@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bglogo"
-    tools:context="com.zconnect.zuttto.zconnect.logoFlash">
+    tools:context="com.zconnect.zutto.zconnect.logoFlash">
 
     <ImageView
         android:background="@drawable/logo"

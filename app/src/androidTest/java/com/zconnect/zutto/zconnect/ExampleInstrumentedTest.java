@@ -1,4 +1,4 @@
-package com.zconnect.zuttto.zconnect;
+package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.zconnect.zuttto.zconnect", appContext.getPackageName());
+        assertEquals("com.zconnect.zutto.zconnect", appContext.getPackageName());
     }
 }

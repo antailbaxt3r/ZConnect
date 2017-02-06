@@ -1,4 +1,4 @@
-package com.zconnect.zuttto.zconnect;
+package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +22,9 @@ public class logoFlash extends AppCompatActivity {
         // Time Delay for the logo activity
         new Timer().schedule(new TimerTask(){
             public void run() {
-                startActivity(new Intent(logoFlash.this, logIn.class));
+                Intent intent = new Intent(logoFlash.this, home.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
             }
         }, 2800);

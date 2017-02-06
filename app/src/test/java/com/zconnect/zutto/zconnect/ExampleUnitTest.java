@@ -1,4 +1,4 @@
-package com.zconnect.zuttto.zconnect;
+package com.zconnect.zutto.zconnect;
 
 import org.junit.Test;
 

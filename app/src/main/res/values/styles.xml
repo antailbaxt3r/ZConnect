@@ -11,6 +11,7 @@
     <style name="login" parent="AppTheme">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="colorAccent">@color/hint</item>
     </style>
 
     <style name="FullscreenTheme" parent="AppTheme">
