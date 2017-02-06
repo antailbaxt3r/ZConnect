@@ -12,14 +12,15 @@
     android:background="@drawable/bglogo"
     tools:context="com.zconnect.zutto.zconnect.registerNewUser">
 
-    <ImageView
+    <ImageButton
         app:srcCompat="@drawable/defaultprofile"
         android:id="@+id/profileImg"
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        />
+        android:background="@color/teal50"
+        android:scaleType="centerCrop" />
 
     <EditText
         android:layout_width="match_parent"

@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -25,12 +26,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class registerNewUser extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST = 7;
     private Uri mImageUri=null;
-    private ImageView userImage;
+    private ImageButton userImage;
     private EditText usernameText;
     private EditText emailText;
     private EditText passwordText;
@@ -39,7 +42,7 @@ public class registerNewUser extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabase;
-    private StorageReference mStorage;
+    private StorageReference mStorageProfile;
 
     private ProgressDialog mProgress;
 
@@ -51,10 +54,10 @@ public class registerNewUser extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
-        mStorage = FirebaseStorage.getInstance().getReference();
+        mStorageProfile = FirebaseStorage.getInstance().getReference().child("Profile");
         mProgress = new ProgressDialog(this);
 
-        userImage = (ImageView) findViewById(R.id.profileImg);
+        userImage = (ImageButton) findViewById(R.id.profileImg);
         usernameText = (EditText) findViewById(R.id.username);
         emailText = (EditText) findViewById(R.id.email);
         passwordText = (EditText) findViewById(R.id.password);
@@ -88,21 +91,32 @@ public class registerNewUser extends AppCompatActivity {
             if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
                 mProgress.setMessage("Adding User");
                 mProgress.show();
+
+
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            mProgress.dismiss();
-                            DatabaseReference currentUser = mDatabase.child(mAuth.getCurrentUser().getUid());
 
-                            currentUser.child("Username").setValue(username);
-                            currentUser.child("Email").setValue(email);
-//                                currentUser.child("ProfileImage").setValue(downloadUri.toString());
+                            StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment());
+                            filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
+                                    String downloadUri = taskSnapshot.getDownloadUrl().toString();
+                                    DatabaseReference currentUser = mDatabase.child(mAuth.getCurrentUser().getUid());
 
-                            Intent homeIntent = new Intent(registerNewUser.this, home.class);
-                            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(homeIntent);
+                                    currentUser.child("Username").setValue(username);
+
+                                    currentUser.child("Email").setValue(email);
+                                    currentUser.child("ProfileImage").setValue(downloadUri.toString());
+                                    mProgress.dismiss();
+                                    Intent homeIntent = new Intent(registerNewUser.this, home.class);
+                                    homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                                    startActivity(homeIntent);
+                                }
+                            });
 
 
                         }
@@ -116,16 +130,29 @@ public class registerNewUser extends AppCompatActivity {
             Toast.makeText(this, "Password should be greater than 6 letters", Toast.LENGTH_SHORT).show();
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-//
-//            mImageUri = data.getData();// takes image that the user added
-//            userImage.setImageURI(mImageUri);//sets the image to mAddImage button
-//
-//        }
-//    }
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK){
+            Uri imageUri = data.getData();
+            CropImage.activity(imageUri)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(1,1)
+                    .setBackgroundColor(R.color.white)
+                    .setBorderCornerColor(R.color.teal100)
+                    .start(this);
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+
+                mImageUri= result.getUri();
+                userImage.setImageURI(mImageUri);
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+    }
 }

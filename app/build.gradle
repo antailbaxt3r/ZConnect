@@ -36,6 +36,9 @@ dependencies {
     // Added for snackbar
     compile 'com.android.support:design:25.1.0'
 
+    // Added for cropping tool
+    compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
+
     testCompile 'junit:junit:4.12'
 }
 
