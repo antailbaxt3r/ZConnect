@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/infone"
+            android:icon="@drawable/ic_phone_black_24dp"
+            android:title="Infone" />
+        <item
+            android:id="@+id/shop"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Shop" />
+        <item
+            android:id="@+id/storeRoom"
+            android:icon="@drawable/storeroom"
+            android:title="StoreRoom" />
+        <item
+            android:id="@+id/events"
+            android:icon="@drawable/ic_event_black_24dp"
+            android:title="Events" />
+    </group>
+
+    <item android:title="Settings">
+        <menu>
+            <item
+                android:id="@+id/signOut"
+                android:icon="@drawable/ic_power_settings_new_black_24dp"
+                android:title="Sign Out" />
+        </menu>
+    </item>
+
+</menu>
