@@ -42,7 +42,13 @@
         <activity
             android:name=".home"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AddEvent" />
+        <activity
+            android:name=".AllEvents"
+            android:label="@string/title_activity_all_events"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".OpenEventDetail"></activity>
     </application>
 
 </manifest>

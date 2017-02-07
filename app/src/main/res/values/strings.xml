@@ -9,4 +9,10 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="dialog_message">You don\'t priveges to post.</string>
+    <string name="dialog_title">Access Denied</string>
+    <string name="request">Request</string>
+    <string name="ok">OK</string>
+    <string name="title_activity_all_events">AllEvents</string>
 </resources>
