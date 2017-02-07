@@ -3,9 +3,6 @@ package com.zconnect.zutto.zconnect;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -104,7 +101,8 @@ public class home extends AppCompatActivity
         if (id == R.id.infone) {
             // Handle the camera action
         } else if (id == R.id.shop) {
-
+            Intent intent = new Intent(this, Shop.class);
+            startActivity(intent);
         } else if (id == R.id.storeRoom) {
 
         } else if (id == R.id.events) {
@@ -122,8 +120,8 @@ public class home extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        checkUser();
-        mAuth.addAuthStateListener(mAuthListener);
+        //checkUser();
+        //  mAuth.addAuthStateListener(mAuthListener);
 
     }
 
