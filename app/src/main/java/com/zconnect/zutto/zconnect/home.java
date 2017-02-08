@@ -99,7 +99,8 @@ public class home extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.infone) {
-            // Handle the camera action
+            Intent intent = new Intent(this, Phonebook.class);
+            startActivity(intent);
         } else if (id == R.id.shop) {
             Intent intent = new Intent(this, Shop.class);
             startActivity(intent);

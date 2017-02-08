@@ -55,7 +55,44 @@
         <activity
             android:name=".ShopDetails"
             android:label="@string/title_activity_shop_details"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddContact"
+            android:label="@string/title_activity_add_contact"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PhonebookDetails"
+            android:label="Details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PhonebookHostelWise"
+            android:label="@string/title_activity_phonebook_hostel_wise"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Phonebook"
+            android:label="Infone"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".PhonebookSearch" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".home"></meta-data>
+        </activity>
+
+        <activity
+            android:name=".PhonebookSearch"
+            android:label="Search Results"
+            android:launchMode="singleTop"
+            android:parentActivityName=".Phonebook">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
     </application>
 
 </manifest>
