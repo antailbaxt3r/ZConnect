@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -53,6 +54,25 @@ public class ShopListRV extends RecyclerView.Adapter<ShopListRV.ViewHolder> {
         public ViewHolder(View itemView) {
             super(itemView);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.shop_list_item_format_image);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShopDetailsItem shopDetailsItem;
+                    shopDetailsItem = shopListItem.get(getAdapterPosition()).getShopDetailsItem();
+                    Intent intent = new Intent(context, ShopDetails.class);
+                    intent.putExtra("Name", shopDetailsItem.getName());
+                    intent.putExtra("Details", shopDetailsItem.getDetails());
+                    intent.putExtra("Imageurl", shopDetailsItem.getImageurl());
+                    intent.putExtra("Menu", shopDetailsItem.getMenuurl());
+                    intent.putExtra("Lat", shopDetailsItem.getLat());
+                    intent.putExtra("Lon", shopDetailsItem.getLon());
+                    intent.putExtra("Number", shopDetailsItem.getNumber());
+                    context.startActivity(intent);
+                    if (context instanceof ShopDetails) {
+                        ((ShopDetails) context).finish();
+                    }
+                }
+            });
         }
     }
 }
