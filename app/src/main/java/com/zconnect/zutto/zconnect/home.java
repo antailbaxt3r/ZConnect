@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -108,6 +109,8 @@ public class home extends AppCompatActivity
         } else if (id == R.id.storeRoom) {
 
         } else if (id == R.id.events) {
+
+            startActivity(new Intent(home.this, AllEvents.class));
 
         } else if (id == R.id.signOut) {
 
