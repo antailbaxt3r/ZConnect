@@ -58,6 +58,8 @@ public class home extends AppCompatActivity
                     Intent loginIntent = new Intent(home.this, logIn.class);
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(loginIntent);
+                }else {
+                    checkUser();
                 }
 
             }
@@ -125,7 +127,6 @@ public class home extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        checkUser();
         mAuth.addAuthStateListener(mAuthListener);
 
     }
