@@ -46,9 +46,20 @@
         <activity android:name=".AddEvent" />
         <activity
             android:name=".AllEvents"
-            android:label="Event`s"
+            android:label="Events"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".OpenEventDetail"></activity>
+        <activity android:name=".OpenEventDetail" />
+        <activity
+            android:name=".TabStoreRoom"
+            android:label="@string/title_activity_tab_store_room"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".StoreRoom"
+            android:label="@string/title_activity_store_room"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AddProduct" />
+        <activity android:name=".OpenProductDetail" />
+        <activity android:name=".MyProducts"></activity>
     </application>
 
 </manifest>

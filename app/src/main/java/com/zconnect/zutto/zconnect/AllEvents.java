@@ -9,7 +9,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -62,6 +61,8 @@ public class AllEvents extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/Posts");
         mPrivileges = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/Privileges");
         mRequest = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/");
+
+        mDatabase.keepSynced(true);
 
         mPrivileges.addValueEventListener(new ValueEventListener() {
             @Override
@@ -119,21 +120,6 @@ public class AllEvents extends AppCompatActivity {
 //                                newPost.child("Email").setValue(emailId);
                                 writeNewPost(emailId);
 
-
-//                            Gmail ob = new Gmail("zconnectmailer@gmail.com", "Cool@coder01", "garg.lokesh96@gmail.com", "SUBJECT", "LITE");
-//                            try {
-//                                MimeMessage message = ob.createEmailMessage();
-//                            } catch (MessagingException e) {
-//                                e.printStackTrace();
-//                            } catch (UnsupportedEncodingException e) {
-//                                e.printStackTrace();
-//                            }
-//                            try {
-//                                ob.sendEmail();
-//                            } catch (MessagingException e) {
-//                                e.printStackTrace();
-//                            }
-//
                                 Toast.makeText(AllEvents.this, "Request Sent", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
 
@@ -211,6 +197,8 @@ public class AllEvents extends AppCompatActivity {
 
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);
+
+
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {

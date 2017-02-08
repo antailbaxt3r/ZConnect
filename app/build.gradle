@@ -24,37 +24,39 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:support-v4:25.1.0'
 
 //    Firebase dependencies
+
+    //for card view
+    //for Date and Time Picker
+
+    //for google-sign-in
+
+    //For displaying images
+    // Added for snackbar
+
+    // Added for cropping tool
+
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:support-v4:25.1.0'
     compile 'com.firebaseui:firebase-ui-database:1.0.0'
     compile 'com.google.firebase:firebase-core:10.0.1'
     compile 'com.google.firebase:firebase-database:10.0.1'
     compile 'com.google.firebase:firebase-storage:10.0.1'
     compile 'com.google.firebase:firebase-auth:10.0.1'
-
-
-    //for card view
     compile 'com.android.support:recyclerview-v7:25.1.0'
     compile 'com.android.support:cardview-v7:25.1.0'
-    //for Date and Time Picker
     compile 'com.github.jjobes:slideDateTimePicker:1.0.2'
-
-    //for google-sign-in
     compile 'com.google.android.gms:play-services:10.0.1'
     compile 'com.google.android.gms:play-services-auth:10.0.1'
-
-    //For displaying images
     compile 'com.squareup.picasso:picasso:2.5.2'
-    // Added for snackbar
     compile 'com.android.support:design:25.1.0'
-
-    // Added for cropping tool
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
-
     testCompile 'junit:junit:4.12'
 }
+
+
+
 
 
 apply plugin: 'com.google.gms.google-services'

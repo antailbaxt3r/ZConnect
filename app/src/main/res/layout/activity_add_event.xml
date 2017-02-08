@@ -15,21 +15,21 @@
         android:id="@+id/imageButton"
         android:layout_width="fill_parent"
         android:layout_height="200dp"
-        android:background="@drawable/border_filled_2"
-        android:padding="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"/>
+        android:background="@drawable/border_filled_2"
+        android:padding="10dp" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/event_name_text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginLeft="7dp"
         android:layout_below="@+id/imageButton"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/border_filled_2"
         >
 
@@ -37,10 +37,11 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ems="10"
             android:layout_marginLeft="2dp"
+            android:ems="10"
             android:hint="Event Name"
             android:inputType="text"
+            android:padding="10dp"
             android:textColor="@color/teal500" />
     </android.support.design.widget.TextInputLayout>
 
@@ -48,10 +49,10 @@
         android:id="@+id/event_description_text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginLeft="7dp"
         android:layout_below="@+id/event_name_text_input_layout"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/border_filled_2"
         >
 
@@ -59,51 +60,52 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ems="10"
-            android:textColor="@color/teal500"
             android:layout_marginLeft="2dp"
+            android:ems="10"
             android:hint="Event Description"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:padding="10dp"
+            android:textColor="@color/teal500" />
     </android.support.design.widget.TextInputLayout>
 <FrameLayout
+    android:id="@+id/dateAndTime"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/event_description_text_input_layout"
     android:layout_marginLeft="7dp"
     android:layout_marginRight="7dp"
-    android:id="@+id/dateAndTime"
     >
     <ImageButton
+        android:id="@+id/dateIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_date_range_black_24dp"
         android:layout_marginTop="15dp"
-        android:id="@+id/dateIcon"
-        android:background="@android:drawable/screen_background_light_transparent" />
+        android:background="@android:drawable/screen_background_light_transparent"
+        app:srcCompat="@mipmap/ic_date_range_black_24dp" />
 
     <TextView
-        android:text="Date and Time"
+        android:id="@+id/dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="30dp"
-        android:textColor="@color/teal500"
-        android:id="@+id/dateText" />
+        android:layout_marginTop="20dp"
+        android:text="Date and Time"
+        android:textColor="@color/teal500" />
     </FrameLayout>
 
 
     <com.google.android.gms.common.internal.zzak
-        android:text="Post"
-        android:layout_height="45dp"
-        android:textColor="@color/teal500"
-        android:background="@drawable/border_filled_2"
         android:id="@+id/post"
-        android:textSize="16dp"
         android:layout_width="140dp"
+        android:layout_height="45dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="15dp"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/dateAndTime"
-        android:layout_marginTop="15dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/border_filled_3"
+        android:text="Post"
+        android:textColor="@color/teal700"
+        android:textSize="16dp" />
 
 </RelativeLayout>

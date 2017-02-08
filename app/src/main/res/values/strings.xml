@@ -10,9 +10,31 @@
 
     <string name="action_settings">Settings</string>
 
+    <string name="category_prompt">Choose category</string>
     <string name="dialog_message">You don\'t priveges to post.</string>
     <string name="dialog_title">Access Denied</string>
     <string name="request">Request</string>
     <string name="ok">OK</string>
     <string name="title_activity_all_events">AllEvents</string>
+    <string name="title_activity_tab_store_room">TabStoreRoom</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_store_room">StoreRoom</string>
+
+    <string-array name="categories">
+        <item>Electronics</item>
+        <item>BeanBags</item>
+        <item>Speakers and Headphones</item>
+        <item>Fashion</item>
+        <item>Storage</item>
+        <item>Books</item>
+        <item>Lab Coats</item>
+        <item>Room Necessities</item>
+        <item>Novels</item>
+        <item>Others</item>
+
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

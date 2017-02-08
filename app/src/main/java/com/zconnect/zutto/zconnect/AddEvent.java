@@ -3,35 +3,33 @@ package com.zconnect.zutto.zconnect;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
+import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.Date;
 
 public class AddEvent extends AppCompatActivity {
 
+    private static final int GALLERY_REQUEST = 7;
     String eventDate;
     String dateString;
     private Uri mImageUri = null;
-    private static final int GALLERY_REQUEST = 7;
     private ImageButton mAddImage;
     private android.support.design.widget.TextInputEditText mEventName;
     private android.support.design.widget.TextInputEditText mEventDescription;
@@ -90,19 +88,20 @@ public class AddEvent extends AppCompatActivity {
             public void onClick(View view) {
 
                 startPosting();
+
             }
         });
     }
 
     private void startPosting() {
-        mProgress.setMessage("JccJc");
+        mProgress.setMessage("Posting Event..");
         mProgress.show();
         final String eventNameValue = mEventName.getText().toString().trim();
         final String eventDescriptionValue = mEventDescription.getText().toString().trim();
 
         if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null) {
             //1
-            StorageReference filepath = mStorage.child("EventImage").child(mImageUri.getLastPathSegment());
+            final StorageReference filepath = mStorage.child("EventImage").child(mImageUri.getLastPathSegment());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -119,6 +118,7 @@ public class AddEvent extends AppCompatActivity {
 
                     mProgress.dismiss();
                     startActivity(new Intent(AddEvent.this, AllEvents.class));
+                    finish();
                 }
             });
         }

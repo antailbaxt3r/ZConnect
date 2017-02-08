@@ -13,6 +13,10 @@ public class Event {
             FormatDate,
             Key;
 
+    public Event() {
+
+    }
+
     public Event(String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key) {
         EventName = eventName;
         EventDescription = eventDescription;

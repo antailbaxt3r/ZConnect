@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_add_product"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.zconnect.zutto.zconnect.AddProduct">
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:background="@drawable/border_filled_2"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageButton"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/border_filled_2"
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="textPersonName"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@+id/name"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/border_filled_2"
+        android:ems="10"
+        android:hint="Description"
+        android:inputType="textMultiLine"
+        android:padding="10dp" />
+
+    <Spinner
+        android:id="@+id/categories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/border_filled_2"
+        android:entries="@array/categories"
+        android:padding="10dp"
+        android:prompt="@string/category_prompt" />
+
+    <EditText
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/description"
+        android:layout_below="@+id/imageButton"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="15dp"
+        android:layout_toEndOf="@+id/name"
+        android:background="@drawable/border_filled_2"
+        android:ems="10"
+        android:hint="Price"
+        android:inputType="numberDecimal"
+        android:padding="10dp" />
+
+    <com.google.android.gms.common.internal.zzak
+        android:id="@+id/post"
+        android:layout_width="140dp"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/categories"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/border_filled_3"
+        android:text="Post"
+        android:textColor="@color/teal700"
+        android:textSize="16dp" />
+
+
+</RelativeLayout>
