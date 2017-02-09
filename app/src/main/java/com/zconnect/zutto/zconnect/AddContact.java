@@ -35,14 +35,14 @@ public class AddContact extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
     private static final int GALLERY_REQUEST = 7;
     ImageView image;
-    Uri imageuri;
+    Uri imageUri;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
     private String cat;
     private StorageReference mStorage = FirebaseStorage.getInstance().getReference();
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("ZConnect").child("Phonebook");
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private Uri mImageUri = null;
     private ProgressDialog mProgress;
     private RadioButton radioButtonS, radioButtonA, radioButtonO;
@@ -119,10 +119,9 @@ public class AddContact extends AppCompatActivity {
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
 //        imageurl=imageuri.toString();
@@ -133,10 +132,10 @@ public class AddContact extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            imageuri = data.getData();
-            CropImage.activity(imageuri)
+            imageUri = data.getData();
+            CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1, 1)
+                    .setAspectRatio(2, 1)
                     .setBackgroundColor(R.color.white)
                     .setBorderCornerColor(R.color.teal100)
                     .start(this);
@@ -194,14 +193,14 @@ public class AddContact extends AppCompatActivity {
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
 //        imageurl = imageuri.toString();
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && imageuri != null) {
+        if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && imageUri != null) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
 
-                    DatabaseReference newPost = ref.child(cat).push();
+                    DatabaseReference newPost = ref.push();
                     // String key = newPost.getKey();
                     newPost.child("name").setValue(name);
                     newPost.child("desc").setValue(details);

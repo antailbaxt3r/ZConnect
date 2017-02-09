@@ -140,6 +140,12 @@ public class home extends AppCompatActivity
         } else if (id == R.id.signOut) {
 
             logout();
+        } else if (id == R.id.ad) {
+            startActivity(new Intent(home.this, Advertisement.class));
+
+        } else if (id == R.id.about) {
+            startActivity(new Intent(home.this, AboutUs.class));
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
