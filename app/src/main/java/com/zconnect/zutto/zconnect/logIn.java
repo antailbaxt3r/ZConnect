@@ -1,16 +1,21 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -66,8 +71,18 @@ public class logIn extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(getApplicationContext(), Shop.class);
-                startActivity(intent);
+                if (!isNetworkAvailable(getApplicationContext())) {
+
+                    Snackbar snack = Snackbar.make(mGoogleSignIn, "No Internet. Can't Log In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                    snack.show();
+
+                } else {
+                    startLogin();
+                }
+
             }
         });
 
@@ -97,7 +112,20 @@ public class logIn extends AppCompatActivity {
         mGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                if (!isNetworkAvailable(getApplicationContext())) {
+
+                    Snackbar snack = Snackbar.make(mGoogleSignIn, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                    snack.show();
+
+                } else {
+                    signIn();
+                }
+
+
+
             }
         });
     }
@@ -124,7 +152,12 @@ public class logIn extends AppCompatActivity {
                 // Google Sign In failed, update UI appropriately
                 // ...
                 mProgress.dismiss();
-                Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();
+                Snackbar snack = Snackbar.make(mGoogleSignIn, "Login failed", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.show();
+                //Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -147,8 +180,11 @@ public class logIn extends AppCompatActivity {
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(logIn.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            Snackbar snack = Snackbar.make(mGoogleSignIn, "Authentication failed.", Snackbar.LENGTH_LONG);
+                            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            snackBarText.setTextColor(Color.WHITE);
+                            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                            snack.show();
                             mProgress.dismiss();
                         }
                         else {
@@ -174,7 +210,10 @@ public class logIn extends AppCompatActivity {
 //            mAuth.removeAuthStateListener(mAuthListener);
 //        }
 //    }
-
+public boolean isNetworkAvailable(final Context context) {
+    final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+    return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+}
     private void startLogin(){
 
         String email = emailText.getText().toString().trim();
@@ -196,13 +235,23 @@ public class logIn extends AppCompatActivity {
 
                     }else {
                         mProgress.dismiss();
-                        Toast.makeText(logIn.this, "Email or Password Incorrect", Toast.LENGTH_SHORT).show();
+                        Snackbar snack = Snackbar.make(mGoogleSignIn, "Email or Password Incorrect", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                        snack.show();
+                        //  Toast.makeText(logIn.this, "Email or Password Incorrect", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
 
         }else{
-            Toast.makeText(this, "Enter both Fields", Toast.LENGTH_SHORT).show();
+            Snackbar snack = Snackbar.make(mGoogleSignIn, "Enter both Fields", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+            snack.show();
+            // Toast.makeText(this, "Enter both Fields", Toast.LENGTH_SHORT).show();
         }
 
     }

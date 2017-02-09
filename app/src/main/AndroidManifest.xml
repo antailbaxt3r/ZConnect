@@ -44,7 +44,10 @@
             android:name=".home"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AddEvent" />
+        <activity
+            android:name=".AddEvent"
+            android:label="Add Event"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AllEvents"
             android:label="Events"
@@ -95,7 +98,9 @@
                 android:value=".PhonebookSearch" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".home"></meta-data>
+                android:value=".home">
+
+            </meta-data>
         </activity>
 
         <activity

@@ -28,7 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class AddContact extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
@@ -42,7 +43,7 @@ public class AddContact extends AppCompatActivity {
     private String cat;
     private StorageReference mStorage = FirebaseStorage.getInstance().getReference();
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("ZConnect").child("Phonebook");
-
+    private Uri mImageUri = null;
     private ProgressDialog mProgress;
     private RadioButton radioButtonS, radioButtonA, radioButtonO;
     private String name, email, details, number, hostel, category = null;
@@ -130,15 +131,28 @@ public class AddContact extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == SELECT_PICTURE) {
-                Picasso.with(AddContact.this).load(data.getData()).noPlaceholder().centerCrop().fit()
-                        .into((ImageView) findViewById(R.id.contact_image));
-            }
+
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             imageuri = data.getData();
+            CropImage.activity(imageuri)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(1, 1)
+                    .setBackgroundColor(R.color.white)
+                    .setBorderCornerColor(R.color.teal100)
+                    .start(this);
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+
+                mImageUri = result.getUri();
+                image.setImageURI(mImageUri);
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_contact, menu);
@@ -154,7 +168,7 @@ public class AddContact extends AppCompatActivity {
                 Snackbar snack = Snackbar.make(editTextDetails, "No Internet. Can't Add Contact.", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.blue500));
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                 snack.show();
 
             } else {
@@ -173,14 +187,16 @@ public class AddContact extends AppCompatActivity {
     public void startposting() {
         mProgress.setMessage("Adding...");
         mProgress.show();
-        name = editTextName.getText().toString().trim();
-        email = editTextEmail.getText().toString().trim();
+        // name = editTextName.getText().toString().trim();
+        //email = editTextEmail.getText().toString().trim();
+        name = "name";
+        email = "email";
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
 //        imageurl = imageuri.toString();
         if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && imageuri != null) {
-            StorageReference filepath = mStorage.child("PhonebookImage").child(imageuri.getLastPathSegment());
-            filepath.putFile(imageuri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment());
+            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
@@ -216,7 +232,7 @@ public class AddContact extends AppCompatActivity {
             Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't add contact.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
-            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.blue500));
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
             snack.show();
             mProgress.dismiss();
         }
