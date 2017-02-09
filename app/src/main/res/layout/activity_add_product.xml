@@ -16,14 +16,14 @@
         android:layout_height="200dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/border_filled_2"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:scaleType="centerCrop" />
 
     <EditText
         android:id="@+id/name"
-        android:layout_width="200dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/imageButton"
         android:layout_marginLeft="7dp"
@@ -82,14 +82,25 @@
         android:layout_width="140dp"
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/categories"
-        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/spinner"
         android:layout_marginBottom="15dp"
-        android:layout_marginTop="15dp"
         android:background="@drawable/border_filled_3"
         android:text="Post"
         android:textColor="@color/teal700"
         android:textSize="16dp" />
+
+    <EditText
+        android:id="@+id/phoneNo"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/post"
+        android:layout_alignBottom="@+id/post"
+        android:layout_alignEnd="@+id/categories"
+        android:layout_below="@+id/spinner"
+        android:background="@drawable/border_filled_2"
+        android:hint="Phone No."
+        android:inputType="phone"
+        android:padding="10dp" />
 
 
 </RelativeLayout>

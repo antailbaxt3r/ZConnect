@@ -23,6 +23,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class AddProduct extends AppCompatActivity {
 
@@ -33,6 +35,7 @@ public class AddProduct extends AppCompatActivity {
     private EditText mProductName;
     private EditText mProductDescription;
     private EditText mProductPrice;
+    private EditText mProductPhone;
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
     private DatabaseReference mUsername;
@@ -50,6 +53,7 @@ public class AddProduct extends AppCompatActivity {
         mProductName = (EditText) findViewById(R.id.name);
         mProductDescription = (EditText) findViewById(R.id.description);
         mProductPrice = (EditText) findViewById(R.id.price);
+        mProductPhone = (EditText) findViewById(R.id.phoneNo);
         mPostBtn = (Button) findViewById(R.id.post);
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
@@ -82,6 +86,7 @@ public class AddProduct extends AppCompatActivity {
         final String productNameValue = mProductName.getText().toString().trim();
         final String productDescriptionValue = mProductDescription.getText().toString().trim();
         final String productPriceValue = mProductPrice.getText().toString().trim();
+        final String productPhoneNo = mProductPhone.getText().toString().trim();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
@@ -100,7 +105,7 @@ public class AddProduct extends AppCompatActivity {
         });
 
 
-        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && mImageUri != null) {
+        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && !TextUtils.isEmpty(productPriceValue) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null) {
             StorageReference filepath = mStorage.child("ProductImage").child(mImageUri.getLastPathSegment());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -115,8 +120,18 @@ public class AddProduct extends AppCompatActivity {
                     newPost.child("ProductDescription").setValue(productDescriptionValue);
                     newPost.child("Image").setValue(downloadUri.toString());
                     newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
+                    newPost.child("Phone_no").setValue(productPhoneNo);
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
+
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("ZConnect").child("everything").push();
+                    newPost2.child("Title").setValue(productNameValue);
+                    newPost2.child("Description").setValue(productDescriptionValue);
+                    newPost2.child("Url").setValue(downloadUri.toString());
+                    newPost2.child("Phone_no").setValue(productPhoneNo);
+                    newPost2.child("type").setValue("Pro");
+                    newPost2.child("multiUse1").setValue(productPriceValue);
+
                     mProgress.dismiss();
                     startActivity(new Intent(AddProduct.this, TabStoreRoom.class));
                     finish();
@@ -131,10 +146,23 @@ public class AddProduct extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-
-            mImageUri = data.getData();// takes image that the user added
-            mAddImage.setImageURI(mImageUri);//sets the image to mAddImage button
-
+            Uri imageUri = data.getData();
+            CropImage.activity(imageUri)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setSnapRadius(2)
+                    .start(this);
         }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+
+                mImageUri = result.getUri();
+                mAddImage.setImageURI(mImageUri);
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+
     }
 }

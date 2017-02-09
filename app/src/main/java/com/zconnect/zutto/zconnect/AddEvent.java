@@ -21,6 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.Date;
 
@@ -43,7 +45,9 @@ public class AddEvent extends AppCompatActivity {
         public void onDateTimeSet(Date date) {
             eventDate = date.toString();
             Toast.makeText(AddEvent.this, eventDate, Toast.LENGTH_SHORT).show();
-            dateString = date.toString();
+            dateString = String.valueOf(date.getTime());
+            Toast.makeText(AddEvent.this, dateString, Toast.LENGTH_SHORT).show();
+
         }
     };
 
@@ -115,6 +119,14 @@ public class AddEvent extends AppCompatActivity {
                     newPost.child("EventDate").setValue(eventDate);
                     newPost.child("FormatDate").setValue(dateString);
 
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("ZConnect/everything").push();
+                    newPost2.child("Title").setValue(eventNameValue);
+                    newPost2.child("Description").setValue(eventDescriptionValue);
+                    newPost2.child("Url").setValue(downloadUri.toString());
+                    newPost2.child("multiUse2").setValue(eventDate);
+                    newPost2.child("multiUse1").setValue(dateString);
+                    newPost2.child("type").setValue("E");
+
 
                     mProgress.dismiss();
                     startActivity(new Intent(AddEvent.this, AllEvents.class));
@@ -129,10 +141,21 @@ public class AddEvent extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+            Uri imageUri = data.getData();
+            CropImage.activity(imageUri)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .start(this);
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
 
-            mImageUri = data.getData();// takes image that the user added
-            mAddImage.setImageURI(mImageUri);//sets the image to mAddImage button
+                mImageUri = result.getUri();
+                mAddImage.setImageURI(mImageUri);
 
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
         }
     }
 }

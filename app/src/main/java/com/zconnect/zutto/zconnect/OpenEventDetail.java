@@ -1,7 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +48,7 @@ public class OpenEventDetail extends AppCompatActivity {
                 String eventName = (String) snapshot.child("EventName").getValue();  //prints "Do you have data? You'll love Firebase."
                 String imageUri = (String) snapshot.child("EventImage").getValue();
                 String eventDescription = (String) snapshot.child("EventDescription").getValue();
-                String eventDate[] = ((String) snapshot.child("EventDate").getValue()).split("\\s");
+                String eventDate[] = ((String) snapshot.child("EventDate").getValue()).split("\\s+");
                 String date = "";
                 int i = 0;
                 while (i < 3) {

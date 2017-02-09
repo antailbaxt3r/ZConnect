@@ -37,6 +37,7 @@ import java.util.Map;
 public class AllEvents extends AppCompatActivity {
 
     boolean flag = false;
+    LinearLayoutManager mlinearmanager;
     private RecyclerView mEventList;
     private DatabaseReference mDatabase;
     private DatabaseReference mPrivileges;
@@ -48,7 +49,11 @@ public class AllEvents extends AppCompatActivity {
         setContentView(R.layout.activity_all_events);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        mlinearmanager = new LinearLayoutManager(this);
+        mlinearmanager.setReverseLayout(true);
+        mlinearmanager.setStackFromEnd(true);
+        //mlinearmanager.setStackFromEnd(true);
+        mlinearmanager.scrollToPosition(1);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -56,7 +61,7 @@ public class AllEvents extends AppCompatActivity {
         final String emailId = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         mEventList = (RecyclerView) findViewById(R.id.eventList);
         mEventList.setHasFixedSize(true);
-        mEventList.setLayoutManager(new LinearLayoutManager(this));
+        mEventList.setLayoutManager(mlinearmanager);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/Posts");
         mPrivileges = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/Privileges");
@@ -275,14 +280,12 @@ public class AllEvents extends AppCompatActivity {
 
         private void addReminderInCalendar(String title, String desc, long time, Context context) {
             Calendar cal = Calendar.getInstance();
-
-
             Intent intent = new Intent(Intent.ACTION_EDIT);
             intent.setType("vnd.android.cursor.item/event");
-            intent.putExtra("beginTime", cal.getTimeInMillis() + time);
+            intent.putExtra("beginTime", time);
             intent.putExtra("allDay", false);
             intent.putExtra("rrule", "FREQ=DAILY");
-            intent.putExtra("endTime", cal.getTimeInMillis() + time + 60 * 60 * 1000);
+            intent.putExtra("endTime", time + 60 * 60 * 1000);
             intent.putExtra("title", title);
             intent.putExtra("description", desc);
             context.startActivity(intent);

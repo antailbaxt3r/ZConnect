@@ -24,6 +24,7 @@ public class OpenProductDetail extends AppCompatActivity {
     private TextView sellerNumber;
     private ImageView productImage;
     private String temporaryVariable;
+    private TextView price;
     private String value;
     private FirebaseAuth mAuth;
 
@@ -32,8 +33,9 @@ public class OpenProductDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_product_detail);
 
-        productName = (TextView) findViewById(R.id.productName);
-        productDescription = (TextView) findViewById(R.id.productDescription);
+        price = (TextView) findViewById(R.id.price);
+        productName = (TextView) findViewById(R.id.name);
+        productDescription = (TextView) findViewById(R.id.description);
         sellerName = (TextView) findViewById(R.id.sellerName);
         productImage = (ImageView) findViewById(R.id.image);
         mAuth = FirebaseAuth.getInstance();
@@ -55,18 +57,20 @@ public class OpenProductDetail extends AppCompatActivity {
                 mAuth = FirebaseAuth.getInstance();
                 FirebaseUser user = mAuth.getCurrentUser();
                 final String userId = user.getUid();
-                String productName = (String) snapshot.child("storeroom").child(value).child("ProductName").getValue();  //prints "Do you have data? You'll love Firebase."
+                String productNameString = (String) snapshot.child("storeroom").child(value).child("ProductName").getValue();  //prints "Do you have data? You'll love Firebase."
                 String imageUri = (String) snapshot.child("storeroom").child(value).child("Image").getValue();
-                String productDescription = (String) snapshot.child("storeroom").child(value).child("ProductDescription").getValue();
-                String sellerName = (String) snapshot.child("Users").child(userId).child("Username").getValue();
+                String productDescriptionString = (String) snapshot.child("storeroom").child(value).child("ProductDescription").getValue();
+                //String sellerName = (String) snapshot.child("Users").child(userId).child("Username").getValue();
+                String priceString = (String) snapshot.child("storeroom").child(value).child("Price").getValue();
 
-
-                Toast.makeText(OpenProductDetail.this, productName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(OpenProductDetail.this, productNameString, Toast.LENGTH_SHORT).show();
 
                 Picasso.with(OpenProductDetail.this).load(imageUri).into(productImage);
-                OpenProductDetail.this.productName.setText(productName);
-                OpenProductDetail.this.productDescription.setText(productDescription);
-                OpenProductDetail.this.sellerName.setText(sellerName);
+                productName.setText(productNameString);
+                productDescription.setText(productDescriptionString);
+                price.setText(priceString);
+                sellerName.setText("God");
+
             }
 
             @Override

@@ -3,8 +3,8 @@ package com.zconnect.zutto.zconnect;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +23,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class setDetails extends AppCompatActivity {
 
+    private static final int GALLERY_REQUEST = 1;
     private ImageButton userProfile;
     private EditText userName;
     private Button submit;
@@ -32,9 +33,6 @@ public class setDetails extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressDialog mProgress;
 
-
-
-    private static final int GALLERY_REQUEST = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,8 +108,6 @@ public class setDetails extends AppCompatActivity {
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1,1)
-                    .setBackgroundColor(R.color.white)
-                    .setBorderCornerColor(R.color.teal100)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
