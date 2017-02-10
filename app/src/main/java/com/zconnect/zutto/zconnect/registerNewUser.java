@@ -1,17 +1,21 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,18 +33,18 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 public class registerNewUser extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST = 7;
+    Uri imageUri;
+    String username, password, downloadUri, email;
     private Uri mImageUri=null;
     private ImageButton userImage;
     private EditText usernameText;
     private EditText emailText;
     private EditText passwordText;
     private Button doneButton;
-
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabase;
     private StorageReference mStorageProfile;
-
     private ProgressDialog mProgress;
 
     @Override
@@ -72,20 +76,36 @@ public class registerNewUser extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startRegister();
+                if (!isNetworkAvailable(getApplicationContext())) {
+
+                    Snackbar snack = Snackbar.make(doneButton, "No Internet. Can't Register.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+                    snack.show();
+
+                } else {
+                    startRegister();
+                }
+
+
             }
         });
     }
 
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
     private void  startRegister()
     {
 
-        final String username = usernameText.getText().toString().trim();
-        final String email = emailText.getText().toString().trim();
-        String password = passwordText.getText().toString().trim();
+        username = usernameText.getText().toString().trim();
+        email = emailText.getText().toString().trim();
+        password = passwordText.getText().toString().trim();
 
-        if(password.length()>=6) {
-            if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
+        if (username != null && email != null && password != null && imageUri != null) {
+            if (password.length() >= 6) {
                 mProgress.setMessage("Adding User");
                 mProgress.show();
 
@@ -100,7 +120,7 @@ public class registerNewUser extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                                    String downloadUri = taskSnapshot.getDownloadUrl().toString();
+                                    downloadUri = taskSnapshot.getDownloadUrl().toString();
                                     DatabaseReference currentUser = mDatabase.child(mAuth.getCurrentUser().getUid());
 
                                     currentUser.child("Username").setValue(username);
@@ -121,10 +141,21 @@ public class registerNewUser extends AppCompatActivity {
                 });
 
             }else{
-                Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
+
+                Snackbar snack = Snackbar.make(doneButton, "Password should be greater than 6 letters", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+                snack.show();
+                // Toast.makeText(this, "Password should be greater than 6 letters", Toast.LENGTH_SHORT).show();
             }
         }else{
-            Toast.makeText(this, "Password should be greater than 6 letters", Toast.LENGTH_SHORT).show();
+            Snackbar snack = Snackbar.make(doneButton, "Enter all fields", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+            snack.show();
+            // Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
         }
     }
     @Override
@@ -132,7 +163,7 @@ public class registerNewUser extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK){
-            Uri imageUri = data.getData();
+            imageUri = data.getData();
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1,1)

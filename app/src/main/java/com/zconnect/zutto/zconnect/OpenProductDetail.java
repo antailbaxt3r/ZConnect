@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,7 +62,7 @@ public class OpenProductDetail extends AppCompatActivity {
                 //String sellerName = (String) snapshot.child("Users").child(userId).child("Username").getValue();
                 String priceString = (String) snapshot.child("storeroom").child(value).child("Price").getValue();
 
-                Toast.makeText(OpenProductDetail.this, productNameString, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(OpenProductDetail.this, productNameString, Toast.LENGTH_SHORT).show();
 
                 Picasso.with(OpenProductDetail.this).load(imageUri).into(productImage);
                 productName.setText(productNameString);

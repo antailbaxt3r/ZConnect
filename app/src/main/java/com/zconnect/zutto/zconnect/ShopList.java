@@ -86,7 +86,7 @@ public class ShopList extends AppCompatActivity {
                     shopDetailsItems.add(shot.getValue(ShopDetailsItem.class));
                 }
                 for (int i = 0; i < shopDetailsItems.size(); i++) {
-                    shopListItems.add(new ShopListItem(shopDetailsItems.get(i).getImageurl(), shopDetailsItems.get(i)));
+                    shopListItems.add(new ShopListItem(shopDetailsItems.get(i).getImageurl(), shopDetailsItems.get(i).getName(), shopDetailsItems.get(i)));
                 }
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(INVISIBLE);

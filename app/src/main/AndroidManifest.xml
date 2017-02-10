@@ -44,7 +44,10 @@
             android:name=".home"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AddEvent" />
+        <activity
+            android:name=".AddEvent"
+            android:label="Add Event"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AllEvents"
             android:label="Events"
@@ -58,10 +61,8 @@
             android:name=".StoreRoom"
             android:label="@string/title_activity_store_room"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AddProduct" />
         <activity android:name=".OpenProductDetail" />
-        <activity android:name=".MyProducts"></activity>
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".MyProducts" />
         <activity
             android:name=".Shop"
             android:label="@string/title_activity_shop"
@@ -95,9 +96,8 @@
                 android:value=".PhonebookSearch" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".home"></meta-data>
+                android:value=".home" />
         </activity>
-
         <activity
             android:name=".PhonebookSearch"
             android:label="Search Results"
@@ -110,6 +110,22 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".AboutUs"
+            android:label="@string/title_activity_about_us"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Advertisement"
+            android:label="@string/title_activity_advertisement"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddProduct"
+            android:label="Add Product"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TabStoreRoom" />
         </activity>
     </application>
 

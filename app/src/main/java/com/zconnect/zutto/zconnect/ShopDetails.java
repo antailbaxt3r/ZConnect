@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ public class ShopDetails extends AppCompatActivity {
         image = (SimpleDraweeView) findViewById(R.id.shop_details_image);
         menu = (SimpleDraweeView) findViewById(R.id.shop_details_menu_image);
         number = (TextView) findViewById(R.id.shop_details_number);
+        number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         numberlayout = (LinearLayout) findViewById(R.id.shop_details_num);
         linearLayout = (LinearLayout) findViewById(R.id.shop_details_directions);
         if (nam != null && detail != null && lat != null && lon != null && imageurl != null && menuurl != null && num != null) {

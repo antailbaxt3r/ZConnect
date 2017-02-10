@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/group"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/infone"
             android:icon="@drawable/ic_phone_black_24dp"
@@ -19,14 +21,32 @@
             android:icon="@drawable/ic_event_black_24dp"
             android:title="Events" />
     </group>
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="none">
 
-    <item android:title="Settings">
-        <menu>
             <item
-                android:id="@+id/signOut"
-                android:icon="@drawable/ic_power_settings_new_black_24dp"
-                android:title="Sign Out" />
-        </menu>
-    </item>
+                android:id="@+id/ad"
+                android:icon="@drawable/ic_live_tv_black_24dp"
+                android:title="Advertisement" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_android_black_24dp"
+            android:title="About Us" />
+
+
+    </group>
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="none">
+
+        <item
+            android:id="@+id/signOut"
+            android:icon="@drawable/ic_power_settings_new_black_24dp"
+            android:title="Sign Out" />
+
+
+    </group>
+
 
 </menu>

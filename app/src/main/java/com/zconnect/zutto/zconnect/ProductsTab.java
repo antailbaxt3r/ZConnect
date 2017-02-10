@@ -81,7 +81,7 @@ public class ProductsTab extends Fragment {
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(getContext(), model.getImage());
-                viewHolder.setPrice(model.getPrice());
+                viewHolder.setPrice("Rs " + model.getPrice());
                 viewHolder.openProduct(model.getKey());
 
 

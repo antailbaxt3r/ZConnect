@@ -4,8 +4,7 @@
     tools:context="com.zconnect.zutto.zconnect.PhonebookDetails">
     <item
         android:id="@+id/action_report"
-        android:icon="@drawable/ic_report_white_24dp"
         android:orderInCategory="1"
-        android:title="Report Problem"
+        android:title="Report"
         app:showAsAction="collapseActionView|ifRoom" />
 </menu>

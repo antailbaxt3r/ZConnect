@@ -19,6 +19,7 @@
     <string name="title_activity_tab_store_room">TabStoreRoom</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_store_room">StoreRoom</string>
+    <string name="about">ZConnect is an upcoming platform which will revolutionize your way of interaction with the community. ZConnect is the online equivalent of any community in which people live together, be it your college, your company, or your locality. ZConnect gives you the power to interact virtually with the people in your community, using ZConnect’s simplified interface. Get alerts on the latest events, updated contacts, offers from shops and second-hand products on sale in your community.</string>
 
     <string-array name="categories">
         <item>Electronics</item>
@@ -63,5 +64,8 @@
     <string name="title_activity_phonebook_details">PhonebookDetails</string>
     <string name="title_activity_phonebook_hostel_wise">PhonebookHostelWise</string>
     <string name="title_activity_phonebook">Phonebook</string>
+    <string name="title_activity_about_us">AboutUs</string>
+    <string name="title_activity_advertisement">Advertisement</string>
+    <string name="title_activity_add_product">AddProduct</string>
 
 </resources>
