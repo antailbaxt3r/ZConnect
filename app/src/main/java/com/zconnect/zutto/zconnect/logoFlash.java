@@ -1,8 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
 import java.util.Timer;
@@ -28,5 +28,7 @@ public class logoFlash extends AppCompatActivity {
                 finish();
             }
         }, 2800);
+
+
     }
 }

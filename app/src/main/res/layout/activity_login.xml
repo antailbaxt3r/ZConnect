@@ -42,7 +42,7 @@
         android:layout_marginStart="31dp"
         android:background="@drawable/border"
         android:hint="Password"
-        android:inputType=""
+        android:inputType="textPassword"
         android:padding="10dp"
         android:textColor="@color/white"
         android:textColorHint="@color/teal50"
