@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -138,6 +140,35 @@ public class home extends AppCompatActivity
 
         } else if (id == R.id.about) {
             startActivity(new Intent(home.this, AboutUs.class));
+
+        } else if (id == R.id.bugReport) {
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(home.this);
+
+            // 2. Chain together various setter methods to set the dialog characteristics
+            builder.setMessage("Send a Bug Report or a Feedback to \nzconnectinc@gmail.com")
+                    .setTitle("Alert");
+
+            builder.setPositiveButton("Bug Report", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", "zconnectinc@gmail.com", null));
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Bug Report");
+                    // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
+                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                }
+            });
+            builder.setNegativeButton("Feedback", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", "zconnectinc@gmail.com", null));
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+                    // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
+                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                }
+            });
+            android.app.AlertDialog dialog = builder.create();
+            dialog.show();
+
 
         }
 
