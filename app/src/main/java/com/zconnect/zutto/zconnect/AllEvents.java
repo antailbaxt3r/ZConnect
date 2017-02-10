@@ -4,20 +4,25 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,6 +54,26 @@ public class AllEvents extends AppCompatActivity {
         setContentView(R.layout.activity_all_events);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            getWindow().setStatusBarColor(colorPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+
         mlinearmanager = new LinearLayoutManager(this);
         mlinearmanager.setReverseLayout(true);
         mlinearmanager.setStackFromEnd(true);
@@ -87,7 +112,7 @@ public class AllEvents extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,15 +143,28 @@ public class AllEvents extends AppCompatActivity {
 
                             //checks if user is online
                             if (!isOnline()) {
-                                Toast.makeText(AllEvents.this, "Request not Sent. Check Internet Connection", Toast.LENGTH_LONG).show();
+                                Snackbar snack = Snackbar.make(fab, "Request not Sent. Check Internet Connection", Snackbar.LENGTH_LONG);
+                                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                snackBarText.setTextColor(Color.WHITE);
+                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                snack.show();
+
+                                // Toast.makeText(AllEvents.this, "Request not Sent. Check Internet Connection", Toast.LENGTH_LONG).show();
                             } else {
 //                                mRequest = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/Requests");
 //                                DatabaseReference newPost = mRequest.push();
 //                                newPost.child("Email").setValue(emailId);
-                                writeNewPost(emailId);
+//                                writeNewPost(emailId);
+//
+//                                Toast.makeText(AllEvents.this, "Request Sent", Toast.LENGTH_SHORT).show();
+//                                dialog.dismiss();
 
-                                Toast.makeText(AllEvents.this, "Request Sent", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
+                                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                                        "mailto", "zconnectinc@gmail.com", null));
+                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Request Permission to add Events");
+                                // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
+                                startActivity(Intent.createChooser(emailIntent, "Send email..."));
+
 
                             }
                         }

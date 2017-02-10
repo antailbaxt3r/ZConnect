@@ -104,11 +104,7 @@ public class TabStoreRoom extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_storeroom) {
-            // Add the onclicklistner code
-            startActivity(new Intent(TabStoreRoom.this, MyProducts.class));
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }

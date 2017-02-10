@@ -11,22 +11,10 @@
         android:orientation="vertical">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/shop_list_item_format_image"
+            android:id="@+id/ad_item_format_image"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="180dp"
             app:actualImageScaleType="fitCenter" />
-
-        <TextView
-            android:id="@+id/shop_list_item_format_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Shop"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="italic">
-
-        </TextView>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>
