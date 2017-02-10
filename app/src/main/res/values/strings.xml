@@ -3,7 +3,7 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="title_activity_home">ZConnect</string>
+    <string name="title_activity_home">Home</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -23,14 +23,13 @@
 
     <string-array name="categories">
         <item>Electronics</item>
-        <item>BeanBags</item>
+        <item>Bean Bags</item>
         <item>Speakers and Headphones</item>
         <item>Fashion</item>
-        <item>Storage</item>
-        <item>Books</item>
-        <item>Lab Coats</item>
+        <item>Storage Devices</item>
+        <item>Academic Books</item>
         <item>Room Necessities</item>
-        <item>Novels</item>
+        <item>Fiction</item>
         <item>Others</item>
 
     </string-array>

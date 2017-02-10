@@ -285,16 +285,21 @@ public class AllEvents extends AppCompatActivity {
 
         public void setEventImage(Context ctx, String image) {
 
-
             ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
             Picasso.with(ctx).load(image).into(post_image);
         }
 
 
         public void setEventDate(String eventDate) {
-
             TextView post_date = (TextView) mView.findViewById(R.id.date);
-            post_date.setText(eventDate);
+            String date[] = eventDate.split("\\s+");
+            String finalDate = "";
+
+            for (int i = 0; i < 4; i++) {
+                finalDate = finalDate + " " + date[i];
+            }
+
+            post_date.setText(finalDate);
 //            String month,date;
 //            TextView post_date = (TextView) mView.findViewById(R.id.date);
 //            month = new DateFormatSymbols().getMonths()[eventDate.getMonth()-1];

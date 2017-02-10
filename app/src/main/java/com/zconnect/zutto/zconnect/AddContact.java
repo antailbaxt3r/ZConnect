@@ -23,13 +23,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.squareup.picasso.Picasso;
 
 public class AddContact extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
@@ -44,10 +50,13 @@ public class AddContact extends AppCompatActivity {
     private StorageReference mStorage = FirebaseStorage.getInstance().getReference();
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private Uri mImageUri = null;
+    private DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users");
     private ProgressDialog mProgress;
     private RadioButton radioButtonS, radioButtonA, radioButtonO;
     private String name, email, details, number, hostel, category = null;
     private Spinner spinner;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +87,24 @@ public class AddContact extends AppCompatActivity {
         editTextDetails = (TextInputEditText) findViewById(R.id.contact_details_editText);
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_email_editText);
         editTextName = (TextInputEditText) findViewById(R.id.contact_name_editText);
+        //Set name of person
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        String userId = mUser.getUid();
+        userRef.child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                editTextName.setText(dataSnapshot.child("Username").getValue().toString());
+                editTextEmail.setText((dataSnapshot.child("Email").getValue().toString()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_number_editText);
         image = (ImageView) findViewById(R.id.contact_image);
         radioButtonS = (RadioButton) findViewById(R.id.radioButton);
@@ -150,8 +177,10 @@ public class AddContact extends AppCompatActivity {
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
+
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_contact, menu);
@@ -186,10 +215,8 @@ public class AddContact extends AppCompatActivity {
     public void startposting() {
         mProgress.setMessage("Adding...");
         mProgress.show();
-        // name = editTextName.getText().toString().trim();
-        //email = editTextEmail.getText().toString().trim();
-        name = "name";
-        email = "email";
+        name = editTextName.getText().toString().trim();
+        email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
 //        imageurl = imageuri.toString();
