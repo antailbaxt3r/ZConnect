@@ -66,5 +66,6 @@
     <string name="title_activity_about_us">AboutUs</string>
     <string name="title_activity_advertisement">Advertisement</string>
     <string name="title_activity_add_product">AddProduct</string>
+    <string name="title_activity_add_event">AddEvent</string>
 
 </resources>
