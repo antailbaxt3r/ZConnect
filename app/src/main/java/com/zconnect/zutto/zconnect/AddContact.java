@@ -23,8 +23,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -42,12 +47,13 @@ public class AddContact extends AppCompatActivity {
     private String cat;
     private StorageReference mStorage = FirebaseStorage.getInstance().getReference();
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("ZConnect").child("Phonebook");
-
+    private DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users");
     private ProgressDialog mProgress;
     private RadioButton radioButtonS, radioButtonA, radioButtonO;
     private String name, email, details, number, hostel, category = null;
     private Spinner spinner;
-
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +83,24 @@ public class AddContact extends AppCompatActivity {
         editTextDetails = (TextInputEditText) findViewById(R.id.contact_details_editText);
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_email_editText);
         editTextName = (TextInputEditText) findViewById(R.id.contact_name_editText);
+        //Set name of person
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        String userId = mUser.getUid();
+        userRef.child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                editTextName.setText(dataSnapshot.child("Username").getValue().toString());
+                editTextEmail.setText((dataSnapshot.child("Email").getValue().toString()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_number_editText);
         image = (ImageView) findViewById(R.id.contact_image);
         radioButtonS = (RadioButton) findViewById(R.id.radioButton);

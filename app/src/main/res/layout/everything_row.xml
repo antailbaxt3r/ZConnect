@@ -2,38 +2,40 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/border_filled_2"
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/EventsAndDescriptionEverything"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <View
                 android:id="@+id/bar"
-                android:layout_width="7dp"
+                android:layout_width="4dp"
                 android:layout_height="match_parent"
                 android:background="@color/colorPrimary" />
 
             <LinearLayout
-                android:id="@+id/EventsAndDescriptionEverything"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="1dp"
                 android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/Image_everything"
                     android:layout_width="match_parent"
                     android:layout_height="265dp"
-                    android:background="@drawable/input_outline"
+                    android:background="@drawable/border_filled_2"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/beanbags" />
 
@@ -43,46 +45,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:padding="10dp"
-                    android:textColor="@color/teal700"
+                    android:layout_margin="10dp"
+                    android:textColor="@color/teal800"
                     android:textSize="25dp"
                     android:textStyle="bold" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/icon_and_text_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
+                    android:layout_margin="0dp"
                     android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/icon"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp" />
-
                     <TextView
                         android:id="@+id/date_event"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginStart="5dp"
-                        android:text="ABCD"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/teal700"
-                        android:textSize="20dp" />
-                </LinearLayout>
+                        android:layout_alignParentLeft="true"
+                        android:layout_margin="10dp"
+                        android:textColor="@color/teal900"
+                        android:textSize="16dp"
+                        android:textStyle="italic" />
+
+                    <ImageView
+                        android:id="@+id/icon"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_margin="10dp" />
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/description_or_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:paddingBottom="10dp"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="10dp"
                     android:paddingTop="5dp"
-                    android:textColor="@color/teal700"
-                    android:textSize="16dp" />
+                    android:textColor="@color/black"
+                    android:textSize="14dp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -94,7 +95,7 @@
 
             <View
                 android:id="@+id/bar2"
-                android:layout_width="7dp"
+                android:layout_width="4dp"
                 android:layout_height="match_parent"
                 android:background="@color/InfoneBar" />
 
@@ -102,8 +103,7 @@
                 android:id="@+id/ContactCardEverything"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="4dp"
                 android:padding="12dp">
 
 

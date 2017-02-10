@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -55,6 +54,7 @@ public class home extends AppCompatActivity
         mDatabase = FirebaseDatabase.getInstance().getReference("ZConnect").child("everything");
         mDatabase.keepSynced(true);
 
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -88,13 +88,6 @@ public class home extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
     }
 
     @Override
@@ -210,6 +203,7 @@ public class home extends AppCompatActivity
                     viewHolder.setBarColor(getApplicationContext(), true);
                     viewHolder.setDate(model.getmultiUse2(), false, getApplicationContext());
                     viewHolder.makeButton(model.getTitle(), model.getDescription(), Long.parseLong(model.getmultiUse1()));
+                    viewHolder.openEvent(model.getTitle(), model.getDescription(), model.getmultiUse2(), model.getUrl());
                 } else if (model.getType().equals("Pro") && model.getType() != null) {
                     viewHolder.removeView();
                     viewHolder.setTitle(model.getTitle());
@@ -217,6 +211,7 @@ public class home extends AppCompatActivity
                     viewHolder.setBarColor(getApplicationContext(), false);
                     viewHolder.setImage(getApplicationContext(), model.getUrl());
                     viewHolder.setDate(String.valueOf(model.getPhone_no()), true, getApplicationContext());
+                    viewHolder.openProduct(model);
 
                 } else if (model.getType().equals("P") && model.getType() != null) {
 
@@ -233,5 +228,4 @@ public class home extends AppCompatActivity
         };
         mEverything.setAdapter(firebaseRecyclerAdapter);
     }
-
 }

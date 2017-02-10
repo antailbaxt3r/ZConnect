@@ -59,5 +59,14 @@
         android:text="Seller Name"
         android:textColor="@color/teal500" />
 
+    <TextView
+        android:id="@+id/sellerNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sellerName"
+        android:padding="10dp"
+        android:text="Seller Number" />
+
 
 </RelativeLayout>

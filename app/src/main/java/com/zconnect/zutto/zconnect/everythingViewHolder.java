@@ -30,6 +30,41 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
 
     }
 
+
+    public void openEvent(final String title, final String description, final String date, final String url) {
+        mView.setOnClickListener(new View.OnClickListener()
+
+        {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
+                i.putExtra("Name", title);
+                i.putExtra("Description", description);
+                i.putExtra("Date", date);
+                i.putExtra("ImageUri", url);
+                i.putExtra("Flag", "true");
+                mView.getContext().startActivity(i);
+            }
+        });
+    }
+
+    public void openProduct(final homeRecyclerClass model) {
+        mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(mView.getContext(), OpenProductDetail.class);
+                i.putExtra("Name", model.getTitle());
+                i.putExtra("Description", model.getDescription());
+                i.putExtra("Price", model.getmultiUse1());
+                i.putExtra("ImageUri", model.getUrl());
+                i.putExtra("Phone_no", model.getPhone_no());
+                i.putExtra("Flag", "true");
+                mView.getContext().startActivity(i);
+            }
+        });
+    }
+
     public void removeView() {
         RelativeLayout mRelativeLayout = (RelativeLayout) mView.findViewById(R.id.ContactCardEverything);
         mRelativeLayout.setVisibility(View.GONE);
@@ -51,16 +86,23 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
 
     public void setDate(final String title, boolean isNumber, final Context context) {
         TextView setDate = (TextView) mView.findViewById(R.id.date_event);
-        setDate.setText(title);
         if (isNumber)
-
         {
+            setDate.setText(title);
             setDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(title.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });
+        } else {
+            String date[] = title.split("\\s+");
+            String finalDate = "";
+            for (int i = 0; i < 4; i++) {
+                finalDate = finalDate + " " + date[i];
+            }
+
+            setDate.setText(finalDate);
         }
     }
 
@@ -95,7 +137,7 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void makeButton(final String title, final String desc, final long time) {
-        LinearLayout layout = (LinearLayout) mView.findViewById(R.id.icon_and_text_layout);
+        RelativeLayout layout = (RelativeLayout) mView.findViewById(R.id.icon_and_text_layout);
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

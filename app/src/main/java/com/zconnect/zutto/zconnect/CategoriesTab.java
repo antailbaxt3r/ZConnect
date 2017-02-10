@@ -65,8 +65,8 @@ class CategoryAdapter extends BaseAdapter {
         list = new ArrayList<EachCategory>();
         Resources res = context.getResources();
         String[] categoriesNames = res.getStringArray(R.array.categories);
-        int[] categoriesIcons = {R.drawable.electronics, R.drawable.beanbags, R.drawable.speakers, R.drawable.fashion, R.drawable.storage, R.drawable.books, R.drawable.labcoats, R.drawable.roomnecessities, R.drawable.novels, R.drawable.others};
-        for (int i = 0; i < 10; i++) {
+        int[] categoriesIcons = {R.drawable.electronics, R.drawable.beanbags, R.drawable.speakers, R.drawable.fashion, R.drawable.storage, R.drawable.books, R.drawable.roomnecessities, R.drawable.novels, R.drawable.others};
+        for (int i = 0; i < 9; i++) {
             EachCategory tempCategory = new EachCategory(categoriesIcons[i], categoriesNames[i]);
             list.add(tempCategory);
         }

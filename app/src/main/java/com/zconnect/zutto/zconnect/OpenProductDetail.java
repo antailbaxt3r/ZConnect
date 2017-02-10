@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,45 +36,72 @@ public class OpenProductDetail extends AppCompatActivity {
         productName = (TextView) findViewById(R.id.name);
         productDescription = (TextView) findViewById(R.id.description);
         sellerName = (TextView) findViewById(R.id.sellerName);
+        sellerNumber = (TextView) findViewById(R.id.sellerNumber);
         productImage = (ImageView) findViewById(R.id.image);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect");
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
         value = null;
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            value = extras.getString("key").toString();
-            //The key argument here must match that used in the other activity
+
+        if (extras != null && extras.getString("Flag") != null && extras.getString("Flag").equals("true")) {
+            productName.setText(extras.getString("Name"));
+            productDescription.setText(extras.getString("Description"));
+            price.setText(extras.getString("Price"));
+            sellerNumber.setText(extras.getString("Phone_no"));
+            Picasso.with(OpenProductDetail.this).load(extras.getString("ImageUri")).into(productImage);
+        } else {
+            if (extras != null) {
+                value = extras.getString("key").toString();
+                //The key argument here must match that used in the other activity
 //            Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
+            }
+            temporaryVariable = value;
+
+
+            mDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    final String userId = user.getUid();
+                    String productNameString = (String) snapshot.child("storeroom").child(value).child("ProductName").getValue();  //prints "Do you have data? You'll love Firebase."
+                    String imageUri = (String) snapshot.child("storeroom").child(value).child("Image").getValue();
+                    String productDescriptionString = (String) snapshot.child("storeroom").child(value).child("ProductDescription").getValue();
+                    String priceString = (String) snapshot.child("storeroom").child(value).child("Price").getValue();
+                    String sellerNumberString = (String) snapshot.child("storeroom").child(value).child("Phone_no").getValue();
+
+                    Picasso.with(OpenProductDetail.this).load(imageUri).into(productImage);
+                    productName.setText(productNameString);
+                    productDescription.setText(productDescriptionString);
+                    price.setText(priceString);
+                    sellerNumber.setText(sellerNumberString);
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                }
+            });
         }
-        temporaryVariable = value;
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect");
 
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                mAuth = FirebaseAuth.getInstance();
-                FirebaseUser user = mAuth.getCurrentUser();
-                final String userId = user.getUid();
-                String productNameString = (String) snapshot.child("storeroom").child(value).child("ProductName").getValue();  //prints "Do you have data? You'll love Firebase."
-                String imageUri = (String) snapshot.child("storeroom").child(value).child("Image").getValue();
-                String productDescriptionString = (String) snapshot.child("storeroom").child(value).child("ProductDescription").getValue();
-                //String sellerName = (String) snapshot.child("Users").child(userId).child("Username").getValue();
-                String priceString = (String) snapshot.child("storeroom").child(value).child("Price").getValue();
-
-                Toast.makeText(OpenProductDetail.this, productNameString, Toast.LENGTH_SHORT).show();
-
-                Picasso.with(OpenProductDetail.this).load(imageUri).into(productImage);
-                productName.setText(productNameString);
-                productDescription.setText(productDescriptionString);
-                price.setText(priceString);
-                sellerName.setText("God");
-
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String sellerNameString = (String) dataSnapshot.child("Users").child(userId).child("Username").getValue();
+                sellerName.setText(sellerNameString);
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
+
+
     }
 }
