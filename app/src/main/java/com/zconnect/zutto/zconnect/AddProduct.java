@@ -1,8 +1,10 @@
 package com.zconnect.zutto.zconnect;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -11,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -97,6 +100,16 @@ public class AddProduct extends AppCompatActivity {
         mAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(
+                        AddProduct.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            AddProduct.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            12345
+                    );
+                }
                 Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 galleryIntent.setType("image/*");
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
@@ -218,10 +231,12 @@ public class AddProduct extends AppCompatActivity {
 
                 try {
                     mImageUri = result.getUri();
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mImageUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 30, out);
+
                     String path = MediaStore.Images.Media.insertImage(AddProduct.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+
                     mImageUri = Uri.parse(path);
                     mAddImage.setImageURI(mImageUri);
 

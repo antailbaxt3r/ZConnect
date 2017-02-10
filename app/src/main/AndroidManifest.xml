@@ -45,10 +45,6 @@
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AddEvent"
-            android:label="Add Event"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".AllEvents"
             android:label="Events"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -126,6 +122,12 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TabStoreRoom" />
+        </activity>
+        <activity
+            android:name=".AddEvent"
+            android:label="Add Events"
+            android:theme="@style/AppTheme.NoActionBar">
+
         </activity>
     </application>
 
