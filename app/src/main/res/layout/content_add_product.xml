@@ -20,7 +20,8 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/border_filled_2"
         android:padding="10dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/addimage" />
 
     <EditText
         android:id="@+id/name"

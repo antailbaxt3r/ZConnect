@@ -21,11 +21,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,7 +46,7 @@ import java.io.IOException;
 public class AddContact extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
     private static final int GALLERY_REQUEST = 7;
-    ImageView image;
+    SimpleDraweeView image;
     Uri imageUri;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
@@ -112,7 +112,8 @@ public class AddContact extends AppCompatActivity {
 
 
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_number_editText);
-        image = (ImageView) findViewById(R.id.contact_image);
+        image = (SimpleDraweeView) findViewById(R.id.contact_image);
+        image.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         radioButtonS = (RadioButton) findViewById(R.id.radioButton);
         radioButtonA = (RadioButton) findViewById(R.id.radioButton2);
         radioButtonO = (RadioButton) findViewById(R.id.radioButton3);
@@ -193,7 +194,7 @@ public class AddContact extends AppCompatActivity {
                     mImageUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 30, out);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 15, out);
 
                     String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 

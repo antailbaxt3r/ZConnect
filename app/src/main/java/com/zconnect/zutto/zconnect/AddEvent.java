@@ -92,7 +92,7 @@ public class AddEvent extends AppCompatActivity {
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
-
+        mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (FrameLayout)findViewById(R.id.dateAndTime);
 
         mProgress = new ProgressDialog(this);
@@ -225,7 +225,7 @@ public class AddEvent extends AppCompatActivity {
                     mImageUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 30, out);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 15, out);
 
                     String path = MediaStore.Images.Media.insertImage(AddEvent.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
