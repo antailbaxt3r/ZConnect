@@ -6,14 +6,25 @@ package com.zconnect.zutto.zconnect;
 
 public class ShopListItem {
     String imageurl;
+    String name;
     ShopDetailsItem shopDetailsItem;
 
-    public ShopListItem(String imageurl, ShopDetailsItem shopDetailsItem) {
+    public ShopListItem(String imageurl, String name, ShopDetailsItem shopDetailsItem) {
         this.imageurl = imageurl;
+        this.name = name;
         this.shopDetailsItem = shopDetailsItem;
     }
 
     public ShopListItem() {
+    }
+
+    public String getName() {
+        if (shopDetailsItem != null) return shopDetailsItem.getName();
+        else return "";
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getImageurl() {

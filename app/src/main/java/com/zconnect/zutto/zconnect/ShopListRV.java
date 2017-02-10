@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -39,6 +40,7 @@ public class ShopListRV extends RecyclerView.Adapter<ShopListRV.ViewHolder> {
     @Override
     public void onBindViewHolder(ShopListRV.ViewHolder holder, int position) {
         holder.simpleDraweeView.setImageURI(Uri.parse(shopListItem.get(position).getImageurl()));
+        holder.textView.setText(shopListItem.get(position).getName());
     }
 
     @Override
@@ -50,9 +52,11 @@ public class ShopListRV extends RecyclerView.Adapter<ShopListRV.ViewHolder> {
 
 
         SimpleDraweeView simpleDraweeView;
+        TextView textView;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            textView = (TextView) itemView.findViewById(R.id.shop_list_item_format_text);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.shop_list_item_format_image);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
