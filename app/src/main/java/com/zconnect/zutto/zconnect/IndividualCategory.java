@@ -77,7 +77,7 @@ public class IndividualCategory extends AppCompatActivity {
         mProductList.setLayoutManager(linearLayoutManager);
         mAuth = FirebaseAuth.getInstance();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         queryCategory = mDatabase.orderByChild("Category").equalTo(category);
         mDatabase.keepSynced(true);
 
@@ -147,7 +147,7 @@ public class IndividualCategory extends AppCompatActivity {
         String ReservedUid;
         private Switch mReserve;
         private TextView ReserveStatus;
-        private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
         private FirebaseAuth mAuth;
 
         public ProductViewHolder(View itemView) {

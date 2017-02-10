@@ -62,7 +62,7 @@ public class ProductsTab extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         // StoreRoom feature Reference
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         mDatabase.keepSynced(true);
         return view;
     }
@@ -142,7 +142,7 @@ public class ProductsTab extends Fragment {
         // Flag to get combined user Id
         String ReservedUid;
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
-        private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
         // Auth to get Current User
         private FirebaseAuth mAuth;
 

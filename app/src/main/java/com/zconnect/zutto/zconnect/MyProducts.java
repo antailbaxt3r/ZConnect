@@ -60,8 +60,7 @@ public class MyProducts extends AppCompatActivity {
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(new LinearLayoutManager(MyProducts.this));
 
-        // mReservedProducts = FirebaseDatabase.getInstance().getReference().child("ZConnect/Users");
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -109,7 +108,7 @@ public class MyProducts extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom/" + product_key);
+                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key);
                         viewHolder.ReserveReference.getRef().removeValue();
                     }
                 });

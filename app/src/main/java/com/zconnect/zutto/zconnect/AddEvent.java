@@ -91,7 +91,7 @@ public class AddEvent extends AppCompatActivity {
         mEventName = (EditText) findViewById(R.id.name);
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/Posts");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
 
         CalendarButton = (FrameLayout)findViewById(R.id.dateAndTime);
 
@@ -182,7 +182,7 @@ public class AddEvent extends AppCompatActivity {
                     newPost.child("EventDate").setValue(eventDate);
                     newPost.child("FormatDate").setValue(dateString);
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("ZConnect/everything").push();
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
                     newPost2.child("Title").setValue(eventNameValue);
                     newPost2.child("Description").setValue(eventDescriptionValue);
                     newPost2.child("Url").setValue(downloadUri.toString());
@@ -220,9 +220,6 @@ public class AddEvent extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-
-//
-//                mAddImage.setImageURI(mImageUri);
 
                 try {
                     mImageUri = result.getUri();

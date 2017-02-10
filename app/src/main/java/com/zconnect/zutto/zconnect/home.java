@@ -65,7 +65,7 @@ public class home extends AppCompatActivity
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("ZConnect").child("everything");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("everything");
         //mDatabase.keepSynced(true);
 
 

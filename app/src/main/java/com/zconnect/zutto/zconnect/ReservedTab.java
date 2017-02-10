@@ -61,8 +61,8 @@ public class ReservedTab extends Fragment {
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mReservedProducts = FirebaseDatabase.getInstance().getReference().child("ZConnect/Users");
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        mReservedProducts = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -100,7 +100,7 @@ public class ReservedTab extends Fragment {
                     @Override
                     public void onClick(View view) {
 
-                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom/" + product_key + "/UsersReserved");
+                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key + "/UsersReserved");
 
                         mAuth = FirebaseAuth.getInstance();
                         FirebaseUser user = mAuth.getCurrentUser();

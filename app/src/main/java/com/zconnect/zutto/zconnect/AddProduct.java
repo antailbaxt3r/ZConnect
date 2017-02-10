@@ -92,7 +92,7 @@ public class AddProduct extends AppCompatActivity {
         mProductPrice = (EditText) findViewById(R.id.price);
         mProductPhone = (EditText) findViewById(R.id.phoneNo);
         mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         spinner1 = (Spinner) findViewById(R.id.categories);
         spinner1.setSelection(8);
         mAuth = FirebaseAuth.getInstance();
@@ -161,7 +161,7 @@ public class AddProduct extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
-        mUsername = FirebaseDatabase.getInstance().getReference().child("ZConnect/Users");
+        mUsername = FirebaseDatabase.getInstance().getReference().child("Users");
 
         mUsername.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -195,7 +195,7 @@ public class AddProduct extends AppCompatActivity {
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("ZConnect").child("everything").push();
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
                     newPost2.child("Title").setValue(productNameValue);
                     newPost2.child("Description").setValue(productDescriptionValue);
                     newPost2.child("Url").setValue(downloadUri.toString());

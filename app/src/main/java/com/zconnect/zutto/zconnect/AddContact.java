@@ -167,7 +167,7 @@ public class AddContact extends AppCompatActivity {
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
-//        imageurl=imageuri.toString();
+
     }
 
     @Override
@@ -188,8 +188,6 @@ public class AddContact extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
 
-//
-//                mAddImage.setImageURI(mImageUri);
 
                 try {
                     mImageUri = result.getUri();
@@ -251,7 +249,6 @@ public class AddContact extends AppCompatActivity {
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
-//        imageurl = imageuri.toString();
         if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && mImageUri != null) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -261,7 +258,6 @@ public class AddContact extends AppCompatActivity {
 
                     DatabaseReference newPost = ref.child(number);
 
-                    // String key = newPost.getKey();
                     newPost.child("name").setValue(name);
                     newPost.child("desc").setValue(details);
                     newPost.child("imageurl").setValue(downloadUri.toString());
@@ -275,7 +271,7 @@ public class AddContact extends AppCompatActivity {
                         newPost.child("hostel").setValue(hostel);
                     }
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("ZConnect").child("everything").push();
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
                     newPost2.child("Title").setValue(name);
                     newPost2.child("Description").setValue(details);
                     newPost2.child("Url").setValue(downloadUri.toString());
