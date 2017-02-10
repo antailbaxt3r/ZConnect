@@ -14,17 +14,58 @@
             android:id="@+id/postImg"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/border"
-            android:padding="2dp" />
-        <TextView
-            android:id="@+id/productName"
+            android:background="@drawable/border4"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/product" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Product Name"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/productName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Product Name"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Price"
+                android:textSize="20dp"
+                android:textStyle="italic" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/sellerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Seller Name"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/sellerNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Seller Number"
+                android:textSize="16dp" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/productDescription"
@@ -34,27 +75,19 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="Product Description"
-            android:textSize="15dp" />
-
-        <TextView
-            android:id="@+id/price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            android:padding="10dp"
-            android:text="Price"
-            android:textSize="15dp" />
+            android:textSize="14dp" />
 
         <Switch
             android:id="@+id/switch1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
             android:paddingBottom="3dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="3dp"
-            android:text="Reserve" />
+            android:text="Reserve"
+            android:textAlignment="textEnd" />
 
 
     </LinearLayout>

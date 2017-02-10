@@ -18,14 +18,53 @@
             android:background="@drawable/border_filled_2"
             android:scaleType="centerCrop" />
 
-        <TextView
-            android:id="@+id/productName"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Product Name"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/productName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Product Name"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Price"
+                android:textSize="20dp"
+                android:textStyle="italic" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/sellerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Seller Name"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/sellerNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Seller Number"
+                android:textSize="16dp" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/productDescription"
@@ -37,29 +76,28 @@
             android:text="Product Description"
             android:textSize="15dp" />
 
-        <TextView
-            android:id="@+id/price"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            android:padding="10dp"
-            android:text="Price"
-            android:textSize="15dp" />
+            android:orientation="horizontal"
+            android:padding="10dp">
 
-        <ImageButton
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/screen_background_light_transparent"
-            android:paddingBottom="0dp"
-            android:paddingEnd="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingStart="10dp"
-            android:paddingTop="10dp"
-            app:srcCompat="@mipmap/ic_delete_forever_black_24dp" />
+            <TextView
+                android:id="@+id/textRemove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="Remove" />
 
+            <ImageButton
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/textRemove"
+                android:background="@android:drawable/screen_background_light_transparent"
+                app:srcCompat="@mipmap/ic_delete_forever_black_24dp" />
+        </RelativeLayout>
 
     </LinearLayout>
 

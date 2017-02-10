@@ -2,6 +2,9 @@ package com.zconnect.zutto.zconnect;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.NotificationCompat;
@@ -18,9 +21,12 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -86,6 +92,8 @@ public class ReservedTab extends Fragment {
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(getContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice());
+                viewHolder.setSellerName(model.getPostedBy());
+                viewHolder.setSellerNumber(model.getPhone_no(), getContext());
 //                }else {
 //               }
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +125,9 @@ public class ReservedTab extends Fragment {
         private TextView ReserveStatus;
         private ImageButton deleteButton;
         private FirebaseAuth mAuth;
+        private String sellerName;
+        private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
+
 
         public ProductViewHolder(View itemView) {
             super(itemView);
@@ -151,7 +162,40 @@ public class ReservedTab extends Fragment {
         public void setProductPrice(String productPrice) {
 
             TextView post_name = (TextView) mView.findViewById(R.id.price);
-            post_name.setText(productPrice);
+            post_name.setText("₹" + productPrice + "/-");
+
+        }
+
+        public void setSellerName(String postedBy) {
+
+
+            Users.child(postedBy).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    sellerName = dataSnapshot.child("Username").getValue().toString();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
+            post_seller_name.setText("Sold By: " + sellerName);
+        }
+
+        public void setSellerNumber(final String sellerNumber, final Context ctx) {
+            TextView post_seller_number = (TextView) mView.findViewById(R.id.sellerNumber);
+            post_seller_number.setText("Call");
+            post_seller_number.setPaintFlags(post_seller_number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+            post_seller_number.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                }
+            });
 
         }
     }

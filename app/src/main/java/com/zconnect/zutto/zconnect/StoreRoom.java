@@ -32,6 +32,7 @@ public class StoreRoom extends AppCompatActivity {
     private RecyclerView mProductList;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private LinearLayoutManager linearLayoutManager;
     private boolean flag = false;
 
     @Override
@@ -48,10 +49,11 @@ public class StoreRoom extends AppCompatActivity {
         Toast.makeText(this, category, Toast.LENGTH_SHORT).show();
         mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
-        mProductList.setLayoutManager(new LinearLayoutManager(this));
-
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(false);
+        mProductList.setLayoutManager(linearLayoutManager);
         mAuth = FirebaseAuth.getInstance();
-
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
         queryCategory = mDatabase.orderByChild("Category").equalTo(category);

@@ -61,8 +61,6 @@
             android:name=".StoreRoom"
             android:label="@string/title_activity_store_room"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".OpenProductDetail" />
-        <activity android:name=".MyProducts" />
         <activity
             android:name=".Shop"
             android:label="@string/title_activity_shop"
@@ -126,6 +124,12 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TabStoreRoom" />
+        </activity>
+        <activity
+            android:name=".MyProducts"
+            android:label="My Products"
+            android:theme="@style/AppTheme.NoActionBar">
+
         </activity>
     </application>
 

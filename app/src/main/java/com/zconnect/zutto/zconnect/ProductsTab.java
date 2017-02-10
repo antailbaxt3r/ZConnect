@@ -3,8 +3,12 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,11 +35,11 @@ import com.squareup.picasso.Picasso;
  */
 public class ProductsTab extends Fragment {
 
+    NotificationCompat.Builder mBuilder;
     private RecyclerView mProductList;
     private DatabaseReference mDatabase;
     private boolean flag = false;
     private FirebaseAuth mAuth;
-
     public ProductsTab() {
         // Required empty public constructor
     }
@@ -76,13 +80,14 @@ public class ProductsTab extends Fragment {
         ) {
 
             @Override
-            protected void populateViewHolder(ProductsTab.ProductViewHolder viewHolder, final Product model, int position) {
-                viewHolder.defaultSwitch(model.getKey());
+            protected void populateViewHolder(final ProductsTab.ProductViewHolder viewHolder, final Product model, int position) {
+                viewHolder.defaultSwitch(model.getKey(), getContext());
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(getContext(), model.getImage());
-                viewHolder.setPrice("Rs " + model.getPrice());
-                viewHolder.openProduct(model.getKey());
+                viewHolder.setPrice(model.getPrice());
+                viewHolder.setSellerName(model.getPostedBy());
+                viewHolder.setSellerNumber(model.getPhone_no(), getContext());
 
 
                 viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
@@ -98,9 +103,13 @@ public class ProductsTab extends Fragment {
                                     if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                         mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
                                         flag = false;
+                                        viewHolder.ReserveStatus.setText("Shortlisted");
+                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.teal600));
                                     } else {
 
                                         mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getDisplayName());
+                                        viewHolder.ReserveStatus.setText("Shortlisted");
+                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
                                         flag = false;
                                     }
                                 }
@@ -131,11 +140,12 @@ public class ProductsTab extends Fragment {
         String[] keyList;
         // Flag to get combined user Id
         String ReservedUid;
-        private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("ZConnect/Users");
+        private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
         private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
-        private DatabaseReference CurrentProduct;
         // Auth to get Current User
         private FirebaseAuth mAuth;
+
+        private String sellerName;
 
         // Constructor
         public ProductViewHolder(View itemView) {
@@ -146,22 +156,8 @@ public class ProductsTab extends Fragment {
             StoreRoom.keepSynced(true);
         }
 
-        public void openProduct(final String key) {
-            mView.setOnClickListener(new View.OnClickListener()
-
-            {
-                @Override
-                public void onClick(View view) {
-
-                    Intent i = new Intent(mView.getContext(), OpenProductDetail.class);
-                    i.putExtra("key", key);
-                    mView.getContext().startActivity(i);
-                }
-            });
-        }
-
         // Setting default switch
-        public void defaultSwitch(final String key) {
+        public void defaultSwitch(final String key, final Context ctx) {
             // Getting User ID
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
@@ -174,8 +170,14 @@ public class ProductsTab extends Fragment {
                     mReserve.setOnCheckedChangeListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
                         mReserve.setChecked(true);
+                        ReserveStatus.setText("Shortlisted");
+                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
+
+
                     } else {
                         mReserve.setChecked(false);
+                        ReserveStatus.setText("Shortlist");
+                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
                     }
                     mReserve.setOnCheckedChangeListener(mListener);
 
@@ -216,7 +218,40 @@ public class ProductsTab extends Fragment {
         //Set Product Price
         public void setPrice(String productPrice) {
             TextView post_name = (TextView) mView.findViewById(R.id.price);
-            post_name.setText(productPrice);
+            post_name.setText("₹" + productPrice + "/-");
+        }
+
+        public void setSellerName(String postedBy) {
+
+
+            Users.child(postedBy).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    sellerName = dataSnapshot.child("Username").getValue().toString();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
+            post_seller_name.setText("Sold By: " + sellerName);
+        }
+
+        public void setSellerNumber(final String sellerNumber, final Context ctx) {
+            TextView post_seller_number = (TextView) mView.findViewById(R.id.sellerNumber);
+            post_seller_number.setText("Call");
+            post_seller_number.setPaintFlags(post_seller_number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+            post_seller_number.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                }
+            });
+
         }
 
     }

@@ -49,18 +49,12 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void openProduct(final homeRecyclerClass model) {
+    public void openProduct() {
         mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(mView.getContext(), OpenProductDetail.class);
-                i.putExtra("Name", model.getTitle());
-                i.putExtra("Description", model.getDescription());
-                i.putExtra("Price", model.getmultiUse1());
-                i.putExtra("ImageUri", model.getUrl());
-                i.putExtra("Phone_no", model.getPhone_no());
-                i.putExtra("Flag", "true");
-                mView.getContext().startActivity(i);
+                mView.getContext().startActivity(new Intent(mView.getContext(), TabStoreRoom.class));
+
             }
         });
     }
@@ -91,7 +85,7 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
         TextView setDate = (TextView) mView.findViewById(R.id.date_event);
         if (isNumber)
         {
-            setDate.setText(title);
+            setDate.setText("+91 " + title);
             setDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -107,6 +101,11 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
 
             setDate.setText(finalDate);
         }
+    }
+
+    public void setPrice(String price) {
+        TextView setPrice = (TextView) mView.findViewById(R.id.price);
+        setPrice.setText(price);
     }
 
     public void setTime(String title) {

@@ -5,20 +5,30 @@ package com.zconnect.zutto.zconnect;
  */
 
 public class Product {
-    private String ProductName, ProductDescription, Image, Key, Price;
+    private String ProductName, ProductDescription, Image, Key, Price, Phone_no, PostedBy;
 
     public Product() {
 
     }
 
-    public Product(String productName, String productDescription, String image, String key, String price) {
+    public Product(String productName, String productDescription, String image, String key, String price, String phone_no, String postedBy) {
         ProductName = productName;
         ProductDescription = productDescription;
         Image = image;
         Key = key;
         Price = price;
+        Phone_no = phone_no;
+        PostedBy = postedBy;
     }
 
+    public String getPhone_no() {
+        return Phone_no;
+    }
+
+
+    public String getPostedBy() {
+        return PostedBy;
+    }
 
     public String getProductName() {
         return ProductName;

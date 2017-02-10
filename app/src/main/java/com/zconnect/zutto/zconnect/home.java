@@ -216,6 +216,7 @@ public class home extends AppCompatActivity
                     viewHolder.setDate(model.getmultiUse2(), false, getApplicationContext());
                     viewHolder.makeButton(model.getTitle(), model.getDescription(), Long.parseLong(model.getmultiUse1()));
                     viewHolder.openEvent(model.getTitle(), model.getDescription(), model.getmultiUse2(), model.getUrl());
+                    viewHolder.setPrice("Description: ");
                 } else if (model.getType().equals("Pro") && model.getType() != null) {
                     viewHolder.removeView();
                     viewHolder.setTitle(model.getTitle());
@@ -223,7 +224,8 @@ public class home extends AppCompatActivity
                     viewHolder.setBarColor(getApplicationContext(), false);
                     viewHolder.setImage(getApplicationContext(), model.getUrl());
                     viewHolder.setDate(String.valueOf(model.getPhone_no()), true, getApplicationContext());
-                    viewHolder.openProduct(model);
+                    viewHolder.openProduct();
+                    viewHolder.setPrice("₹" + model.getmultiUse1() + "/-");
 
                 } else if (model.getType().equals("P") && model.getType() != null) {
 

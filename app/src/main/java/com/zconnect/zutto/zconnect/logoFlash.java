@@ -29,6 +29,5 @@ public class logoFlash extends AppCompatActivity {
             }
         }, 2800);
 
-
     }
 }
