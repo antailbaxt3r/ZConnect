@@ -61,10 +61,8 @@
             android:name=".StoreRoom"
             android:label="@string/title_activity_store_room"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AddProduct" />
         <activity android:name=".OpenProductDetail" />
         <activity android:name=".MyProducts" />
-        android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Shop"
             android:label="@string/title_activity_shop"
@@ -120,7 +118,15 @@
         <activity
             android:name=".Advertisement"
             android:label="@string/title_activity_advertisement"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddProduct"
+            android:label="Add Product"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TabStoreRoom" />
+        </activity>
     </application>
 
 </manifest>
