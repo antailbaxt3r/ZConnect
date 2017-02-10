@@ -200,7 +200,8 @@ public class AddContact extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
 
-                    DatabaseReference newPost = ref.push();
+                    DatabaseReference newPost = ref.child(number);
+
                     // String key = newPost.getKey();
                     newPost.child("name").setValue(name);
                     newPost.child("desc").setValue(details);
