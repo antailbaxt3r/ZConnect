@@ -125,6 +125,7 @@ public class AddEvent extends AppCompatActivity {
                 new SlideDateTimePicker.Builder(getSupportFragmentManager())
                         .setListener(listener)
                         .setInitialDate(new Date())
+                        .setIs24HourTime(true)
                         .build()
                         .show();
             }
@@ -168,7 +169,7 @@ public class AddEvent extends AppCompatActivity {
         final String eventNameValue = mEventName.getText().toString().trim();
         final String eventDescriptionValue = mEventDescription.getText().toString().trim();
 
-        if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null) {
+        if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null && dateString != null) {
             //1
             final StorageReference filepath = mStorage.child("EventImage").child(mImageUri.getLastPathSegment());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -198,6 +199,13 @@ public class AddEvent extends AppCompatActivity {
                     finish();
                 }
             });
+        } else {
+            Snackbar snack = Snackbar.make(mEventDescription, "Fields are empty. Can't Add Event.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+            snack.show();
+            mProgress.dismiss();
         }
     }
 
