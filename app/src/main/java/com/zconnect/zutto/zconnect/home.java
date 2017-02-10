@@ -215,7 +215,7 @@ public class home extends AppCompatActivity
                     viewHolder.setBarColor(getApplicationContext(), true);
                     viewHolder.setDate(model.getmultiUse2(), false, getApplicationContext());
                     viewHolder.makeButton(model.getTitle(), model.getDescription(), Long.parseLong(model.getmultiUse1()));
-                    viewHolder.openEvent(model.getTitle(), model.getDescription(), model.getmultiUse2(), model.getUrl());
+                    viewHolder.openEvent();
                     viewHolder.setPrice("Description: ");
                 } else if (model.getType().equals("Pro") && model.getType() != null) {
                     viewHolder.removeView();

@@ -31,19 +31,14 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void openEvent(final String title, final String description, final String date, final String url) {
+    public void openEvent() {
         mView.setOnClickListener(new View.OnClickListener()
 
         {
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
-                i.putExtra("Name", title);
-                i.putExtra("Description", description);
-                i.putExtra("Date", date);
-                i.putExtra("ImageUri", url);
-                i.putExtra("Flag", "true");
+                Intent i = new Intent(mView.getContext(), AllEvents.class);
                 mView.getContext().startActivity(i);
             }
         });

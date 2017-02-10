@@ -1,23 +1,21 @@
 package com.zconnect.zutto.zconnect;
 
-
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,70 +24,86 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+public class IndividualCategory extends AppCompatActivity {
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class ProductsTab extends Fragment {
-
-    NotificationCompat.Builder mBuilder;
+    public String category;
+    Query queryCategory;
     private RecyclerView mProductList;
     private DatabaseReference mDatabase;
-    private boolean flag = false;
     private FirebaseAuth mAuth;
-    public ProductsTab() {
-        // Required empty public constructor
-    }
-
+    private LinearLayoutManager linearLayoutManager;
+    private boolean flag = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_individual_category);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_products_tab, container, false);
+        Intent intent = getIntent();
+        if (intent != null) {
+            category = intent.getStringExtra("Category");
+            getSupportActionBar().setTitle(category);
+        }
 
-        mProductList = (RecyclerView) view.findViewById(R.id.productList);
+
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            getWindow().setStatusBarColor(colorPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+        mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
-        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
-        productLinearLayout.setReverseLayout(true);
-        productLinearLayout.setStackFromEnd(true);
-        mProductList.setLayoutManager(productLinearLayout);
-
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(false);
+        mProductList.setLayoutManager(linearLayoutManager);
         mAuth = FirebaseAuth.getInstance();
 
-        // StoreRoom feature Reference
         mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        queryCategory = mDatabase.orderByChild("Category").equalTo(category);
         mDatabase.keepSynced(true);
-        return view;
+
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
 
-        // Firebase predefined Recycler Adapter
-        FirebaseRecyclerAdapter<Product, ProductViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, ProductsTab.ProductViewHolder>(
+        FirebaseRecyclerAdapter<Product, ProductViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, ProductViewHolder>(
 
                 Product.class,
                 R.layout.products_row,
-                ProductsTab.ProductViewHolder.class,
-                mDatabase
+                ProductViewHolder.class,
+                queryCategory
         ) {
 
             @Override
-            protected void populateViewHolder(final ProductsTab.ProductViewHolder viewHolder, final Product model, int position) {
-                viewHolder.defaultSwitch(model.getKey(), getContext());
+            protected void populateViewHolder(ProductViewHolder viewHolder, final Product model, int position) {
+                viewHolder.defaultSwitch(model.getKey());
+                //viewHolder.setSwitch(model.getKey());
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
-                viewHolder.setImage(getContext(), model.getImage());
-                viewHolder.setPrice(model.getPrice());
-                viewHolder.setSellerName(model.getPostedBy());
-                viewHolder.setSellerNumber(model.getPhone_no(), getContext());
-
+                viewHolder.setImage(getApplicationContext(), model.getImage());
+                viewHolder.setProductPrice(model.getPrice());
 
                 viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -104,13 +118,9 @@ public class ProductsTab extends Fragment {
                                     if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                         mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
                                         flag = false;
-                                        viewHolder.ReserveStatus.setText("Shortlisted");
-                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.teal600));
                                     } else {
 
                                         mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getDisplayName());
-                                        viewHolder.ReserveStatus.setText("Shortlisted");
-                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
                                         flag = false;
                                     }
                                 }
@@ -124,41 +134,33 @@ public class ProductsTab extends Fragment {
                     }
                 };
                 viewHolder.mReserve.setOnCheckedChangeListener(viewHolder.mListener);
+
             }
         };
         mProductList.setAdapter(firebaseRecyclerAdapter);
     }
 
-    // Each View Holder Class
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
         public CompoundButton.OnCheckedChangeListener mListener;
         View mView;
-        //Switch View
-        Switch mReserve;
-        TextView ReserveStatus;
-        // Flag Variable to get each Reserve Id
         String[] keyList;
-        // Flag to get combined user Id
         String ReservedUid;
-        private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
+        private Switch mReserve;
+        private TextView ReserveStatus;
         private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
-        // Auth to get Current User
         private FirebaseAuth mAuth;
 
-        private String sellerName;
-
-        // Constructor
         public ProductViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             mReserve = (Switch) mView.findViewById(R.id.switch1);
             ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
             StoreRoom.keepSynced(true);
+
         }
 
-        // Setting default switch
-        public void defaultSwitch(final String key, final Context ctx) {
+        public void defaultSwitch(final String key) {
             // Getting User ID
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
@@ -171,14 +173,8 @@ public class ProductsTab extends Fragment {
                     mReserve.setOnCheckedChangeListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
                         mReserve.setChecked(true);
-                        ReserveStatus.setText("Shortlisted");
-                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
-
-
                     } else {
                         mReserve.setChecked(false);
-                        ReserveStatus.setText("Shortlist");
-                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
                     }
                     mReserve.setOnCheckedChangeListener(mListener);
 
@@ -190,9 +186,10 @@ public class ProductsTab extends Fragment {
                 }
 
             });
+
+
         }
 
-        //Set name of product
         public void setProductName(String productName) {
 
             TextView post_name = (TextView) mView.findViewById(R.id.productName);
@@ -200,7 +197,6 @@ public class ProductsTab extends Fragment {
 
         }
 
-        //Set Product Description
         public void setProductDesc(String productDesc) {
 
             TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
@@ -208,52 +204,17 @@ public class ProductsTab extends Fragment {
 
         }
 
-        //Set Product Image
         public void setImage(Context ctx, String image) {
 
             ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
             Picasso.with(ctx).load(image).into(post_image);
-
         }
 
-        //Set Product Price
-        public void setPrice(String productPrice) {
+        public void setProductPrice(String productPrice) {
             TextView post_name = (TextView) mView.findViewById(R.id.price);
-            post_name.setText("₹" + productPrice + "/-");
-        }
-
-        public void setSellerName(String postedBy) {
-
-
-            Users.child(postedBy).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    sellerName = dataSnapshot.child("Username").getValue().toString();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-            TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-            post_seller_name.setText("Sold By: " + sellerName);
-        }
-
-        public void setSellerNumber(final String sellerNumber, final Context ctx) {
-            TextView post_seller_number = (TextView) mView.findViewById(R.id.sellerNumber);
-            post_seller_number.setText("Call");
-            post_seller_number.setPaintFlags(post_seller_number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
-            post_seller_number.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                }
-            });
-
+            post_name.setText(productPrice);
         }
 
     }
+
 }

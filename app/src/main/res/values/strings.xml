@@ -68,5 +68,7 @@
     <string name="title_activity_add_product">AddProduct</string>
     <string name="title_activity_my_product">My Products</string>
     <string name="title_activity_my_products">MyProducts</string>
+    <string name="title_activity_add_event">AddEvent</string>
+    <string name="title_activity_each_category">EachCategory</string>
 
 </resources>

@@ -120,6 +120,7 @@ public class AllEvents extends AppCompatActivity {
                 if (flag) {
                     Intent intent = new Intent(AllEvents.this, AddEvent.class);
                     startActivity(intent);
+                    finish();
                 } else {
 
 
@@ -218,7 +219,7 @@ public class AllEvents extends AppCompatActivity {
                 viewHolder.setEventDesc(model.getEventDescription());
                 viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
                 viewHolder.setEventDate(model.getEventDate());
-                viewHolder.openEvent(model.getKey());
+                // viewHolder.openEvent(model.getKey());
                 viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
 //                key=model.getKey();
 

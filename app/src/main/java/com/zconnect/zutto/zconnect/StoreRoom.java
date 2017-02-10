@@ -46,7 +46,6 @@ public class StoreRoom extends AppCompatActivity {
         if (intent != null) {
             category = intent.getStringExtra("Category");
         }
-        Toast.makeText(this, category, Toast.LENGTH_SHORT).show();
         mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -182,11 +181,8 @@ public class StoreRoom extends AppCompatActivity {
 
         public void setImage(Context ctx, String image) {
 
-
             ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
             Picasso.with(ctx).load(image).into(post_image);
-
-
         }
 
         public void setProductPrice(String productPrice) {

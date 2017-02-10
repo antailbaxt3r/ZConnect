@@ -61,7 +61,9 @@
         android:background="@drawable/border_filled_2"
         android:entries="@array/categories"
         android:padding="10dp"
+        android:spinnerMode="dialog"
         android:prompt="@string/category_prompt" />
+
 
     <EditText
         android:id="@+id/price"
