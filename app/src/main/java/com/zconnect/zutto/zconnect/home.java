@@ -1,7 +1,5 @@
 package com.zconnect.zutto.zconnect;
 
-import android.*;
-import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -37,10 +34,10 @@ public class home extends AppCompatActivity
     // For Recycler
     LinearLayoutManager linearLayoutManager;
     RecyclerView mEverything;
+    boolean checkuser = true;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
-    boolean checkuser = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
