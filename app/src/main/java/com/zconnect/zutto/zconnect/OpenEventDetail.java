@@ -47,7 +47,7 @@ public class OpenEventDetail extends AppCompatActivity {
                 //The key argument here must match that used in the other activity
 //            Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
             }
-            mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/Events/Posts");
+            mDatabase = FirebaseDatabase.getInstance().getReference().child("Events/Posts");
 
             mDatabase.child(value).addValueEventListener(new ValueEventListener() {
                 @Override

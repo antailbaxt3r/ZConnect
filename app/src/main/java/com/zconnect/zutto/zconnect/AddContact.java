@@ -3,13 +3,17 @@ package com.zconnect.zutto.zconnect;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,11 +21,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,12 +39,14 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class AddContact extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
     private static final int GALLERY_REQUEST = 7;
-    ImageView image;
+    SimpleDraweeView image;
     Uri imageUri;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
@@ -106,7 +112,8 @@ public class AddContact extends AppCompatActivity {
 
 
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_number_editText);
-        image = (ImageView) findViewById(R.id.contact_image);
+        image = (SimpleDraweeView) findViewById(R.id.contact_image);
+        image.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         radioButtonS = (RadioButton) findViewById(R.id.radioButton);
         radioButtonA = (RadioButton) findViewById(R.id.radioButton2);
         radioButtonO = (RadioButton) findViewById(R.id.radioButton3);
@@ -146,12 +153,22 @@ public class AddContact extends AppCompatActivity {
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(
+                        AddContact.this,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            AddContact.this,
+                            new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            12345
+                    );
+                }
                 Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 galleryIntent.setType("image/*");
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
-//        imageurl=imageuri.toString();
+
     }
 
     @Override
@@ -159,28 +176,42 @@ public class AddContact extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            imageUri = data.getData();
+            Uri imageUri = data.getData();
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(2, 1)
                     .setBackgroundColor(R.color.white)
                     .setBorderCornerColor(R.color.teal100)
+                    .setSnapRadius(2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
 
-                mImageUri = result.getUri();
-                image.setImageURI(mImageUri);
+
+                try {
+                    mImageUri = result.getUri();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 400, 200, true);
+                    String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+
+                    mImageUri = Uri.parse(path);
+                    image.setImageURI(mImageUri);
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
-
         }
-    }
 
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_contact, menu);
@@ -219,16 +250,15 @@ public class AddContact extends AppCompatActivity {
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
-//        imageurl = imageuri.toString();
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && imageUri != null) {
-            StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment());
+        if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && mImageUri != null) {
+            StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
 
-                    DatabaseReference newPost = ref.push();
-                    // String key = newPost.getKey();
+                    DatabaseReference newPost = ref.child(number);
+
                     newPost.child("name").setValue(name);
                     newPost.child("desc").setValue(details);
                     newPost.child("imageurl").setValue(downloadUri.toString());
@@ -242,7 +272,7 @@ public class AddContact extends AppCompatActivity {
                         newPost.child("hostel").setValue(hostel);
                     }
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("ZConnect").child("everything").push();
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child(number);
                     newPost2.child("Title").setValue(name);
                     newPost2.child("Description").setValue(details);
                     newPost2.child("Url").setValue(downloadUri.toString());

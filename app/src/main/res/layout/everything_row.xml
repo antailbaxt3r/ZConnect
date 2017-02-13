@@ -34,8 +34,7 @@
                 <ImageView
                     android:id="@+id/Image_everything"
                     android:layout_width="match_parent"
-                    android:layout_height="265dp"
-                    android:background="@drawable/border_filled_2"
+                    android:layout_height="256dp"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/beanbags" />
 
@@ -74,6 +73,19 @@
                         android:layout_margin="10dp" />
                 </RelativeLayout>
 
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    android:textStyle="italic" />
+
                 <TextView
                     android:id="@+id/description_or_price"
                     android:layout_width="match_parent"
@@ -83,12 +95,14 @@
                     android:paddingBottom="10dp"
                     android:paddingTop="5dp"
                     android:textColor="@color/black"
-                    android:textSize="14dp" />
+                    android:textSize="15dp" />
+
 
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ContactCardEverything"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -100,7 +114,7 @@
                 android:background="@color/InfoneBar" />
 
             <RelativeLayout
-                android:id="@+id/ContactCardEverything"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginRight="4dp"
@@ -119,12 +133,13 @@
                     app:actualImageScaleType="centerCrop"
                     fresco:placeholderImageScaleType="centerCrop"
                     fresco:roundAsCircle="true"
-                    fresco:srcCompat="@drawable/books" />
+                    fresco:srcCompat="@drawable/defaultprofile" />
 
                 <TextView
                     android:id="@+id/everything_name_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
                     android:layout_toRightOf="@+id/everything_item_format_image"
                     android:padding="10dp"
                     android:text="NAME"
@@ -156,14 +171,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/everything_name_textview"
-                    android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/everything_item_format_image"
                     android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:src="@drawable/ic_phone_black_24dp" />
 
                     <TextView
                         android:id="@+id/everything_number_textview"

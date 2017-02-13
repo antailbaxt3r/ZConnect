@@ -1,11 +1,15 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,13 +21,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 public class MyProducts extends AppCompatActivity {
-
-    //    String reserveString;
     Query query;
     //private DatabaseReference mReservedProducts;
     private DatabaseReference mDatabase;
+
     private RecyclerView mProductList;
     //    private List<String> reserveList;
     private FirebaseAuth mAuth;
@@ -32,19 +36,39 @@ public class MyProducts extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_products);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            getWindow().setStatusBarColor(colorPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
         mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(new LinearLayoutManager(MyProducts.this));
 
-        // mReservedProducts = FirebaseDatabase.getInstance().getReference().child("ZConnect/Users");
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
 
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
         query = mDatabase.orderByChild("PostedBy").equalTo(userId);
+
     }
 
     @Override
@@ -53,7 +77,7 @@ public class MyProducts extends AppCompatActivity {
 
         FirebaseRecyclerAdapter<Product, ProductViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, ProductViewHolder>(
                 Product.class,
-                R.layout.reserved_products_row,
+                R.layout.my_product_row,
                 ProductViewHolder.class,
                 query
         ) {
@@ -65,6 +89,7 @@ public class MyProducts extends AppCompatActivity {
 //               if(reserveList.contains(model.getKey())) {
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
+                viewHolder.setPrice(model.getPrice());
                 viewHolder.setImage(getApplicationContext(), model.getImage());
 //                }else {
 //               }
@@ -72,7 +97,7 @@ public class MyProducts extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom/" + product_key);
+                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key);
                         viewHolder.ReserveReference.getRef().removeValue();
                     }
                 });
@@ -122,5 +147,14 @@ public class MyProducts extends AppCompatActivity {
 
 
         }
+
+        //Set Product Price
+        public void setPrice(String productPrice) {
+            TextView post_name = (TextView) mView.findViewById(R.id.price);
+            post_name.setText("₹" + productPrice + "/-");
+        }
+
+
     }
+
 }

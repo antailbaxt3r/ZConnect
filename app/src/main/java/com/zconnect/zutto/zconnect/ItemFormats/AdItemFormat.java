@@ -1,4 +1,4 @@
-package com.zconnect.zutto.zconnect;
+package com.zconnect.zutto.zconnect.ItemFormats;
 
 /**
  * Created by shubhamk on 10/2/17.

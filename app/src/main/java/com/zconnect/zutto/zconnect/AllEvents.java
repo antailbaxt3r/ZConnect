@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -88,9 +89,9 @@ public class AllEvents extends AppCompatActivity {
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/Posts");
-        mPrivileges = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/Privileges");
-        mRequest = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
+        mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
+        mRequest = FirebaseDatabase.getInstance().getReference().child("Event/");
 
         mDatabase.keepSynced(true);
 
@@ -120,6 +121,7 @@ public class AllEvents extends AppCompatActivity {
                 if (flag) {
                     Intent intent = new Intent(AllEvents.this, AddEvent.class);
                     startActivity(intent);
+                    finish();
                 } else {
 
 
@@ -148,21 +150,11 @@ public class AllEvents extends AppCompatActivity {
                                 snackBarText.setTextColor(Color.WHITE);
                                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                                 snack.show();
-
-                                // Toast.makeText(AllEvents.this, "Request not Sent. Check Internet Connection", Toast.LENGTH_LONG).show();
                             } else {
-//                                mRequest = FirebaseDatabase.getInstance().getReference().child("ZConnect/Event/Requests");
-//                                DatabaseReference newPost = mRequest.push();
-//                                newPost.child("Email").setValue(emailId);
-//                                writeNewPost(emailId);
-//
-//                                Toast.makeText(AllEvents.this, "Request Sent", Toast.LENGTH_SHORT).show();
-//                                dialog.dismiss();
 
                                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                                         "mailto", "zconnectinc@gmail.com", null));
                                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Request Permission to add Events");
-                                // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
                                 startActivity(Intent.createChooser(emailIntent, "Send email..."));
 
 
@@ -218,7 +210,7 @@ public class AllEvents extends AppCompatActivity {
                 viewHolder.setEventDesc(model.getEventDescription());
                 viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
                 viewHolder.setEventDate(model.getEventDate());
-                viewHolder.openEvent(model.getKey());
+                // viewHolder.openEvent(model.getKey());
                 viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
 //                key=model.getKey();
 

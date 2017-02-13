@@ -12,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 public class StoreRoom extends AppCompatActivity {
 
@@ -32,6 +32,7 @@ public class StoreRoom extends AppCompatActivity {
     private RecyclerView mProductList;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private LinearLayoutManager linearLayoutManager;
     private boolean flag = false;
 
     @Override
@@ -45,15 +46,15 @@ public class StoreRoom extends AppCompatActivity {
         if (intent != null) {
             category = intent.getStringExtra("Category");
         }
-        Toast.makeText(this, category, Toast.LENGTH_SHORT).show();
         mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
-        mProductList.setLayoutManager(new LinearLayoutManager(this));
-
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(false);
+        mProductList.setLayoutManager(linearLayoutManager);
         mAuth = FirebaseAuth.getInstance();
 
-
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         queryCategory = mDatabase.orderByChild("Category").equalTo(category);
         mDatabase.keepSynced(true);
     }
@@ -122,7 +123,7 @@ public class StoreRoom extends AppCompatActivity {
         String ReservedUid;
         private Switch mReserve;
         private TextView ReserveStatus;
-        private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
         private FirebaseAuth mAuth;
 
         public ProductViewHolder(View itemView) {
@@ -180,11 +181,8 @@ public class StoreRoom extends AppCompatActivity {
 
         public void setImage(Context ctx, String image) {
 
-
             ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
             Picasso.with(ctx).load(image).into(post_image);
-
-
         }
 
         public void setProductPrice(String productPrice) {
