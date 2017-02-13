@@ -180,6 +180,15 @@ public class logoFlash extends AppCompatActivity {
                 }
                 return false;
             } else {
+                new Timer().schedule(new TimerTask(){
+                    public void run() {
+                        Intent intent = new Intent(logoFlash.this, home.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                }, 2800);
+
                 return true;
             }
         }

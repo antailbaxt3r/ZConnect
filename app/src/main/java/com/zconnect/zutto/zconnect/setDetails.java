@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +42,8 @@ public class setDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_details);
+        String call = getIntent().getStringExtra("caller");
+        Toast.makeText(this,call,Toast.LENGTH_LONG).show();
 
         userProfile = (ImageButton) findViewById(R.id.profileImage);
         userName = (EditText) findViewById(R.id.username);

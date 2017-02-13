@@ -40,6 +40,7 @@ public class home extends AppCompatActivity
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
+    boolean checkuser = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class home extends AppCompatActivity
         if (called.hasExtra("type")){
             if (called.getStringExtra("type").equals("new")) {
 
+                checkuser = false;
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(home.this);
                 alertBuilder.setCancelable(true);
                 alertBuilder.setTitle("Add your contact");
@@ -109,6 +111,7 @@ public class home extends AppCompatActivity
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(loginIntent);
                 }else {
+
                     checkUser();
                 }
 
@@ -234,25 +237,27 @@ public class home extends AppCompatActivity
 
     private void checkUser()
     {
-        mDatabaseUsers.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        if(checkuser) {
+            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if(!dataSnapshot.hasChild(mAuth.getCurrentUser().getUid()))
-                {
-                    Intent setDetailsIntent = new Intent(home.this, setDetails.class);
-                    setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(setDetailsIntent);
+                    if (!dataSnapshot.hasChild(mAuth.getCurrentUser().getUid())) {
+                        if(!checkuser){
+                        Intent setDetailsIntent = new Intent(home.this, setDetails.class);
+                            setDetailsIntent.putExtra("caller","home");
+                        setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(setDetailsIntent);
+
+                    }
+                }}
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+            });
+        }
     }
 
     void makeRecyclerView() {
