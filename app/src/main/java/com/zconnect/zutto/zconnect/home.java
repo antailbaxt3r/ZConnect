@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
+import android.*;
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -7,10 +9,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +45,31 @@ public class home extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        Intent called = getIntent();
+        if (called.hasExtra("type")){
+            if (called.getStringExtra("type").equals("new")) {
+
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(home.this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("Add your contact");
+                alertBuilder.setMessage("Welcome to ZConnect! , Add your contact on ZConnect");
+                alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent addContact = new Intent(home.this,AddContact.class);
+                        addContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(addContact);
+                    }
+                });
+                alertBuilder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            }
+    }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
