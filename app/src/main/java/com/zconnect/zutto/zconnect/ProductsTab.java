@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 
 /**
@@ -40,6 +41,7 @@ public class ProductsTab extends Fragment {
     private DatabaseReference mDatabase;
     private boolean flag = false;
     private FirebaseAuth mAuth;
+
     public ProductsTab() {
         // Required empty public constructor
     }
@@ -64,6 +66,8 @@ public class ProductsTab extends Fragment {
         // StoreRoom feature Reference
         mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         mDatabase.keepSynced(true);
+
+        mBuilder = new NotificationCompat.Builder(getContext());
         return view;
     }
 
@@ -229,6 +233,8 @@ public class ProductsTab extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     sellerName = dataSnapshot.child("Username").getValue().toString();
+                    TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
+                    post_seller_name.setText("Sold By: " + sellerName);
                 }
 
                 @Override
@@ -237,8 +243,7 @@ public class ProductsTab extends Fragment {
                 }
             });
 
-            TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-            post_seller_name.setText("Sold By: " + sellerName);
+
         }
 
         public void setSellerNumber(final String sellerNumber, final Context ctx) {

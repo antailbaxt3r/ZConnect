@@ -42,7 +42,7 @@
 
 
     <string name="title_activity_shop_details">Shop Details</string>
-    <string name="title_activity_add_contact">AddContact</string>
+    <string name="title_activity_add_contact">Add Contact</string>
     <string-array name="hostel">
         <item>AH-1</item>
         <item>AH-2</item>
@@ -63,12 +63,12 @@
     <string name="title_activity_phonebook_details">PhonebookDetails</string>
     <string name="title_activity_phonebook_hostel_wise">PhonebookHostelWise</string>
     <string name="title_activity_phonebook">Phonebook</string>
-    <string name="title_activity_about_us">AboutUs</string>
+    <string name="title_activity_about_us">About Us</string>
     <string name="title_activity_advertisement">Advertisement</string>
     <string name="title_activity_add_product">AddProduct</string>
     <string name="title_activity_my_product">My Products</string>
     <string name="title_activity_my_products">MyProducts</string>
-    <string name="title_activity_add_event">AddEvent</string>
+    <string name="title_activity_add_event">Add Event</string>
     <string name="title_activity_each_category">EachCategory</string>
 
 </resources>

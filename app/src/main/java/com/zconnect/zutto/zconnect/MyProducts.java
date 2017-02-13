@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 public class MyProducts extends AppCompatActivity {
     Query query;
@@ -68,19 +69,6 @@ public class MyProducts extends AppCompatActivity {
         final String userId = user.getUid();
         query = mDatabase.orderByChild("PostedBy").equalTo(userId);
 
-//        mReservedProducts.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                reserveString = (String)dataSnapshot.child(userId +"/Reserved").getValue();
-//                reserveList = new ArrayList<String>(Arrays.asList(reserveString.split(" ")));
-////                Toast.makeText(getContext(), reserveString, Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 
     @Override
@@ -89,7 +77,7 @@ public class MyProducts extends AppCompatActivity {
 
         FirebaseRecyclerAdapter<Product, ProductViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, ProductViewHolder>(
                 Product.class,
-                R.layout.reserved_products_row,
+                R.layout.my_product_row,
                 ProductViewHolder.class,
                 query
         ) {
@@ -101,6 +89,7 @@ public class MyProducts extends AppCompatActivity {
 //               if(reserveList.contains(model.getKey())) {
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
+                viewHolder.setPrice(model.getPrice());
                 viewHolder.setImage(getApplicationContext(), model.getImage());
 //                }else {
 //               }
@@ -158,6 +147,13 @@ public class MyProducts extends AppCompatActivity {
 
 
         }
+
+        //Set Product Price
+        public void setPrice(String productPrice) {
+            TextView post_name = (TextView) mView.findViewById(R.id.price);
+            post_name.setText("₹" + productPrice + "/-");
+        }
+
 
     }
 

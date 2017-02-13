@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 /**
  * Created by Lokesh Garg on 09-02-2017.

@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -89,7 +90,7 @@ public class AllEvents extends AppCompatActivity {
         mEventList.setLayoutManager(mlinearmanager);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
-        mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges");
+        mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
         mRequest = FirebaseDatabase.getInstance().getReference().child("Event/");
 
         mDatabase.keepSynced(true);

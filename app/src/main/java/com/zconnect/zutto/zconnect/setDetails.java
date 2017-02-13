@@ -2,14 +2,18 @@ package com.zconnect.zutto.zconnect;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -76,7 +80,7 @@ public class setDetails extends AppCompatActivity {
         if (!TextUtils.isEmpty(username) && mImageUri!=null)
         {
             mProgress.show();
-            StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment());
+            StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -88,12 +92,20 @@ public class setDetails extends AppCompatActivity {
                     currentUser.child("Image").setValue(downloadUri);
 
                     mProgress.dismiss();
+
                     Intent setDetailsIntent = new Intent(setDetails.this, home.class);
                     setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(setDetailsIntent);
                 }
             });
 
+        } else {
+            Snackbar snack = Snackbar.make(userName, "Enter all fields", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+            snack.show();
+            // Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
         }
 
     }

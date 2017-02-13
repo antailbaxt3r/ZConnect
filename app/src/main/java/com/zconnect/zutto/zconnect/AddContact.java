@@ -194,8 +194,8 @@ public class AddContact extends AppCompatActivity {
                     mImageUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 15, out);
-
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 400, 200, true);
                     String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
@@ -251,7 +251,7 @@ public class AddContact extends AppCompatActivity {
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
         if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && mImageUri != null) {
-            StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment());
+            StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

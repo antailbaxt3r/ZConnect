@@ -128,10 +128,11 @@ public class registerNewUser extends AppCompatActivity {
                                     currentUser.child("Email").setValue(email);
                                     currentUser.child("ProfileImage").setValue(downloadUri.toString());
                                     mProgress.dismiss();
-                                    Intent homeIntent = new Intent(registerNewUser.this, home.class);
-                                    homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                                    startActivity(homeIntent);
+                                    Intent setDetailsIntent = new Intent(registerNewUser.this, home.class);
+                                    setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(setDetailsIntent);
+
                                 }
                             });
 

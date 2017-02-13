@@ -29,6 +29,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -62,6 +63,8 @@ public class AddEvent extends AppCompatActivity {
 
         }
     };
+
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +99,8 @@ public class AddEvent extends AppCompatActivity {
         CalendarButton = (FrameLayout)findViewById(R.id.dateAndTime);
 
         mProgress = new ProgressDialog(this);
+
+        mAuth = FirebaseAuth.getInstance();
 
         mAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +173,7 @@ public class AddEvent extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null && dateString != null) {
             //1
-            final StorageReference filepath = mStorage.child("EventImage").child(mImageUri.getLastPathSegment());
+            final StorageReference filepath = mStorage.child("EventImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -215,6 +220,7 @@ public class AddEvent extends AppCompatActivity {
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setSnapRadius(2)
+                    .setAspectRatio(3, 2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -225,8 +231,8 @@ public class AddEvent extends AppCompatActivity {
                     mImageUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 15, out);
-
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 600, 400, true);
                     String path = MediaStore.Images.Media.insertImage(AddEvent.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
