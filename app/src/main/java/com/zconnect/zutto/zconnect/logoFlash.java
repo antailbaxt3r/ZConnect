@@ -30,7 +30,17 @@ public class logoFlash extends AppCompatActivity {
         setContentView(R.layout.activity_logo_flash);
         // Setting full screen view
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        checkPermission();
+        if(checkPermission())
+        {
+             new Timer().schedule(new TimerTask(){
+                        public void run() {
+                            Intent intent = new Intent(logoFlash.this, home.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }, 2800);
+        }
         // Time Delay for the logo activity
 
 
@@ -180,14 +190,7 @@ public class logoFlash extends AppCompatActivity {
                 }
                 return false;
             } else {
-                new Timer().schedule(new TimerTask(){
-                    public void run() {
-                        Intent intent = new Intent(logoFlash.this, home.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    }
-                }, 2800);
+                
 
                 return true;
             }
