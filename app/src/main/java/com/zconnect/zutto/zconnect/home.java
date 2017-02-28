@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,7 @@ public class home extends AppCompatActivity
     // For Recycler
     LinearLayoutManager linearLayoutManager;
     RecyclerView mEverything;
+    boolean checkuser = true;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
@@ -41,6 +43,32 @@ public class home extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        Intent called = getIntent();
+        if (called.hasExtra("type")){
+            if (called.getStringExtra("type").equals("new")) {
+
+                checkuser = false;
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(home.this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("Add your contact");
+                alertBuilder.setMessage("Welcome to ZConnect! , Add your contact on ZConnect");
+                alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent addContact = new Intent(home.this,AddContact.class);
+                        addContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(addContact);
+                    }
+                });
+                alertBuilder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            }
+    }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -80,6 +108,7 @@ public class home extends AppCompatActivity
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(loginIntent);
                 }else {
+
                     checkUser();
                 }
 
@@ -205,25 +234,27 @@ public class home extends AppCompatActivity
 
     private void checkUser()
     {
-        mDatabaseUsers.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        if(checkuser) {
+            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if(!dataSnapshot.hasChild(mAuth.getCurrentUser().getUid()))
-                {
-                    Intent setDetailsIntent = new Intent(home.this, setDetails.class);
-                    setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(setDetailsIntent);
+                    if (!dataSnapshot.hasChild(mAuth.getCurrentUser().getUid())) {
+                        if(!checkuser){
+                        Intent setDetailsIntent = new Intent(home.this, setDetails.class);
+                            setDetailsIntent.putExtra("caller","home");
+                        setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(setDetailsIntent);
+
+                    }
+                }}
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+            });
+        }
     }
 
     void makeRecyclerView() {

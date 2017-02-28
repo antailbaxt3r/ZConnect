@@ -124,13 +124,13 @@ public class registerNewUser extends AppCompatActivity {
                                     DatabaseReference currentUser = mDatabase.child(mAuth.getCurrentUser().getUid());
 
                                     currentUser.child("Username").setValue(username);
-
                                     currentUser.child("Email").setValue(email);
                                     currentUser.child("ProfileImage").setValue(downloadUri.toString());
                                     mProgress.dismiss();
 
                                     Intent setDetailsIntent = new Intent(registerNewUser.this, home.class);
                                     setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    setDetailsIntent.putExtra("type","new");
                                     startActivity(setDetailsIntent);
 
                                 }
