@@ -71,8 +71,8 @@ public class setDetails extends AppCompatActivity {
                 startActivityForResult(galleryIntent,GALLERY_REQUEST);
             }
         });
-
     }
+
 
     private void startAccountSetup() {
         final String username = userName.getText().toString().trim();
@@ -96,15 +96,14 @@ public class setDetails extends AppCompatActivity {
 
                     mProgress.dismiss();
 
-
                     Intent setDetailsIntent = new Intent(setDetails.this, home.class);
                     setDetailsIntent.putExtra("type","new");
                     setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(setDetailsIntent);
                 }
             });
-
         } else {
+
             String message;
             if(mImageUri==null)
             {
