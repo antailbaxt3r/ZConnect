@@ -45,6 +45,8 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AddContact extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
@@ -72,7 +74,7 @@ public class AddContact extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
-        mProgress = new ProgressDialog(getApplicationContext());
+        mProgress = new ProgressDialog(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
@@ -323,8 +325,24 @@ public class AddContact extends AppCompatActivity {
         newPost2.child("Phone_no").setValue(number);
         newPost2.child("multiUse1").setValue(email);
         newPost2.child("type").setValue("P");
-        mProgress.dismiss();
-        startActivity(new Intent(AddContact.this, Phonebook.class));
+        new Timer().schedule(new TimerTask() {
+            public void run() {
+                mProgress.dismiss();
+                Snackbar snack = Snackbar.make(editTextDetails, "Contact Added.", Snackbar.LENGTH_INDEFINITE);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.show();
+                new Timer().schedule(new TimerTask() {
+                    public void run() {
+                        startActivity(new Intent(AddContact.this, Phonebook.class));
+                        finish();
+                    }
+                }, 1400);
+
+                finish();
+            }
+        }, 1000);
 
     }
 }
