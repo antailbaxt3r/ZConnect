@@ -1,10 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
-import android.*;
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -186,7 +183,7 @@ public class logoFlash extends AppCompatActivity {
                     AlertDialog alert = alertBuilder.create();
                     alert.show();
                 } else {
-                    ActivityCompat.requestPermissions((Activity)logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},7 );
+                    ActivityCompat.requestPermissions(logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 7);
                 }
                 return false;
             } else {
@@ -212,7 +209,7 @@ public class logoFlash extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         }
-                    }, 2800);
+                    }, 1500);
 
                 } else {
                     Toast.makeText(this,"Permission Denied !, Retrying.",Toast.LENGTH_SHORT).show();

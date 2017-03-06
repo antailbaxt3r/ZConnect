@@ -11,12 +11,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,7 +50,7 @@ public class AddContact extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
     private static final int GALLERY_REQUEST = 7;
     SimpleDraweeView image;
-    Uri imageUri;
+    private Context context = this;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
@@ -63,12 +66,13 @@ public class AddContact extends AppCompatActivity {
     private Spinner spinner;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
-        mProgress = new ProgressDialog(this);
+        mProgress = new ProgressDialog(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
@@ -90,30 +94,30 @@ public class AddContact extends AppCompatActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+        image = (SimpleDraweeView) findViewById(R.id.contact_image);
         editTextDetails = (TextInputEditText) findViewById(R.id.contact_details_editText);
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_email_editText);
         editTextName = (TextInputEditText) findViewById(R.id.contact_name_editText);
         //Set name of person
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-        String userId = mUser.getUid();
-        userRef.child(userId).addValueEventListener(new ValueEventListener() {
+        userId = mUser.getUid();
+        final ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 editTextName.setText(dataSnapshot.child("Username").getValue().toString());
                 editTextEmail.setText((dataSnapshot.child("Email").getValue().toString()));
-            }
+                Uri downloadUri = Uri.parse(dataSnapshot.child("Image").getValue().toString());
+                image.setImageURI(downloadUri);
 
+            }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
-
-
+        };
+        userRef.child(userId).addValueEventListener(listener);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_number_editText);
-        image = (SimpleDraweeView) findViewById(R.id.contact_image);
-        image.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         radioButtonS = (RadioButton) findViewById(R.id.radioButton);
         radioButtonA = (RadioButton) findViewById(R.id.radioButton2);
         radioButtonO = (RadioButton) findViewById(R.id.radioButton3);
@@ -208,6 +212,7 @@ public class AddContact extends AppCompatActivity {
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Log.d("Add contact data error", error.toString());
             }
         }
 
@@ -231,6 +236,8 @@ public class AddContact extends AppCompatActivity {
                 snack.show();
 
             } else {
+                mProgress.setMessage("Adding...");
+                mProgress.show();
                 startposting();
             }
             return true;
@@ -244,46 +251,45 @@ public class AddContact extends AppCompatActivity {
     }
 
     public void startposting() {
-        mProgress.setMessage("Adding...");
-        mProgress.show();
         name = editTextName.getText().toString().trim();
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && mImageUri != null) {
-            StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-
-                    DatabaseReference newPost = ref.child(number);
-
-                    newPost.child("name").setValue(name);
-                    newPost.child("desc").setValue(details);
-                    newPost.child("imageurl").setValue(downloadUri.toString());
-                    newPost.child("number").setValue(number);
-                    newPost.child("category").setValue(category);
-                    newPost.child("email").setValue(email);
-                    if (hostel.equals("none")) {
-                        newPost.child("hostel").setValue(hostel);
-                    } else {
-                        hostel = String.valueOf(spinner.getSelectedItem());
-                        newPost.child("hostel").setValue(hostel);
+        if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null) {
+            if (mImageUri == null) {
+                userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Uri downloadUri = Uri.parse(dataSnapshot.child("Image").getValue().toString());
+                        storeData(downloadUri);
                     }
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child(number);
-                    newPost2.child("Title").setValue(name);
-                    newPost2.child("Description").setValue(details);
-                    newPost2.child("Url").setValue(downloadUri.toString());
-                    newPost2.child("Phone_no").setValue(number);
-                    newPost2.child("multiUse1").setValue(email);
-                    newPost2.child("type").setValue("P");
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
+                    }
+                });
+            } else {
+
+                StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
+                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        storeData(taskSnapshot.getDownloadUrl());
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Snackbar snack = Snackbar.make(editTextDetails, "Error , please retry.", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                        snack.show();
                     mProgress.dismiss();
-                    startActivity(new Intent(AddContact.this, Phonebook.class));
+
                 }
             });
+            }
         } else {
             Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't add contact.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
@@ -293,6 +299,33 @@ public class AddContact extends AppCompatActivity {
             mProgress.dismiss();
         }
 
+
+    }
+
+    void storeData(Uri downloadUri) {
+        DatabaseReference newPost = ref.child(number);
+        newPost.child("name").setValue(name);
+        newPost.child("desc").setValue(details);
+        newPost.child("imageurl").setValue(downloadUri.toString());
+        newPost.child("number").setValue(number);
+        newPost.child("category").setValue(category);
+        newPost.child("email").setValue(email);
+        if (hostel.equals("none")) {
+            newPost.child("hostel").setValue(hostel);
+        } else {
+            hostel = String.valueOf(spinner.getSelectedItem());
+            newPost.child("hostel").setValue(hostel);
+        }
+
+        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child(number);
+        newPost2.child("Title").setValue(name);
+        newPost2.child("Description").setValue(details);
+        newPost2.child("Url").setValue(downloadUri.toString());
+        newPost2.child("Phone_no").setValue(number);
+        newPost2.child("multiUse1").setValue(email);
+        newPost2.child("type").setValue("P");
+        mProgress.dismiss();
+        startActivity(new Intent(AddContact.this, Phonebook.class));
 
     }
 }
