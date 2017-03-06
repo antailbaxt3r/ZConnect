@@ -183,9 +183,8 @@ public class AddContact extends AppCompatActivity {
             Uri imageUri = data.getData();
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(2, 1)
+                    .setAspectRatio(1, 1)
                     .setBackgroundColor(R.color.white)
-                    .setBorderCornerColor(R.color.teal100)
                     .setSnapRadius(2)
                     .start(this);
         }
@@ -199,8 +198,8 @@ public class AddContact extends AppCompatActivity {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 400, 200, true);
-                    String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+                    String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap2, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     image.setImageURI(mImageUri);
