@@ -13,6 +13,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
@@ -29,6 +30,7 @@ public class PhonebookAdmin extends Fragment {
     private PhonebookAdapter adapter;
     private RecyclerView recyclerView;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    Query queryRef = databaseReference.orderByChild("name");
     private ProgressBar progressBar;
 
     public PhonebookAdmin() {
@@ -69,7 +71,7 @@ public class PhonebookAdmin extends Fragment {
     public void onStart() {
         super.onStart();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        queryRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 progressBar.setVisibility(VISIBLE);
