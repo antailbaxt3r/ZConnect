@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -68,6 +69,15 @@ public class Phonebook extends AppCompatActivity {
         //Setup tablayout with viewpager
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Phonebook.this, AddContact.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
     }
 
@@ -99,11 +109,6 @@ public class Phonebook extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_add) {
-            Intent intent = new Intent(this, AddContact.class);
-            startActivity(intent);
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
