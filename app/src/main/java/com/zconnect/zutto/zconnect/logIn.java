@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -99,6 +100,7 @@ public class logIn extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
@@ -189,6 +191,7 @@ public class logIn extends AppCompatActivity {
                         }
                         else {
                          mProgress.dismiss();
+
                             checkUser();
                             // ...
                         }
@@ -256,6 +259,14 @@ public boolean isNetworkAvailable(final Context context) {
 
     }
 
+    private void logout() {
+        mAuth.signOut();
+
+//         Google sign out
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+    }
+
+
     private void checkUser() {
         if (mAuth.getCurrentUser() != null) {
             mDatabaseUsers.addValueEventListener(new ValueEventListener() {
@@ -281,6 +292,11 @@ public boolean isNetworkAvailable(final Context context) {
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
+                    if (databaseError.getCode() == -3 && mAuth.getCurrentUser() != null) {
+
+                        logout();
+                        Toast.makeText(logIn.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 

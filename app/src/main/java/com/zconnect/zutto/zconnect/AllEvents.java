@@ -270,8 +270,12 @@ public class AllEvents extends AppCompatActivity {
 
         public void setEventDesc(String eventDesc) {
 
+            String shortEventDesc = eventDesc.substring(0, 70);
+
+            shortEventDesc = shortEventDesc + " ... read more";
+
             TextView post_desc = (TextView) mView.findViewById(R.id.description);
-            post_desc.setText(eventDesc);
+            post_desc.setText(shortEventDesc);
 
         }
 
