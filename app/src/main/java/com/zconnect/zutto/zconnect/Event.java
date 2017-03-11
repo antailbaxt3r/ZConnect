@@ -1,10 +1,13 @@
 package com.zconnect.zutto.zconnect;
 
+import java.io.Serializable;
+
 /**
  * Created by Lokesh Garg on 08-02-2017.
  */
 
-public class Event {
+public class Event implements Serializable {
+
 
     private String EventName,
             EventDescription,
@@ -16,7 +19,6 @@ public class Event {
     public Event() {
 
     }
-
     public Event(String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key) {
         EventName = eventName;
         EventDescription = eventDescription;

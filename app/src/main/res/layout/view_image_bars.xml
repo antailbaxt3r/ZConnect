@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewImageLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.zconnect.zutto.zconnect.viewImage"
+
+    >
+
+
+    <LinearLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_gravity="left"
+            app:srcCompat="@drawable/ic_action_navigation_arrow_back_inverted" />
+
+        <TextView
+            android:id="@+id/TitileTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.19"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="6dp"
+            android:text="sdddddddddsd"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/buttonActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:background="@android:color/transparent"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+
+        <ImageView
+            android:id="@+id/button_share"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:layout_marginLeft="50dp"
+            android:layout_weight="0.14"
+            app:srcCompat="@drawable/ic_menu_share" />
+
+        <ImageView
+            android:id="@+id/button_save"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_gravity="right"
+            android:layout_marginLeft="150dp"
+            android:layout_weight="0.20"
+            app:srcCompat="@android:drawable/ic_menu_save" />
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
