@@ -20,22 +20,21 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
+import com.zconnect.zutto.zconnect.ItemFormats.ShopDetailsItem;
+import com.zconnect.zutto.zconnect.ItemFormats.ShopListItem;
 
 import java.util.Vector;
 
-public class PhonebookSearch extends AppCompatActivity {
-    private android.support.v7.widget.RecyclerView searchContactList;
-    private PhonebookAdapter searchAdapter;
+public class ShopSearch extends AppCompatActivity {
+    private android.support.v7.widget.RecyclerView searchShopList;
+    private ShopListRV searchAdapter;
     private Toolbar toolbar;
     private TextView errorMessage;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Phonebook");
-    Query queryRef = databaseReference.orderByChild("name");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops");
 
-    private Vector<PhonebookItem> searchContact = new Vector<>();
+    private Vector<ShopListItem> searchShop = new Vector<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,22 +42,21 @@ public class PhonebookSearch extends AppCompatActivity {
 
         //Remove notification bar
         Log.v("tag", "s");
-        setContentView(R.layout.activity_phonebook_search);
+        setContentView(R.layout.activity_shop_search);
 
         errorMessage = (TextView) findViewById(R.id.errorMessage);
 
         Intent intent = getIntent();
 
 
-        searchContactList = (android.support.v7.widget.RecyclerView) findViewById(R.id.searchActivityRecyclerView);
+        searchShopList = (android.support.v7.widget.RecyclerView) findViewById(R.id.searchActivityRecyclerView);
         databaseReference.keepSynced(true);
-        queryRef.keepSynced(true);
-        searchAdapter = new PhonebookAdapter(searchContact, PhonebookSearch.this);
+        searchAdapter = new ShopListRV(ShopSearch.this, searchShop);
 
-        searchContactList.setHasFixedSize(true);
-        searchContactList.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
+        searchShopList.setHasFixedSize(true);
+        searchShopList.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         //Setup layout manager. VERY IMP ALWAYS
-        searchContactList.setAdapter(searchAdapter);
+        searchShopList.setAdapter(searchAdapter);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 
 
@@ -88,13 +86,13 @@ public class PhonebookSearch extends AppCompatActivity {
         if (query != "") {
 
             errorMessage.setVisibility(View.INVISIBLE);
-            searchContactList.setVisibility(View.VISIBLE);
+            searchShopList.setVisibility(View.VISIBLE);
 
-            queryRef.addValueEventListener(new ValueEventListener() {
+            databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    searchContact.clear();
+                    searchShop.clear();
 
                     for (DataSnapshot childShot : dataSnapshot.getChildren()) {
 
@@ -102,14 +100,17 @@ public class PhonebookSearch extends AppCompatActivity {
 
                         // storage of EventFormat by individual de-serialization
 
-                        PhonebookDisplayItem foo = new PhonebookDisplayItem();
+                        ShopDetailsItem foo = new ShopDetailsItem();
 
-                        foo.setCategory(childShot.child("category").getValue(String.class));
-                        foo.setDesc(childShot.child("desc").getValue(String.class));
-                        foo.setEmail(childShot.child("email").getValue(String.class));
+                        foo.setCat(childShot.child("cat").getValue(String.class));
+                        foo.setLat(childShot.child("lat").getValue(String.class));
+                        foo.setLon(childShot.child("lon").getValue(String.class));
                         foo.setImageurl(childShot.child("imageurl").getValue(String.class));
                         foo.setName(childShot.child("name").getValue(String.class));
                         foo.setNumber(childShot.child("number").getValue(String.class));
+                        foo.setMenuurl(childShot.child("menuurl").getValue(String.class));
+                        foo.setDetails(childShot.child("details").getValue(String.class));
+
                         String title = childShot.child("name").getValue(String.class);
 
 
@@ -125,8 +126,8 @@ public class PhonebookSearch extends AppCompatActivity {
                         if (title.toLowerCase().contains(query.toLowerCase())) {
 
 
-                            PhonebookItem temp = new PhonebookItem(imageurl, name, number, foo);
-                            searchContact.add(temp);
+                            ShopListItem temp = new ShopListItem(imageurl, name, foo);
+                            searchShop.add(temp);
 
                         } else {
                             String wordSplit[] = title.split(" ");
@@ -138,8 +139,8 @@ public class PhonebookSearch extends AppCompatActivity {
                                 String m = query.toLowerCase();
                                 if (t.contains(m)) {
 
-                                    PhonebookItem temp = new PhonebookItem(imageurl, name, number, foo);
-                                    searchContact.add(temp);
+                                    ShopListItem temp = new ShopListItem(imageurl, name, foo);
+                                    searchShop.add(temp);
                                 }
                             }
                         }
@@ -148,13 +149,13 @@ public class PhonebookSearch extends AppCompatActivity {
                     }
 
                     // Need to add empty search result log message
-                    if (searchContact.isEmpty()) {
+                    if (searchShop.isEmpty()) {
                         errorMessage.setVisibility(View.VISIBLE);
-                        searchContactList.setVisibility(View.INVISIBLE);
+                        searchShopList.setVisibility(View.INVISIBLE);
 
                     } else {
 
-                        searchContactList.setAdapter(searchAdapter);
+                        searchShopList.setAdapter(searchAdapter);
                         searchAdapter.notifyDataSetChanged();
                     }
 
@@ -166,10 +167,10 @@ public class PhonebookSearch extends AppCompatActivity {
                 }
             });
         } else {
-            searchContact.clear();
+            searchShop.clear();
             searchAdapter.notifyDataSetChanged();
             errorMessage.setVisibility(View.VISIBLE);
-            searchContactList.setVisibility(View.INVISIBLE);
+            searchShopList.setVisibility(View.INVISIBLE);
 
 
         }
@@ -183,7 +184,7 @@ public class PhonebookSearch extends AppCompatActivity {
 
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
-        searchView.setQueryHint("Search Infone...");
+        searchView.setQueryHint("Search Shop...");
         searchItem.expandActionView();
 
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
@@ -194,7 +195,7 @@ public class PhonebookSearch extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                PhonebookSearch.this.finish();
+                ShopSearch.this.finish();
                 return true;
             }
         });
