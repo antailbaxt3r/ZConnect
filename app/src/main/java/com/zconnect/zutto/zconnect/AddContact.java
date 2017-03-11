@@ -318,13 +318,6 @@ public class AddContact extends AppCompatActivity {
             newPost.child("hostel").setValue(hostel);
         }
 
-        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference("everything").child(number);
-        newPost2.child("Title").setValue(name);
-        newPost2.child("Description").setValue(details);
-        newPost2.child("Url").setValue(downloadUri.toString());
-        newPost2.child("Phone_no").setValue(number);
-        newPost2.child("multiUse1").setValue(email);
-        newPost2.child("type").setValue("P");
         new Timer().schedule(new TimerTask() {
             public void run() {
                 mProgress.dismiss();
