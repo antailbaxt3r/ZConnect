@@ -82,8 +82,7 @@ public class setDetails extends AppCompatActivity {
         final String userEmail = mAuth.getCurrentUser().getEmail();
 
         mProgress.setMessage("Setting Account..");
-        if (!TextUtils.isEmpty(username))
-        {
+        if (!TextUtils.isEmpty(username)) {
             final DatabaseReference currentUser = mDatabaseUsers.child(userId);
             if (mImageUri == null) {
                 downloadUri = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336"; //sets default download Image url
@@ -116,42 +115,43 @@ public class setDetails extends AppCompatActivity {
                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
                 snack.show();
             } else {
-            StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
+                StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
                 mProgress.show();
                 filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    downloadUri = taskSnapshot.getDownloadUrl().toString();
-                    currentUser.child("Image").setValue(downloadUri); //Sets
-                    currentUser.child("Username").setValue(username); //User
-                    currentUser.child("Email").setValue(userEmail); //Details
-                    mProgress.dismiss();
-                    Intent setDetailsIntent = new Intent(setDetails.this, home.class);
-                    setDetailsIntent.putExtra("type", "new");
-                    setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(setDetailsIntent);
-                }
+                        downloadUri = taskSnapshot.getDownloadUrl().toString();
+                        currentUser.child("Image").setValue(downloadUri); //Sets
+                        currentUser.child("Username").setValue(username); //User
+                        currentUser.child("Email").setValue(userEmail); //Details
+                        mProgress.dismiss();
+                        Intent setDetailsIntent = new Intent(setDetails.this, home.class);
+                        setDetailsIntent.putExtra("type", "new");
+                        setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(setDetailsIntent);
+                    }
                 });
             }
 
         } else {
             String message;
             {
-                message="Enter all fields";
-            if (mImageUri == null) {
-                message = "Please select image";
-            } else {
                 message = "Enter all fields";
+                if (mImageUri == null) {
+                    message = "Please select image";
+                } else {
+                    message = "Enter all fields";
+                }
+                Snackbar snack = Snackbar.make(userName, message, Snackbar.LENGTH_INDEFINITE);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+                snack.show();
+                // Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
             }
-            Snackbar snack = Snackbar.make(userName, message, Snackbar.LENGTH_INDEFINITE);
-            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-            snackBarText.setTextColor(Color.WHITE);
-            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
-            snack.show();
-            // Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
-        }
 
+        }
     }
 
 
