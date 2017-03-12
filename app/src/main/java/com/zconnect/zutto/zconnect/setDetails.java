@@ -43,7 +43,7 @@ public class setDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_details);
         String call = getIntent().getStringExtra("caller");
-        Toast.makeText(this, call, Toast.LENGTH_LONG).show();
+        Toast.makeText(this,call,Toast.LENGTH_LONG).show();
 
         userProfile = (ImageButton) findViewById(R.id.profileImage);
         userName = (EditText) findViewById(R.id.username);
@@ -95,8 +95,6 @@ public class setDetails extends AppCompatActivity {
                     currentUser.child("Image").setValue(downloadUri);
 
                     mProgress.dismiss();
-
-
                     Intent setDetailsIntent = new Intent(setDetails.this, home.class);
                     setDetailsIntent.putExtra("type", "new");
                     setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -110,6 +108,22 @@ public class setDetails extends AppCompatActivity {
                 message = "Please select image";
             } else {
                 message = "Enter all fields";
+            }
+            Snackbar snack = Snackbar.make(userName, message, Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+            snack.show();
+            // Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
+        } else {
+            String message;
+            if(mImageUri==null)
+            {
+                message = "Please select image";
+            }
+            else
+            {
+                message="Enter all fields";
             }
             Snackbar snack = Snackbar.make(userName, message, Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);

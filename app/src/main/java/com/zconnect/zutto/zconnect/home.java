@@ -69,6 +69,32 @@ public class home extends AppCompatActivity
                 alert.show();
             }
         }
+        Intent called = getIntent();
+        if (called.hasExtra("type")){
+            if (called.getStringExtra("type").equals("new")) {
+
+                checkuser = false;
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(home.this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("Add your contact");
+                alertBuilder.setMessage("Welcome to ZConnect! , Add your contact on ZConnect");
+                alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent addContact = new Intent(home.this,AddContact.class);
+                        addContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(addContact);
+                    }
+                });
+                alertBuilder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            }
+    }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -238,17 +264,23 @@ public class home extends AppCompatActivity
             mDatabaseUsers.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+        if(checkuser) {
+            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
                     if (!dataSnapshot.hasChild(mAuth.getCurrentUser().getUid())) {
-                        if (!checkuser) {
-                            Intent setDetailsIntent = new Intent(home.this, setDetails.class);
-                            setDetailsIntent.putExtra("caller", "home");
-                            setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(setDetailsIntent);
+                        if(!checkuser){
+                        Intent setDetailsIntent = new Intent(home.this, setDetails.class);
+                            setDetailsIntent.putExtra("caller","home");
+                        setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(setDetailsIntent);
 
                         }
                     }
                 }
+                    }
+                }}
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {

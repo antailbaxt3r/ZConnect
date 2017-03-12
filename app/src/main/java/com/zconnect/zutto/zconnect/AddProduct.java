@@ -1,14 +1,19 @@
 package com.zconnect.zutto.zconnect;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,6 +41,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class AddProduct extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
@@ -84,14 +92,25 @@ public class AddProduct extends AppCompatActivity {
         mProductPrice = (EditText) findViewById(R.id.price);
         mProductPhone = (EditText) findViewById(R.id.phoneNo);
         mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ZConnect/storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         spinner1 = (Spinner) findViewById(R.id.categories);
+        spinner1.setSelection(8);
         mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
 
         mAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(
+                        AddProduct.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            AddProduct.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            12345
+                    );
+                }
                 Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 galleryIntent.setType("image/*");
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
@@ -142,8 +161,8 @@ public class AddProduct extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
-        mUsername = FirebaseDatabase.getInstance().getReference().child("ZConnect/Users");
-
+        mUsername = FirebaseDatabase.getInstance().getReference().child("Users");
+        String category = spinner1.getSelectedItem().toString();
         mUsername.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -157,8 +176,8 @@ public class AddProduct extends AppCompatActivity {
         });
 
 
-        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && !TextUtils.isEmpty(productPriceValue) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null) {
-            StorageReference filepath = mStorage.child("ProductImage").child(mImageUri.getLastPathSegment());
+        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && !TextUtils.isEmpty(productPriceValue) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null && category != null) {
+            StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -176,7 +195,7 @@ public class AddProduct extends AppCompatActivity {
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("ZConnect").child("everything").push();
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
                     newPost2.child("Title").setValue(productNameValue);
                     newPost2.child("Description").setValue(productDescriptionValue);
                     newPost2.child("Url").setValue(downloadUri.toString());
@@ -189,8 +208,14 @@ public class AddProduct extends AppCompatActivity {
                     finish();
                 }
             });
+        } else {
+            Snackbar snack = Snackbar.make(mProductDescription, "Fields are empty. Can't Add Product.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+            snack.show();
+            mProgress.dismiss();
         }
-
     }
 
     @Override
@@ -202,14 +227,34 @@ public class AddProduct extends AppCompatActivity {
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setSnapRadius(2)
+                    .setAspectRatio(3, 2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
 
-                mImageUri = result.getUri();
-                mAddImage.setImageURI(mImageUri);
+//
+//                mAddImage.setImageURI(mImageUri);
+
+                try {
+                    mImageUri = result.getUri();
+                    Bitmap bitmap2 = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    bitmap2.compress(Bitmap.CompressFormat.JPEG, 10, out);
+                    Bitmap bitmap = Bitmap.createScaledBitmap(bitmap2, 600, 400, true);
+
+
+
+                    String path = MediaStore.Images.Media.insertImage(AddProduct.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+
+                    mImageUri = Uri.parse(path);
+                    mAddImage.setImageURI(mImageUri);
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();

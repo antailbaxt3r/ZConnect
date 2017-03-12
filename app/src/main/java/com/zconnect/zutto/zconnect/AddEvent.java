@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.util.Date;
 
 public class AddEvent extends AppCompatActivity {
+
     private static final int GALLERY_REQUEST = 7;
     String eventDate;
     String dateString;
@@ -95,6 +96,8 @@ public class AddEvent extends AppCompatActivity {
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("temp");
+        mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (FrameLayout)findViewById(R.id.dateAndTime);
 
@@ -155,6 +158,7 @@ public class AddEvent extends AppCompatActivity {
 
             } else {
                 startPosting();
+
             }
             return true;
         }

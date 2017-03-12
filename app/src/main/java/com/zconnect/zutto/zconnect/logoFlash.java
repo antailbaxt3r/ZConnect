@@ -3,6 +3,11 @@ package com.zconnect.zutto.zconnect;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -31,6 +36,7 @@ public class logoFlash extends AppCompatActivity {
             openHome();
         else
             checkPermission();
+        checkPermission();
         // Time Delay for the logo activity
 
 
@@ -156,11 +162,12 @@ public class logoFlash extends AppCompatActivity {
 //        }
 
     }
-
-    public boolean checkPermission() {
+    public boolean checkPermission()
+    {
         int currentAPIVersion = Build.VERSION.SDK_INT;
-        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(logoFlash.this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if(currentAPIVersion>=android.os.Build.VERSION_CODES.M)
+        {
+            if(ContextCompat.checkSelfPermission(logoFlash.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
                 if (ActivityCompat.shouldShowRequestPermissionRationale(logoFlash.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(logoFlash.this);
                     alertBuilder.setCancelable(true);
@@ -169,43 +176,54 @@ public class logoFlash extends AppCompatActivity {
                     alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 7);
+                            ActivityCompat.requestPermissions(logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},7);
                         }
                     });
                     AlertDialog alert = alertBuilder.create();
                     alert.show();
                 } else {
-                    ActivityCompat.requestPermissions(logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 7);
+                    ActivityCompat.requestPermissions((Activity)logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},7 );
                 }
                 return false;
             } else {
-
+                new Timer().schedule(new TimerTask(){
+                    public void run() {
+                        Intent intent = new Intent(logoFlash.this, home.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                }, 2800);
 
                 return true;
             }
-        } else {
-
-
+        }
+        else {
             return true;
-
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case 7:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openHome();
+
+                    new Timer().schedule(new TimerTask(){
+                        public void run() {
+                            Intent intent = new Intent(logoFlash.this, home.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }, 2800);
+
                 } else {
-                    Toast.makeText(this, "Permission Denied !, Retrying.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,"Permission Denied !, Retrying.",Toast.LENGTH_SHORT).show();
                     checkPermission();
                 }
                 break;
         }
-    }
-
-    void openHome() {
+    }  void openHome() {
         new Timer().schedule(new TimerTask() {
             public void run() {
                 Intent intent = new Intent(logoFlash.this, home.class);

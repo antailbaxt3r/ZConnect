@@ -130,7 +130,7 @@ public class registerNewUser extends AppCompatActivity {
 
                                     Intent setDetailsIntent = new Intent(registerNewUser.this, home.class);
                                     setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    setDetailsIntent.putExtra("type", "new");
+                                    setDetailsIntent.putExtra("type","new");
                                     startActivity(setDetailsIntent);
 
                                 }
