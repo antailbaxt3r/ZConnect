@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_open_event_detail"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:layout_height="wrap_content"
     tools:context="com.zconnect.zutto.zconnect.OpenEventDetail">
 
     <LinearLayout
@@ -16,55 +13,97 @@
         android:layout_margin="0dp"
         android:orientation="vertical">
 
-        <ImageView
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="0dp"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways">
+                <!--app:popupTheme="@style/AppTheme.PopupOverlay">-->
+
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
             android:id="@+id/EventImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:background="@drawable/input_outline"
-            android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/defaultevent" />
 
 
-
-        <TextView
-            android:id="@+id/event"
+                <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:padding="12dp"
-            android:textColor="@color/white"
-            android:textSize="22dp"
-            android:textStyle="bold" />
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp">
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:paddingBottom="5dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:text="Event Date"
-            android:textAlignment="textEnd"
-            android:textColor="@color/teal500"
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingTop="5dp"
+                        android:text="Event Date"
+                        android:textColor="@color/teal700"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
 
-            />
+                    <ImageButton
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/reminder"
+                        android:scaleType="fitXY"
+                        android:textAlignment="textEnd" />
+                </RelativeLayout>
 
-        <TextView
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_margin="10dp"
+                    android:background="@android:color/darker_gray" />
+
+                <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right"
-            android:gravity="right"
-            android:paddingBottom="10dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="10dp"
+                    android:layout_margin="10dp"
+                    android:padding="5dp"
             android:paddingTop="5dp"
             android:text="Event Description"
-            android:textColor="@color/teal500"
+                    android:textColor="@color/grey700"
             android:textSize="16dp" />
+
+            </LinearLayout>
+
+        </ScrollView>
 
 
     </LinearLayout>
-</RelativeLayout>
+
+</LinearLayout>
+

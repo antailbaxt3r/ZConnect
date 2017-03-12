@@ -210,7 +210,7 @@ public class AllEvents extends AppCompatActivity {
                 viewHolder.setEventDesc(model.getEventDescription());
                 viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
                 viewHolder.setEventDate(model.getEventDate());
-                // viewHolder.openEvent(model.getKey());
+                viewHolder.openEvent(model.getEventName(), model.getEventDescription(), model.getEventDate(), model.getEventImage());
                 viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
 //                key=model.getKey();
 
@@ -246,7 +246,7 @@ public class AllEvents extends AppCompatActivity {
             mView = itemView;
         }
 
-        public void openEvent(final String key) {
+        public void openEvent(final String name, final String desc, final String date, final String image) {
             mView.setOnClickListener(new View.OnClickListener()
 
             {
@@ -254,7 +254,10 @@ public class AllEvents extends AppCompatActivity {
                 public void onClick(View view) {
 
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
-                    i.putExtra("key", key);
+                    i.putExtra("name", name);
+                    i.putExtra("desc", desc);
+                    i.putExtra("date", date);
+                    i.putExtra("image", image);
                     mView.getContext().startActivity(i);
                 }
             });
