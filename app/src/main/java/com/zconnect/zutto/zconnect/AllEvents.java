@@ -215,20 +215,36 @@ public class AllEvents extends AppCompatActivity {
                 queryRef
         ) {
             @Override
-            protected void populateViewHolder(EventViewHolder viewHolder, Event model, int position) {
-                Date current_date = new LocalDate().toDate();
+            Date current_date = new LocalDate().toDate();
                 if (current_date.getTime() > Long.parseLong(model.getFormatDate()) + 24 * 60 * 60) {
-                    viewHolder.setEventName(model.getEventName());
-                    viewHolder.setEventDesc(model.getEventDescription());
-                    viewHolder.setEventImage(getApplicationContext(), model.getEventName(), model.getEventImage());
-                    viewHolder.setEventDate(model.getEventDate());
-                    viewHolder.openEvent(model);
-                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
-                } else
-                    mDatabase.child(model.getKey()).removeValue();
-            }
+            protected void populateViewHolder(EventViewHolder viewHolder, Event model, int position) {
+                viewHolder.setEventName(model.getEventName());
+                viewHolder.setEventDesc(model.getEventDescription());
+                viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
+                viewHolder.setEventDate(model.getEventDate());
+                viewHolder.openEvent(model.getEventName(), model.getEventDescription(), model.getEventDate(), model.getEventImage());
+                viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
 
-        };
+                    else
+                    mDatabase.child(model.getKey()).removeValue();
+                };
+//                key=model.getKey();
+
+//                SimpleDateFormat outputFormat = new SimpleDateFormat("EEE MM dd HH:mm:ss");
+//                try {
+//
+//                    String simpleDate = model.getSimpleDate();
+//
+//                    Date endDate = outputFormat.parse(simpleDate);
+//                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), endDate);
+//
+//                }
+//                catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+
+
+
         mEventList.setAdapter(firebaseRecyclerAdapter);
 
 
@@ -244,7 +260,7 @@ public class AllEvents extends AppCompatActivity {
             mView = itemView;
         }
 
-        public void openEvent(final String key) {
+        public void openEvent(final String name, final String desc, final String date, final String image) {
             mView.setOnClickListener(new View.OnClickListener()
 
             {
@@ -252,7 +268,10 @@ public class AllEvents extends AppCompatActivity {
                 public void onClick(View view) {
 
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
-                    i.putExtra("key", key);
+                    i.putExtra("name", name);
+                    i.putExtra("desc", desc);
+                    i.putExtra("date", date);
+                    i.putExtra("image", image);
                     mView.getContext().startActivity(i);
                 }
             });

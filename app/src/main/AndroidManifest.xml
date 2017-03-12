@@ -48,7 +48,11 @@
             android:name=".AllEvents"
             android:label="Events"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".OpenEventDetail" />
+
+        <activity
+            android:name=".OpenEventDetail"
+            android:label="Events"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TabStoreRoom"
             android:label="@string/title_activity_tab_store_room"
