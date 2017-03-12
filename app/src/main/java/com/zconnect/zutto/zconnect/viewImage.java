@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -26,6 +28,8 @@ public class viewImage extends AppCompatActivity {
     Bitmap event_image;
     String name;
     PhotoViewAttacher mAttacher;
+    View mViewLayout;
+    View.OnClickListener handleClickOnView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +118,9 @@ public class viewImage extends AppCompatActivity {
 
 
     void initializeLayout() {
+        mViewLayout = findViewById(R.id.viewImageLayout);
+        onTouchListner();
+        mViewLayout.setOnClickListener(handleClickOnView);
         int id[] = {R.id.backButton, R.id.button_share, R.id.button_save};
         viewButtonLayout = findViewById(R.id.viewButtonLayout);
         titleBar = (LinearLayout) viewButtonLayout.findViewById(R.id.titleBar);
@@ -129,16 +136,7 @@ public class viewImage extends AppCompatActivity {
         TextView titleText = (TextView) viewButtonLayout.findViewById(R.id.TitileTextView);
         titleText.setText(name);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (viewButtonLayout.getVisibility() == View.VISIBLE)
-                    viewButtonLayout.setVisibility(View.INVISIBLE);
-                else
-                    viewButtonLayout.setVisibility(View.VISIBLE);
 
-            }
-        });
     }
 
     void initializeListener() {
@@ -156,6 +154,24 @@ public class viewImage extends AppCompatActivity {
                     case R.id.button_save:
                         saveToGallery();
                         break;
+                }
+            }
+        };
+    }
+
+    void onTouchListner() {
+        handleClickOnView = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mViewLayout.getVisibility() == View.INVISIBLE) {
+                    mViewLayout.setVisibility(View.VISIBLE);
+                    new Timer().schedule(new TimerTask() {
+                        public void run() {
+
+                            mViewLayout.setVisibility(View.INVISIBLE);
+
+                        }
+                    }, 1000);
                 }
             }
         };

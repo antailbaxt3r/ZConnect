@@ -20,6 +20,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -32,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -215,19 +218,26 @@ public class AllEvents extends AppCompatActivity {
                 queryRef
         ) {
             @Override
-            Date current_date = new LocalDate().toDate();
+            protected void populateViewHolder(EventViewHolder viewHolder, Event model,
+                                              int position) {
+                Date current_date = new LocalDate().toDate();
                 if (current_date.getTime() > Long.parseLong(model.getFormatDate()) + 24 * 60 * 60) {
-            protected void populateViewHolder(EventViewHolder viewHolder, Event model, int position) {
-                viewHolder.setEventName(model.getEventName());
-                viewHolder.setEventDesc(model.getEventDescription());
-                viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
-                viewHolder.setEventDate(model.getEventDate());
-                viewHolder.openEvent(model.getEventName(), model.getEventDescription(), model.getEventDate(), model.getEventImage());
-                viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
-
-                    else
+                    viewHolder.setEventName(model.getEventName());
+                    viewHolder.setEventDesc(model.getEventDescription());
+                    viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
+                    viewHolder.setEventDate(model.getEventDate());
+                    viewHolder.openEvent(model.getEventName(), model.getEventDescription(), model.getEventDate(), model.getEventImage());
+                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
+                } else
                     mDatabase.child(model.getKey()).removeValue();
-                };
+            }
+
+        };
+        mEventList.setAdapter(firebaseRecyclerAdapter);
+
+    }
+
+
 //                key=model.getKey();
 
 //                SimpleDateFormat outputFormat = new SimpleDateFormat("EEE MM dd HH:mm:ss");
@@ -243,12 +253,6 @@ public class AllEvents extends AppCompatActivity {
 //                    e.printStackTrace();
 //                }
 
-
-
-        mEventList.setAdapter(firebaseRecyclerAdapter);
-
-
-    }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
@@ -335,7 +339,6 @@ public class AllEvents extends AppCompatActivity {
         }
 
         private void addReminderInCalendar(String title, String desc, long time, Context context) {
-            Calendar cal = Calendar.getInstance();
             Intent intent = new Intent(Intent.ACTION_EDIT);
             intent.setType("vnd.android.cursor.item/event");
             intent.putExtra("beginTime", time);

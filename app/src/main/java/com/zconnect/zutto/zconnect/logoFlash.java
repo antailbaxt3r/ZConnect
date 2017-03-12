@@ -27,12 +27,9 @@ public class logoFlash extends AppCompatActivity {
         setContentView(R.layout.activity_logo_flash);
         // Setting full screen view
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (checkPermission())
-            openHome();
-        else
-            checkPermission();
-
+        handlePermission();
     }
+
         // Time Delay for the logo activity
 
 
@@ -179,23 +176,15 @@ public class logoFlash extends AppCompatActivity {
                 } else {
                     ActivityCompat.requestPermissions(logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 7);
                 }
-                return false;
             } else {
-                new Timer().schedule(new TimerTask(){
-                    public void run() {
-                        Intent intent = new Intent(logoFlash.this, home.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    }
-                }, 2800);
-
                 return true;
             }
         }
         else {
             return true;
         }
+
+        return false;
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -230,4 +219,11 @@ public class logoFlash extends AppCompatActivity {
             }
         }, 2800);
     }
+
+    void handlePermission() {
+        if (checkPermission())
+            openHome();
+
+    }
 }
+
