@@ -199,7 +199,7 @@ public class logoFlash extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         }
-                    }, 2800);
+                    }, 1500);
 
                 } else {
                     Toast.makeText(this,"Permission Denied !, Retrying.",Toast.LENGTH_SHORT).show();

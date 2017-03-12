@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +30,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 public class setDetails extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST = 1;
+    String downloadUri; //Stores Image Url
     private ImageButton userProfile;
     private EditText userName;
     private Button submit;
@@ -71,8 +73,8 @@ public class setDetails extends AppCompatActivity {
                 startActivityForResult(galleryIntent,GALLERY_REQUEST);
             }
         });
-    }
 
+    }
 
     private void startAccountSetup() {
         final String username = userName.getText().toString().trim();
@@ -80,36 +82,69 @@ public class setDetails extends AppCompatActivity {
         final String userEmail = mAuth.getCurrentUser().getEmail();
 
         mProgress.setMessage("Setting Account..");
-        if (!TextUtils.isEmpty(username) && mImageUri!=null)
+        if (!TextUtils.isEmpty(username))
         {
-            mProgress.show();
+            final DatabaseReference currentUser = mDatabaseUsers.child(userId);
+            if (mImageUri == null) {
+                downloadUri = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336"; //sets default download Image url
+                Snackbar snack = Snackbar.make(userName, R.string.noImage, Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.setAction("Select", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent galleryIntent = new Intent();
+                        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                        galleryIntent.setType("image/*");
+                        startActivityForResult(galleryIntent, GALLERY_REQUEST);
+                    }
+                });
+                snack.setAction("Skip", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        currentUser.child("Image").setValue(downloadUri); //Sets
+                        currentUser.child("Username").setValue(username); //User
+                        currentUser.child("Email").setValue(userEmail); //Details
+                        mProgress.dismiss();
+                        Intent setDetailsIntent = new Intent(setDetails.this, home.class);
+                        setDetailsIntent.putExtra("type", "new");
+                        setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(setDetailsIntent);
+
+                    }
+                });
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+                snack.show();
+            } else {
             StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
-            filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                mProgress.show();
+                filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    String downloadUri = taskSnapshot.getDownloadUrl().toString();
-                    DatabaseReference currentUser = mDatabaseUsers.child(userId);
-                    currentUser.child("Username").setValue(username);
-                    currentUser.child("Email").setValue(userEmail);
-                    currentUser.child("Image").setValue(downloadUri);
-
+                    downloadUri = taskSnapshot.getDownloadUrl().toString();
+                    currentUser.child("Image").setValue(downloadUri); //Sets
+                    currentUser.child("Username").setValue(username); //User
+                    currentUser.child("Email").setValue(userEmail); //Details
                     mProgress.dismiss();
                     Intent setDetailsIntent = new Intent(setDetails.this, home.class);
                     setDetailsIntent.putExtra("type", "new");
                     setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(setDetailsIntent);
                 }
-            });
-        } else {
+                });
+            }
 
+        } else {
             String message;
+            {
+                message="Enter all fields";
             if (mImageUri == null) {
                 message = "Please select image";
             } else {
                 message = "Enter all fields";
             }
-            Snackbar snack = Snackbar.make(userName, message, Snackbar.LENGTH_LONG);
+            Snackbar snack = Snackbar.make(userName, message, Snackbar.LENGTH_INDEFINITE);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
@@ -140,6 +175,7 @@ public class setDetails extends AppCompatActivity {
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Log.e("Gallery Intent error", error.getMessage());
             }
         }
     }
