@@ -1,18 +1,19 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
+import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 public class OpenEventDetail extends AppCompatActivity {
 
-    DatabaseReference mDatabase;
     TextView Event;
     ImageView EventImage;
     TextView EventDescription;
@@ -25,11 +26,21 @@ public class OpenEventDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_event_detail);
-        initializeViews();
         extras = getIntent().getExtras();
+        ProgressDialog mProgress = new ProgressDialog(this);
         if (extras != null && extras.getString("Flag") != null && extras.getString("Flag").equals("true")) {
+            currentEvent = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.getSerializable("currentEvent");
+            initializeViews();
+            mProgress.setMessage("Loading....");
+            mProgress.show();
+            String url = currentEvent.getEventImage();
+            byteArrayfromNetwork getArray = new byteArrayfromNetwork();
+            byte[] byteArray = getArray.getByteArray(url);
+            image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
             setData();
         }
+        mProgress.dismiss();
     }
 
     void initializeViews() {
@@ -40,8 +51,6 @@ public class OpenEventDetail extends AppCompatActivity {
     }
 
     void setData() {
-        image = (Bitmap) extras.get("currentImage");
-        currentEvent = (com.zconnect.zutto.zconnect.Event) extras.getSerializable("currentEvent");
         Event.setText(currentEvent.getEventName());
         EventDescription.setText(currentEvent.getEventDescription());
         String eventDate[] = currentEvent.getEventDate().split("\\s+");

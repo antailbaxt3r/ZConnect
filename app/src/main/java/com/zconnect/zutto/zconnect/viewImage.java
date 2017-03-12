@@ -1,25 +1,31 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
+
 public class viewImage extends AppCompatActivity {
     LinearLayout titleBar, actionButtonBar;
-    View viewImageLayout;
+    View viewButtonLayout;
     View.OnClickListener buttonListener;
     ImageView imageView;
     String localAbsoluteFilePath;
     Bitmap event_image;
     String name;
+    PhotoViewAttacher mAttacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +34,17 @@ public class viewImage extends AppCompatActivity {
         Bundle extra = getIntent().getExtras();
         if (extra == null)
             finish();
+        ProgressDialog mProgress = new ProgressDialog(this);
+        mProgress.setMessage("Loading");
+        mProgress.show();
         name = extra.getString("currentEvent");
-        event_image = (Bitmap) extra.get("eventImage");
-        initializeLayout();
+        String url = getIntent().getStringExtra("eventImage");
+        byteArrayfromNetwork getArray = new byteArrayfromNetwork();
+        byte[] byteArray = getArray.getByteArray(url);
+        event_image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         initializeListener();
+        initializeLayout();
+        mProgress.dismiss();
     }
 
 
@@ -57,12 +70,75 @@ public class viewImage extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
     }
 
-    void initializeLayout() {
-        viewImageLayout = findViewById(R.id.viewImageLayout);
-        titleBar = (LinearLayout) viewImageLayout.findViewById(R.id.titleBar);
-        actionButtonBar = (LinearLayout) viewImageLayout.findViewById(R.id.buttonActionBar);
-        imageView.setImageBitmap(event_image);
 
+    void shareImage() {
+        saveImage saveImage = new saveImage();
+        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name);
+        if (localAbsoluteFilePath != null && localAbsoluteFilePath != "") {
+
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            Uri phototUri = Uri.parse(localAbsoluteFilePath);
+            shareIntent.setData(phototUri);
+            shareIntent.setType("image/png");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, phototUri);
+            this.startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
+        }
+    }
+
+    void saveToGallery() {
+        ProgressDialog mProgress = new ProgressDialog(this);
+        mProgress.setTitle("Saving......");
+        mProgress.setMessage("Saving to gallery...");
+        mProgress.show();
+        saveImage saveImage = new saveImage();
+        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name);
+        mProgress.dismiss();
+        if (localAbsoluteFilePath != null)
+            Toast.makeText(this, "Saved Successfully", Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(this, "Failed", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0) {
+            // delete temp file
+            File file = new File(localAbsoluteFilePath);
+            file.delete();
+        }
+
+
+    }
+
+
+    void initializeLayout() {
+        int id[] = {R.id.backButton, R.id.button_share, R.id.button_save};
+        viewButtonLayout = findViewById(R.id.viewButtonLayout);
+        titleBar = (LinearLayout) viewButtonLayout.findViewById(R.id.titleBar);
+        actionButtonBar = (LinearLayout) viewButtonLayout.findViewById(R.id.buttonActionBar);
+        for (int i : id) {
+            ImageView button = (ImageView) viewButtonLayout.findViewById(i);
+            button.setOnClickListener(buttonListener);
+        }
+        imageView = (ImageView) findViewById(R.id.iv_image);
+        imageView.setImageBitmap(event_image);
+        mAttacher = new PhotoViewAttacher(imageView);
+
+        TextView titleText = (TextView) viewButtonLayout.findViewById(R.id.TitileTextView);
+        titleText.setText(name);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewButtonLayout.getVisibility() == View.VISIBLE)
+                    viewButtonLayout.setVisibility(View.INVISIBLE);
+                else
+                    viewButtonLayout.setVisibility(View.VISIBLE);
+
+            }
+        });
     }
 
     void initializeListener() {
@@ -83,43 +159,6 @@ public class viewImage extends AppCompatActivity {
                 }
             }
         };
-    }
-
-    void shareImage() {
-        saveImage saveImage = new saveImage();
-        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name);
-        if (localAbsoluteFilePath != null && localAbsoluteFilePath != "") {
-
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            Uri phototUri = Uri.parse(localAbsoluteFilePath);
-            shareIntent.setData(phototUri);
-            shareIntent.setType("image/png");
-            shareIntent.putExtra(Intent.EXTRA_STREAM, phototUri);
-            this.startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
-        }
-    }
-
-    void saveToGallery() {
-        saveImage saveImage = new saveImage();
-        localAbsoluteFilePath = saveImage.saveImageLocally(event_image, name);
-        if (localAbsoluteFilePath != null)
-            Toast.makeText(this, "Saved Successfully", Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(this, "Failed", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 0) {
-            // delete temp file
-            File file = new File(localAbsoluteFilePath);
-            file.delete();
-            Toast.makeText(this, "Successfully Shared", Toast.LENGTH_LONG).show();
-        }
-
-
     }
 
 }

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -22,6 +23,7 @@ public class PhonebookDetails extends AppCompatActivity {
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
     private SimpleDraweeView image;
+    private ImageView mail, call;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,8 @@ public class PhonebookDetails extends AppCompatActivity {
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_details_email_editText);
         editTextName = (TextInputEditText) findViewById(R.id.contact_details_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_details_number_editText);
+        call = (ImageView) findViewById(R.id.callbutton);
+        mail = (ImageView) findViewById(R.id.mailbutton);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -69,6 +73,19 @@ public class PhonebookDetails extends AppCompatActivity {
                 }
             });
             editTextEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
+                    startActivity(Intent.createChooser(emailIntent, "Send Email ..."));
+                }
+            });
+            call.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number)));
+                }
+            });
+            mail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));

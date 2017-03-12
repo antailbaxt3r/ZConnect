@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 /**
  * Created by Lokesh Garg on 09-02-2017.
@@ -31,43 +32,35 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void openEvent(final String title, final String description, final String date, final String url) {
+    public void openEvent() {
         mView.setOnClickListener(new View.OnClickListener()
 
         {
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
-                i.putExtra("Name", title);
-                i.putExtra("Description", description);
-                i.putExtra("Date", date);
-                i.putExtra("ImageUri", url);
-                i.putExtra("Flag", "true");
+                Intent i = new Intent(mView.getContext(), AllEvents.class);
                 mView.getContext().startActivity(i);
             }
         });
     }
 
-    public void openProduct(final homeRecyclerClass model) {
+    public void openProduct() {
         mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(mView.getContext(), OpenProductDetail.class);
-                i.putExtra("Name", model.getTitle());
-                i.putExtra("Description", model.getDescription());
-                i.putExtra("Price", model.getmultiUse1());
-                i.putExtra("ImageUri", model.getUrl());
-                i.putExtra("Phone_no", model.getPhone_no());
-                i.putExtra("Flag", "true");
-                mView.getContext().startActivity(i);
+                mView.getContext().startActivity(new Intent(mView.getContext(), TabStoreRoom.class));
+
             }
         });
     }
 
     public void removeView() {
-        RelativeLayout mRelativeLayout = (RelativeLayout) mView.findViewById(R.id.ContactCardEverything);
-        mRelativeLayout.setVisibility(View.GONE);
+        LinearLayout del = (LinearLayout) mView.findViewById(R.id.ContactCardEverything);
+        del.setVisibility(View.GONE);
+        LinearLayout show = (LinearLayout) mView.findViewById(R.id.EventsAndDescriptionEverything);
+        show.setVisibility(View.VISIBLE);
+
     }
 
     public void setTitle(String title) {
@@ -88,7 +81,7 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
         TextView setDate = (TextView) mView.findViewById(R.id.date_event);
         if (isNumber)
         {
-            setDate.setText(title);
+            setDate.setText("+91 " + title);
             setDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -104,6 +97,11 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
 
             setDate.setText(finalDate);
         }
+    }
+
+    public void setPrice(String price) {
+        TextView setPrice = (TextView) mView.findViewById(R.id.price);
+        setPrice.setText(price);
     }
 
     public void setTime(String title) {
@@ -173,7 +171,8 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout mlayout = (LinearLayout) mView.findViewById(R.id.EventsAndDescriptionEverything);
         mlayout.setVisibility(View.GONE);
-        RelativeLayout mRel = (RelativeLayout) mView.findViewById(R.id.ContactCardEverything);
+        LinearLayout mRel = (LinearLayout) mView.findViewById(R.id.ContactCardEverything);
+        mRel.setVisibility(View.VISIBLE);
         SimpleDraweeView simpleDraweeView = (SimpleDraweeView) mView.findViewById(R.id.everything_item_format_image);
         simpleDraweeView.setImageURI(Uri.parse(phonebookDisplayItem.getImageurl()));
         TextView name = (TextView) mView.findViewById(R.id.everything_name1);
@@ -183,18 +182,8 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
         mRel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, PhonebookDetails.class);
-                //intent.putExtra("Workshop", workshopItemformat1);
-                intent.putExtra("desc", phonebookDisplayItem.getDesc());
-                intent.putExtra("name", phonebookDisplayItem.getName());
-                intent.putExtra("number", phonebookDisplayItem.getNumber());
-                intent.putExtra("image", phonebookDisplayItem.getImageurl());
-                intent.putExtra("email", phonebookDisplayItem.getEmail());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-                if (context instanceof PhonebookDetails) {
-                    ((PhonebookDetails) context).finish();
-                }
+                Intent intent = new Intent(context, Phonebook.class);
+                context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             }
         });
 

@@ -106,7 +106,7 @@ class CategoryAdapter extends BaseAdapter {
         row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), StoreRoom.class);
+                Intent intent = new Intent(view.getContext(), IndividualCategory.class);
                 intent.putExtra("Category", temp.categoryName);
                 context.startActivity(intent);
 

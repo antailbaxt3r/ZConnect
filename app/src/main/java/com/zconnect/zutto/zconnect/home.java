@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 public class home extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,6 +34,7 @@ public class home extends AppCompatActivity
     // For Recycler
     LinearLayoutManager linearLayoutManager;
     RecyclerView mEverything;
+    boolean checkuser = true;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
@@ -38,6 +43,32 @@ public class home extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        Intent called = getIntent();
+        if (called.hasExtra("type")) {
+            if (called.getStringExtra("type").equals("new")) {
+
+                checkuser = false;
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(home.this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle("Add your contact");
+                alertBuilder.setMessage("Welcome to ZConnect! , Add your contact on ZConnect");
+                alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent addContact = new Intent(home.this, AddContact.class);
+                        addContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(addContact);
+                    }
+                });
+                alertBuilder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            }
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -63,8 +94,8 @@ public class home extends AppCompatActivity
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("ZConnect").child("everything");
-        mDatabase.keepSynced(true);
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("everything");
+        //mDatabase.keepSynced(true);
 
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -77,6 +108,7 @@ public class home extends AppCompatActivity
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(loginIntent);
                 }else {
+
                     checkUser();
                 }
 
@@ -139,6 +171,35 @@ public class home extends AppCompatActivity
         } else if (id == R.id.about) {
             startActivity(new Intent(home.this, AboutUs.class));
 
+        } else if (id == R.id.bugReport) {
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(home.this);
+
+            // 2. Chain together various setter methods to set the dialog characteristics
+            builder.setMessage("Send a Bug Report or a Feedback to \nzconnectinc@gmail.com")
+                    .setTitle("Alert");
+
+            builder.setPositiveButton("Bug Report", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", "zconnectinc@gmail.com", null));
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Bug Report");
+                    // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
+                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                }
+            });
+            builder.setNegativeButton("Feedback", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", "zconnectinc@gmail.com", null));
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+                    // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
+                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                }
+            });
+            android.app.AlertDialog dialog = builder.create();
+            dialog.show();
+
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -173,25 +234,28 @@ public class home extends AppCompatActivity
 
     private void checkUser()
     {
-        mDatabaseUsers.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        if (checkuser) {
+            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if(!dataSnapshot.hasChild(mAuth.getCurrentUser().getUid()))
-                {
-                    Intent setDetailsIntent = new Intent(home.this, setDetails.class);
-                    setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(setDetailsIntent);
+                    if (!dataSnapshot.hasChild(mAuth.getCurrentUser().getUid())) {
+                        if (!checkuser) {
+                            Intent setDetailsIntent = new Intent(home.this, setDetails.class);
+                            setDetailsIntent.putExtra("caller", "home");
+                            setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(setDetailsIntent);
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+            });
+        }
     }
 
     void makeRecyclerView() {
@@ -215,7 +279,8 @@ public class home extends AppCompatActivity
                     viewHolder.setBarColor(getApplicationContext(), true);
                     viewHolder.setDate(model.getmultiUse2(), false, getApplicationContext());
                     viewHolder.makeButton(model.getTitle(), model.getDescription(), Long.parseLong(model.getmultiUse1()));
-                    viewHolder.openEvent(model.getTitle(), model.getDescription(), model.getmultiUse2(), model.getUrl());
+                    viewHolder.openEvent();
+                    viewHolder.setPrice("Description: ");
                 } else if (model.getType().equals("Pro") && model.getType() != null) {
                     viewHolder.removeView();
                     viewHolder.setTitle(model.getTitle());
@@ -223,7 +288,8 @@ public class home extends AppCompatActivity
                     viewHolder.setBarColor(getApplicationContext(), false);
                     viewHolder.setImage(getApplicationContext(), model.getUrl());
                     viewHolder.setDate(String.valueOf(model.getPhone_no()), true, getApplicationContext());
-                    viewHolder.openProduct(model);
+                    viewHolder.openProduct();
+                    viewHolder.setPrice("₹" + model.getmultiUse1() + "/-");
 
                 } else if (model.getType().equals("P") && model.getType() != null) {
 

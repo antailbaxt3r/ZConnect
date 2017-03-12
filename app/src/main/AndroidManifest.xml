@@ -128,6 +128,10 @@
                 android:value=".TabStoreRoom" />
         </activity>
         <activity
+            android:name=".IndividualCategory"
+            android:label="@string/title_activity_each_category"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".viewImage"
             android:label="@string/title_activity_view_image"
             android:parentActivityName=".AllEvents"
@@ -136,6 +140,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.AllEvents" />
         </activity>
+        <activity android:name=".image_view"></activity>
     </application>
 
 </manifest>

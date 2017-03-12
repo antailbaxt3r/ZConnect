@@ -102,7 +102,9 @@ public class TabStoreRoom extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        if (id == R.id.action_storeroom) {
+            startActivity(new Intent(TabStoreRoom.this, MyProducts.class));
+        }
         //noinspection SimplifiableIfStatement
 
 
@@ -187,7 +189,7 @@ public class TabStoreRoom extends AppCompatActivity {
                 case 0:
                     return "Products";
                 case 1:
-                    return "Reserved Products";
+                    return "Shortlist";
                 case 2:
                     return "Categories";
             }

@@ -31,7 +31,7 @@
                 android:title="Advertisement" />
         <item
             android:id="@+id/about"
-            android:icon="@drawable/ic_android_black_24dp"
+            android:icon="@drawable/aboutus"
             android:title="About Us" />
 
 
@@ -44,8 +44,10 @@
             android:id="@+id/signOut"
             android:icon="@drawable/ic_power_settings_new_black_24dp"
             android:title="Sign Out" />
-
-
+        <item
+            android:id="@+id/bugReport"
+            android:icon="@drawable/ic_bug_report_black_24dp"
+            android:title="Report Bug / Feedback" />
     </group>
 
 

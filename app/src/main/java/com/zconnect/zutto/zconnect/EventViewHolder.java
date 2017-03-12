@@ -2,8 +2,6 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -11,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 public class EventViewHolder extends RecyclerView.ViewHolder {
 
-    Bitmap event_image;
     View mView;
     ImageView post_image;
 
@@ -30,7 +28,6 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
 
                 Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
                 i.putExtra("currentEvent", thisEvent);
-                i.putExtra("eventImage", event_image);
                 mView.getContext().startActivity(i);
             }
         });
@@ -52,18 +49,19 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void setEventImage(final Context ctx, final String name, String image) {
+    public void setEventImage(final Context ctx, final String name, final String image) {
 
         post_image = (ImageView) mView.findViewById(R.id.postImg);
         Picasso.with(ctx).load(image).into(post_image);
-        event_image = ((BitmapDrawable) post_image.getDrawable()).getBitmap();
         post_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(ctx, viewImage.class);
+
+                Intent i = new Intent(mView.getContext(), viewImage.class);
                 i.putExtra("currentEvent", name);
-                i.putExtra("eventImage", event_image);
-                ctx.startActivity(i);
+                i.putExtra("eventImage", image);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
         });
 

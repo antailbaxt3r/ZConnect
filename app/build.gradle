@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.zconnect.zutto.zconnect"
         minSdkVersion 18
@@ -19,6 +19,7 @@ android {
         }
     }
     repositories {
+        jcenter()
         maven { url 'https://maven.fabric.io/public' }
     }
 }
@@ -57,14 +58,17 @@ dependencies {
     compile 'com.google.android.gms:play-services:9.8.0'
     compile 'com.google.android.gms:play-services-auth:9.8.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.commit451:PhotoView:1.2.5'
     compile 'com.android.support:design:24.2.1'
     compile 'com.facebook.fresco:fresco:0.12.0'
     compile 'com.android.support:multidex:1.0.0'
+    compile 'net.danlew:android.joda:2.9.7'
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }
+
 
 
 

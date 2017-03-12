@@ -20,7 +20,8 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/border_filled_2"
         android:padding="10dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/addimage" />
 
     <EditText
         android:id="@+id/name"
@@ -61,7 +62,9 @@
         android:background="@drawable/border_filled_2"
         android:entries="@array/categories"
         android:padding="10dp"
-        android:prompt="@string/category_prompt" />
+        android:prompt="@string/category_prompt"
+        android:spinnerMode="dialog" />
+
 
     <EditText
         android:id="@+id/price"
