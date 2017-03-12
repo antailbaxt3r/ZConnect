@@ -221,7 +221,7 @@ public class AllEvents extends AppCompatActivity {
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
                 Date current_date = new LocalDate().toDate();
-                if (current_date.getTime() > Long.parseLong(model.getFormatDate()) + 24 * 60 * 60) {
+                if (current_date.getTime() < Long.parseLong(model.getFormatDate()) + 24 * 60 * 60) {
                     viewHolder.setEventName(model.getEventName());
                     viewHolder.setEventDesc(model.getEventDescription());
                     viewHolder.setEventImage(getApplicationContext(), model.getEventImage());

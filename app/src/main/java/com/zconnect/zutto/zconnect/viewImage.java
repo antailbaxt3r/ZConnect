@@ -35,12 +35,12 @@ public class viewImage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_image);
-        Bundle extra = getIntent().getExtras();
-        if (extra == null)
-            finish();
         ProgressDialog mProgress = new ProgressDialog(this);
         mProgress.setMessage("Loading");
         mProgress.show();
+        Bundle extra = getIntent().getExtras();
+        if (extra == null)
+            finish();
         name = extra.getString("currentEvent");
         String url = getIntent().getStringExtra("eventImage");
         byteArrayfromNetwork getArray = new byteArrayfromNetwork();
@@ -163,12 +163,12 @@ public class viewImage extends AppCompatActivity {
         handleClickOnView = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mViewLayout.getVisibility() == View.INVISIBLE) {
-                    mViewLayout.setVisibility(View.VISIBLE);
+                if (viewButtonLayout.getVisibility() == View.INVISIBLE) {
+                    viewButtonLayout.setVisibility(View.VISIBLE);
                     new Timer().schedule(new TimerTask() {
                         public void run() {
 
-                            mViewLayout.setVisibility(View.INVISIBLE);
+                            viewButtonLayout.setVisibility(View.INVISIBLE);
 
                         }
                     }, 1000);
