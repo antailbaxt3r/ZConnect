@@ -179,9 +179,8 @@ public class AddContact extends AppCompatActivity {
             Uri imageUri = data.getData();
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(2, 1)
+                    .setAspectRatio(1, 1)
                     .setBackgroundColor(R.color.white)
-                    .setBorderCornerColor(R.color.teal100)
                     .setSnapRadius(2)
                     .start(this);
         }
@@ -195,8 +194,8 @@ public class AddContact extends AppCompatActivity {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 400, 200, true);
-                    String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+                    String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap2, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     image.setImageURI(mImageUri);
@@ -272,13 +271,6 @@ public class AddContact extends AppCompatActivity {
                         newPost.child("hostel").setValue(hostel);
                     }
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child(number);
-                    newPost2.child("Title").setValue(name);
-                    newPost2.child("Description").setValue(details);
-                    newPost2.child("Url").setValue(downloadUri.toString());
-                    newPost2.child("Phone_no").setValue(number);
-                    newPost2.child("multiUse1").setValue(email);
-                    newPost2.child("type").setValue("P");
 
                     mProgress.dismiss();
                     startActivity(new Intent(AddContact.this, Phonebook.class));

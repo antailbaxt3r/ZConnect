@@ -1,0 +1,1165 @@
+Index: app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/ShopDetailsItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/ShopDetailsItem.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/ShopDetailsItem.java	(revision )
+@@ -0,0 +1,89 @@
++package com.zconnect.zutto.zconnect.ItemFormats;
++
++/**
++ * Created by shubhamk on 8/2/17.
++ */
++
++public class ShopDetailsItem {
++    String name;
++    String number;
++    String imageurl;
++    String lat;
++    String details;
++    String lon;
++    String menuurl;
++
++    public ShopDetailsItem(String name, String imageurl, String number, String lat, String details, String lon, String menuurl) {
++        this.name = name;
++        this.imageurl = imageurl;
++        this.number = number;
++        this.lat = lat;
++        this.details = details;
++        this.lon = lon;
++        this.menuurl = menuurl;
++    }
++
++    public ShopDetailsItem() {
++    }
++
++    public String getImageurl() {
++        return imageurl;
++    }
++
++    public void setImageurl(String imageurl) {
++        this.imageurl = imageurl;
++    }
++
++    public String getMenuurl() {
++        return menuurl;
++    }
++
++    public void setMenuurl(String menuurl) {
++        this.menuurl = menuurl;
++    }
++
++    public String getLon() {
++
++        return lon;
++    }
++
++    public void setLon(String lon) {
++        this.lon = lon;
++    }
++
++    public String getDetails() {
++
++        return details;
++    }
++
++    public void setDetails(String details) {
++        this.details = details;
++    }
++
++    public String getLat() {
++
++        return lat;
++    }
++
++    public void setLat(String lat) {
++        this.lat = lat;
++    }
++
++    public String getNumber() {
++
++        return number;
++    }
++
++    public void setNumber(String number) {
++        this.number = number;
++    }
++
++    public String getName() {
++
++        return name;
++    }
++
++    public void setName(String name) {
++        this.name = name;
++    }
++}
+Index: app/src/main/res/layout/activity_post_emails.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_post_emails.xml	(revision )
++++ app/src/main/res/layout/activity_post_emails.xml	(revision )
+@@ -0,0 +1,9 @@
++<?xml version="1.0" encoding="utf-8"?>
++<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    tools:context="com.zconnect.zutto.zconnect.PostEmails">
++
++</android.support.constraint.ConstraintLayout>
+Index: app/src/main/res/drawable/border4.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/border4.xml	(revision )
++++ app/src/main/res/drawable/border4.xml	(revision )
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <stroke
++        android:width="3dp"
++        android:color="@color/teal100" />
++</shape>
+\ No newline at end of file
+Index: app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/ShopListItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/ShopListItem.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/ShopListItem.java	(revision )
+@@ -0,0 +1,46 @@
++package com.zconnect.zutto.zconnect.ItemFormats;
++
++/**
++ * Created by shubhamk on 8/2/17.
++ */
++
++public class ShopListItem {
++    String imageurl;
++    String name;
++    ShopDetailsItem shopDetailsItem;
++
++    public ShopListItem(String imageurl, String name, ShopDetailsItem shopDetailsItem) {
++        this.imageurl = imageurl;
++        this.name = name;
++        this.shopDetailsItem = shopDetailsItem;
++    }
++
++    public ShopListItem() {
++    }
++
++    public String getName() {
++        if (shopDetailsItem != null) return shopDetailsItem.getName();
++        else return "";
++    }
++
++    public void setName(String name) {
++        this.name = name;
++    }
++
++    public String getImageurl() {
++        if (shopDetailsItem != null) return shopDetailsItem.getImageurl();
++        else return "";
++    }
++
++    public void setImageurl(String imageurl) {
++        this.imageurl = imageurl;
++    }
++
++    public ShopDetailsItem getShopDetailsItem() {
++        return shopDetailsItem;
++    }
++
++    public void setShopDetailsItem(ShopDetailsItem shopDetailsItem) {
++        this.shopDetailsItem = shopDetailsItem;
++    }
++}
+Index: app/src/main/java/com/zconnect/zutto/zconnect/PostEmails.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/PostEmails.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/PostEmails.java	(revision )
+@@ -0,0 +1,53 @@
++package com.zconnect.zutto.zconnect;
++
++import android.content.Intent;
++import android.net.Uri;
++import android.support.v7.app.AppCompatActivity;
++import android.os.Bundle;
++import android.widget.TextView;
++import android.widget.Toast;
++
++import com.google.firebase.database.DataSnapshot;
++import com.google.firebase.database.DatabaseError;
++import com.google.firebase.database.DatabaseReference;
++import com.google.firebase.database.FirebaseDatabase;
++import com.google.firebase.database.ValueEventListener;
++
++public class PostEmails extends AppCompatActivity {
++    public static String email = "";
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_post_emails);
++        final DatabaseReference mdb = FirebaseDatabase.getInstance().getReference("Phonebook");
++        mdb.addValueEventListener(new ValueEventListener() {
++            int i=0;
++            @Override
++            public void onDataChange(DataSnapshot dataSnapshot) {
++                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
++                    i++;
++                    //Toast.makeText(getApplicationContext(),snapshot.child("email").getValue().toString(),Toast.LENGTH_SHORT).show();
++                    if (snapshot.child("category").getValue().toString().equals("S")) {
++                        String emailtemp=snapshot.child("email").getValue().toString();
++                        if(emailtemp!=null)
++                            PostEmails.email+=(emailtemp).concat("\n");
++                    }
++                }
++                if (i==dataSnapshot.getChildrenCount())
++                {
++                    //Toast.makeText(getApplicationContext(),PostEmails.email,Toast.LENGTH_LONG).show();
++                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
++                            "mailto", "zconnectinc@gmail.com", null));
++                    emailIntent.putExtra(Intent.EXTRA_SUBJECT,"Emails");
++                    emailIntent.putExtra(Intent.EXTRA_TEXT, email);
++                     startActivity(Intent.createChooser(emailIntent, "Send email..."));
++                }
++            }
++            @Override
++            public void onCancelled(DatabaseError databaseError) {
++            }
++        });
++
++    }
++
++}
+Index: app/src/main/res/layout/my_product_row.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/my_product_row.xml	(revision )
++++ app/src/main/res/layout/my_product_row.xml	(revision )
+@@ -0,0 +1,81 @@
++<?xml version="1.0" encoding="utf-8"?>
++<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_margin="20dp"
++        android:orientation="vertical">
++
++        <ImageView
++            android:id="@+id/postImg"
++            android:layout_width="match_parent"
++            android:layout_height="180dp"
++            android:adjustViewBounds="true"
++            android:background="@drawable/border_filled_2"
++            android:scaleType="centerCrop" />
++
++        <RelativeLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:orientation="horizontal"
++            android:padding="10dp">
++
++            <TextView
++                android:id="@+id/productName"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_alignParentLeft="true"
++                android:text="Product Name"
++                android:textSize="20dp"
++                android:textStyle="bold" />
++
++            <TextView
++                android:id="@+id/price"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_alignParentRight="true"
++                android:text="Price"
++                android:textSize="20dp"
++                android:textStyle="italic" />
++        </RelativeLayout>
++
++        <TextView
++            android:id="@+id/productDescription"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:paddingBottom="10dp"
++            android:paddingLeft="10dp"
++            android:paddingRight="10dp"
++            android:text="Product Description"
++            android:textSize="15dp" />
++
++        <RelativeLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:orientation="horizontal"
++            android:padding="10dp">
++
++            <TextView
++                android:id="@+id/textRemove"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_centerHorizontal="true"
++                android:layout_centerVertical="true"
++                android:text="Remove" />
++
++            <ImageButton
++                android:id="@+id/delete"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_toRightOf="@+id/textRemove"
++                android:background="@android:drawable/screen_background_light_transparent"
++                app:srcCompat="@mipmap/ic_delete_forever_black_24dp" />
++        </RelativeLayout>
++
++    </LinearLayout>
++
++</android.support.v7.widget.CardView>
+\ No newline at end of file
+Index: app/src/main/res/layout/content_my_products.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/content_my_products.xml	(revision )
++++ app/src/main/res/layout/content_my_products.xml	(revision )
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="utf-8"?>
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/content_my_products"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    app:layout_behavior="@string/appbar_scrolling_view_behavior"
++    tools:context="com.zconnect.zutto.zconnect.MyProducts"
++    tools:showIn="@layout/activity_my_products">
++
++    <android.support.v7.widget.RecyclerView
++        android:id="@+id/productList"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent">
++
++    </android.support.v7.widget.RecyclerView>
++</RelativeLayout>
+Index: app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/PhonebookStudentHostelItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/PhonebookStudentHostelItem.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/PhonebookStudentHostelItem.java	(revision )
+@@ -0,0 +1,26 @@
++package com.zconnect.zutto.zconnect.ItemFormats;
++
++/**
++ * Created by shubhamk on 9/2/17.
++ */
++
++public class PhonebookStudentHostelItem {
++    String hostel;
++
++    public PhonebookStudentHostelItem(String hostel) {
++        this.hostel = hostel;
++    }
++
++    public PhonebookStudentHostelItem() {
++    }
++
++    public String getHostel() {
++        return hostel;
++    }
++
++    public void setHostel(String hostel) {
++        this.hostel = hostel;
++    }
++}
++
++
+Index: app/src/main/java/com/zconnect/zutto/zconnect/IndividualCategory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/IndividualCategory.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/IndividualCategory.java	(revision )
+@@ -0,0 +1,220 @@
++package com.zconnect.zutto.zconnect;
++
++import android.content.Context;
++import android.content.Intent;
++import android.os.Build;
++import android.os.Bundle;
++import android.support.v4.content.ContextCompat;
++import android.support.v7.app.AppCompatActivity;
++import android.support.v7.widget.LinearLayoutManager;
++import android.support.v7.widget.RecyclerView;
++import android.support.v7.widget.Toolbar;
++import android.view.View;
++import android.view.WindowManager;
++import android.widget.CompoundButton;
++import android.widget.ImageView;
++import android.widget.Switch;
++import android.widget.TextView;
++
++import com.firebase.ui.database.FirebaseRecyclerAdapter;
++import com.google.firebase.auth.FirebaseAuth;
++import com.google.firebase.auth.FirebaseUser;
++import com.google.firebase.database.DataSnapshot;
++import com.google.firebase.database.DatabaseError;
++import com.google.firebase.database.DatabaseReference;
++import com.google.firebase.database.FirebaseDatabase;
++import com.google.firebase.database.Query;
++import com.google.firebase.database.ValueEventListener;
++import com.squareup.picasso.Picasso;
++import com.zconnect.zutto.zconnect.ItemFormats.Product;
++
++public class IndividualCategory extends AppCompatActivity {
++
++    public String category;
++    Query queryCategory;
++    private RecyclerView mProductList;
++    private DatabaseReference mDatabase;
++    private FirebaseAuth mAuth;
++    private LinearLayoutManager linearLayoutManager;
++    private boolean flag = false;
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_individual_category);
++        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
++        setSupportActionBar(toolbar);
++
++        Intent intent = getIntent();
++        if (intent != null) {
++            category = intent.getStringExtra("Category");
++            getSupportActionBar().setTitle(category);
++        }
++
++
++        if (toolbar != null) {
++            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
++                @Override
++                public void onClick(View view) {
++                    onBackPressed();
++                }
++            });
++            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
++        }
++        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
++            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
++        }
++
++        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
++            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
++            getWindow().setStatusBarColor(colorPrimary);
++            getWindow().setNavigationBarColor(colorPrimary);
++            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
++        }
++        mProductList = (RecyclerView) findViewById(R.id.productList);
++        mProductList.setHasFixedSize(true);
++        linearLayoutManager = new LinearLayoutManager(this);
++        linearLayoutManager.setReverseLayout(false);
++        mProductList.setLayoutManager(linearLayoutManager);
++        mAuth = FirebaseAuth.getInstance();
++
++        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
++        queryCategory = mDatabase.orderByChild("Category").equalTo(category);
++        mDatabase.keepSynced(true);
++
++    }
++
++    @Override
++    protected void onStart() {
++        super.onStart();
++
++        FirebaseRecyclerAdapter<Product, ProductViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, ProductViewHolder>(
++
++                Product.class,
++                R.layout.products_row,
++                ProductViewHolder.class,
++                queryCategory
++        ) {
++
++            @Override
++            protected void populateViewHolder(ProductViewHolder viewHolder, final Product model, int position) {
++                viewHolder.defaultSwitch(model.getKey());
++                //viewHolder.setSwitch(model.getKey());
++                viewHolder.setProductName(model.getProductName());
++                viewHolder.setProductDesc(model.getProductDescription());
++                viewHolder.setImage(getApplicationContext(), model.getImage());
++                viewHolder.setProductPrice(model.getPrice());
++
++                viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
++                    @Override
++                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
++                        flag = true;
++
++                        mDatabase.addValueEventListener(new ValueEventListener() {
++                            @Override
++                            public void onDataChange(DataSnapshot dataSnapshot) {
++
++                                if (flag) {
++                                    if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
++                                        mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
++                                        flag = false;
++                                    } else {
++
++                                        mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getDisplayName());
++                                        flag = false;
++                                    }
++                                }
++                            }
++
++                            @Override
++                            public void onCancelled(DatabaseError databaseError) {
++
++                            }
++                        });
++                    }
++                };
++                viewHolder.mReserve.setOnCheckedChangeListener(viewHolder.mListener);
++
++            }
++        };
++        mProductList.setAdapter(firebaseRecyclerAdapter);
++    }
++
++    public static class ProductViewHolder extends RecyclerView.ViewHolder {
++
++        public CompoundButton.OnCheckedChangeListener mListener;
++        View mView;
++        String[] keyList;
++        String ReservedUid;
++        private Switch mReserve;
++        private TextView ReserveStatus;
++        private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
++        private FirebaseAuth mAuth;
++
++        public ProductViewHolder(View itemView) {
++            super(itemView);
++            mView = itemView;
++            mReserve = (Switch) mView.findViewById(R.id.switch1);
++            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
++            StoreRoom.keepSynced(true);
++
++        }
++
++        public void defaultSwitch(final String key) {
++            // Getting User ID
++            mAuth = FirebaseAuth.getInstance();
++            FirebaseUser user = mAuth.getCurrentUser();
++            final String userId = user.getUid();
++
++            //Getting  data from database
++            StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
++                @Override
++                public void onDataChange(DataSnapshot dataSnapshot) {
++                    mReserve.setOnCheckedChangeListener(null);
++                    if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
++                        mReserve.setChecked(true);
++                    } else {
++                        mReserve.setChecked(false);
++                    }
++                    mReserve.setOnCheckedChangeListener(mListener);
++
++                }
++
++                @Override
++                public void onCancelled(DatabaseError databaseError) {
++
++                }
++
++            });
++
++
++        }
++
++        public void setProductName(String productName) {
++
++            TextView post_name = (TextView) mView.findViewById(R.id.productName);
++            post_name.setText(productName);
++
++        }
++
++        public void setProductDesc(String productDesc) {
++
++            TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
++            post_desc.setText(productDesc);
++
++        }
++
++        public void setImage(Context ctx, String image) {
++
++            ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
++            Picasso.with(ctx).load(image).into(post_image);
++        }
++
++        public void setProductPrice(String productPrice) {
++            TextView post_name = (TextView) mView.findViewById(R.id.price);
++            post_name.setText(productPrice);
++        }
++
++    }
++
++}
+Index: app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/Product.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/Product.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/Product.java	(revision )
+@@ -0,0 +1,64 @@
++package com.zconnect.zutto.zconnect.ItemFormats;
++
++/**
++ * Created by Lokesh Garg on 08-02-2017.
++ */
++
++public class Product {
++    private String ProductName, ProductDescription, Image, Key, Price, Phone_no, PostedBy;
++
++    public Product() {
++
++    }
++
++    public Product(String productName, String productDescription, String image, String key, String price, String phone_no, String postedBy) {
++        ProductName = productName;
++        ProductDescription = productDescription;
++        Image = image;
++        Key = key;
++        Price = price;
++        Phone_no = phone_no;
++        PostedBy = postedBy;
++    }
++
++    public String getPhone_no() {
++        return Phone_no;
++    }
++
++
++    public String getPostedBy() {
++        return PostedBy;
++    }
++
++    public String getProductName() {
++        return ProductName;
++    }
++
++    public void setProductName(String productName) {
++        ProductName = productName;
++    }
++
++    public String getKey() {
++        return Key;
++    }
++
++    public String getPrice() {
++        return Price;
++    }
++
++    public String getProductDescription() {
++        return ProductDescription;
++    }
++
++    public void setProductDescription(String productDescription) {
++        ProductDescription = productDescription;
++    }
++
++    public String getImage() {
++        return Image;
++    }
++
++    public void setImage(String image) {
++        Image = image;
++    }
++}
+Index: app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/ShopCategoryItemCategory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/ShopCategoryItemCategory.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/ShopCategoryItemCategory.java	(revision )
+@@ -0,0 +1,34 @@
++package com.zconnect.zutto.zconnect.ItemFormats;
++
++/**
++ * Created by shubhamk on 8/2/17.
++ */
++
++public class ShopCategoryItemCategory {
++    String imageurl;
++    String category;
++
++    public ShopCategoryItemCategory(String imageurl, String category) {
++        this.imageurl = imageurl;
++        this.category = category;
++    }
++
++    public ShopCategoryItemCategory() {
++    }
++
++    public String getImageurl() {
++        return imageurl;
++    }
++
++    public void setImageurl(String imageurl) {
++        this.imageurl = imageurl;
++    }
++
++    public String getCategory() {
++        return category;
++    }
++
++    public void setCategory(String category) {
++        this.category = category;
++    }
++}
+Index: app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/PhonebookItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/PhonebookItem.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/PhonebookItem.java	(revision )
+@@ -0,0 +1,57 @@
++package com.zconnect.zutto.zconnect.ItemFormats;
++
++/**
++ * Created by shubhamk on 8/2/17.
++ */
++
++public class PhonebookItem {
++    String imgurl;
++    String name;
++    String number;
++    PhonebookDisplayItem phonebookDisplayItem;
++
++    public PhonebookItem(String imgurl, String name, String number, PhonebookDisplayItem phonebookDisplayItem) {
++        this.imgurl = imgurl;
++        this.name = name;
++        this.number = number;
++        this.phonebookDisplayItem = phonebookDisplayItem;
++    }
++
++    public PhonebookItem() {
++    }
++
++    public PhonebookDisplayItem getPhonebookDisplayItem() {
++        return phonebookDisplayItem;
++    }
++
++    public void setPhonebookDisplayItem(PhonebookDisplayItem phonebookDisplayItem) {
++        this.phonebookDisplayItem = phonebookDisplayItem;
++    }
++
++    public String getImgurl() {
++        if (phonebookDisplayItem != null) return phonebookDisplayItem.getImageurl();
++        else return "";
++    }
++
++    public void setImgurl(String imgurl) {
++        this.imgurl = imgurl;
++    }
++
++    public String getName() {
++        if (phonebookDisplayItem != null) return phonebookDisplayItem.getName();
++        else return "";
++    }
++
++    public void setName(String name) {
++        this.name = name;
++    }
++
++    public String getNumber() {
++        if (phonebookDisplayItem != null) return phonebookDisplayItem.getNumber();
++        else return "";
++    }
++
++    public void setNumber(String number) {
++        this.number = number;
++    }
++}
+Index: app/src/main/res/layout/content_add_event.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/content_add_event.xml	(revision )
++++ app/src/main/res/layout/content_add_event.xml	(revision )
+@@ -0,0 +1,76 @@
++<?xml version="1.0" encoding="utf-8"?>
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/content_add_event"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    app:layout_behavior="@string/appbar_scrolling_view_behavior"
++    tools:context="com.zconnect.zutto.zconnect.AddEvent"
++    tools:showIn="@layout/activity_add_event">
++
++    <com.facebook.drawee.view.SimpleDraweeView
++        android:id="@+id/imageButton"
++        android:layout_width="match_parent"
++        android:layout_height="200dp"
++        android:layout_margin="10dp"
++        android:background="@drawable/border_filled_2"
++        android:padding="2dp"
++        app:roundedCornerRadius="5dp" />
++
++    <EditText
++        android:id="@+id/name"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_below="@id/imageButton"
++        android:layout_marginLeft="7dp"
++        android:layout_marginRight="7dp"
++        android:layout_marginTop="15dp"
++        android:background="@drawable/border_filled_2"
++        android:ems="10"
++        android:hint="Name"
++        android:inputType="textPersonName"
++        android:padding="10dp" />
++
++    <EditText
++        android:id="@+id/description"
++        android:layout_width="match_parent"
++        android:layout_height="80dp"
++        android:layout_below="@+id/name"
++        android:layout_marginLeft="7dp"
++        android:layout_marginRight="7dp"
++        android:layout_marginTop="15dp"
++        android:background="@drawable/border_filled_2"
++        android:ems="10"
++        android:hint="Description"
++        android:inputType="textMultiLine"
++        android:padding="10dp" />
++
++    <FrameLayout
++        android:id="@+id/dateAndTime"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_below="@+id/description"
++        android:layout_marginLeft="7dp"
++        android:layout_marginRight="7dp">
++
++        <ImageButton
++            android:id="@+id/dateIcon"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:layout_marginTop="15dp"
++            android:background="@android:drawable/screen_background_light_transparent"
++            app:srcCompat="@mipmap/ic_date_range_black_24dp" />
++
++        <TextView
++            android:id="@+id/dateText"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:layout_marginStart="30dp"
++            android:layout_marginTop="20dp"
++            android:text="Date and Time"
++            android:textColor="@color/teal500" />
++    </FrameLayout>
++
++
++</RelativeLayout>
+Index: app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/PhonebookDisplayItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/PhonebookDisplayItem.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/PhonebookDisplayItem.java	(revision )
+@@ -0,0 +1,86 @@
++package com.zconnect.zutto.zconnect.ItemFormats;
++
++/**
++ * Created by shubhamk on 8/2/17.
++ */
++
++public class PhonebookDisplayItem {
++    private String imageurl;
++    private String name;
++    private String desc;
++    private String number;
++    private String category;
++    private String email;
++    private String hostel;
++
++    public PhonebookDisplayItem(String imageurl, String name, String desc, String number, String category, String email, String hostel) {
++        this.imageurl = imageurl;
++        this.name = name;
++        this.desc = desc;
++        this.number = number;
++        this.category = category;
++        this.email = email;
++        this.hostel = hostel;
++    }
++
++    public PhonebookDisplayItem() {
++    }
++
++    public String getHostel() {
++        return hostel;
++    }
++
++    public void setHostel(String hostel) {
++        this.hostel = hostel;
++    }
++
++    public String getName() {
++        return name;
++    }
++
++    public void setName(String name) {
++        this.name = name;
++    }
++
++    public String getNumber() {
++        return number;
++    }
++
++    public void setNumber(String number) {
++        this.number = number;
++    }
++
++    public String getCategory() {
++        return category;
++    }
++
++    public void setCategory(String category) {
++        this.category = category;
++    }
++
++    public String getEmail() {
++        return email;
++    }
++
++    public void setEmail(String email) {
++        this.email = email;
++    }
++
++
++    public String getDesc() {
++        return desc;
++    }
++
++    public void setDesc(String desc) {
++        this.desc = desc;
++    }
++
++
++    public String getImageurl() {
++        return imageurl;
++    }
++
++    public void setImageurl(String imageurl) {
++        this.imageurl = imageurl;
++    }
++}
+Index: app/src/main/res/layout/activity_individual_category.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_individual_category.xml	(revision )
++++ app/src/main/res/layout/activity_individual_category.xml	(revision )
+@@ -0,0 +1,27 @@
++<?xml version="1.0" encoding="utf-8"?>
++<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:fitsSystemWindows="true"
++    tools:context="com.zconnect.zutto.zconnect.IndividualCategory">
++
++    <android.support.design.widget.AppBarLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:theme="@style/AppTheme.AppBarOverlay">
++
++        <android.support.v7.widget.Toolbar
++            android:id="@+id/toolbar"
++            android:layout_width="match_parent"
++            android:layout_height="?attr/actionBarSize"
++            android:background="?attr/colorPrimary"
++            app:popupTheme="@style/AppTheme.PopupOverlay" />
++
++    </android.support.design.widget.AppBarLayout>
++
++    <include layout="@layout/content_individual_category" />
++
++
++</android.support.design.widget.CoordinatorLayout>
+Index: app/src/main/res/layout/content_individual_category.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/content_individual_category.xml	(revision )
++++ app/src/main/res/layout/content_individual_category.xml	(revision )
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="utf-8"?>
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/content_each_category"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    app:layout_behavior="@string/appbar_scrolling_view_behavior"
++    tools:context="com.zconnect.zutto.zconnect.IndividualCategory"
++    tools:showIn="@layout/activity_individual_category">
++
++    <android.support.v7.widget.RecyclerView
++        android:id="@+id/productList"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
++
++</RelativeLayout>
+Index: app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/Event.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/Event.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/Event.java	(revision )
+@@ -0,0 +1,67 @@
++package com.zconnect.zutto.zconnect.ItemFormats;
++
++import java.io.Serializable;
++
++/**
++ * Created by Lokesh Garg on 08-02-2017.
++ */
++
++public class Event implements Serializable {
++
++
++    private String EventName,
++            EventDescription,
++            EventImage,
++            EventDate,
++            FormatDate,
++            Key;
++
++    public Event() {
++
++    }
++    public Event(String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key) {
++        EventName = eventName;
++        EventDescription = eventDescription;
++        EventImage = eventImage;
++        EventDate = eventDate;
++        FormatDate = formatDate;
++        Key = key;
++
++    }
++
++    public String getEventDate() {
++        return EventDate;
++    }
++
++    public String getFormatDate() {
++        return FormatDate;
++    }
++
++    public String getKey() {
++        return Key;
++    }
++
++    public String getEventName() {
++        return EventName;
++    }
++
++    public void setEventName(String eventName) {
++        EventName = eventName;
++    }
++
++    public String getEventDescription() {
++        return EventDescription;
++    }
++
++    public void setEventDescription(String eventDescription) {
++        EventDescription = eventDescription;
++    }
++
++    public String getEventImage() {
++        return EventImage;
++    }
++
++    public void setEventImage(String eventImage) {
++        EventImage = eventImage;
++    }
++}
+Index: app/src/main/res/menu/menu_add_event.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/menu/menu_add_event.xml	(revision )
++++ app/src/main/res/menu/menu_add_event.xml	(revision )
+@@ -0,0 +1,10 @@
++<?xml version="1.0" encoding="utf-8"?>
++<menu xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto">
++    <item
++        android:id="@+id/action_done"
++        android:icon="@drawable/ic_done_white_24dp"
++        android:orderInCategory="1"
++        android:title="Add Event"
++        app:showAsAction="collapseActionView|ifRoom" />
++</menu>
+\ No newline at end of file
+Index: app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/AdItemFormat.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/AdItemFormat.java	(revision )
++++ app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/AdItemFormat.java	(revision )
+@@ -0,0 +1,24 @@
++package com.zconnect.zutto.zconnect.ItemFormats;
++
++/**
++ * Created by shubhamk on 10/2/17.
++ */
++
++public class AdItemFormat {
++    String imageurl;
++
++    public AdItemFormat(String imageurl) {
++        this.imageurl = imageurl;
++    }
++
++    public AdItemFormat() {
++    }
++
++    public String getImageurl() {
++        return imageurl;
++    }
++
++    public void setImageurl(String imageurl) {
++        this.imageurl = imageurl;
++    }
++}

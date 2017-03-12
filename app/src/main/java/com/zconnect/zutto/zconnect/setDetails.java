@@ -71,8 +71,8 @@ public class setDetails extends AppCompatActivity {
                 startActivityForResult(galleryIntent,GALLERY_REQUEST);
             }
         });
-
     }
+
 
     private void startAccountSetup() {
         final String username = userName.getText().toString().trim();
@@ -101,8 +101,8 @@ public class setDetails extends AppCompatActivity {
                     startActivity(setDetailsIntent);
                 }
             });
-
         } else {
+
             String message;
             if (mImageUri == null) {
                 message = "Please select image";

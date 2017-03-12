@@ -36,7 +36,8 @@ public class logoFlash extends AppCompatActivity {
             openHome();
         else
             checkPermission();
-        checkPermission();
+
+        }
         // Time Delay for the logo activity
 
 

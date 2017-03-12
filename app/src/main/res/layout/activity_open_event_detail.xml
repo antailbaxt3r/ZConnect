@@ -31,19 +31,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-
             android:padding="12dp"
             android:textColor="@color/white"
             android:textSize="22dp"
             android:textStyle="bold" />
-
-        <!--<ImageView-->
-        <!--android:id="@+id/gradient"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!---->
-        <!--/>-->
-
 
         <TextView
             android:id="@+id/date"
