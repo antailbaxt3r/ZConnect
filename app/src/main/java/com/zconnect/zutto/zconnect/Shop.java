@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -8,6 +9,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -66,6 +69,22 @@ public class Shop extends AppCompatActivity {
         databaseReference.keepSynced(true);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_shop, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_search) {
+            Intent searchintent = new Intent(this, ShopSearch.class);
+            startActivity(searchintent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     protected void onStart() {
         super.onStart();

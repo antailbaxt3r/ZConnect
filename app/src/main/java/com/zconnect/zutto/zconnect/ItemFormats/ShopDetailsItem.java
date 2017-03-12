@@ -12,18 +12,28 @@ public class ShopDetailsItem {
     String details;
     String lon;
     String menuurl;
+    String cat;
 
-    public ShopDetailsItem(String name, String imageurl, String number, String lat, String details, String lon, String menuurl) {
+    public ShopDetailsItem(String name, String number, String imageurl, String lat, String details, String lon, String menuurl, String cat) {
         this.name = name;
-        this.imageurl = imageurl;
         this.number = number;
+        this.imageurl = imageurl;
         this.lat = lat;
         this.details = details;
         this.lon = lon;
         this.menuurl = menuurl;
+        this.cat = cat;
     }
 
     public ShopDetailsItem() {
+    }
+
+    public String getCat() {
+        return cat;
+    }
+
+    public void setCat(String cat) {
+        this.cat = cat;
     }
 
     public String getImageurl() {

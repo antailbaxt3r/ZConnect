@@ -27,7 +27,8 @@ import static android.view.View.VISIBLE;
 
 public class ShopList extends AppCompatActivity {
     ShopListRV adapter;
-    private DatabaseReference databaseReference;
+    String temp;
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops");
     private Vector<ShopListItem> shopListItems = new Vector<>();
     private Vector<ShopDetailsItem> shopDetailsItems = new Vector<>();
     private RecyclerView recycleView;
@@ -41,10 +42,10 @@ public class ShopList extends AppCompatActivity {
         recycleView = (RecyclerView) findViewById(R.id.content_shop_list_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_shop_list_progress);
         setSupportActionBar(toolbar);
-        String temp = getIntent().getStringExtra("Category");
+        temp = getIntent().getStringExtra("Category");
         if (temp != null) {
             getSupportActionBar().setTitle(temp);
-            databaseReference = FirebaseDatabase.getInstance().getReference().child("Shop").child(temp);
+
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -88,6 +89,7 @@ public class ShopList extends AppCompatActivity {
                     shopDetailsItems.add(shot.getValue(ShopDetailsItem.class));
                 }
                 for (int i = 0; i < shopDetailsItems.size(); i++) {
+                    if (temp != null && shopDetailsItems.get(i).getCat().equals(temp))
                     shopListItems.add(new ShopListItem(shopDetailsItems.get(i).getImageurl(), shopDetailsItems.get(i).getName(), shopDetailsItems.get(i)));
                 }
                 adapter.notifyDataSetChanged();
