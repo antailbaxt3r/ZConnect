@@ -52,7 +52,7 @@ public class PhonebookAdmin extends Fragment {
 
         //Keep databaseReference in sync even without needing to call valueEventListener
         databaseReference.keepSynced(true);
-
+        queryRef.keepSynced(true);
 
         //setHasFixedSize is used to optimise RV if we know for sure that this view's bounds do not
         // change with data

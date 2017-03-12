@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
@@ -48,6 +49,7 @@ public class AllEvents extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private DatabaseReference mPrivileges;
     private DatabaseReference mRequest;
+    private Query queryRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +92,12 @@ public class AllEvents extends AppCompatActivity {
         mEventList.setLayoutManager(mlinearmanager);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
+        queryRef = mDatabase.orderByChild("FormatDate");
         mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
         mRequest = FirebaseDatabase.getInstance().getReference().child("Event/");
 
         mDatabase.keepSynced(true);
-
+        queryRef.keepSynced(true);
         mPrivileges.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -202,7 +205,7 @@ public class AllEvents extends AppCompatActivity {
                 Event.class,
                 R.layout.events_row,
                 EventViewHolder.class,
-                mDatabase
+                queryRef
         ) {
             @Override
             protected void populateViewHolder(EventViewHolder viewHolder, Event model, int position) {
