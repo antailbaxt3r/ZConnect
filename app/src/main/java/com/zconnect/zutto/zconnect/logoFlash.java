@@ -3,11 +3,6 @@ package com.zconnect.zutto.zconnect;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -37,7 +32,7 @@ public class logoFlash extends AppCompatActivity {
         else
             checkPermission();
 
-        }
+    }
         // Time Delay for the logo activity
 
 
@@ -162,7 +157,6 @@ public class logoFlash extends AppCompatActivity {
 //            newData.child("imageurl").removeValue();
 //        }
 
-    }
     public boolean checkPermission()
     {
         int currentAPIVersion = Build.VERSION.SDK_INT;
@@ -183,7 +177,7 @@ public class logoFlash extends AppCompatActivity {
                     AlertDialog alert = alertBuilder.create();
                     alert.show();
                 } else {
-                    ActivityCompat.requestPermissions((Activity)logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},7 );
+                    ActivityCompat.requestPermissions(logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 7);
                 }
                 return false;
             } else {
@@ -224,7 +218,9 @@ public class logoFlash extends AppCompatActivity {
                 }
                 break;
         }
-    }  void openHome() {
+    }
+
+    void openHome() {
         new Timer().schedule(new TimerTask() {
             public void run() {
                 Intent intent = new Intent(logoFlash.this, home.class);
