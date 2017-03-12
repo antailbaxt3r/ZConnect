@@ -115,22 +115,6 @@ public class setDetails extends AppCompatActivity {
             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
             snack.show();
             // Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
-        } else {
-            String message;
-            if(mImageUri==null)
-            {
-                message = "Please select image";
-            }
-            else
-            {
-                message="Enter all fields";
-            }
-            Snackbar snack = Snackbar.make(userName, message, Snackbar.LENGTH_LONG);
-            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-            snackBarText.setTextColor(Color.WHITE);
-            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
-            snack.show();
-            // Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
         }
 
     }

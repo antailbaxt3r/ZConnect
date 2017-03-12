@@ -34,7 +34,7 @@ public class viewImage extends AppCompatActivity {
         Bundle extra = getIntent().getExtras();
         if (extra == null)
             finish();
-        ProgressDialog mProgress = new ProgressDialog(this);
+        ProgressDialog mProgress = new ProgressDialog(getApplicationContext());
         mProgress.setMessage("Loading");
         mProgress.show();
         name = extra.getString("currentEvent");

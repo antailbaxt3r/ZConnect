@@ -32,8 +32,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
-import com.squareup.picasso.Picasso;
-import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -223,14 +221,6 @@ public class AllEvents extends AppCompatActivity {
                     viewHolder.openEvent(model);
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
                 } else
-                viewHolder.setEventName(model.getEventName());
-                viewHolder.setEventDesc(model.getEventDescription());
-                viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
-                viewHolder.setEventDate(model.getEventDate());
-                // viewHolder.openEvent(model.getKey());
-                viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
-//                key=model.getKey();
-
                     mDatabase.child(model.getKey()).removeValue();
             }
 

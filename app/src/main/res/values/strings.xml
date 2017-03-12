@@ -71,9 +71,5 @@
     <string name="title_activity_my_products">MyProducts</string>
     <string name="title_activity_add_event">Add Event</string>
     <string name="title_activity_each_category">EachCategory</string>
-    <string name="title_activity_my_product">My Products</string>
-    <string name="title_activity_my_products">MyProducts</string>
-    <string name="title_activity_add_event">Add Event</string>
-    <string name="title_activity_each_category">EachCategory</string>
 
 </resources>

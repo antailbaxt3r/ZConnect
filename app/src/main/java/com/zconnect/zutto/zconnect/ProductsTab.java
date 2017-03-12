@@ -31,7 +31,6 @@ import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 import java.io.IOException;
-import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 
 /**
@@ -100,7 +99,11 @@ public class ProductsTab extends Fragment {
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getPhone_no(), getContext());
-                viewHolder.setImage(getContext(), model.getImage());
+                try {
+                    viewHolder.setImage(getContext(), model.getImage(), model.getProductName());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -247,39 +250,7 @@ public class ProductsTab extends Fragment {
             post_name.setText("₹" + productPrice + "/-");
         }
 
-        public void setSellerName(String postedBy) {
 
-
-            Users.child(postedBy).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    sellerName = dataSnapshot.child("Username").getValue().toString();
-                    TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-                    post_seller_name.setText("Sold By: " + sellerName);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-
-        }
-
-        public void setSellerNumber(final String sellerNumber, final Context ctx) {
-            TextView post_seller_number = (TextView) mView.findViewById(R.id.sellerNumber);
-            post_seller_number.setText("Call");
-            post_seller_number.setPaintFlags(post_seller_number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
-            post_seller_number.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                }
-            });
-
-        }
 
         public void setSellerName(String postedBy) {
 
