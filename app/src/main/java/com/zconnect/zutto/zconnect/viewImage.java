@@ -39,9 +39,7 @@ public class viewImage extends AppCompatActivity {
         if (extra == null)
             finish();
         name = extra.getString("currentEvent");
-        String url = getIntent().getStringExtra("eventImage");
-        byteArrayfromNetwork getArray = new byteArrayfromNetwork();
-        byte[] byteArray = getArray.getByteArray(url);
+        byte[] byteArray = getIntent().getByteArrayExtra("eventImage");
         event_image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         viewButtonLayout = findViewById(R.id.viewButtonLayout);
         initializeListener();
