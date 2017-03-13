@@ -43,17 +43,9 @@ public class viewImage extends AppCompatActivity {
         byteArrayfromNetwork getArray = new byteArrayfromNetwork();
         byte[] byteArray = getArray.getByteArray(url);
         event_image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        viewButtonLayout = findViewById(R.id.viewButtonLayout);
         initializeListener();
         initializeLayout();
-        viewButtonLayout = findViewById(R.id.viewButtonLayout);
-
-        new Timer().schedule(new TimerTask() {
-            public void run() {
-
-                viewButtonLayout.setVisibility(View.INVISIBLE);
-
-            }
-        }, 1000);
     }
 
 
