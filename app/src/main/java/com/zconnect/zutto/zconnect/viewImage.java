@@ -35,9 +35,6 @@ public class viewImage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_image);
-        ProgressDialog mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Loading");
-        mProgress.show();
         Bundle extra = getIntent().getExtras();
         if (extra == null)
             finish();
@@ -48,7 +45,15 @@ public class viewImage extends AppCompatActivity {
         event_image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         initializeListener();
         initializeLayout();
-        mProgress.dismiss();
+        viewButtonLayout = findViewById(R.id.viewButtonLayout);
+
+        new Timer().schedule(new TimerTask() {
+            public void run() {
+
+                viewButtonLayout.setVisibility(View.INVISIBLE);
+
+            }
+        }, 1000);
     }
 
 
@@ -122,7 +127,6 @@ public class viewImage extends AppCompatActivity {
         onTouchListner();
         mViewLayout.setOnClickListener(handleClickOnView);
         int id[] = {R.id.backButton, R.id.button_share, R.id.button_save};
-        viewButtonLayout = findViewById(R.id.viewButtonLayout);
         titleBar = (LinearLayout) viewButtonLayout.findViewById(R.id.titleBar);
         actionButtonBar = (LinearLayout) viewButtonLayout.findViewById(R.id.buttonActionBar);
         for (int i : id) {

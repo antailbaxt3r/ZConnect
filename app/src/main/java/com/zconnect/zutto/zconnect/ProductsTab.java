@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -231,13 +232,15 @@ public class ProductsTab extends Fragment {
             post_image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    ProgressDialog mProgress = new ProgressDialog(ctx);
+                    mProgress.setMessage("Loading.....");
+                    mProgress.show();
                     Intent i = new Intent(mView.getContext(), viewImage.class);
                     i.putExtra("currentEvent", name);
                     i.putExtra("eventImage", image);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mView.getContext().startActivity(i);
+                    mProgress.dismiss();
                 }
             });
 
