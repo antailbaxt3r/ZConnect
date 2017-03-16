@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_add_event"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.zconnect.zutto.zconnect.AddEvent"
     tools:showIn="@layout/activity_add_event">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <RelativeLayout
+        android:id="@+id/content_add_event"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/imageButton"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -64,13 +68,69 @@
 
         <TextView
             android:id="@+id/dateText"
-            android:layout_width="wrap_content"
+            android:layout_width="352dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:text="Date and Time"
             android:textColor="@color/teal500" />
     </FrameLayout>
 
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/venueLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dateAndTime"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="1">
+
+                <ImageButton
+                    android:id="@+id/venuePicker"
+                    android:layout_width="45dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@android:drawable/screen_background_light_transparent"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/ic_directions_black_24dp" />
+
+                <TextView
+                    android:layout_width="55dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="0.19"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
+                    android:paddingTop="5dp"
+                    android:text="Map"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/VenueText"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="15dp"
+                android:hint="Select from Map, Or type here"
+                android:lines="200"
+                android:textColor="@color/teal500"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>

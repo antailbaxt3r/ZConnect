@@ -6,13 +6,13 @@ package com.zconnect.zutto.zconnect;
 
 public class homeRecyclerClass {
     private String Title, Description, Url, multiUse2, multiUse1, Phone_no;
-    private String type;
+    private String type, Key;
 
     public homeRecyclerClass() {
 
     }
 
-    public homeRecyclerClass(String title, String description, String url, String multiUse2, String multiUse1, String phnNo, String type) {
+    public homeRecyclerClass(String title, String description, String url, String multiUse2, String multiUse1, String phnNo, String type, String key) {
         Title = title;
         Description = description;
         Url = url;
@@ -20,6 +20,11 @@ public class homeRecyclerClass {
         this.type = type;
         this.multiUse1 = multiUse1;
         Phone_no = phnNo;
+        Key = key;
+    }
+
+    public String getKey() {
+        return Key;
     }
 
     public String getTitle() {

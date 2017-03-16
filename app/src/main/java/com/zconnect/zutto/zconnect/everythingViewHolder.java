@@ -55,11 +55,16 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void removeView() {
+    public void removeView(Boolean product) {
         LinearLayout del = (LinearLayout) mView.findViewById(R.id.ContactCardEverything);
         del.setVisibility(View.GONE);
         LinearLayout show = (LinearLayout) mView.findViewById(R.id.EventsAndDescriptionEverything);
         show.setVisibility(View.VISIBLE);
+        if(product)
+        {
+            mView.findViewById(R.id.ev_directions).setVisibility(View.GONE);
+            mView.findViewById(R.id.ev_venue).setVisibility(View.GONE);
+        }
 
     }
 
@@ -129,9 +134,20 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
         } else {
             view.setBackgroundColor(ContextCompat.getColor(context, R.color.ProductBar));
             icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_phone_black_24dp));
-
         }
+    }
 
+    public void setDirections(final Double lon, final Double lat)
+    {
+        ImageView mDirections = (ImageView) mView.findViewById(R.id.ev_directions);
+        mDirections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mView.getContext().startActivity(intent);
+            }
+        });
     }
 
     public void makeButton(final String title, final String desc, final long time) {
@@ -144,6 +160,10 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
+    public void setVenue(String venue){
+        TextView mVenue = (TextView) mView.findViewById(R.id.ev_venue);
+        mVenue.setText(venue);
+    }
     private void addReminderInCalendar(String title, String desc, long time_gaph, Context context) {
         Intent intent = new Intent(Intent.ACTION_EDIT);
         intent.setType("vnd.android.cursor.item/event");

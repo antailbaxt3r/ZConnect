@@ -1,10 +1,12 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,7 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,20 +36,29 @@ public class viewImage extends AppCompatActivity {
     PhotoViewAttacher mAttacher;
     View mViewLayout;
     View.OnClickListener handleClickOnView;
-
+    ProgressDialog mProgress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_image);
+        mProgress = new ProgressDialog(this);
+        mProgress.setMessage("Loading...");
+        mProgress.show();
+
         Bundle extra = getIntent().getExtras();
         if (extra == null)
             finish();
+
         name = extra.getString("currentEvent");
-        byte[] byteArray = getIntent().getByteArrayExtra("eventImage");
-        event_image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        final String imageUrl = getIntent().getStringExtra("eventImage");
+
+
         viewButtonLayout = findViewById(R.id.viewButtonLayout);
         initializeListener();
         initializeLayout();
+
+        getImage myTask = new getImage(this);
+        myTask.execute(imageUrl);
     }
 
 
@@ -124,9 +139,6 @@ public class viewImage extends AppCompatActivity {
             button.setOnClickListener(buttonListener);
         }
         imageView = (ImageView) findViewById(R.id.iv_image);
-        imageView.setImageBitmap(event_image);
-        mAttacher = new PhotoViewAttacher(imageView);
-
         TextView titleText = (TextView) viewButtonLayout.findViewById(R.id.TitileTextView);
         titleText.setText(name);
 
@@ -171,5 +183,53 @@ public class viewImage extends AppCompatActivity {
         };
     }
 
-}
+    void setImageView() {
+        imageView.setImageBitmap(event_image);
+        mAttacher = new PhotoViewAttacher(imageView);
+        mProgress.dismiss();
+    }
 
+    class getImage extends AsyncTask<String, Integer, Integer> {
+        Context ctx;
+
+        public getImage(Context context) {
+            ctx = context;
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+            try {
+                URL url = new URL(params[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                event_image = BitmapFactory.decodeStream(input);
+                event_image.compress(Bitmap.CompressFormat.JPEG, 100, new ByteArrayOutputStream());
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(ctx, "Cannot load image", Toast.LENGTH_LONG).show();
+                mProgress.dismiss();
+                onBackPressed();
+            }
+            return 0;
+
+        }
+
+
+        @Override
+        protected void onCancelled() {
+            Toast.makeText(ctx, "Cannot load image", Toast.LENGTH_LONG).show();
+            mProgress.dismiss();
+            onBackPressed();
+            super.onCancelled();
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            setImageView();
+            super.onPostExecute(integer);
+        }
+    }
+
+}

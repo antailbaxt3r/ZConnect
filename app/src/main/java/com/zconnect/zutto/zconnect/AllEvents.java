@@ -131,7 +131,7 @@ public class AllEvents extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (flag) {
+                if (true) {
                     Intent intent = new Intent(AllEvents.this, AddEvent.class);
                     startActivity(intent);
                     finish();
@@ -222,16 +222,23 @@ public class AllEvents extends AppCompatActivity {
                                               int position) {
                 Date current_date = new LocalDate().toDate();
                 if (current_date.getTime() < Long.parseLong(model.getFormatDate()) + 24 * 60 * 60) {
+                    viewHolder.openEvent(model);
                     viewHolder.setEventName(model.getEventName());
                     viewHolder.setEventDesc(model.getEventDescription());
                     viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
                     viewHolder.setEventDate(model.getEventDate());
-                    viewHolder.openEvent(model.getEventName(), model.getEventDescription(), model.getEventDate(), model.getEventImage());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
-                } else
-                    mDatabase.child(model.getKey()).removeValue();
-            }
+                    viewHolder.setEventVenue(model.getVenue());
+                } else {
+                    mDatabase.removeValue(new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            onStart();
 
+                        }
+                    });
+                }
+            }
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);
 
@@ -264,7 +271,7 @@ public class AllEvents extends AppCompatActivity {
             mView = itemView;
         }
 
-        public void openEvent(final String name, final String desc, final String date, final String image) {
+        public void openEvent(final Event event) {
             mView.setOnClickListener(new View.OnClickListener()
 
             {
@@ -272,10 +279,7 @@ public class AllEvents extends AppCompatActivity {
                 public void onClick(View view) {
 
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
-                    i.putExtra("name", name);
-                    i.putExtra("desc", desc);
-                    i.putExtra("date", date);
-                    i.putExtra("image", image);
+                    i.putExtra("currentEvent", event);
                     mView.getContext().startActivity(i);
                 }
             });
@@ -284,31 +288,35 @@ public class AllEvents extends AppCompatActivity {
 
         public void setEventName(String eventName) {
 
-            TextView post_name = (TextView) mView.findViewById(R.id.event);
+            TextView post_name = (TextView) mView.findViewById(R.id.er_event);
             post_name.setText(eventName);
 
         }
 
         public void setEventDesc(String eventDesc) {
 
-            String shortEventDesc = eventDesc.substring(0, 70);
+            String shortEventDesc = eventDesc.substring(0, eventDesc.length() > 70 ? 70 : eventDesc.length() - 1) + " ... read more";
 
-            shortEventDesc = shortEventDesc + " ... read more";
-
-            TextView post_desc = (TextView) mView.findViewById(R.id.description);
+            TextView post_desc = (TextView) mView.findViewById(R.id.er_description);
             post_desc.setText(shortEventDesc);
+
+        }
+
+        public void setEventVenue(String venue) {
+            TextView post_venue = (TextView) mView.findViewById(R.id.er_venue);
+            post_venue.setText(venue);
 
         }
 
         public void setEventImage(Context ctx, String image) {
 
-            ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
+            ImageView post_image = (ImageView) mView.findViewById(R.id.er_postImg);
             Picasso.with(ctx).load(image).into(post_image);
         }
 
 
         public void setEventDate(String eventDate) {
-            TextView post_date = (TextView) mView.findViewById(R.id.date);
+            TextView post_date = (TextView) mView.findViewById(R.id.er_date);
             String date[] = eventDate.split("\\s+");
             String finalDate = "";
 
@@ -325,7 +333,7 @@ public class AllEvents extends AppCompatActivity {
         }
 
         public void setEventReminder(final String eventDescription, final String eventName, final String time) {
-            Button Reminder = (Button) mView.findViewById(R.id.reminder);
+            Button Reminder = (Button) mView.findViewById(R.id.er_reminder);
             Reminder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

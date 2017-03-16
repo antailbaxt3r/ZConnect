@@ -24,6 +24,8 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +33,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+
+import org.joda.time.LocalDate;
+
+import java.util.Date;
 
 public class home extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
@@ -118,7 +124,7 @@ public class home extends AppCompatActivity
         mDatabaseUsers.keepSynced(true);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("everything");
-        //mDatabase.keepSynced(true);
+        mDatabase.keepSynced(true);
 
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -294,21 +300,37 @@ public class home extends AppCompatActivity
 
             @Override
             protected void populateViewHolder(everythingViewHolder viewHolder, homeRecyclerClass model, int position) {
+                String type = "";
+                try {
+                    type = model.getType();
+                } catch (Exception e) {
+                }
+                if (type.equals("E")) {
+                    Date current_date = new LocalDate().toDate();
+                    if (current_date.getTime() < Long.parseLong(model.getmultiUse1()) + 24 * 60 * 60) {
+                        viewHolder.removeView(false);
+                        viewHolder.setTitle(model.getTitle());
+                        viewHolder.setDescription(model.getDescription());
+                        viewHolder.setImage(getApplicationContext(), model.getUrl());
+                        viewHolder.setBarColor(getApplicationContext(), true);
+                        viewHolder.setDate(model.getmultiUse2(), false, getApplicationContext());
+                        viewHolder.makeButton(model.getTitle(), model.getDescription(), Long.parseLong(model.getmultiUse1()));
+                        viewHolder.openEvent();
+                        viewHolder.setPrice("Description: ");
+                    } else {
+                        try {
+                            mDatabase.child(model.getKey()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
 
-
-                if (model.getType().equals("E") && model.getType() != null) {
-
-                    viewHolder.removeView();
-                    viewHolder.setTitle(model.getTitle());
-                    viewHolder.setDescription(model.getDescription());
-                    viewHolder.setImage(getApplicationContext(), model.getUrl());
-                    viewHolder.setBarColor(getApplicationContext(), true);
-                    viewHolder.setDate(model.getmultiUse2(), false, getApplicationContext());
-                    viewHolder.makeButton(model.getTitle(), model.getDescription(), Long.parseLong(model.getmultiUse1()));
-                    viewHolder.openEvent();
-                    viewHolder.setPrice("Description: ");
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 } else if (model.getType().equals("Pro") && model.getType() != null) {
-                    viewHolder.removeView();
+                    viewHolder.removeView(true);
                     viewHolder.setTitle(model.getTitle());
                     viewHolder.setDescription(model.getDescription());
                     viewHolder.setBarColor(getApplicationContext(), false);
@@ -323,7 +345,7 @@ public class home extends AppCompatActivity
                     viewHolder.makeContactView(getApplicationContext(), displayItem);
 
                 }
-                //Toast.makeText(getApplicationContext(),"Check 1",Toast.LENGTH_LONG);
+                //
 
 
             }

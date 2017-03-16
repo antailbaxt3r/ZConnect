@@ -202,6 +202,7 @@ public class AddProduct extends AppCompatActivity {
                     newPost2.child("Phone_no").setValue(productPhoneNo);
                     newPost2.child("type").setValue("Pro");
                     newPost2.child("multiUse1").setValue(productPriceValue);
+                    newPost2.child("Key").setValue(newPost2.getKey());
 
                     mProgress.dismiss();
                     startActivity(new Intent(AddProduct.this, TabStoreRoom.class));
