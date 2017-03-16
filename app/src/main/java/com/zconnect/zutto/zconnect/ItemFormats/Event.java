@@ -66,7 +66,7 @@ public class Event implements Serializable {
     }
 
     public String getVenue() {
-        return Venue.length() == 0 ? "N/A" : Venue;
+        return Venue.length() == 0 ? "Venue : N/A" : Venue;
     }
 
 

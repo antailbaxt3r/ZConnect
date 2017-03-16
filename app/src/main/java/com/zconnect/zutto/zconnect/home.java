@@ -123,7 +123,7 @@ public class home extends AppCompatActivity
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("everything");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("everything/temp");
         mDatabase.keepSynced(true);
 
 
@@ -300,14 +300,10 @@ public class home extends AppCompatActivity
 
             @Override
             protected void populateViewHolder(everythingViewHolder viewHolder, homeRecyclerClass model, int position) {
-                String type = "";
-                try {
-                    type = model.getType();
-                } catch (Exception e) {
-                }
-                if (type.equals("E")) {
+                if (model.getType().length() != 0) {
+                    if (model.getType().equals("E")) {
                     Date current_date = new LocalDate().toDate();
-                    if (current_date.getTime() < Long.parseLong(model.getmultiUse1()) + 24 * 60 * 60) {
+                        if (current_date.getTime() < Long.parseLong(model.getmultiUse1()) + 24 * 60 * 60 || model.getKey() == null) {
                         viewHolder.removeView(false);
                         viewHolder.setTitle(model.getTitle());
                         viewHolder.setDescription(model.getDescription());
@@ -316,6 +312,8 @@ public class home extends AppCompatActivity
                         viewHolder.setDate(model.getmultiUse2(), false, getApplicationContext());
                         viewHolder.makeButton(model.getTitle(), model.getDescription(), Long.parseLong(model.getmultiUse1()));
                         viewHolder.openEvent();
+                            viewHolder.setVenue(model.getVenue());
+                            viewHolder.setDirections(model.getLon(), model.getLat());
                         viewHolder.setPrice("Description: ");
                     } else {
                         try {
@@ -328,6 +326,7 @@ public class home extends AppCompatActivity
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                    }
                     }
                 } else if (model.getType().equals("Pro") && model.getType() != null) {
                     viewHolder.removeView(true);

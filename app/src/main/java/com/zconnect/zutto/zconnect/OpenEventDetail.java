@@ -67,9 +67,9 @@ public class OpenEventDetail extends AppCompatActivity {
         EventDescription = (TextView) findViewById(R.id.description);
         EventVenue = (TextView) findViewById(R.id.od_venue);
         venueDirections = (ImageButton) findViewById(R.id.directions);
-        //  if(event.getLon()==0.0) {
-        //    venueDirections.setVisibility(View.GONE);
-        // }
+        if (event.getLon() == 0.0) {
+            venueDirections.setVisibility(View.GONE);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             getWindow().setStatusBarColor(colorPrimary);

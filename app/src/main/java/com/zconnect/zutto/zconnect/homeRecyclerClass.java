@@ -5,14 +5,16 @@ package com.zconnect.zutto.zconnect;
  */
 
 public class homeRecyclerClass {
+    Double lon, lat;
     private String Title, Description, Url, multiUse2, multiUse1, Phone_no;
-    private String type, Key;
+    private String type, Key, Venue;
 
     public homeRecyclerClass() {
 
     }
 
-    public homeRecyclerClass(String title, String description, String url, String multiUse2, String multiUse1, String phnNo, String type, String key) {
+
+    public homeRecyclerClass(Double lon, Double lat, String title, String venue, String description, String url, String multiUse2, String multiUse1, String phnNo, String type, String key) {
         Title = title;
         Description = description;
         Url = url;
@@ -20,7 +22,11 @@ public class homeRecyclerClass {
         this.type = type;
         this.multiUse1 = multiUse1;
         Phone_no = phnNo;
+        this.lon = lon;
+        this.lat = lat;
+
         Key = key;
+        Venue = venue;
     }
 
     public String getKey() {
@@ -53,6 +59,18 @@ public class homeRecyclerClass {
 
     public String getPhone_no() {
         return Phone_no;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public String getVenue() {
+        return Venue.length() == 0 ? "Venue N/A" : Venue;
     }
 }
 

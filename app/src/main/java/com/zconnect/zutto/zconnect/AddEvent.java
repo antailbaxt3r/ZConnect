@@ -216,7 +216,7 @@ public class AddEvent extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
-                    DatabaseReference newPost = mDatabase.child("temp").push();
+                    DatabaseReference newPost = mDatabase.push();
                     newPost.child("EventName").setValue(eventNameValue);
                     newPost.child("EventDescription").setValue(eventDescriptionValue);
                     newPost.child("EventImage").setValue(downloadUri.toString());
@@ -228,7 +228,7 @@ public class AddEvent extends AppCompatActivity {
                     newPost.child("log").setValue(latLng.longitude);
                     newPost.child("lat").setValue(latLng.latitude);
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything/temp").push();
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
                     newPost2.child("Key").setValue(newPost2.getKey());
                     newPost2.child("Title").setValue(eventNameValue);
                     newPost2.child("Description").setValue(eventDescriptionValue);

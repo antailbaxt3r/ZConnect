@@ -100,7 +100,7 @@ public class AllEvents extends AppCompatActivity {
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts/temp");
         queryRef = mDatabase.orderByChild("FormatDate");
         mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
         mRequest = FirebaseDatabase.getInstance().getReference().child("Event/");
@@ -221,7 +221,7 @@ public class AllEvents extends AppCompatActivity {
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
                 Date current_date = new LocalDate().toDate();
-                if (current_date.getTime() < Long.parseLong(model.getFormatDate()) + 24 * 60 * 60) {
+                if (current_date.getTime() < Long.parseLong(model.getFormatDate()) + 30 * 60 * 60 || model.getKey() == null) {
                     viewHolder.openEvent(model);
                     viewHolder.setEventName(model.getEventName());
                     viewHolder.setEventDesc(model.getEventDescription());
@@ -230,7 +230,7 @@ public class AllEvents extends AppCompatActivity {
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
                     viewHolder.setEventVenue(model.getVenue());
                 } else {
-                    mDatabase.removeValue(new DatabaseReference.CompletionListener() {
+                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             onStart();
