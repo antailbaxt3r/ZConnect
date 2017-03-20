@@ -63,7 +63,7 @@ public class ReservedTab extends Fragment {
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        errorMessage = (TextView) view.findViewById(R.id.defaultMessage);
+//        errorMessage = (TextView) view.findViewById(R.id.defaultMessage);
 
 
         mReservedProducts = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -72,7 +72,7 @@ public class ReservedTab extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
-        query = mDatabase.orderByChild("UsersReserved").equalTo(user.getDisplayName());
+        query = mDatabase.child("UsersReserved").orderByChild(userId).equalTo(user.getDisplayName());
 
         return view;
     }
@@ -113,9 +113,6 @@ public class ReservedTab extends Fragment {
                         viewHolder.ReserveReference.child(userId).removeValue();
                     }
                 });
-                if (position == 1) {
-//                    errorMessage.setVisibility(getView().INVISIBLE);
-                }
             }
 
 
