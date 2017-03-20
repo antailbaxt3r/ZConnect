@@ -3,7 +3,7 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="title_activity_home">Recents</string>
+    <string name="title_activity_home">Home</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -70,5 +70,6 @@
     <string name="title_activity_my_products">MyProducts</string>
     <string name="title_activity_add_event">Add Event</string>
     <string name="title_activity_each_category">EachCategory</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>
