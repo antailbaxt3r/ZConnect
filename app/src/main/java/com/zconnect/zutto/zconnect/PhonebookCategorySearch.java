@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -27,33 +26,30 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
 
 import java.util.Vector;
 
-public class PhonebookSearch extends AppCompatActivity {
+public class PhonebookCategorySearch extends AppCompatActivity {
+    String hostel;
     private android.support.v7.widget.RecyclerView searchContactList;
     private PhonebookAdapter searchAdapter;
     private Toolbar toolbar;
     private TextView errorMessage;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     Query queryRef = databaseReference.orderByChild("name");
-
     private Vector<PhonebookItem> searchContact = new Vector<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        //Remove notification bar
-        Log.v("tag", "s");
-        setContentView(R.layout.activity_phonebook_search);
+        setContentView(R.layout.activity_phonebook_category_search);
 
         errorMessage = (TextView) findViewById(R.id.errorMessage);
 
         Intent intent = getIntent();
-
+        hostel = intent.getStringExtra("hostel");
 
         searchContactList = (android.support.v7.widget.RecyclerView) findViewById(R.id.searchActivityRecyclerView);
         databaseReference.keepSynced(true);
         queryRef.keepSynced(true);
-        searchAdapter = new PhonebookAdapter(searchContact, PhonebookSearch.this);
+        searchAdapter = new PhonebookAdapter(searchContact, PhonebookCategorySearch.this);
 
         searchContactList.setHasFixedSize(true);
         searchContactList.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
@@ -101,53 +97,53 @@ public class PhonebookSearch extends AppCompatActivity {
                         //need to add a try catch block before release
 
                         // storage of EventFormat by individual de-serialization
+                        if (hostel != null && hostel.equals(childShot.child("hostel").getValue(String.class))) {
+                            PhonebookDisplayItem foo = new PhonebookDisplayItem();
 
-                        PhonebookDisplayItem foo = new PhonebookDisplayItem();
-
-                        foo.setCategory(childShot.child("category").getValue(String.class));
-                        foo.setDesc(childShot.child("desc").getValue(String.class));
-                        foo.setEmail(childShot.child("email").getValue(String.class));
-                        foo.setImageurl(childShot.child("imageurl").getValue(String.class));
-                        foo.setName(childShot.child("name").getValue(String.class));
-                        foo.setNumber(childShot.child("number").getValue(String.class));
-
-
-                        String name = childShot.child("name").getValue(String.class);
-                        String number = childShot.child("number").getValue(String.class);
-                        String details = childShot.child("desc").getValue(String.class);
-
-                        String imageurl = childShot.child("imageurl").getValue(String.class);
-                        String title = name + number + details;
-
-                        String typeTemp = "";
-
-                        //Type 1 and 2 check
-
-                        if (title.toLowerCase().contains(query.toLowerCase())) {
+                            foo.setCategory(childShot.child("category").getValue(String.class));
+                            foo.setDesc(childShot.child("desc").getValue(String.class));
+                            foo.setEmail(childShot.child("email").getValue(String.class));
+                            foo.setImageurl(childShot.child("imageurl").getValue(String.class));
+                            foo.setName(childShot.child("name").getValue(String.class));
+                            foo.setNumber(childShot.child("number").getValue(String.class));
 
 
-                            PhonebookItem temp = new PhonebookItem(imageurl, name, number, foo);
-                            searchContact.add(temp);
+                            String name = childShot.child("name").getValue(String.class);
+                            String number = childShot.child("number").getValue(String.class);
+                            String details = childShot.child("desc").getValue(String.class);
 
-                        } else {
-                            String wordSplit[] = title.split(" ");
-                            int l = wordSplit.length;
-                            for (int i = 0; i < l; i++) {
+                            String imageurl = childShot.child("imageurl").getValue(String.class);
+                            String title = name + number + details;
 
-                                String t = wordSplit[i].toLowerCase();
+                            String typeTemp = "";
 
-                                String m = query.toLowerCase();
-                                if (t.contains(m)) {
+                            //Type 1 and 2 check
 
-                                    PhonebookItem temp = new PhonebookItem(imageurl, name, number, foo);
-                                    searchContact.add(temp);
+                            if (title.toLowerCase().contains(query.toLowerCase())) {
+
+
+                                PhonebookItem temp = new PhonebookItem(imageurl, name, number, foo);
+                                searchContact.add(temp);
+
+                            } else {
+                                String wordSplit[] = title.split(" ");
+                                int l = wordSplit.length;
+                                for (int i = 0; i < l; i++) {
+
+                                    String t = wordSplit[i].toLowerCase();
+
+                                    String m = query.toLowerCase();
+                                    if (t.contains(m)) {
+
+                                        PhonebookItem temp = new PhonebookItem(imageurl, name, number, foo);
+                                        searchContact.add(temp);
+                                    }
                                 }
                             }
+
+
                         }
-
-
                     }
-
                     // Need to add empty search result log message
                     if (searchContact.isEmpty()) {
                         errorMessage.setVisibility(View.VISIBLE);
@@ -195,7 +191,7 @@ public class PhonebookSearch extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                PhonebookSearch.this.finish();
+                PhonebookCategorySearch.this.finish();
                 return true;
             }
         });
@@ -227,3 +223,4 @@ public class PhonebookSearch extends AppCompatActivity {
     }
 
 }
+

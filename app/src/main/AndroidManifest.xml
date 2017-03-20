@@ -48,7 +48,6 @@
             android:name=".AllEvents"
             android:label="Events"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".OpenEventDetail"
             android:label="Events"
@@ -91,7 +90,14 @@
         <activity
             android:name=".PhonebookHostelWise"
             android:label="@string/title_activity_phonebook_hostel_wise"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".PhonebookCategorySearch" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".home" />
+        </activity>
         <activity
             android:name=".Phonebook"
             android:label="Infone"
@@ -112,6 +118,18 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".PhonebookCategorySearch"
+            android:label="Search Results"
+            android:launchMode="singleTop"
+            android:parentActivityName=".PhonebookHostelWise">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -144,7 +162,6 @@
             android:name=".IndividualCategory"
             android:label="@string/title_activity_each_category"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ShopSearch"
             android:label="Search Results"

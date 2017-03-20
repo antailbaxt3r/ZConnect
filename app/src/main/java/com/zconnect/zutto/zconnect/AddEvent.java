@@ -177,12 +177,9 @@ public class AddEvent extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-
         if (id == R.id.action_done) {
             if (!isNetworkAvailable(getApplicationContext())) {
 
@@ -193,60 +190,7 @@ public class AddEvent extends AppCompatActivity {
                 snack.show();
 
             } else {
-
                 startPosting(flag);
-
-//                if (flag){
-//                    startPosting(flag);}
-//
-//                else {
-//                    // 1. Instantiate an AlertDialog.Builder with its constructor
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(AddEvent.this);
-//
-//                    // 2. Chain together various setter methods to set the dialog characteristics
-//                    builder.setMessage(R.string.dialog_message);
-////                            .setTitle(R.string.dialog_title);
-//
-//                    // Add the buttons
-//                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//
-////                        }
-////                    });
-////                    builder.setNegativeButton(R.string.request, new DialogInterface.OnClickListener() {
-////                        public void onClick(DialogInterface dialog, int id) {
-////                            // User cancelled the dialog
-//
-//
-//                            //checks if user is online
-//                            if (!isOnline()) {
-//                                Snackbar snack = Snackbar.make(mEventDescription, "Request not Sent. Check Internet Connection", Snackbar.LENGTH_LONG);
-//                                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-//                                snackBarText.setTextColor(Color.WHITE);
-//                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-//                                snack.show();
-//                            } else {
-//
-//                                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-//                                        "mailto", "zconnectinc@gmail.com", null));
-//                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Request Permission to add Events");
-//                                startActivity(Intent.createChooser(emailIntent, "Send email..."));
-//
-//
-//                            }
-//
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                    // Set other dialog properties
-//
-//
-//                    // Create the AlertDialog
-//                    AlertDialog dialog = builder.create();
-//                    startPosting(flag);
-//                    dialog.show();
-
-                // }
             }
             return true;
         }
@@ -284,13 +228,13 @@ public class AddEvent extends AppCompatActivity {
                         newPost.child("FormatDate").setValue(dateString);
 
                         //For Everything
-                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
-                        newPost2.child("Title").setValue(eventNameValue);
-                        newPost2.child("Description").setValue(eventDescriptionValue);
-                        newPost2.child("Url").setValue(downloadUri.toString());
-                        newPost2.child("multiUse2").setValue(eventDate);
-                        newPost2.child("multiUse1").setValue(dateString);
-                        newPost2.child("type").setValue("E");
+                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+                    newPost2.child("name").setValue(eventNameValue);
+                    newPost2.child("desc").setValue(eventDescriptionValue);
+                    newPost2.child("imageurl").setValue(downloadUri.toString());
+                    newPost2.child("feature").setValue("Event");
+                    newPost2.child("id").setValue(key);
+                    newPost2.child("desc2").setValue(eventDate);
 
                     } else {
                         DatabaseReference newPost = mDatabase.push();
