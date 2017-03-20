@@ -187,13 +187,13 @@ public class AddEvent extends AppCompatActivity {
                     newPost.child("EventDate").setValue(eventDate);
                     newPost.child("FormatDate").setValue(dateString);
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
-                    newPost2.child("Title").setValue(eventNameValue);
-                    newPost2.child("Description").setValue(eventDescriptionValue);
-                    newPost2.child("Url").setValue(downloadUri.toString());
-                    newPost2.child("multiUse2").setValue(eventDate);
-                    newPost2.child("multiUse1").setValue(dateString);
-                    newPost2.child("type").setValue("E");
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+                    newPost2.child("name").setValue(eventNameValue);
+                    newPost2.child("desc").setValue(eventDescriptionValue);
+                    newPost2.child("imageurl").setValue(downloadUri.toString());
+                    newPost2.child("feature").setValue("Event");
+                    newPost2.child("id").setValue(key);
+                    newPost2.child("desc2").setValue(eventDate);
 
 
                     mProgress.dismiss();

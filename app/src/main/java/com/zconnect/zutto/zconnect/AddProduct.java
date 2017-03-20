@@ -195,13 +195,13 @@ public class AddProduct extends AppCompatActivity {
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
-                    newPost2.child("Title").setValue(productNameValue);
-                    newPost2.child("Description").setValue(productDescriptionValue);
-                    newPost2.child("Url").setValue(downloadUri.toString());
-                    newPost2.child("Phone_no").setValue(productPhoneNo);
-                    newPost2.child("type").setValue("Pro");
-                    newPost2.child("multiUse1").setValue(productPriceValue);
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+                    newPost2.child("name").setValue(productNameValue);
+                    newPost2.child("desc").setValue(productDescriptionValue);
+                    newPost2.child("imageurl").setValue(downloadUri.toString());
+                    newPost2.child("feature").setValue("Event");
+                    newPost2.child("id").setValue(key);
+                    newPost2.child("desc2").setValue(productPriceValue);
 
                     mProgress.dismiss();
                     startActivity(new Intent(AddProduct.this, TabStoreRoom.class));
