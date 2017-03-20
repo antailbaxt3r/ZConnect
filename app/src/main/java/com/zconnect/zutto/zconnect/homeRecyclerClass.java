@@ -70,7 +70,12 @@ public class homeRecyclerClass {
     }
 
     public String getVenue() {
-        return Venue.length() == 0 ? "Venue N/A" : Venue;
+
+        try {
+            return Venue.length() == 0 ? "Venue N/A" : Venue;
+        } catch (Exception e) {
+            return "N/A";
+        }
     }
 }
 
