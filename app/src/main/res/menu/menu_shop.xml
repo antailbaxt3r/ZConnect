@@ -7,7 +7,5 @@
         android:icon="@drawable/ic_action_action_search"
         android:orderInCategory="2"
         android:title="Search Shops"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="collapseActionView|ifRoom"
-        tools:ignore="PrivateResource" />
+        app:showAsAction="ifRoom" />
 </menu>
