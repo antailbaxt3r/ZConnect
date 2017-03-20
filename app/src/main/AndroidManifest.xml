@@ -48,7 +48,6 @@
             android:name=".AllEvents"
             android:label="Events"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".OpenEventDetail"
             android:label="Events"
@@ -144,7 +143,6 @@
             android:name=".IndividualCategory"
             android:label="@string/title_activity_each_category"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ShopSearch"
             android:label="Search Results"
@@ -158,7 +156,10 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

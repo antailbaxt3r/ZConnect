@@ -34,7 +34,8 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 public class home extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
-    DatabaseReference mDatabase;
+    DatabaseReference mData;
+    com.google.firebase.database.Query mDatabase;
     // For Recycler
     LinearLayoutManager linearLayoutManager;
     RecyclerView mEverything;
@@ -116,8 +117,9 @@ public class home extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
+        mData = FirebaseDatabase.getInstance().getReference().child("everything");
+        mDatabase = mData.limitToLast(10);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("everything");
         //mDatabase.keepSynced(true);
 
 
