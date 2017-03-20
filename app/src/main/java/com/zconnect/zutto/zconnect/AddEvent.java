@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,14 +25,18 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -46,12 +51,14 @@ public class AddEvent extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
     String eventDate;
     String dateString;
+    boolean flag = false;
     private Uri mImageUri = null;
     private SimpleDraweeView mAddImage;
     private EditText mEventName;
     private EditText mEventDescription;
     // private Button mPostBtn;
     private StorageReference mStorage;
+    private DatabaseReference mDatabaseVerified;
     private DatabaseReference mDatabase;
     private FrameLayout CalendarButton;
     private ProgressDialog mProgress;
@@ -94,7 +101,9 @@ public class AddEvent extends AppCompatActivity {
         mEventName = (EditText) findViewById(R.id.name);
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
+        mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/NotVerifiedPosts");
+
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (FrameLayout)findViewById(R.id.dateAndTime);
 
@@ -136,14 +145,44 @@ public class AddEvent extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        DatabaseReference mPrivileges;
+        mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
+
+        final String emailId = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        mPrivileges.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    if (child.getValue().equals(emailId)) {
+                        flag = true;
+                        Toast.makeText(AddEvent.this, "Its True", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_event, menu);
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
+
         if (id == R.id.action_done) {
             if (!isNetworkAvailable(getApplicationContext())) {
 
@@ -154,7 +193,60 @@ public class AddEvent extends AppCompatActivity {
                 snack.show();
 
             } else {
-                startPosting();
+
+                startPosting(flag);
+
+//                if (flag){
+//                    startPosting(flag);}
+//
+//                else {
+//                    // 1. Instantiate an AlertDialog.Builder with its constructor
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(AddEvent.this);
+//
+//                    // 2. Chain together various setter methods to set the dialog characteristics
+//                    builder.setMessage(R.string.dialog_message);
+////                            .setTitle(R.string.dialog_title);
+//
+//                    // Add the buttons
+//                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//
+////                        }
+////                    });
+////                    builder.setNegativeButton(R.string.request, new DialogInterface.OnClickListener() {
+////                        public void onClick(DialogInterface dialog, int id) {
+////                            // User cancelled the dialog
+//
+//
+//                            //checks if user is online
+//                            if (!isOnline()) {
+//                                Snackbar snack = Snackbar.make(mEventDescription, "Request not Sent. Check Internet Connection", Snackbar.LENGTH_LONG);
+//                                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+//                                snackBarText.setTextColor(Color.WHITE);
+//                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+//                                snack.show();
+//                            } else {
+//
+//                                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+//                                        "mailto", "zconnectinc@gmail.com", null));
+//                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Request Permission to add Events");
+//                                startActivity(Intent.createChooser(emailIntent, "Send email..."));
+//
+//
+//                            }
+//
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    // Set other dialog properties
+//
+//
+//                    // Create the AlertDialog
+//                    AlertDialog dialog = builder.create();
+//                    startPosting(flag);
+//                    dialog.show();
+
+                // }
             }
             return true;
         }
@@ -165,7 +257,9 @@ public class AddEvent extends AppCompatActivity {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
-    private void startPosting() {
+
+    private void startPosting(final boolean flag) {
+
         mProgress.setMessage("Posting Event..");
         mProgress.show();
         final String eventNameValue = mEventName.getText().toString().trim();
@@ -178,26 +272,50 @@ public class AddEvent extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
-                    DatabaseReference newPost = mDatabase.push();
-                    String key = newPost.getKey();
-                    newPost.child("Key").setValue(key);
-                    newPost.child("EventName").setValue(eventNameValue);
-                    newPost.child("EventDescription").setValue(eventDescriptionValue);
-                    newPost.child("EventImage").setValue(downloadUri.toString());
-                    newPost.child("EventDate").setValue(eventDate);
-                    newPost.child("FormatDate").setValue(dateString);
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
-                    newPost2.child("Title").setValue(eventNameValue);
-                    newPost2.child("Description").setValue(eventDescriptionValue);
-                    newPost2.child("Url").setValue(downloadUri.toString());
-                    newPost2.child("multiUse2").setValue(eventDate);
-                    newPost2.child("multiUse1").setValue(dateString);
-                    newPost2.child("type").setValue("E");
+                    if (flag) {
+                        DatabaseReference newPost = mDatabaseVerified.push();
+                        String key = newPost.getKey();
+                        newPost.child("Key").setValue(key);
+                        newPost.child("EventName").setValue(eventNameValue);
+                        newPost.child("EventDescription").setValue(eventDescriptionValue);
+                        newPost.child("EventImage").setValue(downloadUri.toString());
+                        newPost.child("EventDate").setValue(eventDate);
+                        newPost.child("FormatDate").setValue(dateString);
 
+                        //For Everything
+                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
+                        newPost2.child("Title").setValue(eventNameValue);
+                        newPost2.child("Description").setValue(eventDescriptionValue);
+                        newPost2.child("Url").setValue(downloadUri.toString());
+                        newPost2.child("multiUse2").setValue(eventDate);
+                        newPost2.child("multiUse1").setValue(dateString);
+                        newPost2.child("type").setValue("E");
+
+                    } else {
+                        DatabaseReference newPost = mDatabase.push();
+                        String key = newPost.getKey();
+                        newPost.child("Key").setValue(key);
+                        newPost.child("EventName").setValue(eventNameValue);
+                        newPost.child("EventDescription").setValue(eventDescriptionValue);
+                        newPost.child("EventImage").setValue(downloadUri.toString());
+                        newPost.child("EventDate").setValue(eventDate);
+                        newPost.child("FormatDate").setValue(dateString);
+                    }
 
                     mProgress.dismiss();
-                    startActivity(new Intent(AddEvent.this, AllEvents.class));
+                    if (!flag) {
+                        Snackbar snack = Snackbar.make(mEventDescription, "Event sent for verification !!", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                        snack.show();
+                    }
+                    Intent intent = new Intent(AddEvent.this, AllEvents.class);
+                    if (!flag) {
+                        intent.putExtra("snackbar", "true");
+                    }
+                    startActivity(intent);
                     finish();
                 }
             });
@@ -209,7 +327,16 @@ public class AddEvent extends AppCompatActivity {
             snack.show();
             mProgress.dismiss();
         }
+
     }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

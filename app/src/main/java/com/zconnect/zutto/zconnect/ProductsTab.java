@@ -178,7 +178,6 @@ public class ProductsTab extends Fragment {
                         ReserveStatus.setText("Shortlisted");
                         ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
 
-
                     } else {
                         mReserve.setChecked(false);
                         ReserveStatus.setText("Shortlist");

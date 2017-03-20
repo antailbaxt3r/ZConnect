@@ -45,6 +45,7 @@ public class ReservedTab extends Fragment {
     private List<String> reserveList;
     private FirebaseAuth mAuth;
     private NotificationCompat.Builder mBuilder;
+    private TextView errorMessage;
 
     public ReservedTab() {
         // Required empty public constructor
@@ -55,12 +56,15 @@ public class ReservedTab extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_products_tab, container, false);
+        View view = inflater.inflate(R.layout.fragment_reserved_tab, container, false);
 
 
-        mProductList = (RecyclerView) view.findViewById(R.id.productList);
+        mProductList = (RecyclerView) view.findViewById(R.id.reservedProductList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        errorMessage = (TextView) view.findViewById(R.id.defaultMessage);
+
 
         mReservedProducts = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
@@ -68,7 +72,7 @@ public class ReservedTab extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
-        query = mDatabase.orderByChild("UsersReserved/" + userId).equalTo(user.getDisplayName());
+        query = mDatabase.orderByChild("UsersReserved").equalTo(user.getDisplayName());
 
         return view;
     }
@@ -109,10 +113,15 @@ public class ReservedTab extends Fragment {
                         viewHolder.ReserveReference.child(userId).removeValue();
                     }
                 });
-
+                if (position == 1) {
+//                    errorMessage.setVisibility(getView().INVISIBLE);
+                }
             }
+
+
         };
         mProductList.setAdapter(firebaseRecyclerAdapter);
+
     }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
