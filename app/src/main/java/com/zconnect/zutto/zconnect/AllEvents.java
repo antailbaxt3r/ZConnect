@@ -100,7 +100,7 @@ public class AllEvents extends AppCompatActivity {
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts/temp");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
         queryRef = mDatabase.orderByChild("FormatDate");
         mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
         mRequest = FirebaseDatabase.getInstance().getReference().child("Event/");

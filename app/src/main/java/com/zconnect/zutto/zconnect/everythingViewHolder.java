@@ -140,6 +140,10 @@ public class everythingViewHolder extends RecyclerView.ViewHolder {
     public void setDirections(final Double lon, final Double lat)
     {
         ImageView mDirections = (ImageView) mView.findViewById(R.id.ev_directions);
+        if (lon == null) {
+            mDirections.setVisibility(View.GONE);
+            return;
+        }
         if (lon == 0 || lat == 0)
             mDirections.setVisibility(View.GONE);
         mDirections.setOnClickListener(new View.OnClickListener() {

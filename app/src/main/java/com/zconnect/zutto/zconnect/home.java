@@ -123,7 +123,7 @@ public class home extends AppCompatActivity
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("everything/temp");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("everything");
         mDatabase.keepSynced(true);
 
 
@@ -300,7 +300,6 @@ public class home extends AppCompatActivity
 
             @Override
             protected void populateViewHolder(everythingViewHolder viewHolder, homeRecyclerClass model, int position) {
-                if (model.getType().length() != 0) {
                     if (model.getType().equals("E")) {
                     Date current_date = new LocalDate().toDate();
                         if (current_date.getTime() < Long.parseLong(model.getmultiUse1()) + 24 * 60 * 60 || model.getKey() == null) {
@@ -327,8 +326,7 @@ public class home extends AppCompatActivity
                             e.printStackTrace();
                         }
                     }
-                    }
-                } else if (model.getType().equals("Pro") && model.getType() != null) {
+                    } else if (model.getType().equals("Pro") && model.getType() != null) {
                     viewHolder.removeView(true);
                     viewHolder.setTitle(model.getTitle());
                     viewHolder.setDescription(model.getDescription());
