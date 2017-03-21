@@ -25,7 +25,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,7 +57,7 @@ public class AddProduct extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private DatabaseReference mUsername;
     private ProgressDialog mProgress;
-    private Spinner spinner1;
+    private CustomSpinner spinner1;
     private FirebaseAuth mAuth;
     private String sellerName;
     @Override
@@ -93,7 +92,7 @@ public class AddProduct extends AppCompatActivity {
         mProductPhone = (EditText) findViewById(R.id.phoneNo);
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
-        spinner1 = (Spinner) findViewById(R.id.categories);
+        spinner1 = (CustomSpinner) findViewById(R.id.categories);
         spinner1.setSelection(8);
         mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
@@ -217,6 +216,7 @@ public class AddProduct extends AppCompatActivity {
             mProgress.dismiss();
         }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

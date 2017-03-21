@@ -51,7 +51,7 @@
         android:inputType="textMultiLine"
         android:padding="10dp" />
 
-    <Spinner
+    <com.zconnect.zutto.zconnect.CustomSpinner
         android:id="@+id/categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

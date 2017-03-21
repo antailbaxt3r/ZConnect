@@ -44,6 +44,7 @@
     <string name="title_activity_shop_details">Shop Details</string>
     <string name="title_activity_add_contact">Add Contact</string>
     <string-array name="hostel">
+
         <item>AH-1</item>
         <item>AH-2</item>
         <item>AH-3</item>
