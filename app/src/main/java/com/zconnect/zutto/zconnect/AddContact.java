@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RadioButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -60,7 +59,7 @@ public class AddContact extends AppCompatActivity {
     private ProgressDialog mProgress;
     private RadioButton radioButtonS, radioButtonA, radioButtonO;
     private String name, email, details, number, hostel, category = null;
-    private Spinner spinner;
+    private CustomSpinner spinner;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
 
@@ -117,7 +116,7 @@ public class AddContact extends AppCompatActivity {
         radioButtonS = (RadioButton) findViewById(R.id.radioButton);
         radioButtonA = (RadioButton) findViewById(R.id.radioButton2);
         radioButtonO = (RadioButton) findViewById(R.id.radioButton3);
-        spinner = (Spinner) findViewById(R.id.spinner);
+        spinner = (CustomSpinner) findViewById(R.id.spinner);
         radioButtonS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -249,6 +248,7 @@ public class AddContact extends AppCompatActivity {
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
+
         if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && mImageUri != null) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -283,8 +283,8 @@ public class AddContact extends AppCompatActivity {
             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
             snack.show();
             mProgress.dismiss();
+
+
         }
-
-
     }
 }
