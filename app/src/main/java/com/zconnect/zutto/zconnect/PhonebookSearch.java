@@ -110,13 +110,14 @@ public class PhonebookSearch extends AppCompatActivity {
                         foo.setImageurl(childShot.child("imageurl").getValue(String.class));
                         foo.setName(childShot.child("name").getValue(String.class));
                         foo.setNumber(childShot.child("number").getValue(String.class));
-                        String title = childShot.child("name").getValue(String.class);
 
 
                         String name = childShot.child("name").getValue(String.class);
                         String number = childShot.child("number").getValue(String.class);
+                        String details = childShot.child("desc").getValue(String.class);
 
                         String imageurl = childShot.child("imageurl").getValue(String.class);
+                        String title = name + number + details;
 
                         String typeTemp = "";
 

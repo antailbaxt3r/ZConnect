@@ -18,13 +18,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RadioButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -65,7 +63,7 @@ public class AddContact extends AppCompatActivity {
     private ProgressDialog mProgress;
     private RadioButton radioButtonS, radioButtonA, radioButtonO;
     private String name, email, details, number, hostel, category = null;
-    private Spinner spinner;
+    private CustomSpinner spinner;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private String userId;
@@ -123,7 +121,7 @@ public class AddContact extends AppCompatActivity {
         radioButtonS = (RadioButton) findViewById(R.id.radioButton);
         radioButtonA = (RadioButton) findViewById(R.id.radioButton2);
         radioButtonO = (RadioButton) findViewById(R.id.radioButton3);
-        spinner = (Spinner) findViewById(R.id.spinner);
+        spinner = (CustomSpinner) findViewById(R.id.spinner);
         radioButtonS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -213,7 +211,6 @@ public class AddContact extends AppCompatActivity {
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
-                Log.d("Add contact data error", error.toString());
             }
         }
 

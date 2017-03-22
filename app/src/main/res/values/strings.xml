@@ -3,7 +3,7 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="title_activity_home">Recents</string>
+    <string name="title_activity_home">Home</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -12,7 +12,7 @@
     <string name="transition_string">animate</string>
 
     <string name="category_prompt">Choose category</string>
-    <string name="dialog_message">You don\'t priveges to post.</string>
+    <string name="dialog_message">This event has been sent for a review</string>
     <string name="dialog_title">Access Denied</string>
     <string name="request">Request</string>
     <string name="ok">OK</string>
@@ -46,6 +46,7 @@
     <string name="title_activity_shop_details">Shop Details</string>
     <string name="title_activity_add_contact">Add Contact</string>
     <string-array name="hostel">
+
         <item>AH-1</item>
         <item>AH-2</item>
         <item>AH-3</item>
@@ -73,5 +74,6 @@
     <string name="title_activity_my_products">MyProducts</string>
     <string name="title_activity_add_event">Add Event</string>
     <string name="title_activity_each_category">EachCategory</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>

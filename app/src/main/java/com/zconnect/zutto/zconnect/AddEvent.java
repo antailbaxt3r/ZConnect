@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,8 +36,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -48,7 +52,6 @@ import java.io.IOException;
 import java.util.Date;
 
 public class AddEvent extends AppCompatActivity {
-
     private static final int GALLERY_REQUEST = 7;
     String eventDate;
     String dateString;
@@ -56,6 +59,8 @@ public class AddEvent extends AppCompatActivity {
     Intent eventVenue;
     Place Venue;
     Boolean selectedFromMap = false;
+    boolean flag = true;
+
     private Uri mImageUri = null;
     private SimpleDraweeView mAddImage;
     private EditText mEventName;
@@ -63,6 +68,7 @@ public class AddEvent extends AppCompatActivity {
     private EditText mVenue;
     private ImageView mDirections;
     private StorageReference mStorage;
+    private DatabaseReference mDatabaseVerified;
     private DatabaseReference mDatabase;
     private FrameLayout CalendarButton;
     private ProgressDialog mProgress;
@@ -120,7 +126,9 @@ public class AddEvent extends AppCompatActivity {
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
+        mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/NotVerifiedPosts");
+
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (FrameLayout)findViewById(R.id.dateAndTime);
         mVenue = (EditText) findViewById(R.id.VenueText);
@@ -172,6 +180,33 @@ public class AddEvent extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        DatabaseReference mPrivileges;
+        mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
+        final String emailId = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        mPrivileges.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    if (child.getValue().equals(emailId)) {
+                        flag = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_event, menu);
         return true;
@@ -190,8 +225,7 @@ public class AddEvent extends AppCompatActivity {
                 snack.show();
 
             } else {
-                startPosting();
-
+                startPosting(flag);
             }
             return true;
         }
@@ -202,7 +236,9 @@ public class AddEvent extends AppCompatActivity {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
-    private void startPosting() {
+
+    private void startPosting(final boolean flag) {
+
         mProgress.setMessage("Posting Event..");
         mProgress.show();
         final String eventNameValue = mEventName.getText().toString().trim();
@@ -216,34 +252,65 @@ public class AddEvent extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
-                    DatabaseReference newPost = mDatabase.push();
-                    newPost.child("EventName").setValue(eventNameValue);
-                    newPost.child("EventDescription").setValue(eventDescriptionValue);
-                    newPost.child("EventImage").setValue(downloadUri.toString());
-                    newPost.child("EventDate").setValue(eventDate);
-                    newPost.child("FormatDate").setValue(dateString);
-                    newPost.child("Venue").setValue(eventVenue);
-                    LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
-                    newPost.child("Key").setValue(newPost.getKey());
-                    newPost.child("log").setValue(latLng.longitude);
-                    newPost.child("lat").setValue(latLng.latitude);
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("everything").push();
-                    newPost2.child("Key").setValue(newPost2.getKey());
-                    newPost2.child("Title").setValue(eventNameValue);
-                    newPost2.child("Description").setValue(eventDescriptionValue);
-                    newPost2.child("Url").setValue(downloadUri.toString());
-                    newPost2.child("multiUse2").setValue(eventDate);
-                    newPost2.child("multiUse1").setValue(dateString);
-                    newPost2.child("type").setValue("E");
-                    newPost.child("Venue").setValue(eventVenue);
-                    newPost.child("log").setValue(latLng.longitude);
-                    newPost.child("lat").setValue(latLng.latitude);
+                    if (flag) {
+                        DatabaseReference newPost = mDatabaseVerified.push();
+                        String key = newPost.getKey();
+                        newPost.child("Key").setValue(key);
+                        newPost.child("EventName").setValue(eventNameValue);
+                        newPost.child("EventDescription").setValue(eventDescriptionValue);
+                        newPost.child("EventImage").setValue(downloadUri.toString());
+                        newPost.child("EventDate").setValue(eventDate);
+                        newPost.child("FormatDate").setValue(dateString);
+                        newPost.child("Venue").setValue(eventVenue);
+                        LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
+                        newPost.child("Key").setValue(newPost.getKey());
+                        newPost.child("log").setValue(latLng.longitude);
+                        newPost.child("lat").setValue(latLng.latitude);
 
+                        //For Everything
+                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+                        newPost2.child("name").setValue(eventNameValue);
+                        newPost2.child("desc").setValue(eventDescriptionValue);
+                        newPost2.child("imageurl").setValue(downloadUri.toString());
+                        newPost2.child("feature").setValue("Event");
+                        newPost2.child("id").setValue(key);
+                        newPost2.child("desc2").setValue(eventDate);
+                        newPost2.child("Venue").setValue(eventVenue);
+                        latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
+                        newPost2.child("Key").setValue(newPost.getKey());
+                        newPost2.child("log").setValue(latLng.longitude);
+                        newPost2.child("lat").setValue(latLng.latitude);
 
+                    } else {
+                        DatabaseReference newPost = mDatabase.push();
+                        String key = newPost.getKey();
+                        newPost.child("Key").setValue(key);
+                        newPost.child("EventName").setValue(eventNameValue);
+                        newPost.child("EventDescription").setValue(eventDescriptionValue);
+                        newPost.child("EventImage").setValue(downloadUri.toString());
+                        newPost.child("EventDate").setValue(eventDate);
+                        newPost.child("FormatDate").setValue(dateString);
+                        newPost.child("Venue").setValue(eventVenue);
+                        LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
+                        newPost.child("Key").setValue(newPost.getKey());
+                        newPost.child("log").setValue(latLng.longitude);
+                        newPost.child("lat").setValue(latLng.latitude);
+                    }
 
                     mProgress.dismiss();
-                    startActivity(new Intent(AddEvent.this, AllEvents.class));
+                    if (!flag) {
+                        Snackbar snack = Snackbar.make(mEventDescription, "Event sent for verification !!", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                        snack.show();
+                    }
+                    Intent intent = new Intent(AddEvent.this, AllEvents.class);
+                    if (!flag) {
+                        intent.putExtra("snackbar", "true");
+                    }
+                    startActivity(intent);
                     finish();
                 }
             });
@@ -255,7 +322,16 @@ public class AddEvent extends AppCompatActivity {
             snack.show();
             mProgress.dismiss();
         }
+
     }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

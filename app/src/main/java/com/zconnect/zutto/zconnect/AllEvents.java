@@ -1,13 +1,10 @@
 package com.zconnect.zutto.zconnect;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -18,44 +15,35 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AllEvents extends AppCompatActivity {
 
-    boolean flag = false;
     LinearLayoutManager mlinearmanager;
     private RecyclerView mEventList;
     private DatabaseReference mDatabase;
-    private DatabaseReference mPrivileges;
     private DatabaseReference mRequest;
     private Query queryRef;
 
@@ -64,12 +52,9 @@ public class AllEvents extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_events);
         JodaTimeAndroid.init(this);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
-        mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
-        mRequest = FirebaseDatabase.getInstance().getReference().child("Event/");
-        mDatabase.keepSynced(true);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,89 +89,21 @@ public class AllEvents extends AppCompatActivity {
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/Posts");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
         queryRef = mDatabase.orderByChild("FormatDate");
-        mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
         mRequest = FirebaseDatabase.getInstance().getReference().child("Event/");
         mDatabase.keepSynced(true);
-
-
-
-
         queryRef.keepSynced(true);
-        mPrivileges.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot child : snapshot.getChildren()) {
 
-                    if (child.getValue().equals(emailId)) {
-                        flag = true;
-                    }
-
-                } //prints "Do you have data? You'll love Firebase."
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (true) {
                     Intent intent = new Intent(AllEvents.this, AddEvent.class);
                     startActivity(intent);
                     finish();
-                } else {
-
-
-                    // 1. Instantiate an AlertDialog.Builder with its constructor
-                    AlertDialog.Builder builder = new AlertDialog.Builder(AllEvents.this);
-
-                    // 2. Chain together various setter methods to set the dialog characteristics
-                    builder.setMessage(R.string.dialog_message)
-                            .setTitle(R.string.dialog_title);
-
-                    // Add the buttons
-                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                        }
-                    });
-                    builder.setNegativeButton(R.string.request, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-
-
-                            //checks if user is online
-                            if (!isOnline()) {
-                                Snackbar snack = Snackbar.make(fab, "Request not Sent. Check Internet Connection", Snackbar.LENGTH_LONG);
-                                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                                snackBarText.setTextColor(Color.WHITE);
-                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                                snack.show();
-                            } else {
-
-                                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                                        "mailto", "zconnectinc@gmail.com", null));
-                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Request Permission to add Events");
-                                startActivity(Intent.createChooser(emailIntent, "Send email..."));
-
-
-                            }
-                        }
-                    });
-                    // Set other dialog properties
-
-
-                    // Create the AlertDialog
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                }
 
             }
         });
@@ -217,6 +134,18 @@ public class AllEvents extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        String flag = null;
+        flag = getIntent().getStringExtra("snackbar");
+        if (flag != null) {
+            if (flag.equals("true")) {
+                Snackbar snack = Snackbar.make(mEventList, "Event sent for verification !!", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.show();
+            }
+        }
+
         FirebaseRecyclerAdapter<Event, EventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, EventViewHolder>(
                 Event.class,
                 R.layout.events_row,
@@ -227,7 +156,7 @@ public class AllEvents extends AppCompatActivity {
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
                 DateTime current_date = new DateTime();
-                if (current_date.getMillis() < (Long.parseLong(model.getFormatDate())+ 24 * 60 * 60 )|| model.getKey() == null) {
+                if (current_date.getMillis() < (Long.parseLong(model.getFormatDate()) + 30 * 60 * 60) || model.getKey() == null) {
                     viewHolder.openEvent(model);
                     viewHolder.setEventName(model.getEventName());
                     viewHolder.setEventDesc(model.getEventDescription());
@@ -301,9 +230,15 @@ public class AllEvents extends AppCompatActivity {
 
         public void setEventDesc(String eventDesc) {
 
-            String shortEventDesc = eventDesc.substring(0, eventDesc.length() > 70 ? 70 : eventDesc.length() - 1) + " ... read more";
+            String shortEventDesc;
 
             TextView post_desc = (TextView) mView.findViewById(R.id.er_description);
+            if (eventDesc.length() < 70) {
+                shortEventDesc = eventDesc;
+            } else {
+                shortEventDesc = eventDesc.substring(0, 70);
+                shortEventDesc = shortEventDesc + " ... read more";
+            }
             post_desc.setText(shortEventDesc);
 
         }
@@ -331,11 +266,6 @@ public class AllEvents extends AppCompatActivity {
             }
 
             post_date.setText(finalDate);
-//            String month,date;
-//            TextView post_date = (TextView) mView.findViewById(R.id.date);
-//            month = new DateFormatSymbols().getMonths()[eventDate.getMonth()-1];
-//            date=eventDate.getDate()+" " + month;
-//            post_date.setText(date);
         }
 
         public void setEventReminder(final String eventDescription, final String eventName, final String time) {

@@ -7,8 +7,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -19,38 +24,36 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class home extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
-    DatabaseReference mDatabase;
+    DatabaseReference mData;
+    com.google.firebase.database.Query mDatabase;
     // For Recycler
     LinearLayoutManager linearLayoutManager;
     RecyclerView mEverything;
     boolean checkuser = true;
+    ActionBarDrawerToggle toggle;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
     private GoogleApiClient mGoogleApiClient;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+
 
 
     @Override
@@ -113,7 +116,7 @@ public class home extends AppCompatActivity
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
@@ -125,8 +128,7 @@ public class home extends AppCompatActivity
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("everything");
-        mDatabase.keepSynced(true);
+        //mDatabase.keepSynced(true);
 
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -146,13 +148,19 @@ public class home extends AppCompatActivity
             }
         };
 
-        //For Recycler
-        mEverything = (RecyclerView) findViewById(R.id.everything);
-        mEverything.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
-        mEverything.setLayoutManager(linearLayoutManager);
+        viewPager = (ViewPager) findViewById(R.id.container);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        setSupportActionBar(toolbar);
+
+        setupViewPager(viewPager);
+
+        assert tabLayout != null;
+        //Setup tablayout with viewpager
+        tabLayout.setupWithViewPager(viewPager);
+        viewPager.setCurrentItem(0);
+
     }
 
     @Override
@@ -171,6 +179,10 @@ public class home extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -246,18 +258,7 @@ public class home extends AppCompatActivity
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        makeRecyclerView();
 
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mEverything.setAdapter(null);
-    }
 
     private void logout(){
         mAuth.signOut();
@@ -292,65 +293,41 @@ public class home extends AppCompatActivity
         }
     }
 
-    void makeRecyclerView() {
-        FirebaseRecyclerAdapter<homeRecyclerClass, everythingViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<homeRecyclerClass, everythingViewHolder>(
-                homeRecyclerClass.class,
-                R.layout.everything_row,
-                everythingViewHolder.class,
-                mDatabase) {
+    private void setupViewPager(ViewPager viewPager) {
+        home.ViewPagerAdapter adapter = new home.ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new Homescreen(), "Features");
+        adapter.addFragment(new Recents(), "Recents");
+        viewPager.setAdapter(adapter);
+    }
 
 
-            @Override
-            protected void populateViewHolder(everythingViewHolder viewHolder, homeRecyclerClass model, int position) {
-                    if (model.getType().equals("E")) {
-                        DateTime current_date = new DateTime();
-                        if (current_date.getMillis() < (Long.parseLong(model.getmultiUse1()) + 24 *60 * 60) || model.getKey() == null) {
-                        viewHolder.removeView(false);
-                        viewHolder.setTitle(model.getTitle());
-                        viewHolder.setDescription(model.getDescription());
-                        viewHolder.setImage(getApplicationContext(), model.getUrl());
-                        viewHolder.setBarColor(getApplicationContext(), true);
-                        viewHolder.setDate(model.getmultiUse2(), false, getApplicationContext());
-                        viewHolder.makeButton(model.getTitle(), model.getDescription(), Long.parseLong(model.getmultiUse1()));
-                        viewHolder.openEvent();
-                            viewHolder.setVenue(model.getVenue());
-                            viewHolder.setDirections(model.getLon(), model.getLat());
-                        viewHolder.setPrice("Description: ");
-                    } else {
-                        try {
-                            mDatabase.child(model.getKey()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    } else if (model.getType().equals("Pro") && model.getType() != null) {
-                    viewHolder.removeView(true);
-                    viewHolder.setTitle(model.getTitle());
-                    viewHolder.setDescription(model.getDescription());
-                    viewHolder.setBarColor(getApplicationContext(), false);
-                    viewHolder.setImage(getApplicationContext(), model.getUrl());
-                    viewHolder.setDate(String.valueOf(model.getPhone_no()), true, getApplicationContext());
-                    viewHolder.openProduct();
-                    viewHolder.setPrice("₹" + model.getmultiUse1() + "/-");
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
 
-                } else if (model.getType().equals("P") && model.getType() != null) {
+        @Override
+        public Fragment getItem(int position) {
 
-                    PhonebookDisplayItem displayItem = new PhonebookDisplayItem(model.getUrl(), model.getTitle(), model.getDescription(), String.valueOf(model.getPhone_no()), model.getmultiUse1(), model.getmultiUse2(), "Hostel");
-                    viewHolder.makeContactView(getApplicationContext(), displayItem);
+            return mFragmentList.get(position);
+        }
 
-                }
-                //
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
 
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
 
-            }
-
-
-        };
-        mEverything.setAdapter(firebaseRecyclerAdapter);
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }
