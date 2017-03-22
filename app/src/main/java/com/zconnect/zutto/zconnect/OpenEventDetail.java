@@ -63,11 +63,11 @@ public class OpenEventDetail extends AppCompatActivity {
 
 
 //      Event = (TextView) findViewById(R.id.event);
-        EventImage = (ImageView) findViewById(R.id.EventImage);
+        EventImage = (ImageView) findViewById(R.id.od_EventImage);
         EventDescription = (TextView) findViewById(R.id.description);
         EventVenue = (TextView) findViewById(R.id.od_venue);
-        venueDirections = (ImageButton) findViewById(R.id.directions);
-        if (event.getLon() == 0.0) {
+        venueDirections = (ImageButton) findViewById(R.id.od_directions);
+        if (event.getLon() == null) {
             venueDirections.setVisibility(View.GONE);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -79,10 +79,10 @@ public class OpenEventDetail extends AppCompatActivity {
 
 
 //      Event = (TextView) findViewById(R.id.event);
-        EventImage = (ImageView) findViewById(R.id.EventImage);
-        EventDescription = (TextView) findViewById(R.id.description);
+        EventImage = (ImageView) findViewById(R.id.od_EventImage);
+        EventDescription = (TextView) findViewById(R.id.od_description);
         EventVenue = (TextView) findViewById(R.id.od_venue);
-        venueDirections = (ImageButton) findViewById(R.id.directions);
+        venueDirections = (ImageButton) findViewById(R.id.od_directions);
 
         venueDirections.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +97,7 @@ public class OpenEventDetail extends AppCompatActivity {
                 }
             }
         });
-        EventDate = (TextView) findViewById(R.id.date);
+        EventDate = (TextView) findViewById(R.id.od_date);
         EventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

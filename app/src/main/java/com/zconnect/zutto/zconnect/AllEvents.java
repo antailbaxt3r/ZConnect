@@ -18,11 +18,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +41,8 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import java.util.Date;
@@ -105,6 +109,8 @@ public class AllEvents extends AppCompatActivity {
         mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
         mRequest = FirebaseDatabase.getInstance().getReference().child("Event/");
         mDatabase.keepSynced(true);
+
+
 
 
         queryRef.keepSynced(true);
@@ -220,8 +226,8 @@ public class AllEvents extends AppCompatActivity {
             @Override
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
-                Date current_date = new LocalDate().toDate();
-                if (current_date.getTime() < Long.parseLong(model.getFormatDate()) + 30 * 60 * 60 || model.getKey() == null) {
+                DateTime current_date = new DateTime();
+                if (current_date.getMillis() < (Long.parseLong(model.getFormatDate())+ 24 * 60 * 60 )|| model.getKey() == null) {
                     viewHolder.openEvent(model);
                     viewHolder.setEventName(model.getEventName());
                     viewHolder.setEventDesc(model.getEventDescription());
@@ -358,7 +364,7 @@ public class AllEvents extends AppCompatActivity {
             context.startActivity(intent);
 
             // Display event id.
-            //Toast.makeText(getApplicationContext(), "Event added :: ID :: " + event.getLastPathSegment(), Toast.LENGTH_SHORT).show();
+            //
 
             /** Adding reminder for event added. *
              }

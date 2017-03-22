@@ -34,6 +34,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 
 import java.util.Date;
@@ -301,8 +303,8 @@ public class home extends AppCompatActivity
             @Override
             protected void populateViewHolder(everythingViewHolder viewHolder, homeRecyclerClass model, int position) {
                     if (model.getType().equals("E")) {
-                    Date current_date = new LocalDate().toDate();
-                        if (current_date.getTime() < Long.parseLong(model.getmultiUse1()) + 24 * 60 * 60 || model.getKey() == null) {
+                        DateTime current_date = new DateTime();
+                        if (current_date.getMillis() < (Long.parseLong(model.getmultiUse1()) + 24 *60 * 60) || model.getKey() == null) {
                         viewHolder.removeView(false);
                         viewHolder.setTitle(model.getTitle());
                         viewHolder.setDescription(model.getDescription());

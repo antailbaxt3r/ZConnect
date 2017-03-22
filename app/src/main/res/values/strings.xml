@@ -9,6 +9,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="transition_string">animate</string>
 
     <string name="category_prompt">Choose category</string>
     <string name="dialog_message">You don\'t priveges to post.</string>
