@@ -59,7 +59,7 @@ public class AddEvent extends AppCompatActivity {
     Intent eventVenue;
     Place Venue;
     Boolean selectedFromMap = false;
-    boolean flag = true;
+    boolean flag = false;
 
     private Uri mImageUri = null;
     private SimpleDraweeView mAddImage;
