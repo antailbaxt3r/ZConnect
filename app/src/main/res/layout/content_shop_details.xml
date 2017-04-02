@@ -74,19 +74,6 @@
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/shop_details_menu_image"
-        android:layout_width="match_parent"
-        android:layout_height="360dp"
-        android:layout_below="@+id/shop_details_directions"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/border"
-        android:padding="2dp"
-        app:roundedCornerRadius="12dp" />
-
     <LinearLayout
         android:id="@+id/shop_details_directions"
         android:layout_width="130dp"
@@ -111,4 +98,92 @@
             android:textSize="16sp"
             android:textStyle="italic" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/galleryText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/shop_details_directions"
+        android:padding="5dp"
+        android:text="Gallery"
+        android:textColor="@color/black"
+        android:textSize="18dp" />
+
+    <HorizontalScrollView
+        android:id="@+id/galleryScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/galleryText">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/galleryRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"></android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="fill_parent"
+        android:layout_height="2dip"
+        android:layout_below="@id/galleryScroll"
+        android:background="#000000" />
+
+
+    <TextView
+        android:id="@+id/menuText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider"
+        android:padding="5dp"
+        android:text="Products"
+        android:textColor="@color/black"
+        android:textSize="18dp" />
+
+    <HorizontalScrollView
+        android:id="@+id/menuScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/menuText">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/menuRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"></android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+    <!--<com.facebook.drawee.view.SimpleDraweeView-->
+    <!--android:id="@+id/shop_details_menu_image"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="360dp"-->
+    <!--android:layout_below="@+id/shop_details_directions"-->
+    <!--android:layout_marginBottom="4dp"-->
+    <!--android:layout_marginLeft="4dp"-->
+    <!--android:layout_marginRight="4dp"-->
+    <!--android:layout_marginTop="15dp"-->
+    <!--android:background="@drawable/border"-->
+    <!--android:padding="2dp"-->
+    <!--app:roundedCornerRadius="12dp" />-->
+
+
 </RelativeLayout>
