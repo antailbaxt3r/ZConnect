@@ -225,5 +225,7 @@ public class logoFlash extends AppCompatActivity {
             openHome();
 
     }
+
+
 }
 
