@@ -202,8 +202,6 @@ public class AddEvent extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     @Override

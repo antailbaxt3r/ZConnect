@@ -45,7 +45,6 @@ public class ShopList extends AppCompatActivity {
         temp = getIntent().getStringExtra("Category");
         if (temp != null) {
             getSupportActionBar().setTitle(temp);
-
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -81,7 +80,6 @@ public class ShopList extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Log.e("TAG","omg pro boy");
                 progressBar.setVisibility(VISIBLE);
                 shopListItems.clear();
                 shopDetailsItems.clear();

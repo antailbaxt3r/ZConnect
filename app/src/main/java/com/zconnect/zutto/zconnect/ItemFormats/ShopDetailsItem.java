@@ -13,8 +13,10 @@ public class ShopDetailsItem {
     String lon;
     String menuurl;
     String cat;
+    String shopid;
 
-    public ShopDetailsItem(String name, String number, String imageurl, String lat, String details, String lon, String menuurl, String cat) {
+
+    public ShopDetailsItem(String name, String shopid, String number, String imageurl, String lat, String details, String lon, String menuurl, String cat) {
         this.name = name;
         this.number = number;
         this.imageurl = imageurl;
@@ -23,9 +25,19 @@ public class ShopDetailsItem {
         this.lon = lon;
         this.menuurl = menuurl;
         this.cat = cat;
+        this.shopid = shopid;
     }
 
+
     public ShopDetailsItem() {
+    }
+
+    public String getShopid() {
+        return shopid;
+    }
+
+    public void setShopid(String Gallery) {
+        this.shopid = shopid;
     }
 
     public String getCat() {
@@ -97,3 +109,4 @@ public class ShopDetailsItem {
         this.name = name;
     }
 }
+
