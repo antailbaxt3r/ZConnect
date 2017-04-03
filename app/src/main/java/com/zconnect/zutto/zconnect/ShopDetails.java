@@ -25,7 +25,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.GalleryFormat;
 
+import java.util.ArrayList;
+
 public class ShopDetails extends AppCompatActivity {
+
+
     TextView name, details, number;
     LinearLayout linearLayout, numberlayout;
     SimpleDraweeView menu, image;
@@ -36,9 +40,12 @@ public class ShopDetails extends AppCompatActivity {
     GalleryAdapter adapter;
     RecyclerView galleryRecycler;
     RecyclerView menuRecycler;
+    ArrayList<String> menuImages = new ArrayList<String>();
+    ArrayList<String> galleryImages = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -89,10 +96,11 @@ public class ShopDetails extends AppCompatActivity {
         num = getIntent().getStringExtra("Number");
         shopid = getIntent().getStringExtra("ShopId");
 
+
         name = (TextView) findViewById(R.id.shop_details_name);
         details = (TextView) findViewById(R.id.shop_details_details);
         image = (SimpleDraweeView) findViewById(R.id.shop_details_image);
-//        Menu = (SimpleDraweeView) findViewById(R.id.shop_details_menu_image);
+//      Menu = (SimpleDraweeView) findViewById(R.id.shop_details_menu_image);
         number = (TextView) findViewById(R.id.shop_details_number);
         number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         numberlayout = (LinearLayout) findViewById(R.id.shop_details_num);
@@ -120,8 +128,8 @@ public class ShopDetails extends AppCompatActivity {
 
         }
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child("0").child("Gallery");
-        mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child("0").child("Menu");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Gallery");
+        mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Menu");
 
         mDatabase.keepSynced(true);
         mDatabaseMenu.keepSynced(true);
@@ -129,9 +137,19 @@ public class ShopDetails extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        menuImages.removeAll(menuImages);
+        galleryImages.removeAll(galleryImages);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
+
 
 
         FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder>(
@@ -141,10 +159,20 @@ public class ShopDetails extends AppCompatActivity {
                 mDatabase
         ) {
 
-            @Override
-            protected void populateViewHolder(GalleryViewHolder viewHolder, GalleryFormat model, int position) {
 
+            @Override
+            protected void populateViewHolder(final GalleryViewHolder viewHolder, GalleryFormat model, int position) {
+
+                galleryImages.add(model.getImage());
                 viewHolder.setImage(getApplicationContext(), model.getImage());
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(ShopDetails.this, GalleryActivity.class);
+                        intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME, galleryImages);
+                        startActivity(intent);
+                    }
+                });
             }
 
         };
@@ -159,9 +187,18 @@ public class ShopDetails extends AppCompatActivity {
         ) {
 
             @Override
-            protected void populateViewHolder(GalleryViewHolder viewHolder, GalleryFormat model, int position) {
+            protected void populateViewHolder(final GalleryViewHolder viewHolder, GalleryFormat model, int position) {
 
+                menuImages.add(model.getImage());
                 viewHolder.setImage(getApplicationContext(), model.getImage());
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(ShopDetails.this, GalleryActivity.class);
+                        intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME, menuImages);
+                        startActivity(intent);
+                    }
+                });
             }
 
         };
@@ -175,6 +212,7 @@ public class ShopDetails extends AppCompatActivity {
 
         View mView;
 
+
         public GalleryViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
@@ -184,7 +222,6 @@ public class ShopDetails extends AppCompatActivity {
 
             ImageView imageHolder = (ImageView) mView.findViewById(R.id.galleryImage);
             Picasso.with(ctx).load(ImageUrl).into(imageHolder);
-
 
         }
 
