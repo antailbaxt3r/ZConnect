@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -44,7 +45,7 @@ import java.io.IOException;
 public class EditProfile extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
     String email;
-    String name, details, imageurl, number, hostel, category;
+    String name, details, imageurl, number, hostel = null, host, category;
     SimpleDraweeView simpleDraweeView;
     private FirebaseAuth mAuth;
     private Uri mImageUri = null;
@@ -54,6 +55,9 @@ public class EditProfile extends AppCompatActivity {
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
     private ProgressDialog mProgress;
+    private CustomSpinner spinner;
+    private RadioButton radioButtonS, radioButtonA, radioButtonO;
+
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     @Override
@@ -69,7 +73,10 @@ public class EditProfile extends AppCompatActivity {
         editTextName = (TextInputEditText) findViewById(R.id.contact_edit_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_edit_number_editText);
         simpleDraweeView = (SimpleDraweeView) findViewById(R.id.contact_edit_image);
-
+        radioButtonS = (RadioButton) findViewById(R.id.radioButton_1);
+        radioButtonA = (RadioButton) findViewById(R.id.radioButton_2);
+        radioButtonO = (RadioButton) findViewById(R.id.radioButton_3);
+        spinner = (CustomSpinner) findViewById(R.id.spinner1);
 //        Log.v("tag",email);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -127,7 +134,24 @@ public class EditProfile extends AppCompatActivity {
                             editTextNumber.setText(number);
                             simpleDraweeView.setImageURI(Uri.parse(imageurl));
                             editTextDetails.setText(details);
-                        }
+                            spinner.setSelection(getIndex(spinner, hostel));
+
+                            //private method of your class
+
+                            if (category.equals("S")) {
+                                radioButtonS.setChecked(true);
+                                spinner.setVisibility(View.VISIBLE);
+                                host = "hostel";
+                            } else if (category.equals("A")) {
+                                radioButtonA.setChecked(true);
+                                spinner.setVisibility(View.INVISIBLE);
+                                host = "none";
+                            } else if (category.equals("O")) {
+                                radioButtonO.setChecked(true);
+                                spinner.setVisibility(View.INVISIBLE);
+                                host = "none";
+                            }
+                    }
                     }
 
                 }
@@ -141,9 +165,50 @@ public class EditProfile extends AppCompatActivity {
         });
 
         databaseReference.keepSynced(true);
+        radioButtonS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                category = "S";
+                host = "hostel";
+                spinner.setVisibility(View.VISIBLE);
+            }
+        });
+
+        radioButtonA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                category = "A";
+                host = "none";
+                spinner.setVisibility(View.INVISIBLE);
+            }
+        });
+
+
+        radioButtonO.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                category = "O";
+                host = "none";
+                spinner.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+
 
     }
 
+    private int getIndex(CustomSpinner spinner, String strin) {
+        int index = 0;
+
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(strin)) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_contact, menu);
@@ -246,7 +311,12 @@ public class EditProfile extends AppCompatActivity {
                     newPost.child("number").setValue(number);
                     newPost.child("category").setValue(category);
                     newPost.child("email").setValue(email);
-                    newPost.child("hostel").setValue(hostel);
+                    if (host.equals("none")) {
+                        newPost.child("hostel").setValue(hostel);
+                    } else {
+                        host = String.valueOf(spinner.getSelectedItem());
+                        newPost.child("hostel").setValue(host);
+                    }
 
                     mProgress.dismiss();
                     startActivity(new Intent(EditProfile.this, home.class));
@@ -261,7 +331,12 @@ public class EditProfile extends AppCompatActivity {
             newPost.child("number").setValue(number);
             newPost.child("category").setValue(category);
             newPost.child("email").setValue(email);
-            newPost.child("hostel").setValue(hostel);
+            if (host.equals("none")) {
+                newPost.child("hostel").setValue(hostel);
+            } else {
+                host = String.valueOf(spinner.getSelectedItem());
+                newPost.child("hostel").setValue(host);
+            }
 
             mProgress.dismiss();
             startActivity(new Intent(EditProfile.this, home.class));

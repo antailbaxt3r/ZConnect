@@ -134,7 +134,13 @@ public class home extends AppCompatActivity
         username = (TextView) header.findViewById(R.id.textView_1);
         useremail = (TextView) header.findViewById(R.id.textView_2);
 
-
+        header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                startActivity(intent);
+            }
+        });
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
@@ -233,7 +239,7 @@ public class home extends AppCompatActivity
             startActivity(new Intent(home.this, Advertisement.class));
 
         } else if (id == R.id.about) {
-            startActivity(new Intent(home.this, EditProfile.class));
+            startActivity(new Intent(home.this, AboutUs.class));
 
         } else if (id == R.id.bugReport) {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(home.this);
@@ -276,6 +282,10 @@ public class home extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+        name = mAuth.getCurrentUser().getDisplayName();
+        email = mAuth.getCurrentUser().getEmail();
+        username.setText(name);
+        useremail.setText(email);
 
     }
 
