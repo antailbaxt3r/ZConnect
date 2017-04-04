@@ -233,7 +233,7 @@ public class home extends AppCompatActivity
             startActivity(new Intent(home.this, Advertisement.class));
 
         } else if (id == R.id.about) {
-            startActivity(new Intent(home.this, AboutUs.class));
+            startActivity(new Intent(home.this, EditProfile.class));
 
         } else if (id == R.id.bugReport) {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(home.this);
@@ -276,10 +276,7 @@ public class home extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-        email = mAuth.getCurrentUser().getEmail();
-        name = mAuth.getCurrentUser().getDisplayName();
-        username.setText(name);
-        useremail.setText(email);
+
     }
 
 
