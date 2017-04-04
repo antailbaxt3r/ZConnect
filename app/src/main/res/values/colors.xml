@@ -51,5 +51,6 @@
     <color name="amberA400">#FFC400</color>
     <color name="yellowA400">#FFEA00</color>
     <color name="brownA900">#3e2723</color>
-
+    <color name="black_background">#f0000000</color>
+    <color name="seventyBlack">#32000000</color>
 </resources>

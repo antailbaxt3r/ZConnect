@@ -283,7 +283,7 @@ public boolean isNetworkAvailable(final Context context) {
                         mProgress.dismiss();
                         Intent loginIntent = new Intent(logIn.this, setDetails.class);
                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        loginIntent.putExtra("caller","login");
+                        loginIntent.putExtra("caller", "login");
                         startActivity(loginIntent);
                     }
 

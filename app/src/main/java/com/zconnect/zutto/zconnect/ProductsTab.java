@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -29,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
+
+import java.io.IOException;
 
 
 /**
@@ -89,11 +92,19 @@ public class ProductsTab extends Fragment {
                 viewHolder.defaultSwitch(model.getKey(), getContext());
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
-                viewHolder.setImage(getContext(), model.getImage());
+                try {
+                    viewHolder.setImage(getContext(), model.getImage(), model.getProductName());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getPhone_no(), getContext());
-
+                try {
+                    viewHolder.setImage(getContext(), model.getImage(), model.getProductName());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -138,6 +149,7 @@ public class ProductsTab extends Fragment {
 
         public CompoundButton.OnCheckedChangeListener mListener;
         View mView;
+
         //Switch View
         Switch mReserve;
         TextView ReserveStatus;
@@ -209,13 +221,27 @@ public class ProductsTab extends Fragment {
             TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
             post_desc.setText(productDesc);
 
+
         }
 
         //Set Product Image
-        public void setImage(Context ctx, String image) {
-
+        public void setImage(final Context ctx, final String image, final String name) throws IOException {
             ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
             Picasso.with(ctx).load(image).into(post_image);
+            post_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ProgressDialog mProgress = new ProgressDialog(ctx);
+                    mProgress.setMessage("Loading.....");
+                    mProgress.show();
+                    Intent i = new Intent(mView.getContext(), viewImage.class);
+                    i.putExtra("currentEvent", name);
+                    i.putExtra("eventImage", image);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    mView.getContext().startActivity(i);
+                    mProgress.dismiss();
+                }
+            });
 
         }
 
@@ -223,7 +249,10 @@ public class ProductsTab extends Fragment {
         public void setPrice(String productPrice) {
             TextView post_name = (TextView) mView.findViewById(R.id.price);
             post_name.setText("₹" + productPrice + "/-");
+            post_name.setText("₹" + productPrice + "/-");
         }
+
+
 
         public void setSellerName(String postedBy) {
 
@@ -260,4 +289,5 @@ public class ProductsTab extends Fragment {
         }
 
     }
+
 }

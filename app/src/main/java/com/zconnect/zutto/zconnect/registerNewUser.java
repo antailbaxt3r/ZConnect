@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,7 +36,7 @@ public class registerNewUser extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
     Uri imageUri;
     String username, password, downloadUri, email;
-    private Uri mImageUri=null;
+    private Uri mImageUri = null;
     private ImageButton userImage;
     private EditText usernameText;
     private EditText emailText;
@@ -76,6 +77,7 @@ public class registerNewUser extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (!isNetworkAvailable(getApplicationContext())) {
 
                     Snackbar snack = Snackbar.make(doneButton, "No Internet. Can't Register.", Snackbar.LENGTH_LONG);
@@ -85,7 +87,31 @@ public class registerNewUser extends AppCompatActivity {
                     snack.show();
 
                 } else {
-                    startRegister();
+
+                    username = usernameText.getText().toString().trim();
+                    email = emailText.getText().toString().trim();
+                    password = passwordText.getText().toString().trim();
+                    //Toast.makeText(getApplicationContext(),username.length()+"\t"+email.length()+"\t"+password.length(),Toast.LENGTH_LONG).show();
+                    if (username.length() != 0 && email.length() != 0 && password.length() != 0) {
+                        if (password.length() >= 6) {
+                            startRegister();
+                        } else {
+
+                            Snackbar snack = Snackbar.make(doneButton, "Password should be greater than 6 letters", Snackbar.LENGTH_LONG);
+                            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            snackBarText.setTextColor(Color.WHITE);
+                            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+                            snack.show();
+                            // Toast.makeText(this, "Password should be greater than 6 letters", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Snackbar snack = Snackbar.make(doneButton, "Enter all fields", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+                        snack.show();
+                        // Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
 
@@ -97,77 +123,76 @@ public class registerNewUser extends AppCompatActivity {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
-    private void  startRegister()
-    {
 
-        username = usernameText.getText().toString().trim();
-        email = emailText.getText().toString().trim();
-        password = passwordText.getText().toString().trim();
+    private void startRegister() {
 
-        if (username != null && email != null && password != null && imageUri != null) {
-            if (password.length() >= 6) {
-                mProgress.setMessage("Adding User");
-                mProgress.show();
-
-
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-
-                            StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment());
-                            filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                                    downloadUri = taskSnapshot.getDownloadUrl().toString();
-                                    DatabaseReference currentUser = mDatabase.child(mAuth.getCurrentUser().getUid());
-
-                                    currentUser.child("Username").setValue(username);
-                                    currentUser.child("Email").setValue(email);
-                                    currentUser.child("ProfileImage").setValue(downloadUri.toString());
-                                    mProgress.dismiss();
-
-                                    Intent setDetailsIntent = new Intent(registerNewUser.this, home.class);
-                                    setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    setDetailsIntent.putExtra("type","new");
-                                    startActivity(setDetailsIntent);
-
-                                }
-                            });
-
-
-                        }
-                    }
-                });
-
-            }else{
-
-                Snackbar snack = Snackbar.make(doneButton, "Password should be greater than 6 letters", Snackbar.LENGTH_LONG);
-                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                snackBarText.setTextColor(Color.WHITE);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
-                snack.show();
-                // Toast.makeText(this, "Password should be greater than 6 letters", Toast.LENGTH_SHORT).show();
-            }
-        }else{
-            Snackbar snack = Snackbar.make(doneButton, "Enter all fields", Snackbar.LENGTH_LONG);
+        if (mImageUri == null) {
+            Snackbar snack = Snackbar.make(usernameText, R.string.noImage, Snackbar.LENGTH_INDEFINITE);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
+            snack.setAction("Select", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    galleryIntent.setType("image/*");
+                    startActivityForResult(galleryIntent, GALLERY_REQUEST);
+
+                }
+            });
+            snack.setAction("Skip", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    downloadUri = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336"; //sets default download Image url
+                    mProgress.show();
+                    Postdetails();
+                }
+            });
             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
             snack.show();
-            // Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
+        } else {
+            StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
+            mProgress.show();
+            filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    downloadUri = taskSnapshot.getDownloadUrl().toString();
+                    Postdetails();
+
+                }
+            });
         }
+
     }
+
+    // OLD CODE.
+    //                            StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment());
+//                            filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                                @Override
+//                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                                    downloadUri = taskSnapshot.getDownloadUrl().toString();
+//                                    DatabaseReference currentUser = mDatabase.child(mAuth.getCurrentUser().getUid());
+//
+//                                    currentUser.child("Username").setValue(username);
+//                                    currentUser.child("Email").setValue(email);
+//                                    currentUser.child("ProfileImage").setValue(downloadUri.toString());
+//                                    mProgress.dismiss();
+//
+//                                    Intent setDetailsIntent = new Intent(registerNewUser.this, home.class);
+//                                    setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                    setDetailsIntent.putExtra("type","new");
+//                                    startActivity(setDetailsIntent);
+//
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK){
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             imageUri = data.getData();
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1,1)
+                    .setAspectRatio(1, 1)
                     .setBackgroundColor(R.color.white)
                     .setBorderCornerColor(R.color.teal100)
                     .start(this);
@@ -176,12 +201,40 @@ public class registerNewUser extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
 
-                mImageUri= result.getUri();
+                mImageUri = result.getUri();
                 userImage.setImageURI(mImageUri);
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
         }
+    }
+
+    void openHome() {
+        Intent setDetailsIntent = new Intent(registerNewUser.this, home.class);
+        setDetailsIntent.putExtra("type", "new");
+        setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(setDetailsIntent);
+    }
+
+    void Postdetails() {
+        mProgress.setMessage("Adding User");
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    final DatabaseReference currentUser = mDatabase.child(mAuth.getCurrentUser().getUid());
+
+                    currentUser.child("Image").setValue(downloadUri); //Sets
+                    currentUser.child("Username").setValue(username); //User
+                    currentUser.child("Email").setValue(email); //Details
+                    mProgress.dismiss();
+                    openHome();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Sign Up failed , Retry .", Toast.LENGTH_LONG).show();
+                    mProgress.dismiss();
+                }
+            }
+        });
     }
 }

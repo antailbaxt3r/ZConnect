@@ -1,10 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
-import android.*;
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,17 +27,9 @@ public class logoFlash extends AppCompatActivity {
         setContentView(R.layout.activity_logo_flash);
         // Setting full screen view
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if(checkPermission())
-        {
-             new Timer().schedule(new TimerTask(){
-                        public void run() {
-                            Intent intent = new Intent(logoFlash.this, home.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
-                        }
-                    }, 2800);
-        }
+        handlePermission();
+    }
+
         // Time Delay for the logo activity
 
 
@@ -165,7 +154,6 @@ public class logoFlash extends AppCompatActivity {
 //            newData.child("imageurl").removeValue();
 //        }
 
-    }
     public boolean checkPermission()
     {
         int currentAPIVersion = Build.VERSION.SDK_INT;
@@ -186,18 +174,17 @@ public class logoFlash extends AppCompatActivity {
                     AlertDialog alert = alertBuilder.create();
                     alert.show();
                 } else {
-                    ActivityCompat.requestPermissions((Activity)logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},7 );
+                    ActivityCompat.requestPermissions(logoFlash.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 7);
                 }
-                return false;
             } else {
-                
-
                 return true;
             }
         }
         else {
             return true;
         }
+
+        return false;
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -212,7 +199,7 @@ public class logoFlash extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         }
-                    }, 2800);
+                    }, 1500);
 
                 } else {
                     Toast.makeText(this,"Permission Denied !, Retrying.",Toast.LENGTH_SHORT).show();
@@ -221,4 +208,24 @@ public class logoFlash extends AppCompatActivity {
                 break;
         }
     }
+
+    void openHome() {
+        new Timer().schedule(new TimerTask() {
+            public void run() {
+                Intent intent = new Intent(logoFlash.this, home.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        }, 2800);
+    }
+
+    void handlePermission() {
+        if (checkPermission())
+            openHome();
+
+    }
+
+
 }
+

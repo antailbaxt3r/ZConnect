@@ -1,9 +1,13 @@
 package com.zconnect.zutto.zconnect;
 
-import android.content.Context;
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
+import java.io.IOException;
+
 public class IndividualCategory extends AppCompatActivity {
 
     public String category;
@@ -37,6 +43,7 @@ public class IndividualCategory extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private LinearLayoutManager linearLayoutManager;
     private boolean flag = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +104,19 @@ public class IndividualCategory extends AppCompatActivity {
         ) {
 
             @Override
-            protected void populateViewHolder(ProductViewHolder viewHolder, final Product model, int position) {
+            protected void populateViewHolder(final ProductViewHolder viewHolder, final Product model, int position) {
                 viewHolder.defaultSwitch(model.getKey());
                 //viewHolder.setSwitch(model.getKey());
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
-                viewHolder.setImage(getApplicationContext(), model.getImage());
+                try {
+                    viewHolder.setImage(IndividualCategory.this, model.getImage(), model.getProductName());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 viewHolder.setProductPrice(model.getPrice());
+                viewHolder.setSellerName(model.getPostedBy());
+                viewHolder.setSellerNumber(model.getPhone_no());
 
                 viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -118,9 +131,14 @@ public class IndividualCategory extends AppCompatActivity {
                                     if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                         mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
                                         flag = false;
+                                        viewHolder.ReserveStatus.setText("Shortlisted");
+                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.teal600));
+
                                     } else {
 
                                         mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getDisplayName());
+                                        viewHolder.ReserveStatus.setText("Shortlisted");
+                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
                                         flag = false;
                                     }
                                 }
@@ -145,10 +163,12 @@ public class IndividualCategory extends AppCompatActivity {
         public CompoundButton.OnCheckedChangeListener mListener;
         View mView;
         String[] keyList;
+        ImageView post_image;
         String ReservedUid;
         private Switch mReserve;
         private TextView ReserveStatus;
         private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
         private FirebaseAuth mAuth;
 
         public ProductViewHolder(View itemView) {
@@ -156,6 +176,7 @@ public class IndividualCategory extends AppCompatActivity {
             mView = itemView;
             mReserve = (Switch) mView.findViewById(R.id.switch1);
             ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
+            post_image = (ImageView) mView.findViewById(R.id.postImg);
             StoreRoom.keepSynced(true);
 
         }
@@ -204,10 +225,20 @@ public class IndividualCategory extends AppCompatActivity {
 
         }
 
-        public void setImage(Context ctx, String image) {
+        public void setImage(final Activity activity, final String image, final String name) throws IOException {
+            Picasso.with(mView.getContext()).load(image).into(post_image);
+            post_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-            ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
-            Picasso.with(ctx).load(image).into(post_image);
+                    ProgressDialog mProgress = new ProgressDialog(mView.getContext());
+                    mProgress.setMessage("Loading.....");
+                    mProgress.show();
+                    animate(activity, name, image);
+                    mProgress.dismiss();
+                }
+            });
+
         }
 
         public void setProductPrice(String productPrice) {
@@ -215,6 +246,56 @@ public class IndividualCategory extends AppCompatActivity {
             post_name.setText(productPrice);
         }
 
+
+        public void setSellerName(String postedBy) {
+
+
+            Users.child(postedBy).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String sellerName = dataSnapshot.child("Username").getValue().toString();
+                    TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
+                    post_seller_name.setText("Sold By: " + sellerName);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
+        public void setSellerNumber(final String sellerNumber) {
+            TextView post_seller_number = (TextView) mView.findViewById(R.id.sellerNumber);
+            post_seller_number.setText("Call");
+            post_seller_number.setPaintFlags(post_seller_number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+            post_seller_number.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mView.getContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                }
+            });
+
+        }
+
+        public void animate(final Activity activity, final String name, String url) {
+            final Intent i = new Intent(mView.getContext(), viewImage.class);
+            i.putExtra("currentEvent", name);
+            i.putExtra("eventImage", url);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, post_image, mView.getResources().getString(R.string.transition_string));
+
+            mView.getContext().startActivity(i, optionsCompat.toBundle());
+
+
+        }
+
+
     }
 
-}
+    }
+
+

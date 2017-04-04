@@ -24,12 +24,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -51,12 +55,18 @@ public class AddEvent extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
     String eventDate;
     String dateString;
+    // private Button mPostBtn;
+    Intent eventVenue;
+    Place Venue;
+    Boolean selectedFromMap = false;
     boolean flag = false;
+
     private Uri mImageUri = null;
     private SimpleDraweeView mAddImage;
     private EditText mEventName;
     private EditText mEventDescription;
-    // private Button mPostBtn;
+    private EditText mVenue;
+    private ImageView mDirections;
     private StorageReference mStorage;
     private DatabaseReference mDatabaseVerified;
     private DatabaseReference mDatabase;
@@ -78,6 +88,20 @@ public class AddEvent extends AppCompatActivity {
         setContentView(R.layout.activity_add_event);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        LatLngBounds bitsGoa = new LatLngBounds(new LatLng(15.386095, 73.876165), new LatLng(15.396108, 73.878407));
+        builder.setLatLngBounds(bitsGoa);
+        try {
+            eventVenue = builder.build(this);
+        } catch (Exception e) {
+            Snackbar snack = Snackbar.make(mEventDescription, "Cannot open Maps , Please input your venue.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+            snack.show();
+            e.printStackTrace();
+        }
+
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -101,11 +125,14 @@ public class AddEvent extends AppCompatActivity {
         mEventName = (EditText) findViewById(R.id.name);
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
+        mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/NotVerifiedPosts");
 
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (FrameLayout)findViewById(R.id.dateAndTime);
+        mVenue = (EditText) findViewById(R.id.VenueText);
+        mDirections = (ImageView) findViewById(R.id.venuePicker);
 
         mProgress = new ProgressDialog(this);
 
@@ -130,6 +157,14 @@ public class AddEvent extends AppCompatActivity {
             }
         });
 
+        mDirections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivityForResult(eventVenue, 124);
+            }
+        });
+
         CalendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,7 +185,6 @@ public class AddEvent extends AppCompatActivity {
 
         DatabaseReference mPrivileges;
         mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
-
         final String emailId = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         mPrivileges.addValueEventListener(new ValueEventListener() {
             @Override
@@ -159,7 +193,6 @@ public class AddEvent extends AppCompatActivity {
                 for (DataSnapshot child : snapshot.getChildren()) {
                     if (child.getValue().equals(emailId)) {
                         flag = true;
-                        Toast.makeText(AddEvent.this, "Its True", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -208,6 +241,7 @@ public class AddEvent extends AppCompatActivity {
         mProgress.show();
         final String eventNameValue = mEventName.getText().toString().trim();
         final String eventDescriptionValue = mEventDescription.getText().toString().trim();
+        final String eventVenue = mVenue.getText().toString();
 
         if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null && dateString != null) {
             //1
@@ -226,6 +260,11 @@ public class AddEvent extends AppCompatActivity {
                         newPost.child("EventImage").setValue(downloadUri.toString());
                         newPost.child("EventDate").setValue(eventDate);
                         newPost.child("FormatDate").setValue(dateString);
+                        newPost.child("Venue").setValue(eventVenue);
+                        LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
+                        newPost.child("Key").setValue(newPost.getKey());
+                        newPost.child("log").setValue(latLng.longitude);
+                        newPost.child("lat").setValue(latLng.latitude);
 
                         //For Everything
                         DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
@@ -235,6 +274,11 @@ public class AddEvent extends AppCompatActivity {
                         newPost2.child("feature").setValue("Event");
                         newPost2.child("id").setValue(key);
                         newPost2.child("desc2").setValue(eventDate);
+                        newPost2.child("Venue").setValue(eventVenue);
+                        latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
+                        newPost2.child("Key").setValue(newPost.getKey());
+                        newPost2.child("log").setValue(latLng.longitude);
+                        newPost2.child("lat").setValue(latLng.latitude);
 
                     } else {
                         DatabaseReference newPost = mDatabase.push();
@@ -245,6 +289,11 @@ public class AddEvent extends AppCompatActivity {
                         newPost.child("EventImage").setValue(downloadUri.toString());
                         newPost.child("EventDate").setValue(eventDate);
                         newPost.child("FormatDate").setValue(dateString);
+                        newPost.child("Venue").setValue(eventVenue);
+                        LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
+                        newPost.child("Key").setValue(newPost.getKey());
+                        newPost.child("log").setValue(latLng.longitude);
+                        newPost.child("lat").setValue(latLng.latitude);
                     }
 
                     mProgress.dismiss();
@@ -317,6 +366,12 @@ public class AddEvent extends AppCompatActivity {
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
+        }
+
+        if (requestCode == 124 && resultCode == RESULT_OK) {
+            Venue = PlacePicker.getPlace(this, data);
+            mVenue.setText(Venue.getName().toString() + Venue.getAddress());
+            selectedFromMap = true;
         }
 
     }

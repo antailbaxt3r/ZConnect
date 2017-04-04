@@ -194,6 +194,7 @@ public class AddProduct extends AppCompatActivity {
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
 
+
                     DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
                     newPost2.child("name").setValue(productNameValue);
                     newPost2.child("desc").setValue(productDescriptionValue);
@@ -201,6 +202,7 @@ public class AddProduct extends AppCompatActivity {
                     newPost2.child("feature").setValue("Event");
                     newPost2.child("id").setValue(key);
                     newPost2.child("desc2").setValue(productPriceValue);
+                    newPost2.child("Key").setValue(newPost2.getKey());
 
                     mProgress.dismiss();
                     startActivity(new Intent(AddProduct.this, TabStoreRoom.class));
@@ -216,7 +218,6 @@ public class AddProduct extends AppCompatActivity {
             mProgress.dismiss();
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

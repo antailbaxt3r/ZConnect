@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".ZConnect"
@@ -151,17 +153,28 @@
                 android:value=".TabStoreRoom" />
         </activity>
         <activity
+            android:name=".IndividualCategory"
+            android:label="@string/title_activity_each_category"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".viewImage"
+            android:label="@string/title_activity_view_image"
+            android:parentActivityName=".AllEvents"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zconnect.zutto.zconnect.AllEvents" />
+        </activity>
+        <activity android:name=".image_view"></activity>
+        <activity
             android:name=".MyProducts"
             android:label="My Products"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddEvent"
             android:label="Add Events"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".IndividualCategory"
-            android:label="@string/title_activity_each_category"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <activity
             android:name=".ShopSearch"
             android:label="Search Results"
@@ -176,6 +189,13 @@
                 android:resource="@xml/searchable" />
         </activity>
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM" />
     </application>
+
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
 
 </manifest>
