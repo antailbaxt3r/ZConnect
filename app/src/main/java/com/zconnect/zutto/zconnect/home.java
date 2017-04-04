@@ -1,13 +1,17 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,7 +27,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+
+import android.widget.TextView;
+
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -49,6 +57,9 @@ public class home extends AppCompatActivity
     RecyclerView mEverything;
     boolean checkuser = true;
     ActionBarDrawerToggle toggle;
+
+    String email = null, name = null;
+
     boolean doubleBackToExitPressedOnce = false;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -56,6 +67,9 @@ public class home extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+
+    private TextView username, useremail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +138,18 @@ public class home extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
 
+        username = (TextView) header.findViewById(R.id.textView_1);
+        useremail = (TextView) header.findViewById(R.id.textView_2);
+
+        header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                startActivity(intent);
+            }
+        });
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
@@ -223,8 +248,18 @@ public class home extends AppCompatActivity
             startActivity(new Intent(home.this, AllEvents.class));
 
         } else if (id == R.id.signOut) {
+            if (!isNetworkAvailable(getApplicationContext())) {
 
-            logout();
+                Snackbar snack = Snackbar.make(username, "No Internet. Can't Log Out.", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.show();
+
+            } else {
+                logout();
+            }
+
         } else if (id == R.id.ad) {
             startActivity(new Intent(home.this, Advertisement.class));
 
@@ -263,6 +298,7 @@ public class home extends AppCompatActivity
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -271,7 +307,10 @@ public class home extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-
+        name = mAuth.getCurrentUser().getDisplayName();
+        email = mAuth.getCurrentUser().getEmail();
+        username.setText(name);
+        useremail.setText(email);
 
     }
 
@@ -282,6 +321,11 @@ public class home extends AppCompatActivity
 
         // Google sign out
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+    }
+
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
 
@@ -300,7 +344,8 @@ public class home extends AppCompatActivity
                         startActivity(setDetailsIntent);
 
                     }
-                }}
+
+                    }}
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
