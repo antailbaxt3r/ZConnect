@@ -23,11 +23,15 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
@@ -38,6 +42,10 @@ import java.util.Map;
 public class AllEvents extends AppCompatActivity {
 
     LinearLayoutManager mlinearmanager;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+    DatabaseReference mUserStats, mFeaturesStats;
+    String TotalEvents;
     private RecyclerView mEventList;
     private DatabaseReference mDatabase;
     private DatabaseReference mRequest;
@@ -69,6 +77,27 @@ public class AllEvents extends AppCompatActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                TotalEvents = dataSnapshot.child("TotalEvents").getValue().toString();
+                DatabaseReference newPost = mUserStats;
+                Map<String, Object> taskMap = new HashMap<String, Object>();
+                taskMap.put("TotalEvents", TotalEvents);
+                newPost.updateChildren(taskMap);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         mlinearmanager = new LinearLayoutManager(this);
         mlinearmanager.setReverseLayout(true);
