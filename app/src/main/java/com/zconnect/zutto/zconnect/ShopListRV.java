@@ -73,6 +73,7 @@ public class ShopListRV extends RecyclerView.Adapter<ShopListRV.ViewHolder> {
                     intent.putExtra("Lat", shopDetailsItem.getLat());
                     intent.putExtra("Lon", shopDetailsItem.getLon());
                     intent.putExtra("Number", shopDetailsItem.getNumber());
+                    intent.putExtra("ShopId", shopDetailsItem.getShopid());
                     context.startActivity(intent);
                     if (context instanceof ShopDetails) {
                         ((ShopDetails) context).finish();
