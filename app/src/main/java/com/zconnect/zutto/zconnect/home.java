@@ -22,7 +22,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -47,14 +49,14 @@ public class home extends AppCompatActivity
     RecyclerView mEverything;
     boolean checkuser = true;
     ActionBarDrawerToggle toggle;
+    String email = null, name = null;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
     private GoogleApiClient mGoogleApiClient;
     private ViewPager viewPager;
     private TabLayout tabLayout;
-
-
+    private TextView username, useremail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +125,11 @@ public class home extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+
+        username = (TextView) header.findViewById(R.id.textView_1);
+        useremail = (TextView) header.findViewById(R.id.textView_2);
+
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -246,6 +253,7 @@ public class home extends AppCompatActivity
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -254,8 +262,10 @@ public class home extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-
-
+        email = mAuth.getCurrentUser().getEmail();
+        name = mAuth.getCurrentUser().getDisplayName();
+        username.setText(name);
+        useremail.setText(email);
     }
 
 
@@ -283,7 +293,8 @@ public class home extends AppCompatActivity
                         startActivity(setDetailsIntent);
 
                     }
-                }}
+
+                    }}
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
