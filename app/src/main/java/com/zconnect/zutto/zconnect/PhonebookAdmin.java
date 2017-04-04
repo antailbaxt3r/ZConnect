@@ -74,6 +74,7 @@ public class PhonebookAdmin extends Fragment {
 
     }
 
+
 //    @Override
 //    public void onStart() {
 //        super.onStart();
@@ -115,5 +116,39 @@ public class PhonebookAdmin extends Fragment {
             phonebookStudentHostelItems.add(phonebookStudentHostelItem1);
         }
         return phonebookStudentHostelItems;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        queryRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressBar.setVisibility(VISIBLE);
+                phonebookItems.clear();
+                phonebookDisplayItems.clear();
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+
+                    phonebookDisplayItems.add(shot.getValue(PhonebookDisplayItem.class));
+
+
+                }
+                for (int i = 0; i < phonebookDisplayItems.size(); i++) {
+                    if (phonebookDisplayItems.get(i).getCategory() != null && phonebookDisplayItems.get(i).getCategory().equals("A")) {
+                        phonebookItems.add(new PhonebookItem(phonebookDisplayItems.get(i).getImageurl(), phonebookDisplayItems.get(i).getName(), phonebookDisplayItems.get(i).getNumber(), phonebookDisplayItems.get(i)));
+                    }
+
+                }
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(INVISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                progressBar.setVisibility(INVISIBLE);
+            }
+        });
+
+
     }
 }
