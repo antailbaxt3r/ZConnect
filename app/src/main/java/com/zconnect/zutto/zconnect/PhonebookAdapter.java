@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -44,6 +45,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
         holder.simpleDraweeView.setImageURI(Uri.parse(phonebookItem.get(position).getImgurl()));
         holder.name.setText(phonebookItem.get(position).getName());
         holder.number.setText(phonebookItem.get(position).getNumber());
+
     }
 
     @Override
@@ -54,12 +56,24 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder {
         SimpleDraweeView simpleDraweeView;
         TextView name, number;
-
+        ImageView call;
+        
         public ViewHolder(View itemView) {
             super(itemView);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.phonebook_item_format_image);
             name = (TextView) itemView.findViewById(R.id.phonebook_name1);
             number = (TextView) itemView.findViewById(R.id.phonebook_number1);
+            call = (ImageView) itemView.findViewById(R.id.callbutton);
+
+            call.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PhonebookDisplayItem phonebookDisplayItem;
+                    phonebookDisplayItem = phonebookItem.get(getAdapterPosition()).getPhonebookDisplayItem();
+                    context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phonebookDisplayItem.getNumber())));
+                }
+            });
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
