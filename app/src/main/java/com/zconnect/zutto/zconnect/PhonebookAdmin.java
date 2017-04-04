@@ -80,6 +80,8 @@ public class PhonebookAdmin extends Fragment {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
 
                     phonebookDisplayItems.add(shot.getValue(PhonebookDisplayItem.class));
+
+
                 }
                 for (int i = 0; i < phonebookDisplayItems.size(); i++) {
                     if (phonebookDisplayItems.get(i).getCategory() != null && phonebookDisplayItems.get(i).getCategory().equals("A")) {
