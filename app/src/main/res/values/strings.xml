@@ -72,5 +72,6 @@
     <string name="title_activity_add_event">Add Event</string>
     <string name="title_activity_each_category">EachCategory</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_edit_profile">EditProfile</string>
 
 </resources>
