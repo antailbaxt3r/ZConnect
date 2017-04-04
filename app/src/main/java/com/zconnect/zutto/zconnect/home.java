@@ -29,7 +29,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+
 import android.widget.TextView;
+
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -55,7 +57,9 @@ public class home extends AppCompatActivity
     RecyclerView mEverything;
     boolean checkuser = true;
     ActionBarDrawerToggle toggle;
+
     String email = null, name = null;
+
     boolean doubleBackToExitPressedOnce = false;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -63,7 +67,9 @@ public class home extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+
     private TextView username, useremail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

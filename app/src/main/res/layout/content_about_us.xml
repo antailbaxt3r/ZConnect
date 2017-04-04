@@ -43,5 +43,13 @@
         android:text="zconnectinc@gmail.com"
         android:textColorLink="#8BC34A" />
 
+    <ImageView
+        android:id="@+id/fblink"
+        android:src="@mipmap/ic_facebook_grey600_36dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_gravity="center"/>
+
 
 </LinearLayout>
