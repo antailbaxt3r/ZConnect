@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -70,7 +69,7 @@ public class ReservedTab extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
-        query = mDatabase.orderByChild("UsersReserved/" + userId).equalTo(user.getDisplayName());
+        query = mDatabase.orderByChild("UsersReserved/" + userId).equalTo(userId);
 
         return view;
     }
@@ -123,13 +122,8 @@ public class ReservedTab extends Fragment {
 
 
         View mView;
-        String[] keyList;
-        String ReservedUid;
         private DatabaseReference ReserveReference;
-        private Switch mReserve;
-        private TextView ReserveStatus;
         private ImageButton deleteButton;
-        private FirebaseAuth mAuth;
         private String sellerName;
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
 
@@ -178,6 +172,8 @@ public class ReservedTab extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     sellerName = dataSnapshot.child("Username").getValue().toString();
+                    TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
+                    post_seller_name.setText("Sold By: " + sellerName);
                 }
 
                 @Override
@@ -186,8 +182,7 @@ public class ReservedTab extends Fragment {
                 }
             });
 
-            TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-            post_seller_name.setText("Sold By: " + sellerName);
+
         }
 
         public void setSellerNumber(final String sellerNumber, final Context ctx) {
@@ -203,5 +198,6 @@ public class ReservedTab extends Fragment {
             });
 
         }
+
     }
 }
