@@ -347,7 +347,8 @@ public class home extends AppCompatActivity
 
                     }
 
-                    }}
+                    }
+                }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {

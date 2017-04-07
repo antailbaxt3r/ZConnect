@@ -30,6 +30,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,10 +40,15 @@ import com.zconnect.zutto.zconnect.ItemFormats.Product;
 public class ProductsTab extends Fragment {
 
     NotificationCompat.Builder mBuilder;
+    FirebaseUser user;
+    String TotalProducts;
+    String userId;
+    DatabaseReference mUserStats, mFeaturesStats;
     private RecyclerView mProductList;
     private DatabaseReference mDatabase;
     private boolean flag = false;
     private FirebaseAuth mAuth;
+
 
     public ProductsTab() {
         // Required empty public constructor
@@ -66,6 +74,30 @@ public class ProductsTab extends Fragment {
         // StoreRoom feature Reference
         mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         mDatabase.keepSynced(true);
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+
+        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                TotalProducts = dataSnapshot.child("TotalProducts").getValue().toString();
+                DatabaseReference newPost = mUserStats;
+                Map<String, Object> taskMap = new HashMap<String, Object>();
+                taskMap.put("TotalProducts", TotalProducts);
+                newPost.updateChildren(taskMap);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
 
         mBuilder = new NotificationCompat.Builder(getContext());
         return view;
@@ -260,4 +292,5 @@ public class ProductsTab extends Fragment {
         }
 
     }
+
 }

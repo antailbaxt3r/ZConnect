@@ -18,11 +18,25 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Phonebook extends AppCompatActivity {
+    FirebaseUser user;
+    FirebaseAuth mAuth;
+    String TotalNumbers;
+    String userId;
+    DatabaseReference mUserStats, mFeaturesStats;
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
@@ -53,6 +67,28 @@ public class Phonebook extends AppCompatActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+
+        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                TotalNumbers = dataSnapshot.child("TotalNumbers").getValue().toString();
+                DatabaseReference newPost = mUserStats;
+                Map<String, Object> taskMap = new HashMap<String, Object>();
+                taskMap.put("TotalNumbers", TotalNumbers);
+                newPost.updateChildren(taskMap);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);

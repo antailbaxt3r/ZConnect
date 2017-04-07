@@ -62,6 +62,7 @@ public class Shop extends AppCompatActivity {
                     });
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
         recycleView.setHasFixedSize(true);
         recycleView.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new ShopCategoryRV(this, shopCategoryItemCategories);

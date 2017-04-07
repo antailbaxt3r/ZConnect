@@ -19,6 +19,7 @@
             android:name=".logoFlash"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,39 +31,49 @@
         <!-- Crop Activity -->
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".logIn"
+            android:screenOrientation="portrait"
             android:theme="@style/login" />
         <activity
             android:name=".registerNewUser"
+            android:screenOrientation="portrait"
             android:theme="@style/login" />
         <activity
             android:name=".setDetails"
+            android:screenOrientation="portrait"
             android:theme="@style/login" />
         <activity
             android:name=".home"
             android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AllEvents"
             android:label="Events"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OpenEventDetail"
             android:label="Events"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TabStoreRoom"
             android:label="@string/title_activity_tab_store_room"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".StoreRoom"
             android:label="@string/title_activity_store_room"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Shop"
             android:label="@string/title_activity_shop"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.default_searchable"
@@ -71,25 +82,31 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".home" />
         </activity>
+
         <activity
             android:name=".ShopList"
             android:label="@string/title_activity_shop_list"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ShopDetails"
             android:label="@string/title_activity_shop_details"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddContact"
             android:label="@string/title_activity_add_contact"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PhonebookDetails"
             android:label="Details"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PhonebookHostelWise"
             android:label="@string/title_activity_phonebook_hostel_wise"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.default_searchable"
@@ -101,6 +118,7 @@
         <activity
             android:name=".Phonebook"
             android:label="Infone"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.default_searchable"
@@ -113,7 +131,8 @@
             android:name=".PhonebookSearch"
             android:label="Search Results"
             android:launchMode="singleTop"
-            android:parentActivityName=".Phonebook">
+            android:parentActivityName=".Phonebook"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -126,11 +145,11 @@
             android:name=".PhonebookCategorySearch"
             android:label="Search Results"
             android:launchMode="singleTop"
-            android:parentActivityName=".PhonebookHostelWise">
+            android:parentActivityName=".PhonebookHostelWise"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -138,14 +157,17 @@
         <activity
             android:name=".AboutUs"
             android:label="@string/title_activity_about_us"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Advertisement"
             android:label="@string/title_activity_advertisement"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddProduct"
             android:label="Add Product"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -154,20 +176,24 @@
         <activity
             android:name=".MyProducts"
             android:label="My Products"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddEvent"
             android:label="Add Events"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".IndividualCategory"
             android:label="@string/title_activity_each_category"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ShopSearch"
             android:label="Search Results"
             android:launchMode="singleTop"
-            android:parentActivityName=".Shop">
+            android:parentActivityName=".Shop"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -179,6 +205,12 @@
         <activity
             android:name=".EditProfile"
             android:label="@string/title_activity_edit_profile"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".GalleryActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver android:name=".InfoneSearchWidget">

@@ -62,6 +62,7 @@ public class EditProfile extends AppCompatActivity {
 
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,7 +159,7 @@ public class EditProfile extends AppCompatActivity {
                                 spinner.setVisibility(View.INVISIBLE);
                                 host = "none";
                             }
-                    }
+                        }
                     }
                     if (number == null) {
                         flag = true;
@@ -204,7 +205,6 @@ public class EditProfile extends AppCompatActivity {
         });
 
 
-
     }
 
     private int getIndex(CustomSpinner spinner, String strin) {
@@ -218,6 +218,7 @@ public class EditProfile extends AppCompatActivity {
         }
         return index;
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_contact, menu);

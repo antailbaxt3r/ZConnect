@@ -36,7 +36,7 @@ public class ShopDetailsItem {
         return shopid;
     }
 
-    public void setShopid(String Gallery) {
+    public void setShopid(String shopid) {
         this.shopid = shopid;
     }
 
