@@ -6,11 +6,7 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <ProgressBar
-        android:id="@+id/admin_phone_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+
     <!-- A RecyclerView with some commonly used attributes -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/admin_phone_rv"
