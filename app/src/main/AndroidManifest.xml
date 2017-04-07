@@ -222,6 +222,15 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/infone_search_widget_info" />
         </receiver>
+
+        <activity
+            android:name=".Shop_detail"
+            android:label="@string/title_activity_shop_detail"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ShopList" />
+        </activity>
     </application>
 
 </manifest>
