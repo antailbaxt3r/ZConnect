@@ -20,16 +20,17 @@
         app:srcCompat="@mipmap/ic_launcher" />
 
     <TextView
+        android:id="@+id/textView_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="ZConnect"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textView_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="The way you connect."

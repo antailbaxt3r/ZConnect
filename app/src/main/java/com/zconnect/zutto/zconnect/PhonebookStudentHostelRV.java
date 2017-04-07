@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookStudentHostelItem;
 
 import java.util.Vector;
@@ -18,6 +20,7 @@ import java.util.Vector;
 
 public class PhonebookStudentHostelRV extends RecyclerView.Adapter<PhonebookStudentHostelRV.ViewHolder> {
     Context context;
+
     Vector<PhonebookStudentHostelItem> phonebookStudentHostelItems;
 
     public PhonebookStudentHostelRV(Vector<PhonebookStudentHostelItem> phonebookStudentHostelItems, Context context) {
@@ -56,12 +59,12 @@ public class PhonebookStudentHostelRV extends RecyclerView.Adapter<PhonebookStud
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, PhonebookHostelWise.class);
+                        Intent intent = new Intent(context, PhonebookHostelWise.class);
                     intent.putExtra("Hostel", phonebookStudentHostelItems.get(getAdapterPosition()).getHostel());
                     context.startActivity(intent);
                     if (context instanceof PhonebookHostelWise) {
                         ((PhonebookHostelWise) context).finish();
-                    }
+                        }
                 }
             });
 
