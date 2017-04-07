@@ -18,7 +18,7 @@ public class PhonebookAdmin extends Fragment {
     Vector<PhonebookStudentHostelItem> phonebookStudentHostelItems;
     private PhonebookStudentHostelRV adapter;
     private RecyclerView recyclerView;
-    private String dept[] = {"CS", "EEE/INSTR", "MECH", "CHEM-ENGG", "BIO", "MATH", "PHY", "CHEM", "ECO", "SWD", "ADMIN", "ARC"};
+    private String dept[] = {"CS", "EEE/INSTR", "MECH", "CHEM-ENGG", "BIO", "MATH", "PHY", "CHEM" ,"ECO", "SWD", "ADMIN", "ARC"};
 
 //    Vector<PhonebookItem> phonebookItems = new Vector<>();
 //    Vector<PhonebookDisplayItem> phonebookDisplayItems = new Vector<>();
@@ -41,7 +41,7 @@ public class PhonebookAdmin extends Fragment {
 
         //Reference views---------------------------------------------------------------------------
         recyclerView = (RecyclerView) view.findViewById(R.id.admin_phone_rv);
-//        progressBar = (ProgressBar) view.findViewById(R.id.admin_phone_progress);
+        //   progressBar = (ProgressBar) view.findViewById(R.id.admin_phone_progress);
 
         //MAIN--------------------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ public class PhonebookAdmin extends Fragment {
             phonebookStudentHostelItems.add(phonebookStudentHostelItem1);
         }
         return phonebookStudentHostelItems;
-    }
 
+    }
 
 }

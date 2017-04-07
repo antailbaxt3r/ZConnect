@@ -286,6 +286,7 @@ public class EditProfile extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         email = mAuth.getCurrentUser().getEmail();
+        if (email != null)
         editTextEmail.setText(email);
 
     }

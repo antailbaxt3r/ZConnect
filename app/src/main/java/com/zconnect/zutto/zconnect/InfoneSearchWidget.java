@@ -18,13 +18,8 @@ public class InfoneSearchWidget extends AppWidgetProvider {
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.infone_search_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+        //  views.setTextViewText(R.id.appwidget_text, widgetText);
         Intent intent = new Intent(context, PhonebookSearch.class);
-//        CharSequence widgetText = LoginWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
-//        // Construct the RemoteViews object
-//        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.login_widget);
-//        views.setTextViewText(R.id.appwidget_text, widgetText);
-//        views.setTextViewText(R.id.actionButton,widgetText);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                 intent, 0);
         views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent);

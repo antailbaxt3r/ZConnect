@@ -307,7 +307,9 @@ public class home extends AppCompatActivity
         mAuth.addAuthStateListener(mAuthListener);
         name = mAuth.getCurrentUser().getDisplayName();
         email = mAuth.getCurrentUser().getEmail();
+        if (name != null)
         username.setText(name);
+        if (email != null)
         useremail.setText(email);
 
     }
