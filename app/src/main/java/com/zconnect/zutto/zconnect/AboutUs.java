@@ -20,7 +20,7 @@ public class AboutUs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_us);
 
-        fbbutton = (ImageView)findViewById(R.id.fblink);
+        fbbutton = (ImageView) findViewById(R.id.fblink);
         fbbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
