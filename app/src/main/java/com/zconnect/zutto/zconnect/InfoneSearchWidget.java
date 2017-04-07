@@ -22,7 +22,7 @@ public class InfoneSearchWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, PhonebookSearch.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                 intent, 0);
-        views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent);
+        views.setOnClickPendingIntent(R.id.linearlayout_widget, pendingIntent);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
