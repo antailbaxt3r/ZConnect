@@ -75,5 +75,6 @@
     <string name="title_activity_edit_profile">Edit Profile</string>
     <string name="appwidget_text">Search Infone ...</string>
     <string name="add_widget">Add widget</string>
+    <string name="title_activity_offers">Latest Offers</string>
 
 </resources>

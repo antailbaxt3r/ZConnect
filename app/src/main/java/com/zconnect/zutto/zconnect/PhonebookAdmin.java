@@ -18,7 +18,7 @@ public class PhonebookAdmin extends Fragment {
     Vector<PhonebookStudentHostelItem> phonebookStudentHostelItems;
     private PhonebookStudentHostelRV adapter;
     private RecyclerView recyclerView;
-    private String dept[] = {"CS", "EEE/INSTR", "MECH", "CHEM-ENGG", "BIO", "MATH", "PHY", "CHEM" ,"ECO", "SWD", "ADMIN", "ARC"};
+    private String dept[] = {"CS", "EEE/INSTR", "MECH", "CHEM-ENGG", "BIO", "MATH", "PHY", "CHEM", "ECO", "SWD", "ADMIN", "ARC"};
 
 //    Vector<PhonebookItem> phonebookItems = new Vector<>();
 //    Vector<PhonebookDisplayItem> phonebookDisplayItems = new Vector<>();

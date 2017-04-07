@@ -82,7 +82,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".home" />
         </activity>
-
         <activity
             android:name=".ShopList"
             android:label="@string/title_activity_shop_list"
@@ -150,6 +149,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -207,7 +207,6 @@
             android:label="@string/title_activity_edit_profile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".GalleryActivity"
             android:screenOrientation="portrait"
@@ -222,6 +221,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/infone_search_widget_info" />
         </receiver>
+
+        <activity
+            android:name=".Offers"
+            android:label="@string/title_activity_offers"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

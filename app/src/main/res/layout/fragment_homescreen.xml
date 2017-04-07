@@ -30,6 +30,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:text="Infone"
+                    android:textColor="@color/white"
                     android:textSize="35dp"
                     android:visibility="invisible" />
 
@@ -50,6 +51,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:text="0"
+                            android:textColor="@color/white"
                             android:textSize="55dp"
                             android:visibility="invisible" />
 
@@ -62,6 +64,7 @@
                             android:layout_marginTop="0dp"
                             android:text=" new contacts \n added "
                             android:textAlignment="center"
+                            android:textColor="@color/white"
                             android:textSize="18dp"
                             android:visibility="invisible" />
                     </RelativeLayout>
@@ -89,6 +92,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:text="StoreRoom"
+                    android:textColor="@color/white"
                     android:textSize="35dp"
                     android:visibility="invisible" />
 
@@ -109,6 +113,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:text="0"
+                            android:textColor="@color/white"
                             android:textSize="55dp"
                             android:visibility="invisible" />
 
@@ -121,6 +126,7 @@
                             android:layout_marginTop="0dp"
                             android:text=" new products \n for sale "
                             android:textAlignment="center"
+                            android:textColor="@color/white"
                             android:textSize="18dp"
                             android:visibility="invisible" />
                     </RelativeLayout>
@@ -154,6 +160,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:text="Events"
+                    android:textColor="@color/white"
                     android:textSize="35dp"
                     android:visibility="invisible" />
 
@@ -174,6 +181,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:text="0"
+                            android:textColor="@color/white"
                             android:textSize="55dp"
                             android:visibility="invisible" />
 
@@ -186,6 +194,7 @@
                             android:layout_marginTop="0dp"
                             android:text=" new events \n coming soon "
                             android:textAlignment="center"
+                            android:textColor="@color/white"
                             android:textSize="18dp"
                             android:visibility="invisible" />
                     </RelativeLayout>
@@ -213,6 +222,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:text="Shops"
+                    android:textColor="@color/white"
                     android:textSize="35dp"
                     android:visibility="invisible" />
 
@@ -233,6 +243,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:text="0"
+                            android:textColor="@color/white"
                             android:textSize="55dp"
                             android:visibility="invisible" />
 
@@ -245,6 +256,7 @@
                             android:layout_marginTop="0dp"
                             android:text=" recently added \n exciting offers "
                             android:textAlignment="center"
+                            android:textColor="@color/white"
                             android:textSize="18dp"
                             android:visibility="invisible" />
                     </RelativeLayout>
