@@ -42,6 +42,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,13 +60,14 @@ public class home extends AppCompatActivity
     String email = null, name = null;
 
     boolean doubleBackToExitPressedOnce = false;
+    String number = null;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
     private GoogleApiClient mGoogleApiClient;
     private ViewPager viewPager;
     private TabLayout tabLayout;
-
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private TextView username, useremail;
 
 
@@ -141,13 +143,6 @@ public class home extends AppCompatActivity
         username = (TextView) header.findViewById(R.id.textView_1);
         useremail = (TextView) header.findViewById(R.id.textView_2);
 
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                startActivity(intent);
-            }
-        });
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
@@ -171,14 +166,47 @@ public class home extends AppCompatActivity
 
             }
         };
-        if (mAuth.getCurrentUser().getDisplayName() != null)
+        if (mAuth.getCurrentUser().getDisplayName() != null && mAuth.getCurrentUser() != null)
             name = mAuth.getCurrentUser().getDisplayName();
-        if (mAuth.getCurrentUser().getEmail() != null)
+        if (mAuth.getCurrentUser().getEmail() != null && mAuth.getCurrentUser() != null)
             email = mAuth.getCurrentUser().getEmail();
         if (name != null)
             username.setText(name);
         if (email != null)
             useremail.setText(email);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+
+                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
+                    if (email != null) {
+                        if (phonebookDisplayItem.getEmail().equals(email)) {
+                            name = phonebookDisplayItem.getName();
+                            number = phonebookDisplayItem.getNumber();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseReference.keepSynced(true);
+        if (number != null)
+            // Log.v("tag",number);
+            if (number != null) {
+                header.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                        startActivity(intent);
+                    }
+                });
+            }
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
 

@@ -21,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -57,7 +56,7 @@ public class AddContact extends AppCompatActivity {
     private Uri mImageUri = null;
     private DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users");
     private ProgressDialog mProgress;
-    private RadioButton radioButtonS, radioButtonA, radioButtonO;
+    // private RadioButton radioButtonS, radioButtonA, radioButtonO;
     private String name, email, details, number, hostel, category = null;
     private CustomSpinner spinner;
     private FirebaseAuth mAuth;
@@ -113,42 +112,12 @@ public class AddContact extends AppCompatActivity {
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_number_editText);
         image = (SimpleDraweeView) findViewById(R.id.contact_image);
         image.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
-        radioButtonS = (RadioButton) findViewById(R.id.radioButton);
-        radioButtonA = (RadioButton) findViewById(R.id.radioButton2);
-        radioButtonO = (RadioButton) findViewById(R.id.radioButton3);
         spinner = (CustomSpinner) findViewById(R.id.spinner);
-        radioButtonS.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                category = "S";
-                cat = "Student";
-                hostel = "hostel";
-                spinner.setVisibility(View.VISIBLE);
-            }
-        });
 
-        radioButtonA.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                category = "A";
-                cat = "Admin";
-                hostel = "none";
-                spinner.setVisibility(View.INVISIBLE);
-            }
-        });
-
-
-        radioButtonO.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                category = "O";
-                cat = "Others";
-                hostel = "none";
-                spinner.setVisibility(View.INVISIBLE);
-
-            }
-        });
-
+        category = "S";
+        cat = "Student";
+        hostel = "hostel";
+        spinner.setVisibility(View.VISIBLE);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

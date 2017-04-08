@@ -139,10 +139,14 @@ public class Homescreen extends Fragment {
         UserStats = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                UserTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-                UserTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-                UserTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
-                UserTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                if (dataSnapshot.child("TotalNumbers").getValue() != null)
+                    UserTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                if (dataSnapshot.child("TotalEvents").getValue() != null)
+                    UserTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                if (dataSnapshot.child("TotalOffers").getValue() != null)
+                    UserTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                if (dataSnapshot.child("TotalProducts").getValue() != null)
+                    UserTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
                 setNotification();
             }
 

@@ -89,11 +89,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ShopDetails"
-            android:label="@string/title_activity_shop_details"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".AddContact"
             android:label="@string/title_activity_add_contact"
             android:screenOrientation="portrait"
