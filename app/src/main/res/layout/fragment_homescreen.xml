@@ -17,7 +17,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#B9F6CA">
+            android:background="@drawable/contacts">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -79,7 +79,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#B388FF">
+            android:background="@drawable/products">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -147,7 +147,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#FF9E80">
+            android:background="@drawable/events">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -209,7 +209,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#80D8FF">
+            android:background="@drawable/offers">
 
             <RelativeLayout
                 android:layout_width="match_parent"

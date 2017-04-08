@@ -111,7 +111,7 @@ public class Offers extends AppCompatActivity {
             shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Intent intent = new Intent(getApplicationContext(), ShopDetails.class);
+                    Intent intent = new Intent(getApplicationContext(), Shop_detail.class);
                     intent.putExtra("Name", dataSnapshot.child("name").getValue().toString());
                     intent.putExtra("Details", dataSnapshot.child("details").getValue().toString());
                     intent.putExtra("Imageurl", dataSnapshot.child("imageurl").getValue().toString());

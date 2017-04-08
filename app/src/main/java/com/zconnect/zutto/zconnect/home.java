@@ -171,7 +171,14 @@ public class home extends AppCompatActivity
 
             }
         };
-
+        if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getDisplayName() != null)
+            name = mAuth.getCurrentUser().getDisplayName();
+        if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getEmail() != null)
+            email = mAuth.getCurrentUser().getEmail();
+        if (name != null)
+            username.setText(name);
+        if (email != null)
+            useremail.setText(email);
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
 
@@ -305,12 +312,7 @@ public class home extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-        name = mAuth.getCurrentUser().getDisplayName();
-        email = mAuth.getCurrentUser().getEmail();
-        if (name != null)
-        username.setText(name);
-        if (email != null)
-        useremail.setText(email);
+
 
     }
 

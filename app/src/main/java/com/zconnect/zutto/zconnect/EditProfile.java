@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,8 +46,9 @@ import java.io.IOException;
 public class EditProfile extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
     String email;
-    String name, details, imageurl, number, hostel = null, host, category;
+    String name, details, imageurl, number = null, hostel = null, host, category;
     SimpleDraweeView simpleDraweeView;
+    Boolean flag = false;
     private FirebaseAuth mAuth;
     private Uri mImageUri = null;
     private StorageReference mStorage = FirebaseStorage.getInstance().getReference();
@@ -65,7 +67,7 @@ public class EditProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mProgress = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
@@ -98,7 +100,12 @@ public class EditProfile extends AppCompatActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
+        editTextNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplication(), "To add contact number go to Infone.", Toast.LENGTH_SHORT).show();
+            }
+        });
         simpleDraweeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,7 +161,9 @@ public class EditProfile extends AppCompatActivity {
                             }
                         }
                     }
-
+                    if (number == null) {
+                        flag = true;
+                    }
                 }
 
             }
@@ -298,6 +307,14 @@ public class EditProfile extends AppCompatActivity {
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
+        if (flag) {
+            Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+            snack.show();
+            mProgress.dismiss();
+        } else {
         if (name != null && number != null && details != null && mImageUri != null) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -351,6 +368,7 @@ public class EditProfile extends AppCompatActivity {
             mProgress.dismiss();
 
 
+        }
         }
     }
 

@@ -65,7 +65,7 @@ public class ShopListRV extends RecyclerView.Adapter<ShopListRV.ViewHolder> {
                 public void onClick(View view) {
                     ShopDetailsItem shopDetailsItem;
                     shopDetailsItem = shopListItem.get(getAdapterPosition()).getShopDetailsItem();
-                    Intent intent = new Intent(context, ShopDetails.class);
+                    Intent intent = new Intent(context, Shop_detail.class);
                     intent.putExtra("Name", shopDetailsItem.getName());
                     intent.putExtra("Details", shopDetailsItem.getDetails());
                     intent.putExtra("Imageurl", shopDetailsItem.getImageurl());
@@ -75,8 +75,8 @@ public class ShopListRV extends RecyclerView.Adapter<ShopListRV.ViewHolder> {
                     intent.putExtra("Number", shopDetailsItem.getNumber());
                     intent.putExtra("ShopId", shopDetailsItem.getShopid());
                     context.startActivity(intent);
-                    if (context instanceof ShopDetails) {
-                        ((ShopDetails) context).finish();
+                    if (context instanceof Shop_detail) {
+                        ((Shop_detail) context).finish();
                     }
                 }
             });
