@@ -21,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +57,7 @@ public class EditProfile extends AppCompatActivity {
     private android.support.design.widget.TextInputEditText editTextNumber;
     private ProgressDialog mProgress;
     private CustomSpinner spinner;
-    private RadioButton radioButtonS, radioButtonA, radioButtonO;
+    // private RadioButton radioButtonS, radioButtonA, radioButtonO;
 
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
@@ -76,9 +75,7 @@ public class EditProfile extends AppCompatActivity {
         editTextName = (TextInputEditText) findViewById(R.id.contact_edit_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_edit_number_editText);
         simpleDraweeView = (SimpleDraweeView) findViewById(R.id.contact_edit_image);
-        radioButtonS = (RadioButton) findViewById(R.id.radioButton_1);
-        radioButtonA = (RadioButton) findViewById(R.id.radioButton_2);
-        radioButtonO = (RadioButton) findViewById(R.id.radioButton_3);
+
         spinner = (CustomSpinner) findViewById(R.id.spinner1);
 //        Log.v("tag",email);
         if (toolbar != null) {
@@ -147,15 +144,15 @@ public class EditProfile extends AppCompatActivity {
                             //private method of your class
 
                             if (category.equals("S")) {
-                                radioButtonS.setChecked(true);
+                                //radioButtonS.setChecked(true);
                                 spinner.setVisibility(View.VISIBLE);
                                 host = "hostel";
                             } else if (category.equals("A")) {
-                                radioButtonA.setChecked(true);
+                                //radioButtonA.setChecked(true);
                                 spinner.setVisibility(View.INVISIBLE);
                                 host = "none";
                             } else if (category.equals("O")) {
-                                radioButtonO.setChecked(true);
+                                //radioButtonO.setChecked(true);
                                 spinner.setVisibility(View.INVISIBLE);
                                 host = "none";
                             }
@@ -175,35 +172,9 @@ public class EditProfile extends AppCompatActivity {
         });
 
         databaseReference.keepSynced(true);
-        radioButtonS.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                category = "S";
-                host = "hostel";
-                spinner.setVisibility(View.VISIBLE);
-            }
-        });
-
-        radioButtonA.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                category = "A";
-                host = "none";
-                spinner.setVisibility(View.INVISIBLE);
-            }
-        });
-
-
-        radioButtonO.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                category = "O";
-                host = "none";
-                spinner.setVisibility(View.INVISIBLE);
-
-            }
-        });
-
+        category = "S";
+        host = "hostel";
+        spinner.setVisibility(View.VISIBLE);
 
     }
 

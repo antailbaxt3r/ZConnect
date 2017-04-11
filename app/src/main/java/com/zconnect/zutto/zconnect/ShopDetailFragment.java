@@ -23,6 +23,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.GalleryFormat;
 
+import java.util.ArrayList;
+
 public class ShopDetailFragment extends Fragment {
 
     TextView name, details, number;
@@ -35,7 +37,8 @@ public class ShopDetailFragment extends Fragment {
     GalleryAdapter adapter;
     RecyclerView galleryRecycler;
     RecyclerView menuRecycler;
-
+    ArrayList<String> menuImages = new ArrayList<String>();
+    ArrayList<String> galleryImages = new ArrayList<String>();
     public ShopDetailFragment() {
         // Required empty public constructor
     }
@@ -46,17 +49,17 @@ public class ShopDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_shop_detail, container, false);
-
         galleryScroll = (HorizontalScrollView) view.findViewById(R.id.galleryScroll);
         menuScroll = (HorizontalScrollView) view.findViewById(R.id.menuScroll);
         galleryScroll.setHorizontalScrollBarEnabled(false);
         menuScroll.setHorizontalScrollBarEnabled(false);
+
         LinearLayoutManager layoutManager
-                = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+                = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         galleryRecycler = (RecyclerView) view.findViewById(R.id.galleryRecycler);
         galleryRecycler.setLayoutManager(layoutManager);
 
-        LinearLayoutManager layoutManagerMenu = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManagerMenu = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         menuRecycler = (RecyclerView) view.findViewById(R.id.menuRecycler);
         menuRecycler.setLayoutManager(layoutManagerMenu);
 
@@ -70,10 +73,11 @@ public class ShopDetailFragment extends Fragment {
         num = getActivity().getIntent().getStringExtra("Number");
         shopid = getActivity().getIntent().getStringExtra("ShopId");
 
+
         name = (TextView) view.findViewById(R.id.shop_details_name);
         details = (TextView) view.findViewById(R.id.shop_details_details);
         image = (SimpleDraweeView) view.findViewById(R.id.shop_details_image);
-//        Menu = (SimpleDraweeView) findViewById(R.id.shop_details_menu_image);
+//      Menu = (SimpleDraweeView) findViewById(R.id.shop_details_menu_image);
         number = (TextView) view.findViewById(R.id.shop_details_number);
         number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         numberlayout = (LinearLayout) view.findViewById(R.id.shop_details_num);
@@ -101,13 +105,11 @@ public class ShopDetailFragment extends Fragment {
 
         }
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child("0").child("Gallery");
-        mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child("0").child("Menu");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Gallery");
+        mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Menu");
 
         mDatabase.keepSynced(true);
         mDatabaseMenu.keepSynced(true);
-
-
         return view;
 
     }
@@ -115,36 +117,57 @@ public class ShopDetailFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        menuImages.clear();
+        galleryImages.clear();
 
 
-        FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder>(
+        FirebaseRecyclerAdapter<GalleryFormat, ShopDetailFragment.GalleryViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<GalleryFormat, ShopDetailFragment.GalleryViewHolder>(
                 GalleryFormat.class,
                 R.layout.gallery_row,
-                GalleryViewHolder.class,
+                ShopDetailFragment.GalleryViewHolder.class,
                 mDatabase
         ) {
 
-            @Override
-            protected void populateViewHolder(GalleryViewHolder viewHolder, GalleryFormat model, int position) {
 
+            @Override
+            protected void populateViewHolder(final ShopDetailFragment.GalleryViewHolder viewHolder, GalleryFormat model, int position) {
+
+                galleryImages.add(model.getImage());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity().getApplicationContext(), GalleryActivity.class);
+                        intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME, galleryImages);
+                        startActivity(intent);
+                    }
+                });
             }
 
         };
 
         galleryRecycler.setAdapter(firebaseRecyclerAdapter);
 
-        FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder> firebaseRecyclerAdapterMenu = new FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder>(
+        FirebaseRecyclerAdapter<GalleryFormat, ShopDetailFragment.GalleryViewHolder> firebaseRecyclerAdapterMenu = new FirebaseRecyclerAdapter<GalleryFormat, ShopDetailFragment.GalleryViewHolder>(
                 GalleryFormat.class,
                 R.layout.gallery_row,
-                GalleryViewHolder.class,
+                ShopDetailFragment.GalleryViewHolder.class,
                 mDatabaseMenu
         ) {
 
             @Override
-            protected void populateViewHolder(GalleryViewHolder viewHolder, GalleryFormat model, int position) {
+            protected void populateViewHolder(final ShopDetailFragment.GalleryViewHolder viewHolder, GalleryFormat model, int position) {
 
+                menuImages.add(model.getImage());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity().getApplicationContext(), GalleryActivity.class);
+                        intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME, menuImages);
+                        startActivity(intent);
+                    }
+                });
             }
 
         };
@@ -158,6 +181,7 @@ public class ShopDetailFragment extends Fragment {
 
         View mView;
 
+
         public GalleryViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
@@ -167,7 +191,6 @@ public class ShopDetailFragment extends Fragment {
 
             ImageView imageHolder = (ImageView) mView.findViewById(R.id.galleryImage);
             Picasso.with(ctx).load(ImageUrl).into(imageHolder);
-
 
         }
 

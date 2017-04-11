@@ -170,7 +170,6 @@ public class Homescreen extends Fragment {
     public void onStart() {
         super.onStart();
         if (isNetworkAvailable(getContext())) {
-
             mDatabaseStats.addValueEventListener(TotalStats);
             mDatabaseUser.addValueEventListener(UserStats);
         } else {
