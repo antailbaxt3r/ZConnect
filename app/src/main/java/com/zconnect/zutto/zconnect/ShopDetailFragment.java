@@ -104,7 +104,7 @@ public class ShopDetailFragment extends Fragment {
             });
 
         }
-
+image.setVisibility(View.GONE);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Gallery");
         mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Menu");
 
