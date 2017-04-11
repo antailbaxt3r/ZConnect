@@ -126,10 +126,12 @@ public class home extends AppCompatActivity
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            getWindow().setStatusBarColor(colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
