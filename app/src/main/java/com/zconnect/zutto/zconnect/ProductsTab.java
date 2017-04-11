@@ -3,7 +3,6 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -265,7 +264,7 @@ public class ProductsTab extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     sellerName = dataSnapshot.child("Username").getValue().toString();
                     TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-                    post_seller_name.setText("Sold By: " + sellerName);
+                    post_seller_name.setText("By: " + sellerName);
                 }
 
                 @Override
@@ -278,9 +277,7 @@ public class ProductsTab extends Fragment {
         }
 
         public void setSellerNumber(final String sellerNumber, final Context ctx) {
-            TextView post_seller_number = (TextView) mView.findViewById(R.id.sellerNumber);
-            post_seller_number.setText("Call");
-            post_seller_number.setPaintFlags(post_seller_number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            ImageView post_seller_number = (ImageView) mView.findViewById(R.id.sellerNumber);
 
             post_seller_number.setOnClickListener(new View.OnClickListener() {
                 @Override

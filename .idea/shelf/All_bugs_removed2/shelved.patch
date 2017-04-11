@@ -1,0 +1,7 @@
+Index: app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/Menu.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/Menu.java	(revision 27e1ea1d667bbfb4ea40b746eb0d8e1763afd5ce)
++++ app/src/main/java/com/zconnect/zutto/zconnect/ItemFormats/Menu.java	

@@ -143,6 +143,13 @@ public class home extends AppCompatActivity
         username = (TextView) header.findViewById(R.id.textView_1);
         useremail = (TextView) header.findViewById(R.id.textView_2);
 
+        header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                startActivity(intent);
+            }
+        });
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
@@ -166,9 +173,9 @@ public class home extends AppCompatActivity
 
             }
         };
-        if (mAuth.getCurrentUser().getDisplayName() != null && mAuth.getCurrentUser() != null)
+        if (mAuth.getCurrentUser().getDisplayName() != null)
             name = mAuth.getCurrentUser().getDisplayName();
-        if (mAuth.getCurrentUser().getEmail() != null && mAuth.getCurrentUser() != null)
+        if (mAuth.getCurrentUser().getEmail() != null)
             email = mAuth.getCurrentUser().getEmail();
         if (name != null)
             username.setText(name);
