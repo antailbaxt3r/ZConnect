@@ -1,8 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,8 +28,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
-
-import java.io.IOException;
 
 public class IndividualCategory extends AppCompatActivity {
 
@@ -107,11 +104,7 @@ public class IndividualCategory extends AppCompatActivity {
                 //viewHolder.setSwitch(model.getKey());
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
-                try {
-                    viewHolder.setImage(IndividualCategory.this, model.getImage(), model.getProductName());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                viewHolder.setImage(getApplicationContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getPhone_no());
@@ -162,7 +155,6 @@ public class IndividualCategory extends AppCompatActivity {
         public CompoundButton.OnCheckedChangeListener mListener;
         View mView;
         String[] keyList;
-        ImageView post_image;
         String ReservedUid;
         private Switch mReserve;
         private TextView ReserveStatus;
@@ -174,10 +166,7 @@ public class IndividualCategory extends AppCompatActivity {
             super(itemView);
             mView = itemView;
             mReserve = (Switch) mView.findViewById(R.id.switch1);
-            mReserve.setTextOn("Shortlisted");
-            mReserve.setTextOff("Shortlist");
             ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
-            post_image = (ImageView) mView.findViewById(R.id.postImg);
             StoreRoom.keepSynced(true);
 
         }
@@ -229,9 +218,11 @@ public class IndividualCategory extends AppCompatActivity {
 
         }
 
-        public void setImage(final Activity activity, final String image, final String name) throws IOException {
-            Picasso.with(mView.getContext()).load(image).into(post_image);
 
+        public void setImage(Context ctx, String image) {
+
+            ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
+            Picasso.with(ctx).load(image).into(post_image);
         }
 
         public void setProductPrice(String productPrice) {
@@ -261,9 +252,7 @@ public class IndividualCategory extends AppCompatActivity {
         }
 
         public void setSellerNumber(final String sellerNumber) {
-            TextView post_seller_number = (TextView) mView.findViewById(R.id.sellerNumber);
-            post_seller_number.setText("Call");
-            post_seller_number.setPaintFlags(post_seller_number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            ImageView post_seller_number = (ImageView) mView.findViewById(R.id.sellerNumber);
 
             post_seller_number.setOnClickListener(new View.OnClickListener() {
                 @Override

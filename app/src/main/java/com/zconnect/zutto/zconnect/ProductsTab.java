@@ -29,10 +29,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import java.io.IOException;
 
 
 /**
@@ -49,7 +48,6 @@ public class ProductsTab extends Fragment {
     private DatabaseReference mDatabase;
     private boolean flag = false;
     private FirebaseAuth mAuth;
-
 
     public ProductsTab() {
         // Required empty public constructor
@@ -175,7 +173,6 @@ public class ProductsTab extends Fragment {
 
         public CompoundButton.OnCheckedChangeListener mListener;
         View mView;
-
         //Switch View
         Switch mReserve;
         TextView ReserveStatus;
@@ -195,8 +192,6 @@ public class ProductsTab extends Fragment {
             super(itemView);
             mView = itemView;
             mReserve = (Switch) mView.findViewById(R.id.switch1);
-            mReserve.setTextOff("Shortlist");
-            mReserve.setTextOn("Shortlisted");
             ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
             StoreRoom.keepSynced(true);
         }
@@ -261,7 +256,6 @@ public class ProductsTab extends Fragment {
         //Set Product Price
         public void setPrice(String productPrice) {
             TextView post_name = (TextView) mView.findViewById(R.id.price);
-            post_name.setText("₹" + productPrice + "/-");
             post_name.setText("₹" + productPrice + "/-");
         }
 

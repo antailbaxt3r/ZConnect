@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -122,8 +123,13 @@ public class ReservedTab extends Fragment {
 
 
         View mView;
+        String[] keyList;
+        String ReservedUid;
         private DatabaseReference ReserveReference;
+        private Switch mReserve;
+        private TextView ReserveStatus;
         private ImageButton deleteButton;
+        private FirebaseAuth mAuth;
         private String sellerName;
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
 
