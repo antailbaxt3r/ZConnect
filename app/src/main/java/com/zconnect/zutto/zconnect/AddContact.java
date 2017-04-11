@@ -114,7 +114,6 @@ public class AddContact extends AppCompatActivity {
 
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_number_editText);
         image = (SimpleDraweeView) findViewById(R.id.contact_image);
-        image.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         spinner = (CustomSpinner) findViewById(R.id.spinner);
 
         category = "S";
@@ -151,7 +150,6 @@ public class AddContact extends AppCompatActivity {
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1, 1)
-                    .setBackgroundColor(R.color.white)
                     .setSnapRadius(2)
                     .start(this);
         }
@@ -165,7 +163,7 @@ public class AddContact extends AppCompatActivity {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 150, 150, true);
                     String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap2, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);

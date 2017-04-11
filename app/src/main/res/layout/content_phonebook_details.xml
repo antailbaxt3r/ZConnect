@@ -11,12 +11,12 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/contact_details_display_image"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/border"
-        android:padding="2dp"
-        app:roundedCornerRadius="12dp" />
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/defaultprofile"
+        app:roundAsCircle="true" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/contact_details_name_text_input_layout"

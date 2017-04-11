@@ -181,7 +181,7 @@ public class home extends AppCompatActivity
             username.setText(name);
         if (email != null)
             useremail.setText(email);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {

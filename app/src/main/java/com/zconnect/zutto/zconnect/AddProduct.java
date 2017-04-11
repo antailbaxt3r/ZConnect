@@ -266,15 +266,24 @@ public class AddProduct extends AppCompatActivity {
                     Bitmap bitmap2 = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     bitmap2.compress(Bitmap.CompressFormat.JPEG, 10, out);
-                    Bitmap bitmap = Bitmap.createScaledBitmap(bitmap2, 600, 400, true);
+                    final int maxSize = 400;
+                    int outWidth;
+                    int outHeight;
+                    int inWidth = bitmap2.getWidth();
+                    int inHeight = bitmap2.getHeight();
+                    if (inWidth > inHeight) {
+                        outWidth = maxSize;
+                        outHeight = (inHeight * maxSize) / inWidth;
+                    } else {
+                        outHeight = maxSize;
+                        outWidth = (inWidth * maxSize) / inHeight;
+                    }
 
-
-
+                    Bitmap bitmap = Bitmap.createScaledBitmap(bitmap2, outWidth, outHeight, true);
                     String path = MediaStore.Images.Media.insertImage(AddProduct.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     mAddImage.setImageURI(mImageUri);
-
 
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -140,7 +140,9 @@ public class EditProfile extends AppCompatActivity {
                             simpleDraweeView.setImageURI(Uri.parse(imageurl));
                             editTextDetails.setText(details);
                             spinner.setSelection(getIndex(spinner, hostel));
-
+                            if (number == null) {
+                                flag = true;
+                            }
                             //private method of your class
 
                             if (category.equals("S")) {
@@ -158,9 +160,7 @@ public class EditProfile extends AppCompatActivity {
                             }
                         }
                     }
-                    if (number == null) {
-                        flag = true;
-                    }
+
                 }
 
             }
