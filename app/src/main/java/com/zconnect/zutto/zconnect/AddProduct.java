@@ -43,9 +43,12 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddProduct extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
+    DatabaseReference mFeaturesStats;
     private Uri mImageUri = null;
     private ImageButton mAddImage;
     private Button mPostBtn;
@@ -60,6 +63,7 @@ public class AddProduct extends AppCompatActivity {
     private CustomSpinner spinner1;
     private FirebaseAuth mAuth;
     private String sellerName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +165,7 @@ public class AddProduct extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
         mUsername = FirebaseDatabase.getInstance().getReference().child("Users");
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
         String category = spinner1.getSelectedItem().toString();
         mUsername.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -201,6 +206,26 @@ public class AddProduct extends AppCompatActivity {
                     newPost2.child("feature").setValue("Event");
                     newPost2.child("id").setValue(key);
                     newPost2.child("desc2").setValue(productPriceValue);
+
+                    // Adding stats
+
+                    mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Integer TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                            TotalProducts = TotalProducts + 1;
+                            DatabaseReference newPost = mFeaturesStats;
+                            Map<String, Object> taskMap = new HashMap<String, Object>();
+                            taskMap.put("TotalProducts", TotalProducts);
+                            newPost.updateChildren(taskMap);
+                        }
+
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
 
                     mProgress.dismiss();
                     startActivity(new Intent(AddProduct.this, TabStoreRoom.class));

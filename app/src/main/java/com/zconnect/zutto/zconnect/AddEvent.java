@@ -46,12 +46,15 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddEvent extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
     String eventDate;
     String dateString;
     boolean flag = false;
+    DatabaseReference mFeaturesStats;
     private Uri mImageUri = null;
     private SimpleDraweeView mAddImage;
     private EditText mEventName;
@@ -206,6 +209,7 @@ public class AddEvent extends AppCompatActivity {
 
         mProgress.setMessage("Posting Event..");
         mProgress.show();
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
         final String eventNameValue = mEventName.getText().toString().trim();
         final String eventDescriptionValue = mEventDescription.getText().toString().trim();
 
@@ -235,6 +239,26 @@ public class AddEvent extends AppCompatActivity {
                         newPost2.child("feature").setValue("Event");
                         newPost2.child("id").setValue(key);
                         newPost2.child("desc2").setValue(eventDate);
+
+                        // Adding stats
+
+                        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Integer TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                                TotalEvents = TotalEvents + 1;
+                                DatabaseReference newPost = mFeaturesStats;
+                                Map<String, Object> taskMap = new HashMap<String, Object>();
+                                taskMap.put("TotalEvents", TotalEvents);
+                                newPost.updateChildren(taskMap);
+                            }
+
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
 
                     } else {
                         DatabaseReference newPost = mDatabase.push();

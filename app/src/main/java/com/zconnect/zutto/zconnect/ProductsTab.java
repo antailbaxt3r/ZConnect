@@ -74,7 +74,6 @@ public class ProductsTab extends Fragment {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         mDatabase.keepSynced(true);
 
-        mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
         mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");

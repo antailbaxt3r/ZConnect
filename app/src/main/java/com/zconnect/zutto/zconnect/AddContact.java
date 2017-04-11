@@ -40,12 +40,15 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddContact extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
     private static final int GALLERY_REQUEST = 7;
     SimpleDraweeView image;
     Uri imageUri;
+    DatabaseReference mFeaturesStats;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
@@ -217,6 +220,7 @@ public class AddContact extends AppCompatActivity {
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
 
         if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && mImageUri != null) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
@@ -240,9 +244,29 @@ public class AddContact extends AppCompatActivity {
                         newPost.child("hostel").setValue(hostel);
                     }
 
+                    mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                            TotalNumbers = TotalNumbers + 1;
+                            DatabaseReference newPost = mFeaturesStats;
+                            Map<String, Object> taskMap = new HashMap<String, Object>();
+                            taskMap.put("TotalNumbers", TotalNumbers);
+                            newPost.updateChildren(taskMap);
+                        }
+
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
 
                     mProgress.dismiss();
+
                     startActivity(new Intent(AddContact.this, Phonebook.class));
+                    finish();
                 }
             });
         } else {
