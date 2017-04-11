@@ -84,6 +84,10 @@ public class Shop extends AppCompatActivity {
             Intent searchintent = new Intent(this, ShopSearch.class);
             startActivity(searchintent);
         }
+        if (id==R.id.action_offer){
+            Intent intent=new Intent(this,Offers.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
     @Override
