@@ -4,15 +4,15 @@ package com.zconnect.zutto.zconnect.ItemFormats;
  * Created by Lokesh Garg on 21-03-2017.
  */
 
-public class menu {
+public class Menu {
 
     String imageurl;
 
-    public menu(String imageurl) {
+    public Menu(String imageurl) {
         this.imageurl = imageurl;
     }
 
-    public menu() {
+    public Menu() {
     }
 
     public String getImageurl() {
