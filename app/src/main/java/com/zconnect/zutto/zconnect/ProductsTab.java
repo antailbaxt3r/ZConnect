@@ -32,6 +32,8 @@ import com.zconnect.zutto.zconnect.ItemFormats.Product;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.io.IOException;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -120,11 +122,15 @@ public class ProductsTab extends Fragment {
                 viewHolder.defaultSwitch(model.getKey(), getContext());
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
-                viewHolder.setImage(getContext(), model.getImage());
+                try {
+                    viewHolder.setImage(getContext(), model.getImage(), model.getProductName());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getPhone_no(), getContext());
-
+                viewHolder.defaultSwitch(model.getKey(), viewHolder.mView.getContext());
 
                 viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -139,12 +145,12 @@ public class ProductsTab extends Fragment {
                                     if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                         mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
                                         flag = false;
-                                        viewHolder.ReserveStatus.setText("Shortlisted");
+                                        viewHolder.mReserve.setText("Shortlisted");
                                         viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.teal600));
                                     } else {
-
-                                        mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getDisplayName());
-                                        viewHolder.ReserveStatus.setText("Shortlisted");
+                                        viewHolder.mReserve.setText("Shortlist");
+                                        mDatabase.child(model.getKey()).child("UsersReserved")
+                                                .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
                                         viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
                                         flag = false;
                                     }
@@ -169,6 +175,7 @@ public class ProductsTab extends Fragment {
 
         public CompoundButton.OnCheckedChangeListener mListener;
         View mView;
+
         //Switch View
         Switch mReserve;
         TextView ReserveStatus;
@@ -188,6 +195,8 @@ public class ProductsTab extends Fragment {
             super(itemView);
             mView = itemView;
             mReserve = (Switch) mView.findViewById(R.id.switch1);
+            mReserve.setTextOff("Shortlist");
+            mReserve.setTextOn("Shortlisted");
             ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
             StoreRoom.keepSynced(true);
         }
@@ -206,12 +215,12 @@ public class ProductsTab extends Fragment {
                     mReserve.setOnCheckedChangeListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
                         mReserve.setChecked(true);
-                        ReserveStatus.setText("Shortlisted");
+                        mReserve.setText("Shortlisted");
                         ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
 
                     } else {
                         mReserve.setChecked(false);
-                        ReserveStatus.setText("Shortlist");
+                        mReserve.setText("Shortlist");
                         ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
                     }
                     mReserve.setOnCheckedChangeListener(mListener);
@@ -240,21 +249,22 @@ public class ProductsTab extends Fragment {
             TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
             post_desc.setText(productDesc);
 
+
         }
 
         //Set Product Image
-        public void setImage(Context ctx, String image) {
-
+        public void setImage(final Context ctx, final String image, final String name) throws IOException {
             ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
             Picasso.with(ctx).load(image).into(post_image);
-
         }
 
         //Set Product Price
         public void setPrice(String productPrice) {
             TextView post_name = (TextView) mView.findViewById(R.id.price);
             post_name.setText("₹" + productPrice + "/-");
+            post_name.setText("₹" + productPrice + "/-");
         }
+
 
         public void setSellerName(String postedBy) {
 
