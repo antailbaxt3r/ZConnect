@@ -169,7 +169,7 @@ public class Homescreen extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (isNetworkAvailable(getContext())) {
+        if (isNetworkAvailable(getContext())&&user!=null) {
             mDatabaseStats.addValueEventListener(TotalStats);
             mDatabaseUser.addValueEventListener(UserStats);
         } else {
@@ -180,9 +180,10 @@ public class Homescreen extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        mDatabaseUser.removeEventListener(UserStats);
-        mDatabaseStats.removeEventListener(TotalStats);
-    }
+if(user!=null) {
+    mDatabaseUser.removeEventListener(UserStats);
+    mDatabaseStats.removeEventListener(TotalStats);
+}   }
 
     public void setNotification() {
 

@@ -173,9 +173,9 @@ public class home extends AppCompatActivity
 
             }
         };
-        if (mAuth.getCurrentUser().getDisplayName() != null)
+        if (mAuth.getCurrentUser()!=null &&mAuth.getCurrentUser().getDisplayName() != null)
             name = mAuth.getCurrentUser().getDisplayName();
-        if (mAuth.getCurrentUser().getEmail() != null)
+        if (mAuth.getCurrentUser()!=null &&mAuth.getCurrentUser().getEmail() != null)
             email = mAuth.getCurrentUser().getEmail();
         if (name != null)
             username.setText(name);
