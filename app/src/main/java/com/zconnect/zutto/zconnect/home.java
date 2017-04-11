@@ -58,7 +58,7 @@ public class home extends AppCompatActivity
     ActionBarDrawerToggle toggle;
 
     String email = null, name = null;
-
+Boolean flag=false;
     boolean doubleBackToExitPressedOnce = false;
     String number = null;
     private FirebaseAuth mAuth;
@@ -145,13 +145,7 @@ public class home extends AppCompatActivity
         username = (TextView) header.findViewById(R.id.textView_1);
         useremail = (TextView) header.findViewById(R.id.textView_2);
 
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                startActivity(intent);
-            }
-        });
+
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
@@ -193,6 +187,7 @@ public class home extends AppCompatActivity
                         if (phonebookDisplayItem.getEmail().equals(email)) {
                             name = phonebookDisplayItem.getName();
                             number = phonebookDisplayItem.getNumber();
+                            flag= true;
                         }
                     }
                 }
@@ -205,9 +200,8 @@ public class home extends AppCompatActivity
         });
 
         databaseReference.keepSynced(true);
-        if (number != null)
-            // Log.v("tag",number);
-            if (number != null) {
+        if (flag)
+        {
                 header.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

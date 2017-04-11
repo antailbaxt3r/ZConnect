@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -219,8 +220,9 @@ public class AddContact extends AppCompatActivity {
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
-
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && hostel != null && mImageUri != null) {
+        hostel = String.valueOf(spinner.getSelectedItem());
+    //  Log.v("tag",hostel);
+        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem()!=null&& mImageUri != null) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -235,12 +237,9 @@ public class AddContact extends AppCompatActivity {
                     newPost.child("number").setValue(number);
                     newPost.child("category").setValue(category);
                     newPost.child("email").setValue(email);
-                    if (hostel.equals("none")) {
+
                         newPost.child("hostel").setValue(hostel);
-                    } else {
-                        hostel = String.valueOf(spinner.getSelectedItem());
-                        newPost.child("hostel").setValue(hostel);
-                    }
+
 
 
                     mProgress.dismiss();
