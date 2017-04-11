@@ -5,51 +5,51 @@ package com.zconnect.zutto.zconnect.ItemFormats;
  */
 
 public class ShopOfferItemFormat {
-    String Title;
-    String Description;
-    String ImageUrl;
-    String shopId;
+    String name;
+    String desc;
+    String image;
+    String ShopKey;
 
-    public ShopOfferItemFormat(String title, String description, String imageUrl, String shopId) {
-        Title = title;
-        Description = description;
-        ImageUrl = imageUrl;
-        this.shopId = shopId;
+    public ShopOfferItemFormat(String name, String desc, String image, String ShopKey) {
+        name = name;
+        desc = desc;
+        image = image;
+        this.ShopKey = ShopKey;
     }
 
     public ShopOfferItemFormat() {
 
     }
 
-    public String getTitle() {
-        return Title;
+    public String getname() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        Title = title;
+    public void setname(String name) {
+        name = name;
     }
 
-    public String getDescription() {
-        return Description;
+    public String getdesc() {
+        return desc;
     }
 
-    public void setDescription(String description) {
-        Description = description;
+    public void setdesc(String desc) {
+        desc = desc;
     }
 
-    public String getImageUrl() {
-        return ImageUrl;
+    public String getimage() {
+        return image;
     }
 
-    public void setImageUrl(String imageUrl) {
-        ImageUrl = imageUrl;
+    public void setimage(String image) {
+        image = image;
     }
 
-    public String getShopId() {
-        return shopId;
+    public String getShopKey() {
+        return ShopKey;
     }
 
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
+    public void setShopKey(String ShopKey) {
+        this.ShopKey = ShopKey;
     }
 }
