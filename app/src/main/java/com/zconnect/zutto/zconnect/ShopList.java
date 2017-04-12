@@ -34,6 +34,7 @@ public class ShopList extends AppCompatActivity {
     private RecyclerView recycleView;
     private ProgressBar progressBar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +74,7 @@ public class ShopList extends AppCompatActivity {
         adapter = new ShopListRV(this, shopListItems);
         recycleView.setAdapter(adapter);
         databaseReference.keepSynced(true);
+
     }
 
     @Override

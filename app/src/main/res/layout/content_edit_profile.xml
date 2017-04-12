@@ -11,13 +11,12 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/contact_edit_image"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_margin="10dp"
-        android:clickable="false"
-        android:background="@drawable/border"
-        android:padding="2dp"
-        app:roundedCornerRadius="5dp" />
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/defaultprofile"
+        app:roundAsCircle="true" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/contact_edit_name_text_input_layout"
@@ -37,11 +36,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.92"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
             android:clickable="false"
             android:cursorVisible="false"
             android:editable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:hint="Name"
             android:inputType="textPersonName"
             android:text=""

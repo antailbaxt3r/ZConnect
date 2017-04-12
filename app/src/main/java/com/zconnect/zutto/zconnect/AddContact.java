@@ -17,7 +17,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,12 +40,15 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddContact extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
     private static final int GALLERY_REQUEST = 7;
     SimpleDraweeView image;
     Uri imageUri;
+    DatabaseReference mFeaturesStats;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
@@ -90,7 +92,6 @@ public class AddContact extends AppCompatActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
         editTextDetails = (TextInputEditText) findViewById(R.id.contact_details_editText);
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_email_editText);
         editTextName = (TextInputEditText) findViewById(R.id.contact_name_editText);
@@ -114,7 +115,6 @@ public class AddContact extends AppCompatActivity {
 
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_number_editText);
         image = (SimpleDraweeView) findViewById(R.id.contact_image);
-        image.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         spinner = (CustomSpinner) findViewById(R.id.spinner);
 
         category = "S";
@@ -151,7 +151,6 @@ public class AddContact extends AppCompatActivity {
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1, 1)
-                    .setBackgroundColor(R.color.white)
                     .setSnapRadius(2)
                     .start(this);
         }
@@ -165,7 +164,7 @@ public class AddContact extends AppCompatActivity {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 150, 150, true);
                     String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap2, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
@@ -221,8 +220,10 @@ public class AddContact extends AppCompatActivity {
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
         hostel = String.valueOf(spinner.getSelectedItem());
-    //  Log.v("tag",hostel);
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem()!=null&& mImageUri != null) {
+        //  Log.v("tag",hostel);
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+
+        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && mImageUri != null) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -238,12 +239,31 @@ public class AddContact extends AppCompatActivity {
                     newPost.child("category").setValue(category);
                     newPost.child("email").setValue(email);
 
-                        newPost.child("hostel").setValue(hostel);
+                    newPost.child("hostel").setValue(hostel);
 
+
+                    mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                            TotalNumbers = TotalNumbers + 1;
+                            DatabaseReference newPost = mFeaturesStats;
+                            Map<String, Object> taskMap = new HashMap<String, Object>();
+                            taskMap.put("TotalNumbers", TotalNumbers);
+                            newPost.updateChildren(taskMap);
+                        }
+
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
 
 
                     mProgress.dismiss();
                     startActivity(new Intent(AddContact.this, Phonebook.class));
+                    finish();
                 }
             });
         } else {

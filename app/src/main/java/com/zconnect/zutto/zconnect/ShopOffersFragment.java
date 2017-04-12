@@ -18,9 +18,6 @@ import com.zconnect.zutto.zconnect.ItemFormats.ShopOfferItemFormat;
 
 import java.util.Vector;
 
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-
 public class ShopOffersFragment extends Fragment {
     TextView defaultmsg;
     RecyclerView recyclerView;

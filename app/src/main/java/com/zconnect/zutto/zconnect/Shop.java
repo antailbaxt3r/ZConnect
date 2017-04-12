@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.ShopCategoryItemCategory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import static android.view.View.INVISIBLE;
@@ -29,10 +33,14 @@ import static android.view.View.VISIBLE;
 
 public class Shop extends AppCompatActivity {
     ShopCategoryRV adapter;
+    DatabaseReference mUserStats, mFeaturesStats;
+    FirebaseUser user;
+    String TotalOffers;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Shop").child("Category");
     private Vector<ShopCategoryItemCategory> shopCategoryItemCategories = new Vector<>();
     private RecyclerView recycleView;
     private ProgressBar progressBar;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +78,27 @@ public class Shop extends AppCompatActivity {
         adapter = new ShopCategoryRV(this, shopCategoryItemCategories);
         recycleView.setAdapter(adapter);
         databaseReference.keepSynced(true);
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+
+        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                TotalOffers = dataSnapshot.child("TotalOffers").getValue().toString();
+                DatabaseReference newPost = mUserStats;
+                Map<String, Object> taskMap = new HashMap<String, Object>();
+                taskMap.put("TotalOffers", TotalOffers);
+                newPost.updateChildren(taskMap);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

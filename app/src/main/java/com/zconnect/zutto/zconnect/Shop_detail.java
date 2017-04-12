@@ -23,7 +23,7 @@ import java.util.List;
 
 public class Shop_detail extends AppCompatActivity {
 
-    String name,imageurl;
+    String name, imageurl;
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
@@ -58,14 +58,14 @@ public class Shop_detail extends AppCompatActivity {
             });
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        collapsingToolbarLayout=(CollapsingToolbarLayout)findViewById(R.id.shop_details_collapsing_toolbar);
-        simpleDraweeView=(SimpleDraweeView)findViewById(R.id.activity_shop_details_backdrop);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.shop_details_collapsing_toolbar);
+        simpleDraweeView = (SimpleDraweeView) findViewById(R.id.activity_shop_details_backdrop);
         name = getIntent().getStringExtra("Name");
-        imageurl=getIntent().getStringExtra("Imageurl");
+        imageurl = getIntent().getStringExtra("Imageurl");
         if (name != null)
             getSupportActionBar().setTitle(null);
-        if (imageurl!=null){
-           simpleDraweeView.setImageURI(Uri.parse(imageurl));
+        if (imageurl != null) {
+            simpleDraweeView.setImageURI(Uri.parse(imageurl));
             collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         }
         viewPager = (ViewPager) findViewById(R.id.container);

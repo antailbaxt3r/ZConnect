@@ -57,7 +57,6 @@ public class OpenEventDetail extends AppCompatActivity {
         }
 
 
-
 //      Event = (TextView) findViewById(R.id.event);
         EventImage = (ImageView) findViewById(R.id.EventImage);
         EventDescription = (TextView) findViewById(R.id.description);
