@@ -70,6 +70,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         i.putExtra("image", recentsItemFormats.get(getAdapterPosition()).getImageurl());
                         context.startActivity(i);
                     }
+                    else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
+                        Intent intent= new Intent(context,TabStoreRoom.class);
+                        context.startActivity(intent);
+                    }
+                    else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Shop")){
+                        Intent intent= new Intent(context,Shop.class);
+                        context.startActivity(intent);
+                    }
                 }
             });
         }
