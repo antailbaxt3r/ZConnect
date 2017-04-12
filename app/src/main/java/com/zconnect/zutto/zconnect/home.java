@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -58,7 +59,7 @@ public class home extends AppCompatActivity
     ActionBarDrawerToggle toggle;
 
     String email = null, name = null;
-    Boolean flag = false;
+    Boolean flag=false;
     boolean doubleBackToExitPressedOnce = false;
     String number = null;
     private FirebaseAuth mAuth;
@@ -177,38 +178,18 @@ public class home extends AppCompatActivity
             username.setText(name);
         if (email != null)
             useremail.setText(email);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
-                    if (email != null) {
-                        if (phonebookDisplayItem.getEmail().equals(email)) {
-                            name = phonebookDisplayItem.getName();
-                            number = phonebookDisplayItem.getNumber();
-                            flag = true;
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         databaseReference.keepSynced(true);
-        if (flag) {
+
                 header.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if(number!=null){
                         Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                        startActivity(intent);
+                        startActivity(intent);}
                     }
                 });
-            }
+
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
 
@@ -342,6 +323,31 @@ public class home extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+        if (mAuth.getCurrentUser()!=null &&mAuth.getCurrentUser().getEmail() != null)
+            email = mAuth.getCurrentUser().getEmail();
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+
+                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
+
+                    if (email!=null&&phonebookDisplayItem.getEmail()!=null&&phonebookDisplayItem.getEmail().equals(email)) {
+                        name = phonebookDisplayItem.getName();
+                        number = phonebookDisplayItem.getNumber();
+                        flag= true;
+                        Log.v("Tag",number);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
 
     }
