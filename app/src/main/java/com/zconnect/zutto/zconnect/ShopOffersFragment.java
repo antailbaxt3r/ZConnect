@@ -49,6 +49,7 @@ public class ShopOffersFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         //Setup layout manager. VERY IMP ALWAYS
         adapter = new ShopOfferRV(getContext(), shopOfferItemFormats);
+
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -61,24 +62,37 @@ public class ShopOffersFragment extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                defaultmsg.setVisibility(VISIBLE);
+                defaultmsg.setVisibility(View.INVISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
                 shopOfferItemFormats.clear();
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
+                    ShopOfferItemFormat shopOfferItemFormat = shot.getValue(ShopOfferItemFormat.class);
+                    if (shopOfferItemFormat.getShopKey().equals(shopid)) {
+                        shopOfferItemFormats.add(shopOfferItemFormat);
+                    }
 
                 }
 
-                adapter.notifyDataSetChanged();
-                defaultmsg.setVisibility(INVISIBLE);
+                // Need to add empty search result log message
+                if (shopOfferItemFormats.isEmpty()) {
+                    defaultmsg.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.INVISIBLE);
+
+                } else {
+
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
+
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                defaultmsg.setVisibility(INVISIBLE);
+                //defaultmsg.setVisibility(INVISIBLE);
             }
         });
-
 
     }
 

@@ -8,48 +8,49 @@ public class ShopOfferItemFormat {
     String name;
     String desc;
     String image;
-    String ShopKey;
+    String shopKey;
 
-    public ShopOfferItemFormat(String name, String desc, String image, String ShopKey) {
-        name = name;
-        desc = desc;
-        image = image;
-        this.ShopKey = ShopKey;
+    public ShopOfferItemFormat(String name, String desc, String image, String shopKey) {
+        this.name = name;
+        this.desc = desc;
+        this.image = image;
+        this.shopKey = shopKey;
     }
 
     public ShopOfferItemFormat() {
 
     }
 
-    public String getname() {
+
+    public String getName() {
         return name;
     }
 
-    public void setname(String name) {
-        name = name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getdesc() {
+    public String getDesc() {
         return desc;
     }
 
-    public void setdesc(String desc) {
-        desc = desc;
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
-    public String getimage() {
+    public String getImage() {
         return image;
     }
 
-    public void setimage(String image) {
-        image = image;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getShopKey() {
-        return ShopKey;
+        return shopKey;
     }
 
-    public void setShopKey(String ShopKey) {
-        this.ShopKey = ShopKey;
+    public void setShopKey(String shopKey) {
+        this.shopKey = shopKey;
     }
 }

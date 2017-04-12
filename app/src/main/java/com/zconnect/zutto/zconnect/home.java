@@ -58,7 +58,7 @@ public class home extends AppCompatActivity
     ActionBarDrawerToggle toggle;
 
     String email = null, name = null;
-
+Boolean flag=false;
     boolean doubleBackToExitPressedOnce = false;
     String number = null;
     private FirebaseAuth mAuth;
@@ -126,10 +126,12 @@ public class home extends AppCompatActivity
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            getWindow().setStatusBarColor(colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -143,13 +145,7 @@ public class home extends AppCompatActivity
         username = (TextView) header.findViewById(R.id.textView_1);
         useremail = (TextView) header.findViewById(R.id.textView_2);
 
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                startActivity(intent);
-            }
-        });
+
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
@@ -191,6 +187,7 @@ public class home extends AppCompatActivity
                         if (phonebookDisplayItem.getEmail().equals(email)) {
                             name = phonebookDisplayItem.getName();
                             number = phonebookDisplayItem.getNumber();
+                            flag= true;
                         }
                     }
                 }
@@ -203,9 +200,8 @@ public class home extends AppCompatActivity
         });
 
         databaseReference.keepSynced(true);
-        if (number != null)
-            // Log.v("tag",number);
-            if (number != null) {
+        if (flag)
+        {
                 header.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

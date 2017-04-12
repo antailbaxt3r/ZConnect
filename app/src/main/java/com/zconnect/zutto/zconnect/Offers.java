@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,12 +23,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.OfferFormat;
+import com.zconnect.zutto.zconnect.ItemFormats.ShopOfferItemFormat;
+
+import java.util.Vector;
 
 public class Offers extends AppCompatActivity {
 
     RecyclerView offersRecycler;
     DatabaseReference offersDatabase;
+    TextView defaultmsg;
     LinearLayoutManager offersLinearLayoutManager;
+    Vector<ShopOfferItemFormat>shopOfferItemFormats=new Vector<>();
+    ShopOfferRV adapter;
 
 
     @Override
@@ -52,18 +59,21 @@ public class Offers extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            getWindow().setStatusBarColor(colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        offersRecycler = (RecyclerView) findViewById(R.id.offersRecycler);
-        offersDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Offers");
-        offersLinearLayoutManager = new LinearLayoutManager(this);
-        offersLinearLayoutManager.setReverseLayout(true);
-        offersLinearLayoutManager.setStackFromEnd(true);
-        offersLinearLayoutManager.scrollToPosition(1);
 
+        offersRecycler = (RecyclerView) findViewById(R.id.offersRecycler);
+        defaultmsg=(TextView)findViewById(R.id.shop_errorMessage1);
+        offersDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Offers");
+
+adapter=new ShopOfferRV(this,shopOfferItemFormats);
+        offersRecycler.setHasFixedSize(true);
+        offersRecycler.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
+        offersRecycler.setAdapter(adapter);
         offersDatabase.keepSynced(true);
 
 
@@ -73,77 +83,40 @@ public class Offers extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<OfferFormat, offerViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<OfferFormat, offerViewHolder>(
-                OfferFormat.class,
-                R.layout.events_row,
-                offerViewHolder.class,
-                offersDatabase
-        ) {
+        offersDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            protected void populateViewHolder(offerViewHolder viewHolder, OfferFormat model, int position) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                defaultmsg.setVisibility(View.INVISIBLE);
+                offersRecycler.setVisibility(View.VISIBLE);
+                shopOfferItemFormats.clear();
 
-                viewHolder.setTitle(model.getTitle());
-                viewHolder.setDescription(model.getDescription());
-                viewHolder.setImage(model.getImageUrl(), getApplicationContext());
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    ShopOfferItemFormat shopOfferItemFormat = shot.getValue(ShopOfferItemFormat.class);
+
+                        shopOfferItemFormats.add(shopOfferItemFormat);
+                    }
+
+
+
+                // Need to add empty search result log message
+                if (shopOfferItemFormats.isEmpty()) {
+                    defaultmsg.setVisibility(View.VISIBLE);
+                    offersRecycler.setVisibility(View.INVISIBLE);
+
+                } else {
+
+                    offersRecycler.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
+
+
             }
 
-
-        };
-
-        offersRecycler.setAdapter(firebaseRecyclerAdapter);
-
-    }
-
-    public class offerViewHolder extends RecyclerView.ViewHolder {
-
-        DatabaseReference shopReference;
-        View mView;
-
-        public offerViewHolder(View itemView) {
-            super(itemView);
-            mView = itemView;
-        }
-
-        public void setLink(String ShopNo) {
-
-            shopReference = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(ShopNo);
-
-            shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Intent intent = new Intent(getApplicationContext(), Shop_detail.class);
-                    intent.putExtra("Name", dataSnapshot.child("name").getValue().toString());
-                    intent.putExtra("Details", dataSnapshot.child("details").getValue().toString());
-                    intent.putExtra("Imageurl", dataSnapshot.child("imageurl").getValue().toString());
-                    intent.putExtra("Lat", dataSnapshot.child("lat").getValue().toString());
-                    intent.putExtra("Lon", dataSnapshot.child("lon").getValue().toString());
-                    intent.putExtra("Number", dataSnapshot.child("number").getValue().toString());
-                    intent.putExtra("ShopId", dataSnapshot.child("shopid").getValue().toString());
-                    startActivity(intent);
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-
-        }
-
-        public void setTitle(String Title) {
-            TextView TitleText = (TextView) mView.findViewById(R.id.offerTitle);
-        }
-
-        public void setDescription(String Description) {
-            TextView DescriptionText = (TextView) mView.findViewById(R.id.offerDescription);
-        }
-
-        public void setImage(String ImageUrl, Context ctx) {
-            ImageView OfferImageView = (ImageView) mView.findViewById(R.id.offerImage);
-            Picasso.with(ctx).load(ImageUrl).into(OfferImageView);
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //defaultmsg.setVisibility(INVISIBLE);
+            }
+        });
 
     }
 

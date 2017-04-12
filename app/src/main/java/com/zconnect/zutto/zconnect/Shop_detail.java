@@ -1,7 +1,10 @@
 package com.zconnect.zutto.zconnect;
 
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,22 +16,39 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Shop_detail extends AppCompatActivity {
 
-    String name;
+    String name,imageurl;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+
+    private SimpleDraweeView simpleDraweeView;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_detail);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.shop_details_toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
         setSupportActionBar(toolbar);
+
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -38,24 +58,21 @@ public class Shop_detail extends AppCompatActivity {
             });
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            getWindow().setStatusBarColor(colorPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
+        collapsingToolbarLayout=(CollapsingToolbarLayout)findViewById(R.id.shop_details_collapsing_toolbar);
+        simpleDraweeView=(SimpleDraweeView)findViewById(R.id.activity_shop_details_backdrop);
         name = getIntent().getStringExtra("Name");
+        imageurl=getIntent().getStringExtra("Imageurl");
         if (name != null)
-            getSupportActionBar().setTitle(name);
+            getSupportActionBar().setTitle(null);
+        if (imageurl!=null){
+           simpleDraweeView.setImageURI(Uri.parse(imageurl));
+            collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+        }
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        setSupportActionBar(toolbar);
+
 
         setupViewPager(viewPager);
 
