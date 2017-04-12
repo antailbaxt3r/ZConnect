@@ -58,7 +58,7 @@ public class home extends AppCompatActivity
     ActionBarDrawerToggle toggle;
 
     String email = null, name = null;
-Boolean flag=false;
+    Boolean flag = false;
     boolean doubleBackToExitPressedOnce = false;
     String number = null;
     private FirebaseAuth mAuth;
@@ -187,7 +187,7 @@ Boolean flag=false;
                         if (phonebookDisplayItem.getEmail().equals(email)) {
                             name = phonebookDisplayItem.getName();
                             number = phonebookDisplayItem.getNumber();
-                            flag= true;
+                            flag = true;
                         }
                     }
                 }
@@ -200,8 +200,7 @@ Boolean flag=false;
         });
 
         databaseReference.keepSynced(true);
-        if (flag)
-        {
+        if (flag) {
                 header.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.textservice.TextInfo;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -40,7 +39,7 @@ public class ShopOfferRV extends RecyclerView.Adapter<ShopOfferRV.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ShopOfferRV.ViewHolder holder, int position) {
-holder.title.setText(shopOfferItemFormats.get(position).getName());
+        holder.title.setText(shopOfferItemFormats.get(position).getName());
         holder.desc.setText(shopOfferItemFormats.get(position).getDesc());
         holder.simpleDraweeView.setImageURI(Uri.parse(shopOfferItemFormats.get(position).getImage()));
     }
@@ -52,13 +51,13 @@ holder.title.setText(shopOfferItemFormats.get(position).getName());
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-TextView title,desc;
+        TextView title, desc;
         SimpleDraweeView simpleDraweeView;
         public ViewHolder(View itemView) {
             super(itemView);
-title=(TextView)itemView.findViewById(R.id.offerTitle);
-            desc=(TextView)itemView.findViewById(R.id.offerDescription);
-            simpleDraweeView=(SimpleDraweeView)itemView.findViewById(R.id.offerImage);
+            title = (TextView) itemView.findViewById(R.id.offerTitle);
+            desc = (TextView) itemView.findViewById(R.id.offerDescription);
+            simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.offerImage);
         }
     }
 }

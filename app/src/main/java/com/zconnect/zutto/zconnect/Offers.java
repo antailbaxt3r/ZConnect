@@ -1,7 +1,5 @@
 package com.zconnect.zutto.zconnect;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -12,17 +10,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
-import com.zconnect.zutto.zconnect.ItemFormats.OfferFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.ShopOfferItemFormat;
 
 import java.util.Vector;
@@ -33,7 +27,7 @@ public class Offers extends AppCompatActivity {
     DatabaseReference offersDatabase;
     TextView defaultmsg;
     LinearLayoutManager offersLinearLayoutManager;
-    Vector<ShopOfferItemFormat>shopOfferItemFormats=new Vector<>();
+    Vector<ShopOfferItemFormat> shopOfferItemFormats = new Vector<>();
     ShopOfferRV adapter;
 
 
@@ -67,10 +61,10 @@ public class Offers extends AppCompatActivity {
 
 
         offersRecycler = (RecyclerView) findViewById(R.id.offersRecycler);
-        defaultmsg=(TextView)findViewById(R.id.shop_errorMessage1);
+        defaultmsg = (TextView) findViewById(R.id.shop_errorMessage1);
         offersDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Offers");
 
-adapter=new ShopOfferRV(this,shopOfferItemFormats);
+        adapter = new ShopOfferRV(this, shopOfferItemFormats);
         offersRecycler.setHasFixedSize(true);
         offersRecycler.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         offersRecycler.setAdapter(adapter);
@@ -93,9 +87,8 @@ adapter=new ShopOfferRV(this,shopOfferItemFormats);
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     ShopOfferItemFormat shopOfferItemFormat = shot.getValue(ShopOfferItemFormat.class);
 
-                        shopOfferItemFormats.add(shopOfferItemFormat);
-                    }
-
+                    shopOfferItemFormats.add(shopOfferItemFormat);
+                }
 
 
                 // Need to add empty search result log message

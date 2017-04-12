@@ -17,7 +17,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -221,10 +220,10 @@ public class AddContact extends AppCompatActivity {
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
         hostel = String.valueOf(spinner.getSelectedItem());
-    //  Log.v("tag",hostel);
+        //  Log.v("tag",hostel);
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
 
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem()!=null&& mImageUri != null) {
+        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && mImageUri != null) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -240,7 +239,7 @@ public class AddContact extends AppCompatActivity {
                     newPost.child("category").setValue(category);
                     newPost.child("email").setValue(email);
 
-                        newPost.child("hostel").setValue(hostel);
+                    newPost.child("hostel").setValue(hostel);
 
 
                     mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
