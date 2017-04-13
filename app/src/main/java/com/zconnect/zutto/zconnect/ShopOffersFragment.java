@@ -65,7 +65,7 @@ public class ShopOffersFragment extends Fragment {
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     ShopOfferItemFormat shopOfferItemFormat = shot.getValue(ShopOfferItemFormat.class);
-                    if (shopOfferItemFormat.getShopKey().equals(shopid)) {
+                    if (shopOfferItemFormat.getkey().equals(shopid)) {
                         shopOfferItemFormats.add(shopOfferItemFormat);
                     }
 

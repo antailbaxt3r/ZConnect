@@ -8,13 +8,13 @@ public class ShopOfferItemFormat {
     String name;
     String desc;
     String image;
-    String shopKey;
+    String key;
 
-    public ShopOfferItemFormat(String name, String desc, String image, String shopKey) {
+    public ShopOfferItemFormat(String name, String desc, String image, String key) {
         this.name = name;
         this.desc = desc;
         this.image = image;
-        this.shopKey = shopKey;
+        this.key = key;
     }
 
     public ShopOfferItemFormat() {
@@ -46,11 +46,11 @@ public class ShopOfferItemFormat {
         this.image = image;
     }
 
-    public String getShopKey() {
-        return shopKey;
+    public String getkey() {
+        return key;
     }
 
-    public void setShopKey(String shopKey) {
-        this.shopKey = shopKey;
+    public void setkey(String key) {
+        this.key = key;
     }
 }
