@@ -290,15 +290,7 @@ public class AllEvents extends AppCompatActivity {
             intent.putExtra("title", title);
             intent.putExtra("description", desc);
             context.startActivity(intent);
-
-            // Display event id.
-            //Toast.makeText(getApplicationContext(), "Event added :: ID :: " + event.getLastPathSegment(), Toast.LENGTH_SHORT).show();
-
-            /** Adding reminder for event added. *
-             }
-             /** Returns Calendar Base URI, supports both new and old OS. */
-
-
+            
         }
     }
 
