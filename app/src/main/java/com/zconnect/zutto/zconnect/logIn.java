@@ -66,6 +66,22 @@ public class logIn extends AppCompatActivity {
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
         mProgress = new ProgressDialog(this);
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser()!=null)
+                {
+                    if(firebaseAuth.getCurrentUser().getEmail().toString().endsWith("@goa.bits-pilani.ac.in")) {
+                        checkUser();
+                    }else {
+
+                        logout();
+                        mProgress.dismiss();
+                        Toast.makeText(logIn.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        };
 
 //        logInButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -139,7 +155,6 @@ public class logIn extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
             return;
@@ -209,30 +224,30 @@ public class logIn extends AppCompatActivity {
                             snack.show();
                             mProgress.dismiss();
                         }
-                        else {
-                         mProgress.dismiss();
-
-                            checkUser();
-                            // ...
-                        }
+//                        else {
+//                         mProgress.dismiss();
+//
+//                            checkUser();
+//                            // ...
+//                        }
                     }
                 });
     }
 
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        mAuth.addAuthStateListener(mAuthListener);
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        if (mAuthListener != null) {
-//            mAuth.removeAuthStateListener(mAuthListener);
-//        }
-//    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
 public boolean isNetworkAvailable(final Context context) {
     final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
     return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
@@ -298,13 +313,15 @@ public boolean isNetworkAvailable(final Context context) {
                         Intent loginIntent = new Intent(logIn.this, home.class);
                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(loginIntent);
+                        finish();
 
                     } else {
                         mProgress.dismiss();
                         Intent loginIntent = new Intent(logIn.this, setDetails.class);
                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        loginIntent.putExtra("caller","login");
+                        loginIntent.putExtra("caller", "login");
                         startActivity(loginIntent);
+                        finish();
                     }
 
                 }

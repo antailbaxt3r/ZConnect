@@ -35,7 +35,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
-import java.util.Calendar;
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.joda.time.DateTime;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +58,7 @@ public class AllEvents extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_events);
+        JodaTimeAndroid.init(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -179,15 +183,27 @@ public class AllEvents extends AppCompatActivity {
                 queryRef
         ) {
             @Override
-            protected void populateViewHolder(EventViewHolder viewHolder, Event model, int position) {
-                viewHolder.setEventName(model.getEventName());
-                viewHolder.setEventDesc(model.getEventDescription());
-                viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
-                viewHolder.setEventDate(model.getEventDate());
-                viewHolder.openEvent(model.getEventName(), model.getEventDescription(), model.getEventDate(), model.getEventImage());
-                viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
-            }
+            protected void populateViewHolder(EventViewHolder viewHolder, Event model,
+                                              int position) {
+                DateTime current_date = new DateTime();
+                if (current_date.getMillis() < (Long.parseLong(model.getFormatDate()) + 30 * 60 * 60) || model.getKey() == null) {
+                    viewHolder.openEvent(model);
+                    viewHolder.setEventName(model.getEventName());
+                    viewHolder.setEventDesc(model.getEventDescription());
+                    viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
+                    viewHolder.setEventDate(model.getEventDate());
+                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
+                    viewHolder.setEventVenue(model.getVenue());
+                } else {
+                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            onStart();
 
+                        }
+                    });
+                }
+            }
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);
 
@@ -204,7 +220,7 @@ public class AllEvents extends AppCompatActivity {
             mView = itemView;
         }
 
-        public void openEvent(final String name, final String desc, final String date, final String image) {
+        public void openEvent(final Event event) {
             mView.setOnClickListener(new View.OnClickListener()
 
             {
@@ -212,10 +228,7 @@ public class AllEvents extends AppCompatActivity {
                 public void onClick(View view) {
 
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
-                    i.putExtra("name", name);
-                    i.putExtra("desc", desc);
-                    i.putExtra("date", date);
-                    i.putExtra("image", image);
+                    i.putExtra("currentEvent", event);
                     mView.getContext().startActivity(i);
                 }
             });
@@ -224,7 +237,7 @@ public class AllEvents extends AppCompatActivity {
 
         public void setEventName(String eventName) {
 
-            TextView post_name = (TextView) mView.findViewById(R.id.event);
+            TextView post_name = (TextView) mView.findViewById(R.id.er_event);
             post_name.setText(eventName);
 
         }
@@ -233,6 +246,7 @@ public class AllEvents extends AppCompatActivity {
 
             String shortEventDesc;
 
+            TextView post_desc = (TextView) mView.findViewById(R.id.er_description);
             if (eventDesc.length() < 70) {
                 shortEventDesc = eventDesc;
             } else {
@@ -240,21 +254,25 @@ public class AllEvents extends AppCompatActivity {
                 shortEventDesc = shortEventDesc + " ... read more";
             }
 
-
-            TextView post_desc = (TextView) mView.findViewById(R.id.description);
             post_desc.setText(shortEventDesc);
+
+        }
+
+        public void setEventVenue(String venue) {
+            TextView post_venue = (TextView) mView.findViewById(R.id.er_venue);
+            post_venue.setText(venue);
 
         }
 
         public void setEventImage(Context ctx, String image) {
 
-            ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
+            ImageView post_image = (ImageView) mView.findViewById(R.id.er_postImg);
             Picasso.with(ctx).load(image).into(post_image);
         }
 
 
         public void setEventDate(String eventDate) {
-            TextView post_date = (TextView) mView.findViewById(R.id.date);
+            TextView post_date = (TextView) mView.findViewById(R.id.er_date);
             String date[] = eventDate.split("\\s+");
             String finalDate = "";
 
@@ -266,7 +284,7 @@ public class AllEvents extends AppCompatActivity {
         }
 
         public void setEventReminder(final String eventDescription, final String eventName, final String time) {
-            Button Reminder = (Button) mView.findViewById(R.id.reminder);
+            Button Reminder = (Button) mView.findViewById(R.id.er_reminder);
             Reminder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -280,7 +298,6 @@ public class AllEvents extends AppCompatActivity {
         }
 
         private void addReminderInCalendar(String title, String desc, long time, Context context) {
-            Calendar cal = Calendar.getInstance();
             Intent intent = new Intent(Intent.ACTION_EDIT);
             intent.setType("vnd.android.cursor.item/event");
             intent.putExtra("beginTime", time);
@@ -290,7 +307,15 @@ public class AllEvents extends AppCompatActivity {
             intent.putExtra("title", title);
             intent.putExtra("description", desc);
             context.startActivity(intent);
-            
+
+            // Display event id.
+            //Toast.makeText(getApplicationContext(), "Event added :: ID :: " + event.getLastPathSegment(), Toast.LENGTH_SHORT).show();
+
+            /** Adding reminder for event added. *
+             }
+             /** Returns Calendar Base URI, supports both new and old OS. */
+
+
         }
     }
 

@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".ZConnect"
@@ -145,7 +147,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -169,6 +170,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TabStoreRoom" />
         </activity>
+        <activity
+            android:name=".viewImage"
+            android:label="@string/title_activity_view_image"
+            android:parentActivityName=".AllEvents"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zconnect.zutto.zconnect.AllEvents" />
+        </activity>
+        <activity android:name=".image_view"></activity>
         <activity
             android:name=".MyProducts"
             android:label="My Products"
@@ -198,6 +209,7 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+
         <activity
             android:name=".EditProfile"
             android:label="@string/title_activity_edit_profile"
@@ -231,6 +243,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Shop" />
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM" />
+
     </application>
+
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
 
 </manifest>

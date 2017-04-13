@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -30,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -160,6 +162,7 @@ public class home extends AppCompatActivity
                 {
                     Intent loginIntent = new Intent(home.this, logIn.class);
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    mAuth.removeAuthStateListener(mAuthListener);
                     startActivity(loginIntent);
                     finish();
                 }else {
@@ -202,8 +205,16 @@ public class home extends AppCompatActivity
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(0);
 
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mAuth.addAuthStateListener(mAuthListener);
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -296,7 +307,7 @@ public class home extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+
         if (mAuth.getCurrentUser()!=null &&mAuth.getCurrentUser().getEmail() != null)
             email = mAuth.getCurrentUser().getEmail();
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -326,11 +337,6 @@ public class home extends AppCompatActivity
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mAuth.removeAuthStateListener(mAuthListener);
-    }
 
     private void logout(){
         mAuth.signOut();
@@ -370,6 +376,32 @@ public class home extends AppCompatActivity
                 }
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+
+
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+
     }
 
     private void setupViewPager(ViewPager viewPager) {

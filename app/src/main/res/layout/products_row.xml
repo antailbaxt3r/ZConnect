@@ -17,7 +17,8 @@
             android:background="@drawable/border4"
             android:padding="5dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/product" />
+            android:src="@drawable/product"
+            android:transitionName="@string/transition_string" />
 
         <RelativeLayout
             android:layout_width="match_parent"
