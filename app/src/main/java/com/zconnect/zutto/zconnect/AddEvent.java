@@ -23,8 +23,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -72,13 +72,15 @@ public class AddEvent extends AppCompatActivity {
     private StorageReference mStorage;
     private DatabaseReference mDatabaseVerified;
     private DatabaseReference mDatabase;
-    private FrameLayout CalendarButton;
+    private LinearLayout CalendarButton;
     private ProgressDialog mProgress;
+    private TextView dateTime;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
         @Override
         public void onDateTimeSet(Date date) {
             eventDate = date.toString();
             dateString = String.valueOf(date.getTime());
+            dateTime.setText(eventDate);
 
         }
     };
@@ -133,9 +135,10 @@ public class AddEvent extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/NotVerifiedPosts");
 
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
-        CalendarButton = (FrameLayout)findViewById(R.id.dateAndTime);
+        CalendarButton = (LinearLayout) findViewById(R.id.dateAndTime);
         mVenue = (EditText) findViewById(R.id.VenueText);
         mDirections = (ImageView) findViewById(R.id.venuePicker);
+        dateTime = (TextView) findViewById(R.id.dateText);
 
         mProgress = new ProgressDialog(this);
 
@@ -177,6 +180,8 @@ public class AddEvent extends AppCompatActivity {
                         .setIs24HourTime(true)
                         .build()
                         .show();
+
+
             }
         });
 
@@ -365,7 +370,6 @@ public class AddEvent extends AppCompatActivity {
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setSnapRadius(2)
-                    .setAspectRatio(3, 2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -374,10 +378,23 @@ public class AddEvent extends AppCompatActivity {
 
                 try {
                     mImageUri = result.getUri();
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Bitmap bitmap2 = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 600, 400, true);
+                    bitmap2.compress(Bitmap.CompressFormat.JPEG, 60, out);
+                    final int maxSize = 1000;
+                    int outWidth;
+                    int outHeight;
+                    int inWidth = bitmap2.getWidth();
+                    int inHeight = bitmap2.getHeight();
+                    if (inWidth > inHeight) {
+                        outWidth = maxSize;
+                        outHeight = (inHeight * maxSize) / inWidth;
+                    } else {
+                        outHeight = maxSize;
+                        outWidth = (inWidth * maxSize) / inHeight;
+                    }
+
+                    Bitmap bitmap = Bitmap.createScaledBitmap(bitmap2, outWidth, outHeight, true);
                     String path = MediaStore.Images.Media.insertImage(AddEvent.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);

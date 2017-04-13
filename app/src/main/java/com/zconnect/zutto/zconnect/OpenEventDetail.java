@@ -64,12 +64,12 @@ public class OpenEventDetail extends AppCompatActivity {
 
 //      Event = (TextView) findViewById(R.id.event);
         EventImage = (ImageView) findViewById(R.id.od_EventImage);
-        EventDescription = (TextView) findViewById(R.id.description);
+        EventDescription = (TextView) findViewById(R.id.od_description);
         EventVenue = (TextView) findViewById(R.id.od_venue);
         venueDirections = (ImageButton) findViewById(R.id.od_directions);
-        if (event.getLon() == null) {
-            venueDirections.setVisibility(View.GONE);
-        }
+//        if (event.getLon() == null) {
+//            venueDirections.setVisibility(View.GONE);
+//        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             getWindow().setStatusBarColor(colorPrimary);
@@ -78,25 +78,21 @@ public class OpenEventDetail extends AppCompatActivity {
         }
 
 
-//      Event = (TextView) findViewById(R.id.event);
-        EventImage = (ImageView) findViewById(R.id.od_EventImage);
-        EventDescription = (TextView) findViewById(R.id.od_description);
-        EventVenue = (TextView) findViewById(R.id.od_venue);
-        venueDirections = (ImageButton) findViewById(R.id.od_directions);
-
-        venueDirections.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + event.getLat() + "," + event.getLon()));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
+        if (event.getLon() != null) {
+            venueDirections.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + event.getLat() + "," + event.getLon()));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-        });
+            });
+        }
         EventDate = (TextView) findViewById(R.id.od_date);
         EventImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,32 +127,43 @@ public class OpenEventDetail extends AppCompatActivity {
         EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
 
 
-//        mDatabase = FirebaseDatabase.getInstance().getReference().child("Events/Posts/"+value);
-//
-//        mDatabase.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-////                String eventName = (String) snapshot.child("EventName").getValue();
-//                String imageUri = (String) snapshot.child("EventImage").getValue();
-//                String eventDescription = (String) snapshot.child("EventDescription").getValue();
-//                String eventDate[] = ((String) snapshot.child("EventDate").getValue()).split("\\s+");
-//                String date = "";
-//                int i = 0;
-//                while (i < 3) {
-//                    date = date + " " + eventDate[i];
-//                    i++;
-//                }
-//
-//                Picasso.with(OpenEventDetail.this).load(imageUri).into(EventImage);
-////                Event.setText(eventName);
-//                EventDate.setText(date);
-//                EventDescription.setText(eventDescription);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//            }
-//        });
+        setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
+
+
+    }
+
+    public void setEventReminder(final String eventDescription, final String eventName, final String time) {
+        ImageButton Reminder = (ImageButton) findViewById(R.id.setReminder);
+        Reminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
+
+            }
+
+        });
+
+    }
+
+    private void addReminderInCalendar(String title, String desc, long time) {
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra("beginTime", time);
+        intent.putExtra("allDay", false);
+        intent.putExtra("rrule", "FREQ=DAILY");
+        intent.putExtra("endTime", time + 60 * 60 * 1000);
+        intent.putExtra("title", title);
+        intent.putExtra("description", desc);
+        startActivity(intent);
+
+        // Display event id.
+        //Toast.makeText(getApplicationContext(), "Event added :: ID :: " + event.getLastPathSegment(), Toast.LENGTH_SHORT).show();
+
+        /** Adding reminder for event added. *
+         }
+         /** Returns Calendar Base URI, supports both new and old OS. */
+
 
     }
 }

@@ -67,12 +67,13 @@
 
         <ImageView
             android:id="@+id/button_save"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="70dp"
             android:layout_marginRight="90dp"
             android:gravity="right"
             android:paddingBottom="3dp"
+            android:scaleType="centerCrop"
             app:srcCompat="@android:drawable/ic_menu_save" />
     </LinearLayout>
 

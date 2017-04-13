@@ -43,17 +43,17 @@
 
                 <ImageView
                     android:id="@+id/od_EventImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:background="@drawable/input_outline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/input_outline"
                     android:scaleType="centerCrop"
                     android:src="@drawable/defaultevent" />
 
 
                 <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
@@ -63,16 +63,18 @@
                         android:id="@+id/od_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
                         android:paddingLeft="5dp"
                         android:paddingTop="5dp"
                         android:text="Event Date"
                         android:textColor="@color/teal700"
-                        android:textSize="20dp"
+                        android:textSize="26dp"
                         android:textStyle="bold" />
 
                     <ImageButton
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
+                        android:id="@+id/setReminder"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
                         android:layout_marginRight="5dp"
@@ -87,19 +89,7 @@
                     android:layout_margin="10dp"
                     android:background="@android:color/darker_gray" />
 
-                <TextView
-                    android:id="@+id/od_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:padding="5dp"
-            android:paddingTop="5dp"
-            android:text="Event Description"
-                    android:textColor="@color/grey700"
-            android:textSize="16dp" />
-
-
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -107,28 +97,40 @@
                     android:paddingRight="10dp"
                     android:paddingTop="10dp">
 
+                    <ImageButton
+                        android:id="@+id/od_directions"
+                        android:layout_width="35dp"
+                        android:layout_height="54dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/location"
+                        android:scaleType="fitXY" />
+
+
                     <TextView
                         android:id="@+id/od_venue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingTop="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="20dp"
                         android:text="Venue N/A"
                         android:textColor="@color/teal700"
                         android:textSize="20dp"
                         android:textStyle="bold" />
 
-                    <ImageButton
-                        android:id="@+id/od_directions"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginRight="5dp"
-                        android:background="@drawable/ic_directions_black_24dp"
-                        android:scaleType="fitXY"
-                        android:textAlignment="textEnd" />
-                </RelativeLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/od_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:padding="5dp"
+                    android:paddingTop="5dp"
+                    android:text="Event Description"
+                    android:textColor="@color/grey700"
+                    android:textSize="16dp" />
+
 
             </LinearLayout>
 

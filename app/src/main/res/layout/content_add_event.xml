@@ -14,68 +14,71 @@
         android:layout_height="match_parent">
 
         <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/imageButton"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/border_filled_2"
-        android:padding="2dp"
-        app:roundedCornerRadius="5dp" />
+            android:id="@+id/imageButton"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/border_filled_2"
+            android:padding="2dp"
+            app:roundedCornerRadius="5dp" />
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/imageButton"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/border_filled_2"
-        android:ems="10"
-        android:hint="Name"
-        android:inputType="textPersonName"
-        android:padding="10dp" />
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageButton"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/border_filled_2"
+            android:ems="10"
+            android:hint="Name"
+            android:inputType="textPersonName"
+            android:padding="10dp" />
 
-    <EditText
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_below="@+id/name"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/border_filled_2"
-        android:ems="10"
-        android:hint="Description"
-        android:inputType="textMultiLine"
-        android:padding="10dp" />
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_below="@+id/name"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/border_filled_2"
+            android:ems="10"
+            android:hint="Description"
+            android:inputType="textMultiLine"
+            android:padding="10dp" />
 
-    <FrameLayout
-        android:id="@+id/dateAndTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/description"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp">
-
-        <ImageButton
-            android:id="@+id/dateIcon"
+        <LinearLayout
+            android:id="@+id/dateAndTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:background="@android:drawable/screen_background_light_transparent"
-            app:srcCompat="@mipmap/ic_date_range_black_24dp" />
+            android:layout_below="@+id/description"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
-        <TextView
-            android:id="@+id/dateText"
-            android:layout_width="352dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp"
-            android:text="Date and Time"
-            android:textColor="@color/teal500" />
-    </FrameLayout>
+            <ImageButton
+                android:id="@+id/dateIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:background="@android:drawable/screen_background_light_transparent"
+                android:backgroundTint="@android:color/transparent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@mipmap/ic_date_range_black_24dp" />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="352dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:text="Date and Time"
+                android:textColor="@color/teal500" />
+        </LinearLayout>
 
 
         <LinearLayout
@@ -85,52 +88,58 @@
             android:layout_below="@+id/dateAndTime"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginLeft="2dp"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:paddingTop="5dp"
+                android:text="Select Venue"
+                android:textAlignment="textStart"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:weightSum="1">
+                android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/venuePicker"
-                    android:layout_width="45dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@android:drawable/screen_background_light_transparent"
-                    android:scaleType="fitXY"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:backgroundTint="@android:color/transparent"
+                    android:scaleType="centerCrop"
                     app:srcCompat="@drawable/ic_directions_black_24dp" />
 
                 <TextView
-                    android:layout_width="55dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="2dp"
-                    android:layout_weight="0.19"
-                    android:paddingLeft="3dp"
-                    android:paddingRight="3dp"
-                    android:paddingTop="5dp"
-                    android:text="Map"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="-or-"
+                    android:textSize="20dp" />
 
+                <EditText
+                    android:id="@+id/VenueText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:hint="Select from Map, Or type here"
+                    android:lines="200"
+                    android:textColor="@color/teal500"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/VenueText"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginBottom="15dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="15dp"
-                android:hint="Select from Map, Or type here"
-                android:lines="200"
-                android:textColor="@color/teal500"
-                android:textSize="14sp" />
         </LinearLayout>
 
     </RelativeLayout>
+
 </ScrollView>
