@@ -6,15 +6,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,12 +38,13 @@ import com.google.firebase.database.ValueEventListener;
 public class logIn extends AppCompatActivity {
 
     private static final String TAG = "EmailPassword";
+    boolean doubleBackToExitPressedOnce = false;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private EditText emailText;
-    private EditText passwordText;
-    private Button newUserButton;
-    private Button logInButton;
+    //    private EditText emailText;
+//    private EditText passwordText;
+//    private Button newUserButton;
+//    private Button logInButton;
     private DatabaseReference mDatabaseUsers;
     private ProgressDialog mProgress;
     private SignInButton mGoogleSignIn;
@@ -57,10 +56,10 @@ public class logIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        newUserButton = (Button) findViewById(R.id.register);
-        logInButton = (Button) findViewById(R.id.login);
-        emailText = (EditText) findViewById(R.id.email);
-        passwordText = (EditText) findViewById(R.id.password);
+//        newUserButton = (Button) findViewById(R.id.register);
+//        logInButton = (Button) findViewById(R.id.login);
+//        emailText = (EditText) findViewById(R.id.email);
+//        passwordText = (EditText) findViewById(R.id.password);
         mGoogleSignIn = (SignInButton) findViewById(R.id.GoogleSignIn);
 
         mAuth = FirebaseAuth.getInstance();
@@ -68,32 +67,32 @@ public class logIn extends AppCompatActivity {
         mDatabaseUsers.keepSynced(true);
         mProgress = new ProgressDialog(this);
 
-        logInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        logInButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (!isNetworkAvailable(getApplicationContext())) {
+//
+//                    Snackbar snack = Snackbar.make(mGoogleSignIn, "No Internet. Can't Log In.", Snackbar.LENGTH_LONG);
+//                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+//                    snackBarText.setTextColor(Color.WHITE);
+//                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+//                    snack.show();
+//
+//                } else {
+//                    startLogin();
+//                }
+//
+//            }
+//        });
 
-                if (!isNetworkAvailable(getApplicationContext())) {
-
-                    Snackbar snack = Snackbar.make(mGoogleSignIn, "No Internet. Can't Log In.", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                    snack.show();
-
-                } else {
-                    startLogin();
-                }
-
-            }
-        });
-
-        newUserButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent newUserIntent = new Intent(logIn.this,registerNewUser.class);
-                startActivity(newUserIntent);
-            }
-        });
+//        newUserButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent newUserIntent = new Intent(logIn.this,registerNewUser.class);
+//                startActivity(newUserIntent);
+//            }
+//        });
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -137,6 +136,27 @@ public class logIn extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    @Override
+    public void onBackPressed() {
+
+
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -217,47 +237,47 @@ public boolean isNetworkAvailable(final Context context) {
     final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
     return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
 }
-    private void startLogin(){
-
-        String email = emailText.getText().toString().trim();
-        String password = passwordText.getText().toString().trim();
-
-
-        mProgress.setMessage("Signing In..");
-
-        if(!TextUtils.isEmpty(email)&&!TextUtils.isEmpty(password))
-        {
-            mProgress.show();
-            mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-
-                    if(task.isSuccessful()){
-
-                        checkUser();
-
-                    }else {
-                        mProgress.dismiss();
-                        Snackbar snack = Snackbar.make(mGoogleSignIn, "Email or Password Incorrect", Snackbar.LENGTH_LONG);
-                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                        snackBarText.setTextColor(Color.WHITE);
-                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                        snack.show();
-                        //  Toast.makeText(logIn.this, "Email or Password Incorrect", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-        }else{
-            Snackbar snack = Snackbar.make(mGoogleSignIn, "Enter both Fields", Snackbar.LENGTH_LONG);
-            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-            snackBarText.setTextColor(Color.WHITE);
-            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-            snack.show();
-            // Toast.makeText(this, "Enter both Fields", Toast.LENGTH_SHORT).show();
-        }
-
-    }
+//    private void startLogin(){
+//
+//        String email = emailText.getText().toString().trim();
+//        String password = passwordText.getText().toString().trim();
+//
+//
+//        mProgress.setMessage("Signing In..");
+//
+//        if(!TextUtils.isEmpty(email)&&!TextUtils.isEmpty(password))
+//        {
+//            mProgress.show();
+//            mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                @Override
+//                public void onComplete(@NonNull Task<AuthResult> task) {
+//
+//                    if(task.isSuccessful()){
+//
+//                        checkUser();
+//
+//                    }else {
+//                        mProgress.dismiss();
+//                        Snackbar snack = Snackbar.make(mGoogleSignIn, "Email or Password Incorrect", Snackbar.LENGTH_LONG);
+//                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+//                        snackBarText.setTextColor(Color.WHITE);
+//                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+//                        snack.show();
+//                        //  Toast.makeText(logIn.this, "Email or Password Incorrect", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
+//
+//        }else{
+//            Snackbar snack = Snackbar.make(mGoogleSignIn, "Enter both Fields", Snackbar.LENGTH_LONG);
+//            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+//            snackBarText.setTextColor(Color.WHITE);
+//            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+//            snack.show();
+//            // Toast.makeText(this, "Enter both Fields", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
 
     private void logout() {
         mAuth.signOut();
@@ -295,7 +315,7 @@ public boolean isNetworkAvailable(final Context context) {
                     if (databaseError.getCode() == -3 && mAuth.getCurrentUser() != null) {
 
                         logout();
-                        Toast.makeText(logIn.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(logIn.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

@@ -180,10 +180,11 @@ public class Homescreen extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-if(user!=null) {
-    mDatabaseUser.removeEventListener(UserStats);
-    mDatabaseStats.removeEventListener(TotalStats);
-}   }
+        if (user != null) {
+            mDatabaseUser.removeEventListener(UserStats);
+            mDatabaseStats.removeEventListener(TotalStats);
+        }
+    }
 
     public void setNotification() {
 

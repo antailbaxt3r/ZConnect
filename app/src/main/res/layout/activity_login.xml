@@ -5,10 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bglogo"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="48dp"
-    android:paddingTop="48dp"
     tools:context="com.zconnect.zutto.zconnect.logIn">
 
     <ImageView
@@ -17,91 +13,103 @@
         android:layout_height="130dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="106dp"
         android:background="@drawable/logo" />
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/password"
-        android:layout_alignStart="@+id/password"
-        android:layout_marginBottom="14dp"
-        android:background="@drawable/border"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/teal50"
-        android:textSize="20dp" />
+    <!--<EditText-->
+    <!--android:id="@+id/email"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_above="@+id/password"-->
+    <!--android:layout_alignStart="@+id/password"-->
+    <!--android:layout_marginBottom="14dp"-->
+    <!--android:background="@drawable/border"-->
+    <!--android:hint="Email"-->
+    <!--android:inputType="textEmailAddress"-->
+    <!--android:padding="10dp"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textColorHint="@color/teal50"-->
+    <!--android:textSize="20dp" />-->
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="31dp"
-        android:background="@drawable/border"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/teal50"
-        android:textSize="20dp" />
+    <!--<EditText-->
+    <!--android:id="@+id/password"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_marginStart="31dp"-->
+    <!--android:background="@drawable/border"-->
+    <!--android:hint="Password"-->
+    <!--android:inputType="textPassword"-->
+    <!--android:padding="10dp"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textColorHint="@color/teal50"-->
+    <!--android:textSize="20dp" />-->
 
-    <LinearLayout
-        android:id="@+id/buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@id/password"
-        android:layout_below="@+id/password"
-        android:layout_marginTop="19dp"
-        android:orientation="horizontal">
+    <!--<LinearLayout-->
+    <!--android:id="@+id/buttons"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignStart="@id/password"-->
+    <!--android:layout_below="@+id/password"-->
+    <!--android:layout_marginTop="19dp"-->
+    <!--android:orientation="horizontal">-->
 
-        <Button
-            android:id="@+id/login"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_marginRight="10dp"
+    <!--<Button-->
+    <!--android:id="@+id/login"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="45dp"-->
+    <!--android:layout_marginRight="10dp"-->
 
-            android:layout_weight=".5"
-            android:background="@drawable/border_filled"
-            android:text="Log In"
-            android:textColor="@color/teal100"
-            android:textSize="16dp" />
+    <!--android:layout_weight=".5"-->
+    <!--android:background="@drawable/border_filled"-->
+    <!--android:text="Log In"-->
+    <!--android:textColor="@color/teal100"-->
+    <!--android:textSize="16dp" />-->
 
-        <Button
-            android:id="@+id/register"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="10dp"
-            android:layout_weight=".5"
-            android:background="@drawable/border_filled"
-            android:text="New User"
-            android:textColor="@color/teal100"
-            android:textSize="16dp" />
+    <!--<Button-->
+    <!--android:id="@+id/register"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="45dp"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:layout_weight=".5"-->
+    <!--android:background="@drawable/border_filled"-->
+    <!--android:text="New User"-->
+    <!--android:textColor="@color/teal100"-->
+    <!--android:textSize="16dp" />-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 
-    <TextView
-        android:id="@+id/or"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/buttons"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="26dp"
-        android:text="--OR--"
-        android:textColor="@color/teal50" />
+    <!--<TextView-->
+    <!--android:id="@+id/or"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/buttons"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginTop="26dp"-->
+    <!--android:text="&#45;&#45;OR&#45;&#45;"-->
+    <!--android:textColor="@color/teal50" />-->
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/GoogleSignIn"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignStart="@+id/password"
-        android:layout_below="@+id/or"
-        android:layout_marginTop="17dp">
-
+        android:layout_below="@+id/imageView"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="70dp">
     </com.google.android.gms.common.SignInButton>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/GoogleSignIn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="*Sign In through your BITS Goa email"
+        android:textColor="@color/white"
+        android:textSize="16dp" />
 
 
 </RelativeLayout>
