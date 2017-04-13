@@ -69,11 +69,10 @@ public class logIn extends AppCompatActivity {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser()!=null)
-                {
-                    if(firebaseAuth.getCurrentUser().getEmail().toString().endsWith("@goa.bits-pilani.ac.in")) {
+                if (firebaseAuth.getCurrentUser() != null) {
+                    if (firebaseAuth.getCurrentUser().getEmail().toString().endsWith("@goa.bits-pilani.ac.in")) {
                         checkUser();
-                    }else {
+                    } else {
 
                         logout();
                         mProgress.dismiss();

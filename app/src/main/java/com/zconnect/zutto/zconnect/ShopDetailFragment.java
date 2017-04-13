@@ -15,6 +15,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -115,29 +116,35 @@ public class ShopDetailFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        menuImages.removeAll(menuImages);
+        galleryImages.removeAll(galleryImages);
+    }
+
+
+    @Override
     public void onStart() {
         super.onStart();
-        menuImages.clear();
-        galleryImages.clear();
 
-
-        FirebaseRecyclerAdapter<GalleryFormat, ShopDetailFragment.GalleryViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<GalleryFormat, ShopDetailFragment.GalleryViewHolder>(
+        FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder>(
                 GalleryFormat.class,
                 R.layout.gallery_row,
-                ShopDetailFragment.GalleryViewHolder.class,
+                GalleryViewHolder.class,
                 mDatabase
         ) {
 
 
             @Override
-            protected void populateViewHolder(final ShopDetailFragment.GalleryViewHolder viewHolder, GalleryFormat model, int position) {
+            protected void populateViewHolder(final GalleryViewHolder viewHolder, GalleryFormat model, int position) {
 
                 galleryImages.add(model.getImage());
-                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.setImage(getContext(), model.getImage());
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getActivity().getApplicationContext(), GalleryActivity.class);
+                        Intent intent = new Intent(getContext(), GalleryActivity.class);
                         intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME, galleryImages);
                         startActivity(intent);
                     }
@@ -148,30 +155,31 @@ public class ShopDetailFragment extends Fragment {
 
         galleryRecycler.setAdapter(firebaseRecyclerAdapter);
 
-        FirebaseRecyclerAdapter<GalleryFormat, ShopDetailFragment.GalleryViewHolder> firebaseRecyclerAdapterMenu = new FirebaseRecyclerAdapter<GalleryFormat, ShopDetailFragment.GalleryViewHolder>(
+        FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder> firebaseRecyclerAdapterMenu = new FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder>(
                 GalleryFormat.class,
                 R.layout.gallery_row,
-                ShopDetailFragment.GalleryViewHolder.class,
+                GalleryViewHolder.class,
                 mDatabaseMenu
         ) {
 
             @Override
-            protected void populateViewHolder(final ShopDetailFragment.GalleryViewHolder viewHolder, GalleryFormat model, int position) {
+            protected void populateViewHolder(final GalleryViewHolder viewHolder, GalleryFormat model, int position) {
 
                 menuImages.add(model.getImage());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getActivity().getApplicationContext(), GalleryActivity.class);
+                        Intent intent = new Intent(getContext(), GalleryActivity.class);
                         intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME, menuImages);
                         startActivity(intent);
                     }
                 });
+                if (model.getImage() != null)
+                    Toast.makeText(getContext(), model.getImage(), Toast.LENGTH_SHORT).show();
             }
 
         };
-
         menuRecycler.setAdapter(firebaseRecyclerAdapterMenu);
 
 
@@ -191,7 +199,6 @@ public class ShopDetailFragment extends Fragment {
 
             ImageView imageHolder = (ImageView) mView.findViewById(R.id.galleryImage);
             Picasso.with(ctx).load(ImageUrl).into(imageHolder);
-
         }
 
     }

@@ -37,6 +37,7 @@ public class viewImage extends AppCompatActivity {
     View mViewLayout;
     View.OnClickListener handleClickOnView;
     ProgressDialog mProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

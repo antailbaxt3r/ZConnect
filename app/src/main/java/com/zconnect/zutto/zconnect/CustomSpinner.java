@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
@@ -18,7 +17,7 @@ import java.lang.reflect.Method;
  * Created by shubhamk on 21/3/17.
  */
 
-public class CustomSpinner extends Spinner {
+public class CustomSpinner extends android.support.v7.widget.AppCompatSpinner {
     public CustomSpinner(Context context) {
         super(context);
     }
