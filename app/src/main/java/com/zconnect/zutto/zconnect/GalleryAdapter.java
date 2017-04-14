@@ -1,14 +1,20 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.GalleryFormat;
 
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
@@ -17,9 +23,9 @@ import java.util.Vector;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
     Context context;
-    Vector<String> galleryItem;
+    Vector<GalleryFormat> galleryItem;
 
-    public GalleryAdapter(Context context, Vector<String> galleryItem) {
+    public GalleryAdapter(Context context, Vector<GalleryFormat> galleryItem) {
         this.context = context;
         this.galleryItem = galleryItem;
     }
@@ -38,7 +44,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(GalleryAdapter.ViewHolder holder, int position) {
-        Picasso.with(context).load(galleryItem.get(position).toString()).into(holder.image);
+      holder.image.setImageURI(Uri.parse(galleryItem.get(position).getImage()));
     }
 
     @Override
@@ -48,11 +54,23 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView image;
-
+        SimpleDraweeView image;
+ArrayList<String>arrayList=new ArrayList<>();
         public ViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.galleryRecycler);
+            image = (SimpleDraweeView) itemView.findViewById(R.id.galleryImage);
+       itemView.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               arrayList.clear();
+               Intent intent = new Intent(context,GalleryActivity.class);
+               for (int i=0;i<galleryItem.size();i++){
+                   arrayList.add(galleryItem.get(i).getImage());
+               }
+               intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME,arrayList);
+               context.startActivity(intent);
+           }
+       });
         }
     }
 

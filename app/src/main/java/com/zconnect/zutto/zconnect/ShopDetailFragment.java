@@ -27,23 +27,31 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.GalleryFormat;
+import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
 
 import java.util.ArrayList;
+import java.util.Vector;
+
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 
 public class ShopDetailFragment extends Fragment {
 
     TextView name, details, number;
     LinearLayout linearLayout, numberlayout;
-    SimpleDraweeView menu, image;
+    SimpleDraweeView  image;
     String nam, detail, lat, lon, imageurl, num, menuurl, shopid = null;
     DatabaseReference mDatabase, mDatabaseMenu,database;
     HorizontalScrollView galleryScroll, menuScroll;
 
-    GalleryAdapter adapter;
+    GalleryAdapter adapter,adapter1;
     RecyclerView galleryRecycler;
     RecyclerView menuRecycler;
     ArrayList<String> menuImages = new ArrayList<String>();
     ArrayList<String> galleryImages = new ArrayList<String>();
+    Vector<GalleryFormat>galleryFormats=new Vector<>();
+    Vector<GalleryFormat>menu=new Vector<>();
     public ShopDetailFragment() {
         // Required empty public constructor
     }
@@ -125,11 +133,16 @@ public class ShopDetailFragment extends Fragment {
 
         image.setVisibility(View.GONE);
         name.setVisibility(View.GONE);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Gallery");
-        mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Menu");
+
+            mDatabase = database.child("Gallery");
+            mDatabaseMenu = database.child("Menu");
 
         mDatabase.keepSynced(true);
         mDatabaseMenu.keepSynced(true);
+        adapter=new GalleryAdapter(getContext(),galleryFormats);
+        galleryRecycler.setAdapter(adapter);
+        adapter1=new GalleryAdapter(getContext(),menu);
+        menuRecycler.setAdapter(adapter1);
         return view;
 
     }
@@ -147,77 +160,44 @@ public class ShopDetailFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder>(
-                GalleryFormat.class,
-                R.layout.gallery_row,
-                GalleryViewHolder.class,
-                mDatabase
-        ) {
-
-
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            protected void populateViewHolder(final GalleryViewHolder viewHolder, GalleryFormat model, int position) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                galleryImages.add(model.getImage());
-                viewHolder.setImage(model.getImage());
-                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getContext(), GalleryActivity.class);
-                        intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME, galleryImages);
-                        startActivity(intent);
-                    }
-                });
+                galleryFormats.clear();
+
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+
+                   galleryFormats.add(shot.getValue(GalleryFormat.class));
+
+                }
+
+                adapter.notifyDataSetChanged();
+
             }
 
-        };
-
-        galleryRecycler.setAdapter(firebaseRecyclerAdapter);
-
-        FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder> firebaseRecyclerAdapterMenu = new FirebaseRecyclerAdapter<GalleryFormat, GalleryViewHolder>(
-                GalleryFormat.class,
-                R.layout.gallery_row,
-                GalleryViewHolder.class,
-                mDatabaseMenu
-        ) {
-
             @Override
-            protected void populateViewHolder(final GalleryViewHolder viewHolder, GalleryFormat model, int position) {
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        mDatabaseMenu.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                menuImages.add(model.getImage());
-                viewHolder.setImage( model.getImage());
-                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getContext(), GalleryActivity.class);
-                        intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME, menuImages);
-                        startActivity(intent);
-                    }
-                });
+                menu.clear();
+
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    menu.add(shot.getValue(GalleryFormat.class));
+                }
+
+                adapter1.notifyDataSetChanged();
+
             }
 
-        };
-        menuRecycler.setAdapter(firebaseRecyclerAdapterMenu);
-
-
-    }
-
-    public static class GalleryViewHolder extends RecyclerView.ViewHolder {
-
-        View mView;
-
-
-        public GalleryViewHolder(View itemView) {
-            super(itemView);
-            mView = itemView;
-        }
-
-        public void setImage(String ImageUrl) {
-
-            SimpleDraweeView imageHolder = (SimpleDraweeView) mView.findViewById(R.id.galleryImage);
-            if (ImageUrl!=null)
-           imageHolder.setImageURI(Uri.parse(ImageUrl));
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
     }
 
