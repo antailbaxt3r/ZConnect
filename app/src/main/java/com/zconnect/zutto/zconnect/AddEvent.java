@@ -284,11 +284,6 @@ public class AddEvent extends AppCompatActivity {
                         newPost2.child("feature").setValue("Event");
                         newPost2.child("id").setValue(key);
                         newPost2.child("desc2").setValue(eventDate);
-                        newPost2.child("Venue").setValue(eventVenue);
-                        latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
-                        newPost2.child("Key").setValue(newPost.getKey());
-                        newPost2.child("log").setValue(latLng.longitude);
-                        newPost2.child("lat").setValue(latLng.latitude);
 
                         // Adding stats
 
