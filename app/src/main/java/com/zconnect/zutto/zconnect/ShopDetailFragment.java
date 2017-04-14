@@ -124,6 +124,7 @@ public class ShopDetailFragment extends Fragment {
         });
 
         image.setVisibility(View.GONE);
+        name.setVisibility(View.GONE);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Gallery");
         mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Menu");
 
@@ -158,7 +159,7 @@ public class ShopDetailFragment extends Fragment {
             protected void populateViewHolder(final GalleryViewHolder viewHolder, GalleryFormat model, int position) {
 
                 galleryImages.add(model.getImage());
-                viewHolder.setImage(getContext(), model.getImage());
+                viewHolder.setImage(model.getImage());
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -184,7 +185,7 @@ public class ShopDetailFragment extends Fragment {
             protected void populateViewHolder(final GalleryViewHolder viewHolder, GalleryFormat model, int position) {
 
                 menuImages.add(model.getImage());
-                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.setImage( model.getImage());
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -193,7 +194,6 @@ public class ShopDetailFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
-
             }
 
         };
@@ -212,10 +212,10 @@ public class ShopDetailFragment extends Fragment {
             mView = itemView;
         }
 
-        public void setImage(Context ctx, String ImageUrl) {
+        public void setImage(String ImageUrl) {
 
-            ImageView imageHolder = (ImageView) mView.findViewById(R.id.galleryImage);
-            Picasso.with(ctx).load(ImageUrl).into(imageHolder);
+            SimpleDraweeView imageHolder = (SimpleDraweeView) mView.findViewById(R.id.galleryImage);
+           imageHolder.setImageURI(Uri.parse(ImageUrl));
         }
 
     }
