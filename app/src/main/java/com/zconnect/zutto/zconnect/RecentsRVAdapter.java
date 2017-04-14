@@ -58,7 +58,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
 
         TextView feature, name, desc;
         SimpleDraweeView simpleDraweeView;
-
+Intent i;
+        String nam;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -70,9 +71,24 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                 @Override
                 public void onClick(View view) {
                     if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Event")) {
-                        Intent i = new Intent(context, OpenEventDetail.class);
+                        i = new Intent(context, OpenEventDetail.class);
                         i.putExtra("id", recentsItemFormats.get(getAdapterPosition()).getId());
-                        context.startActivity(i);
+                      DatabaseReference  databaseReference= FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(recentsItemFormats.get(getAdapterPosition()).getId());
+                    databaseReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.child("EventName").getValue()!=null)
+                            nam = dataSnapshot.child("EventName").getValue().toString();
+                            if(nam!=null)
+                                context.startActivity(i);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    }) ;
+                        //context.startActivity(i);
                     }
                     else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                         Intent intent= new Intent(context,TabStoreRoom.class);
