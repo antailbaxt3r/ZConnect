@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,10 @@ public class Recents extends Fragment {
         //setHasFixedSize is used to optimise RV if we know for sure that this view's bounds do not
         // change with data
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
+        productLinearLayout.setReverseLayout(true);
+        productLinearLayout.setStackFromEnd(true);
+        recyclerView.setLayoutManager(productLinearLayout);
         //Setup layout manager. VERY IMP ALWAYS
         adapter = new RecentsRVAdapter(getContext(), recentsItemFormats);
         recyclerView.setAdapter(adapter);

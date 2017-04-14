@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -62,8 +63,12 @@ public class Shop_detail extends AppCompatActivity {
         simpleDraweeView = (SimpleDraweeView) findViewById(R.id.activity_shop_details_backdrop);
         name = getIntent().getStringExtra("Name");
         imageurl = getIntent().getStringExtra("Imageurl");
-        if (name != null)
-            getSupportActionBar().setTitle(null);
+      //  Log.v("im",imageurl);
+        String tag =getIntent().getStringExtra("Tag");
+        if(tag!=null&&tag.equals("1"))
+            getSupportActionBar().setTitle("Details");
+       else if (name != null)
+            getSupportActionBar().setTitle(name);
         if (imageurl != null) {
             simpleDraweeView.setImageURI(Uri.parse(imageurl));
             collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
