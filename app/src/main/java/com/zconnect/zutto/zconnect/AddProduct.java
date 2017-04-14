@@ -48,6 +48,8 @@ import java.util.Map;
 
 public class AddProduct extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
+    IntentHandle intentHandle;
+    Intent galleryIntent;
     DatabaseReference mFeaturesStats;
     private Uri mImageUri = null;
     private ImageButton mAddImage;
@@ -70,6 +72,7 @@ public class AddProduct extends AppCompatActivity {
         setContentView(R.layout.activity_add_product);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        intentHandle = new IntentHandle();
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -116,8 +119,7 @@ public class AddProduct extends AppCompatActivity {
                             12345
                     );
                 }
-                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
+                galleryIntent = intentHandle.getPickImageIntent(getApplicationContext());
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
@@ -251,9 +253,10 @@ public class AddProduct extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
+            Uri imageUri = intentHandle.getPickImageResultUri(data);
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(2, 1)
                     .setSnapRadius(2)
                     .start(this);
         }
