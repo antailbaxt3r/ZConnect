@@ -6,9 +6,20 @@ package com.zconnect.zutto.zconnect.ItemFormats;
 
 public class PhonebookStudentHostelItem {
     String hostel;
+String cat;
 
-    public PhonebookStudentHostelItem(String hostel) {
+    public PhonebookStudentHostelItem(String hostel, String cat) {
         this.hostel = hostel;
+        this.cat = cat;
+    }
+
+    public String getCat() {
+        return cat;
+
+    }
+
+    public void setCat(String cat) {
+        this.cat = cat;
     }
 
     public PhonebookStudentHostelItem() {

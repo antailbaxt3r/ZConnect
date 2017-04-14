@@ -27,7 +27,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
 import java.util.Vector;
 
 public class PhonebookCategorySearch extends AppCompatActivity {
-    String hostel;
+    String hostel,cat;
     private android.support.v7.widget.RecyclerView searchContactList;
     private PhonebookAdapter searchAdapter;
     private Toolbar toolbar;
@@ -45,7 +45,7 @@ public class PhonebookCategorySearch extends AppCompatActivity {
 
         Intent intent = getIntent();
         hostel = intent.getStringExtra("hostel");
-
+cat=intent.getStringExtra("cat");
         searchContactList = (android.support.v7.widget.RecyclerView) findViewById(R.id.searchActivityRecyclerView);
         databaseReference.keepSynced(true);
         queryRef.keepSynced(true);
@@ -97,7 +97,7 @@ public class PhonebookCategorySearch extends AppCompatActivity {
                         //need to add a try catch block before release
 
                         // storage of EventFormat by individual de-serialization
-                        if (hostel != null && hostel.equals(childShot.child("hostel").getValue(String.class))) {
+                        if (hostel != null && hostel.equals(childShot.child("hostel").getValue(String.class))&&cat!=null&&cat.equals(childShot.child("category").getValue(String.class))) {
                             PhonebookDisplayItem foo = new PhonebookDisplayItem();
 
                             foo.setCategory(childShot.child("category").getValue(String.class));
