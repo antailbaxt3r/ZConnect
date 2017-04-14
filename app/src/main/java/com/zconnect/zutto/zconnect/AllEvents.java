@@ -229,6 +229,7 @@ public class AllEvents extends AppCompatActivity {
 
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
                     i.putExtra("currentEvent", event);
+                    i.putExtra("Eventtag","1");
                     mView.getContext().startActivity(i);
                 }
             });

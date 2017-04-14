@@ -4,12 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 
 import java.util.Vector;
@@ -53,6 +59,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
         TextView feature, name, desc;
         SimpleDraweeView simpleDraweeView;
 
+
         public ViewHolder(View itemView) {
             super(itemView);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.recents_image);
@@ -64,10 +71,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                 public void onClick(View view) {
                     if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Event")) {
                         Intent i = new Intent(context, OpenEventDetail.class);
-                        i.putExtra("name", recentsItemFormats.get(getAdapterPosition()).getName());
-                        i.putExtra("desc", recentsItemFormats.get(getAdapterPosition()).getDesc());
-                        i.putExtra("date", recentsItemFormats.get(getAdapterPosition()).getDesc2());
-                        i.putExtra("image", recentsItemFormats.get(getAdapterPosition()).getImageurl());
+                        i.putExtra("id", recentsItemFormats.get(getAdapterPosition()).getId());
                         context.startActivity(i);
                     }
                     else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
@@ -75,8 +79,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         context.startActivity(intent);
                     }
                     else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Shop")){
-                        Intent intent= new Intent(context,Shop.class);
-                        context.startActivity(intent);
+                        final Intent intent= new Intent(context,Shop_detail.class);
+                        intent.putExtra("ShopId",recentsItemFormats.get(getAdapterPosition()).getId());
+                        intent.putExtra("Tag","1");
+                   intent.putExtra("Imageurl",recentsItemFormats.get(getAdapterPosition()).getDesc2());
+                    //  Log.v("im1",recentsItemFormats.get(getAdapterPosition()).getDesc2());
+                    context.startActivity(intent);
                     }
                 }
             });

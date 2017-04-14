@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,11 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.GalleryFormat;
 
@@ -32,7 +36,7 @@ public class ShopDetailFragment extends Fragment {
     LinearLayout linearLayout, numberlayout;
     SimpleDraweeView menu, image;
     String nam, detail, lat, lon, imageurl, num, menuurl, shopid = null;
-    DatabaseReference mDatabase, mDatabaseMenu;
+    DatabaseReference mDatabase, mDatabaseMenu,database;
     HorizontalScrollView galleryScroll, menuScroll;
 
     GalleryAdapter adapter;
@@ -65,13 +69,7 @@ public class ShopDetailFragment extends Fragment {
         menuRecycler.setLayoutManager(layoutManagerMenu);
 
 
-        nam = getActivity().getIntent().getStringExtra("Name");
-        detail = getActivity().getIntent().getStringExtra("Details");
-        lat = getActivity().getIntent().getStringExtra("Lat");
-        lon = getActivity().getIntent().getStringExtra("Lon");
-        imageurl = getActivity().getIntent().getStringExtra("Imageurl");
-        menuurl = getActivity().getIntent().getStringExtra("Menu");
-        num = getActivity().getIntent().getStringExtra("Number");
+
         shopid = getActivity().getIntent().getStringExtra("ShopId");
 
 
@@ -83,28 +81,48 @@ public class ShopDetailFragment extends Fragment {
         number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         numberlayout = (LinearLayout) view.findViewById(R.id.shop_details_num);
         linearLayout = (LinearLayout) view.findViewById(R.id.shop_details_directions);
-        if (nam != null && detail != null && lat != null && lon != null && imageurl != null && menuurl != null && num != null) {
-            name.setText(nam);
-            details.setText(detail);
-            image.setImageURI(Uri.parse(imageurl));
-//            menu.setImageURI(Uri.parse(menuurl));
-            number.setText(num);
-            linearLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
-            });
-            numberlayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num)));
-                }
-            });
-
+        if(shopid!=null){
+            database=FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid);
         }
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                nam=dataSnapshot.child("name").getValue().toString();
+                Log.v("TAg",nam);
+                detail=dataSnapshot.child("details").getValue().toString();
+                lat=dataSnapshot.child("lat").getValue().toString();
+                lon=dataSnapshot.child("lon").getValue().toString();
+                imageurl=dataSnapshot.child("imageurl").getValue().toString();
+                num=dataSnapshot.child("number").getValue().toString();
+                name.setText(nam);
+                details.setText(detail);
+
+                image.setImageURI(Uri.parse(imageurl));
+//            menu.setImageURI(Uri.parse(menuurl));
+                number.setText(num);
+                linearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                });
+                numberlayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num)));
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         image.setVisibility(View.GONE);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Gallery");
         mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid).child("Menu");
@@ -175,8 +193,7 @@ public class ShopDetailFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
-                if (model.getImage() != null)
-                    Toast.makeText(getContext(), model.getImage(), Toast.LENGTH_SHORT).show();
+
             }
 
         };
