@@ -54,6 +54,7 @@ public class PhonebookStudents extends Fragment {
         for (int i = 0; i < 14; i++) {
             PhonebookStudentHostelItem phonebookStudentHostelItem1 = new PhonebookStudentHostelItem();
             phonebookStudentHostelItem1.setHostel(hostel[i]);
+            phonebookStudentHostelItem1.setCat("S");
             phonebookStudentHostelItems.add(phonebookStudentHostelItem1);
         }
         return phonebookStudentHostelItems;

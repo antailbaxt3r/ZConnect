@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
 
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import static android.view.View.INVISIBLE;
@@ -30,6 +31,7 @@ import static android.view.View.VISIBLE;
 
 public class PhonebookHostelWise extends AppCompatActivity {
     String hostel;
+    String cat;
     Vector<PhonebookItem> phonebookItems = new Vector<>();
     Vector<PhonebookDisplayItem> phonebookDisplayItems = new Vector<>();
     private PhonebookAdapter adapter;
@@ -74,6 +76,7 @@ public class PhonebookHostelWise extends AppCompatActivity {
         databaseReference.keepSynced(true);
         queryRef.keepSynced(true);
         hostel = getIntent().getStringExtra("Hostel");
+        cat=getIntent().getStringExtra("Cat");
         getSupportActionBar().setTitle(hostel + " Phonebook");
         //setHasFixedSize is used to optimise RV if we know for sure that this view's bounds do not
         // change with data
@@ -98,6 +101,7 @@ public class PhonebookHostelWise extends AppCompatActivity {
         if (id == R.id.action_search) {
             Intent searchintent = new Intent(this, PhonebookCategorySearch.class);
             searchintent.putExtra("hostel", hostel);
+            searchintent.putExtra("cat",cat);
             startActivity(searchintent);
         }
         return super.onOptionsItemSelected(item);
@@ -117,7 +121,7 @@ public class PhonebookHostelWise extends AppCompatActivity {
                     phonebookDisplayItems.add(shot.getValue(PhonebookDisplayItem.class));
                 }
                 for (int i = 0; i < phonebookDisplayItems.size(); i++) {
-                    if (phonebookDisplayItems.get(i).getCategory() != null && hostel != null && phonebookDisplayItems.get(i).getCategory().equals("S") && phonebookDisplayItems.get(i).getHostel().equals(hostel)) {
+                    if (phonebookDisplayItems.get(i).getCategory() != null && hostel != null &&cat!=null && phonebookDisplayItems.get(i).getCategory().equals(cat) && phonebookDisplayItems.get(i).getHostel().equals(hostel)) {
                         phonebookItems.add(new PhonebookItem(phonebookDisplayItems.get(i).getImageurl(), phonebookDisplayItems.get(i).getName(), phonebookDisplayItems.get(i).getNumber(), phonebookDisplayItems.get(i)));
                     }
 

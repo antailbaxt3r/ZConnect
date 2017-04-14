@@ -18,7 +18,7 @@ public class PhonebookAdmin extends Fragment {
     Vector<PhonebookStudentHostelItem> phonebookStudentHostelItems;
     private PhonebookStudentHostelRV adapter;
     private RecyclerView recyclerView;
-    private String dept[] = {"CS", "EEE/INSTR", "MECH", "CHEM-ENGG", "BIO", "MATH", "PHY", "CHEM", "ECO", "SWD", "ADMIN", "ARC"};
+    private String dept[] = {"CS", "EEE/INSTR", "MECH", "CHEM-ENGG", "BIO", "MATH", "PHY", "CHEM", "ECO", "HUMANITIES"};
 
 //    Vector<PhonebookItem> phonebookItems = new Vector<>();
 //    Vector<PhonebookDisplayItem> phonebookDisplayItems = new Vector<>();
@@ -98,9 +98,10 @@ public class PhonebookAdmin extends Fragment {
 
     public Vector<PhonebookStudentHostelItem> data() {
         Vector<PhonebookStudentHostelItem> phonebookStudentHostelItems = new Vector<>();
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 10; i++) {
             PhonebookStudentHostelItem phonebookStudentHostelItem1 = new PhonebookStudentHostelItem();
             phonebookStudentHostelItem1.setHostel(dept[i]);
+            phonebookStudentHostelItem1.setCat("A");
             phonebookStudentHostelItems.add(phonebookStudentHostelItem1);
         }
         return phonebookStudentHostelItems;
