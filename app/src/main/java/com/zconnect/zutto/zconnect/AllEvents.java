@@ -105,8 +105,7 @@ public class AllEvents extends AppCompatActivity {
         });
 
         mlinearmanager = new LinearLayoutManager(this);
-        mlinearmanager.setReverseLayout(true);
-        mlinearmanager.setStackFromEnd(true);
+
         //mlinearmanager.setStackFromEnd(true);
         mlinearmanager.scrollToPosition(1);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();

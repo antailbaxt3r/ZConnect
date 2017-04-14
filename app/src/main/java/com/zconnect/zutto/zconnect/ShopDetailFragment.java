@@ -215,6 +215,7 @@ public class ShopDetailFragment extends Fragment {
         public void setImage(String ImageUrl) {
 
             SimpleDraweeView imageHolder = (SimpleDraweeView) mView.findViewById(R.id.galleryImage);
+            if (ImageUrl!=null)
            imageHolder.setImageURI(Uri.parse(ImageUrl));
         }
 
