@@ -47,7 +47,8 @@ public class AddContact extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
     private static final int GALLERY_REQUEST = 7;
     SimpleDraweeView image;
-    Uri imageUri;
+    Intent galleryIntent;  //Intent to get image
+    IntentHandle intentHandle; //Object which makes camera intent
     DatabaseReference mFeaturesStats;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
@@ -72,6 +73,7 @@ public class AddContact extends AppCompatActivity {
         mProgress = new ProgressDialog(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        intentHandle = (new IntentHandle()); //Init intent object
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -134,8 +136,7 @@ public class AddContact extends AppCompatActivity {
                             12345
                     );
                 }
-                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
+                galleryIntent = intentHandle.getPickImageIntent(getApplicationContext()); //Get intent to create chooser .
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
@@ -147,7 +148,7 @@ public class AddContact extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
+            Uri imageUri = intentHandle.getPickImageResultUri(data); //Get data
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1, 1)

@@ -21,7 +21,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,6 +50,7 @@ import java.util.List;
 public class home extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference mData;
+    Homescreen homescreen ;
     com.google.firebase.database.Query mDatabase;
     // For Recycler
     LinearLayoutManager linearLayoutManager;
@@ -92,33 +92,20 @@ public class home extends AppCompatActivity
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+         homescreen = new Homescreen();
+        //        Intent called = getIntent();
+//        homescreen = called.hasExtra("type")?new Homescreen("new"):new Homescreen(null);
+//        if (called.hasExtra("type"))
+//            checkuser = false;
+//        if (called.hasExtra("type")) {
+//            if (called.getStringExtra("type").equals("new")) {
+//                Log.d("Extra","this opens");
+//                checkuser = false;
+//                homescreen.type = "new" ;
+//            }
+//        }
+//       homescreen.type = "new" ;
 
-        Intent called = getIntent();
-        if (called.hasExtra("type")){
-            if (called.getStringExtra("type").equals("new")) {
-
-                checkuser = false;
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(home.this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle("Add your contact");
-                alertBuilder.setMessage("Welcome to ZConnect! , Add your contact on ZConnect");
-                alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent addContact = new Intent(home.this,AddContact.class);
-                        addContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(addContact);
-                    }
-                });
-                alertBuilder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            }
-    }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -158,23 +145,22 @@ public class home extends AppCompatActivity
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                if (firebaseAuth.getCurrentUser()==null)
-                {
+                if (firebaseAuth.getCurrentUser() == null) {
                     Intent loginIntent = new Intent(home.this, logIn.class);
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     mAuth.removeAuthStateListener(mAuthListener);
                     startActivity(loginIntent);
                     finish();
-                }else {
+                } else {
 
                     checkUser();
                 }
 
             }
         };
-        if (mAuth.getCurrentUser()!=null &&mAuth.getCurrentUser().getDisplayName() != null)
+        if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getDisplayName() != null)
             name = mAuth.getCurrentUser().getDisplayName();
-        if (mAuth.getCurrentUser()!=null &&mAuth.getCurrentUser().getEmail() != null)
+        if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getEmail() != null)
             email = mAuth.getCurrentUser().getEmail();
         if (name != null)
             username.setText(name);
@@ -183,14 +169,15 @@ public class home extends AppCompatActivity
 
         databaseReference.keepSynced(true);
 
-                header.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(number!=null){
-                        Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                        startActivity(intent);}
-                    }
-                });
+        header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (number != null) {
+                    Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -207,7 +194,6 @@ public class home extends AppCompatActivity
 
 
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -323,6 +309,7 @@ public class home extends AppCompatActivity
                         flag= true;
                         Log.v("Tag",number);
                     }
+
                 }
 
             }
@@ -406,7 +393,7 @@ public class home extends AppCompatActivity
 
     private void setupViewPager(ViewPager viewPager) {
         home.ViewPagerAdapter adapter = new home.ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new Homescreen(), "Features");
+        adapter.addFragment(homescreen, "Features");
         adapter.addFragment(new Recents(), "Recents");
         viewPager.setAdapter(adapter);
     }
