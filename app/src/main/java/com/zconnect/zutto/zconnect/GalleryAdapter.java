@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
@@ -44,8 +45,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(GalleryAdapter.ViewHolder holder, int position) {
-      holder.image.setImageURI(Uri.parse(galleryItem.get(position).getImage()));
-    }
+        if(galleryItem.get(position).getImageurl()!=null){
+      holder.image.setImageURI(Uri.parse(galleryItem.get(position).getImageurl()));
+         //   Toast.makeText(context,galleryItem.get(position).getImage(),Toast.LENGTH_SHORT).show();
+        }}
 
     @Override
     public int getItemCount() {
@@ -55,17 +58,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         SimpleDraweeView image;
-ArrayList<String>arrayList=new ArrayList<>();
+        ArrayList<String>arrayList=new ArrayList<>();
         public ViewHolder(View itemView) {
             super(itemView);
             image = (SimpleDraweeView) itemView.findViewById(R.id.galleryImage);
-       itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
                arrayList.clear();
                Intent intent = new Intent(context,GalleryActivity.class);
                for (int i=0;i<galleryItem.size();i++){
-                   arrayList.add(galleryItem.get(i).getImage());
+                   arrayList.add(galleryItem.get(i).getImageurl());
                }
                intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME,arrayList);
                context.startActivity(intent);
