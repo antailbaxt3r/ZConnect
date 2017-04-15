@@ -134,8 +134,8 @@ public class ShopDetailFragment extends Fragment {
         image.setVisibility(View.GONE);
         name.setVisibility(View.GONE);
 
-            mDatabase = database.child("Gallery");
-            mDatabaseMenu = database.child("Menu");
+            mDatabase =FirebaseDatabase.getInstance().getReference().child("Shop").child("Gallery").child(shopid);
+            mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Menu").child(shopid);
 
         mDatabase.keepSynced(true);
         mDatabaseMenu.keepSynced(true);
@@ -168,7 +168,7 @@ public class ShopDetailFragment extends Fragment {
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
 
-                   galleryFormats.add(shot.getValue(GalleryFormat.class));
+                    galleryFormats.add(shot.getValue(GalleryFormat.class));
 
                 }
 
@@ -187,7 +187,9 @@ public class ShopDetailFragment extends Fragment {
                 menu.clear();
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
+
                     menu.add(shot.getValue(GalleryFormat.class));
+
                 }
 
                 adapter1.notifyDataSetChanged();
@@ -198,7 +200,6 @@ public class ShopDetailFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
     }
 
 }

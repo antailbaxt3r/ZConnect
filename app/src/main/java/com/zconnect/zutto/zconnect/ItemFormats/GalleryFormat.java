@@ -5,31 +5,21 @@ package com.zconnect.zutto.zconnect.ItemFormats;
  */
 
 public class GalleryFormat {
-    String ImageName;
-    String ImageUrl;
+    String imageurl;
 
-    public GalleryFormat(String ImageName, String ImageUrl) {
-        this.ImageName = ImageName;
-        this.ImageUrl = ImageUrl;
+    public GalleryFormat(String imageurl) {
+        this.imageurl = imageurl;
     }
 
     public GalleryFormat() {
 
     }
 
-    public String getImage() {
-        return ImageUrl;
+    public String getImageurl() {
+        return imageurl;
     }
 
-    public void setImage(String imageurl) {
-        this.ImageUrl = imageurl;
-    }
-
-    public String getTitle() {
-        return ImageName;
-    }
-
-    public void setTitle(String name) {
-        this.ImageName = name;
+    public void setImageurl(String imageurl) {
+        this.imageurl = imageurl;
     }
 }

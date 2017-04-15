@@ -38,6 +38,7 @@ public class AdRVAdapter extends RecyclerView.Adapter<AdRVAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(AdRVAdapter.ViewHolder holder, int position) {
+
         holder.simpleDraweeView.setImageURI(Uri.parse(adItemFormats.get(position).getImageurl()));
     }
 
