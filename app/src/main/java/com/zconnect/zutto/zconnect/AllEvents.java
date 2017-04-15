@@ -105,8 +105,7 @@ public class AllEvents extends AppCompatActivity {
         });
 
         mlinearmanager = new LinearLayoutManager(this);
-        mlinearmanager.setReverseLayout(true);
-        mlinearmanager.setStackFromEnd(true);
+
         //mlinearmanager.setStackFromEnd(true);
         mlinearmanager.scrollToPosition(1);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -194,15 +193,16 @@ public class AllEvents extends AppCompatActivity {
                     viewHolder.setEventDate(model.getEventDate());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
                     viewHolder.setEventVenue(model.getVenue());
-                } else {
-                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            onStart();
-
-                        }
-                    });
                 }
+//                else {
+//                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
+//                        @Override
+//                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                            onStart();
+//
+//                        }
+//                    });
+//                }
             }
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);

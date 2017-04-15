@@ -73,6 +73,7 @@ public class Shop_detail extends AppCompatActivity {
             simpleDraweeView.setImageURI(Uri.parse(imageurl));
             collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         }
+
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
 

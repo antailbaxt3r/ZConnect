@@ -58,6 +58,7 @@ public class PhonebookStudentHostelRV extends RecyclerView.Adapter<PhonebookStud
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, PhonebookHostelWise.class);
+                    intent.putExtra("Cat",phonebookStudentHostelItems.get(getAdapterPosition()).getCat());
                     intent.putExtra("Hostel", phonebookStudentHostelItems.get(getAdapterPosition()).getHostel());
                     context.startActivity(intent);
                     if (context instanceof PhonebookHostelWise) {

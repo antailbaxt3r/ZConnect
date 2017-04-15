@@ -78,12 +78,7 @@ public class OpenEventDetail extends AppCompatActivity {
 //        if (event.getLon() == null) {
 //            venueDirections.setVisibility(View.GONE);
 //        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            getWindow().setStatusBarColor(colorPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
+
 
 
 
