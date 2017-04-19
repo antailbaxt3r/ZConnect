@@ -31,7 +31,7 @@
         android:layout_below="@+id/profileImage"
         android:layout_marginTop="30dp"
         android:background="@drawable/border"
-        android:hint="Username"
+        android:hint="Name"
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textColor="@color/white"
