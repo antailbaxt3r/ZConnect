@@ -184,8 +184,6 @@ public class AllEvents extends AppCompatActivity {
             @Override
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
-                DateTime current_date = new DateTime();
-                if (current_date.getMillis() < (Long.parseLong(model.getFormatDate()) + 30 * 60 * 60) || model.getKey() == null) {
                     viewHolder.openEvent(model);
                     viewHolder.setEventName(model.getEventName());
                     viewHolder.setEventDesc(model.getEventDescription());
@@ -193,7 +191,7 @@ public class AllEvents extends AppCompatActivity {
                     viewHolder.setEventDate(model.getEventDate());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
                     viewHolder.setEventVenue(model.getVenue());
-                }
+                
 //                else {
 //                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
 //                        @Override
