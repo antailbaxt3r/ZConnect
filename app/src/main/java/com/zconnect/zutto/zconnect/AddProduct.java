@@ -208,7 +208,7 @@ public class AddProduct extends AppCompatActivity {
                     newPost2.child("name").setValue(productNameValue);
                     newPost2.child("desc").setValue(productDescriptionValue);
                     newPost2.child("imageurl").setValue(downloadUri.toString());
-                    newPost2.child("feature").setValue("Event");
+                    newPost2.child("feature").setValue("StoreRoom");
                     newPost2.child("id").setValue(key);
                     newPost2.child("desc2").setValue(productPriceValue);
                     newPost2.child("Key").setValue(newPost2.getKey());
