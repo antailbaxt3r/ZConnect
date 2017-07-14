@@ -202,4 +202,10 @@ public class TabStoreRoom extends AppCompatActivity {
             return null;
         }
     }
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent storeIntent =new Intent(TabStoreRoom.this,home.class);
+        startActivity(storeIntent);
+    }
 }
