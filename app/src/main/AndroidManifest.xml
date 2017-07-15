@@ -179,7 +179,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.AllEvents" />
         </activity>
-        <activity android:name=".image_view"></activity>
+        <activity android:name=".image_view">
+        </activity>
         <activity
             android:name=".MyProducts"
             android:label="My Products"
@@ -233,7 +234,8 @@
         <activity
             android:name=".Offers"
             android:label="@string/title_activity_offers"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <activity
             android:name=".Shop_detail"
