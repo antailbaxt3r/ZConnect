@@ -8,6 +8,8 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -39,6 +41,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -189,7 +192,7 @@ public class AllEvents extends AppCompatActivity {
                     viewHolder.setEventDesc(model.getEventDescription());
                     viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
                     viewHolder.setEventDate(model.getEventDate());
-                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getFormatDate());
+                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
                     viewHolder.setEventVenue(model.getVenue());
                 
 //                else {
@@ -288,7 +291,7 @@ public class AllEvents extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                    addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)), mView.getContext());
+                    addReminderInCalendar(eventName, eventDescription, time, mView.getContext());
 
                 }
 
@@ -296,15 +299,38 @@ public class AllEvents extends AppCompatActivity {
 
         }
 
-        private void addReminderInCalendar(String title, String desc, long time, Context context) {
-            Intent intent = new Intent(Intent.ACTION_EDIT);
-            intent.setType("vnd.android.cursor.item/event");
-            intent.putExtra("beginTime", time);
-            intent.putExtra("allDay", false);
-            intent.putExtra("rrule", "FREQ=DAILY");
-            intent.putExtra("endTime", time + 60 * 60 * 1000);
-            intent.putExtra("title", title);
-            intent.putExtra("description", desc);
+        private void addReminderInCalendar(String title, String desc, String time, Context context) {
+
+            String arr[]=time.split(" ");
+
+            String month=monthSwitcher(arr[1]);
+            String date=arr[2];
+            String year=arr[5];
+            String times=arr[3];
+
+            String timesA[]=times.split(":");
+            String hour=timesA[0];
+            String mins=timesA[1];
+
+
+            Calendar beginTime = Calendar.getInstance();
+            beginTime.set(Integer.parseInt(year),Integer.parseInt(month)-1, Integer.parseInt(date),
+                    Integer.parseInt(hour), Integer.parseInt(mins));
+            Calendar endTime = Calendar.getInstance();
+            endTime.set(Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(date),
+                    Integer.parseInt(hour)+1, Integer.parseInt(mins));
+
+
+            Intent intent = new Intent(Intent.ACTION_INSERT);
+            intent.setData(Events.CONTENT_URI);
+            //intent.setType("vnd.android.cursor.item/event");
+            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis());
+            intent.putExtra(Events.ALL_DAY, false);
+            //intent.putExtra(Events.RRULE, "FREQ=DAILY");
+            //intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis());
+            intent.putExtra(Events.TITLE, title);
+            intent.putExtra(Events.DESCRIPTION, desc);
+            intent.putExtra(Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_FREE);
             context.startActivity(intent);
 
             // Display event id.
@@ -313,7 +339,6 @@ public class AllEvents extends AppCompatActivity {
             /** Adding reminder for event added. *
              }
              /** Returns Calendar Base URI, supports both new and old OS. */
-
 
         }
     }
@@ -342,5 +367,38 @@ public class AllEvents extends AppCompatActivity {
         }
 
     }
+
+    static String monthSwitcher(String mon){
+
+        if(mon.equalsIgnoreCase("Jan")){
+            return "01";
+        } else if(mon.equalsIgnoreCase("Feb")){
+            return "02";
+        } else if(mon.equalsIgnoreCase("Mar")){
+            return "03";
+        } else if(mon.equalsIgnoreCase("Apr")){
+            return "04";
+        } else if(mon.equalsIgnoreCase("May")) {
+            return "05";
+        } else if(mon.equalsIgnoreCase("Jun")){
+            return "06";
+        } else if(mon.equalsIgnoreCase("Jul")){
+            return "07";
+        } else if(mon.equalsIgnoreCase("Aug")){
+            return "08";
+        } else if(mon.equalsIgnoreCase("Sept")){
+            return "09";
+        } else if(mon.equalsIgnoreCase("Oct")){
+            return "10";
+        } else if(mon.equalsIgnoreCase("Nov")){
+            return "11";
+        } else if(mon.equalsIgnoreCase("Dec")){
+            return "12";
+        } else
+            return "00";
+
+    }
+
+
 
 }
