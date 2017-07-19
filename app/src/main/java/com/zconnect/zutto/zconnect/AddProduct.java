@@ -252,44 +252,31 @@ public class AddProduct extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            Uri imageUri = intentHandle.getPickImageResultUri(data);
+            Uri imageUri = data.getData();
             CropImage.activity(imageUri)
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(2, 1)
-                    .setSnapRadius(2)
+                    .setAspectRatio(3, 2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
 
-//
-//                mAddImage.setImageURI(mImageUri);
-
                 try {
                     mImageUri = result.getUri();
-                    Bitmap bitmap2 = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap2.compress(Bitmap.CompressFormat.JPEG, 10, out);
-                    final int maxSize = 400;
-                    int outWidth;
-                    int outHeight;
-                    int inWidth = bitmap2.getWidth();
-                    int inHeight = bitmap2.getHeight();
-                    if (inWidth > inHeight) {
-                        outWidth = maxSize;
-                        outHeight = (inHeight * maxSize) / inWidth;
-                    } else {
-                        outHeight = maxSize;
-                        outWidth = (inWidth * maxSize) / inHeight;
-                    }
 
-                    Bitmap bitmap = Bitmap.createScaledBitmap(bitmap2, outWidth, outHeight, true);
-                    String path = MediaStore.Images.Media.insertImage(AddProduct.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+                    Double ratio = Math.ceil(500000.0 / bitmap.getByteCount());
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
+                    String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     mAddImage.setImageURI(mImageUri);
+
 
                 } catch (IOException e) {
                     e.printStackTrace();

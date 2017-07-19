@@ -3,10 +3,12 @@ package com.zconnect.zutto.zconnect;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +33,9 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 public class registerNewUser extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST = 7;
@@ -47,6 +52,7 @@ public class registerNewUser extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private StorageReference mStorageProfile;
     private ProgressDialog mProgress;
+    private IntentHandle intentHandle = new IntentHandle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +74,7 @@ public class registerNewUser extends AppCompatActivity {
         userImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_REQUEST);
+                startActivity(intentHandle.getPickImageIntent(registerNewUser.this));
             }
         });
 
@@ -133,9 +137,7 @@ public class registerNewUser extends AppCompatActivity {
             snack.setAction("Select", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                    galleryIntent.setType("image/*");
-                    startActivityForResult(galleryIntent, GALLERY_REQUEST);
+                    startActivity(intentHandle.getPickImageIntent(registerNewUser.this));
 
                 }
             });
@@ -189,20 +191,38 @@ public class registerNewUser extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            imageUri = data.getData();
+            Uri imageUri = intentHandle.getPickImageResultUri(data); //Get data
             CropImage.activity(imageUri)
+                    .setCropShape(CropImageView.CropShape.OVAL)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1, 1)
+                    .setSnapRadius(2)
                     .setBackgroundColor(R.color.white)
-                    .setBorderCornerColor(R.color.teal100)
+                    .setBorderLineColor(R.color.teal100)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
 
-                mImageUri = result.getUri();
-                userImage.setImageURI(mImageUri);
+
+                try {
+                    mImageUri = result.getUri();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    Double ratio = Math.ceil(150000.0 / bitmap.getByteCount());
+                    ratio = ratio < 0.01 ? 0.01 : ratio;
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
+
+                    String path = MediaStore.Images.Media.insertImage(registerNewUser.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+
+                    mImageUri = Uri.parse(path);
+                    userImage.setImageURI(mImageUri);
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();

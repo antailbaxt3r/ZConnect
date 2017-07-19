@@ -43,6 +43,7 @@ public class setDetails extends AppCompatActivity {
     private StorageReference mStorageProfile;
     private FirebaseAuth mAuth;
     private ProgressDialog mProgress;
+    private IntentHandle intentHandle = new IntentHandle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +72,8 @@ public class setDetails extends AppCompatActivity {
         userProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent,GALLERY_REQUEST);
+                startActivity(intentHandle.getPickImageIntent(setDetails.this));
+
             }
         });
 
@@ -96,10 +95,7 @@ public class setDetails extends AppCompatActivity {
                 snack.setAction("Select", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent galleryIntent = new Intent();
-                        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                        galleryIntent.setType("image/*");
-                        startActivityForResult(galleryIntent, GALLERY_REQUEST);
+                        startActivity(intentHandle.getPickImageIntent(setDetails.this));
                     }
                 });
                 snack.setAction("Skip", new View.OnClickListener() {
@@ -166,8 +162,9 @@ public class setDetails extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
+            Uri imageUri = intentHandle.getPickImageResultUri(data); //Get data
             CropImage.activity(imageUri)
+                    .setCropShape(CropImageView.CropShape.OVAL)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1, 1)
                     .setSnapRadius(2)
@@ -182,9 +179,11 @@ public class setDetails extends AppCompatActivity {
                     mImageUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 150, 150, true);
-                    String path = MediaStore.Images.Media.insertImage(setDetails.this.getContentResolver(), bitmap2, mImageUri.getLastPathSegment(), null);
+                    Double ratio = Math.ceil(150000.0 / bitmap.getByteCount());
+                    ratio = ratio < 0.01 ? 0.01 : ratio;
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
+
+                    String path = MediaStore.Images.Media.insertImage(setDetails.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     userProfile.setImageURI(mImageUri);
