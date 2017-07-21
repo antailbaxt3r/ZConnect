@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -54,6 +55,7 @@ public class ProductsTab extends Fragment {
     }
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,32 +71,36 @@ public class ProductsTab extends Fragment {
         mProductList.setLayoutManager(productLinearLayout);
 
         mAuth = FirebaseAuth.getInstance();
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
 
         // StoreRoom feature Reference
         mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         mDatabase.keepSynced(true);
 
-        user = mAuth.getCurrentUser();
+        if(!status){
+            user = mAuth.getCurrentUser();
 
-        mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
-        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
 
-        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                TotalProducts = dataSnapshot.child("TotalProducts").getValue().toString();
-                DatabaseReference newPost = mUserStats;
-                Map<String, Object> taskMap = new HashMap<String, Object>();
-                taskMap.put("TotalProducts", TotalProducts);
-                newPost.updateChildren(taskMap);
-            }
+            mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    TotalProducts = dataSnapshot.child("TotalProducts").getValue().toString();
+                    DatabaseReference newPost = mUserStats;
+                    Map<String, Object> taskMap = new HashMap<String, Object>();
+                    taskMap.put("TotalProducts", TotalProducts);
+                    newPost.updateChildren(taskMap);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
 
+        }
 
 
         mBuilder = new NotificationCompat.Builder(getContext());
@@ -116,7 +122,9 @@ public class ProductsTab extends Fragment {
 
             @Override
             protected void populateViewHolder(final ProductsTab.ProductViewHolder viewHolder, final Product model, int position) {
-                viewHolder.defaultSwitch(model.getKey(), getContext());
+
+                SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
                 try {
@@ -127,41 +135,45 @@ public class ProductsTab extends Fragment {
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getPhone_no(), getContext());
-                viewHolder.defaultSwitch(model.getKey(), viewHolder.mView.getContext());
+                if(!status) {
+                    viewHolder.defaultSwitch(model.getKey(), getContext());
+                    viewHolder.defaultSwitch(model.getKey(), viewHolder.mView.getContext());
 
-                viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        flag = true;
+                    viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            flag = true;
 
-                        mDatabase.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+                            mDatabase.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                if (flag) {
-                                    if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
-                                        mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
-                                        flag = false;
-                                        viewHolder.mReserve.setText("Shortlisted");
-                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.teal600));
-                                    } else {
-                                        viewHolder.mReserve.setText("Shortlist");
-                                        mDatabase.child(model.getKey()).child("UsersReserved")
-                                                .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
-                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                                        flag = false;
+                                    if (flag) {
+                                        if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
+                                            mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+                                            flag = false;
+                                            viewHolder.mReserve.setText("Shortlisted");
+                                            viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.teal600));
+                                        } else {
+                                            viewHolder.mReserve.setText("Shortlist");
+                                            mDatabase.child(model.getKey()).child("UsersReserved")
+                                                    .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+                                            viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                                            flag = false;
+                                        }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-                    }
-                };
-                viewHolder.mReserve.setOnCheckedChangeListener(viewHolder.mListener);
+                                }
+                            });
+                        }
+                    };
+                    viewHolder.mReserve.setOnCheckedChangeListener(viewHolder.mListener);
+
+                }
             }
         };
         mProductList.setAdapter(firebaseRecyclerAdapter);
@@ -185,13 +197,19 @@ public class ProductsTab extends Fragment {
         private FirebaseAuth mAuth;
 
         private String sellerName;
-
+        SharedPreferences sharedPref;
         // Constructor
         public ProductViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+            sharedPref = mView.getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+            Boolean status = sharedPref.getBoolean("mode", false);
             mReserve = (Switch) mView.findViewById(R.id.switch1);
             ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
+            if(status){
+                mReserve.setVisibility(View.GONE);
+                ReserveStatus.setVisibility(View.GONE);
+            }
             StoreRoom.keepSynced(true);
         }
 

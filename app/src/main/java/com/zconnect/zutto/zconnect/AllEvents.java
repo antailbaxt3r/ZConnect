@@ -1,7 +1,9 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,6 +15,7 @@ import android.provider.CalendarContract.Events;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -85,27 +88,31 @@ public class AllEvents extends AppCompatActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
 
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
+        if (!status) {
+            mAuth = FirebaseAuth.getInstance();
+            user = mAuth.getCurrentUser();
 
-        mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
-        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
-        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                TotalEvents = dataSnapshot.child("TotalEvents").getValue().toString();
-                DatabaseReference newPost = mUserStats;
-                Map<String, Object> taskMap = new HashMap<String, Object>();
-                taskMap.put("TotalEvents", TotalEvents);
-                newPost.updateChildren(taskMap);
-            }
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    TotalEvents = dataSnapshot.child("TotalEvents").getValue().toString();
+                    DatabaseReference newPost = mUserStats;
+                    Map<String, Object> taskMap = new HashMap<String, Object>();
+                    taskMap.put("TotalEvents", TotalEvents);
+                    newPost.updateChildren(taskMap);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
 
         mlinearmanager = new LinearLayoutManager(this);
 
@@ -114,8 +121,7 @@ public class AllEvents extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        //get current user
-        final String emailId = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
         mEventList = (RecyclerView) findViewById(R.id.eventList);
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
@@ -132,10 +138,39 @@ public class AllEvents extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+
+                if (!status) {
 
                     Intent intent = new Intent(AllEvents.this, AddEvent.class);
                     startActivity(intent);
                     finish();
+                }else {
+
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AllEvents.this);
+
+                    // 2. Chain together various setter methods to set the dialog characteristics
+                    builder.setMessage("Please Log In to access this feature.")
+                            .setTitle("Dear Guest!");
+
+                    builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(AllEvents.this, logIn.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+                    android.app.AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                }
 
             }
         });
