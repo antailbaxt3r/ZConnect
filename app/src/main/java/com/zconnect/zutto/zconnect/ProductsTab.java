@@ -267,7 +267,7 @@ public class ProductsTab extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     sellerName = dataSnapshot.child("Username").getValue().toString();
                     TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-                    post_seller_name.setText("By: " + sellerName);
+                    post_seller_name.setText("Sold By: " + sellerName);
                 }
 
                 @Override
