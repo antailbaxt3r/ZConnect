@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -101,21 +100,28 @@ public class OpenEventDetail extends AppCompatActivity {
         if(tag!=null&&tag.equals("1")){
             Bundle extras = getIntent().getExtras();
             event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
-            if (event.getLon() != null) {
                 venueDirections.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         try {
-                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + event.getLat() + "," + event.getLon()));
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
+                            if (event.getLat() == 0 && event.getLon() == 0) {
+                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            } else {
+                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
-            }
+
             String eventDate[] = (event.getEventDate().split("\\s+"));
             String date = "";
             int i = 0;
@@ -142,21 +148,27 @@ public class OpenEventDetail extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     event = dataSnapshot.getValue(Event.class);
-                    if (event.getLon() != null) {
                         venueDirections.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 try {
-                                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + event.getLat() + "," + event.getLon()));
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
+                                    if (event.getLat() == 0 && event.getLon() == 0) {
+                                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
+                                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                        mapIntent.setPackage("com.google.android.apps.maps");
+                                        startActivity(mapIntent);
+                                    } else {
+                                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
+                                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                        mapIntent.setPackage("com.google.android.apps.maps");
+                                        startActivity(mapIntent);
+                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
-                    }
                     String eventDate[] = (event.getEventDate().split("\\s+"));
                     String date = "";
                     int i = 0;
