@@ -15,8 +15,6 @@ import android.provider.CalendarContract.Events;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -42,13 +40,11 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import org.joda.time.DateTime;
-
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AllEvents extends AppCompatActivity {
+public class AllEvents extends BaseActivity {
 
     LinearLayoutManager mlinearmanager;
     FirebaseAuth mAuth;
@@ -59,6 +55,37 @@ public class AllEvents extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private DatabaseReference mRequest;
     private Query queryRef;
+
+    static String monthSwitcher(String mon) {
+
+        if (mon.equalsIgnoreCase("Jan")) {
+            return "01";
+        } else if (mon.equalsIgnoreCase("Feb")) {
+            return "02";
+        } else if (mon.equalsIgnoreCase("Mar")) {
+            return "03";
+        } else if (mon.equalsIgnoreCase("Apr")) {
+            return "04";
+        } else if (mon.equalsIgnoreCase("May")) {
+            return "05";
+        } else if (mon.equalsIgnoreCase("Jun")) {
+            return "06";
+        } else if (mon.equalsIgnoreCase("Jul")) {
+            return "07";
+        } else if (mon.equalsIgnoreCase("Aug")) {
+            return "08";
+        } else if (mon.equalsIgnoreCase("Sept")) {
+            return "09";
+        } else if (mon.equalsIgnoreCase("Oct")) {
+            return "10";
+        } else if (mon.equalsIgnoreCase("Nov")) {
+            return "11";
+        } else if (mon.equalsIgnoreCase("Dec")) {
+            return "12";
+        } else
+            return "00";
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,7 +256,7 @@ public class AllEvents extends AppCompatActivity {
                     viewHolder.setEventDate(model.getEventDate());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
                     viewHolder.setEventVenue(model.getVenue());
-                
+
 //                else {
 //                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
 //                        @Override
@@ -400,37 +427,6 @@ public class AllEvents extends AppCompatActivity {
             result.put("stars", stars);
             return result;
         }
-
-    }
-
-    static String monthSwitcher(String mon){
-
-        if(mon.equalsIgnoreCase("Jan")){
-            return "01";
-        } else if(mon.equalsIgnoreCase("Feb")){
-            return "02";
-        } else if(mon.equalsIgnoreCase("Mar")){
-            return "03";
-        } else if(mon.equalsIgnoreCase("Apr")){
-            return "04";
-        } else if(mon.equalsIgnoreCase("May")) {
-            return "05";
-        } else if(mon.equalsIgnoreCase("Jun")){
-            return "06";
-        } else if(mon.equalsIgnoreCase("Jul")){
-            return "07";
-        } else if(mon.equalsIgnoreCase("Aug")){
-            return "08";
-        } else if(mon.equalsIgnoreCase("Sept")){
-            return "09";
-        } else if(mon.equalsIgnoreCase("Oct")){
-            return "10";
-        } else if(mon.equalsIgnoreCase("Nov")){
-            return "11";
-        } else if(mon.equalsIgnoreCase("Dec")){
-            return "12";
-        } else
-            return "00";
 
     }
 
