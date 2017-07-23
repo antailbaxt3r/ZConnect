@@ -3,18 +3,27 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableWrapper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,6 +53,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
 
+import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -229,6 +239,7 @@ public class AllEvents extends AppCompatActivity {
                     viewHolder.setEventDate(model.getEventDate());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
                     viewHolder.setEventVenue(model.getVenue());
+                    viewHolder.setShareOptions(model.getEventImage());
                 
 //                else {
 //                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
@@ -242,7 +253,6 @@ public class AllEvents extends AppCompatActivity {
             }
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);
-
 
     }
 
@@ -334,6 +344,77 @@ public class AllEvents extends AppCompatActivity {
 
         }
 
+        public void setShareOptions(final String image){
+
+            final Button share=(Button) mView.findViewById(R.id.share_button);
+
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    shareEvent(image,mView.getContext());
+
+                    /*Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    shareIntent.setType("image*//*");
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Hello World");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(image)); //add image path
+                    mView.getContext().startActivity(Intent.createChooser(shareIntent, "Share image using"));
+*/
+                }
+            });
+        }
+
+        private void shareEvent(final String image, final Context context) {
+
+            try {
+                //shareIntent.setPackage("com.whatsapp");
+                //Add text and then Image URI
+                Thread thread = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        try  {
+                            //Your code goes here
+                            Uri imageUri = Uri.parse(image);
+                            Intent shareIntent = new Intent();
+                            shareIntent.setAction(Intent.ACTION_SEND);
+
+                            Bitmap bm= BitmapFactory.decodeStream(new URL(image)
+                                    .openConnection()
+                                    .getInputStream());
+
+
+                            bm=mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
+                                    R.drawable.background_icon_z),bm,context);
+
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, "An important event @Zconnect ...");
+                            shareIntent.setType("text/plain");
+
+                            String path = MediaStore.Images.Media.insertImage(
+                                    context.getContentResolver(),
+                                    bm, "", null);
+                            Uri screenshotUri = Uri.parse(path);
+
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                            shareIntent.setType("image/*");
+                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                            context.startActivity(shareIntent);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                thread.start();
+
+            } catch (android.content.ActivityNotFoundException ex) {
+                //ToastHelper.MakeShortText("Whatsapp have not been installed.");
+            }
+
+        }
+
         private void addReminderInCalendar(String title, String desc, String time, Context context) {
 
             String arr[]=time.split(" ");
@@ -376,6 +457,32 @@ public class AllEvents extends AppCompatActivity {
              /** Returns Calendar Base URI, supports both new and old OS. */
 
         }
+        public Bitmap mergeBitmap(Bitmap bitmap2, Bitmap bitmap1,Context context) {
+            Bitmap mergedBitmap = null;
+
+
+            Drawable[] layers=new Drawable[2];
+
+            layers[0]=new BitmapDrawable(context.getResources(), bitmap1);
+            layers[1]=new BitmapDrawable(context.getResources(), bitmap2);
+
+            LayerDrawable layerDrawable=new LayerDrawable(layers);
+
+            int width = layerDrawable.getIntrinsicWidth();
+            int height = layerDrawable.getIntrinsicHeight();
+
+            mergedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(mergedBitmap);
+            layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            layerDrawable.draw(canvas);
+
+
+            //mergedBitmap=BitmapFactory.decodeResourceStream(layerDrawable)
+
+            return mergedBitmap;
+        }
+
+
     }
 
     @IgnoreExtraProperties
