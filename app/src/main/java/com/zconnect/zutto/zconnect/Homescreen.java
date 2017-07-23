@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -86,6 +88,10 @@ public class Homescreen extends Fragment {
         StoreRoomName = (TextView) view.findViewById(R.id.StoreRoomName);
         StoreRoomStatement = (TextView) view.findViewById(R.id.StoreRoomStatement);
 
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        final Boolean status = sharedPref.getBoolean("mode", false);
+        //Toast.makeText(getContext(), status.toString(), Toast.LENGTH_SHORT).show();
+
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         if (user != null) {
@@ -103,6 +109,8 @@ public class Homescreen extends Fragment {
                 startActivity(InfoneIntent);
             }
         });
+
+
 
         StoreRoomCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,30 +152,34 @@ public class Homescreen extends Fragment {
 
             }
         };
-        UserStats = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("TotalNumbers").getValue() != null) {
-                    UserTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-                }
-                if (dataSnapshot.child("TotalEvents").getValue() != null) {
-                    UserTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-                }
-                if (dataSnapshot.child("TotalOffers").getValue() != null) {
-                    UserTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
-                }
-                if (dataSnapshot.child("TotalProducts").getValue() != null) {
-                    UserTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
-                }
-                setNotification();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+        if(user!=null) {
+            UserStats = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child("TotalNumbers").getValue() != null) {
+                        UserTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                    }
+                    if (dataSnapshot.child("TotalEvents").getValue() != null) {
+                        UserTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                    }
+                    if (dataSnapshot.child("TotalOffers").getValue() != null) {
+                        UserTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                    }
+                    if (dataSnapshot.child("TotalProducts").getValue() != null) {
+                        UserTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                    }
+                    setNotification();
+                }
 
-            }
-        };
-        addContactOption();
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            addContactOption();
+        }
+
 
         return view;
     }

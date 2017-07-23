@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -69,26 +71,32 @@ public class Phonebook extends AppCompatActivity {
         }
 
         mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
 
-        mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
-        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
 
-        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                TotalNumbers = dataSnapshot.child("TotalNumbers").getValue().toString();
-                DatabaseReference newPost = mUserStats;
-                Map<String, Object> taskMap = new HashMap<String, Object>();
-                taskMap.put("TotalNumbers", TotalNumbers);
-                newPost.updateChildren(taskMap);
-            }
+        if (!status) {
+            user = mAuth.getCurrentUser();
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
 
-            }
-        });
+            mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    TotalNumbers = dataSnapshot.child("TotalNumbers").getValue().toString();
+                    DatabaseReference newPost = mUserStats;
+                    Map<String, Object> taskMap = new HashMap<String, Object>();
+                    taskMap.put("TotalNumbers", TotalNumbers);
+                    newPost.updateChildren(taskMap);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
 
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -106,9 +114,39 @@ public class Phonebook extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Phonebook.this, AddContact.class);
-                startActivity(intent);
-                finish();
+                SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+
+                if (!status) {
+                    Intent intent = new Intent(Phonebook.this, AddContact.class);
+                    startActivity(intent);
+                    finish();
+                }else {
+
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Phonebook.this);
+
+                    // 2. Chain together various setter methods to set the dialog characteristics
+                    builder.setMessage("Please Log In to access this feature.")
+                            .setTitle("Dear Guest!");
+
+                    builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(Phonebook.this, logIn.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+                    android.app.AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                }
+
             }
         });
 
@@ -135,10 +173,20 @@ public class Phonebook extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new PhonebookAdmin(), "Admin");
-        adapter.addFragment(new PhonebookStudents(), "Students");
-        adapter.addFragment(new PhonebookOthers(), "others");
-        viewPager.setAdapter(adapter);
+
+        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+        if (!status) {
+            adapter.addFragment(new PhonebookAdmin(), "Admin");
+            adapter.addFragment(new PhonebookStudents(), "Students");
+            adapter.addFragment(new PhonebookOthers(), "others");
+            viewPager.setAdapter(adapter);
+        }else {
+            adapter.addFragment(new PhonebookAdmin(), "Admin");
+            adapter.addFragment(new PhonebookOthers(), "others");
+            viewPager.setAdapter(adapter);
+        }
     }
 
 

@@ -19,7 +19,6 @@ android {
         }
     }
     repositories {
-        // jcenter()
         maven { url 'https://maven.fabric.io/public' }
     }
 }

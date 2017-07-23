@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -101,51 +102,56 @@ public class IndividualCategory extends AppCompatActivity {
 
             @Override
             protected void populateViewHolder(final ProductViewHolder viewHolder, final Product model, int position) {
-                viewHolder.defaultSwitch(model.getKey());
-                //viewHolder.setSwitch(model.getKey());
+
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(getApplicationContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getPhone_no());
-                viewHolder.defaultSwitch(model.getKey());
 
-                viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        flag = true;
 
-                        mDatabase.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+                SharedPreferences sharedPref = getSharedPreferences("guestMode",MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+                if(!status) {
+                    viewHolder.defaultSwitch(model.getKey());
+                    viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            flag = true;
 
-                                if (flag) {
-                                    if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
-                                        mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
-                                        viewHolder.mReserve.setText("Shortlisted");
-                                        flag = false;
-                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.teal600));
+                            mDatabase.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    } else {
+                                    if (flag) {
+                                        if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
+                                            mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+                                            viewHolder.mReserve.setText("Shortlisted");
+                                            flag = false;
+                                            viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.teal600));
 
-                                        mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
-                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
-                                        viewHolder.mReserve.setText("Shortlist");
-                                        flag = false;
+                                        } else {
+
+                                            mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+                                            viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                                            viewHolder.mReserve.setText("Shortlist");
+                                            flag = false;
+                                        }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-                    }
-                };
-                viewHolder.mReserve.setOnCheckedChangeListener(viewHolder.mListener);
+                                }
+                            });
+                        }
+                    };
+                    viewHolder.mReserve.setOnCheckedChangeListener(viewHolder.mListener);
 
+
+                }
             }
         };
         mProductList.setAdapter(firebaseRecyclerAdapter);
@@ -162,12 +168,21 @@ public class IndividualCategory extends AppCompatActivity {
         private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
         private FirebaseAuth mAuth;
+        SharedPreferences sharedPref;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+            sharedPref = mView.getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+            Boolean status = sharedPref.getBoolean("mode", false);
             mReserve = (Switch) mView.findViewById(R.id.switch1);
             ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
+
+            if(status){
+                mReserve.setVisibility(View.GONE);
+                ReserveStatus.setVisibility(View.GONE);
+            }
+
             StoreRoom.keepSynced(true);
 
         }
