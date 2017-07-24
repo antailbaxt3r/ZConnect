@@ -159,6 +159,10 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
                             spinner.setSelection(getIndex(spinner, hostel));
 
                             String[] skillsArray =skills.split(",");
+
+                            skillsArray[0]=skillsArray[0].substring(2);
+                            skillsArray[skillsArray.length-1]=skillsArray[skillsArray.length-1]
+                                    .substring(0,skillsArray[skillsArray.length-1].length()-2);
                             skillTags.setTags(skillsArray);
                             if (number == null) {
                                 flag = true;
