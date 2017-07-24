@@ -3,10 +3,10 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,9 +23,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableWrapper;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -51,14 +48,12 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import org.joda.time.DateTime;
-
 import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AllEvents extends AppCompatActivity {
+public class AllEvents extends BaseActivity {
 
     LinearLayoutManager mlinearmanager;
     FirebaseAuth mAuth;
@@ -69,6 +64,37 @@ public class AllEvents extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private DatabaseReference mRequest;
     private Query queryRef;
+
+    static String monthSwitcher(String mon) {
+
+        if (mon.equalsIgnoreCase("Jan")) {
+            return "01";
+        } else if (mon.equalsIgnoreCase("Feb")) {
+            return "02";
+        } else if (mon.equalsIgnoreCase("Mar")) {
+            return "03";
+        } else if (mon.equalsIgnoreCase("Apr")) {
+            return "04";
+        } else if (mon.equalsIgnoreCase("May")) {
+            return "05";
+        } else if (mon.equalsIgnoreCase("Jun")) {
+            return "06";
+        } else if (mon.equalsIgnoreCase("Jul")) {
+            return "07";
+        } else if (mon.equalsIgnoreCase("Aug")) {
+            return "08";
+        } else if (mon.equalsIgnoreCase("Sept")) {
+            return "09";
+        } else if (mon.equalsIgnoreCase("Oct")) {
+            return "10";
+        } else if (mon.equalsIgnoreCase("Nov")) {
+            return "11";
+        } else if (mon.equalsIgnoreCase("Dec")) {
+            return "12";
+        } else
+            return "00";
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,15 +258,15 @@ public class AllEvents extends AppCompatActivity {
             @Override
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
-                    viewHolder.openEvent(model);
-                    viewHolder.setEventName(model.getEventName());
-                    viewHolder.setEventDesc(model.getEventDescription());
-                    viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
-                    viewHolder.setEventDate(model.getEventDate());
-                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
-                    viewHolder.setEventVenue(model.getVenue());
-                    viewHolder.setShareOptions(model.getEventImage());
-                
+                viewHolder.openEvent(model);
+                viewHolder.setEventName(model.getEventName());
+                viewHolder.setEventDesc(model.getEventDescription());
+                viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
+                viewHolder.setEventDate(model.getEventDate());
+                viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
+                viewHolder.setEventVenue(model.getVenue());
+                viewHolder.setShareOptions(model.getEventImage());
+
 //                else {
 //                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
 //                        @Override
@@ -344,15 +370,15 @@ public class AllEvents extends AppCompatActivity {
 
         }
 
-        public void setShareOptions(final String image){
+        public void setShareOptions(final String image) {
 
-            final Button share=(Button) mView.findViewById(R.id.share_button);
+            final Button share = (Button) mView.findViewById(R.id.share_button);
 
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    shareEvent(image,mView.getContext());
+                    shareEvent(image, mView.getContext());
 
                     /*Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
                     shareIntent.setType("image*//*");
@@ -373,19 +399,19 @@ public class AllEvents extends AppCompatActivity {
 
                     @Override
                     public void run() {
-                        try  {
+                        try {
                             //Your code goes here
                             Uri imageUri = Uri.parse(image);
                             Intent shareIntent = new Intent();
                             shareIntent.setAction(Intent.ACTION_SEND);
 
-                            Bitmap bm= BitmapFactory.decodeStream(new URL(image)
+                            Bitmap bm = BitmapFactory.decodeStream(new URL(image)
                                     .openConnection()
                                     .getInputStream());
 
 
-                            bm=mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
-                                    R.drawable.background_icon_z),bm,context);
+                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
+                                    R.drawable.background_icon_z), bm, context);
 
                             shareIntent.putExtra(Intent.EXTRA_TEXT, "An important event @Zconnect ...");
                             shareIntent.setType("text/plain");
@@ -457,16 +483,17 @@ public class AllEvents extends AppCompatActivity {
              /** Returns Calendar Base URI, supports both new and old OS. */
 
         }
-        public Bitmap mergeBitmap(Bitmap bitmap2, Bitmap bitmap1,Context context) {
+
+        public Bitmap mergeBitmap(Bitmap bitmap2, Bitmap bitmap1, Context context) {
             Bitmap mergedBitmap = null;
 
 
-            Drawable[] layers=new Drawable[2];
+            Drawable[] layers = new Drawable[2];
 
-            layers[0]=new BitmapDrawable(context.getResources(), bitmap1);
-            layers[1]=new BitmapDrawable(context.getResources(), bitmap2);
+            layers[0] = new BitmapDrawable(context.getResources(), bitmap1);
+            layers[1] = new BitmapDrawable(context.getResources(), bitmap2);
 
-            LayerDrawable layerDrawable=new LayerDrawable(layers);
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
 
             int width = layerDrawable.getIntrinsicWidth();
             int height = layerDrawable.getIntrinsicHeight();
@@ -507,37 +534,6 @@ public class AllEvents extends AppCompatActivity {
             result.put("stars", stars);
             return result;
         }
-
-    }
-
-    static String monthSwitcher(String mon){
-
-        if(mon.equalsIgnoreCase("Jan")){
-            return "01";
-        } else if(mon.equalsIgnoreCase("Feb")){
-            return "02";
-        } else if(mon.equalsIgnoreCase("Mar")){
-            return "03";
-        } else if(mon.equalsIgnoreCase("Apr")){
-            return "04";
-        } else if(mon.equalsIgnoreCase("May")) {
-            return "05";
-        } else if(mon.equalsIgnoreCase("Jun")){
-            return "06";
-        } else if(mon.equalsIgnoreCase("Jul")){
-            return "07";
-        } else if(mon.equalsIgnoreCase("Aug")){
-            return "08";
-        } else if(mon.equalsIgnoreCase("Sept")){
-            return "09";
-        } else if(mon.equalsIgnoreCase("Oct")){
-            return "10";
-        } else if(mon.equalsIgnoreCase("Nov")){
-            return "11";
-        } else if(mon.equalsIgnoreCase("Dec")){
-            return "12";
-        } else
-            return "00";
 
     }
 

@@ -3,7 +3,6 @@ package com.zconnect.zutto.zconnect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.ShopOfferItemFormat;
 
 import java.util.Vector;
 
-public class Offers extends AppCompatActivity {
+public class Offers extends BaseActivity {
 
     RecyclerView offersRecycler;
     DatabaseReference offersDatabase;

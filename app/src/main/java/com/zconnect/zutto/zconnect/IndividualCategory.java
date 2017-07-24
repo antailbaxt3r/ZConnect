@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,7 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
-public class IndividualCategory extends AppCompatActivity {
+public class IndividualCategory extends BaseActivity {
 
     public String category;
     Query queryCategory;
@@ -163,12 +162,12 @@ public class IndividualCategory extends AppCompatActivity {
         View mView;
         String[] keyList;
         String ReservedUid;
+        SharedPreferences sharedPref;
         private Switch mReserve;
         private TextView ReserveStatus;
         private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
         private FirebaseAuth mAuth;
-        SharedPreferences sharedPref;
 
         public ProductViewHolder(View itemView) {
             super(itemView);

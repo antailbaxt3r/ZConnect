@@ -1,9 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
-public class image_view extends AppCompatActivity {
+public class image_view extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

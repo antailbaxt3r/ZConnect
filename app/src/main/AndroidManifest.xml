@@ -7,6 +7,12 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
 
     <application
         android:name=".ZConnect"
@@ -85,7 +91,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".home" />
         </activity>
-
         <activity
             android:name=".ShopList"
             android:label="@string/title_activity_shop_list"
@@ -148,6 +153,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -180,8 +186,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.AllEvents" />
         </activity>
-        <activity android:name=".image_view">
-        </activity>
+        <activity android:name=".image_view"></activity>
         <activity
             android:name=".MyProducts"
             android:label="My Products"
@@ -211,7 +216,6 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name=".EditProfile"
             android:label="@string/title_activity_edit_profile"
@@ -231,13 +235,15 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/infone_search_widget_info" />
         </receiver>
-
+        <receiver android:name=".BaseActivity$networkStatereceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"></action>
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".Offers"
             android:label="@string/title_activity_offers"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".Shop_detail"
             android:label="@string/title_activity_shop_detail"
@@ -252,9 +258,5 @@
             android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM" />
 
     </application>
-
-    <meta-data
-        android:name="com.google.android.gms.version"
-        android:value="@integer/google_play_services_version" />
 
 </manifest>

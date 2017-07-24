@@ -15,7 +15,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,7 +41,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class EditProfile extends AppCompatActivity {
+public class EditProfile extends BaseActivity {
     private static final int GALLERY_REQUEST = 7;
     String email;
     String name, details, imageurl, number = null, hostel = null, host, category;
