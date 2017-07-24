@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="fruits">
+        <item>Android App Dev</item>
+        <item>iOS App Dev</item>
+        <item>Javascript</item>
+        <item>Node JS</item>
+        <item>React JS</item>
+        <item>Jquery</item>
+        <item>Angular 1</item>
+        <item>Angular 2</item>
+        <item>Spring(Java)</item>
+        <item>Django</item>
+        <item>My SQL</item>
+        <item>Competitive Coding</item>
+        <item>Ethical Hacking</item>
+        <item>Data Mining</item>
+        <item>Machine Learning</item>
+        <item>Text Analytics</item>
+        <item>2D animation</item>
+        <item>3D animation</item>
+        <item>Graphic Design</item>
+        <item>Handicraft</item>
+        <item>Logo Design</item>
+        <item>Algorithms</item>
+        <item>Electronics</item>
+        <item>VLSI Design</item>
+        <item>Computer hardware</item>
+        <item>Gaming</item>
+        <item>Game Dev</item>
+        <item>Electrical Machines</item>
+        <item>Quantum Physics</item>
+        <item>Content marketing</item>
+        <item>Blogging</item>
+        <item>Direction (Drama)</item>
+        <item>Acting</item>
+        <item>Modeling</item>
+        <item>Natural language processing</item>
+        <item>R development</item>
+        <item>Information security</item>
+        <item>Amazon Web Services</item>
+        <item>.NET Dev</item>
+        <item>Video editing</item>
+        <item>Photography</item>
+        <item>Java development</item>
+        <item>Accounting</item>
+        <item>Marionberry</item>
+        <item>Sponsorship</item>
+        <item>AutoCAD</item>
+        <item>Communications</item>
+        <item>Advertising</item>
+        <item>Accounting</item>
+        <item>C#</item>
+        <item>Photoshop</item>
+        <item>C/C++</item>
+        <item>Debater</item>
+        <item>WordPress</item>
+        <item>creative writer</item>
+        <item>Badminton</item>
+        <item>Football</item>
+        <item>Cricket</item>
+        <item>Futsal</item>
+        <item>Chess</item>
+        <item>Carrom</item>
+        <item>Hockey</item>
+        <item>Mechanics</item>
+        <item>Frisbee</item>
+        <item>Running</item>
+        <item>Sketching</item>
+        <item>Arts</item>
+        <item>Ardino</item>
+        <item>Quizing</item>
+        <item>Swimming</item>
+        <item>Raspberry pie</item>
+        <item>Ruby</item>
+        <item>HTML and CSS</item>
+        <item>PHP</item>
+        <item>Ilustrator</item>
+        <item>Studying</item>
+        <item>Database Managment</item>
+        <item>Entrepreneurship</item>
+        <item>Pencil Art</item>
+        <item>Writing</item>
+        <item>Engines</item>
+    </array>
+</resources>
