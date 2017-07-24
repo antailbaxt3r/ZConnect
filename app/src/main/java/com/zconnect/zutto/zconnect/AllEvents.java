@@ -373,6 +373,7 @@ public class AllEvents extends BaseActivity {
         public void setShareOptions(final String image) {
 
             final Button share = (Button) mView.findViewById(R.id.share_button);
+
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
