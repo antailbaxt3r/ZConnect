@@ -280,7 +280,6 @@ public class AllEvents extends BaseActivity {
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);
 
-
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
