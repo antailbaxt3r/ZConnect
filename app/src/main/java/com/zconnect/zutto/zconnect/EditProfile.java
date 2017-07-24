@@ -15,7 +15,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,7 +45,8 @@ import java.util.Collection;
 
 import mabbas007.tagsedittext.TagsEditText;
 
-public class EditProfile extends AppCompatActivity implements TagsEditText.TagsEditListener{
+public class EditProfile extends BaseActivity implements TagsEditText.TagsEditListener{
+
     private static final int GALLERY_REQUEST = 7;
     String email;
     String name, details, imageurl, number = null, hostel = null, host, category,skills;
