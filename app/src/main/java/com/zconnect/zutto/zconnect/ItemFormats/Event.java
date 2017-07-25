@@ -16,12 +16,15 @@ public class Event implements Serializable {
             EventDate,
             FormatDate,
             Key,
-            Venue;
+            Venue,
+            Boosters;
     public Event() {
 
     }
 
-    public Event(String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key, String venue, double lon, double lat) {
+    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key, String venue, String boosters) {
+        this.lon = lon;
+        this.lat = lat;
         EventName = eventName;
         EventDescription = eventDescription;
         EventImage = eventImage;
@@ -29,8 +32,15 @@ public class Event implements Serializable {
         FormatDate = formatDate;
         Key = key;
         Venue = venue;
-        this.lon = lon;
-        this.lat = lat;
+        Boosters = boosters;
+    }
+
+    public String getBoosters() {
+        return Boosters;
+    }
+
+    public void setBoosters(String boosters) {
+        Boosters = boosters;
     }
 
     public String getEventDate() {
