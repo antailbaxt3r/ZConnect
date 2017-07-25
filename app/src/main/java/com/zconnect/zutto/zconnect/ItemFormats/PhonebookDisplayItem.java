@@ -12,8 +12,10 @@ public class PhonebookDisplayItem {
     private String category;
     private String email;
     private String hostel;
+    private String skills;
 
-    public PhonebookDisplayItem(String imageurl, String name, String desc, String number, String category, String email, String hostel) {
+    public PhonebookDisplayItem(String imageurl, String name, String desc, String number,
+                                String category, String email, String hostel, String skills) {
         this.imageurl = imageurl;
         this.name = name;
         this.desc = desc;
@@ -21,9 +23,18 @@ public class PhonebookDisplayItem {
         this.category = category;
         this.email = email;
         this.hostel = hostel;
+        this.skills=skills;
     }
 
     public PhonebookDisplayItem() {
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
     }
 
     public String getHostel() {

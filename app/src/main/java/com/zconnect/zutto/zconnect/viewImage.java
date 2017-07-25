@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,7 +24,7 @@ import java.util.TimerTask;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class viewImage extends AppCompatActivity {
+public class viewImage extends BaseActivity {
     LinearLayout titleBar, actionButtonBar;
     View viewButtonLayout;
     View.OnClickListener buttonListener;

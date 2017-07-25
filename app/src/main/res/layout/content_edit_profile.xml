@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:TagsEditText="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_edit_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,7 +16,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/defaultprofile"
         app:roundAsCircle="true" />
 
@@ -23,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contact_edit_image"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:clickable="false"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
@@ -52,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contact_edit_name_text_input_layout"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="0dp"
         android:clickable="false"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
@@ -81,7 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contact_edit_number_text_input_layout"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="0dp"
         android:clickable="false"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
@@ -105,14 +107,33 @@
             android:textColor="@android:color/black" />
     </android.support.design.widget.TextInputLayout>
 
-
+    <mabbas007.tagsedittext.TagsEditText
+        android:id="@+id/skillsTags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contact_edit_email_text_input_layout"
+        android:hint="Skills"
+        android:inputType="text"
+        android:text=""
+        android:textColor="@android:color/black"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        TagsEditText:allowSpaceInTag="true"
+        TagsEditText:tagsCloseImageRight="@drawable/tag_close"
+        TagsEditText:tagsBackground="@drawable/square"
+        TagsEditText:tagsCloseImageLeft="@drawable/dot"
+        TagsEditText:tagsTextColor="@color/black"
+        TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize"
+        TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
+        />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/contact_edit_details_text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/contact_edit_email_text_input_layout"
-        android:layout_marginTop="8dp"
+        android:layout_below="@+id/skillsTags"
+        android:layout_marginTop="0dp"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
@@ -133,7 +154,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/contact_edit_details_text_input_layout"
         android:layout_marginBottom="31dp"
         android:layout_marginTop="8dp"
@@ -143,6 +163,5 @@
         android:paddingRight="16dp"
         android:paddingStart="16dp"
         android:prompt="@string/hostel_prompt" />
-
 
 </RelativeLayout>

@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Event implements Serializable {
 
 
-    Double lon, lat;
+    double lon = 0, lat = 0;
     private String EventName,
             EventDescription,
             EventImage,
@@ -21,7 +21,7 @@ public class Event implements Serializable {
 
     }
 
-    public Event(String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key, String venue, Double lon, Double lat) {
+    public Event(String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key, String venue, double lon, double lat) {
         EventName = eventName;
         EventDescription = eventDescription;
         EventImage = eventImage;
@@ -70,11 +70,11 @@ public class Event implements Serializable {
     }
 
 
-    public Double getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public Double getLat() {
+    public double getLat() {
         return lat;
     }
 }

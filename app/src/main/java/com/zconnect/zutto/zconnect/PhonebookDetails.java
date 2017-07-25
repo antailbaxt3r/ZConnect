@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,12 +15,13 @@ import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
-public class PhonebookDetails extends AppCompatActivity {
-    String name, number, email, desc, imagelink;
+public class PhonebookDetails extends BaseActivity {
+    String name, number, email, desc, imagelink ,skills ,category;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
+    private android.support.design.widget.TextInputEditText editTextSkills;
     private SimpleDraweeView image;
     private ImageView mail, call;
 
@@ -35,6 +35,7 @@ public class PhonebookDetails extends AppCompatActivity {
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_details_email_editText);
         editTextName = (TextInputEditText) findViewById(R.id.contact_details_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_details_number_editText);
+        editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
         call = (ImageView) findViewById(R.id.callbutton);
         mail = (ImageView) findViewById(R.id.mailbutton);
         setSupportActionBar(toolbar);
@@ -63,10 +64,23 @@ public class PhonebookDetails extends AppCompatActivity {
         number = getIntent().getStringExtra("number");
         imagelink = getIntent().getStringExtra("image");
         email = getIntent().getStringExtra("email");
+        skills=getIntent().getStringExtra("skills");
+        category=getIntent().getStringExtra("category");
+
+        if(category.equalsIgnoreCase("S")) {
+            editTextSkills.setVisibility(View.VISIBLE);
+        }
+        if(skills==null)
+            skills="";
+
+        if(skills.length()>1)
+            skills=skills.substring(1,skills.length()-1);
+
         if (name != null && desc != null && number != null && imagelink != null && email != null) {
             editTextName.setText(name);
             editTextDetails.setText(desc);
             editTextNumber.setText(number);
+            editTextSkills.setText(skills);
             editTextNumber.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

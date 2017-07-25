@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +21,7 @@ import android.view.WindowManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class TabStoreRoom extends AppCompatActivity {
+public class TabStoreRoom extends BaseActivity {
 
     Toolbar mActionBarToolbar;
     FirebaseUser user;
@@ -194,6 +192,12 @@ public class TabStoreRoom extends AppCompatActivity {
 //            return rootView;
 //        }
 //    }
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent storeIntent = new Intent(TabStoreRoom.this, home.class);
+        startActivity(storeIntent);
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -276,11 +280,5 @@ public class TabStoreRoom extends AppCompatActivity {
             }
             return null;
         }
-    }
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        Intent storeIntent =new Intent(TabStoreRoom.this,home.class);
-        startActivity(storeIntent);
     }
 }

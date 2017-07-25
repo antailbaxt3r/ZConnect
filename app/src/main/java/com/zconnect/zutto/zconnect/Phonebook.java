@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Phonebook extends AppCompatActivity {
+public class Phonebook extends BaseActivity {
     FirebaseUser user;
     FirebaseAuth mAuth;
     String TotalNumbers;
@@ -180,11 +179,11 @@ public class Phonebook extends AppCompatActivity {
         if (!status) {
             adapter.addFragment(new PhonebookAdmin(), "Admin");
             adapter.addFragment(new PhonebookStudents(), "Students");
-            adapter.addFragment(new PhonebookOthers(), "others");
+            adapter.addFragment(new PhonebookOthersCategories(), "others");
             viewPager.setAdapter(adapter);
         }else {
             adapter.addFragment(new PhonebookAdmin(), "Admin");
-            adapter.addFragment(new PhonebookOthers(), "others");
+            adapter.addFragment(new PhonebookOthersCategories(), "others");
             viewPager.setAdapter(adapter);
         }
     }
