@@ -108,7 +108,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <mabbas007.tagsedittext.TagsEditText
-        android:id="@+id/tagsEditText"
+        android:id="@+id/skillsTags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contact_edit_email_text_input_layout"
@@ -132,7 +132,7 @@
         android:id="@+id/contact_edit_details_text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tagsEditText"
+        android:layout_below="@+id/skillsTags"
         android:layout_marginTop="0dp"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"

@@ -86,6 +86,8 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
                     intent.putExtra("number", phonebookDisplayItem.getNumber());
                     intent.putExtra("image", phonebookDisplayItem.getImageurl());
                     intent.putExtra("email", phonebookDisplayItem.getEmail());
+                    intent.putExtra("skills", phonebookDisplayItem.getSkills());
+                    intent.putExtra("category", phonebookDisplayItem.getCategory());
                     context.startActivity(intent);
                     if (context instanceof PhonebookDetails) {
                         ((PhonebookDetails) context).finish();

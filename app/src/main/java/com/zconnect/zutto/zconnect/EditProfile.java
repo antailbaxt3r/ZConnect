@@ -129,12 +129,12 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
             }
         });
 
-        skillTags =(TagsEditText) findViewById(R.id.tagsEditText);
+        skillTags =(TagsEditText) findViewById(R.id.skillsTags);
         skillTags.setTagsListener(this);
         skillTags.setTagsWithSpacesEnabled(true);
 
         skillTags.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.fruits)));
+                android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.skills)));
         skillTags.setThreshold(1);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -158,12 +158,27 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
                             editTextDetails.setText(details);
                             spinner.setSelection(getIndex(spinner, hostel));
 
-                            String[] skillsArray =skills.split(",");
+                            if(skills==null || skills.equalsIgnoreCase("[]")){
 
-                            skillsArray[0]=skillsArray[0].substring(2);
-                            skillsArray[skillsArray.length-1]=skillsArray[skillsArray.length-1]
-                                    .substring(0,skillsArray[skillsArray.length-1].length()-2);
-                            skillTags.setTags(skillsArray);
+                                skills="";
+
+                            }
+
+                            if( !skills.equals("") || skills.indexOf(',')>0) {
+                                String[] skillsArray = skills.split(",");
+
+                                skillsArray[0] = skillsArray[0].substring(1);
+                                skillsArray[skillsArray.length - 1] = skillsArray[skillsArray.length - 1]
+                                        .substring(0, skillsArray[skillsArray.length - 1].length() - 1);
+                                skillTags.setTags(skillsArray);
+                            }
+                            else {
+
+
+                                skillTags.setText(skills);
+
+                            }
+
                             if (number == null) {
                                 flag = true;
                             }
@@ -311,7 +326,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
             snack.show();
             mProgress.dismiss();
         } else {
-        if (name != null && number != null && details != null && mImageUri != null) {
+        if (name != null && number != null && details != null && mImageUri != null && !skills.equals("")) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override

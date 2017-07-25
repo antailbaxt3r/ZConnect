@@ -173,6 +173,10 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
                         Intent intent = new Intent(getApplicationContext(), EditProfile.class);
                         startActivity(intent);
                     }
+                    else {
+                        Intent intent = new Intent(getApplicationContext(), AddContact.class);
+                        startActivity(intent);
+                    }
                 }
             });
         }

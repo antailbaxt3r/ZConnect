@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="fruits">
+    <array name="skills">
         <item>Android App Dev</item>
         <item>iOS App Dev</item>
         <item>Javascript</item>
