@@ -495,8 +495,8 @@ public class AllEvents extends BaseActivity {
 
             LayerDrawable layerDrawable = new LayerDrawable(layers);
 
-            int width = layerDrawable.getIntrinsicWidth();
-            int height = layerDrawable.getIntrinsicHeight();
+            int width = layers[0].getIntrinsicWidth();
+            int height = layers[0].getIntrinsicHeight();
 
             mergedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(mergedBitmap);

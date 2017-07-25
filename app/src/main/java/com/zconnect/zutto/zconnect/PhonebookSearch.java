@@ -109,14 +109,16 @@ public class PhonebookSearch extends BaseActivity {
                         foo.setImageurl(childShot.child("imageurl").getValue(String.class));
                         foo.setName(childShot.child("name").getValue(String.class));
                         foo.setNumber(childShot.child("number").getValue(String.class));
+                        foo.setSkills(childShot.child("skills").getValue(String.class));
 
 
                         String name = childShot.child("name").getValue(String.class);
                         String number = childShot.child("number").getValue(String.class);
                         String details = childShot.child("desc").getValue(String.class);
+                        String skills = childShot.child("skills").getValue(String.class);
 
                         String imageurl = childShot.child("imageurl").getValue(String.class);
-                        String title = name + number + details;
+                        String title = name + number + details + skills;
 
                         String typeTemp = "";
 
