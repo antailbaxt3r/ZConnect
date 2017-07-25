@@ -179,11 +179,11 @@ public class Phonebook extends BaseActivity {
         if (!status) {
             adapter.addFragment(new PhonebookAdmin(), "Admin");
             adapter.addFragment(new PhonebookStudents(), "Students");
-            adapter.addFragment(new PhonebookOthers(), "others");
+            adapter.addFragment(new PhonebookOthersCategories(), "others");
             viewPager.setAdapter(adapter);
         }else {
             adapter.addFragment(new PhonebookAdmin(), "Admin");
-            adapter.addFragment(new PhonebookOthers(), "others");
+            adapter.addFragment(new PhonebookOthersCategories(), "others");
             viewPager.setAdapter(adapter);
         }
     }
