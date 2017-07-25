@@ -119,7 +119,36 @@ public class Campus_Map extends FragmentActivity implements OnMapReadyCallback {
         map.addMarker(new MarkerOptions().position(marker).title("Workshop"));
         marker = new LatLng(15.39304, 73.88051);
         map.addMarker(new MarkerOptions().position(marker).title("Auditorium"));
-
+        marker = new LatLng(15.391248, 73.880643);
+        map.addMarker(new MarkerOptions().position(marker).title("FoodKing"));
+        marker = new LatLng(15.39295, 73.87635);
+        map.addMarker(new MarkerOptions().position(marker).title("Cricket Ground"));
+        marker = new LatLng(15.39266, 73.87725);
+        map.addMarker(new MarkerOptions().position(marker).title("Volleyball Courts"));
+        marker = new LatLng(15.39336, 73.87732);
+        map.addMarker(new MarkerOptions().position(marker).title("Football Field"));
+        marker = new LatLng(15.39408, 73.8768);
+        map.addMarker(new MarkerOptions().position(marker).title("Tennis Courts"));
+        marker = new LatLng(15.39293, 73.87557);
+        map.addMarker(new MarkerOptions().position(marker).title("Cricket Nets"));
+        marker = new LatLng(15.39258, 73.87533);
+        map.addMarker(new MarkerOptions().position(marker).title("Basketball Courts"));
+        marker = new LatLng(15.39209, 73.87531);
+        map.addMarker(new MarkerOptions().position(marker).title("Badminton Court"));
+        marker = new LatLng(15.39233, 73.87557);
+        map.addMarker(new MarkerOptions().position(marker).title("Squash Court"));
+        marker = new LatLng(15.392558, 73.878976);
+        map.addMarker(new MarkerOptions().position(marker).title("Ice n Spice"));
+        marker = new LatLng(15.391435, 73.879045);
+        map.addMarker(new MarkerOptions().position(marker).title("Monginis"));
+        marker = new LatLng(15.39191, 73.8764);
+        map.addMarker(new MarkerOptions().position(marker).title("Borkars Super Store"));
+        marker = new LatLng(15.39223, 73.87637);
+        map.addMarker(new MarkerOptions().position(marker).title("Laxmi Laundry"));
+        marker = new LatLng(15.39221, 73.8764);
+        map.addMarker(new MarkerOptions().position(marker).title("Beauty Parlour"));
+        marker = new LatLng(15.39216, 73.87647);
+        map.addMarker(new MarkerOptions().position(marker).title("Power Laundry"));
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(centre)
