@@ -257,6 +257,8 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         } else if (id == R.id.about) {
             startActivity(new Intent(home.this, AboutUs.class));
 
+        } else if (id == R.id.mapActivity) {
+            startActivity(new Intent(this, Campus_Map.class));
         } else if (id == R.id.bugReport) {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(home.this);
 

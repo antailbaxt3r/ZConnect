@@ -20,6 +20,11 @@
             android:id="@+id/events"
             android:icon="@drawable/ic_event_black_24dp"
             android:title="Events" />
+
+        <item
+            android:id="@+id/mapActivity"
+            android:icon="@drawable/ic_place_black_24dp"
+            android:title="Campus Map"></item>
     </group>
     <group
         android:id="@+id/group1"
