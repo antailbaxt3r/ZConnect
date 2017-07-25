@@ -26,6 +26,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -266,6 +267,7 @@ public class AllEvents extends BaseActivity {
                 viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
                 viewHolder.setEventVenue(model.getVenue());
                 viewHolder.setShareOptions(model.getEventImage());
+                viewHolder.setBoosters(model.getBoosters());
 
 //                else {
 //                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
@@ -307,6 +309,14 @@ public class AllEvents extends BaseActivity {
             });
         }
 
+        public void setBoosters(String boosters) {
+            TextView count = (TextView) itemView.findViewById(R.id.Boostcount);
+            if (boosters == null || TextUtils.isEmpty(boosters))
+                count.setText("0");
+            else {
+                count.setText(String.valueOf(boosters.trim().split(" ").length));
+            }
+        }
 
         public void setEventName(String eventName) {
 
