@@ -20,6 +20,10 @@
             android:id="@+id/events"
             android:icon="@drawable/ic_event_black_24dp"
             android:title="Events" />
+        <item
+            android:id="@+id/cabpool"
+            android:icon="@drawable/ic_directions_car_black_24dp"
+            android:title="Cab Pooling"/>
     </group>
     <group
         android:id="@+id/group1"
