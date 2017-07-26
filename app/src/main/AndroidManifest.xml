@@ -272,20 +272,18 @@
             android:label="@string/title_activity_pool_list"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-    </application>
-
-
+        <activity
             android:name="com.zconnect.zutto.zconnect.Campus_Map"
             android:label="@string/title_activity_campus__map"
             android:theme="@style/Map">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zconnect.zutto.zconnect.home" />
+                android:value="com.zconnect.zutto.zconnect.home"/>
 
         </activity>
 
-
     </application>
+
 
 
 </manifest>
