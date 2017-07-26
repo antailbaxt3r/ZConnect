@@ -4,22 +4,29 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -42,13 +49,12 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import org.joda.time.DateTime;
-
+import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AllEvents extends AppCompatActivity {
+public class AllEvents extends BaseActivity {
 
     LinearLayoutManager mlinearmanager;
     FirebaseAuth mAuth;
@@ -59,6 +65,37 @@ public class AllEvents extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private DatabaseReference mRequest;
     private Query queryRef;
+
+    static String monthSwitcher(String mon) {
+
+        if (mon.equalsIgnoreCase("Jan")) {
+            return "01";
+        } else if (mon.equalsIgnoreCase("Feb")) {
+            return "02";
+        } else if (mon.equalsIgnoreCase("Mar")) {
+            return "03";
+        } else if (mon.equalsIgnoreCase("Apr")) {
+            return "04";
+        } else if (mon.equalsIgnoreCase("May")) {
+            return "05";
+        } else if (mon.equalsIgnoreCase("Jun")) {
+            return "06";
+        } else if (mon.equalsIgnoreCase("Jul")) {
+            return "07";
+        } else if (mon.equalsIgnoreCase("Aug")) {
+            return "08";
+        } else if (mon.equalsIgnoreCase("Sept")) {
+            return "09";
+        } else if (mon.equalsIgnoreCase("Oct")) {
+            return "10";
+        } else if (mon.equalsIgnoreCase("Nov")) {
+            return "11";
+        } else if (mon.equalsIgnoreCase("Dec")) {
+            return "12";
+        } else
+            return "00";
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,14 +259,16 @@ public class AllEvents extends AppCompatActivity {
             @Override
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
-                    viewHolder.openEvent(model);
-                    viewHolder.setEventName(model.getEventName());
-                    viewHolder.setEventDesc(model.getEventDescription());
-                    viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
-                    viewHolder.setEventDate(model.getEventDate());
-                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
-                    viewHolder.setEventVenue(model.getVenue());
-                
+                viewHolder.openEvent(model);
+                viewHolder.setEventName(model.getEventName());
+                viewHolder.setEventDesc(model.getEventDescription());
+                viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
+                viewHolder.setEventDate(model.getEventDate());
+                viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
+                viewHolder.setEventVenue(model.getVenue());
+                viewHolder.setShareOptions(model.getEventImage());
+                viewHolder.setBoosters(model.getBoosters());
+
 //                else {
 //                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
 //                        @Override
@@ -242,7 +281,6 @@ public class AllEvents extends AppCompatActivity {
             }
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);
-
 
     }
 
@@ -271,6 +309,14 @@ public class AllEvents extends AppCompatActivity {
             });
         }
 
+        public void setBoosters(String boosters) {
+            TextView count = (TextView) itemView.findViewById(R.id.Boostcount);
+            if (boosters == null || TextUtils.isEmpty(boosters))
+                count.setText("0");
+            else {
+                count.setText(String.valueOf(boosters.trim().split(" ").length));
+            }
+        }
 
         public void setEventName(String eventName) {
 
@@ -334,6 +380,77 @@ public class AllEvents extends AppCompatActivity {
 
         }
 
+        public void setShareOptions(final String image) {
+
+            final Button share = (Button) mView.findViewById(R.id.share_button);
+
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    shareEvent(image, mView.getContext());
+
+                    /*Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    shareIntent.setType("image*//*");
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Hello World");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(image)); //add image path
+                    mView.getContext().startActivity(Intent.createChooser(shareIntent, "Share image using"));
+*/
+                }
+            });
+        }
+
+        private void shareEvent(final String image, final Context context) {
+
+            try {
+                //shareIntent.setPackage("com.whatsapp");
+                //Add text and then Image URI
+                Thread thread = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        try {
+                            //Your code goes here
+                            Uri imageUri = Uri.parse(image);
+                            Intent shareIntent = new Intent();
+                            shareIntent.setAction(Intent.ACTION_SEND);
+
+                            Bitmap bm = BitmapFactory.decodeStream(new URL(image)
+                                    .openConnection()
+                                    .getInputStream());
+
+
+                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
+                                    R.drawable.background_icon_z), bm, context);
+
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, "An important event @Zconnect ...");
+                            shareIntent.setType("text/plain");
+
+                            String path = MediaStore.Images.Media.insertImage(
+                                    context.getContentResolver(),
+                                    bm, "", null);
+                            Uri screenshotUri = Uri.parse(path);
+
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                            shareIntent.setType("image/*");
+                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                            context.startActivity(shareIntent);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                thread.start();
+
+            } catch (android.content.ActivityNotFoundException ex) {
+                //ToastHelper.MakeShortText("Whatsapp have not been installed.");
+            }
+
+        }
+
         private void addReminderInCalendar(String title, String desc, String time, Context context) {
 
             String arr[]=time.split(" ");
@@ -376,6 +493,33 @@ public class AllEvents extends AppCompatActivity {
              /** Returns Calendar Base URI, supports both new and old OS. */
 
         }
+
+        public Bitmap mergeBitmap(Bitmap bitmap2, Bitmap bitmap1, Context context) {
+            Bitmap mergedBitmap = null;
+
+
+            Drawable[] layers = new Drawable[2];
+
+            layers[0] = new BitmapDrawable(context.getResources(), bitmap1);
+            layers[1] = new BitmapDrawable(context.getResources(), bitmap2);
+
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
+
+            int width = layers[0].getIntrinsicWidth();
+            int height = layers[0].getIntrinsicHeight();
+
+            mergedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(mergedBitmap);
+            layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            layerDrawable.draw(canvas);
+
+
+            //mergedBitmap=BitmapFactory.decodeResourceStream(layerDrawable)
+
+            return mergedBitmap;
+        }
+
+
     }
 
     @IgnoreExtraProperties
@@ -400,37 +544,6 @@ public class AllEvents extends AppCompatActivity {
             result.put("stars", stars);
             return result;
         }
-
-    }
-
-    static String monthSwitcher(String mon){
-
-        if(mon.equalsIgnoreCase("Jan")){
-            return "01";
-        } else if(mon.equalsIgnoreCase("Feb")){
-            return "02";
-        } else if(mon.equalsIgnoreCase("Mar")){
-            return "03";
-        } else if(mon.equalsIgnoreCase("Apr")){
-            return "04";
-        } else if(mon.equalsIgnoreCase("May")) {
-            return "05";
-        } else if(mon.equalsIgnoreCase("Jun")){
-            return "06";
-        } else if(mon.equalsIgnoreCase("Jul")){
-            return "07";
-        } else if(mon.equalsIgnoreCase("Aug")){
-            return "08";
-        } else if(mon.equalsIgnoreCase("Sept")){
-            return "09";
-        } else if(mon.equalsIgnoreCase("Oct")){
-            return "10";
-        } else if(mon.equalsIgnoreCase("Nov")){
-            return "11";
-        } else if(mon.equalsIgnoreCase("Dec")){
-            return "12";
-        } else
-            return "00";
 
     }
 

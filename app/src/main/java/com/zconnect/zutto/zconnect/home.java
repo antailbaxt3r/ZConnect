@@ -22,7 +22,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -48,8 +47,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class home extends AppCompatActivity
-    implements NavigationView.OnNavigationItemSelectedListener {
+public class home extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference mData;
     Homescreen homescreen ;
     com.google.firebase.database.Query mDatabase;
@@ -81,7 +79,6 @@ public class home extends AppCompatActivity
         SharedPreferences sharedPref = getSharedPreferences("guestMode",MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
-        Toast.makeText(this, status.toString(), Toast.LENGTH_SHORT).show();
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -176,6 +173,10 @@ public class home extends AppCompatActivity
                         Intent intent = new Intent(getApplicationContext(), EditProfile.class);
                         startActivity(intent);
                     }
+                    else {
+                        Intent intent = new Intent(getApplicationContext(), AddContact.class);
+                        startActivity(intent);
+                    }
                 }
             });
         }
@@ -192,6 +193,7 @@ public class home extends AppCompatActivity
         //Setup tablayout with viewpager
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(0);
+        isNetworkAvailable(this);
 
 
     }
@@ -259,6 +261,8 @@ public class home extends AppCompatActivity
         } else if (id == R.id.about) {
             startActivity(new Intent(home.this, AboutUs.class));
 
+        } else if (id == R.id.mapActivity) {
+            startActivity(new Intent(this, Campus_Map.class));
         } else if (id == R.id.bugReport) {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(home.this);
 

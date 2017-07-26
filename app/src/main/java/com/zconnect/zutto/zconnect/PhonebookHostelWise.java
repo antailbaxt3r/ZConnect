@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,13 +22,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
 
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-public class PhonebookHostelWise extends AppCompatActivity {
+public class PhonebookHostelWise extends BaseActivity {
     String hostel;
     String cat;
     Vector<PhonebookItem> phonebookItems = new Vector<>();

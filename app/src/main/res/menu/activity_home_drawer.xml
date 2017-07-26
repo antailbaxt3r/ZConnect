@@ -20,19 +20,27 @@
             android:id="@+id/events"
             android:icon="@drawable/ic_event_black_24dp"
             android:title="Events" />
+
         <item
             android:id="@+id/cabpool"
             android:icon="@drawable/ic_directions_car_black_24dp"
             android:title="Cab Pooling"/>
+
+
+        <item
+            android:id="@+id/mapActivity"
+            android:icon="@drawable/ic_place_black_24dp"
+            android:title="Campus Map"/>
+
     </group>
     <group
         android:id="@+id/group1"
         android:checkableBehavior="none">
 
-            <item
-                android:id="@+id/ad"
-                android:icon="@drawable/ic_live_tv_black_24dp"
-                android:title="Advertisement" />
+        <item
+            android:id="@+id/ad"
+            android:icon="@drawable/ic_live_tv_black_24dp"
+            android:title="Advertisement" />
         <item
             android:id="@+id/about"
             android:icon="@drawable/aboutus"

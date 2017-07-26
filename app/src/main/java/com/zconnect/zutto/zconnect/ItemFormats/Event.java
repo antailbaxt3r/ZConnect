@@ -9,19 +9,22 @@ import java.io.Serializable;
 public class Event implements Serializable {
 
 
-    Double lon, lat;
+    double lon = 0, lat = 0;
     private String EventName,
             EventDescription,
             EventImage,
             EventDate,
             FormatDate,
             Key,
-            Venue;
+            Venue,
+            Boosters;
     public Event() {
 
     }
 
-    public Event(String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key, String venue, Double lon, Double lat) {
+    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key, String venue, String boosters) {
+        this.lon = lon;
+        this.lat = lat;
         EventName = eventName;
         EventDescription = eventDescription;
         EventImage = eventImage;
@@ -29,8 +32,15 @@ public class Event implements Serializable {
         FormatDate = formatDate;
         Key = key;
         Venue = venue;
-        this.lon = lon;
-        this.lat = lat;
+        Boosters = boosters;
+    }
+
+    public String getBoosters() {
+        return Boosters;
+    }
+
+    public void setBoosters(String boosters) {
+        Boosters = boosters;
     }
 
     public String getEventDate() {
@@ -70,11 +80,11 @@ public class Event implements Serializable {
     }
 
 
-    public Double getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public Double getLat() {
+    public double getLat() {
         return lat;
     }
 }

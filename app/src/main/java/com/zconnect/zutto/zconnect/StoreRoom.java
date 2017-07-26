@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,18 +28,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
-public class StoreRoom extends AppCompatActivity {
+public class StoreRoom extends BaseActivity {
 
     public String category;
     Query queryCategory;
+    SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+    Boolean status = sharedPref.getBoolean("mode", false);
     private RecyclerView mProductList;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private LinearLayoutManager linearLayoutManager;
     private boolean flag = false;
-
-    SharedPreferences sharedPref = getSharedPreferences("guestMode",MODE_PRIVATE);
-    Boolean status = sharedPref.getBoolean("mode", false);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
