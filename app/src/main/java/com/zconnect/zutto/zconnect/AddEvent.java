@@ -364,7 +364,6 @@ public class AddEvent extends BaseActivity {
             CropImage.activity(imageUri)
                     .setCropShape(CropImageView.CropShape.RECTANGLE)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(3, 2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -376,7 +375,7 @@ public class AddEvent extends BaseActivity {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-                    Double ratio = Math.ceil(500000.0 / bitmap.getByteCount());
+                    Double ratio = Math.ceil(250000.0 / bitmap.getByteCount());
                     bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
                     String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
