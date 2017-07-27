@@ -281,6 +281,11 @@
             android:label="@string/title_activity_cab_list_of_people"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".AddCabPool"
+            android:label="@string/title_activity_add_cab_pool"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

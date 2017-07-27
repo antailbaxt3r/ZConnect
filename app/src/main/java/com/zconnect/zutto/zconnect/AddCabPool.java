@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,15 +10,12 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,29 +28,23 @@ import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.Calendar;
 
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-
-public class CabListOfPeople extends AppCompatActivity {
-    RecyclerView recyclerView;
-    ProgressBar progressBar;
-    DatabaseReference pool;
-    Button join;
-    String key;
-    String name, number, email;
-    Vector<CabListItemFormat> cabListItemFormatVector = new Vector<>();
-    CabItemFormat cabItemFormat, cabItemFormat1;
-    CabPeopleRVAdapter adapter;
+public class AddCabPool extends AppCompatActivity {
+    Button done, calender;
+    CustomSpinner source, destination, time;
+    TextView date;
+    CabItemFormat cabItemFormat;
+    String email, name, number;
+    int year, month, day;
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
     private FirebaseAuth mAuth;
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cab_list_of_people);
+        setContentView(R.layout.activity_add_cab_pool);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
@@ -75,13 +67,6 @@ public class CabListOfPeople extends AppCompatActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        try {
-            key = getIntent().getStringExtra("key");
-        } catch (Exception e) {
-
-        }
-        pool = FirebaseDatabase.getInstance().getReference().child("Cab").child(key);
-        mAuth = FirebaseAuth.getInstance();
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -105,84 +90,80 @@ public class CabListOfPeople extends AppCompatActivity {
 
             }
         });
-
-        recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
-        progressBar = (ProgressBar) findViewById(R.id.content_cabpeople_progress);
-        join = (Button) findViewById(R.id.join);
-        adapter = new CabPeopleRVAdapter(this, cabListItemFormatVector);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
-        recyclerView.setAdapter(adapter);
-        pool.keepSynced(true);
-        join.setOnClickListener(new View.OnClickListener() {
+        mAuth = FirebaseAuth.getInstance();
+        source = (CustomSpinner) findViewById(R.id.spinner_source);
+        destination = (CustomSpinner) findViewById(R.id.spinner_destination);
+        time = (CustomSpinner) findViewById(R.id.spinner_time);
+        done = (Button) findViewById(R.id.done);
+        date = (TextView) findViewById(R.id.date);
+        calender = (Button) findViewById(R.id.calender);
+        calender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isNetworkAvailable(getApplicationContext())) {
-                    CabListItemFormat cabListItemFormat = new CabListItemFormat();
-                    cabListItemFormat.setName(name);
-                    cabListItemFormat.setPhonenumber(number);
-                    pool.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            cabItemFormat1 = dataSnapshot.getValue(CabItemFormat.class);
-                        }
+                final Calendar c = Calendar.getInstance();
+                year = c.get(Calendar.YEAR);
+                month = c.get(Calendar.MONTH);
+                day = c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddCabPool.this,
+                        new DatePickerDialog.OnDateSetListener() {
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            progressBar.setVisibility(INVISIBLE);
-                        }
-                    });
-                    ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
-                    if (cabItemFormat1 != null) {
-                        cabListItemFormats = cabItemFormat1.getCabListItemFormats();
-                    cabListItemFormats.add(cabListItemFormat);
-                    cabItemFormat1.setCabListItemFormats(cabListItemFormats);
-                    databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);
-                        Intent intent = new Intent(CabListOfPeople.this, CabPooling.class);
-                        finish();
-                        startActivity(intent);
-                        Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                date.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+
+                            }
+                        }, year, month, day);
+                datePickerDialog.show();
+
+            }
+        });
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (date.getText() != null && source.getSelectedItem() != null && destination.getSelectedItem() != null && time.getSelectedItem() != null) {
+                    if (isNetworkAvailable(getApplicationContext())) {
+                        CabListItemFormat cabListItemFormat = new CabListItemFormat();
+                        cabListItemFormat.setName(name);
+                        cabListItemFormat.setPhonenumber(number);
+                        ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
+                        cabListItemFormats.add(cabListItemFormat);
+                        DatabaseReference newPost = databaseReference.push();
+                        String key = newPost.getKey();
+                        newPost.child("key").setValue(key);
+                        newPost.child("source").setValue(String.valueOf(source.getSelectedItem()));
+                        newPost.child("destination").setValue(String.valueOf(destination.getSelectedItem()));
+                        newPost.child("time").setValue(String.valueOf(time.getSelectedItem()));
+                        newPost.child("date").setValue(date.getText().toString());
+                        newPost.child("cabListItemFormats").setValue(cabListItemFormats);
+
+                        startActivity(new Intent(AddCabPool.this, CabPooling.class));
                     } else {
-                        Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
+                        Snackbar snack = Snackbar.make(done, "No Internet. Try later", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                        snack.show();
                     }
                 } else {
-                    Snackbar snack = Snackbar.make(join, "No Internet.Try later", Snackbar.LENGTH_LONG);
+                    Snackbar snack = Snackbar.make(done, "Fields are empty", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
                     snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                     snack.show();
-
                 }
-
             }
         });
+
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
         email = mAuth.getCurrentUser().getEmail();
-        pool.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                progressBar.setVisibility(VISIBLE);
-                join.setVisibility(INVISIBLE);
-                cabListItemFormatVector.clear();
 
-
-                cabItemFormat = dataSnapshot.getValue(CabItemFormat.class);
-
-                cabListItemFormatVector.addAll(cabItemFormat.getCabListItemFormats());
-                adapter.notifyDataSetChanged();
-                join.setVisibility(VISIBLE);
-                progressBar.setVisibility(INVISIBLE);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(INVISIBLE);
-            }
-        });
 
     }
 
