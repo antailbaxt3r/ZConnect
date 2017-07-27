@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -153,7 +154,13 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
                 android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.skills)));
         skillTags.setThreshold(1);
 
-
+        //changing fonts
+        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        editTextName.setTypeface(ralewayRegular);
+        editTextDetails.setTypeface(ralewayRegular);
+        editTextNumber.setTypeface(ralewayRegular);
+        editTextEmail.setTypeface(ralewayRegular);
+        skillTags.setTypeface(ralewayRegular);
 
     }
 

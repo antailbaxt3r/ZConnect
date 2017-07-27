@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -180,7 +181,20 @@ public class Homescreen extends Fragment {
             addContactOption();
         }
 
-
+        //changing fonts
+        Typeface ralewayExtraLight = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-ExtraLight.ttf");
+        InfoneName.setTypeface(ralewayExtraLight);
+        InfoneStats.setTypeface(ralewayExtraLight);
+        InfoneStatement.setTypeface(ralewayExtraLight);
+        EventsName.setTypeface(ralewayExtraLight);
+        EventsStats.setTypeface(ralewayExtraLight);
+        EventsStatement.setTypeface(ralewayExtraLight);
+        ShopsName.setTypeface(ralewayExtraLight);
+        ShopsStats.setTypeface(ralewayExtraLight);
+        ShopsStatement.setTypeface(ralewayExtraLight);
+        StoreRoomName.setTypeface(ralewayExtraLight);
+        StoreRoomStats.setTypeface(ralewayExtraLight);
+        StoreRoomStatement.setTypeface(ralewayExtraLight);
         return view;
     }
 

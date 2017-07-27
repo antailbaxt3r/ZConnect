@@ -5,12 +5,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -85,25 +88,48 @@ public class StoreRoom extends BaseActivity {
 
                 if(!status) {
                     viewHolder.defaultSwitch(model.getKey());
-                    viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
+//                    viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
+//                        @Override
+//                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                            flag = true;
+//
+//                            mDatabase.addValueEventListener(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                                    if (flag) {
+//                                        if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
+//                                            mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+//                                            flag = false;
+//                                        } else {
+//
+//                                            mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getDisplayName());
+//                                            flag = false;
+//                                        }
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError) {
+//
+//                                }
+//                            });
+//                        }
+//                    };
+                    viewHolder.mListener = new View.OnClickListener() {
                         @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                            flag = true;
+                        public void onClick(View v) {
 
                             mDatabase.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    if (flag) {
                                         if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                             mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
-                                            flag = false;
                                         } else {
 
                                             mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getDisplayName());
-                                            flag = false;
                                         }
-                                    }
                                 }
 
                                 @Override
@@ -111,9 +137,10 @@ public class StoreRoom extends BaseActivity {
 
                                 }
                             });
+
                         }
                     };
-                    viewHolder.mReserve.setOnCheckedChangeListener(viewHolder.mListener);
+                    viewHolder.shortList.setOnClickListener(viewHolder.mListener);
                 }
 
 
@@ -124,13 +151,14 @@ public class StoreRoom extends BaseActivity {
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
-        public CompoundButton.OnCheckedChangeListener mListener;
+        public View.OnClickListener mListener;
         View mView;
         String[] keyList;
         String ReservedUid;
         ImageView post_image;
-        private Switch mReserve;
-        private TextView ReserveStatus;
+//        private Switch mReserve;
+//        private TextView ReserveStatus;
+        private Button shortList;
         private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
         private FirebaseAuth mAuth;
 
@@ -138,8 +166,9 @@ public class StoreRoom extends BaseActivity {
 
             super(itemView);
             mView = itemView;
-            mReserve = (Switch) mView.findViewById(R.id.switch1);
-            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
+//            mReserve = (Switch) mView.findViewById(R.id.switch1);
+//            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
+            shortList = (Button) mView.findViewById(R.id.shortList);
             post_image = (ImageView) mView.findViewById(R.id.postImg);
             StoreRoom.keepSynced(true);
 
@@ -155,13 +184,17 @@ public class StoreRoom extends BaseActivity {
             StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    mReserve.setOnCheckedChangeListener(null);
+//                    mReserve.setOnCheckedChangeListener(null);
+                    shortList.setOnClickListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-                        mReserve.setChecked(true);
+//                        mReserve.setChecked(true);
+                        shortList.setBackgroundColor(ContextCompat.getColor(mView.getContext(), R.color.teal600));
                     } else {
-                        mReserve.setChecked(false);
+                        shortList.setBackgroundColor(ContextCompat.getColor(mView.getContext(), R.color.teal400));
+//                        mReserve.setChecked(false);
                     }
-                    mReserve.setOnCheckedChangeListener(mListener);
+//                    mReserve.setOnCheckedChangeListener(mListener);
+                    shortList.setOnClickListener(mListener);
 
                 }
 

@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -110,6 +111,15 @@ public class PhonebookDetails extends BaseActivity {
             image.setImageURI((Uri.parse(imagelink)));
             editTextEmail.setText(email);
         }
+
+        //changing fonts
+        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        editTextName.setTypeface(ralewayRegular);
+        editTextDetails.setTypeface(ralewayRegular);
+        editTextNumber.setTypeface(ralewayRegular);
+        editTextSkills.setTypeface(ralewayRegular);
+        editTextEmail.setTypeface(ralewayRegular);
+
     }
 
     @Override

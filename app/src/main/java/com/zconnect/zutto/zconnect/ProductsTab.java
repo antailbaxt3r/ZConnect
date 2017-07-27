@@ -4,6 +4,7 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -139,27 +141,64 @@ public class ProductsTab extends Fragment {
                     viewHolder.defaultSwitch(model.getKey(), getContext());
                     viewHolder.defaultSwitch(model.getKey(), viewHolder.mView.getContext());
 
-                    viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                            flag = true;
+//                    viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
+//                        @Override
+//                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                            flag = true;
+//
+//                            mDatabase.addValueEventListener(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                                    if (flag) {
+//                                        if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
+//                                            mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+//                                            flag = false;
+//                                            viewHolder.mReserve.setText("Shortlisted");
+//                                            viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.teal600));
+//                                        } else {
+//                                            viewHolder.mReserve.setText("Shortlist");
+//                                            mDatabase.child(model.getKey()).child("UsersReserved")
+//                                                    .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+//                                            viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+//                                            flag = false;
+//                                        }
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError) {
+//
+//                                }
+//                            });
+//                        }
+//                    };
 
+                    viewHolder.mListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            flag = true;
                             mDatabase.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-
                                     if (flag) {
+
                                         if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                             mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+                                            viewHolder.shortList.setText("Shortlisted");
                                             flag = false;
-                                            viewHolder.mReserve.setText("Shortlisted");
-                                            viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.teal600));
+                                            viewHolder.shortList.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.curvedradiusbutton2_sr));
+                                            Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
+                                            viewHolder.shortList.setTypeface(customfont);
+
                                         } else {
-                                            viewHolder.mReserve.setText("Shortlist");
+                                            viewHolder.shortList.setText("Shortlist");
                                             mDatabase.child(model.getKey()).child("UsersReserved")
                                                     .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
-                                            viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+                                            viewHolder.shortList.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.curvedradiusbutton_sr));
                                             flag = false;
+                                            Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
+                                            viewHolder.shortList.setTypeface(customfont);
                                         }
                                     }
                                 }
@@ -169,9 +208,10 @@ public class ProductsTab extends Fragment {
 
                                 }
                             });
+
                         }
                     };
-                    viewHolder.mReserve.setOnCheckedChangeListener(viewHolder.mListener);
+                    viewHolder.shortList.setOnClickListener(viewHolder.mListener);
 
                 }
             }
@@ -182,7 +222,7 @@ public class ProductsTab extends Fragment {
     // Each View Holder Class
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
-        public CompoundButton.OnCheckedChangeListener mListener;
+        public View.OnClickListener mListener;
         View mView;
         //Switch View
         Switch mReserve;
@@ -195,6 +235,7 @@ public class ProductsTab extends Fragment {
         private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
         // Auth to get Current User
         private FirebaseAuth mAuth;
+        private Button shortList;
 
         private String sellerName;
         SharedPreferences sharedPref;
@@ -204,11 +245,13 @@ public class ProductsTab extends Fragment {
             mView = itemView;
             sharedPref = mView.getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
             Boolean status = sharedPref.getBoolean("mode", false);
-            mReserve = (Switch) mView.findViewById(R.id.switch1);
-            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
+//            mReserve = (Switch) mView.findViewById(R.id.switch1);
+//            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
+            shortList = (Button) mView.findViewById(R.id.shortList);
             if(status){
-                mReserve.setVisibility(View.GONE);
-                ReserveStatus.setVisibility(View.GONE);
+                shortList.setVisibility(itemView.GONE);
+//                mReserve.setVisibility(View.GONE);
+//                ReserveStatus.setVisibility(View.GONE);
             }
             StoreRoom.keepSynced(true);
         }
@@ -220,22 +263,33 @@ public class ProductsTab extends Fragment {
             FirebaseUser user = mAuth.getCurrentUser();
             final String userId = user.getUid();
 
+
             //Getting  data from database
             StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    mReserve.setOnCheckedChangeListener(null);
+//                    mReserve.setOnCheckedChangeListener(null);
+                    shortList.setOnClickListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-                        mReserve.setChecked(true);
-                        mReserve.setText("Shortlisted");
-                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
+//                        mReserve.setChecked(true);
+//                        mReserve.setText("Shortlisted");
+                        shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
+                        shortList.setText("Shortlisted");
+                        Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+                        shortList.setTypeface(customfont);
+                        //ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
 
                     } else {
-                        mReserve.setChecked(false);
-                        mReserve.setText("Shortlist");
-                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
+
+                        shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
+                        shortList.setText("Shortlist");
+                        Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+                        shortList.setTypeface(customfont);
+//                        mReserve.setChecked(false);
+//                        mReserve.setText("Shortlist");
+//                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
                     }
-                    mReserve.setOnCheckedChangeListener(mListener);
+                    shortList.setOnClickListener(mListener);
 
                 }
 
@@ -252,6 +306,8 @@ public class ProductsTab extends Fragment {
 
             TextView post_name = (TextView) mView.findViewById(R.id.productName);
             post_name.setText(productName);
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            post_name.setTypeface(ralewayMedium);
 
         }
 
@@ -260,6 +316,8 @@ public class ProductsTab extends Fragment {
 
             TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
             post_desc.setText(productDesc);
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            post_desc.setTypeface(ralewayMedium);
 
 
         }
@@ -272,8 +330,10 @@ public class ProductsTab extends Fragment {
 
         //Set Product Price
         public void setPrice(String productPrice) {
-            TextView post_name = (TextView) mView.findViewById(R.id.price);
-            post_name.setText("₹" + productPrice + "/-");
+            TextView post_price = (TextView) mView.findViewById(R.id.price);
+            post_price.setText("₹" + productPrice + "/-");
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            post_price.setTypeface(ralewayMedium);
         }
 
 
@@ -286,6 +346,8 @@ public class ProductsTab extends Fragment {
                     sellerName = dataSnapshot.child("Username").getValue().toString();
                     TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
                     post_seller_name.setText("Sold By: " + sellerName);
+                    Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+                    post_seller_name.setTypeface(ralewayMedium);
                 }
 
                 @Override
@@ -298,8 +360,9 @@ public class ProductsTab extends Fragment {
         }
 
         public void setSellerNumber(final String sellerNumber, final Context ctx) {
-            ImageView post_seller_number = (ImageView) mView.findViewById(R.id.sellerNumber);
-
+            Button post_seller_number = (Button) mView.findViewById(R.id.sellerNumber);
+            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+            post_seller_number.setTypeface(customfont);
             post_seller_number.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

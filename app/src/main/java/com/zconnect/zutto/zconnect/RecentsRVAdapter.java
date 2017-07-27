@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -104,6 +105,13 @@ Intent i;
                     }
                 }
             });
+
+            Typeface quicksandLight = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            Typeface quicksandMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+            Typeface quicksandBold = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-ExtraLight.ttf");
+            name.setTypeface(quicksandMedium);
+            feature.setTypeface(quicksandBold);
+            desc.setTypeface(quicksandLight);
         }
     }
 }

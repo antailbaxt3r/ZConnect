@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -195,7 +196,8 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         viewPager.setCurrentItem(0);
         isNetworkAvailable(this);
 
-
+        //changing fonts
+        Typeface ralewayBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Thin.ttf");
     }
 //    @Override
 //    protected void onResume() {
