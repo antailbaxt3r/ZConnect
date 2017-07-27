@@ -1,13 +1,16 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -16,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -136,9 +141,8 @@ public class OpenEventDetail extends BaseActivity {
             Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
             EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-
+            boostCounter(event.getKey());
             setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-
 
         }
         else {
@@ -147,6 +151,7 @@ public class OpenEventDetail extends BaseActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     event = dataSnapshot.getValue(Event.class);
+                    boostCounter(event.getKey());
                         venueDirections.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -233,5 +238,85 @@ public class OpenEventDetail extends BaseActivity {
          /** Returns Calendar Base URI, supports both new and old OS. */
 
 
+    }
+
+    private void setBoost() {
+        String boost = event.getBoosters();
+        TextView count = (TextView) findViewById(R.id.boostCount);
+        if (boost == null || TextUtils.isEmpty(boost)) {
+            count.setText("0");
+            boost = "";
+        } else {
+            String boosters[] = boost.trim().split(" ");
+            count.setText(String.valueOf(boosters.length));
+        }
+
+        TextView boostText = (TextView) findViewById(R.id.boostText);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        View boostBtn = findViewById(R.id.boostBtn);
+
+        if (user != null) {
+
+            if (boost.contains(user.getUid())) {
+
+                boostText.setText("Boosted");
+                boostText.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                final String newBoost = boost.replace(user.getUid(), "");
+                boostBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(event.getKey()).child("Boosters").setValue(newBoost.trim());
+                    }
+                });
+            } else {
+                boostText.setText("Boost");
+                boostText.setTextColor(ContextCompat.getColor(this, R.color.black));
+                final String newBoost = boost.concat(" " + user.getUid());
+                boostBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(event.getKey()).child("Boosters").setValue(newBoost.trim());
+                    }
+                });
+            }
+
+        } else {
+            boostText.setText("Boost");
+            boostText.setTextColor(ContextCompat.getColor(this, R.color.black));
+            boostBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(OpenEventDetail.this);
+                    dialog.setNegativeButton("Lite", null)
+                            .setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent loginIntent = new Intent(OpenEventDetail.this, logIn.class);
+                                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(loginIntent);
+                                    finish();
+                                }
+                            })
+                            .setTitle("Please login to boost.")
+                            .create().show();
+                }
+            });
+        }
+    }
+
+    private void boostCounter(String key) {
+        FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(key).child("Boosters").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                event.setBoosters(dataSnapshot.getValue(String.class));
+                setBoost();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

@@ -238,6 +238,10 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
 
             startActivity(new Intent(home.this, AllEvents.class));
 
+        } else if (id == R.id.cabpool) {
+
+            startActivity(new Intent(home.this, CabPooling.class));
+
         } else if (id == R.id.signOut) {
             if (!isNetworkAvailable(getApplicationContext())) {
 
