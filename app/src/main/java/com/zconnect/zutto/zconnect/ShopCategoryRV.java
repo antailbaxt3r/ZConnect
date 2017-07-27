@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -59,6 +60,10 @@ public class ShopCategoryRV extends RecyclerView.Adapter<ShopCategoryRV.ViewHold
             super(itemView);
             category = (TextView) itemView.findViewById(R.id.shop_category_item_format_text);
             simpleDraweeView = (SquareImageView) itemView.findViewById(R.id.shop_category_item_format_image);
+
+            Typeface ralewayRegular = Typeface.createFromAsset(context.getAssets(), "fonts/Raleway-Medium.ttf");
+            category.setTypeface(ralewayRegular);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -310,7 +311,10 @@ public class AllEvents extends BaseActivity {
         }
 
         public void setBoosters(String boosters) {
+            Typeface ralewayRegular = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+
             TextView count = (TextView) itemView.findViewById(R.id.Boostcount);
+            count.setTypeface(ralewayRegular);
             if (boosters == null || TextUtils.isEmpty(boosters))
                 count.setText("0");
             else {
@@ -319,8 +323,10 @@ public class AllEvents extends BaseActivity {
         }
 
         public void setEventName(String eventName) {
+            Typeface ralewayRegular = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
 
             TextView post_name = (TextView) mView.findViewById(R.id.er_event);
+            post_name.setTypeface(ralewayRegular);
             post_name.setText(eventName);
 
         }
@@ -328,8 +334,10 @@ public class AllEvents extends BaseActivity {
         public void setEventDesc(String eventDesc) {
 
             String shortEventDesc;
+            Typeface ralewayRegular = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
 
             TextView post_desc = (TextView) mView.findViewById(R.id.er_description);
+            post_desc.setTypeface(ralewayRegular);
             if (eventDesc.length() < 70) {
                 shortEventDesc = eventDesc;
             } else {
@@ -342,7 +350,10 @@ public class AllEvents extends BaseActivity {
         }
 
         public void setEventVenue(String venue) {
+            Typeface ralewayRegular = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+
             TextView post_venue = (TextView) mView.findViewById(R.id.er_venue);
+            post_venue.setTypeface(ralewayRegular);
             post_venue.setText(venue);
 
         }
@@ -355,7 +366,10 @@ public class AllEvents extends BaseActivity {
 
 
         public void setEventDate(String eventDate) {
+            Typeface ralewayRegular = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+
             TextView post_date = (TextView) mView.findViewById(R.id.er_date);
+            post_date.setTypeface(ralewayRegular);
             String date[] = eventDate.split("\\s+");
             String finalDate = "";
 
@@ -367,7 +381,10 @@ public class AllEvents extends BaseActivity {
         }
 
         public void setEventReminder(final String eventDescription, final String eventName, final String time) {
+            Typeface ralewayRegular = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+
             Button Reminder = (Button) mView.findViewById(R.id.er_reminder);
+            Reminder.setTypeface(ralewayRegular);
             Reminder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -381,9 +398,10 @@ public class AllEvents extends BaseActivity {
         }
 
         public void setShareOptions(final String image) {
+            Typeface ralewayRegular = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
 
             final Button share = (Button) mView.findViewById(R.id.share_button);
-
+            share.setTypeface(ralewayRegular);
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
