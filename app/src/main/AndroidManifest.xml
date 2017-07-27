@@ -2,19 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.zconnect.zutto.zconnect">
 
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <meta-data
         android:name="com.google.android.gms.version"
-        android:value="@integer/google_play_services_version" />
-
+        android:value="@integer/google_play_services_version"/>
 
     <application
         android:name=".ZConnect"
@@ -188,7 +185,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.AllEvents"/>
         </activity>
-        <activity android:name=".image_view"></activity>
+        <activity android:name=".image_view"/>
         <activity
             android:name=".MyProducts"
             android:label="My Products"
@@ -239,14 +236,14 @@
         </receiver>
         <receiver android:name=".BaseActivity$networkStatereceiver">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"></action>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
+
         <activity
             android:name=".Offers"
             android:label="@string/title_activity_offers"
             android:theme="@style/AppTheme.NoActionBar">
-
         </activity>
         <activity
             android:name=".Shop_detail"
@@ -262,7 +259,6 @@
             android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM"/>
 
         <activity
-
             android:name=".CabPooling"
             android:label="@string/title_activity_cab_pooling"
             android:theme="@style/AppTheme.NoActionBar">
@@ -273,17 +269,23 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name="com.zconnect.zutto.zconnect.Campus_Map"
+            android:name=".Campus_Map"
             android:label="@string/title_activity_campus__map"
             android:theme="@style/Map">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.home"/>
-
         </activity>
-
+        <activity
+            android:name=".CabListOfPeople"
+            android:label="@string/title_activity_cab_list_of_people"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".AddCabPool"
+            android:label="@string/title_activity_add_cab_pool"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
-
-
 
 </manifest>

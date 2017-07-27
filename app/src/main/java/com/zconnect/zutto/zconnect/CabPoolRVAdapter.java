@@ -2,17 +2,14 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.Vector;
 
@@ -51,6 +48,8 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     }
     class ViewHolder extends RecyclerView.ViewHolder {
        TextView source,destination,details,time,date;
+        String key;
+        Button list_people;
         public ViewHolder(View itemView) {
             super(itemView);
             source =(TextView)itemView.findViewById(R.id.source);
@@ -58,6 +57,17 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             details=(TextView)itemView.findViewById(R.id.details);
             time=(TextView)itemView.findViewById(R.id.time_range);
             date=(TextView)itemView.findViewById(R.id.date);
+            list_people = (Button) itemView.findViewById(R.id.list);
+
+            list_people.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, CabListOfPeople.class);
+                    intent.putExtra("key", cabItemFormats.get(getAdapterPosition()).getKey());
+
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }

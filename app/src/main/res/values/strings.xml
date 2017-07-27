@@ -95,6 +95,8 @@
     <string name="title_activity_pool_list">PoolList</string>
 
     <string name="title_activity_campus__map">BITS-GOA</string>
+    <string name="title_activity_cab_list_of_people">CabListOfPeople</string>
+    <string name="title_activity_add_cab_pool">AddCabPool</string>
 
 
 </resources>
