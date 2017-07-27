@@ -30,8 +30,9 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:text="Infone"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
-                    android:textSize="35dp"
+                    android:textSize="32dp"
                     android:visibility="invisible" />
 
                 <LinearLayout
@@ -93,7 +94,8 @@
                     android:layout_centerVertical="true"
                     android:text="StoreRoom"
                     android:textColor="@color/white"
-                    android:textSize="35dp"
+                    android:textStyle="bold"
+                    android:textSize="32dp"
                     android:visibility="invisible" />
 
                 <LinearLayout
@@ -161,7 +163,8 @@
                     android:layout_centerVertical="true"
                     android:text="Events"
                     android:textColor="@color/white"
-                    android:textSize="35dp"
+                    android:textStyle="bold"
+                    android:textSize="32dp"
                     android:visibility="invisible" />
 
                 <LinearLayout
@@ -223,7 +226,8 @@
                     android:layout_centerVertical="true"
                     android:text="Shops"
                     android:textColor="@color/white"
-                    android:textSize="35dp"
+                    android:textStyle="bold"
+                    android:textSize="32dp"
                     android:visibility="invisible" />
 
                 <LinearLayout

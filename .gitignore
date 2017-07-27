@@ -4,6 +4,7 @@
 /.idea/workspace.xml
 /.idea/libraries
 /.idea/shelf
+/.idea/runConfigurations.xml
 .DS_Store
 /build
 gradle

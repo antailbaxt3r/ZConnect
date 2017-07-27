@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,9 @@ public class PhonebookStudentHostelRV extends RecyclerView.Adapter<PhonebookStud
                 }
             });
 
+            //changing fonts
+            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+            hostel.setTypeface(ralewayMedium);
         }
     }
 
