@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+
+    <TextView
+        android:id="@+id/cab_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="NAME"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        />
+
+
+    <TextView
+        android:id="@+id/cab_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="9999999999"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"/>
+
+
+    <ImageView
+        android:id="@+id/callbutton"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="0.5"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_phone_black_24dp"/>
+
+
+</LinearLayout>

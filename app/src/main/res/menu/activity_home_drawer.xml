@@ -2,8 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group
-        android:id="@+id/group"
-        android:checkableBehavior="single">
+        android:id="@+id/groupMain">
+        <item
+            android:id="@+id/edit_profile"
+            android:icon="@drawable/account"
+            android:title="Edit Profile" />
+
+    </group>
+
+
+    <group
+        android:id="@+id/group">
         <item
             android:id="@+id/infone"
             android:icon="@drawable/ic_phone_black_24dp"

@@ -7,7 +7,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -29,8 +28,7 @@ public class PoolList extends AppCompatActivity {
     DatabaseReference pool = FirebaseDatabase.getInstance().getReference().child("Cab");
     Query query = pool.orderByChild("time");
     TextView defaultmsg;
-    String source, destination, date, time;
-    LinearLayoutManager offersLinearLayoutManager;
+    String source,destination,date,time;
     Vector<CabItemFormat> cabItemFormatVector = new Vector<>();
     Vector<CabItemFormat> cabItemFormats = new Vector<>();
     CabPoolRVAdapter adapter;
@@ -104,7 +102,7 @@ public class PoolList extends AppCompatActivity {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
 
-                    cabItemFormatVector.add(cabItemFormat);
+                     cabItemFormatVector.add(cabItemFormat);
                 }
 
 
@@ -115,10 +113,10 @@ public class PoolList extends AppCompatActivity {
 
                 } else {
                     int i;
-                    for (i = 0; i < cabItemFormatVector.size(); i++) {
-                        if (cabItemFormatVector.get(i).getSource().equals(source) &&
+                    for(i=0;i<cabItemFormatVector.size();i++){
+                        if(cabItemFormatVector.get(i).getSource().equals(source)&&
                                 cabItemFormatVector.get(i).getDestination().equals(destination) &&
-                                cabItemFormatVector.get(i).getDate().equals(date)) {
+                                cabItemFormatVector.get(i).getDate().equals(date)){
                             cabItemFormats.add(cabItemFormatVector.get(i));
                         }
                     }
