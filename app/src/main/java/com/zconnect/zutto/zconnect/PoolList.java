@@ -1,9 +1,9 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -44,8 +44,8 @@ public class PoolList extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(PoolList.this, AddCabPool.class);
+                startActivity(intent);
             }
         });
         if (toolbar != null) {
@@ -98,7 +98,7 @@ public class PoolList extends AppCompatActivity {
                 defaultmsg.setVisibility(View.INVISIBLE);
                 poolrv.setVisibility(View.VISIBLE);
                 cabItemFormatVector.clear();
-
+                cabItemFormats.clear();
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
 
@@ -106,21 +106,25 @@ public class PoolList extends AppCompatActivity {
                 }
 
 
-                // Need to add empty search result log message
-                if (cabItemFormatVector.isEmpty()) {
-                    defaultmsg.setVisibility(View.VISIBLE);
-                    poolrv.setVisibility(View.INVISIBLE);
 
-                } else {
+
                     int i;
                     for(i=0;i<cabItemFormatVector.size();i++){
+                        if (source != null && destination != null && date != null) {
                         if(cabItemFormatVector.get(i).getSource().equals(source)&&
                                 cabItemFormatVector.get(i).getDestination().equals(destination) &&
                                 cabItemFormatVector.get(i).getDate().equals(date)){
                             cabItemFormats.add(cabItemFormatVector.get(i));
                         }
+                        }
                     }
+                if (cabItemFormats.isEmpty()) {
+                    defaultmsg.setVisibility(View.VISIBLE);
+                    poolrv.setVisibility(View.INVISIBLE);
+
+                } else {
                     poolrv.setAdapter(adapter);
+                    //   Toast.makeText(getApplicationContext(), String.valueOf(cabItemFormats.size()), Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
                 }
 

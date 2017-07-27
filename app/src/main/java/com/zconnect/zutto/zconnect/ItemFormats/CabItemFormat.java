@@ -1,6 +1,6 @@
 package com.zconnect.zutto.zconnect.ItemFormats;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * Created by shubhamk on 26/7/17.
@@ -13,10 +13,10 @@ public class CabItemFormat {
     String details;
     String time;
     String key;
-    Vector<CabListItemFormat> cabListItemFormats;
+    ArrayList<CabListItemFormat> cabListItemFormats;
 
 
-    public CabItemFormat(String source, String destination, String date, String details, String time, String key, Vector<CabListItemFormat> cabListItemFormats) {
+    public CabItemFormat(String source, String destination, String date, String details, String time, String key, ArrayList<CabListItemFormat> cabListItemFormats) {
         this.source = source;
         this.destination = destination;
         this.date = date;
@@ -77,11 +77,11 @@ public class CabItemFormat {
         this.key = key;
     }
 
-    public Vector<CabListItemFormat> getCabListItemFormats() {
+    public ArrayList<CabListItemFormat> getCabListItemFormats() {
         return cabListItemFormats;
     }
 
-    public void setCabListItemFormats(Vector<CabListItemFormat> cabListItemFormats) {
+    public void setCabListItemFormats(ArrayList<CabListItemFormat> cabListItemFormats) {
         this.cabListItemFormats = cabListItemFormats;
     }
 }
