@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -248,7 +247,7 @@ public class ProductsTab extends Fragment {
 //            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
             shortList = (Button) mView.findViewById(R.id.shortList);
             if(status){
-                shortList.setVisibility(itemView.GONE);
+                shortList.setVisibility(View.GONE);
 //                mReserve.setVisibility(View.GONE);
 //                ReserveStatus.setVisibility(View.GONE);
             }
@@ -358,7 +357,7 @@ public class ProductsTab extends Fragment {
 
         }
 
-        public void setSellerNumber(final String sellerNumber, final Context ctx) {
+        public void setSellerNumber(final String category, final String sellerNumber, final Context ctx) {
             Button post_seller_number = (Button) mView.findViewById(R.id.sellerNumber);
             Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
             post_seller_number.setTypeface(customfont);

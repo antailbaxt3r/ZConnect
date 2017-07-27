@@ -894,7 +894,63 @@ public class CounterManager {
         });
     }
 
+    public static void createPool(final String dest) {
+        ref.child("CabPool").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                {
+                    Long count = dataSnapshot.child("TotalCabPool").getValue(Long.class);
+                    if (count == null)
+                        count = Long.parseLong("0");
+                    count = count + 1;
+                    dataSnapshot.child("TotalCabPool").getRef().setValue(count);
+                }
+                {
+                    Long count = dataSnapshot.child(dest).child("Pools").getValue(Long.class);
+                    if (count == null)
+                        count = Long.parseLong("0");
+                    count = count + 1;
+                    dataSnapshot.child(dest).child("Pools").getRef().setValue(count);
+                }
 
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void searchPool(final String dest) {
+        ref.child("CabPool").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                {
+                    Long count = dataSnapshot.child("TotalCabPoolSearch").getValue(Long.class);
+                    if (count == null)
+                        count = Long.parseLong("0");
+                    count = count + 1;
+                    dataSnapshot.child("TotalCabPoolSearch").getRef().setValue(count);
+                }
+                {
+                    Long count = dataSnapshot.child(dest).child("PoolSearch").getValue(Long.class);
+                    if (count == null)
+                        count = Long.parseLong("0");
+                    count = count + 1;
+                    dataSnapshot.child(dest).child("PoolSearch").getRef().setValue(count);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     public static void ShopOpen() {
         ref.child("Shops").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -939,6 +995,26 @@ public class CounterManager {
 
     public static void EventOpen() {
         ref.child("Events").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                {
+                    Long count = dataSnapshot.child("Open").getValue(Long.class);
+                    if (count == null)
+                        count = Long.parseLong("0");
+                    count = count + 1;
+                    dataSnapshot.child("Open").getRef().setValue(count);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void openCabPool() {
+        ref.child("CabPool").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 {

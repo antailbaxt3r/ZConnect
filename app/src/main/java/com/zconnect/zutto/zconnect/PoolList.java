@@ -21,19 +21,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.ShopOfferItemFormat;
 
 import java.util.Vector;
 
 public class PoolList extends AppCompatActivity {
     RecyclerView poolrv;
-    DatabaseReference pool=  FirebaseDatabase.getInstance().getReference().child("Cab");
+    DatabaseReference pool = FirebaseDatabase.getInstance().getReference().child("Cab");
     Query query = pool.orderByChild("time");
     TextView defaultmsg;
-    String source,destination,date,time;
+    String source, destination, date, time;
     LinearLayoutManager offersLinearLayoutManager;
     Vector<CabItemFormat> cabItemFormatVector = new Vector<>();
-    Vector<CabItemFormat>cabItemFormats = new Vector<>();
+    Vector<CabItemFormat> cabItemFormats = new Vector<>();
     CabPoolRVAdapter adapter;
 
     @Override
@@ -76,8 +75,7 @@ public class PoolList extends AppCompatActivity {
             destination = getIntent().getStringExtra("destination");
             date = getIntent().getStringExtra("date");
             time = getIntent().getStringExtra("time");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -91,6 +89,7 @@ public class PoolList extends AppCompatActivity {
         poolrv.setAdapter(adapter);
         query.keepSynced(true);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -105,7 +104,7 @@ public class PoolList extends AppCompatActivity {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
 
-                     cabItemFormatVector.add(cabItemFormat);
+                    cabItemFormatVector.add(cabItemFormat);
                 }
 
 
@@ -116,10 +115,10 @@ public class PoolList extends AppCompatActivity {
 
                 } else {
                     int i;
-                    for(i=0;i<cabItemFormatVector.size();i++){
-                        if(cabItemFormatVector.get(i).getSource().equals(source)&&
+                    for (i = 0; i < cabItemFormatVector.size(); i++) {
+                        if (cabItemFormatVector.get(i).getSource().equals(source) &&
                                 cabItemFormatVector.get(i).getDestination().equals(destination) &&
-                                cabItemFormatVector.get(i).getDate().equals(date)){
+                                cabItemFormatVector.get(i).getDate().equals(date)) {
                             cabItemFormats.add(cabItemFormatVector.get(i));
                         }
                     }
@@ -132,7 +131,7 @@ public class PoolList extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-               
+
             }
         });
 

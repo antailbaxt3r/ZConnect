@@ -1,18 +1,13 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.Vector;
 
@@ -22,7 +17,7 @@ import java.util.Vector;
 
 public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.ViewHolder> {
     Context context;
-    Vector<CabItemFormat>cabItemFormats;
+    Vector<CabItemFormat> cabItemFormats;
 
     public CabPoolRVAdapter(Context context, Vector<CabItemFormat> cabItemFormats) {
         this.context = context;
@@ -49,15 +44,17 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     public int getItemCount() {
         return cabItemFormats.size();
     }
+
     class ViewHolder extends RecyclerView.ViewHolder {
-       TextView source,destination,details,time,date;
+        TextView source, destination, details, time, date;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            source =(TextView)itemView.findViewById(R.id.source);
-            destination =(TextView)itemView.findViewById(R.id.destination);
-            details=(TextView)itemView.findViewById(R.id.details);
-            time=(TextView)itemView.findViewById(R.id.time_range);
-            date=(TextView)itemView.findViewById(R.id.date);
+            source = (TextView) itemView.findViewById(R.id.source);
+            destination = (TextView) itemView.findViewById(R.id.destination);
+            details = (TextView) itemView.findViewById(R.id.details);
+            time = (TextView) itemView.findViewById(R.id.time_range);
+            date = (TextView) itemView.findViewById(R.id.date);
         }
     }
 }

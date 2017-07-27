@@ -34,16 +34,16 @@ public class CabItemFormat {
         return destination;
     }
 
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
     public String getDate() {
         return date;
     }
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
     }
 
     public String getDetails() {

@@ -36,18 +36,18 @@
                 <TextView
                     android:id="@+id/productName"
                     android:layout_width="0dp"
-                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
+                    android:layout_weight=".7"
                     android:text="Product Name"
                     android:textSize="20dp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/price"
                     android:layout_width="0dp"
-                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:layout_weight=".3"
                     android:text="Price"
                     android:textSize="20dp"
                     android:textStyle="italic" />
@@ -57,22 +57,23 @@
                 android:id="@+id/productDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="5dp"
                 android:text="Product Description"
-                android:textSize="14dp"
-                android:paddingTop="5dp"/>
+                android:textSize="14dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingTop="10dp">
+
                 <Button
                     android:id="@+id/delete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/curveradiusgoogle"
                     android:text="Remove"
-                    android:textColor="@color/white"
-                    android:background="@drawable/curveradiusgoogle"/>
+                    android:textColor="@color/white" />
             </LinearLayout>
         </LinearLayout>
 

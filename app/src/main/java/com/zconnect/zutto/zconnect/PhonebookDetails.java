@@ -40,7 +40,7 @@ public class PhonebookDetails extends BaseActivity {
         editTextName = (TextInputEditText) findViewById(R.id.contact_details_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_details_number_editText);
         //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
-        editTextSkills = (TagsEditText)  findViewById(R.id.contact_details_editText_skills);
+        editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
 
         call = (ImageView) findViewById(R.id.callbutton);
         mail = (ImageView) findViewById(R.id.mailbutton);
@@ -83,15 +83,15 @@ public class PhonebookDetails extends BaseActivity {
         if(skills.length()>1)
             skills=skills.substring(1,skills.length()-1);
 
-        String[] skillsArray={""};
+        String[] skillsArray = {""};
 
         if (name != null && desc != null && number != null && imagelink != null && email != null) {
             editTextName.setText(name);
             editTextDetails.setText(desc);
             editTextNumber.setText(number);
 
-            if(!skills.equals(""))
-                skillsArray=skills.split(",");
+            if (!skills.equals(""))
+                skillsArray = skills.split(",");
 
             editTextSkills.setTags(skillsArray);
             editTextNumber.setOnClickListener(new View.OnClickListener() {
