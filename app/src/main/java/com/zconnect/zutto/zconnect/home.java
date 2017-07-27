@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -21,7 +22,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -47,8 +47,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class home extends AppCompatActivity
-    implements NavigationView.OnNavigationItemSelectedListener {
+public class home extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference mData;
     Homescreen homescreen ;
     com.google.firebase.database.Query mDatabase;
@@ -76,6 +75,9 @@ public class home extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        SharedPreferences sharedPref = getSharedPreferences("guestMode",MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -145,13 +147,7 @@ public class home extends AppCompatActivity
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                if (firebaseAuth.getCurrentUser() == null) {
-                    Intent loginIntent = new Intent(home.this, logIn.class);
-                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    mAuth.removeAuthStateListener(mAuthListener);
-                    startActivity(loginIntent);
-                    finish();
-                } else {
+                if (firebaseAuth.getCurrentUser() != null) {
 
                     checkUser();
                 }
@@ -169,15 +165,21 @@ public class home extends AppCompatActivity
 
         databaseReference.keepSynced(true);
 
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (number != null) {
-                    Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                    startActivity(intent);
+        if(!status) {
+            header.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (number != null) {
+                        Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                        startActivity(intent);
+                    }
+                    else {
+                        Intent intent = new Intent(getApplicationContext(), AddContact.class);
+                        startActivity(intent);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -191,16 +193,17 @@ public class home extends AppCompatActivity
         //Setup tablayout with viewpager
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(0);
+        isNetworkAvailable(this);
 
 
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        mAuth.addAuthStateListener(mAuthListener);
-
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        mAuth.addAuthStateListener(mAuthListener);
+//
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -220,6 +223,7 @@ public class home extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
 
         if (id == R.id.infone) {
             Intent intent = new Intent(this, Phonebook.class);
@@ -253,6 +257,8 @@ public class home extends AppCompatActivity
         } else if (id == R.id.about) {
             startActivity(new Intent(home.this, AboutUs.class));
 
+        } else if (id == R.id.mapActivity) {
+            startActivity(new Intent(this, Campus_Map.class));
         } else if (id == R.id.bugReport) {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(home.this);
 
@@ -330,6 +336,15 @@ public class home extends AppCompatActivity
 
         // Google sign out
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
+        if (mAuth.getCurrentUser() == null) {
+            Intent loginIntent = new Intent(home.this, logIn.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            mAuth.removeAuthStateListener(mAuthListener);
+            startActivity(loginIntent);
+            finish();
+        }
+
     }
 
     public boolean isNetworkAvailable(final Context context) {

@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -27,7 +26,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
 
 import java.util.Vector;
 
-public class PhonebookSearch extends AppCompatActivity {
+public class PhonebookSearch extends BaseActivity {
     private android.support.v7.widget.RecyclerView searchContactList;
     private PhonebookAdapter searchAdapter;
     private Toolbar toolbar;
@@ -110,14 +109,16 @@ public class PhonebookSearch extends AppCompatActivity {
                         foo.setImageurl(childShot.child("imageurl").getValue(String.class));
                         foo.setName(childShot.child("name").getValue(String.class));
                         foo.setNumber(childShot.child("number").getValue(String.class));
+                        foo.setSkills(childShot.child("skills").getValue(String.class));
 
 
                         String name = childShot.child("name").getValue(String.class);
                         String number = childShot.child("number").getValue(String.class);
                         String details = childShot.child("desc").getValue(String.class);
+                        String skills = childShot.child("skills").getValue(String.class);
 
                         String imageurl = childShot.child("imageurl").getValue(String.class);
-                        String title = name + number + details;
+                        String title = name + number + details + skills;
 
                         String typeTemp = "";
 

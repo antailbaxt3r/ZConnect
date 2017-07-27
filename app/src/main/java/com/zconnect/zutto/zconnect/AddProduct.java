@@ -15,7 +15,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -46,7 +45,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddProduct extends AppCompatActivity {
+public class AddProduct extends BaseActivity {
     private static final int GALLERY_REQUEST = 7;
     IntentHandle intentHandle;
     Intent galleryIntent;

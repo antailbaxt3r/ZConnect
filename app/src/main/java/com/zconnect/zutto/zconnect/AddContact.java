@@ -15,12 +15,12 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -40,10 +40,13 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddContact extends AppCompatActivity {
+import mabbas007.tagsedittext.TagsEditText;
+
+public class AddContact extends BaseActivity implements TagsEditText.TagsEditListener{
     public static final int SELECT_PICTURE = 1;
     private static final int GALLERY_REQUEST = 7;
     SimpleDraweeView image;
@@ -61,10 +64,11 @@ public class AddContact extends AppCompatActivity {
     private DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users");
     private ProgressDialog mProgress;
     // private RadioButton radioButtonS, radioButtonA, radioButtonO;
-    private String name, email, details, number, hostel, category = null;
+    private String name, email, details, number, hostel, category = null,skills;
     private CustomSpinner spinner;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private TagsEditText skillTags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +144,16 @@ public class AddContact extends AppCompatActivity {
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
+
+        skillTags =(TagsEditText) findViewById(R.id.skillsTags);
+        skillTags.setTagsListener(this);
+        skillTags.setTagsWithSpacesEnabled(true);
+
+        skillTags.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.skills)));
+        skillTags.setThreshold(1);
+
+
 
     }
 
@@ -224,10 +238,11 @@ public class AddContact extends AppCompatActivity {
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
         hostel = String.valueOf(spinner.getSelectedItem());
+        skills= skillTags.getTags().toString().trim();
         //  Log.v("tag",hostel);
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
 
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && mImageUri != null) {
+        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && mImageUri != null && !skills.equals("")) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -242,8 +257,8 @@ public class AddContact extends AppCompatActivity {
                     newPost.child("number").setValue(number);
                     newPost.child("category").setValue(category);
                     newPost.child("email").setValue(email);
-
                     newPost.child("hostel").setValue(hostel);
+                    newPost.child("skills").setValue(skills);
 
 
                     mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -280,5 +295,26 @@ public class AddContact extends AppCompatActivity {
 
 
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            skillTags.showDropDown();
+        }
+    }
+
+    @Override
+    public void onTagsChanged(Collection<String> tags) {
+
+    }
+
+    @Override
+    public void onEditingFinished() {
+        //Log.d(TAG,"OnEditing finished");
+//        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(skillTags.getWindowToken(), 0);
+//        //skillTags.clearFocus();
     }
 }

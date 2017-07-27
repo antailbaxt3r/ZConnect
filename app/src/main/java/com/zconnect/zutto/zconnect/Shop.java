@@ -1,10 +1,10 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +31,7 @@ import java.util.Vector;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-public class Shop extends AppCompatActivity {
+public class Shop extends BaseActivity {
     ShopCategoryRV adapter;
     DatabaseReference mUserStats, mFeaturesStats;
     FirebaseUser user;
@@ -79,26 +79,32 @@ public class Shop extends AppCompatActivity {
         recycleView.setAdapter(adapter);
         databaseReference.keepSynced(true);
         mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
 
-        mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
-        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
 
-        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                TotalOffers = dataSnapshot.child("TotalOffers").getValue().toString();
-                DatabaseReference newPost = mUserStats;
-                Map<String, Object> taskMap = new HashMap<String, Object>();
-                taskMap.put("TotalOffers", TotalOffers);
-                newPost.updateChildren(taskMap);
-            }
+        if (!status) {
+            user = mAuth.getCurrentUser();
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
 
-            }
-        });
+            mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    TotalOffers = dataSnapshot.child("TotalOffers").getValue().toString();
+                    DatabaseReference newPost = mUserStats;
+                    Map<String, Object> taskMap = new HashMap<String, Object>();
+                    taskMap.put("TotalOffers", TotalOffers);
+                    newPost.updateChildren(taskMap);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 
     @Override

@@ -13,15 +13,16 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 import android.widget.Toast;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.StringTokenizer;
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 
 public class logoFlash extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class logoFlash extends AppCompatActivity {
 
                     new Timer().schedule(new TimerTask(){
                         public void run() {
-                            Intent intent = new Intent(logoFlash.this, home.class);
+                            Intent intent = new Intent(logoFlash.this, logIn.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                             finish();
@@ -100,10 +101,18 @@ public class logoFlash extends AppCompatActivity {
     void openHome() {
         new Timer().schedule(new TimerTask() {
             public void run() {
-                Intent intent = new Intent(logoFlash.this, home.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
+                mAuth = FirebaseAuth.getInstance();
+                if(mAuth.getCurrentUser()!=null){
+                    Intent intent = new Intent(logoFlash.this, home.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Intent intent = new Intent(logoFlash.this, logIn.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                }
             }
         }, 2800);
     }
@@ -113,7 +122,5 @@ public class logoFlash extends AppCompatActivity {
             openHome();
 
     }
-
-
 }
 

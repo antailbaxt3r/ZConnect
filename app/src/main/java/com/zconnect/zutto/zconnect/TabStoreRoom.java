@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +21,7 @@ import android.view.WindowManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class TabStoreRoom extends AppCompatActivity {
+public class TabStoreRoom extends BaseActivity {
 
     Toolbar mActionBarToolbar;
     FirebaseUser user;
@@ -38,6 +39,7 @@ public class TabStoreRoom extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +88,38 @@ public class TabStoreRoom extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
-                startActivity(intent);
-                finish();
+
+                SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+                if (!status) {
+                    Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
+                    startActivity(intent);
+                    finish();
+                }else
+                {
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(TabStoreRoom.this);
+
+                    // 2. Chain together various setter methods to set the dialog characteristics
+                    builder.setMessage("Please Log In to access this feature.")
+                            .setTitle("Dear Guest!");
+
+                    builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(TabStoreRoom.this, logIn.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+
+                        }
+                    });
+                    builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+                    android.app.AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
 
@@ -98,8 +129,16 @@ public class TabStoreRoom extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the Menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_storeroom, menu);
-        return true;
+        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+        if (!status){
+            getMenuInflater().inflate(R.menu.menu_storeroom, menu);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     @Override
@@ -108,6 +147,7 @@ public class TabStoreRoom extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
         if (id == R.id.action_storeroom) {
             startActivity(new Intent(TabStoreRoom.this, MyProducts.class));
         }
@@ -152,6 +192,12 @@ public class TabStoreRoom extends AppCompatActivity {
 //            return rootView;
 //        }
 //    }
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent storeIntent = new Intent(TabStoreRoom.this, home.class);
+        startActivity(storeIntent);
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -165,6 +211,9 @@ public class TabStoreRoom extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+            SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+            Boolean status = sharedPref.getBoolean("mode", false);
+            if (!status){
             switch (position) {
                 case 0:
                     ProductsTab productsTab = new ProductsTab();
@@ -177,6 +226,18 @@ public class TabStoreRoom extends AppCompatActivity {
                     return categoriesTab;
                 default:
                     return null;
+            }}else {
+                switch (position) {
+                    case 0:
+                        ProductsTab productsTab = new ProductsTab();
+                        return productsTab;
+                    case 1:
+                        CategoriesTab categoriesTab = new CategoriesTab();
+                        return categoriesTab;
+                    default:
+                        return null;
+                }
+
             }
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
@@ -186,26 +247,38 @@ public class TabStoreRoom extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+
+            SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+            Boolean status = sharedPref.getBoolean("mode", false);
+            if(!status){
+                return 3;
+            }else {
+                return 2;
+            }
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Products";
-                case 1:
-                    return "Shortlist";
-                case 2:
-                    return "Categories";
+            SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+            Boolean status = sharedPref.getBoolean("mode", false);
+            if(!status) {
+                switch (position) {
+                    case 0:
+                        return "Products";
+                    case 1:
+                        return "Shortlist";
+                    case 2:
+                        return "Categories";
+                }
+            }else {
+                switch (position) {
+                    case 0:
+                        return "Products";
+                    case 1:
+                        return "Categories";
+                }
             }
             return null;
         }
-    }
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        Intent storeIntent =new Intent(TabStoreRoom.this,home.class);
-        startActivity(storeIntent);
     }
 }
