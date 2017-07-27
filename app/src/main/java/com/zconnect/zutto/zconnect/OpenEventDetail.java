@@ -39,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
+import java.io.File;
 import java.net.URL;
 
 public class OpenEventDetail extends BaseActivity {
@@ -54,6 +55,10 @@ public class OpenEventDetail extends BaseActivity {
     String id;
     Toolbar mActionBarToolbar;
     DatabaseReference databaseReference;
+
+    Uri screenshotUri;
+    String path;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -260,16 +265,17 @@ public class OpenEventDetail extends BaseActivity {
                             shareIntent.putExtra(Intent.EXTRA_TEXT, "An important event @Zconnect ...");
                             shareIntent.setType("text/plain");
 
-                            String path = MediaStore.Images.Media.insertImage(
+                            path = MediaStore.Images.Media.insertImage(
                                     context.getContentResolver(),
                                     bm, "", null);
-                            Uri screenshotUri = Uri.parse(path);
+                            screenshotUri = Uri.parse(path);
 
                             shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                            shareIntent.setType("image/*");
+                            shareIntent.setType("image/png");
                             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                            context.startActivity(shareIntent);
+                            startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
+                            //context.startActivity(shareIntent);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -331,7 +337,7 @@ public class OpenEventDetail extends BaseActivity {
         intent.setType("vnd.android.cursor.item/event");
         intent.putExtra("beginTime", time);
         intent.putExtra("allDay", false);
-        intent.putExtra("rrule", "FREQ=DAILY");
+        //intent.putExtra("rrule", "FREQ=DAILY");
         intent.putExtra("endTime", time + 60 * 60 * 1000);
         intent.putExtra("title", title);
         intent.putExtra("description", desc);
@@ -425,5 +431,18 @@ public class OpenEventDetail extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0) {
+            // delete temp file
+            File file = new File(path);
+            file.delete();
+        }
+
+
     }
 }
