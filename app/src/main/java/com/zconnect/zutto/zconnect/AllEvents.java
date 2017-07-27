@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -211,6 +212,8 @@ public class AllEvents extends BaseActivity {
 
             }
         });
+        TextView venue = (TextView)findViewById(R.id.venue);
+        Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
     }
 
     private void writeNewPost(String email) {
@@ -245,6 +248,8 @@ public class AllEvents extends BaseActivity {
                 Snackbar snack = Snackbar.make(mEventList, "Event sent for verification !!", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
+                Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
+                snackBarText.setTypeface(customFont);
                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                 snack.show();
             }
@@ -266,18 +271,9 @@ public class AllEvents extends BaseActivity {
                 viewHolder.setEventDate(model.getEventDate());
                 viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
                 viewHolder.setEventVenue(model.getVenue());
-                viewHolder.setShareOptions(model.getEventImage());
+//                viewHolder.setShareOptions(model.getEventImage());
                 viewHolder.setBoosters(model.getBoosters());
 
-//                else {
-//                    mDatabase.child(model.getKey()).removeValue(new DatabaseReference.CompletionListener() {
-//                        @Override
-//                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-//                            onStart();
-//
-//                        }
-//                    });
-//                }
             }
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);
@@ -325,6 +321,8 @@ public class AllEvents extends BaseActivity {
 
             TextView post_name = (TextView) mView.findViewById(R.id.er_event);
             post_name.setText(eventName);
+            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            post_name.setTypeface(customFont);
 
         }
 
@@ -341,12 +339,16 @@ public class AllEvents extends BaseActivity {
             }
 
             post_desc.setText(shortEventDesc);
+            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+            post_desc.setTypeface(customFont);
 
         }
 
         public void setEventVenue(String venue) {
             TextView post_venue = (TextView) mView.findViewById(R.id.er_venue);
             post_venue.setText(venue);
+            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+            post_venue.setTypeface(customFont);
 
         }
 
@@ -367,6 +369,8 @@ public class AllEvents extends BaseActivity {
             }
 
             post_date.setText(finalDate);
+            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            post_date.setTypeface(customFont);
         }
 
         public void setEventReminder(final String eventDescription, final String eventName, final String time) {
@@ -380,72 +384,83 @@ public class AllEvents extends BaseActivity {
                 }
 
             });
+            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+            Reminder.setTypeface(customFont);
 
         }
 
-        public void setShareOptions(final String image) {
 
-            final Button share = (Button) mView.findViewById(R.id.share_button);
-
-            share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CounterManager.eventShare(key);
-                    shareEvent(image, mView.getContext());
-                }
-            });
-        }
-
-        private void shareEvent(final String image, final Context context) {
-
-            try {
-                //shareIntent.setPackage("com.whatsapp");
-                //Add text and then Image URI
-                Thread thread = new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        try {
-                            //Your code goes here
-                            Uri imageUri = Uri.parse(image);
-                            Intent shareIntent = new Intent();
-                            shareIntent.setAction(Intent.ACTION_SEND);
-
-                            Bitmap bm = BitmapFactory.decodeStream(new URL(image)
-                                    .openConnection()
-                                    .getInputStream());
+//        public void setShareOptions(final String image) {
+//
+//            final Button share = (Button) mView.findViewById(R.id.share_button);
+//
+//            share.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                    shareEvent(image, mView.getContext());
+//
+//                    /*Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+//                    shareIntent.setType("image*//*");
+//                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Hello World");
+//                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(image)); //add image path
+//                    mView.getContext().startActivity(Intent.createChooser(shareIntent, "Share image using"));
+//*/
+//                }
+//            });
+//        }
 
 
-                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
-                                    R.drawable.background_icon_z), bm, context);
-
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, "An important event @Zconnect ...");
-                            shareIntent.setType("text/plain");
-
-                            String path = MediaStore.Images.Media.insertImage(
-                                    context.getContentResolver(),
-                                    bm, "", null);
-                            Uri screenshotUri = Uri.parse(path);
-
-                            shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                            shareIntent.setType("image/*");
-                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                            context.startActivity(shareIntent);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                thread.start();
-
-            } catch (android.content.ActivityNotFoundException ex) {
-                //ToastHelper.MakeShortText("Whatsapp have not been installed.");
-            }
-
-        }
+//        private void shareEvent(final String image, final Context context) {
+//
+//            try {
+//                //shareIntent.setPackage("com.whatsapp");
+//                //Add text and then Image URI
+//                Thread thread = new Thread(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        try {
+//                            //Your code goes here
+//                            Uri imageUri = Uri.parse(image);
+//                            Intent shareIntent = new Intent();
+//                            shareIntent.setAction(Intent.ACTION_SEND);
+//
+//                            Bitmap bm = BitmapFactory.decodeStream(new URL(image)
+//                                    .openConnection()
+//                                    .getInputStream());
+//
+//
+//                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
+//                                    R.drawable.background_icon_z), bm, context);
+//
+//                            shareIntent.putExtra(Intent.EXTRA_TEXT, "An important event @Zconnect ...");
+//                            shareIntent.setType("text/plain");
+//
+//                            String path = MediaStore.Images.Media.insertImage(
+//                                    context.getContentResolver(),
+//                                    bm, "", null);
+//                            Uri screenshotUri = Uri.parse(path);
+//
+//                            shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+//                            shareIntent.setType("image/*");
+//                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//                            context.startActivity(shareIntent);
+//
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                });
+//
+//                thread.start();
+//
+//            } catch (android.content.ActivityNotFoundException ex) {
+//                //ToastHelper.MakeShortText("Whatsapp have not been installed.");
+//            }
+//
+//        }
 
         private void addReminderInCalendar(String title, String desc, String time, Context context) {
 

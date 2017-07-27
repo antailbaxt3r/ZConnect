@@ -1,16 +1,26 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -28,6 +38,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
+
+import java.net.URL;
 
 public class OpenEventDetail extends BaseActivity {
 
@@ -208,6 +220,101 @@ public class OpenEventDetail extends BaseActivity {
 
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_event_share, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.share) {
+
+            shareEvent(event.getEventImage(),this.getApplicationContext());
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void shareEvent(final String image, final Context context) {
+
+            try {
+                //shareIntent.setPackage("com.whatsapp");
+                //Add text and then Image URI
+                Thread thread = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        try {
+                            //Your code goes here
+                            Uri imageUri = Uri.parse(image);
+                            Intent shareIntent = new Intent();
+                            shareIntent.setAction(Intent.ACTION_SEND);
+
+                            Bitmap bm = BitmapFactory.decodeStream(new URL(image)
+                                    .openConnection()
+                                    .getInputStream());
+
+
+                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
+                                    R.drawable.background_icon_z), bm, context);
+
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, "An important event @Zconnect ...");
+                            shareIntent.setType("text/plain");
+
+                            String path = MediaStore.Images.Media.insertImage(
+                                    context.getContentResolver(),
+                                    bm, "", null);
+                            Uri screenshotUri = Uri.parse(path);
+
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                            shareIntent.setType("image/*");
+                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                            context.startActivity(shareIntent);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                thread.start();
+
+            } catch (android.content.ActivityNotFoundException ex) {
+                //ToastHelper.MakeShortText("Whatsapp have not been installed.");
+            }
+
+    }
+
+    public Bitmap mergeBitmap(Bitmap bitmap2, Bitmap bitmap1, Context context) {
+        Bitmap mergedBitmap = null;
+
+
+        Drawable[] layers = new Drawable[2];
+
+        layers[0] = new BitmapDrawable(context.getResources(), bitmap1);
+        layers[1] = new BitmapDrawable(context.getResources(), bitmap2);
+
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+
+        int width = layers[0].getIntrinsicWidth();
+        int height = layers[0].getIntrinsicHeight();
+
+        mergedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mergedBitmap);
+        layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        layerDrawable.draw(canvas);
+
+
+        //mergedBitmap=BitmapFactory.decodeResourceStream(layerDrawable)
+
+        return mergedBitmap;
+    }
+
+
 
     public void setEventReminder(final String eventDescription, final String eventName, final String time) {
         ImageButton Reminder = (ImageButton) findViewById(R.id.setReminder);

@@ -65,6 +65,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                 public void onClick(View v) {
                     Intent intent = new Intent(context, CabListOfPeople.class);
                     intent.putExtra("key", cabItemFormats.get(getAdapterPosition()).getKey());
+
                     context.startActivity(intent);
                 }
             });
