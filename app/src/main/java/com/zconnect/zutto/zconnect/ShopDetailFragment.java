@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -74,6 +75,12 @@ public class ShopDetailFragment extends Fragment {
         name = (TextView) view.findViewById(R.id.shop_details_name);
         details = (TextView) view.findViewById(R.id.shop_details_details);
         image = (SimpleDraweeView) view.findViewById(R.id.shop_details_image);
+
+        Typeface ralewayRegular = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+
+        name.setTypeface(ralewayRegular);
+        details.setTypeface(ralewayRegular);
+
 //      Menu = (SimpleDraweeView) findViewById(R.id.shop_details_menu_image);
         number = (TextView) view.findViewById(R.id.shop_details_number);
         number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
