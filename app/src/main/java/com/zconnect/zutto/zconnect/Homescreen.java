@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +29,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 
 public class Homescreen extends Fragment {
+    public String type = null;
     TextView InfoneStats;
     TextView InfoneName;
     TextView InfoneStatement;
@@ -55,7 +55,6 @@ public class Homescreen extends Fragment {
     ValueEventListener UserStats;
     ValueEventListener TotalStats;
     LinearLayout InfoneCard, StoreRoomCard, EventsCard, ShopsCard;
-    public String type = null;
     @SuppressLint("ValidFragment")
     public Homescreen() {
     }
@@ -105,6 +104,7 @@ public class Homescreen extends Fragment {
         InfoneCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterManager.InfoneOpen();
                 Intent InfoneIntent = new Intent(getContext(), Phonebook.class);
                 startActivity(InfoneIntent);
             }
@@ -115,6 +115,7 @@ public class Homescreen extends Fragment {
         StoreRoomCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterManager.StoreRoomOpen();
                 Intent InfoneIntent = new Intent(getContext(), TabStoreRoom.class);
                 startActivity(InfoneIntent);
             }
@@ -123,6 +124,7 @@ public class Homescreen extends Fragment {
         EventsCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterManager.EventOpen();
                 Intent InfoneIntent = new Intent(getContext(), AllEvents.class);
                 startActivity(InfoneIntent);
             }
@@ -131,6 +133,7 @@ public class Homescreen extends Fragment {
         ShopsCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterManager.ShopOpen();
                 Intent InfoneIntent = new Intent(getContext(), Shop.class);
                 startActivity(InfoneIntent);
             }

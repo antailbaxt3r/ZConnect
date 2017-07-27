@@ -97,6 +97,7 @@ public class PhonebookDetails extends BaseActivity {
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CounterManager.InfoneCallAfterProfile();
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number)));
                 }
             });

@@ -285,7 +285,7 @@ public class AddEvent extends BaseActivity {
                         newPost2.child("desc2").setValue(eventDate);
 
                         // Adding stats
-
+                        CounterManager.addEventVerified(key, eventNameValue);
                         mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -318,6 +318,8 @@ public class AddEvent extends BaseActivity {
                         newPost.child("Key").setValue(newPost.getKey());
                         newPost.child("log").setValue(latLng.longitude);
                         newPost.child("lat").setValue(latLng.latitude);
+
+                        CounterManager.addEventUnVerified(key, eventNameValue);
                     }
 
                     mProgress.dismiss();

@@ -226,16 +226,19 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
 
 
         if (id == R.id.infone) {
+            CounterManager.InfoneOpen();
             Intent intent = new Intent(this, Phonebook.class);
             startActivity(intent);
         } else if (id == R.id.shop) {
+            CounterManager.ShopOpen();
             Intent intent = new Intent(this, Shop.class);
             startActivity(intent);
         } else if (id == R.id.storeRoom) {
+            CounterManager.StoreRoomOpen();
             startActivity(new Intent(home.this, TabStoreRoom.class));
 
         } else if (id == R.id.events) {
-
+            CounterManager.EventOpen();
             startActivity(new Intent(home.this, AllEvents.class));
 
         } else if (id == R.id.signOut) {
@@ -252,12 +255,14 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
             }
 
         } else if (id == R.id.ad) {
+            CounterManager.AdvertisementOpen();
             startActivity(new Intent(home.this, Advertisement.class));
 
         } else if (id == R.id.about) {
             startActivity(new Intent(home.this, AboutUs.class));
 
         } else if (id == R.id.mapActivity) {
+            CounterManager.MapOpen();
             startActivity(new Intent(this, Campus_Map.class));
         } else if (id == R.id.bugReport) {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(home.this);

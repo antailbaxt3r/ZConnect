@@ -169,7 +169,7 @@ public class AddProduct extends BaseActivity {
         final String userId = user.getUid();
         mUsername = FirebaseDatabase.getInstance().getReference().child("Users");
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
-        String category = spinner1.getSelectedItem().toString();
+        final String category = spinner1.getSelectedItem().toString();
         mUsername.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -231,7 +231,7 @@ public class AddProduct extends BaseActivity {
 
                         }
                     });
-
+                    CounterManager.StoroomAddProduct(category);
                     mProgress.dismiss();
                     startActivity(new Intent(AddProduct.this, TabStoreRoom.class));
                     finish();

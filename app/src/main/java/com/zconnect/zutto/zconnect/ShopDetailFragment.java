@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -13,28 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.GalleryFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
 
 import java.util.ArrayList;
 import java.util.Vector;
-
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
 
 public class ShopDetailFragment extends Fragment {
 
@@ -111,6 +101,7 @@ public class ShopDetailFragment extends Fragment {
                 linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        CounterManager.shopDirections(nam);
                         Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
@@ -119,6 +110,7 @@ public class ShopDetailFragment extends Fragment {
                 numberlayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        CounterManager.shopCall(nam);
                         startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num)));
                     }
                 });
@@ -130,7 +122,18 @@ public class ShopDetailFragment extends Fragment {
 
             }
         });
-
+        galleryRecycler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CounterManager.shopGallery(nam);
+            }
+        });
+        menuRecycler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CounterManager.shopProducts(nam);
+            }
+        });
         image.setVisibility(View.GONE);
         name.setVisibility(View.GONE);
 

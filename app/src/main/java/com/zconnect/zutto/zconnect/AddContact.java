@@ -260,7 +260,7 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
                     newPost.child("hostel").setValue(hostel);
                     newPost.child("skills").setValue(skills);
 
-
+                    CounterManager.InfoneContactAdded();
                     mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

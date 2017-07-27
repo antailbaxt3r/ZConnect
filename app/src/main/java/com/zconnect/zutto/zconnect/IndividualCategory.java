@@ -107,13 +107,13 @@ public class IndividualCategory extends BaseActivity {
                 viewHolder.setImage(getApplicationContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
-                viewHolder.setSellerNumber(model.getPhone_no());
+                viewHolder.setSellerNumber(model.getPhone_no(), category);
 
 
                 SharedPreferences sharedPref = getSharedPreferences("guestMode",MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 if(!status) {
-                    viewHolder.defaultSwitch(model.getKey());
+                    viewHolder.defaultSwitch(model.getKey(), category);
                     viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -186,7 +186,7 @@ public class IndividualCategory extends BaseActivity {
 
         }
 
-        public void defaultSwitch(final String key) {
+        public void defaultSwitch(final String key, final String category) {
             // Getting User ID
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
@@ -200,7 +200,9 @@ public class IndividualCategory extends BaseActivity {
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
                         mReserve.setChecked(true);
                         mReserve.setText("Shortlisted");
+                        CounterManager.StoroomShortList(category);
                     } else {
+                        CounterManager.StoroomShortListDelete(category);
                         mReserve.setChecked(false);
                         mReserve.setText("Shortlist");
 
@@ -238,6 +240,7 @@ public class IndividualCategory extends BaseActivity {
 
             ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
             Picasso.with(ctx).load(image).into(post_image);
+
         }
 
         public void setProductPrice(String productPrice) {
@@ -266,12 +269,13 @@ public class IndividualCategory extends BaseActivity {
 
         }
 
-        public void setSellerNumber(final String sellerNumber) {
+        public void setSellerNumber(final String sellerNumber, final String category) {
             ImageView post_seller_number = (ImageView) mView.findViewById(R.id.sellerNumber);
 
             post_seller_number.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CounterManager.StoroomCall(category);
                     mView.getContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });

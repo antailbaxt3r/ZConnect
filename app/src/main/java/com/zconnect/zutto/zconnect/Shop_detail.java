@@ -90,6 +90,24 @@ public class Shop_detail extends BaseActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         Shop_detail.ViewPagerAdapter adapter = new Shop_detail.ViewPagerAdapter(getSupportFragmentManager());
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1)
+                    CounterManager.shopOffers(name);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         adapter.addFragment(new ShopDetailFragment(), "Details");
         adapter.addFragment(new ShopOffersFragment(), "Offers");
         viewPager.setAdapter(adapter);

@@ -134,10 +134,9 @@ public class ProductsTab extends Fragment {
                 }
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
-                viewHolder.setSellerNumber(model.getPhone_no(), getContext());
+                viewHolder.setSellerNumber(model.getCategory(), model.getPhone_no(), getContext());
                 if(!status) {
-                    viewHolder.defaultSwitch(model.getKey(), getContext());
-                    viewHolder.defaultSwitch(model.getKey(), viewHolder.mView.getContext());
+                    viewHolder.defaultSwitch(model.getKey(), getContext(), model.getCategory());
 
                     viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
                         @Override
@@ -191,13 +190,12 @@ public class ProductsTab extends Fragment {
         String[] keyList;
         // Flag to get combined user Id
         String ReservedUid;
+        SharedPreferences sharedPref;
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
         private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
         // Auth to get Current User
         private FirebaseAuth mAuth;
-
         private String sellerName;
-        SharedPreferences sharedPref;
         // Constructor
         public ProductViewHolder(View itemView) {
             super(itemView);
@@ -214,7 +212,7 @@ public class ProductsTab extends Fragment {
         }
 
         // Setting default switch
-        public void defaultSwitch(final String key, final Context ctx) {
+        public void defaultSwitch(final String key, final Context ctx, final String category) {
             // Getting User ID
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
@@ -226,11 +224,13 @@ public class ProductsTab extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     mReserve.setOnCheckedChangeListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
+                        CounterManager.StoroomShortList(category);
                         mReserve.setChecked(true);
                         mReserve.setText("Shortlisted");
                         ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
 
                     } else {
+                        CounterManager.StoroomShortListDelete(category);
                         mReserve.setChecked(false);
                         mReserve.setText("Shortlist");
                         ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
@@ -297,12 +297,13 @@ public class ProductsTab extends Fragment {
 
         }
 
-        public void setSellerNumber(final String sellerNumber, final Context ctx) {
+        public void setSellerNumber(final String category, final String sellerNumber, final Context ctx) {
             ImageView post_seller_number = (ImageView) mView.findViewById(R.id.sellerNumber);
 
             post_seller_number.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CounterManager.StoroomCall(category);
                     ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });

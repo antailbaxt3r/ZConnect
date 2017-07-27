@@ -86,7 +86,7 @@ public class ReservedTab extends Fragment {
                 query
         ) {
             @Override
-            protected void populateViewHolder(final ProductViewHolder viewHolder, Product model, int position) {
+            protected void populateViewHolder(final ProductViewHolder viewHolder, final Product model, int position) {
 
                 final String product_key = getRef(position).getKey();
 
@@ -96,13 +96,13 @@ public class ReservedTab extends Fragment {
                 viewHolder.setImage(getContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
-                viewHolder.setSellerNumber(model.getPhone_no(), getContext());
+                viewHolder.setSellerNumber(model.getPhone_no(), getContext(), model.getCategory());
 //                }else {
 //               }
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        CounterManager.StoroomShortListDelete(model.getCategory());
                         viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key + "/UsersReserved");
 
                         mAuth = FirebaseAuth.getInstance();
@@ -191,7 +191,7 @@ public class ReservedTab extends Fragment {
 
         }
 
-        public void setSellerNumber(final String sellerNumber, final Context ctx) {
+        public void setSellerNumber(final String sellerNumber, final Context ctx, final String category) {
             TextView post_seller_number = (TextView) mView.findViewById(R.id.sellerNumber);
             post_seller_number.setText("Call");
             post_seller_number.setPaintFlags(post_seller_number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -199,6 +199,7 @@ public class ReservedTab extends Fragment {
             post_seller_number.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CounterManager.StoroomCall(category);
                     ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });

@@ -96,7 +96,7 @@ public class MyProducts extends BaseActivity {
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        CounterManager.StoreRoomMyProductDelete();
                         viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key);
                         viewHolder.ReserveReference.getRef().removeValue();
                     }
