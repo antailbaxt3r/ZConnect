@@ -224,8 +224,20 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        if(id== R.id.edit_profile){
 
-        if (id == R.id.infone) {
+            if (number != null) {
+                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                startActivity(intent);
+            }
+            else {
+                Intent intent = new Intent(getApplicationContext(), AddContact.class);
+                startActivity(intent);
+            }
+
+
+        }
+        else if (id == R.id.infone) {
             Intent intent = new Intent(this, Phonebook.class);
             startActivity(intent);
         } else if (id == R.id.shop) {
