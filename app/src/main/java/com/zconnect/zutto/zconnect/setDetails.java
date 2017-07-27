@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -54,6 +55,10 @@ public class setDetails extends BaseActivity {
         userProfile = (ImageButton) findViewById(R.id.profileImage);
         userName = (EditText) findViewById(R.id.username);
         submit = (Button) findViewById(R.id.submitDetails);
+
+        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        userName.setTypeface(ralewayRegular);
+        submit.setTypeface(ralewayRegular);
 
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mStorageProfile = FirebaseStorage.getInstance().getReference().child("Profile");

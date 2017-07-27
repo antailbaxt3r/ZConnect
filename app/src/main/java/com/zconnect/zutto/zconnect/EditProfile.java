@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -80,8 +81,17 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
         editTextName = (TextInputEditText) findViewById(R.id.contact_edit_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_edit_number_editText);
         simpleDraweeView = (SimpleDraweeView) findViewById(R.id.contact_edit_image);
-
+        skillTags =(TagsEditText) findViewById(R.id.skillsTags);
         spinner = (CustomSpinner) findViewById(R.id.spinner1);
+
+
+        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        editTextName.setTypeface(ralewayRegular);
+        editTextDetails.setTypeface(ralewayRegular);
+        editTextNumber.setTypeface(ralewayRegular);
+        skillTags.setTypeface(ralewayRegular);
+        editTextEmail.setTypeface(ralewayRegular);
+
 //        Log.v("tag",email);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -129,7 +139,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
             }
         });
 
-        skillTags =(TagsEditText) findViewById(R.id.skillsTags);
+
         skillTags.setTagsListener(this);
         skillTags.setTagsWithSpacesEnabled(true);
 
