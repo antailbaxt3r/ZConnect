@@ -9,4 +9,8 @@
         android:top="5dp" />
 
     <solid android:color="@color/bg_tag_default" />
+    <corners android:bottomRightRadius="15dp"
+        android:bottomLeftRadius="15dp"
+        android:topLeftRadius="15dp"
+        android:topRightRadius="15dp" />
 </shape>

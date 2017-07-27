@@ -16,13 +16,16 @@ import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import mabbas007.tagsedittext.TagsEditText;
+
 public class PhonebookDetails extends BaseActivity {
     String name, number, email, desc, imagelink ,skills ,category;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
-    private android.support.design.widget.TextInputEditText editTextSkills;
+    //private android.support.design.widget.TextInputEditText editTextSkills;
+    private TagsEditText editTextSkills;
     private SimpleDraweeView image;
     private ImageView mail, call;
 
@@ -36,7 +39,9 @@ public class PhonebookDetails extends BaseActivity {
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_details_email_editText);
         editTextName = (TextInputEditText) findViewById(R.id.contact_details_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_details_number_editText);
-        editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
+        //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
+        editTextSkills = (TagsEditText)  findViewById(R.id.contact_details_editText_skills);
+
         call = (ImageView) findViewById(R.id.callbutton);
         mail = (ImageView) findViewById(R.id.mailbutton);
         setSupportActionBar(toolbar);
@@ -70,6 +75,7 @@ public class PhonebookDetails extends BaseActivity {
 
         if(category.equalsIgnoreCase("S")) {
             editTextSkills.setVisibility(View.VISIBLE);
+            editTextSkills.setEnabled(false);
         }
         if(skills==null)
             skills="";
@@ -77,11 +83,17 @@ public class PhonebookDetails extends BaseActivity {
         if(skills.length()>1)
             skills=skills.substring(1,skills.length()-1);
 
+        String[] skillsArray={""};
+
         if (name != null && desc != null && number != null && imagelink != null && email != null) {
             editTextName.setText(name);
             editTextDetails.setText(desc);
             editTextNumber.setText(number);
-            editTextSkills.setText(skills);
+
+            if(!skills.equals(""))
+                skillsArray=skills.split(",");
+
+            editTextSkills.setTags(skillsArray);
             editTextNumber.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

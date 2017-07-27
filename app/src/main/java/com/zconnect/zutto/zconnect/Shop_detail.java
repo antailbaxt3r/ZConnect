@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
@@ -47,6 +48,8 @@ public class Shop_detail extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
         setSupportActionBar(toolbar);
+        ((NestedScrollView) findViewById(R.id.scroll)).setFillViewport(true);
+
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
