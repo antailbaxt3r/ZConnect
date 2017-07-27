@@ -2,8 +2,11 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +100,14 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
                     }
                 }
             });
+
+            //chnaging fonts
+            Typeface ralewayLight = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+            Typeface ralewaySemiBold = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            name.setTypeface(ralewaySemiBold);
+            number.setTypeface(ralewayLight);
+
+
         }
     }
 }

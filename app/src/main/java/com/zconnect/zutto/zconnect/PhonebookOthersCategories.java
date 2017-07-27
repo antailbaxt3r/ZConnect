@@ -56,14 +56,13 @@ public class PhonebookOthersCategories extends Fragment {
         FirebaseDatabase.getInstance().getReference("PhonebookOtherCategories").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                phonebookStudentHostelItems.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     PhonebookStudentHostelItem phonebookStudentHostelItem1 = new PhonebookStudentHostelItem();
                     phonebookStudentHostelItem1.setHostel(snapshot.getValue(String.class));
                     phonebookStudentHostelItem1.setCat("O");
                     phonebookStudentHostelItems.add(phonebookStudentHostelItem1);
                 }
-
                 adapter.notifyDataSetChanged();
             }
 

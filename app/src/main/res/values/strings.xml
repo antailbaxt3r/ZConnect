@@ -25,9 +25,7 @@
 
     <string-array name="categories">
         <item>Electronics</item>
-        <item>Bean Bags</item>
         <item>Speakers and Headphones</item>
-        <item>Fashion</item>
         <item>Storage Devices</item>
         <item>Academic Books</item>
         <item>Room Necessities</item>
@@ -62,7 +60,19 @@
         <item>CH-5</item>
         <item>CH-6</item>
     </string-array>
+    <string-array name="location">
+        <item>Airport</item>
+        <item>Madgaon Railway Station</item>
+        <item>Bits</item>
+    </string-array>
+    <string-array name="time">
+        <item>8:00 to 9:00</item>
+        <item>9:00 to 10:00</item>
+    </string-array>
     <string name="hostel_prompt">Choose Hostel</string>
+    <string name="destination_prompt">Choose Location</string>
+    <string name="source_prompt">Choose Location</string>
+    <string name="time_prompt">Choose Time</string>
     <string name="title_activity_phonebook_details">PhonebookDetails</string>
     <string name="title_activity_phonebook_hostel_wise">PhonebookHostelWise</string>
     <string name="title_activity_phonebook">Phonebook</string>
@@ -80,6 +90,11 @@
     <string name="add_widget">Add widget</string>
     <string name="title_activity_offers">Latest Offers</string>
     <string name="title_activity_shop_detail">Shop_detail</string>
+
+    <string name="title_activity_cab_pooling">Cab Pooling</string>
+    <string name="title_activity_pool_list">PoolList</string>
+
     <string name="title_activity_campus__map">BITS-GOA</string>
+
 
 </resources>

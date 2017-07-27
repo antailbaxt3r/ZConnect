@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -113,7 +115,7 @@ public class MyProducts extends BaseActivity {
         private DatabaseReference ReserveReference;
         //        private Switch mReserve;
 //        private TextView ReserveStatus;
-        private ImageButton deleteButton;
+        private Button deleteButton;
 //        private FirebaseAuth mAuth;
 //        String [] keyList;
 //        String ReservedUid;
@@ -122,13 +124,15 @@ public class MyProducts extends BaseActivity {
             super(itemView);
             mView = itemView;
             //to delete reserved items
-            deleteButton = (ImageButton) mView.findViewById(R.id.delete);
+            deleteButton = (Button) mView.findViewById(R.id.delete);
         }
 
         public void setProductName(String productName) {
 
             TextView post_name = (TextView) mView.findViewById(R.id.productName);
             post_name.setText(productName);
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            post_name.setTypeface(ralewayMedium);
 
         }
 
@@ -136,7 +140,8 @@ public class MyProducts extends BaseActivity {
 
             TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
             post_desc.setText(productDesc);
-
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            post_desc.setTypeface(ralewayMedium);
         }
 
         public void setImage(Context ctx, String image) {
@@ -150,8 +155,10 @@ public class MyProducts extends BaseActivity {
 
         //Set Product Price
         public void setPrice(String productPrice) {
-            TextView post_name = (TextView) mView.findViewById(R.id.price);
-            post_name.setText("₹" + productPrice + "/-");
+            TextView post_price = (TextView) mView.findViewById(R.id.price);
+            post_price.setText("₹" + productPrice + "/-");
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            post_price.setTypeface(ralewayMedium);
         }
 
 

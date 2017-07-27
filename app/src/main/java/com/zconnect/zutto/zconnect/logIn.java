@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +46,7 @@ public class logIn extends BaseActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
     private ProgressDialog mProgress;
-    private SignInButton mGoogleSignIn;
+    private Button mGoogleSignIn;
     private Button mGuestLogIn;
     private int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
@@ -67,7 +69,8 @@ public class logIn extends BaseActivity {
 
             }
         });
-        mGoogleSignIn = (SignInButton) findViewById(R.id.GoogleSignIn);
+        mGoogleSignIn = (Button) findViewById(R.id.GoogleSignIn);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -125,6 +128,13 @@ public class logIn extends BaseActivity {
 
             }
         });
+
+        TextView bitsgoaemailinfo = (TextView)findViewById(R.id.bitsgoaemailinfo);
+        Typeface ralewayLight = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        Typeface ralewayMedium = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        bitsgoaemailinfo.setTypeface(ralewayLight);
+        mGoogleSignIn.setTypeface(ralewayMedium);
+        mGuestLogIn.setTypeface(ralewayMedium);
     }
 
     private void signIn() {
