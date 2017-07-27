@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -136,10 +135,9 @@ public class ProductsTab extends Fragment {
                 }
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
-                viewHolder.setSellerNumber(model.getPhone_no(), getContext());
+                viewHolder.setSellerNumber(model.getCategory(), model.getPhone_no(), getContext());
                 if(!status) {
-                    viewHolder.defaultSwitch(model.getKey(), getContext());
-                    viewHolder.defaultSwitch(model.getKey(), viewHolder.mView.getContext());
+                    viewHolder.defaultSwitch(model.getKey(), getContext(), model.getCategory());
 
 //                    viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
 //                        @Override
@@ -231,6 +229,7 @@ public class ProductsTab extends Fragment {
         String[] keyList;
         // Flag to get combined user Id
         String ReservedUid;
+        SharedPreferences sharedPref;
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
         private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
         // Auth to get Current User
@@ -238,7 +237,6 @@ public class ProductsTab extends Fragment {
         private Button shortList;
 
         private String sellerName;
-        SharedPreferences sharedPref;
         // Constructor
         public ProductViewHolder(View itemView) {
             super(itemView);
@@ -249,7 +247,7 @@ public class ProductsTab extends Fragment {
 //            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
             shortList = (Button) mView.findViewById(R.id.shortList);
             if(status){
-                shortList.setVisibility(itemView.GONE);
+                shortList.setVisibility(View.GONE);
 //                mReserve.setVisibility(View.GONE);
 //                ReserveStatus.setVisibility(View.GONE);
             }
@@ -257,7 +255,7 @@ public class ProductsTab extends Fragment {
         }
 
         // Setting default switch
-        public void defaultSwitch(final String key, final Context ctx) {
+        public void defaultSwitch(final String key, final Context ctx, final String category) {
             // Getting User ID
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
@@ -271,8 +269,7 @@ public class ProductsTab extends Fragment {
 //                    mReserve.setOnCheckedChangeListener(null);
                     shortList.setOnClickListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-//                        mReserve.setChecked(true);
-//                        mReserve.setText("Shortlisted");
+                        CounterManager.StoroomShortList(category);
                         shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                         shortList.setText("Shortlisted");
                         Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
@@ -288,6 +285,7 @@ public class ProductsTab extends Fragment {
 //                        mReserve.setChecked(false);
 //                        mReserve.setText("Shortlist");
 //                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
+                        CounterManager.StoroomShortListDelete(category);
                     }
                     shortList.setOnClickListener(mListener);
 
@@ -359,13 +357,14 @@ public class ProductsTab extends Fragment {
 
         }
 
-        public void setSellerNumber(final String sellerNumber, final Context ctx) {
+        public void setSellerNumber(final String category, final String sellerNumber, final Context ctx) {
             Button post_seller_number = (Button) mView.findViewById(R.id.sellerNumber);
             Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
             post_seller_number.setTypeface(customfont);
             post_seller_number.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CounterManager.StoroomCall(category);
                     ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });

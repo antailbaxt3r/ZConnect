@@ -284,6 +284,7 @@ public class AllEvents extends BaseActivity {
 
 
         View mView;
+        String key;
 
         public EventViewHolder(View itemView) {
             super(itemView);
@@ -291,12 +292,14 @@ public class AllEvents extends BaseActivity {
         }
 
         public void openEvent(final Event event) {
+
+            key = event.getKey();
             mView.setOnClickListener(new View.OnClickListener()
 
             {
                 @Override
                 public void onClick(View view) {
-
+                    CounterManager.eventOpenCounter(key);
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
                     i.putExtra("currentEvent", event);
                     i.putExtra("Eventtag","1");
@@ -375,7 +378,7 @@ public class AllEvents extends BaseActivity {
             Reminder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    CounterManager.eventReminderCounter(key);
                     addReminderInCalendar(eventName, eventDescription, time, mView.getContext());
 
                 }
@@ -385,6 +388,7 @@ public class AllEvents extends BaseActivity {
             Reminder.setTypeface(customFont);
 
         }
+
 
 //        public void setShareOptions(final String image) {
 //
@@ -405,6 +409,7 @@ public class AllEvents extends BaseActivity {
 //                }
 //            });
 //        }
+
 
 //        private void shareEvent(final String image, final Context context) {
 //
@@ -490,6 +495,7 @@ public class AllEvents extends BaseActivity {
             intent.putExtra(Events.DESCRIPTION, desc);
             intent.putExtra(Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_FREE);
             context.startActivity(intent);
+
 
             // Display event id.
             //Toast.makeText(getApplicationContext(), "Event added :: ID :: " + event.getLastPathSegment(), Toast.LENGTH_SHORT).show();

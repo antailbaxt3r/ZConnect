@@ -46,6 +46,7 @@ public class ShopSearch extends AppCompatActivity {
 
         errorMessage = (TextView) findViewById(R.id.errorMessage);
 
+        CounterManager.shopSearch();
         Intent intent = getIntent();
 
 

@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -98,7 +97,7 @@ public class MyProducts extends BaseActivity {
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        CounterManager.StoreRoomMyProductDelete();
                         viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key);
                         viewHolder.ReserveReference.getRef().removeValue();
                     }

@@ -18,13 +18,15 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 public class CabPooling extends AppCompatActivity {
-    Button done,calender;
-    CustomSpinner source,destination,time;
+    Button done, calender;
+    CustomSpinner source, destination, time;
     TextView date;
-    int year,month,day;
+    int year, month, day;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CounterManager.openCabPool();
         setContentView(R.layout.activity_cab_pooling);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -48,12 +50,12 @@ public class CabPooling extends AppCompatActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        source =(CustomSpinner)findViewById(R.id.spinner_source);
-        destination = (CustomSpinner)findViewById(R.id.spinner_destination);
-        time=(CustomSpinner)findViewById(R.id.spinner_time);
-        done =(Button)findViewById(R.id.done);
-        date = (TextView)findViewById(R.id.date);
-        calender =(Button)findViewById(R.id.calender);
+        source = (CustomSpinner) findViewById(R.id.spinner_source);
+        destination = (CustomSpinner) findViewById(R.id.spinner_destination);
+        time = (CustomSpinner) findViewById(R.id.spinner_time);
+        done = (Button) findViewById(R.id.done);
+        date = (TextView) findViewById(R.id.date);
+        calender = (Button) findViewById(R.id.calender);
         calender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,15 +81,16 @@ public class CabPooling extends AppCompatActivity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(date.getText() !=null && source.getSelectedItem()!=null && destination.getSelectedItem()!=null && time.getSelectedItem()!=null  ){
-                    Intent intent = new Intent(CabPooling.this,PoolList.class);
-                    intent.putExtra("date",date.getText().toString());
-                    intent.putExtra("source",String.valueOf(source.getSelectedItem()));
-                    intent.putExtra("destination",String.valueOf(destination.getSelectedItem()));
-                    intent.putExtra("time",String.valueOf(time.getSelectedItem()));
+                if (date.getText() != null && source.getSelectedItem() != null && destination.getSelectedItem() != null && time.getSelectedItem() != null) {
+                    Intent intent = new Intent(CabPooling.this, PoolList.class);
+                    intent.putExtra("date", date.getText().toString());
+                    intent.putExtra("source", String.valueOf(source.getSelectedItem()));
+                    intent.putExtra("destination", String.valueOf(destination.getSelectedItem()));
+                    intent.putExtra("time", String.valueOf(time.getSelectedItem()));
+
+                    CounterManager.searchPool(String.valueOf(destination.getSelectedItem()));
                     startActivity(intent);
-                }
-                else {
+                } else {
                     Snackbar snack = Snackbar.make(done, "Fields are empty", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
