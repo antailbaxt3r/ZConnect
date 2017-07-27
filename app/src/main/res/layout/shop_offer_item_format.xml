@@ -18,9 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/recents_image"
+            android:background="@color/teal600"
             android:padding="10dp"
             android:text="Name"
-            android:background="@color/teal600"
             android:textColor="@color/white"
             android:textSize="18dp" />
 
@@ -32,9 +32,9 @@
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/offerImage"
                 android:layout_width="0dp"
-                android:layout_weight=".6"
                 android:layout_height="200dp"
                 android:layout_below="@+id/featurename"
+                android:layout_weight=".6"
                 android:padding="5dp"
                 android:scaleType="centerCrop" />
 

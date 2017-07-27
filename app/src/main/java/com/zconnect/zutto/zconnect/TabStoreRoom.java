@@ -92,6 +92,7 @@ public class TabStoreRoom extends BaseActivity {
                 SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 if (!status) {
+                    CounterManager.StoreRoomFABclick();
                     Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
                     startActivity(intent);
                     finish();

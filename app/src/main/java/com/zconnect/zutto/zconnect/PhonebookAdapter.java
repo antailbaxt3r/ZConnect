@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +69,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    CounterManager.InfoneCallDirect();
                     PhonebookDisplayItem phonebookDisplayItem;
                     phonebookDisplayItem = phonebookItem.get(getAdapterPosition()).getPhonebookDisplayItem();
                     context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phonebookDisplayItem.getNumber())));
@@ -81,9 +80,11 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, PhonebookDetails.class);
-
                     PhonebookDisplayItem phonebookDisplayItem;
                     phonebookDisplayItem = phonebookItem.get(getAdapterPosition()).getPhonebookDisplayItem();
+
+                    CounterManager.infoneOpenContact(phonebookDisplayItem.getNumber());
+
                     intent.putExtra("desc", phonebookDisplayItem.getDesc());
                     intent.putExtra("name", phonebookDisplayItem.getName());
                     intent.putExtra("number", phonebookDisplayItem.getNumber());

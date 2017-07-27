@@ -42,6 +42,7 @@ public class PhonebookSearch extends BaseActivity {
 
         //Remove notification bar
         Log.v("tag", "s");
+        CounterManager.InfoneSearchClick();
         setContentView(R.layout.activity_phonebook_search);
 
         errorMessage = (TextView) findViewById(R.id.errorMessage);

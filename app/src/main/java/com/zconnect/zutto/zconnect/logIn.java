@@ -24,7 +24,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -129,7 +128,7 @@ public class logIn extends BaseActivity {
             }
         });
 
-        TextView bitsgoaemailinfo = (TextView)findViewById(R.id.bitsgoaemailinfo);
+        TextView bitsgoaemailinfo = (TextView) findViewById(R.id.bitsgoaemailinfo);
         Typeface ralewayLight = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
         Typeface ralewayMedium = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
         bitsgoaemailinfo.setTypeface(ralewayLight);

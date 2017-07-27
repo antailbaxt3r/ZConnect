@@ -111,7 +111,7 @@ cat=intent.getStringExtra("cat");
                             String name = childShot.child("name").getValue(String.class);
                             String number = childShot.child("number").getValue(String.class);
                             String details = childShot.child("desc").getValue(String.class);
-                            String skills= childShot.child("skills").getValue(String.class);
+                            String skills = childShot.child("skills").getValue(String.class);
 
                             String imageurl = childShot.child("imageurl").getValue(String.class);
                             String title = name + number + details + skills;

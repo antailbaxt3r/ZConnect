@@ -174,7 +174,7 @@ public class Phonebook extends BaseActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
-        Boolean status = sharedPref.getBoolean("mode", false);
+        final Boolean status = sharedPref.getBoolean("mode", false);
 
         if (!status) {
             adapter.addFragment(new PhonebookAdmin(), "Admin");
@@ -186,9 +186,41 @@ public class Phonebook extends BaseActivity {
             adapter.addFragment(new PhonebookOthersCategories(), "others");
             viewPager.setAdapter(adapter);
         }
+
+        increaseCount(status, viewPager.getCurrentItem());
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                increaseCount(status, position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
-
+    public void increaseCount(boolean status, int position) {
+        if (!status) {
+            if (position == 0)
+                CounterManager.infoneOpenTab("Admin");
+            else if (position == 1)
+                CounterManager.infoneOpenTab("Students");
+            else if (position == 2)
+                CounterManager.infoneOpenTab("others");
+        } else {
+            if (position == 0)
+                CounterManager.infoneOpenTab("Admin");
+            else if (position == 1)
+                CounterManager.infoneOpenTab("others");
+        }
+    }
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();

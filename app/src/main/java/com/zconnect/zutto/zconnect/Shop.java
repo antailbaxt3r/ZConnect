@@ -118,10 +118,12 @@ public class Shop extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_search) {
+            CounterManager.shopSearch();
             Intent searchintent = new Intent(this, ShopSearch.class);
             startActivity(searchintent);
         }
         if (id==R.id.action_offer){
+            CounterManager.shopOffers();
             Intent intent=new Intent(this,Offers.class);
             startActivity(intent);
         }

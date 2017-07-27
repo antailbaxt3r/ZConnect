@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -30,8 +29,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
-
-import static java.security.AccessController.getContext;
 
 public class IndividualCategory extends BaseActivity {
 
@@ -112,13 +109,13 @@ public class IndividualCategory extends BaseActivity {
                 viewHolder.setImage(getApplicationContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
-                viewHolder.setSellerNumber(model.getPhone_no());
+                viewHolder.setSellerNumber(model.getPhone_no(), category);
 
 
                 SharedPreferences sharedPref = getSharedPreferences("guestMode",MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 if(!status) {
-                    viewHolder.defaultSwitch(model.getKey());
+                    viewHolder.defaultSwitch(model.getKey(), model.getCategory());
 //                    viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
 //                        @Override
 //                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -223,7 +220,7 @@ public class IndividualCategory extends BaseActivity {
             shortList = (Button) mView.findViewById(R.id.shortList);
 
             if(status){
-                shortList.setVisibility(itemView.GONE);
+                shortList.setVisibility(View.GONE);
 //                mReserve.setVisibility(View.GONE);
 //                ReserveStatus.setVisibility(View.GONE);
             }
@@ -232,7 +229,7 @@ public class IndividualCategory extends BaseActivity {
 
         }
 
-        public void defaultSwitch(final String key) {
+        public void defaultSwitch(final String key, final String category) {
             // Getting User ID
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
@@ -245,6 +242,7 @@ public class IndividualCategory extends BaseActivity {
 //                    mReserve.setOnCheckedChangeListener(null);
                     shortList.setOnClickListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
+                        CounterManager.StoroomShortList(category);
                         shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                         shortList.setText("Shortlisted");
                         Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
@@ -253,6 +251,7 @@ public class IndividualCategory extends BaseActivity {
 //                        mReserve.setText("Shortlisted");
                         shortList.setText("Shortlisted");
                     } else {
+                        CounterManager.StoroomShortListDelete(category);
                         shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
                         shortList.setText("Shortlist");
                         Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
@@ -331,13 +330,14 @@ public class IndividualCategory extends BaseActivity {
 
         }
 
-        public void setSellerNumber(final String sellerNumber) {
+        public void setSellerNumber(final String sellerNumber, final String category) {
             Button post_seller_number = (Button) mView.findViewById(R.id.sellerNumber);
             Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
             post_seller_number.setTypeface(customfont);
             post_seller_number.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CounterManager.StoroomCall(category);
                     mView.getContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });

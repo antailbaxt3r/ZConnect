@@ -101,6 +101,8 @@ public class OpenEventDetail extends BaseActivity {
         EventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                CounterManager.eventOpenPic(event.getKey());
                 ProgressDialog mProg = new ProgressDialog(OpenEventDetail.this);
                 mProg.setMessage("Loading....");
                 mProg.show();
@@ -119,6 +121,7 @@ public class OpenEventDetail extends BaseActivity {
                 venueDirections.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        CounterManager.eventgetDirection(event.getKey());
                         try {
                             if (event.getLat() == 0 && event.getLon() == 0) {
                                 Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
@@ -168,6 +171,7 @@ public class OpenEventDetail extends BaseActivity {
                             @Override
                             public void onClick(View v) {
                                 try {
+                                    CounterManager.eventgetDirection(event.getKey());
                                     if (event.getLat() == 0 && event.getLon() == 0) {
                                         Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
                                         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -317,7 +321,7 @@ public class OpenEventDetail extends BaseActivity {
         Reminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                CounterManager.eventReminderCounter(event.getKey());
                 addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
 
             }
@@ -383,6 +387,7 @@ public class OpenEventDetail extends BaseActivity {
                 boostBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        CounterManager.eventBoost(event.getKey());
                         FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(event.getKey()).child("Boosters").setValue(newBoost.trim());
                     }
                 });
