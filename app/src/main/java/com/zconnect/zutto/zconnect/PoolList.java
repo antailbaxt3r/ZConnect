@@ -7,7 +7,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -21,7 +20,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.ShopOfferItemFormat;
 
 import java.util.Vector;
 
@@ -31,7 +29,6 @@ public class PoolList extends AppCompatActivity {
     Query query = pool.orderByChild("time");
     TextView defaultmsg;
     String source,destination,date,time;
-    LinearLayoutManager offersLinearLayoutManager;
     Vector<CabItemFormat> cabItemFormatVector = new Vector<>();
     Vector<CabItemFormat>cabItemFormats = new Vector<>();
     CabPoolRVAdapter adapter;

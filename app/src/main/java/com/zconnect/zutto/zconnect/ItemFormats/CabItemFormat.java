@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect.ItemFormats;
 
+import java.util.Vector;
+
 /**
  * Created by shubhamk on 26/7/17.
  */
@@ -10,13 +12,18 @@ public class CabItemFormat {
     String date;
     String details;
     String time;
+    String key;
+    Vector<CabListItemFormat> cabListItemFormats;
 
-    public CabItemFormat(String source, String destination, String date, String details, String time) {
+
+    public CabItemFormat(String source, String destination, String date, String details, String time, String key, Vector<CabListItemFormat> cabListItemFormats) {
         this.source = source;
         this.destination = destination;
         this.date = date;
         this.details = details;
         this.time = time;
+        this.key = key;
+        this.cabListItemFormats = cabListItemFormats;
     }
 
     public CabItemFormat() {
@@ -34,16 +41,16 @@ public class CabItemFormat {
         return destination;
     }
 
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
     public String getDate() {
         return date;
     }
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
     }
 
     public String getDetails() {
@@ -60,5 +67,21 @@ public class CabItemFormat {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Vector<CabListItemFormat> getCabListItemFormats() {
+        return cabListItemFormats;
+    }
+
+    public void setCabListItemFormats(Vector<CabListItemFormat> cabListItemFormats) {
+        this.cabListItemFormats = cabListItemFormats;
     }
 }
