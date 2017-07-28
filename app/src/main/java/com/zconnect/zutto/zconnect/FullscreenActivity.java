@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -32,6 +33,7 @@ public class FullscreenActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        makeActivityFullScreen();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen_tutorial);
         //Get the data to be swiped through
@@ -53,6 +55,23 @@ public class FullscreenActivity extends BaseActivity {
         //set the adapter that will create the individual pages
         vp.setAdapter(new MyPagesAdapter());
 
+        doneButton(vp.getCurrentItem());
+        vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                doneButton(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         tabLayout.setupWithViewPager(vp, true);
 
         doneBtn.setVisibility(View.GONE);
@@ -68,6 +87,14 @@ public class FullscreenActivity extends BaseActivity {
 
     }
 
+    private void doneButton(int position) {
+        if(position==3){
+
+            doneBtn.setVisibility(View.VISIBLE);
+        } else
+            doneBtn.setVisibility(View.INVISIBLE);
+    }
+
     //Implement PagerAdapter Class to handle individual page creation
     private class MyPagesAdapter extends PagerAdapter {
         @Override
@@ -79,15 +106,14 @@ public class FullscreenActivity extends BaseActivity {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             View page = inflater.inflate(R.layout.tutorial_page, null);
-            ((ImageView)page.findViewById(R.id.textMessage)).setImageDrawable(pageData[position]);
+            ImageView image =(ImageView) page.findViewById(R.id.textMessage);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(container.getWidth(),container.getHeight());
+
+            image.setLayoutParams(layoutParams);
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            image.setImageDrawable(pageData[position]);
             //Add the page to the front of the queue
             ((ViewPager) container).addView(page, 0);
-
-            if(position==3){
-
-                doneBtn.setVisibility(View.VISIBLE);
-            }
-
 
             return page;
         }

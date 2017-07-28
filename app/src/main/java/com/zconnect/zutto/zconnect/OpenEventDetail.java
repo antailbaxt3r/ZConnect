@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -23,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,6 +57,7 @@ public class OpenEventDetail extends BaseActivity {
     String id;
     Toolbar mActionBarToolbar;
     DatabaseReference databaseReference;
+    Button boostBtn;
 
     ProgressDialog progressDialog;
 
@@ -70,6 +73,8 @@ public class OpenEventDetail extends BaseActivity {
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mActionBarToolbar);
+
+        boostBtn = (Button)findViewById(R.id.boostBtn);
 
         progressDialog=new ProgressDialog(this);
 
@@ -226,8 +231,18 @@ public class OpenEventDetail extends BaseActivity {
             });
         }
 
+        //changing fonts
+        Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
+        Typeface customFont2 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        EventDate.setTypeface(customFont);
+        EventDescription.setTypeface(customFont2);
+        EventVenue.setTypeface(customFont);
 
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String boost = event.getBoosters();
+        if (boost.contains(user.getUid())) {
+            boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+        }
     }
 
     @Override
@@ -250,7 +265,7 @@ public class OpenEventDetail extends BaseActivity {
     private void shareEvent(final String image, final Context context) {
 
             try {
-                progressDialog.setMessage("Opening sharing options");
+                progressDialog.setMessage("Loading...");
                 progressDialog.show();
                 //shareIntent.setPackage("com.whatsapp");
                 //Add text and then Image URI
@@ -271,8 +286,12 @@ public class OpenEventDetail extends BaseActivity {
 
                             bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
                                     R.drawable.background_icon_z), bm, context);
+                            String temp = "*Event:* " + event.getEventName()
+                                    + "\n*Venue:* " + event.getVenue()
+                                    + "\n*Date:* " + event.getEventDate()
+                                    + "\n" + event.getEventDescription();
 
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, "An important event @Zconnect ...");
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
                             shareIntent.setType("text/plain");
 
                             path = MediaStore.Images.Media.insertImage(
@@ -332,7 +351,7 @@ public class OpenEventDetail extends BaseActivity {
 
 
     public void setEventReminder(final String eventDescription, final String eventName, final String time) {
-        ImageButton Reminder = (ImageButton) findViewById(R.id.setReminder);
+        Button Reminder = (Button) findViewById(R.id.setReminder);
         Reminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -342,6 +361,8 @@ public class OpenEventDetail extends BaseActivity {
             }
 
         });
+        Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        Reminder.setTypeface(customFont);
 
     }
 
@@ -368,49 +389,40 @@ public class OpenEventDetail extends BaseActivity {
 
     private void setBoost() {
         String boost = event.getBoosters();
-        TextView count = (TextView) findViewById(R.id.boostCount);
         if (boost == null || TextUtils.isEmpty(boost)) {
-            count.setText("0");
+            boostBtn.setText("0 Boost");
             boost = "";
         } else {
             String boosters[] = boost.trim().split(" ");
-            count.setText(String.valueOf(boosters.length));
+                boostBtn.setText(String.valueOf(boosters.length) + " Boost");
+
         }
-
-        TextView boostText = (TextView) findViewById(R.id.boostText);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        View boostBtn = findViewById(R.id.boostBtn);
 
         if (user != null) {
 
             if (boost.contains(user.getUid())) {
-
-                boostText.setText("Boosted");
-                boostText.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
                 final String newBoost = boost.replace(user.getUid(), "");
                 boostBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(event.getKey()).child("Boosters").setValue(newBoost.trim());
+                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
                     }
                 });
             } else {
-                boostText.setText("Boost");
-                boostText.setTextColor(ContextCompat.getColor(this, R.color.black));
                 final String newBoost = boost.concat(" " + user.getUid());
                 boostBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         CounterManager.eventBoost(event.getKey());
                         FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(event.getKey()).child("Boosters").setValue(newBoost.trim());
+                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
                     }
                 });
             }
 
         } else {
-            boostText.setText("Boost");
-            boostText.setTextColor(ContextCompat.getColor(this, R.color.black));
             boostBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -430,6 +442,9 @@ public class OpenEventDetail extends BaseActivity {
                 }
             });
         }
+
+        Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        boostBtn.setTypeface(customfont);
     }
 
     private void boostCounter(String key) {

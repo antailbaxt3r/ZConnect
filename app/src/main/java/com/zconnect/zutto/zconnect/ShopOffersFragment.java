@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -49,6 +50,9 @@ public class ShopOffersFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
+        //changing fonts
+        Typeface customFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
+        defaultmsg.setTypeface(customFont);
         return view;
     }
 

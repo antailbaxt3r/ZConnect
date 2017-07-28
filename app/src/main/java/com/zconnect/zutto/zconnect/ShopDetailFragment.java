@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -153,6 +154,15 @@ public class ShopDetailFragment extends Fragment {
         galleryRecycler.setAdapter(adapter);
         adapter1=new GalleryAdapter(getContext(),menu);
         menuRecycler.setAdapter(adapter1);
+
+        //changing fonts
+        Typeface customFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
+        TextView galleryText = (TextView)view.findViewById(R.id.galleryText);
+        TextView productText = (TextView)view.findViewById(R.id.productText);
+        number.setTypeface(customFont);
+        galleryText.setTypeface(customFont);
+        productText.setTypeface(customFont);
+
         return view;
 
     }

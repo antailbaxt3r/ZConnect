@@ -61,7 +61,7 @@ public class ShopCategoryRV extends RecyclerView.Adapter<ShopCategoryRV.ViewHold
             category = (TextView) itemView.findViewById(R.id.shop_category_item_format_text);
             simpleDraweeView = (SquareImageView) itemView.findViewById(R.id.shop_category_item_format_image);
 
-            Typeface ralewayRegular = Typeface.createFromAsset(context.getAssets(), "fonts/Raleway-Medium.ttf");
+            Typeface ralewayRegular = Typeface.createFromAsset(context.getAssets(), "fonts/Raleway-Light.ttf");
             category.setTypeface(ralewayRegular);
 
             itemView.setOnClickListener(new View.OnClickListener() {

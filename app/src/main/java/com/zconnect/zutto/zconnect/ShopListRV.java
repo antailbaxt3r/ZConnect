@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -82,6 +83,10 @@ public class ShopListRV extends RecyclerView.Adapter<ShopListRV.ViewHolder> {
                     }
                 }
             });
+
+            //changing fonts
+            Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            textView.setTypeface(customFont);
         }
     }
 }
