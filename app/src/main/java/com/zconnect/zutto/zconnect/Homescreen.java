@@ -251,8 +251,8 @@ public class Homescreen extends Fragment {
 
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (isNetworkAvailable(getContext())&&user!=null) {
             mDatabaseStats.addValueEventListener(TotalStats);
             mDatabaseUser.addValueEventListener(UserStats);
@@ -261,9 +261,10 @@ public class Homescreen extends Fragment {
         }
     }
 
+
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         if (user != null) {
             mDatabaseUser.removeEventListener(UserStats);
             mDatabaseStats.removeEventListener(TotalStats);
