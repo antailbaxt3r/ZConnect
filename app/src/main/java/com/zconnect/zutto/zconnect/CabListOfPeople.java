@@ -63,7 +63,8 @@ public class CabListOfPeople extends BaseActivity {
         pool = databaseReference.child(key);
         mAuth = FirebaseAuth.getInstance();
 
-        email = mAuth.getCurrentUser().getEmail();
+        if (mAuth.getCurrentUser() != null)
+            email = mAuth.getCurrentUser().getEmail();
         pool.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,19 +111,21 @@ public class CabListOfPeople extends BaseActivity {
 
             }
         });
-        databaseReference.child("").orderByChild("email").equalTo(mAuth.getCurrentUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                flag = dataSnapshot.getChildrenCount() != 0;
+        if (email != null) {
+            databaseReference.child("").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    flag = dataSnapshot.getChildrenCount() != 0;
 
-                hideProgressDialog();
-            }
+                    hideProgressDialog();
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_cabpeople_progress);
         join = (Button) findViewById(R.id.join);
@@ -148,59 +151,59 @@ public class CabListOfPeople extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (isNetworkAvailable(CabListOfPeople.this)) {
-
-                    if (numberFlag) {
-                        if (flag) {
-                            Snackbar snack = Snackbar.make(join, "Already Joined", Snackbar.LENGTH_LONG);
-                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                        snackBarText.setTextColor(Color.WHITE);
-                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                        snack.show();
-                        } else {
-                            if (name != null && number != null) {
-                                CabListItemFormat cabListItemFormat = new CabListItemFormat();
-                                cabListItemFormat.setName(name);
-                                cabListItemFormat.setPhonenumber(number);
-
-                                ArrayList<CabListItemFormat> cabListItemFormats;
-                                if (cabItemFormat1 != null) {
-                                    cabListItemFormats = cabItemFormat1.getCabListItemFormats();
-                                    cabListItemFormats.add(cabListItemFormat);
-                                    cabItemFormat1.setCabListItemFormats(cabListItemFormats);
-                                    databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);
-                                    Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Snackbar snack = Snackbar.make(join, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
+                    if (email == null) {
+                        if (numberFlag) {
+                            if (flag) {
+                                Snackbar snack = Snackbar.make(join, "Already Joined", Snackbar.LENGTH_LONG);
                                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                 snackBarText.setTextColor(Color.WHITE);
                                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                                 snack.show();
-                            }
-                    }
+                            } else {
+                                if (name != null && number != null) {
+                                    CabListItemFormat cabListItemFormat = new CabListItemFormat();
+                                    cabListItemFormat.setName(name);
+                                    cabListItemFormat.setPhonenumber(number);
 
+                                    ArrayList<CabListItemFormat> cabListItemFormats;
+                                    if (cabItemFormat1 != null) {
+                                        cabListItemFormats = cabItemFormat1.getCabListItemFormats();
+                                        cabListItemFormats.add(cabListItemFormat);
+                                        cabItemFormat1.setCabListItemFormats(cabListItemFormats);
+                                        databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);
+                                        Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Snackbar snack = Snackbar.make(join, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
+                                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                    snackBarText.setTextColor(Color.WHITE);
+                                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                    snack.show();
+                                }
+                            }
+
+                        } else {
+                            showToast("Please enter your contact details to join");
+                            startActivity(new Intent(CabListOfPeople.this, AddContact.class));
+                        }
                     } else {
-                        showToast("Please enter your contact details to join");
-                        startActivity(new Intent(CabListOfPeople.this, AddContact.class));
+                        Snackbar snack = Snackbar.make(join, "No Internet.Try later", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                        snack.show();
+
                     }
                 } else {
-                Snackbar snack = Snackbar.make(join, "No Internet.Try later", Snackbar.LENGTH_LONG);
-                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                snackBarText.setTextColor(Color.WHITE);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                snack.show();
-
-            }
-
+                    showSnack("Please login to join");
+                }
             }
         });
 
 
     }
-
-
 
 
 }
