@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    app:cardCornerRadius="3dp"
-    app:cardUseCompatPadding="true"
-    android:background="@color/gray_holo_light">
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/card"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="10dp"
+                                    android:layout_marginTop="10dp"
+                                    android:background="@color/gray_holo_light"
+                                    app:cardCornerRadius="3dp"
+                                    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,8 +25,8 @@
             <TextView
                 android:id="@+id/source_head"
                 android:layout_width="0dp"
-                android:layout_weight=".4"
                 android:layout_height="wrap_content"
+                android:layout_weight=".4"
                 android:text="From: "
                 android:textSize="20dp"/>
 
@@ -36,8 +36,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".6"
                 android:text="bits"
-                android:textSize="20dp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:textSize="20dp"/>
 
         </LinearLayout>
 
@@ -50,8 +50,8 @@
             <TextView
                 android:id="@+id/destination_head"
                 android:layout_width="0dp"
-                android:layout_weight=".4"
                 android:layout_height="wrap_content"
+                android:layout_weight=".4"
                 android:text="Destination: "
                 android:textSize="20dp"/>
 
@@ -61,8 +61,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".6"
                 android:text="bits"
-                android:textSize="20dp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:textSize="20dp"/>
 
         </LinearLayout>
 
@@ -74,15 +74,15 @@
             <TextView
                 android:id="@+id/date_head"
                 android:layout_width="0dp"
-                android:layout_weight=".4"
                 android:layout_height="wrap_content"
+                android:layout_weight=".4"
                 android:text="Date: "
                 android:textSize="20dp"/>
             <TextView
                 android:id="@+id/date"
                 android:layout_width="0dp"
-                android:layout_weight=".6"
                 android:layout_height="wrap_content"
+                android:layout_weight=".6"
                 android:text="Date"
                 android:textColor="@color/black"
                 android:textSize="20dp" />
@@ -96,48 +96,37 @@
             <TextView
                 android:id="@+id/time_head"
                 android:layout_width="0dp"
-                android:layout_weight=".4"
                 android:layout_height="wrap_content"
+                android:layout_weight=".4"
                 android:text="Time Slot: "
                 android:textSize="20dp"/>
             <TextView
                 android:id="@+id/time_range"
                 android:layout_width="0dp"
-                android:layout_weight=".6"
                 android:layout_height="wrap_content"
+                android:layout_weight=".6"
                 android:text="Time"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="Details"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="List of People"
                 android:background="@drawable/curveradiusgoogle"
-                android:textSize="20dp"
-                android:textColor="@color/white"/>
+                android:text="List of People"
+                android:textColor="@color/white"
+                android:textSize="20dp"/>
         </LinearLayout>
     </LinearLayout>
 
