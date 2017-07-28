@@ -184,7 +184,8 @@
             TagsEditText:tagsCloseImageLeft="@drawable/dot"
             TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
             TagsEditText:tagsTextColor="@color/black"
-            TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
+            TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize"
+            android:visibility="gone"/>
 
     </android.support.design.widget.TextInputLayout>
 

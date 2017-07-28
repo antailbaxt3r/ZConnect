@@ -98,5 +98,7 @@
     <string name="title_activity_cab_list_of_people">CabListOfPeople</string>
     <string name="title_activity_add_cab_pool">AddCabPool</string>
 
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+
 
 </resources>
