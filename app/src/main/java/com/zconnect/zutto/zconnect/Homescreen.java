@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -44,6 +45,7 @@ public class Homescreen extends Fragment {
     FirebaseAuth mAuth;
     String userId;
     GridLayout Grid;
+    ImageView carpool;
     DatabaseReference mDatabaseUser, mDatabaseStats;
     int UserTotalNumbers = 0, TotalNumbers = 0;
     int UserTotalProducts = 0, TotalProducts = 0;
@@ -84,6 +86,16 @@ public class Homescreen extends Fragment {
         StoreRoomStats = (TextView) view.findViewById(R.id.StoreRoomStats);
         StoreRoomName = (TextView) view.findViewById(R.id.StoreRoomName);
         StoreRoomStatement = (TextView) view.findViewById(R.id.StoreRoomStatement);
+
+        carpool = (ImageView) view.findViewById(R.id.cabpool);
+
+        carpool.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CabPooling.class);
+                startActivity(intent);
+            }
+        });
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         final Boolean status = sharedPref.getBoolean("mode", false);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,67 +7,126 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.zconnect.zutto.zconnect.AddCabPool"
-    tools:showIn="@layout/activity_add_cab_pool">
-
-    <com.zconnect.zutto.zconnect.CustomSpinner
-        android:id="@+id/spinner_destination"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/location"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
-        android:prompt="@string/destination_prompt"/>
-
-    <com.zconnect.zutto.zconnect.CustomSpinner
-        android:id="@+id/spinner_source"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner_destination"
-        android:entries="@array/location"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
-        android:prompt="@string/source_prompt"/>
+    tools:showIn="@layout/activity_add_cab_pool"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_margin="20dp">
 
     <TextView
-        android:id="@+id/date"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/spinner_source"
-        android:layout_below="@+id/spinner_source"
-        android:hint="Date"
-        android:textSize="15sp"/>
-
-    <Button
-        android:id="@+id/calender"
+        android:id="@+id/search_for_rides"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/date"
-        android:layout_alignBottom="@+id/date"
-        android:layout_toEndOf="@+id/date"
-        android:text="Calender"/>
+        android:text="CREATE A RIDE"
+        android:paddingTop="10dp"
+        android:paddingBottom="20dp"
+        android:textSize="24dp"
+        android:layout_gravity="center_horizontal"/>
 
-    <com.zconnect.zutto.zconnect.CustomSpinner
-        android:id="@+id/spinner_time"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/calender"
-        android:entries="@array/time"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
-        android:prompt="@string/time_prompt"/>
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/from"
+            android:layout_width="0dp"
+            android:layout_weight=".4"
+            android:layout_height="wrap_content"
+            android:text="From: "
+            android:textSize="20dp"/>
+        <com.zconnect.zutto.zconnect.CustomSpinner
+            android:id="@+id/spinner_source"
+            android:layout_width="0dp"
+            android:layout_weight=".6"
+            android:layout_height="wrap_content"
+            android:entries="@array/location"
+            android:prompt="@string/source_prompt"/>
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/destination"
+            android:layout_width="0dp"
+            android:layout_weight=".4"
+            android:layout_height="wrap_content"
+            android:text="Destination: "
+            android:textSize="20dp"/>
+
+        <com.zconnect.zutto.zconnect.CustomSpinner
+            android:id="@+id/spinner_destination"
+            android:layout_width="0dp"
+            android:layout_weight=".6"
+            android:layout_height="wrap_content"
+            android:entries="@array/location"
+            android:prompt="@string/destination_prompt" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_weight=".4"
+            android:layout_height="wrap_content"
+            android:text="Date: "
+            android:textSize="20dp"/>
+
+
+        <TextView
+            android:id="@+id/calender"
+            android:paddingLeft="8dp"
+            android:layout_width="0dp"
+            android:layout_weight=".6"
+            android:textSize="20dp"
+            android:layout_height="wrap_content"
+            android:text="Click to choose" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/timeslot"
+            android:layout_width="0dp"
+            android:layout_weight=".4"
+            android:layout_height="wrap_content"
+            android:text="Time Slot: "
+            android:textSize="20dp"/>
+
+        <com.zconnect.zutto.zconnect.CustomSpinner
+            android:id="@+id/spinner_time"
+            android:layout_width="0dp"
+            android:layout_weight=".6"
+            android:layout_height="wrap_content"
+            android:entries="@array/time"
+            android:prompt="@string/time_prompt" />
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/done"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner_time"
-        android:layout_centerHorizontal="true"
-        android:text="Add"/>
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:background="@drawable/curveradiusgoogle"
+        android:text="Add" />
 
-</RelativeLayout>
+</LinearLayout>

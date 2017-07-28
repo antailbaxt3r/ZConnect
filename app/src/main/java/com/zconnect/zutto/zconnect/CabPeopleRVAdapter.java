@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,6 +55,12 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
             call = (ImageView) itemView.findViewById(R.id.callbutton);
             name = (TextView) itemView.findViewById(R.id.cab_name);
             number = (TextView) itemView.findViewById(R.id.cab_number);
+
+            Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(),"fonts/Raleway-Medium.ttf");
+            name.setTypeface(customFont);
+
+            Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(),"fonts/Raleway-Light.ttf");
+            number.setTypeface(customFont2);
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
