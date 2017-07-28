@@ -262,10 +262,12 @@
         <activity
             android:name=".CabPooling"
             android:label="@string/title_activity_cab_pooling"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".PoolList"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_pool_list"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -279,6 +281,7 @@
         </activity>
         <activity
             android:name=".CabListOfPeople"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_cab_list_of_people"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

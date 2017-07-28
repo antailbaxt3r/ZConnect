@@ -32,6 +32,7 @@ public class PoolList extends AppCompatActivity {
     Vector<CabItemFormat> cabItemFormatVector = new Vector<>();
     Vector<CabItemFormat> cabItemFormats = new Vector<>();
     CabPoolRVAdapter adapter;
+    ValueEventListener newListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,15 +87,11 @@ public class PoolList extends AppCompatActivity {
         poolrv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         poolrv.setAdapter(adapter);
         query.keepSynced(true);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        query.addValueEventListener(new ValueEventListener() {
+        newListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 defaultmsg.setVisibility(View.INVISIBLE);
                 poolrv.setVisibility(View.VISIBLE);
                 cabItemFormatVector.clear();
@@ -102,22 +99,18 @@ public class PoolList extends AppCompatActivity {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
 
-                     cabItemFormatVector.add(cabItemFormat);
+                    cabItemFormatVector.add(cabItemFormat);
                 }
-
-
-
-
-                    int i;
-                    for(i=0;i<cabItemFormatVector.size();i++){
-                        if (source != null && destination != null && date != null) {
+                int i;
+                for(i=0;i<cabItemFormatVector.size();i++){
+                    if (source != null && destination != null && date != null && cabItemFormatVector != null) {
                         if(cabItemFormatVector.get(i).getSource().equals(source)&&
                                 cabItemFormatVector.get(i).getDestination().equals(destination) &&
                                 cabItemFormatVector.get(i).getDate().equals(date)){
                             cabItemFormats.add(cabItemFormatVector.get(i));
                         }
-                        }
                     }
+                }
                 if (cabItemFormats.isEmpty()) {
                     defaultmsg.setVisibility(View.VISIBLE);
                     poolrv.setVisibility(View.INVISIBLE);
@@ -128,15 +121,25 @@ public class PoolList extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 }
 
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
-
+        };
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        query.addValueEventListener(newListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        query.removeEventListener(newListener);
+    }
 }
