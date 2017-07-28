@@ -141,7 +141,7 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
                             12345
                     );
                 }
-                galleryIntent = intentHandle.getPickImageIntent(getApplicationContext()); //Get intent to create chooser .
+                galleryIntent = intentHandle.getPickImageIntent(AddContact.this); //Get intent to create chooser .
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
@@ -184,11 +184,11 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
 
                 try {
                     mImageUri = result.getUri();
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(AddContact.this.getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    Double ratio = Math.ceil(150000.0 / bitmap.getByteCount());
+                    Double ratio = (150000.0 / bitmap.getByteCount());
                     ratio = ratio < 0.01 ? 0.01 : ratio;
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio * 100.0, 100), out);
 
                     String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 

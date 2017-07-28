@@ -47,10 +47,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/login" />
         <activity
-            android:name=".registerNewUser"
-            android:screenOrientation="portrait"
-            android:theme="@style/login" />
-        <activity
             android:name=".setDetails"
             android:screenOrientation="portrait"
             android:theme="@style/login" />

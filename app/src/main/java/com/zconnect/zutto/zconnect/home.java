@@ -24,6 +24,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -109,6 +110,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+        addImageDialog();
          homescreen = new Homescreen();
         //        Intent called = getIntent();
 //        homescreen = called.hasExtra("type")?new Homescreen("new"):new Homescreen(null);
@@ -450,6 +452,50 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         viewPager.setAdapter(adapter);
     }
 
+    private void addImageDialog() {
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Phonebook");
+        ref.orderByChild("email").equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if ((dataSnapshot.getChildrenCount()) == 0) {
+                    SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
+                    Boolean status = sharedPref.getBoolean("never", false);
+                    if (!status) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(home.this);
+                        builder.setTitle("Hi " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName())
+                                .setMessage("Add your information and get discovered.")
+                                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        startActivity(new Intent(home.this, AddContact.class));
+                                    }
+                                }).setNegativeButton("Later", null)
+                                .setNeutralButton("Lite :", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
+
+                                        SharedPreferences.Editor editInfo = sharedPref.edit();
+                                        editInfo.putBoolean("never", true);
+                                        editInfo.apply();
+                                        editInfo.commit();
+                                    }
+                                })
+                                .setCancelable(false)
+                                .create().show();
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
