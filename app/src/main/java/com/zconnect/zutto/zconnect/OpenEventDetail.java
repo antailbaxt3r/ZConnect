@@ -265,7 +265,7 @@ public class OpenEventDetail extends BaseActivity {
     private void shareEvent(final String image, final Context context) {
 
             try {
-                progressDialog.setMessage("Opening sharing options");
+                progressDialog.setMessage("Loading...");
                 progressDialog.show();
                 //shareIntent.setPackage("com.whatsapp");
                 //Add text and then Image URI
@@ -286,8 +286,12 @@ public class OpenEventDetail extends BaseActivity {
 
                             bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
                                     R.drawable.background_icon_z), bm, context);
+                            String temp = "*Event:* " + event.getEventName()
+                                    + "\n*Venue:* " + event.getVenue()
+                                    + "\n*Date:* " + event.getEventDate()
+                                    + "\n" + event.getEventDescription();
 
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, "An important event @Zconnect ...");
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
                             shareIntent.setType("text/plain");
 
                             path = MediaStore.Images.Media.insertImage(
