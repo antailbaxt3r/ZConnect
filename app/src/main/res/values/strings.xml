@@ -63,11 +63,38 @@
     <string-array name="location">
         <item>Airport</item>
         <item>Madgaon Railway Station</item>
+        <item>Vasco Railway Station</item>
+        <item>Karmali Railway Station</item>
+        <item>Madgaon Bus Stop</item>
+        <item>Panjim Bus Stop</item>
+        <item>Vasco Bus Stop</item>
         <item>Bits</item>
     </string-array>
     <string-array name="time">
-        <item>8:00 to 9:00</item>
-        <item>9:00 to 10:00</item>
+        <item>00:00 to 01:00</item>
+        <item>01:00 to 02:00</item>
+        <item>02:00 to 03:00</item>
+        <item>03:00 to 04:00</item>
+        <item>04:00 to 05:00</item>
+        <item>05:00 to 06:00</item>
+        <item>06:00 to 07:00</item>
+        <item>07:00 to 08:00</item>
+        <item>08:00 to 09:00</item>
+        <item>09:00 to 10:00</item>
+        <item>10:00 to 11:00</item>
+        <item>11:00 to 12:00</item>
+        <item>12:00 to 13:00</item>
+        <item>13:00 to 14:00</item>
+        <item>14:00 to 15:00</item>
+        <item>15:00 to 16:00</item>
+        <item>16:00 to 17:00</item>
+        <item>17:00 to 18:00</item>
+        <item>18:00 to 19:00</item>
+        <item>19:00 to 19:00</item>
+        <item>20:00 to 21:00</item>
+        <item>21:00 to 22:00</item>
+        <item>22:00 to 23:00</item>
+        <item>23:00 to 00:00</item>
     </string-array>
     <string name="hostel_prompt">Choose Hostel</string>
     <string name="destination_prompt">Choose Location</string>
@@ -92,11 +119,12 @@
     <string name="title_activity_shop_detail">Shop_detail</string>
 
     <string name="title_activity_cab_pooling">Cab Pooling</string>
-    <string name="title_activity_pool_list">PoolList</string>
+    <string name="title_activity_pool_list">Pools Available</string>
 
     <string name="title_activity_campus__map">BITS-GOA</string>
-    <string name="title_activity_cab_list_of_people">CabListOfPeople</string>
-    <string name="title_activity_add_cab_pool">AddCabPool</string>
+    <string name="title_activity_cab_list_of_people">Cab Pooled By</string>
+    <string name="title_activity_add_cab_pool">Add Cab Pool</string>
+    <string name="title_activity_my_rides">My Rides</string>
 
 
 </resources>

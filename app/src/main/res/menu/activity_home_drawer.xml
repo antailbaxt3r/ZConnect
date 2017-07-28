@@ -5,7 +5,7 @@
         android:id="@+id/groupMain">
         <item
             android:id="@+id/edit_profile"
-            android:icon="@drawable/account"
+            android:icon="@drawable/ic_person_black_24dp"
             android:title="Edit Profile" />
 
     </group>

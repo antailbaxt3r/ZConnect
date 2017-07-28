@@ -124,21 +124,29 @@ public class AddCabPool extends AppCompatActivity {
             public void onClick(View v) {
                 if (date.getText() != null && source.getSelectedItem() != null && destination.getSelectedItem() != null && time.getSelectedItem() != null) {
                     if (isNetworkAvailable(getApplicationContext())) {
-                        CabListItemFormat cabListItemFormat = new CabListItemFormat();
-                        cabListItemFormat.setName(name);
-                        cabListItemFormat.setPhonenumber(number);
-                        ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
-                        cabListItemFormats.add(cabListItemFormat);
-                        DatabaseReference newPost = databaseReference.push();
-                        String key = newPost.getKey();
-                        newPost.child("key").setValue(key);
-                        newPost.child("source").setValue(String.valueOf(source.getSelectedItem()));
-                        newPost.child("destination").setValue(String.valueOf(destination.getSelectedItem()));
-                        newPost.child("time").setValue(String.valueOf(time.getSelectedItem()));
-                        newPost.child("date").setValue(date.getText().toString());
-                        newPost.child("cabListItemFormats").setValue(cabListItemFormats);
+                        if (name != null && number != null) {
+                            CabListItemFormat cabListItemFormat = new CabListItemFormat();
+                            cabListItemFormat.setName(name);
+                            cabListItemFormat.setPhonenumber(number);
+                            ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
+                            cabListItemFormats.add(cabListItemFormat);
+                            DatabaseReference newPost = databaseReference.push();
+                            String key = newPost.getKey();
+                            newPost.child("key").setValue(key);
+                            newPost.child("source").setValue(String.valueOf(source.getSelectedItem()));
+                            newPost.child("destination").setValue(String.valueOf(destination.getSelectedItem()));
+                            newPost.child("time").setValue(String.valueOf(time.getSelectedItem()));
+                            newPost.child("date").setValue(date.getText().toString());
+                            newPost.child("cabListItemFormats").setValue(cabListItemFormats);
 
-                        startActivity(new Intent(AddCabPool.this, CabPooling.class));
+                            startActivity(new Intent(AddCabPool.this, CabPooling.class));
+                        } else {
+                            Snackbar snack = Snackbar.make(done, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
+                            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            snackBarText.setTextColor(Color.WHITE);
+                            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                            snack.show();
+                        }
                     } else {
                         Snackbar snack = Snackbar.make(done, "No Internet. Try later", Snackbar.LENGTH_LONG);
                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
