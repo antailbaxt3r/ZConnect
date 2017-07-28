@@ -266,7 +266,6 @@
         <activity
             android:name=".PoolList"
             android:label="@string/title_activity_pool_list"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
@@ -293,7 +292,6 @@
             android:label="@string/title_activity_fullscreen"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        </activity>
         <activity
             android:name=".MyRides"
             android:label="@string/title_activity_my_rides"

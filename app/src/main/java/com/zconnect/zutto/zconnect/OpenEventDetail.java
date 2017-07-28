@@ -56,6 +56,8 @@ public class OpenEventDetail extends BaseActivity {
     Toolbar mActionBarToolbar;
     DatabaseReference databaseReference;
 
+    ProgressDialog progressDialog;
+
     Uri screenshotUri;
     String path;
 
@@ -68,6 +70,8 @@ public class OpenEventDetail extends BaseActivity {
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mActionBarToolbar);
+
+        progressDialog=new ProgressDialog(this);
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -246,6 +250,8 @@ public class OpenEventDetail extends BaseActivity {
     private void shareEvent(final String image, final Context context) {
 
             try {
+                progressDialog.setMessage("Opening sharing options");
+                progressDialog.show();
                 //shareIntent.setPackage("com.whatsapp");
                 //Add text and then Image URI
                 Thread thread = new Thread(new Runnable() {
@@ -278,10 +284,12 @@ public class OpenEventDetail extends BaseActivity {
                             shareIntent.setType("image/png");
                             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
+                            progressDialog.dismiss();
                             startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
                             //context.startActivity(shareIntent);
 
                         } catch (Exception e) {
+                            progressDialog.dismiss();
                             e.printStackTrace();
                         }
                     }
@@ -290,6 +298,7 @@ public class OpenEventDetail extends BaseActivity {
                 thread.start();
 
             } catch (android.content.ActivityNotFoundException ex) {
+                progressDialog.dismiss();
                 //ToastHelper.MakeShortText("Whatsapp have not been installed.");
             }
 

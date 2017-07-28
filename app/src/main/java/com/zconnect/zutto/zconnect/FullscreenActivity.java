@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -26,7 +27,7 @@ public class FullscreenActivity extends AppCompatActivity {
     Drawable pageData[]=new Drawable[4];	        //Stores the text to swipe.
     LayoutInflater inflater;	//Used to create individual pages
     ViewPager vp;	            //Reference to class to swipe views
-
+    TabLayout tabLayout;
     Button doneBtn;
 
     @Override
@@ -41,6 +42,8 @@ public class FullscreenActivity extends AppCompatActivity {
         pageData[2]=getResources().getDrawable(R.drawable.events_tut);
         pageData[3]=getResources().getDrawable(R.drawable.storeroom_tut);
 
+        tabLayout = (TabLayout) findViewById(R.id.tabDots);
+
 
         doneBtn=(Button) findViewById(R.id.dummy_button);
         //get an inflater to be used to create single pages
@@ -49,6 +52,8 @@ public class FullscreenActivity extends AppCompatActivity {
         vp=(ViewPager)findViewById(R.id.viewPager);
         //set the adapter that will create the individual pages
         vp.setAdapter(new MyPagesAdapter());
+
+        tabLayout.setupWithViewPager(vp, true);
 
         doneBtn.setVisibility(View.GONE);
 
@@ -64,7 +69,7 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     //Implement PagerAdapter Class to handle individual page creation
-    class MyPagesAdapter extends PagerAdapter {
+    private class MyPagesAdapter extends PagerAdapter {
         @Override
         public int getCount() {
             //Return total pages, here one for each data item
