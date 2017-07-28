@@ -256,7 +256,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM" />
+            android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM"/>
 
         <activity
             android:name=".CabPooling"
@@ -266,8 +266,7 @@
         <activity
             android:name=".PoolList"
             android:label="@string/title_activity_pool_list"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".Campus_Map"
@@ -275,7 +274,7 @@
             android:theme="@style/Map">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zconnect.zutto.zconnect.home" />
+                android:value="com.zconnect.zutto.zconnect.home"/>
         </activity>
         <activity
             android:name=".CabListOfPeople"
@@ -293,13 +292,6 @@
             android:label="@string/title_activity_fullscreen"
             android:theme="@style/AppTheme.NoActionBar"
             />
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity
-            android:name=".AddCabPool"
-            android:label="@string/title_activity_add_cab_pool"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
         <activity
             android:name=".MyRides"
             android:label="@string/title_activity_my_rides"
