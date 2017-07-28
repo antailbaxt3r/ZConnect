@@ -14,10 +14,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -35,7 +35,7 @@ public class setDetails extends BaseActivity {
 
     private static final int GALLERY_REQUEST = 1;
     String downloadUri; //Stores Image Url
-    private ImageButton userProfile;
+    private SimpleDraweeView userProfile;
     private EditText userName;
     private Button submit;
     private Uri mImageUri=null;
@@ -52,7 +52,7 @@ public class setDetails extends BaseActivity {
         String call = getIntent().getStringExtra("caller");
         Toast.makeText(this,call,Toast.LENGTH_LONG).show();
 
-        userProfile = (ImageButton) findViewById(R.id.profileImage);
+        userProfile = (SimpleDraweeView) findViewById(R.id.profileImage);
         userName = (EditText) findViewById(R.id.username);
         submit = (Button) findViewById(R.id.submitDetails);
 
@@ -76,7 +76,7 @@ public class setDetails extends BaseActivity {
         userProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(intentHandle.getPickImageIntent(setDetails.this));
+                startActivityForResult(intentHandle.getPickImageIntent(setDetails.this), GALLERY_REQUEST);
 
             }
         });
@@ -121,7 +121,7 @@ public class setDetails extends BaseActivity {
                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
                 snack.show();
             } else {
-                final StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
+                final StorageReference filePath = mStorageProfile.child(mAuth.getCurrentUser().getUid());
                 mProgress.show();
                 filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override

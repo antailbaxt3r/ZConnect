@@ -42,7 +42,6 @@ public class logIn extends BaseActivity {
     private static final String TAG = "EmailPassword";
     boolean doubleBackToExitPressedOnce = false;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
     private ProgressDialog mProgress;
     private Button mGoogleSignIn;
@@ -55,41 +54,10 @@ public class logIn extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mGuestLogIn = (Button)findViewById(R.id.guestLogIn);
-        mGuestLogIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                guestLogIn(true);
-
-                Intent loginIntent = new Intent(logIn.this, home.class);
-                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(loginIntent);
-
-            }
-        });
-        mGoogleSignIn = (Button) findViewById(R.id.GoogleSignIn);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
         mProgress = new ProgressDialog(this);
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() != null) {
-                    if (firebaseAuth.getCurrentUser().getEmail().toString().endsWith("@goa.bits-pilani.ac.in")) {
-                        checkUser();
-                    } else {
 
-                        logout();
-                        mProgress.dismiss();
-                        Toast.makeText(logIn.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        };
 
 
         // Configure Google Sign In
@@ -107,6 +75,34 @@ public class logIn extends BaseActivity {
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            if (mAuth.getCurrentUser().getEmail() != null && mAuth.getCurrentUser().getEmail().endsWith("@goa.bits-pilani.ac.in")) {
+                checkUser();
+            } else {
+                logout();
+                mProgress.dismiss();
+                Toast.makeText(logIn.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
+            }
+        }
+        mGuestLogIn = (Button) findViewById(R.id.guestLogIn);
+        mGuestLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                guestLogIn(true);
+
+                Intent loginIntent = new Intent(logIn.this, home.class);
+                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(loginIntent);
+
+            }
+        });
+        mGoogleSignIn = (Button) findViewById(R.id.GoogleSignIn);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 
         mGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,6 +208,14 @@ public class logIn extends BaseActivity {
                             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                             snack.show();
                             mProgress.dismiss();
+                        } else {
+                            if (FirebaseAuth.getInstance().getCurrentUser().getEmail().endsWith("@goa.bits-pilani.ac.in")) {
+                                checkUser();
+                            } else {
+                                logout();
+                                mProgress.dismiss();
+                                Toast.makeText(logIn.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
+                            }
                         }
 //                        else {
 //                         mProgress.dismiss();
@@ -238,20 +242,18 @@ public class logIn extends BaseActivity {
     public void onStart() {
         super.onStart();
         guestLogIn(false);
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
+
     }
-public boolean isNetworkAvailable(final Context context) {
-    final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-    return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
-}
+
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
 //    private void startLogin(){
 //
 //        String email = emailText.getText().toString().trim();
