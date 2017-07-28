@@ -235,16 +235,14 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/infone_search_widget_info" />
         </receiver>
-        <receiver android:name=".BaseActivity$networkStatereceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
+
 
         <activity
             android:name=".Offers"
             android:label="@string/title_activity_offers"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity
             android:name=".Shop_detail"
             android:label="@string/title_activity_shop_detail"
@@ -288,8 +286,8 @@
         <activity
             android:name=".FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_fullscreen"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
