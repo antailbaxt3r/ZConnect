@@ -121,7 +121,7 @@ public class setDetails extends BaseActivity {
                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
                 snack.show();
             } else {
-                final StorageReference filePath = mStorageProfile.child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
+                final StorageReference filePath = mStorageProfile.child(mAuth.getCurrentUser().getUid());
                 mProgress.show();
                 filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override

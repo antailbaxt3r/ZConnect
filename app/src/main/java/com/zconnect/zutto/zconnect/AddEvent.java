@@ -157,7 +157,7 @@ public class AddEvent extends BaseActivity {
                             12345
                     );
                 }
-                Intent galleryIntent = intentHandle.getPickImageIntent(getApplicationContext());
+                Intent galleryIntent = intentHandle.getPickImageIntent(AddEvent.this);
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }

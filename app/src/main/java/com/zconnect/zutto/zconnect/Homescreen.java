@@ -4,14 +4,12 @@ import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +24,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 
 public class Homescreen extends Fragment {
@@ -181,7 +178,6 @@ public class Homescreen extends Fragment {
 
                 }
             };
-            addContactOption();
         }
 
         //changing fonts
@@ -200,54 +196,6 @@ public class Homescreen extends Fragment {
         StoreRoomStatement.setTypeface(ralewayExtraLight);
         return view;
     }
-
-    void  addContactOption() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Phonebook");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Boolean exists = false;
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
-
-                    if (mAuth.getCurrentUser().getEmail()!=null&&phonebookDisplayItem.getEmail()!=null&&phonebookDisplayItem.getEmail().equals(mAuth.getCurrentUser().getEmail())) {
-                        exists= true;
-                    }
-
-                }
-                if (!exists)
-                {
-                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
-                    alertBuilder.setCancelable(true);
-                    alertBuilder.setTitle("Add your contact");
-                    alertBuilder.setMessage("Welcome to ZConnect! , Add your contact on ZConnect");
-                    alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent addContact = new Intent(getContext(), AddContact.class);
-                            addContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(addContact);
-                        }
-                    });
-                    alertBuilder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-                    AlertDialog alert = alertBuilder.create();
-                    alert.show();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        }
 
 
     @Override

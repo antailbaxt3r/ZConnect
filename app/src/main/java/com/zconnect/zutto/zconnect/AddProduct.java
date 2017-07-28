@@ -119,7 +119,7 @@ public class AddProduct extends BaseActivity {
                             12345
                     );
                 }
-                galleryIntent = intentHandle.getPickImageIntent(getApplicationContext());
+                galleryIntent = intentHandle.getPickImageIntent(AddProduct.this);
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
@@ -136,6 +136,46 @@ public class AddProduct extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_product, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+            Uri imageUri = intentHandle.getPickImageResultUri(data); //Get data
+            CropImage.activity(imageUri)
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .start(this);
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+
+                try {
+                    mImageUri = result.getUri();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+                    Double ratio = (250000.0 / bitmap.getByteCount());
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio * 100.0, 100), out);
+                    String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+
+                    mImageUri = Uri.parse(path);
+                    mAddImage.setImageURI(mImageUri);
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+
     }
 
     @Override
@@ -253,45 +293,7 @@ public class AddProduct extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-
-        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
-            CropImage.activity(imageUri)
-                    .setCropShape(CropImageView.CropShape.RECTANGLE)
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .start(this);
-        }
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-
-                try {
-                    mImageUri = result.getUri();
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-                    Double ratio = (250000.0 / bitmap.getByteCount());
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio * 100.0, 100), out);
-                    String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
-
-                    mImageUri = Uri.parse(path);
-                    mAddImage.setImageURI(mImageUri);
-
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-            }
-        }
-
-    }
     @Override
     public void onBackPressed() {
         //super.onBackPressed();

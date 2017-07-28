@@ -10,19 +10,21 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class logoFlash extends AppCompatActivity {
+public class logoFlash extends BaseActivity {
 
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +35,6 @@ public class logoFlash extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         handlePermission();
     }
-
-
-
-
-
-
-
-
 
 
     public boolean checkPermission()
@@ -101,12 +95,28 @@ public class logoFlash extends AppCompatActivity {
     void openHome() {
         new Timer().schedule(new TimerTask() {
             public void run() {
-                mAuth = FirebaseAuth.getInstance();
-                if(mAuth.getCurrentUser()!=null){
-                    Intent intent = new Intent(logoFlash.this, home.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    FirebaseDatabase.getInstance().getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                Intent intent = new Intent(logoFlash.this, home.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Intent intent = new Intent(logoFlash.this, setDetails.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            showToast("Internet available , try again");
+                        }
+                    });
                 } else {
                     Intent intent = new Intent(logoFlash.this, logIn.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -114,7 +124,7 @@ public class logoFlash extends AppCompatActivity {
                     finish();
                 }
             }
-        }, 2800);
+        }, 1700);
     }
 
     void handlePermission() {
