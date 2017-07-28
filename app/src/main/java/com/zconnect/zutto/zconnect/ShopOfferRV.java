@@ -61,8 +61,8 @@ public class ShopOfferRV extends RecyclerView.Adapter<ShopOfferRV.ViewHolder> {
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.offerImage);
 
             //changing fonts
-            Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "font/Raleway-Regular.ttf");
-            Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "font/Raleway-Light.ttf");
+            Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
             title.setTypeface(customFont);
             desc.setTypeface(customFont2);
         }

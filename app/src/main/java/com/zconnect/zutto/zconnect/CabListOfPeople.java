@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -114,6 +115,8 @@ public class CabListOfPeople extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_cabpeople_progress);
         join = (Button) findViewById(R.id.join);
+        Typeface customFont = Typeface.createFromAsset(getAssets(),"fonts/Raleway-Light.ttf");
+        join.setTypeface(customFont);
         adapter = new CabPeopleRVAdapter(this, cabListItemFormatVector);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
