@@ -19,7 +19,7 @@ import java.util.Vector;
 
 public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.ViewHolder> {
     Context context;
-    Vector<CabItemFormat>cabItemFormats;
+    Vector<CabItemFormat> cabItemFormats;
 
     public CabPoolRVAdapter(Context context, Vector<CabItemFormat> cabItemFormats) {
         this.context = context;
@@ -46,6 +46,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     public int getItemCount() {
         return cabItemFormats.size();
     }
+
     class ViewHolder extends RecyclerView.ViewHolder {
        TextView source,destination,details,time,date;
         String key;

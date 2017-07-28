@@ -12,14 +12,15 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <TextView
             android:id="@+id/noitems"
-            android:paddingTop="40dp"
-            android:textSize="20dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
-            android:text="No shortlisted items"/>
+            android:paddingTop="40dp"
+            android:text="No shortlisted items"
+            android:textSize="20dp" />
 
     </RelativeLayout>
 

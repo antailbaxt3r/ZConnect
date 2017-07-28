@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:TagsEditText="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:TagsEditText="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_phonebook_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -48,7 +48,8 @@
             android:text=""
             android:textColor="@android:color/black" />
     </android.support.design.widget.TextInputLayout>
-    <requestFocus/>
+
+    <requestFocus />
 
     <ImageView
         android:id="@+id/callbutton"
@@ -164,27 +165,26 @@
         android:paddingRight="16dp"
         android:paddingStart="16dp">
 
-    <mabbas007.tagsedittext.TagsEditText
-        android:id="@+id/contact_details_editText_skills"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/contact_details_desc_text_input_layout"
-        android:hint="Skills"
-        android:inputType="text"
-        android:text=""
-        android:textColor="@android:color/black"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginTop="8dp"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        TagsEditText:allowSpaceInTag="true"
-        TagsEditText:tagsBackground="@drawable/square"
-        TagsEditText:tagsCloseImageLeft="@drawable/dot"
-        TagsEditText:tagsTextColor="@color/black"
-        TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize"
-        TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
-        />
+        <mabbas007.tagsedittext.TagsEditText
+            android:id="@+id/contact_details_editText_skills"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/contact_details_desc_text_input_layout"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="8dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="Skills"
+            android:inputType="text"
+            android:text=""
+            android:textColor="@android:color/black"
+            TagsEditText:allowSpaceInTag="true"
+            TagsEditText:tagsBackground="@drawable/square"
+            TagsEditText:tagsCloseImageLeft="@drawable/dot"
+            TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
+            TagsEditText:tagsTextColor="@color/black"
+            TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
 
     </android.support.design.widget.TextInputLayout>
 

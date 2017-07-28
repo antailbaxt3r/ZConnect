@@ -285,7 +285,7 @@ public class AddEvent extends BaseActivity {
                         newPost2.child("desc2").setValue(eventDate);
 
                         // Adding stats
-
+                        CounterManager.addEventVerified(key, eventNameValue);
                         mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -318,6 +318,8 @@ public class AddEvent extends BaseActivity {
                         newPost.child("Key").setValue(newPost.getKey());
                         newPost.child("log").setValue(latLng.longitude);
                         newPost.child("lat").setValue(latLng.latitude);
+
+                        CounterManager.addEventUnVerified(key, eventNameValue);
                     }
 
                     mProgress.dismiss();
@@ -362,8 +364,8 @@ public class AddEvent extends BaseActivity {
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
             CropImage.activity(imageUri)
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setSnapRadius(2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -372,24 +374,12 @@ public class AddEvent extends BaseActivity {
 
                 try {
                     mImageUri = result.getUri();
-                    Bitmap bitmap2 = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap2.compress(Bitmap.CompressFormat.JPEG, 60, out);
-                    final int maxSize = 1000;
-                    int outWidth;
-                    int outHeight;
-                    int inWidth = bitmap2.getWidth();
-                    int inHeight = bitmap2.getHeight();
-                    if (inWidth > inHeight) {
-                        outWidth = maxSize;
-                        outHeight = (inHeight * maxSize) / inWidth;
-                    } else {
-                        outHeight = maxSize;
-                        outWidth = (inWidth * maxSize) / inHeight;
-                    }
 
-                    Bitmap bitmap = Bitmap.createScaledBitmap(bitmap2, outWidth, outHeight, true);
-                    String path = MediaStore.Images.Media.insertImage(AddEvent.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+                    Double ratio = Math.ceil(250000.0 / bitmap.getByteCount());
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
+                    String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     mAddImage.setImageURI(mImageUri);

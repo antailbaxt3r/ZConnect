@@ -3,7 +3,6 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,13 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -61,7 +58,7 @@ public class ReservedTab extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_reserved_tab, container, false);
-        noitems = (TextView)view.findViewById(R.id.noitems);
+        noitems = (TextView) view.findViewById(R.id.noitems);
 
         mProductList = (RecyclerView) view.findViewById(R.id.reservedProductList);
         mProductList.setHasFixedSize(true);
@@ -82,10 +79,9 @@ public class ReservedTab extends Fragment {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren())
-                {
+                if (dataSnapshot.hasChildren()) {
                     noitems.setVisibility(View.GONE);
-                }else {
+                } else {
                     noitems.setVisibility(View.VISIBLE);
                 }
             }
@@ -111,7 +107,7 @@ public class ReservedTab extends Fragment {
                 query
         ) {
             @Override
-            protected void populateViewHolder(final ProductViewHolder viewHolder, Product model, int position) {
+            protected void populateViewHolder(final ProductViewHolder viewHolder, final Product model, int position) {
 
                 final String product_key = getRef(position).getKey();
 
@@ -121,13 +117,13 @@ public class ReservedTab extends Fragment {
                 viewHolder.setImage(getContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
-                viewHolder.setSellerNumber(model.getPhone_no(), getContext());
+                viewHolder.setSellerNumber(model.getPhone_no(), getContext(), model.getCategory());
 //                }else {
 //               }
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        CounterManager.StoroomShortListDelete(model.getCategory());
                         viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key + "/UsersReserved");
 
                         mAuth = FirebaseAuth.getInstance();
@@ -224,11 +220,12 @@ public class ReservedTab extends Fragment {
 
         }
 
-        public void setSellerNumber(final String sellerNumber, final Context ctx) {
+        public void setSellerNumber(final String sellerNumber, final Context ctx, final String category) {
             Button post_seller_number = (Button) mView.findViewById(R.id.sellerNumber);
             post_seller_number.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CounterManager.StoroomCall(category);
                     ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });
