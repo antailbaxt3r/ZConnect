@@ -47,10 +47,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/login" />
         <activity
-            android:name=".registerNewUser"
-            android:screenOrientation="portrait"
-            android:theme="@style/login" />
-        <activity
             android:name=".setDetails"
             android:screenOrientation="portrait"
             android:theme="@style/login" />
@@ -288,8 +284,8 @@
         <activity
             android:name=".FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_fullscreen"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity

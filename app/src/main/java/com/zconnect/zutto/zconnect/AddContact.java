@@ -183,12 +183,12 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
 
 
                 try {
-                    mImageUri = result.getUri();
+                    mImageUri = intentHandle.getPickImageResultUri(data);
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    Double ratio = Math.ceil(150000.0 / bitmap.getByteCount());
+                    Double ratio = (150000.0 / bitmap.getByteCount());
                     ratio = ratio < 0.01 ? 0.01 : ratio;
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio * 100.0, 100), out);
 
                     String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
