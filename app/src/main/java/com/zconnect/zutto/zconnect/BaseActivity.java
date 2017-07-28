@@ -236,6 +236,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public class networkStatereceiver extends BroadcastReceiver {
+        public networkStatereceiver() {
+        }
+
         @Override
         public void onReceive(Context context, Intent intent) {
             isNetworkAvailable(BaseActivity.this);
