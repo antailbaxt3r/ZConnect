@@ -46,6 +46,7 @@ public class CabListOfPeople extends AppCompatActivity {
     CabItemFormat cabItemFormat, cabItemFormat1;
     CabPeopleRVAdapter adapter;
     private FirebaseAuth mAuth;
+    private Boolean flag=false;
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
 
@@ -80,6 +81,7 @@ public class CabListOfPeople extends AppCompatActivity {
         } catch (Exception e) {
 
         }
+        flag=false;
         pool = FirebaseDatabase.getInstance().getReference().child("Cab").child(key);
         mAuth = FirebaseAuth.getInstance();
         ref.addValueEventListener(new ValueEventListener() {
@@ -92,8 +94,11 @@ public class CabListOfPeople extends AppCompatActivity {
                         if (phonebookDisplayItem.getEmail().equals(email)) {
                             name = phonebookDisplayItem.getName();
                             number = phonebookDisplayItem.getNumber();
-
                         }
+                    }
+                    if (phonebookDisplayItem.getEmail().equals(mAuth.getCurrentUser().getEmail()))
+                    {
+                        flag=true;
                     }
 
                 }
@@ -114,30 +119,38 @@ public class CabListOfPeople extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(adapter);
         pool.keepSynced(true);
+
+        pool.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                cabItemFormat1 = dataSnapshot.getValue(CabItemFormat.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                progressBar.setVisibility(INVISIBLE);
+            }
+        });
+
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isNetworkAvailable(getApplicationContext())) {
+            if (isNetworkAvailable(getApplicationContext())) {
+
+                if(flag){
+                    Toast.makeText(CabListOfPeople.this, "Already Joined", Toast.LENGTH_SHORT).show();
+                }else {
+
                     CabListItemFormat cabListItemFormat = new CabListItemFormat();
                     cabListItemFormat.setName(name);
                     cabListItemFormat.setPhonenumber(number);
-                    pool.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            cabItemFormat1 = dataSnapshot.getValue(CabItemFormat.class);
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            progressBar.setVisibility(INVISIBLE);
-                        }
-                    });
                     ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
                     if (cabItemFormat1 != null) {
                         cabListItemFormats = cabItemFormat1.getCabListItemFormats();
-                    cabListItemFormats.add(cabListItemFormat);
-                    cabItemFormat1.setCabListItemFormats(cabListItemFormats);
-                    databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);
+                        cabListItemFormats.add(cabListItemFormat);
+                        cabItemFormat1.setCabListItemFormats(cabListItemFormats);
+                        databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);
                         Intent intent = new Intent(CabListOfPeople.this, CabPooling.class);
                         finish();
                         startActivity(intent);
@@ -145,14 +158,16 @@ public class CabListOfPeople extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Snackbar snack = Snackbar.make(join, "No Internet.Try later", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                    snack.show();
-
                 }
+
+            } else {
+                Snackbar snack = Snackbar.make(join, "No Internet.Try later", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.show();
+
+            }
 
             }
         });

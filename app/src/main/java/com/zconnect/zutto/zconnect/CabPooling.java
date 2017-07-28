@@ -2,13 +2,17 @@ package com.zconnect.zutto.zconnect;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -18,9 +22,9 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 public class CabPooling extends AppCompatActivity {
-    Button done, calender;
+    Button done;
     CustomSpinner source, destination, time;
-    TextView date;
+    TextView calender;
     int year, month, day;
 
     @Override
@@ -54,8 +58,8 @@ public class CabPooling extends AppCompatActivity {
         destination = (CustomSpinner) findViewById(R.id.spinner_destination);
         time = (CustomSpinner) findViewById(R.id.spinner_time);
         done = (Button) findViewById(R.id.done);
-        date = (TextView) findViewById(R.id.date);
-        calender = (Button) findViewById(R.id.calender);
+
+        calender = (TextView) findViewById(R.id.calender);
         calender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +74,7 @@ public class CabPooling extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                date.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                calender.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
 
                             }
                         }, year, month, day);
@@ -78,12 +82,15 @@ public class CabPooling extends AppCompatActivity {
 
             }
         });
+
+
+
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (date.getText() != null && source.getSelectedItem() != null && destination.getSelectedItem() != null && time.getSelectedItem() != null) {
+                if (calender.getText() != null && source.getSelectedItem() != null && destination.getSelectedItem() != null && time.getSelectedItem() != null) {
                     Intent intent = new Intent(CabPooling.this, PoolList.class);
-                    intent.putExtra("date", date.getText().toString());
+                    intent.putExtra("date", calender.getText().toString());
                     intent.putExtra("source", String.valueOf(source.getSelectedItem()));
                     intent.putExtra("destination", String.valueOf(destination.getSelectedItem()));
                     intent.putExtra("time", String.valueOf(time.getSelectedItem()));
@@ -99,6 +106,51 @@ public class CabPooling extends AppCompatActivity {
                 }
             }
         });
+
+        Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
+        Typeface customFont2 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        done.setTypeface(customFont2);
+        calender.setTypeface(customFont2);
+
+        TextView from = (TextView)findViewById(R.id.from);
+        TextView destination = (TextView)findViewById(R.id.destination);
+        TextView date = (TextView)findViewById(R.id.date);
+        TextView timeslot = (TextView)findViewById(R.id.timeslot);
+        TextView search_for_rides = (TextView)findViewById(R.id.search_for_rides);
+        from.setTypeface(customFont);
+        destination.setTypeface(customFont);
+        date.setTypeface(customFont);
+        timeslot.setTypeface(customFont);
+        search_for_rides.setTypeface(customFont);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the Menu; this adds items to the action bar if it is present.
+        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+        if (!status){
+            getMenuInflater().inflate(R.menu.myrides, menu);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.rides) {
+            startActivity(new Intent(CabPooling.this, MyProducts.class));
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }
