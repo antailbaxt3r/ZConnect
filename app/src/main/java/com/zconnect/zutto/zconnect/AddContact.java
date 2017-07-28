@@ -39,7 +39,6 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -184,17 +183,18 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
 
                 try {
                     mImageUri = result.getUri();
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(AddContact.this.getContentResolver(), mImageUri);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    Double ratio = (150000.0 / bitmap.getByteCount());
-                    ratio = ratio < 0.01 ? 0.01 : ratio;
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio * 100.0, 100), out);
+                    image.setImageURI(mImageUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
 
+                    if (bitmap.getByteCount() > 250000) {
+
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+                    }
                     String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     image.setImageURI(mImageUri);
-
 
                 } catch (IOException e) {
                     e.printStackTrace();

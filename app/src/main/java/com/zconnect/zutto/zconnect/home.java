@@ -110,7 +110,8 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        addImageDialog();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null)
+            addImageDialog();
          homescreen = new Homescreen();
         //        Intent called = getIntent();
 //        homescreen = called.hasExtra("type")?new Homescreen("new"):new Homescreen(null);
