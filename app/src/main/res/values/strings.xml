@@ -126,5 +126,7 @@
     <string name="title_activity_add_cab_pool">Add Cab Pool</string>
     <string name="title_activity_my_rides">My Rides</string>
 
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+
 
 </resources>

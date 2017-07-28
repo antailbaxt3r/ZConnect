@@ -1,0 +1,63 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context="com.zconnect.zutto.zconnect.FullscreenActivity">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+    <!--<TextView
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:keepScreenOn="true"
+        android:text="thoda sa gyan"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textAllCaps="true"
+         />-->
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+        <TextView
+            android:id="@+id/fullscreen_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:keepScreenOn="true"
+            android:text="thoda sa gyan"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textAllCaps="true"
+            android:fontFamily="sans-serif-light"/>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/dummy_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="done"
+                android:textSize="15sp"
+                android:textColor="@color/white"
+                android:background="@color/colorPrimary"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="2dp"
+                android:fontFamily="sans-serif-light"
+                />
+
+    </FrameLayout>
+
+</FrameLayout>
