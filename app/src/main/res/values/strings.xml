@@ -123,7 +123,8 @@
 
     <string name="title_activity_campus__map">BITS-GOA</string>
     <string name="title_activity_cab_list_of_people">Cab Pooled By</string>
-    <string name="title_activity_add_cab_pool">Add CabPool</string>
+    <string name="title_activity_add_cab_pool">Add Cab Pool</string>
+    <string name="title_activity_my_rides">My Rides</string>
 
 
 </resources>

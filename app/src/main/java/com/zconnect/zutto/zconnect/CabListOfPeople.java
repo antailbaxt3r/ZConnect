@@ -138,9 +138,13 @@ public class CabListOfPeople extends AppCompatActivity {
             if (isNetworkAvailable(getApplicationContext())) {
 
                 if(flag){
-                    Toast.makeText(CabListOfPeople.this, "Already Joined", Toast.LENGTH_SHORT).show();
+                    Snackbar snack = Snackbar.make(join, "Already Joined", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                    snack.show();
                 }else {
-
+                    if (name != null && number != null) {
                     CabListItemFormat cabListItemFormat = new CabListItemFormat();
                     cabListItemFormat.setName(name);
                     cabListItemFormat.setPhonenumber(number);
@@ -157,6 +161,13 @@ public class CabListOfPeople extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
+                    }
+                    } else {
+                        Snackbar snack = Snackbar.make(join, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                        snack.show();
                     }
                 }
 

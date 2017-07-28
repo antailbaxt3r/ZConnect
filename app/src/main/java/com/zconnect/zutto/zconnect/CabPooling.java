@@ -129,7 +129,6 @@ public class CabPooling extends AppCompatActivity {
         // Inflate the Menu; this adds items to the action bar if it is present.
         SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
-
         if (!status){
             getMenuInflater().inflate(R.menu.myrides, menu);
             return true;
@@ -147,7 +146,7 @@ public class CabPooling extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.rides) {
-            startActivity(new Intent(CabPooling.this, MyProducts.class));
+            startActivity(new Intent(CabPooling.this, MyRides.class));
         }
 
         return super.onOptionsItemSelected(item);

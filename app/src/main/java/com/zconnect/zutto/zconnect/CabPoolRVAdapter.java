@@ -37,7 +37,6 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     @Override
     public void onBindViewHolder(CabPoolRVAdapter.ViewHolder holder, int position) {
         holder.date.setText(cabItemFormats.get(position).getDate());
-        holder.details.setText(cabItemFormats.get(position).getDetails());
         holder.destination.setText(cabItemFormats.get(position).getDestination());
         holder.source.setText(cabItemFormats.get(position).getSource());
         holder.time.setText(cabItemFormats.get(position).getTime());
@@ -56,7 +55,6 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             super(itemView);
             source =(TextView)itemView.findViewById(R.id.source);
             destination =(TextView)itemView.findViewById(R.id.destination);
-            details=(TextView)itemView.findViewById(R.id.details);
             time=(TextView)itemView.findViewById(R.id.time_range);
             date=(TextView)itemView.findViewById(R.id.date);
             list_people = (Button) itemView.findViewById(R.id.list);
@@ -75,7 +73,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
             source.setTypeface(customFont2);
             destination.setTypeface(customFont2);
-            details.setTypeface(customFont2);
+//            details.setTypeface(customFont2);
             time.setTypeface(customFont2);
             date.setTypeface(customFont2);
             list_people.setTypeface(customFont2);
