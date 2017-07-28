@@ -28,7 +28,6 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class setDetails extends BaseActivity {
@@ -181,17 +180,18 @@ public class setDetails extends BaseActivity {
 
                 try {
                     mImageUri = result.getUri();
+                    userProfile.setImageURI(mImageUri);
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    Double ratio = Math.ceil(150000.0 / bitmap.getByteCount());
-                    ratio = ratio < 0.01 ? 0.01 : ratio;
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio, 100), out);
+                    Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
 
+                    if (bitmap.getByteCount() > 250000) {
+
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+                    }
                     String path = MediaStore.Images.Media.insertImage(setDetails.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     userProfile.setImageURI(mImageUri);
-
 
                 } catch (IOException e) {
                     e.printStackTrace();

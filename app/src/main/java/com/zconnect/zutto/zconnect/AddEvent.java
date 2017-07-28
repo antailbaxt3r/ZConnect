@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.location.places.Place;
@@ -46,7 +45,6 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -63,7 +61,7 @@ public class AddEvent extends BaseActivity {
     boolean flag = false;
     DatabaseReference mFeaturesStats;
     private Uri mImageUri = null;
-    private SimpleDraweeView mAddImage;
+    private ImageView mAddImage;
     private EditText mEventName;
     private EditText mEventDescription;
     private EditText mVenue;
@@ -126,7 +124,7 @@ public class AddEvent extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        mAddImage = (SimpleDraweeView) findViewById(R.id.imageButton);
+        mAddImage = (ImageView) findViewById(R.id.imageButton);
         mEventName = (EditText) findViewById(R.id.name);
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
@@ -158,7 +156,6 @@ public class AddEvent extends BaseActivity {
                     );
                 }
                 Intent galleryIntent = intentHandle.getPickImageIntent(AddEvent.this);
-                startActivityForResult(galleryIntent, GALLERY_REQUEST);
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
@@ -376,15 +373,16 @@ public class AddEvent extends BaseActivity {
                 try {
                     mImageUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
 
-                    Double ratio = (250000.0 / bitmap.getByteCount());
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio * 100.0, 100), out);
-                    String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+                    if (bitmap.getByteCount() > 350000) {
+
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), false);
+                    }
+                    String path = MediaStore.Images.Media.insertImage(AddEvent.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     mAddImage.setImageURI(mImageUri);
-
 
                 } catch (IOException e) {
                     e.printStackTrace();

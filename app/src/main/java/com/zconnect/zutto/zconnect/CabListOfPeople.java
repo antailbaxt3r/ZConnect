@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -9,12 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,7 +32,7 @@ import java.util.Vector;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-public class CabListOfPeople extends AppCompatActivity {
+public class CabListOfPeople extends BaseActivity {
     RecyclerView recyclerView;
     ProgressBar progressBar;
     DatabaseReference pool;
@@ -47,7 +43,7 @@ public class CabListOfPeople extends AppCompatActivity {
     CabItemFormat cabItemFormat, cabItemFormat1;
     CabPeopleRVAdapter adapter;
     private FirebaseAuth mAuth;
-    private Boolean flag=false;
+    private Boolean flag = false, numberFlag = false;
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
 
@@ -55,63 +51,84 @@ public class CabListOfPeople extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cab_list_of_people);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onBackPressed();
-                }
-            });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
+        setToolbar();
+        setToolbarTitle("List of people");
+        showBackButton();
+        setSupportActionBar(getToolbar());
+        showProgressDialog();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
         try {
             key = getIntent().getStringExtra("key");
         } catch (Exception e) {
-
+            finish();
         }
         flag=false;
-        pool = FirebaseDatabase.getInstance().getReference().child("Cab").child(key);
+        pool = databaseReference.child(key);
         mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() != null)
+            email = mAuth.getCurrentUser().getEmail();
+        pool.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressBar.setVisibility(VISIBLE);
+                join.setVisibility(INVISIBLE);
+                cabListItemFormatVector.clear();
+
+
+                cabItemFormat = dataSnapshot.getValue(CabItemFormat.class);
+
+                cabListItemFormatVector.addAll(cabItemFormat.getCabListItemFormats());
+                adapter.notifyDataSetChanged();
+                join.setVisibility(VISIBLE);
+                progressBar.setVisibility(INVISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                progressBar.setVisibility(INVISIBLE);
+            }
+        });
+
+
+
+
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
                     PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
                     if (email != null) {
                         if (phonebookDisplayItem.getEmail().equals(email)) {
                             name = phonebookDisplayItem.getName();
                             number = phonebookDisplayItem.getNumber();
+                            numberFlag = true;
                         }
-                    }
-                    if (phonebookDisplayItem.getEmail().equals(mAuth.getCurrentUser().getEmail()))
-                    {
-                        flag=true;
                     }
 
                 }
 
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+        if (email != null) {
+            databaseReference.child("").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    flag = dataSnapshot.getChildrenCount() != 0;
 
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_cabpeople_progress);
         join = (Button) findViewById(R.id.join);
@@ -138,86 +155,60 @@ public class CabListOfPeople extends AppCompatActivity {
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if (isNetworkAvailable(getApplicationContext())) {
+                if (isNetworkAvailable(CabListOfPeople.this)) {
+                    if (email == null) {
+                        if (numberFlag) {
+                            if (flag) {
+                                Snackbar snack = Snackbar.make(join, "Already Joined", Snackbar.LENGTH_LONG);
+                                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                snackBarText.setTextColor(Color.WHITE);
+                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                snack.show();
+                            } else {
+                                if (name != null && number != null) {
+                                    CabListItemFormat cabListItemFormat = new CabListItemFormat();
+                                    cabListItemFormat.setName(name);
+                                    cabListItemFormat.setPhonenumber(number);
 
-                if(flag){
-                    Snackbar snack = Snackbar.make(join, "Already Joined", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                    snack.show();
-                }else {
-                    if (name != null && number != null) {
-                    CabListItemFormat cabListItemFormat = new CabListItemFormat();
-                    cabListItemFormat.setName(name);
-                    cabListItemFormat.setPhonenumber(number);
+                                    ArrayList<CabListItemFormat> cabListItemFormats;
+                                    if (cabItemFormat1 != null) {
+                                        cabListItemFormats = cabItemFormat1.getCabListItemFormats();
+                                        cabListItemFormats.add(cabListItemFormat);
+                                        cabItemFormat1.setCabListItemFormats(cabListItemFormats);
+                                        databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);
+                                        Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Snackbar snack = Snackbar.make(join, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
+                                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                    snackBarText.setTextColor(Color.WHITE);
+                                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                    snack.show();
+                                }
+                            }
 
-                    ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
-                    if (cabItemFormat1 != null) {
-                        cabListItemFormats = cabItemFormat1.getCabListItemFormats();
-                        cabListItemFormats.add(cabListItemFormat);
-                        cabItemFormat1.setCabListItemFormats(cabListItemFormats);
-                        databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);
-                        Intent intent = new Intent(CabListOfPeople.this, CabPooling.class);
-                        finish();
-                        startActivity(intent);
-                        Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
+                        } else {
+                            showToast("Please enter your contact details to join");
+                            startActivity(new Intent(CabListOfPeople.this, AddContact.class));
+                        }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
-                    }
-                    } else {
-                        Snackbar snack = Snackbar.make(join, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
+                        Snackbar snack = Snackbar.make(join, "No Internet.Try later", Snackbar.LENGTH_LONG);
                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                         snackBarText.setTextColor(Color.WHITE);
                         snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                         snack.show();
+
                     }
+                } else {
+                    showSnack("Please login to join");
                 }
-
-            } else {
-                Snackbar snack = Snackbar.make(join, "No Internet.Try later", Snackbar.LENGTH_LONG);
-                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                snackBarText.setTextColor(Color.WHITE);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                snack.show();
-
-            }
-
-            }
-        });
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        email = mAuth.getCurrentUser().getEmail();
-        pool.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                progressBar.setVisibility(VISIBLE);
-                join.setVisibility(INVISIBLE);
-                cabListItemFormatVector.clear();
-
-
-                cabItemFormat = dataSnapshot.getValue(CabItemFormat.class);
-
-                cabListItemFormatVector.addAll(cabItemFormat.getCabListItemFormats());
-                adapter.notifyDataSetChanged();
-                join.setVisibility(VISIBLE);
-                progressBar.setVisibility(INVISIBLE);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(INVISIBLE);
             }
         });
 
+
     }
 
-    public boolean isNetworkAvailable(final Context context) {
-        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
-    }
 
 }
