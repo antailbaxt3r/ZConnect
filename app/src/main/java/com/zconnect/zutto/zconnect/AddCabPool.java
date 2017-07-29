@@ -31,9 +31,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class AddCabPool extends AppCompatActivity {
-    Button done, calender;
+    Button done;
     CustomSpinner source, destination, time;
-    TextView date;
+    TextView date, calender;
     CabItemFormat cabItemFormat;
     String email, name, number;
     int year, month, day;
@@ -96,7 +96,7 @@ public class AddCabPool extends AppCompatActivity {
         time = (CustomSpinner) findViewById(R.id.spinner_time);
         done = (Button) findViewById(R.id.done);
         date = (TextView) findViewById(R.id.date);
-        calender = (Button) findViewById(R.id.calender);
+        calender = (TextView) findViewById(R.id.calender);
         calender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
