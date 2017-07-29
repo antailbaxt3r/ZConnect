@@ -56,10 +56,10 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
             name = (TextView) itemView.findViewById(R.id.cab_name);
             number = (TextView) itemView.findViewById(R.id.cab_number);
 
-            Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(),"fonts/Raleway-Medium.ttf");
+            Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
             name.setTypeface(customFont);
 
-            Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(),"fonts/Raleway-Light.ttf");
+            Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
             number.setTypeface(customFont2);
             call.setOnClickListener(new View.OnClickListener() {
                 @Override

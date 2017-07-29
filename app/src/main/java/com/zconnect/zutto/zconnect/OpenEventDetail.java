@@ -239,9 +239,12 @@ public class OpenEventDetail extends BaseActivity {
         EventVenue.setTypeface(customFont);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String boost = event.getBoosters();
-        if (boost.contains(user.getUid())) {
-            boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+
+        if (user != null) {
+            String boost = event.getBoosters();
+            if (boost.contains(user.getUid())) {
+                boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+            }
         }
     }
 
@@ -395,7 +398,7 @@ public class OpenEventDetail extends BaseActivity {
             boost = "";
         } else {
             String boosters[] = boost.trim().split(" ");
-            if (boost.contains(user.getUid()))
+            if (user != null && boost.contains(user.getUid()))
                 boostBtn.setText(String.valueOf(boosters.length) + " Boosted");
             else
                 boostBtn.setText(String.valueOf(boosters.length) + " Boost");
