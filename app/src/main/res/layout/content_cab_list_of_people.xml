@@ -26,9 +26,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/content_cabpeople_rv"
-        android:text="Join"
-        android:textSize="20dp"
         android:layout_margin="10dp"
         android:background="@drawable/curveradiusgoogle"
-        android:textColor="@color/white"/>
+        android:text="Join"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
 </RelativeLayout>
