@@ -105,13 +105,14 @@ public class CabListOfPeople extends BaseActivity {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
                     if (email != null) {
-                        if (phonebookDisplayItem.getEmail().equals(email)) {
-                            name = phonebookDisplayItem.getName();
-                            number = phonebookDisplayItem.getNumber();
-                            numberFlag = true;
+                        if (phonebookDisplayItem.getEmail() != null) {
+                            if (phonebookDisplayItem.getEmail().equals(email)) {
+                                name = phonebookDisplayItem.getName();
+                                number = phonebookDisplayItem.getNumber();
+                                numberFlag = true;
+                            }
                         }
                     }
-
                 }
 
             }

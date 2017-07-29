@@ -74,10 +74,12 @@ public class AddCabPool extends AppCompatActivity {
 
                     PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
                     if (email != null) {
+                        if (phonebookDisplayItem.getEmail() != null) {
                         if (phonebookDisplayItem.getEmail().equals(email)) {
                             name = phonebookDisplayItem.getName();
                             number = phonebookDisplayItem.getNumber();
 
+                        }
                         }
                     }
 
