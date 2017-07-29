@@ -111,6 +111,7 @@ public class ShopSearch extends AppCompatActivity {
                         foo.setNumber(childShot.child("number").getValue(String.class));
                         foo.setMenuurl(childShot.child("menuurl").getValue(String.class));
                         foo.setDetails(childShot.child("details").getValue(String.class));
+                        foo.setShopid(childShot.child("shopid").getValue(String.class));
 
                         String title = childShot.child("name").getValue(String.class);
 

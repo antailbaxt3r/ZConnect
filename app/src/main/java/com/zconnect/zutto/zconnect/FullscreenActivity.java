@@ -48,7 +48,6 @@ public class FullscreenActivity extends BaseActivity {
         vp=(ViewPager)findViewById(R.id.viewPager);
         //set the adapter that will create the individual pages
         vp.setAdapter(new MyPagesAdapter());
-        vp.setCurrentItem(0);
 
         doneButton(vp.getCurrentItem());
         vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -103,13 +102,13 @@ public class FullscreenActivity extends BaseActivity {
         public Object instantiateItem(ViewGroup container, int position) {
             View page = inflater.inflate(R.layout.tutorial_page, null);
             ImageView image =(ImageView) page.findViewById(R.id.textMessage);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(container.getWidth(),container.getHeight());
+           // RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(container.getWidth(),container.getHeight());
 
-            image.setLayoutParams(layoutParams);
-            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//            image.setLayoutParams(layoutParams);
+//            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
             image.setImageDrawable(pageData[position]);
             //Add the page to the front of the queue
-            container.addView(page, 0);
+            ((ViewPager) container).addView(page, 0);
 
             return page;
         }
@@ -117,11 +116,11 @@ public class FullscreenActivity extends BaseActivity {
         public boolean isViewFromObject(View arg0, Object arg1) {
             //See if object from instantiateItem is related to the given view
             //required by API
-            return arg0 == arg1;
+            return arg0==(View)arg1;
         }
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
+            ((ViewPager) container).removeView((View) object);
             object=null;
         }
     }

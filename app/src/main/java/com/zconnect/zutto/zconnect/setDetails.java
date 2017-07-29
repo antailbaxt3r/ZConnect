@@ -95,12 +95,6 @@ public class setDetails extends BaseActivity {
                 Snackbar snack = Snackbar.make(userName, R.string.noImage, Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snack.setAction("Select", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(intentHandle.getPickImageIntent(setDetails.this));
-                    }
-                });
                 snack.setAction("Skip", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

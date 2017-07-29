@@ -300,6 +300,7 @@ public class AddProduct extends BaseActivity {
         //super.onBackPressed();
         Intent storeIntent =new Intent(AddProduct.this,TabStoreRoom.class);
         startActivity(storeIntent);
+        finish();
     }
 }
 

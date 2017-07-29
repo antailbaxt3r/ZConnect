@@ -70,6 +70,7 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
     private FirebaseUser mUser;
     private TagsEditText skillTags;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -244,8 +245,6 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
     }
 
     public void startposting() {
-        mProgress.setMessage("Adding...");
-        mProgress.show();
         name = editTextName.getText().toString().trim();
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
@@ -254,50 +253,109 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
         skills= skillTags.getTags().toString().trim();
         //  Log.v("tag",hostel);
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        mProgress.setMessage("Adding...");
 
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && mImageUri != null && !skills.equals("")) {
-            StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-
-                    DatabaseReference newPost = ref.child(number);
-
-                    newPost.child("name").setValue(name);
-                    newPost.child("desc").setValue(details);
-                    newPost.child("imageurl").setValue(downloadUri);
-                    newPost.child("number").setValue(number);
-                    newPost.child("category").setValue(category);
-                    newPost.child("email").setValue(email);
-                    newPost.child("hostel").setValue(hostel);
-                    newPost.child("skills").setValue(skills);
-
-                    CounterManager.InfoneContactAdded();
-                    mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue(String.class));
-                            TotalNumbers = TotalNumbers + 1;
-                            DatabaseReference newPost = mFeaturesStats;
-                            Map<String, Object> taskMap = new HashMap<String, Object>();
-                            taskMap.put("TotalNumbers", TotalNumbers);
-                            newPost.updateChildren(taskMap);
-                        }
+        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && skills!=null) {
+            if(mImageUri != null) {
+                mProgress.show();
+                StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
+                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUri = taskSnapshot.getDownloadUrl();
 
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        DatabaseReference newPost = ref.child(number);
 
-                        }
-                    });
+                        newPost.child("name").setValue(name);
+                        newPost.child("desc").setValue(details);
+                        newPost.child("imageurl").setValue(downloadUri);
+                        newPost.child("number").setValue(number);
+                        newPost.child("category").setValue(category);
+                        newPost.child("email").setValue(email);
+                        newPost.child("hostel").setValue(hostel);
+                        newPost.child("skills").setValue(skills);
+
+                        CounterManager.InfoneContactAdded();
+                        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                                TotalNumbers = TotalNumbers + 1;
+                                DatabaseReference newPost = mFeaturesStats;
+                                Map<String, Object> taskMap = new HashMap<String, Object>();
+                                taskMap.put("TotalNumbers", TotalNumbers);
+                                newPost.updateChildren(taskMap);
+                            }
 
 
-                    mProgress.dismiss();
-                    startActivity(new Intent(AddContact.this, Phonebook.class));
-                    finish();
-                }
-            });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                        mProgress.dismiss();
+                        startActivity(new Intent(AddContact.this, Phonebook.class));
+                        finish();
+
+                    }
+                });
+            }else {
+
+
+                final String downloadUri;
+                downloadUri = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336"; //sets default download Image url
+                Snackbar snack = Snackbar.make(this.editTextName, R.string.noImage, Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.setAction("Skip", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mProgress.show();
+                        DatabaseReference newPost = ref.child(number);
+
+                        newPost.child("name").setValue(name);
+                        newPost.child("desc").setValue(details);
+                        newPost.child("imageurl").setValue(downloadUri);
+                        newPost.child("number").setValue(number);
+                        newPost.child("category").setValue(category);
+                        newPost.child("email").setValue(email);
+                        newPost.child("hostel").setValue(hostel);
+                        newPost.child("skills").setValue(skills);
+
+                        CounterManager.InfoneContactAdded();
+                        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                                TotalNumbers = TotalNumbers + 1;
+                                DatabaseReference newPost = mFeaturesStats;
+                                Map<String, Object> taskMap = new HashMap<String, Object>();
+                                taskMap.put("TotalNumbers", TotalNumbers);
+                                newPost.updateChildren(taskMap);
+                            }
+
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                        mProgress.dismiss();
+                        startActivity(new Intent(AddContact.this, Phonebook.class));
+                        finish();
+
+
+                    }
+                });
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+                snack.show();
+            }
+
         } else {
             Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't add contact.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);

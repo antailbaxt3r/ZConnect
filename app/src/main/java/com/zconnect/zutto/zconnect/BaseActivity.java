@@ -158,7 +158,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             snack.show();
             return snack;
         } catch (Exception e) {
-            showToast(e.getMessage());
+//            showToast(e.getMessage());
             Log.d("Snack Error", e.getMessage());
             return null;
         }

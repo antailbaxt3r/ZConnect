@@ -71,8 +71,11 @@ public class MyRides extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
                     PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
+                    if(phonebookDisplayItem==null) {
+                        shot.getRef().removeValue();
+                        continue;
+                    }
                     if (email != null) {
                         if (phonebookDisplayItem.getEmail().equals(email)) {
                             name = phonebookDisplayItem.getName();
@@ -114,6 +117,8 @@ public class MyRides extends AppCompatActivity {
                 for (i = 0; i < cabItemFormatVector.size(); i++) {
                     CabItemFormat cabItemFormat = cabItemFormatVector.get(i);
                     ArrayList<CabListItemFormat> cabListItemFormats = cabItemFormat.getCabListItemFormats();
+                    if(cabListItemFormats==null)
+                        cabListItemFormats = new ArrayList<>();
                     int j;
                     for (j = 0; j < cabListItemFormats.size(); j++) {
                         if (name != null && number != null) {
