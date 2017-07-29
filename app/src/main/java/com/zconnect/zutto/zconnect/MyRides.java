@@ -72,17 +72,14 @@ public class MyRides extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
-                    if(phonebookDisplayItem==null) {
-                        shot.getRef().removeValue();
-                        continue;
-                    }
                     if (email != null) {
-                        if (phonebookDisplayItem.getEmail().equals(email)) {
-                            name = phonebookDisplayItem.getName();
-                            number = phonebookDisplayItem.getNumber();
+                        if (phonebookDisplayItem.getEmail() != null) {
+                            if (phonebookDisplayItem.getEmail().equals(email)) {
+                                name = phonebookDisplayItem.getName();
+                                number = phonebookDisplayItem.getNumber();
+                            }
                         }
                     }
-
 
                 }
 

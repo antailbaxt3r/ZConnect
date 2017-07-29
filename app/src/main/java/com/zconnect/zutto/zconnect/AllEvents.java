@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -14,13 +13,11 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -50,7 +47,6 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -309,84 +305,88 @@ public class AllEvents extends BaseActivity {
         }
 
         public void setBoosters(String boosters) {
-            TextView count = (TextView) itemView.findViewById(R.id.Boostcount);
-            if (boosters == null || TextUtils.isEmpty(boosters))
-                count.setText("0");
-            else {
-                count.setText(String.valueOf(boosters.trim().split(" ").length));
+            if (boosters != null) {
+                TextView count = (TextView) itemView.findViewById(R.id.Boostcount);
+                if (boosters == null || TextUtils.isEmpty(boosters))
+                    count.setText("0");
+                else {
+                    count.setText(String.valueOf(boosters.trim().split(" ").length));
+                }
             }
         }
-
         public void setEventName(String eventName) {
-
-            TextView post_name = (TextView) mView.findViewById(R.id.er_event);
-            post_name.setText(eventName);
-            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
-            post_name.setTypeface(customFont);
-
+            if (eventName != null) {
+                TextView post_name = (TextView) mView.findViewById(R.id.er_event);
+                post_name.setText(eventName);
+                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+                post_name.setTypeface(customFont);
+            }
         }
 
         public void setEventDesc(String eventDesc) {
+            if (eventDesc != null) {
+                String shortEventDesc;
 
-            String shortEventDesc;
+                TextView post_desc = (TextView) mView.findViewById(R.id.er_description);
+                if (eventDesc.length() < 70) {
+                    shortEventDesc = eventDesc;
+                } else {
+                    shortEventDesc = eventDesc.substring(0, 70);
+                    shortEventDesc = shortEventDesc + " ... read more";
+                }
 
-            TextView post_desc = (TextView) mView.findViewById(R.id.er_description);
-            if (eventDesc.length() < 70) {
-                shortEventDesc = eventDesc;
-            } else {
-                shortEventDesc = eventDesc.substring(0, 70);
-                shortEventDesc = shortEventDesc + " ... read more";
+                post_desc.setText(shortEventDesc);
+                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+                post_desc.setTypeface(customFont);
             }
-
-            post_desc.setText(shortEventDesc);
-            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-            post_desc.setTypeface(customFont);
-
         }
 
         public void setEventVenue(String venue) {
-            TextView post_venue = (TextView) mView.findViewById(R.id.er_venue);
-            post_venue.setText(venue);
-            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
-            post_venue.setTypeface(customFont);
-
+            if (venue != null) {
+                TextView post_venue = (TextView) mView.findViewById(R.id.er_venue);
+                post_venue.setText(venue);
+                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+                post_venue.setTypeface(customFont);
+            }
         }
 
         public void setEventImage(Context ctx, String image) {
-
-            ImageView post_image = (ImageView) mView.findViewById(R.id.er_postImg);
-            Picasso.with(ctx).load(image).into(post_image);
+            if (image != null) {
+                ImageView post_image = (ImageView) mView.findViewById(R.id.er_postImg);
+                Picasso.with(ctx).load(image).into(post_image);
+            }
         }
-
 
         public void setEventDate(String eventDate) {
-            TextView post_date = (TextView) mView.findViewById(R.id.er_date);
-            String date[] = eventDate.split("\\s+");
-            String finalDate = "";
+            if (eventDate != null) {
+                TextView post_date = (TextView) mView.findViewById(R.id.er_date);
+                String date[] = eventDate.split("\\s+");
+                String finalDate = "";
 
-            for (int i = 0; i < 4; i++) {
-                finalDate = finalDate + " " + date[i];
-            }
-
-            post_date.setText(finalDate);
-            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-            post_date.setTypeface(customFont);
-        }
-
-        public void setEventReminder(final String eventDescription, final String eventName, final String time) {
-            Button Reminder = (Button) mView.findViewById(R.id.er_reminder);
-            Reminder.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    CounterManager.eventReminderCounter(key);
-                    addReminderInCalendar(eventName, eventDescription, time, mView.getContext());
-
+                for (int i = 0; i < 4; i++) {
+                    finalDate = finalDate + " " + date[i];
                 }
 
-            });
-            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-            Reminder.setTypeface(customFont);
+                post_date.setText(finalDate);
+                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+                post_date.setTypeface(customFont);
+            }
+        }
+        public void setEventReminder(final String eventDescription, final String eventName, final String time) {
+            if (eventDescription != null && eventName != null && time != null) {
+                Button Reminder = (Button) mView.findViewById(R.id.er_reminder);
+                Reminder.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        CounterManager.eventReminderCounter(key);
+                        addReminderInCalendar(eventName, eventDescription, time, mView.getContext());
 
+                    }
+
+                });
+                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+                Reminder.setTypeface(customFont);
+            }
         }
 
 
