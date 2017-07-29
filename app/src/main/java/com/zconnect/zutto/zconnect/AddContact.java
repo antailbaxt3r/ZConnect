@@ -272,7 +272,7 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
                         mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue(String.class));
+                                Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
                                 TotalNumbers = TotalNumbers + 1;
                                 DatabaseReference newPost = mFeaturesStats;
                                 Map<String, Object> taskMap = new HashMap<String, Object>();
@@ -320,7 +320,7 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
                         mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue(String.class));
+                                Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
                                 TotalNumbers = TotalNumbers + 1;
                                 DatabaseReference newPost = mFeaturesStats;
                                 Map<String, Object> taskMap = new HashMap<String, Object>();
