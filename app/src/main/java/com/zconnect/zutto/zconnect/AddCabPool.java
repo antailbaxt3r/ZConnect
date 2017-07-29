@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
@@ -139,6 +140,8 @@ public class AddCabPool extends AppCompatActivity {
                             newPost.child("date").setValue(date.getText().toString());
                             newPost.child("cabListItemFormats").setValue(cabListItemFormats);
 
+                            FirebaseMessaging.getInstance().subscribeToTopic(key);
+                            FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Topics").push().setValue(key);
                             startActivity(new Intent(AddCabPool.this, CabPooling.class));
                         } else {
                             Snackbar snack = Snackbar.make(done, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);

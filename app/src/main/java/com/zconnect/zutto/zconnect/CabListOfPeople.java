@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
@@ -115,7 +117,7 @@ public class CabListOfPeople extends BaseActivity {
             }
         });
         if (email != null) {
-            databaseReference.child("").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            databaseReference.child("Users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     flag = dataSnapshot.getChildrenCount() != 0;
@@ -177,6 +179,16 @@ public class CabListOfPeople extends BaseActivity {
                                         cabItemFormat1.setCabListItemFormats(cabListItemFormats);
                                         databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);
                                         Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
+
+                                        RemoteMessage.Builder creator = new RemoteMessage.Builder(key);
+                                        creator.addData("Type", "CabPool");
+                                        creator.addData("Person", name);
+                                        creator.addData("Contact", number);
+                                        creator.addData("Pool", key);
+                                        FirebaseMessaging.getInstance().send(creator.build());
+                                        FirebaseMessaging.getInstance().subscribeToTopic(key);
+                                        FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Topics").push().setValue(key);
+
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
                                     }
