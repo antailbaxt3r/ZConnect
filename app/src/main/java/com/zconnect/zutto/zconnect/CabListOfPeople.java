@@ -1,11 +1,13 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -123,10 +125,11 @@ public class CabListOfPeople extends BaseActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    hideProgressDialog();
                 }
             });
-        }
+        } else
+            hideProgressDialog();
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_cabpeople_progress);
         join = (Button) findViewById(R.id.join);
@@ -153,8 +156,7 @@ public class CabListOfPeople extends BaseActivity {
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isNetworkAvailable(CabListOfPeople.this)) {
-                    if (email == null) {
+                if (email != null) {
                         if (numberFlag) {
                             if (flag) {
                                 Snackbar snack = Snackbar.make(join, "Already Joined", Snackbar.LENGTH_LONG);
@@ -192,15 +194,20 @@ public class CabListOfPeople extends BaseActivity {
                             startActivity(new Intent(CabListOfPeople.this, AddContact.class));
                         }
                     } else {
-                        Snackbar snack = Snackbar.make(join, "No Internet.Try later", Snackbar.LENGTH_LONG);
-                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                        snackBarText.setTextColor(Color.WHITE);
-                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                        snack.show();
 
-                    }
-                } else {
-                    showSnack("Please login to join");
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(CabListOfPeople.this);
+                    dialog.setNegativeButton("Lite", null)
+                            .setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent loginIntent = new Intent(CabListOfPeople.this, logIn.class);
+                                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(loginIntent);
+                                    finish();
+                                }
+                            })
+                            .setTitle("Please login to join.")
+                            .create().show();
                 }
             }
         });

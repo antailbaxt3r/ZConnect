@@ -77,6 +77,12 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
         mProgress = new ProgressDialog(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            showToast("Please Login.");
+            startActivity(new Intent(this, logIn.class));
+            finish();
+        }
         intentHandle = (new IntentHandle()); //Init intent object
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
