@@ -61,7 +61,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
     private TagsEditText skillTags;
-    private ProgressDialog mProgress;
+    public ProgressDialog mProgress;
     private CustomSpinner spinner;
     // private RadioButton radioButtonS, radioButtonA, radioButtonO;
 
@@ -383,12 +383,13 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
             mProgress.dismiss();
             startActivity(new Intent(EditProfile.this, home.class));
         } else {
+            mProgress.dismiss();
             Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
             snack.show();
-            mProgress.dismiss();
+
 
 
         }

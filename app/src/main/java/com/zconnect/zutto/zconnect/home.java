@@ -458,7 +458,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
     private void addImageDialog() {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Phonebook");
-        ref.orderByChild("email").equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.orderByChild("email").equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if ((dataSnapshot.getChildrenCount()) == 0) {

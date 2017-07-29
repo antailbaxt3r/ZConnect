@@ -70,6 +70,7 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
     private FirebaseUser mUser;
     private TagsEditText skillTags;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -244,8 +245,6 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
     }
 
     public void startposting() {
-        mProgress.setMessage("Adding...");
-        mProgress.show();
         name = editTextName.getText().toString().trim();
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
@@ -254,14 +253,17 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
         skills= skillTags.getTags().toString().trim();
         //  Log.v("tag",hostel);
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        mProgress.setMessage("Adding...");
 
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && !skills.equals("")) {
+        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && skills!=null) {
             if(mImageUri != null) {
+                mProgress.show();
                 StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
                 filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUri = taskSnapshot.getDownloadUrl();
+
 
                         DatabaseReference newPost = ref.child(number);
 
@@ -301,7 +303,8 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
                     }
                 });
             }else {
-                mProgress.dismiss();
+
+
                 final String downloadUri;
                 downloadUri = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336"; //sets default download Image url
                 Snackbar snack = Snackbar.make(this.editTextName, R.string.noImage, Snackbar.LENGTH_LONG);

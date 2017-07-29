@@ -71,15 +71,21 @@ public class CabListOfPeople extends BaseActivity {
         pool.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                flag = false;
                 progressBar.setVisibility(VISIBLE);
                 join.setVisibility(INVISIBLE);
                 cabListItemFormatVector.clear();
 
-
                 cabItemFormat = dataSnapshot.getValue(CabItemFormat.class);
-
-                cabListItemFormatVector.addAll(cabItemFormat.getCabListItemFormats());
-                adapter.notifyDataSetChanged();
+                if(cabItemFormat != null&&cabItemFormat.getCabListItemFormats()!=null) {
+                    cabListItemFormatVector.addAll(cabItemFormat.getCabListItemFormats());
+                    for (CabListItemFormat format : cabItemFormat.getCabListItemFormats()) {
+                        if (format.getPhonenumber().equals(number)) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                }                adapter.notifyDataSetChanged();
                 join.setVisibility(VISIBLE);
                 progressBar.setVisibility(INVISIBLE);
             }
@@ -173,6 +179,8 @@ public class CabListOfPeople extends BaseActivity {
                                     ArrayList<CabListItemFormat> cabListItemFormats;
                                     if (cabItemFormat1 != null) {
                                         cabListItemFormats = cabItemFormat1.getCabListItemFormats();
+                                        if(cabListItemFormats == null)
+                                            cabListItemFormats = new ArrayList<CabListItemFormat>();
                                         cabListItemFormats.add(cabListItemFormat);
                                         cabItemFormat1.setCabListItemFormats(cabListItemFormats);
                                         databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);

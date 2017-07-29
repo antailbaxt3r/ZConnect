@@ -198,6 +198,7 @@ public class TabStoreRoom extends BaseActivity {
         //super.onBackPressed();
         Intent storeIntent = new Intent(TabStoreRoom.this, home.class);
         startActivity(storeIntent);
+        finish();
     }
 
     /**
