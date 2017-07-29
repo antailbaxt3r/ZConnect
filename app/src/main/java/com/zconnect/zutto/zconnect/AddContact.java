@@ -295,20 +295,16 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
                     }
                 });
             }else {
+                mProgress.dismiss();
                 final String downloadUri;
                 downloadUri = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336"; //sets default download Image url
                 Snackbar snack = Snackbar.make(this.editTextName, R.string.noImage, Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snack.setAction("Select", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(intentHandle.getPickImageIntent(AddContact.this));
-                    }
-                });
                 snack.setAction("Skip", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        mProgress.show();
                         DatabaseReference newPost = ref.child(number);
 
                         newPost.child("name").setValue(name);
