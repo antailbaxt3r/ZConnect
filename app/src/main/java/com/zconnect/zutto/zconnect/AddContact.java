@@ -108,8 +108,8 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
         userRef.child(userId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                editTextName.setText(dataSnapshot.child("Username").getValue().toString());
-                editTextEmail.setText((dataSnapshot.child("Email").getValue().toString()));
+                editTextName.setText(dataSnapshot.child("Username").getValue(String.class));
+                editTextEmail.setText((dataSnapshot.child("Email").getValue(String.class)));
             }
 
             @Override
@@ -260,7 +260,7 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
 
                     newPost.child("name").setValue(name);
                     newPost.child("desc").setValue(details);
-                    newPost.child("imageurl").setValue(downloadUri.toString());
+                    newPost.child("imageurl").setValue(downloadUri);
                     newPost.child("number").setValue(number);
                     newPost.child("category").setValue(category);
                     newPost.child("email").setValue(email);
@@ -271,7 +271,7 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
                     mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                            Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue(String.class));
                             TotalNumbers = TotalNumbers + 1;
                             DatabaseReference newPost = mFeaturesStats;
                             Map<String, Object> taskMap = new HashMap<String, Object>();
