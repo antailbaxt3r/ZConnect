@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -28,7 +29,15 @@ import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
+import org.json.JSONObject;
+
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import static android.view.View.INVISIBLE;
@@ -188,14 +197,10 @@ public class CabListOfPeople extends BaseActivity {
                                         databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);
                                         Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
 
-                                        RemoteMessage.Builder creator = new RemoteMessage.Builder(key);
-                                        creator.addData("Type", "CabPool");
-                                        creator.addData("Person", name);
-                                        creator.addData("Contact", number);
-                                        creator.addData("Pool", key);
-                                        FirebaseMessaging.getInstance().send(creator.build());
-                                        FirebaseMessaging.getInstance().subscribeToTopic(key);
                                         FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Topics").push().setValue(key);
+
+                                        sendNotification notification = new sendNotification();
+                                        notification.execute();
 
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
@@ -235,5 +240,50 @@ public class CabListOfPeople extends BaseActivity {
 
     }
 
+    private class sendNotification extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            String pName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+            RemoteMessage.Builder creator = new RemoteMessage.Builder(key);
+            creator.addData("Type", "CabPool");
+            creator.addData("Person", pName == null ? name : pName);
+            creator.addData("Contact", number);
+            creator.addData("key", key);
+
+            try {
+                URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Authorization", "key=AAAAGZIFvsE:APA91bG7rY-RLe6T3JxhFcmA4iRtihJCbD2RUwypt0aC8hVCvrm99LKZR__y3SqSIQmJocsuLaDltTuUui9BUrLwAM0SiCx0qSTrO8dpmxnjiHkaATnfYwVIN3T81lwlxYwBF7x9_3Kd");
+                connection.setDoOutput(true);
+                connection.connect();
+
+
+                OutputStream os = connection.getOutputStream();
+                OutputStreamWriter writer = new OutputStreamWriter(os);
+
+
+                Map<String, Object> data = new HashMap<String, Object>();
+                data.put("to", "/topics/" + key);
+                data.put("data", creator.build().getData());
+
+                JSONObject object = new JSONObject(data);
+                String s2 = object.toString().replace("\\", "");
+
+                writer.write(s2);
+                writer.flush();
+
+                showToast(connection.getResponseMessage());
+                FirebaseMessaging.getInstance().subscribeToTopic(key);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 
 }
