@@ -209,7 +209,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
                                 host = "none";
                             }
                         }
-                    }
+                        }
                     }
 
                 }
