@@ -77,9 +77,11 @@ public class MyRides extends AppCompatActivity {
                         continue;
                     }
                     if (email != null) {
-                        if (phonebookDisplayItem.getEmail().equals(email)) {
-                            name = phonebookDisplayItem.getName();
-                            number = phonebookDisplayItem.getNumber();
+                        if (phonebookDisplayItem.getEmail() != null) {
+                            if (phonebookDisplayItem.getEmail().equals(email)) {
+                                name = phonebookDisplayItem.getName();
+                                number = phonebookDisplayItem.getNumber();
+                            }
                         }
                     }
 

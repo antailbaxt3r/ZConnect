@@ -242,8 +242,10 @@ public class OpenEventDetail extends BaseActivity {
 
         if (user != null) {
             String boost = event.getBoosters();
+            if (boost != null) {
             if (boost.contains(user.getUid())) {
                 boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+            }
             }
         }
     }
