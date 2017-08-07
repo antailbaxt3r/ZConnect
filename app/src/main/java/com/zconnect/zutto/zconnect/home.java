@@ -48,6 +48,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class home extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -462,9 +463,11 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if ((dataSnapshot.getChildrenCount()) == 0) {
+
+                    final Long currTime = Calendar.getInstance().getTimeInMillis();
                     SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
                     Boolean status = sharedPref.getBoolean("never", false);
-                    if (!status) {
+                    if (!status||(currTime-sharedPref.getLong("date",0)>7*24*3600*1000)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(home.this);
                         builder.setTitle("Hi " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName())
                                 .setMessage("Add your information and get discovered.")
@@ -481,8 +484,8 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
 
                                         SharedPreferences.Editor editInfo = sharedPref.edit();
                                         editInfo.putBoolean("never", true);
+                                        editInfo.putLong("date",currTime);
                                         editInfo.apply();
-                                        editInfo.commit();
                                     }
                                 })
                                 .setCancelable(false)
