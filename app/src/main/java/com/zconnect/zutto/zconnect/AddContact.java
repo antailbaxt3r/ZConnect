@@ -17,6 +17,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -255,7 +256,7 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
         mProgress.setMessage("Adding...");
 
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && skills!=null) {
+        if (!TextUtils.isEmpty(number)&&!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email)&&!TextUtils.isEmpty(details) && !TextUtils.isEmpty(cat)&&!TextUtils.isEmpty(category) && spinner.getSelectedItem() != null && skills!="[]") {
             if(mImageUri != null) {
                 mProgress.show();
                 StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
