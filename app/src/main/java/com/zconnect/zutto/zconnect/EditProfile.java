@@ -49,6 +49,7 @@ import mabbas007.tagsedittext.TagsEditText;
 public class EditProfile extends BaseActivity implements TagsEditText.TagsEditListener{
 
     private static final int GALLERY_REQUEST = 7;
+    public ProgressDialog mProgress;
     String email;
     String name, details, imageurl, number = null, hostel = null, host, category,skills;
     SimpleDraweeView simpleDraweeView;
@@ -61,7 +62,6 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
     private TagsEditText skillTags;
-    private ProgressDialog mProgress;
     private CustomSpinner spinner;
     // private RadioButton radioButtonS, radioButtonA, radioButtonO;
 
@@ -154,6 +154,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
 
                     PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
                     if (email != null) {
+                        if (phonebookDisplayItem.getEmail() != null) {
                         if (phonebookDisplayItem.getEmail().equals(email)) {
                             name = phonebookDisplayItem.getName();
                             details = phonebookDisplayItem.getDesc();
@@ -208,6 +209,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
                                 host = "none";
                             }
                         }
+                    }
                     }
 
                 }
@@ -383,12 +385,13 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
             mProgress.dismiss();
             startActivity(new Intent(EditProfile.this, home.class));
         } else {
+            mProgress.dismiss();
             Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
             snack.show();
-            mProgress.dismiss();
+
 
 
         }

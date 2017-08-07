@@ -41,7 +41,6 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -118,9 +117,10 @@ public class AddProduct extends BaseActivity {
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             12345
                     );
+                } else {
+                    galleryIntent = intentHandle.getPickImageIntent(AddProduct.this);
+                    startActivityForResult(galleryIntent, GALLERY_REQUEST);
                 }
-                galleryIntent = intentHandle.getPickImageIntent(AddProduct.this);
-                startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
 
@@ -156,21 +156,22 @@ public class AddProduct extends BaseActivity {
 
                 try {
                     mImageUri = result.getUri();
+                    mAddImage.setImageURI(mImageUri);
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
 
-                    Double ratio = (250000.0 / bitmap.getByteCount());
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, (int) Math.min(ratio * 100.0, 100), out);
-                    String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+                    if (bitmap.getByteCount() > 350000) {
+
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), false);
+                    }
+                    String path = MediaStore.Images.Media.insertImage(AddProduct.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     mAddImage.setImageURI(mImageUri);
 
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
@@ -299,6 +300,7 @@ public class AddProduct extends BaseActivity {
         //super.onBackPressed();
         Intent storeIntent =new Intent(AddProduct.this,TabStoreRoom.class);
         startActivity(storeIntent);
+        finish();
     }
 }
 

@@ -110,7 +110,8 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        addImageDialog();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null)
+            addImageDialog();
          homescreen = new Homescreen();
         //        Intent called = getIntent();
 //        homescreen = called.hasExtra("type")?new Homescreen("new"):new Homescreen(null);
@@ -148,7 +149,9 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
-
+        if (status) {
+            navigationView.getMenu().findItem(R.id.edit_profile).setVisible(false);
+        }
         username = (TextView) header.findViewById(R.id.textView_1);
         useremail = (TextView) header.findViewById(R.id.textView_2);
 
@@ -182,6 +185,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
 
         databaseReference.keepSynced(true);
 
+        if (mAuth.getCurrentUser() == null)
         if(!status) {
             header.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -189,15 +193,14 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
                     if (number != null) {
                         Intent intent = new Intent(getApplicationContext(), EditProfile.class);
                         startActivity(intent);
-                    }
-                    else {
+                    } else {
                         Intent intent = new Intent(getApplicationContext(), AddContact.class);
                         startActivity(intent);
                     }
-                }
+                    }
             });
-        }
 
+        }
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
 
@@ -455,7 +458,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
     private void addImageDialog() {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Phonebook");
-        ref.orderByChild("email").equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.orderByChild("email").equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if ((dataSnapshot.getChildrenCount()) == 0) {

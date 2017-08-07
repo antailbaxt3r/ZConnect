@@ -1,24 +1,18 @@
 package com.zconnect.zutto.zconnect;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -38,11 +32,11 @@ public class FullscreenActivity extends BaseActivity {
         setContentView(R.layout.activity_fullscreen_tutorial);
         //Get the data to be swiped through
         //pageData=getResources().getStringArray(R.array.desserts);
-
-        pageData[0]=getResources().getDrawable(R.drawable.infone_tut);
-        pageData[1]=getResources().getDrawable(R.drawable.shops_tut);
-        pageData[2]=getResources().getDrawable(R.drawable.events_tut);
-        pageData[3]=getResources().getDrawable(R.drawable.storeroom_tut);
+        showProgressDialog();
+        pageData[0] = ContextCompat.getDrawable(this, R.drawable.infone_tut);
+        pageData[1] = ContextCompat.getDrawable(this, R.drawable.shops_tut);
+        pageData[2] = ContextCompat.getDrawable(this, R.drawable.events_tut);
+        pageData[3] = ContextCompat.getDrawable(this, R.drawable.storeroom_tut);
 
         tabLayout = (TabLayout) findViewById(R.id.tabDots);
 
@@ -84,6 +78,7 @@ public class FullscreenActivity extends BaseActivity {
 
             }
         });
+        hideProgressDialog();
 
     }
 
@@ -107,10 +102,10 @@ public class FullscreenActivity extends BaseActivity {
         public Object instantiateItem(ViewGroup container, int position) {
             View page = inflater.inflate(R.layout.tutorial_page, null);
             ImageView image =(ImageView) page.findViewById(R.id.textMessage);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(container.getWidth(),container.getHeight());
+           // RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(container.getWidth(),container.getHeight());
 
-            image.setLayoutParams(layoutParams);
-            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//            image.setLayoutParams(layoutParams);
+//            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
             image.setImageDrawable(pageData[position]);
             //Add the page to the front of the queue
             ((ViewPager) container).addView(page, 0);
