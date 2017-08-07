@@ -3,6 +3,8 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -54,6 +56,7 @@ public class ProductsTab extends Fragment {
     }
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,32 +72,36 @@ public class ProductsTab extends Fragment {
         mProductList.setLayoutManager(productLinearLayout);
 
         mAuth = FirebaseAuth.getInstance();
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
 
         // StoreRoom feature Reference
         mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         mDatabase.keepSynced(true);
 
-        user = mAuth.getCurrentUser();
+        if(!status){
+            user = mAuth.getCurrentUser();
 
-        mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
-        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
 
-        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                TotalProducts = dataSnapshot.child("TotalProducts").getValue().toString();
-                DatabaseReference newPost = mUserStats;
-                Map<String, Object> taskMap = new HashMap<String, Object>();
-                taskMap.put("TotalProducts", TotalProducts);
-                newPost.updateChildren(taskMap);
-            }
+            mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    TotalProducts = dataSnapshot.child("TotalProducts").getValue().toString();
+                    DatabaseReference newPost = mUserStats;
+                    Map<String, Object> taskMap = new HashMap<String, Object>();
+                    taskMap.put("TotalProducts", TotalProducts);
+                    newPost.updateChildren(taskMap);
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
 
+        }
 
 
         mBuilder = new NotificationCompat.Builder(getContext());
@@ -116,7 +123,9 @@ public class ProductsTab extends Fragment {
 
             @Override
             protected void populateViewHolder(final ProductsTab.ProductViewHolder viewHolder, final Product model, int position) {
-                viewHolder.defaultSwitch(model.getKey(), getContext());
+
+                SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
                 try {
@@ -126,42 +135,83 @@ public class ProductsTab extends Fragment {
                 }
                 viewHolder.setPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
-                viewHolder.setSellerNumber(model.getPhone_no(), getContext());
-                viewHolder.defaultSwitch(model.getKey(), viewHolder.mView.getContext());
+                viewHolder.setSellerNumber(model.getCategory(), model.getPhone_no(), getContext());
+                if(!status) {
+                    viewHolder.defaultSwitch(model.getKey(), getContext(), model.getCategory());
 
-                viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        flag = true;
+//                    viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
+//                        @Override
+//                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                            flag = true;
+//
+//                            mDatabase.addValueEventListener(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                                    if (flag) {
+//                                        if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
+//                                            mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+//                                            flag = false;
+//                                            viewHolder.mReserve.setText("Shortlisted");
+//                                            viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.teal600));
+//                                        } else {
+//                                            viewHolder.mReserve.setText("Shortlist");
+//                                            mDatabase.child(model.getKey()).child("UsersReserved")
+//                                                    .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+//                                            viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+//                                            flag = false;
+//                                        }
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError) {
+//
+//                                }
+//                            });
+//                        }
+//                    };
 
-                        mDatabase.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+                    viewHolder.mListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            flag = true;
+                            mDatabase.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (flag) {
 
-                                if (flag) {
-                                    if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
-                                        mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
-                                        flag = false;
-                                        viewHolder.mReserve.setText("Shortlisted");
-                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.teal600));
-                                    } else {
-                                        viewHolder.mReserve.setText("Shortlist");
-                                        mDatabase.child(model.getKey()).child("UsersReserved")
-                                                .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
-                                        viewHolder.ReserveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                                        flag = false;
+                                        if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
+                                            mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+                                            viewHolder.shortList.setText("Shortlisted");
+                                            flag = false;
+                                            viewHolder.shortList.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.curvedradiusbutton2_sr));
+                                            Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
+                                            viewHolder.shortList.setTypeface(customfont);
+
+                                        } else {
+                                            viewHolder.shortList.setText("Shortlist");
+                                            mDatabase.child(model.getKey()).child("UsersReserved")
+                                                    .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+                                            viewHolder.shortList.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.curvedradiusbutton_sr));
+                                            flag = false;
+                                            Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
+                                            viewHolder.shortList.setTypeface(customfont);
+                                        }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-                    }
-                };
-                viewHolder.mReserve.setOnCheckedChangeListener(viewHolder.mListener);
+                                }
+                            });
+
+                        }
+                    };
+                    viewHolder.shortList.setOnClickListener(viewHolder.mListener);
+
+                }
             }
         };
         mProductList.setAdapter(firebaseRecyclerAdapter);
@@ -170,7 +220,7 @@ public class ProductsTab extends Fragment {
     // Each View Holder Class
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
-        public CompoundButton.OnCheckedChangeListener mListener;
+        public View.OnClickListener mListener;
         View mView;
         //Switch View
         Switch mReserve;
@@ -179,45 +229,65 @@ public class ProductsTab extends Fragment {
         String[] keyList;
         // Flag to get combined user Id
         String ReservedUid;
+        SharedPreferences sharedPref;
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
         private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
         // Auth to get Current User
         private FirebaseAuth mAuth;
+        private Button shortList;
 
         private String sellerName;
-
         // Constructor
         public ProductViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            mReserve = (Switch) mView.findViewById(R.id.switch1);
-            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
+            sharedPref = mView.getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+            Boolean status = sharedPref.getBoolean("mode", false);
+//            mReserve = (Switch) mView.findViewById(R.id.switch1);
+//            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
+            shortList = (Button) mView.findViewById(R.id.shortList);
+            if(status){
+                shortList.setVisibility(View.GONE);
+//                mReserve.setVisibility(View.GONE);
+//                ReserveStatus.setVisibility(View.GONE);
+            }
             StoreRoom.keepSynced(true);
         }
 
         // Setting default switch
-        public void defaultSwitch(final String key, final Context ctx) {
+        public void defaultSwitch(final String key, final Context ctx, final String category) {
             // Getting User ID
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
             final String userId = user.getUid();
 
+
             //Getting  data from database
             StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    mReserve.setOnCheckedChangeListener(null);
+//                    mReserve.setOnCheckedChangeListener(null);
+                    shortList.setOnClickListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-                        mReserve.setChecked(true);
-                        mReserve.setText("Shortlisted");
-                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
+                        CounterManager.StoroomShortList(category);
+                        shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
+                        shortList.setText("Shortlisted");
+                        Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+                        shortList.setTypeface(customfont);
+                        //ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
 
                     } else {
-                        mReserve.setChecked(false);
-                        mReserve.setText("Shortlist");
-                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
+
+                        shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
+                        shortList.setText("Shortlist");
+                        Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+                        shortList.setTypeface(customfont);
+//                        mReserve.setChecked(false);
+//                        mReserve.setText("Shortlist");
+//                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
+                        CounterManager.StoroomShortListDelete(category);
                     }
-                    mReserve.setOnCheckedChangeListener(mListener);
+                    shortList.setOnClickListener(mListener);
 
                 }
 
@@ -234,6 +304,8 @@ public class ProductsTab extends Fragment {
 
             TextView post_name = (TextView) mView.findViewById(R.id.productName);
             post_name.setText(productName);
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            post_name.setTypeface(ralewayMedium);
 
         }
 
@@ -242,6 +314,8 @@ public class ProductsTab extends Fragment {
 
             TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
             post_desc.setText(productDesc);
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            post_desc.setTypeface(ralewayMedium);
 
 
         }
@@ -254,8 +328,10 @@ public class ProductsTab extends Fragment {
 
         //Set Product Price
         public void setPrice(String productPrice) {
-            TextView post_name = (TextView) mView.findViewById(R.id.price);
-            post_name.setText("₹" + productPrice + "/-");
+            TextView post_price = (TextView) mView.findViewById(R.id.price);
+            post_price.setText("₹" + productPrice + "/-");
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            post_price.setTypeface(ralewayMedium);
         }
 
 
@@ -267,7 +343,9 @@ public class ProductsTab extends Fragment {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     sellerName = dataSnapshot.child("Username").getValue().toString();
                     TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-                    post_seller_name.setText("By: " + sellerName);
+                    post_seller_name.setText("Sold By: " + sellerName);
+                    Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+                    post_seller_name.setTypeface(ralewayMedium);
                 }
 
                 @Override
@@ -279,12 +357,14 @@ public class ProductsTab extends Fragment {
 
         }
 
-        public void setSellerNumber(final String sellerNumber, final Context ctx) {
-            ImageView post_seller_number = (ImageView) mView.findViewById(R.id.sellerNumber);
-
+        public void setSellerNumber(final String category, final String sellerNumber, final Context ctx) {
+            Button post_seller_number = (Button) mView.findViewById(R.id.sellerNumber);
+            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+            post_seller_number.setTypeface(customfont);
             post_seller_number.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CounterManager.StoroomCall(category);
                     ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });

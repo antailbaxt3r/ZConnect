@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:TagsEditText="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_phonebook_details"
@@ -23,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contact_details_display_image"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:clickable="false"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
@@ -48,6 +49,8 @@
             android:textColor="@android:color/black" />
     </android.support.design.widget.TextInputLayout>
 
+    <requestFocus />
+
     <ImageView
         android:id="@+id/callbutton"
         android:layout_width="25dp"
@@ -63,7 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contact_details_name_text_input_layout"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:clickable="false"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
@@ -100,7 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contact_details_number_text_input_layout"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:clickable="false"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
@@ -149,4 +152,41 @@
             android:text=""
             android:textColor="@android:color/black" />
     </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/contact_details_skills_text_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contact_details_desc_text_input_layout"
+        android:layout_marginTop="8dp"
+        android:clickable="false"
+        android:paddingEnd="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingStart="16dp">
+
+        <mabbas007.tagsedittext.TagsEditText
+            android:id="@+id/contact_details_editText_skills"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/contact_details_desc_text_input_layout"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="8dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="Skills"
+            android:inputType="text"
+            android:text=""
+            android:textColor="@android:color/black"
+            TagsEditText:allowSpaceInTag="true"
+            TagsEditText:tagsBackground="@drawable/square"
+            TagsEditText:tagsCloseImageLeft="@drawable/dot"
+            TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
+            TagsEditText:tagsTextColor="@color/black"
+            TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize"
+            android:visibility="gone"/>
+
+    </android.support.design.widget.TextInputLayout>
+
 </RelativeLayout>

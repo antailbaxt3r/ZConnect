@@ -11,9 +11,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -22,7 +21,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Shop_detail extends AppCompatActivity {
+public class Shop_detail extends BaseActivity {
 
     String name, imageurl;
     private ViewPager viewPager;
@@ -49,6 +48,8 @@ public class Shop_detail extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
         setSupportActionBar(toolbar);
+        ((NestedScrollView) findViewById(R.id.scroll)).setFillViewport(true);
+
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -92,6 +93,24 @@ public class Shop_detail extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         Shop_detail.ViewPagerAdapter adapter = new Shop_detail.ViewPagerAdapter(getSupportFragmentManager());
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1)
+                    CounterManager.shopOffers(name);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         adapter.addFragment(new ShopDetailFragment(), "Details");
         adapter.addFragment(new ShopOffersFragment(), "Offers");
         viewPager.setAdapter(adapter);

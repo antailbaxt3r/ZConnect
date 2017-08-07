@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -15,7 +16,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -41,12 +41,11 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddProduct extends AppCompatActivity {
+public class AddProduct extends BaseActivity {
     private static final int GALLERY_REQUEST = 7;
     IntentHandle intentHandle;
     Intent galleryIntent;
@@ -102,7 +101,7 @@ public class AddProduct extends AppCompatActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         spinner1 = (CustomSpinner) findViewById(R.id.categories);
-        spinner1.setSelection(8);
+        spinner1.setSelection(6);
         mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
 
@@ -118,19 +117,66 @@ public class AddProduct extends AppCompatActivity {
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             12345
                     );
+                } else {
+                    galleryIntent = intentHandle.getPickImageIntent(AddProduct.this);
+                    startActivityForResult(galleryIntent, GALLERY_REQUEST);
                 }
-                galleryIntent = intentHandle.getPickImageIntent(getApplicationContext());
-                startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
 
-
+        //changing fonts
+        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        mProductName.setTypeface(ralewayRegular);
+        mProductDescription.setTypeface(ralewayRegular);
+        mProductPhone.setTypeface(ralewayRegular);
+        mProductPrice.setTypeface(ralewayRegular);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add_product, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+            Uri imageUri = intentHandle.getPickImageResultUri(data); //Get data
+            CropImage.activity(imageUri)
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .start(this);
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+
+                try {
+                    mImageUri = result.getUri();
+                    mAddImage.setImageURI(mImageUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
+
+                    if (bitmap.getByteCount() > 350000) {
+
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), false);
+                    }
+                    String path = MediaStore.Images.Media.insertImage(AddProduct.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+
+                    mImageUri = Uri.parse(path);
+                    mAddImage.setImageURI(mImageUri);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+
     }
 
     @Override
@@ -170,7 +216,7 @@ public class AddProduct extends AppCompatActivity {
         final String userId = user.getUid();
         mUsername = FirebaseDatabase.getInstance().getReference().child("Users");
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
-        String category = spinner1.getSelectedItem().toString();
+        final String category = spinner1.getSelectedItem().toString();
         mUsername.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -232,7 +278,7 @@ public class AddProduct extends AppCompatActivity {
 
                         }
                     });
-
+                    CounterManager.StoroomAddProduct(category);
                     mProgress.dismiss();
                     startActivity(new Intent(AddProduct.this, TabStoreRoom.class));
                     finish();
@@ -248,64 +294,13 @@ public class AddProduct extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            Uri imageUri = intentHandle.getPickImageResultUri(data);
-            CropImage.activity(imageUri)
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(2, 1)
-                    .setSnapRadius(2)
-                    .start(this);
-        }
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-
-//
-//                mAddImage.setImageURI(mImageUri);
-
-                try {
-                    mImageUri = result.getUri();
-                    Bitmap bitmap2 = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap2.compress(Bitmap.CompressFormat.JPEG, 10, out);
-                    final int maxSize = 400;
-                    int outWidth;
-                    int outHeight;
-                    int inWidth = bitmap2.getWidth();
-                    int inHeight = bitmap2.getHeight();
-                    if (inWidth > inHeight) {
-                        outWidth = maxSize;
-                        outHeight = (inHeight * maxSize) / inWidth;
-                    } else {
-                        outHeight = maxSize;
-                        outWidth = (inWidth * maxSize) / inHeight;
-                    }
-
-                    Bitmap bitmap = Bitmap.createScaledBitmap(bitmap2, outWidth, outHeight, true);
-                    String path = MediaStore.Images.Media.insertImage(AddProduct.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
-
-                    mImageUri = Uri.parse(path);
-                    mAddImage.setImageURI(mImageUri);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-            }
-        }
-
-    }
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
         Intent storeIntent =new Intent(AddProduct.this,TabStoreRoom.class);
         startActivity(storeIntent);
+        finish();
     }
 }
 

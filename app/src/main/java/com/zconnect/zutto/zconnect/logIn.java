@@ -3,16 +3,19 @@ package com.zconnect.zutto.zconnect;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +24,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,19 +37,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class logIn extends AppCompatActivity {
+public class logIn extends BaseActivity {
 
     private static final String TAG = "EmailPassword";
     boolean doubleBackToExitPressedOnce = false;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    //    private EditText emailText;
-//    private EditText passwordText;
-//    private Button newUserButton;
-//    private Button logInButton;
     private DatabaseReference mDatabaseUsers;
     private ProgressDialog mProgress;
-    private SignInButton mGoogleSignIn;
+    private Button mGoogleSignIn;
+    private Button mGuestLogIn;
     private int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
 
@@ -56,58 +54,11 @@ public class logIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        newUserButton = (Button) findViewById(R.id.register);
-//        logInButton = (Button) findViewById(R.id.login);
-//        emailText = (EditText) findViewById(R.id.email);
-//        passwordText = (EditText) findViewById(R.id.password);
-        mGoogleSignIn = (SignInButton) findViewById(R.id.GoogleSignIn);
-
-        mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
         mProgress = new ProgressDialog(this);
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() != null) {
-                    if (firebaseAuth.getCurrentUser().getEmail().toString().endsWith("@goa.bits-pilani.ac.in")) {
-                        checkUser();
-                    } else {
 
-                        logout();
-                        mProgress.dismiss();
-                        Toast.makeText(logIn.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        };
 
-//        logInButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (!isNetworkAvailable(getApplicationContext())) {
-//
-//                    Snackbar snack = Snackbar.make(mGoogleSignIn, "No Internet. Can't Log In.", Snackbar.LENGTH_LONG);
-//                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-//                    snackBarText.setTextColor(Color.WHITE);
-//                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-//                    snack.show();
-//
-//                } else {
-//                    startLogin();
-//                }
-//
-//            }
-//        });
-
-//        newUserButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent newUserIntent = new Intent(logIn.this,registerNewUser.class);
-//                startActivity(newUserIntent);
-//            }
-//        });
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -124,6 +75,34 @@ public class logIn extends AppCompatActivity {
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            if (mAuth.getCurrentUser().getEmail() != null && mAuth.getCurrentUser().getEmail().endsWith("@goa.bits-pilani.ac.in")) {
+                checkUser();
+            } else {
+                logout();
+                mProgress.dismiss();
+                Toast.makeText(logIn.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
+            }
+        }
+        mGuestLogIn = (Button) findViewById(R.id.guestLogIn);
+        mGuestLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                guestLogIn(true);
+
+                Intent loginIntent = new Intent(logIn.this, home.class);
+                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(loginIntent);
+
+            }
+        });
+        mGoogleSignIn = (Button) findViewById(R.id.GoogleSignIn);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 
         mGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,6 +123,13 @@ public class logIn extends AppCompatActivity {
 
             }
         });
+
+        TextView bitsgoaemailinfo = (TextView) findViewById(R.id.bitsgoaemailinfo);
+        Typeface ralewayLight = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        Typeface ralewayMedium = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        bitsgoaemailinfo.setTypeface(ralewayLight);
+        mGoogleSignIn.setTypeface(ralewayMedium);
+        mGuestLogIn.setTypeface(ralewayMedium);
     }
 
     private void signIn() {
@@ -222,6 +208,14 @@ public class logIn extends AppCompatActivity {
                             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                             snack.show();
                             mProgress.dismiss();
+                        } else {
+                            if (FirebaseAuth.getInstance().getCurrentUser().getEmail().endsWith("@goa.bits-pilani.ac.in")) {
+                                checkUser();
+                            } else {
+                                logout();
+                                mProgress.dismiss();
+                                Toast.makeText(logIn.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
+                            }
                         }
 //                        else {
 //                         mProgress.dismiss();
@@ -234,23 +228,32 @@ public class logIn extends AppCompatActivity {
     }
 
 
+
+
+    public void guestLogIn(Boolean mode){
+        SharedPreferences sharedPref = getSharedPreferences("guestMode",MODE_PRIVATE);
+
+        SharedPreferences.Editor editInfo= sharedPref.edit();
+        editInfo.putBoolean("mode",mode);
+        editInfo.apply();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        guestLogIn(false);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
+
     }
-public boolean isNetworkAvailable(final Context context) {
-    final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-    return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
-}
+
+    public boolean isNetworkAvailable(final Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
 //    private void startLogin(){
 //
 //        String email = emailText.getText().toString().trim();

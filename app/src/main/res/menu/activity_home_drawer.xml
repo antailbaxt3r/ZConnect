@@ -2,8 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group
-        android:id="@+id/group"
-        android:checkableBehavior="single">
+        android:id="@+id/groupMain">
+        <item
+            android:id="@+id/edit_profile"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="Edit Profile" />
+
+    </group>
+
+
+    <group
+        android:id="@+id/group">
         <item
             android:id="@+id/infone"
             android:icon="@drawable/ic_phone_black_24dp"
@@ -20,15 +29,27 @@
             android:id="@+id/events"
             android:icon="@drawable/ic_event_black_24dp"
             android:title="Events" />
+
+        <item
+            android:id="@+id/cabpool"
+            android:icon="@drawable/ic_directions_car_black_24dp"
+            android:title="Cab Pooling" />
+
+
+        <item
+            android:id="@+id/mapActivity"
+            android:icon="@drawable/ic_place_black_24dp"
+            android:title="Campus Map" />
+
     </group>
     <group
         android:id="@+id/group1"
         android:checkableBehavior="none">
 
-            <item
-                android:id="@+id/ad"
-                android:icon="@drawable/ic_live_tv_black_24dp"
-                android:title="Advertisement" />
+        <item
+            android:id="@+id/ad"
+            android:icon="@drawable/ic_live_tv_black_24dp"
+            android:title="Advertisement" />
         <item
             android:id="@+id/about"
             android:icon="@drawable/aboutus"

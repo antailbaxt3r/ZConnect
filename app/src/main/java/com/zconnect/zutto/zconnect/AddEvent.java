@@ -15,7 +15,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -27,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.location.places.Place;
@@ -47,13 +45,12 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddEvent extends AppCompatActivity {
+public class AddEvent extends BaseActivity {
     private static final int GALLERY_REQUEST = 7;
     String eventDate;
     String dateString;
@@ -64,7 +61,7 @@ public class AddEvent extends AppCompatActivity {
     boolean flag = false;
     DatabaseReference mFeaturesStats;
     private Uri mImageUri = null;
-    private SimpleDraweeView mAddImage;
+    private ImageView mAddImage;
     private EditText mEventName;
     private EditText mEventDescription;
     private EditText mVenue;
@@ -84,6 +81,7 @@ public class AddEvent extends AppCompatActivity {
 
         }
     };
+    private IntentHandle intentHandle = new IntentHandle();
 
     private FirebaseAuth mAuth;
     @Override
@@ -126,7 +124,7 @@ public class AddEvent extends AppCompatActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        mAddImage = (SimpleDraweeView) findViewById(R.id.imageButton);
+        mAddImage = (ImageView) findViewById(R.id.imageButton);
         mEventName = (EditText) findViewById(R.id.name);
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
@@ -157,8 +155,7 @@ public class AddEvent extends AppCompatActivity {
                             12345
                     );
                 }
-                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
+                Intent galleryIntent = intentHandle.getPickImageIntent(AddEvent.this);
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
@@ -286,7 +283,7 @@ public class AddEvent extends AppCompatActivity {
                         newPost2.child("desc2").setValue(eventDate);
 
                         // Adding stats
-
+                        CounterManager.addEventVerified(key, eventNameValue);
                         mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -319,6 +316,8 @@ public class AddEvent extends AppCompatActivity {
                         newPost.child("Key").setValue(newPost.getKey());
                         newPost.child("log").setValue(latLng.longitude);
                         newPost.child("lat").setValue(latLng.latitude);
+
+                        CounterManager.addEventUnVerified(key, eventNameValue);
                     }
 
                     mProgress.dismiss();
@@ -361,10 +360,10 @@ public class AddEvent extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
+            Uri imageUri = intentHandle.getPickImageResultUri(data);
             CropImage.activity(imageUri)
+                    .setCropShape(CropImageView.CropShape.RECTANGLE)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setSnapRadius(2)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -373,28 +372,17 @@ public class AddEvent extends AppCompatActivity {
 
                 try {
                     mImageUri = result.getUri();
-                    Bitmap bitmap2 = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap2.compress(Bitmap.CompressFormat.JPEG, 60, out);
-                    final int maxSize = 1000;
-                    int outWidth;
-                    int outHeight;
-                    int inWidth = bitmap2.getWidth();
-                    int inHeight = bitmap2.getHeight();
-                    if (inWidth > inHeight) {
-                        outWidth = maxSize;
-                        outHeight = (inHeight * maxSize) / inWidth;
-                    } else {
-                        outHeight = maxSize;
-                        outWidth = (inWidth * maxSize) / inHeight;
-                    }
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
 
-                    Bitmap bitmap = Bitmap.createScaledBitmap(bitmap2, outWidth, outHeight, true);
+                    if (bitmap.getByteCount() > 350000) {
+
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), false);
+                    }
                     String path = MediaStore.Images.Media.insertImage(AddEvent.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     mAddImage.setImageURI(mImageUri);
-
 
                 } catch (IOException e) {
                     e.printStackTrace();

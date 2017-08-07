@@ -3,12 +3,15 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -21,7 +24,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -47,8 +50,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class home extends AppCompatActivity
-    implements NavigationView.OnNavigationItemSelectedListener {
+public class home extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     DatabaseReference mData;
     Homescreen homescreen ;
     com.google.firebase.database.Query mDatabase;
@@ -77,6 +79,22 @@ public class home extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        SharedPreferences sharedPref = getSharedPreferences("guestMode",MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!prefs.getBoolean("firstTime", false)) {
+            // <---- run your one time code here
+            Intent tutIntent =new Intent(home.this,FullscreenActivity.class);
+            tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(tutIntent);
+            //mark first time has runned.
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("firstTime", true);
+            editor.apply();
+        }
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -92,6 +110,8 @@ public class home extends AppCompatActivity
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null)
+            addImageDialog();
          homescreen = new Homescreen();
         //        Intent called = getIntent();
 //        homescreen = called.hasExtra("type")?new Homescreen("new"):new Homescreen(null);
@@ -129,7 +149,9 @@ public class home extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
-
+        if (status) {
+            navigationView.getMenu().findItem(R.id.edit_profile).setVisible(false);
+        }
         username = (TextView) header.findViewById(R.id.textView_1);
         useremail = (TextView) header.findViewById(R.id.textView_2);
 
@@ -145,13 +167,7 @@ public class home extends AppCompatActivity
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                if (firebaseAuth.getCurrentUser() == null) {
-                    Intent loginIntent = new Intent(home.this, logIn.class);
-                    loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    mAuth.removeAuthStateListener(mAuthListener);
-                    startActivity(loginIntent);
-                    finish();
-                } else {
+                if (firebaseAuth.getCurrentUser() != null) {
 
                     checkUser();
                 }
@@ -169,16 +185,22 @@ public class home extends AppCompatActivity
 
         databaseReference.keepSynced(true);
 
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (number != null) {
-                    Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                    startActivity(intent);
-                }
-            }
-        });
+        if (mAuth.getCurrentUser() == null)
+        if(!status) {
+            header.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (number != null) {
+                        Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), AddContact.class);
+                        startActivity(intent);
+                    }
+                    }
+            });
 
+        }
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
 
@@ -191,16 +213,18 @@ public class home extends AppCompatActivity
         //Setup tablayout with viewpager
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(0);
+        isNetworkAvailable(this);
 
-
+        //changing fonts
+        Typeface ralewayBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Thin.ttf");
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        mAuth.addAuthStateListener(mAuthListener);
-
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        mAuth.addAuthStateListener(mAuthListener);
+//
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -221,18 +245,38 @@ public class home extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.infone) {
+        if(id== R.id.edit_profile){
+
+            if (number != null) {
+                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                startActivity(intent);
+            }
+            else {
+                Intent intent = new Intent(getApplicationContext(), AddContact.class);
+                startActivity(intent);
+            }
+
+
+        }
+        else if (id == R.id.infone) {
+            CounterManager.InfoneOpen();
             Intent intent = new Intent(this, Phonebook.class);
             startActivity(intent);
         } else if (id == R.id.shop) {
+            CounterManager.ShopOpen();
             Intent intent = new Intent(this, Shop.class);
             startActivity(intent);
         } else if (id == R.id.storeRoom) {
+            CounterManager.StoreRoomOpen();
             startActivity(new Intent(home.this, TabStoreRoom.class));
 
         } else if (id == R.id.events) {
-
+            CounterManager.EventOpen();
             startActivity(new Intent(home.this, AllEvents.class));
+
+        } else if (id == R.id.cabpool) {
+
+            startActivity(new Intent(home.this, CabPooling.class));
 
         } else if (id == R.id.signOut) {
             if (!isNetworkAvailable(getApplicationContext())) {
@@ -248,11 +292,15 @@ public class home extends AppCompatActivity
             }
 
         } else if (id == R.id.ad) {
+            CounterManager.AdvertisementOpen();
             startActivity(new Intent(home.this, Advertisement.class));
 
         } else if (id == R.id.about) {
             startActivity(new Intent(home.this, AboutUs.class));
 
+        } else if (id == R.id.mapActivity) {
+            CounterManager.MapOpen();
+            startActivity(new Intent(this, Campus_Map.class));
         } else if (id == R.id.bugReport) {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(home.this);
 
@@ -330,6 +378,15 @@ public class home extends AppCompatActivity
 
         // Google sign out
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
+        if (mAuth.getCurrentUser() == null) {
+            Intent loginIntent = new Intent(home.this, logIn.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            mAuth.removeAuthStateListener(mAuthListener);
+            startActivity(loginIntent);
+            finish();
+        }
+
     }
 
     public boolean isNetworkAvailable(final Context context) {
@@ -398,6 +455,50 @@ public class home extends AppCompatActivity
         viewPager.setAdapter(adapter);
     }
 
+    private void addImageDialog() {
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Phonebook");
+        ref.orderByChild("email").equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if ((dataSnapshot.getChildrenCount()) == 0) {
+                    SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
+                    Boolean status = sharedPref.getBoolean("never", false);
+                    if (!status) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(home.this);
+                        builder.setTitle("Hi " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName())
+                                .setMessage("Add your information and get discovered.")
+                                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        startActivity(new Intent(home.this, AddContact.class));
+                                    }
+                                }).setNegativeButton("Later", null)
+                                .setNeutralButton("Lite :", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
+
+                                        SharedPreferences.Editor editInfo = sharedPref.edit();
+                                        editInfo.putBoolean("never", true);
+                                        editInfo.apply();
+                                        editInfo.commit();
+                                    }
+                                })
+                                .setCancelable(false)
+                                .create().show();
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

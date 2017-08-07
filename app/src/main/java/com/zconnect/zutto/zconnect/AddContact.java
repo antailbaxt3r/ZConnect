@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -15,12 +16,12 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -38,12 +39,14 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddContact extends AppCompatActivity {
+import mabbas007.tagsedittext.TagsEditText;
+
+public class AddContact extends BaseActivity implements TagsEditText.TagsEditListener{
     public static final int SELECT_PICTURE = 1;
     private static final int GALLERY_REQUEST = 7;
     SimpleDraweeView image;
@@ -61,10 +64,12 @@ public class AddContact extends AppCompatActivity {
     private DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users");
     private ProgressDialog mProgress;
     // private RadioButton radioButtonS, radioButtonA, radioButtonO;
-    private String name, email, details, number, hostel, category = null;
+    private String name, email, details, number, hostel, category = null,skills;
     private CustomSpinner spinner;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private TagsEditText skillTags;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +78,12 @@ public class AddContact extends AppCompatActivity {
         mProgress = new ProgressDialog(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            showToast("Please Login.");
+            startActivity(new Intent(this, logIn.class));
+            finish();
+        }
         intentHandle = (new IntentHandle()); //Init intent object
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -104,8 +115,8 @@ public class AddContact extends AppCompatActivity {
         userRef.child(userId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                editTextName.setText(dataSnapshot.child("Username").getValue().toString());
-                editTextEmail.setText((dataSnapshot.child("Email").getValue().toString()));
+                editTextName.setText(dataSnapshot.child("Username").getValue(String.class));
+                editTextEmail.setText((dataSnapshot.child("Email").getValue(String.class)));
             }
 
             @Override
@@ -136,10 +147,26 @@ public class AddContact extends AppCompatActivity {
                             12345
                     );
                 }
-                galleryIntent = intentHandle.getPickImageIntent(getApplicationContext()); //Get intent to create chooser .
+                galleryIntent = intentHandle.getPickImageIntent(AddContact.this); //Get intent to create chooser .
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
+
+        skillTags =(TagsEditText) findViewById(R.id.skillsTags);
+        skillTags.setTagsListener(this);
+        skillTags.setTagsWithSpacesEnabled(true);
+
+        skillTags.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.skills)));
+        skillTags.setThreshold(1);
+
+        //changing fonts
+        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        editTextName.setTypeface(ralewayRegular);
+        editTextDetails.setTypeface(ralewayRegular);
+        editTextNumber.setTypeface(ralewayRegular);
+        editTextEmail.setTypeface(ralewayRegular);
+        skillTags.setTypeface(ralewayRegular);
 
     }
 
@@ -150,6 +177,7 @@ public class AddContact extends AppCompatActivity {
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             Uri imageUri = intentHandle.getPickImageResultUri(data); //Get data
             CropImage.activity(imageUri)
+                    .setCropShape(CropImageView.CropShape.OVAL)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1, 1)
                     .setSnapRadius(2)
@@ -162,15 +190,18 @@ public class AddContact extends AppCompatActivity {
 
                 try {
                     mImageUri = result.getUri();
+                    image.setImageURI(mImageUri);
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 150, 150, true);
-                    String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap2, mImageUri.getLastPathSegment(), null);
+                    Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
+
+                    if (bitmap.getByteCount() > 250000) {
+
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
+                    }
+                    String path = MediaStore.Images.Media.insertImage(AddContact.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
                     image.setImageURI(mImageUri);
-
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -214,59 +245,117 @@ public class AddContact extends AppCompatActivity {
     }
 
     public void startposting() {
-        mProgress.setMessage("Adding...");
-        mProgress.show();
         name = editTextName.getText().toString().trim();
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
         hostel = String.valueOf(spinner.getSelectedItem());
+        skills= skillTags.getTags().toString().trim();
         //  Log.v("tag",hostel);
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        mProgress.setMessage("Adding...");
 
-        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && mImageUri != null) {
-            StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-
-                    DatabaseReference newPost = ref.child(number);
-
-                    newPost.child("name").setValue(name);
-                    newPost.child("desc").setValue(details);
-                    newPost.child("imageurl").setValue(downloadUri.toString());
-                    newPost.child("number").setValue(number);
-                    newPost.child("category").setValue(category);
-                    newPost.child("email").setValue(email);
-
-                    newPost.child("hostel").setValue(hostel);
+        if (name != null && number != null && email != null && details != null && cat != null && category != null && spinner.getSelectedItem() != null && skills!=null) {
+            if(mImageUri != null) {
+                mProgress.show();
+                StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
+                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUri = taskSnapshot.getDownloadUrl();
 
 
-                    mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-                            TotalNumbers = TotalNumbers + 1;
-                            DatabaseReference newPost = mFeaturesStats;
-                            Map<String, Object> taskMap = new HashMap<String, Object>();
-                            taskMap.put("TotalNumbers", TotalNumbers);
-                            newPost.updateChildren(taskMap);
-                        }
+                        DatabaseReference newPost = ref.child(number);
+
+                        newPost.child("name").setValue(name);
+                        newPost.child("desc").setValue(details);
+                        newPost.child("imageurl").setValue(downloadUri);
+                        newPost.child("number").setValue(number);
+                        newPost.child("category").setValue(category);
+                        newPost.child("email").setValue(email);
+                        newPost.child("hostel").setValue(hostel);
+                        newPost.child("skills").setValue(skills);
+
+                        CounterManager.InfoneContactAdded();
+                        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                                TotalNumbers = TotalNumbers + 1;
+                                DatabaseReference newPost = mFeaturesStats;
+                                Map<String, Object> taskMap = new HashMap<String, Object>();
+                                taskMap.put("TotalNumbers", TotalNumbers);
+                                newPost.updateChildren(taskMap);
+                            }
 
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
 
 
-                    mProgress.dismiss();
-                    startActivity(new Intent(AddContact.this, Phonebook.class));
-                    finish();
-                }
-            });
+                        mProgress.dismiss();
+                        startActivity(new Intent(AddContact.this, Phonebook.class));
+                        finish();
+
+                    }
+                });
+            }else {
+
+
+                final String downloadUri;
+                downloadUri = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336"; //sets default download Image url
+                Snackbar snack = Snackbar.make(this.editTextName, R.string.noImage, Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.setAction("Skip", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mProgress.show();
+                        DatabaseReference newPost = ref.child(number);
+
+                        newPost.child("name").setValue(name);
+                        newPost.child("desc").setValue(details);
+                        newPost.child("imageurl").setValue(downloadUri);
+                        newPost.child("number").setValue(number);
+                        newPost.child("category").setValue(category);
+                        newPost.child("email").setValue(email);
+                        newPost.child("hostel").setValue(hostel);
+                        newPost.child("skills").setValue(skills);
+
+                        CounterManager.InfoneContactAdded();
+                        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Integer TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                                TotalNumbers = TotalNumbers + 1;
+                                DatabaseReference newPost = mFeaturesStats;
+                                Map<String, Object> taskMap = new HashMap<String, Object>();
+                                taskMap.put("TotalNumbers", TotalNumbers);
+                                newPost.updateChildren(taskMap);
+                            }
+
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                        mProgress.dismiss();
+                        startActivity(new Intent(AddContact.this, Phonebook.class));
+                        finish();
+
+
+                    }
+                });
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal900));
+                snack.show();
+            }
+
         } else {
             Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't add contact.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
@@ -277,5 +366,26 @@ public class AddContact extends AppCompatActivity {
 
 
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            skillTags.showDropDown();
+        }
+    }
+
+    @Override
+    public void onTagsChanged(Collection<String> tags) {
+
+    }
+
+    @Override
+    public void onEditingFinished() {
+        //Log.d(TAG,"OnEditing finished");
+//        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(skillTags.getWindowToken(), 0);
+//        //skillTags.clearFocus();
     }
 }

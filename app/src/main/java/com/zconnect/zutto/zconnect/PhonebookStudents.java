@@ -17,7 +17,7 @@ public class PhonebookStudents extends Fragment {
     Vector<PhonebookStudentHostelItem> phonebookStudentHostelItems;
     private PhonebookStudentHostelRV adapter;
     private RecyclerView recyclerView;
-    private String hostel[] = {"AH-1", "AH-2", "AH-3", "AH-4", "AH-5", "AH-6", "AH-7", "AH-8", "CH-1", "CH-2", "CH-3", "CH-4", "CH-5", "CH-6"};
+    private String hostel[] = {"AH-1", "AH-2", "AH-3", "AH-4", "AH-5", "AH-6", "AH-7", "AH-8","AH-9", "CH-1", "CH-2", "CH-3", "CH-4", "CH-5", "CH-6","CH-7"};
 
     public PhonebookStudents() {
         // Required empty public constructor
@@ -51,7 +51,7 @@ public class PhonebookStudents extends Fragment {
 
     public Vector<PhonebookStudentHostelItem> data() {
         Vector<PhonebookStudentHostelItem> phonebookStudentHostelItems = new Vector<>();
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 16; i++) {
             PhonebookStudentHostelItem phonebookStudentHostelItem1 = new PhonebookStudentHostelItem();
             phonebookStudentHostelItem1.setHostel(hostel[i]);
             phonebookStudentHostelItem1.setCat("S");

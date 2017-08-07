@@ -1,16 +1,16 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +23,7 @@ import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
-public class MyProducts extends AppCompatActivity {
+public class MyProducts extends BaseActivity {
     Query query;
     //private DatabaseReference mReservedProducts;
     private DatabaseReference mDatabase;
@@ -97,7 +97,7 @@ public class MyProducts extends AppCompatActivity {
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        CounterManager.StoreRoomMyProductDelete();
                         viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key);
                         viewHolder.ReserveReference.getRef().removeValue();
                     }
@@ -114,7 +114,7 @@ public class MyProducts extends AppCompatActivity {
         private DatabaseReference ReserveReference;
         //        private Switch mReserve;
 //        private TextView ReserveStatus;
-        private ImageButton deleteButton;
+        private Button deleteButton;
 //        private FirebaseAuth mAuth;
 //        String [] keyList;
 //        String ReservedUid;
@@ -123,13 +123,15 @@ public class MyProducts extends AppCompatActivity {
             super(itemView);
             mView = itemView;
             //to delete reserved items
-            deleteButton = (ImageButton) mView.findViewById(R.id.delete);
+            deleteButton = (Button) mView.findViewById(R.id.delete);
         }
 
         public void setProductName(String productName) {
 
             TextView post_name = (TextView) mView.findViewById(R.id.productName);
             post_name.setText(productName);
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            post_name.setTypeface(ralewayMedium);
 
         }
 
@@ -137,7 +139,8 @@ public class MyProducts extends AppCompatActivity {
 
             TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
             post_desc.setText(productDesc);
-
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            post_desc.setTypeface(ralewayMedium);
         }
 
         public void setImage(Context ctx, String image) {
@@ -151,8 +154,10 @@ public class MyProducts extends AppCompatActivity {
 
         //Set Product Price
         public void setPrice(String productPrice) {
-            TextView post_name = (TextView) mView.findViewById(R.id.price);
-            post_name.setText("₹" + productPrice + "/-");
+            TextView post_price = (TextView) mView.findViewById(R.id.price);
+            post_price.setText("₹" + productPrice + "/-");
+            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            post_price.setTypeface(ralewayMedium);
         }
 
 

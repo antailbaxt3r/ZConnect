@@ -1,31 +1,13 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1.5dp"
-    app:cardBackgroundColor="@color/white">
+    android:layout_margin="10dp"
+    android:background="@drawable/roundradius">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/featurename"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Feature"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/recents_image"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_below="@+id/featurename"
-            android:background="@drawable/border4"
-            android:padding="5dp"
-            android:scaleType="centerCrop" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/recentname"
@@ -33,19 +15,68 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/recents_image"
+            android:background="@color/teal600"
             android:padding="10dp"
             android:text="Name"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="18dp" />
 
-        <TextView
-            android:id="@+id/recentdesc"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/recentname"
-            android:padding="10dp"
-            android:text="Desc"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
-    </RelativeLayout>
+            android:orientation="horizontal">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/recents_image"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_below="@+id/featurename"
+                android:layout_weight=".6"
+                android:padding="5dp"
+                android:scaleType="centerCrop" />
+
+            <RelativeLayout
+                android:id="@+id/descTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".4"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/recentdesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:padding="8dp"
+                    android:text="Desc"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@id/recentdesc">
+
+
+                    <TextView
+                        android:id="@+id/featurename"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="right"
+                        android:paddingRight="10dp"
+                        android:text="Feature"
+                        android:textColor="@color/teal900"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 </android.support.v7.widget.CardView>

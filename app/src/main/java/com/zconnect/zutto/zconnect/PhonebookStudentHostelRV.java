@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,9 +58,14 @@ public class PhonebookStudentHostelRV extends RecyclerView.Adapter<PhonebookStud
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    String cat = phonebookStudentHostelItems.get(getAdapterPosition()).getCat();
+                    String hostel = phonebookStudentHostelItems.get(getAdapterPosition()).getHostel();
+                    String category = cat.equals("A") ? "Admin" : (cat.equals("O") ? "others" : "Students");
+                    CounterManager.infoneOpenCategory(category, hostel);
+
                     Intent intent = new Intent(context, PhonebookHostelWise.class);
-                    intent.putExtra("Cat",phonebookStudentHostelItems.get(getAdapterPosition()).getCat());
-                    intent.putExtra("Hostel", phonebookStudentHostelItems.get(getAdapterPosition()).getHostel());
+                    intent.putExtra("Cat", cat);
+                    intent.putExtra("Hostel", hostel);
                     context.startActivity(intent);
                     if (context instanceof PhonebookHostelWise) {
                         ((PhonebookHostelWise) context).finish();
@@ -67,6 +73,9 @@ public class PhonebookStudentHostelRV extends RecyclerView.Adapter<PhonebookStud
                 }
             });
 
+            //changing fonts
+            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+            hostel.setTypeface(ralewayMedium);
         }
     }
 

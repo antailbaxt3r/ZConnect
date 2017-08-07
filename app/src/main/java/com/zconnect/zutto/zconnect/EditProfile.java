@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -15,12 +16,12 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,11 +42,16 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 
-public class EditProfile extends AppCompatActivity {
+import mabbas007.tagsedittext.TagsEditText;
+
+public class EditProfile extends BaseActivity implements TagsEditText.TagsEditListener{
+
     private static final int GALLERY_REQUEST = 7;
+    public ProgressDialog mProgress;
     String email;
-    String name, details, imageurl, number = null, hostel = null, host, category;
+    String name, details, imageurl, number = null, hostel = null, host, category,skills;
     SimpleDraweeView simpleDraweeView;
     Boolean flag = false;
     private FirebaseAuth mAuth;
@@ -55,7 +61,7 @@ public class EditProfile extends AppCompatActivity {
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
-    private ProgressDialog mProgress;
+    private TagsEditText skillTags;
     private CustomSpinner spinner;
     // private RadioButton radioButtonS, radioButtonA, radioButtonO;
 
@@ -75,8 +81,17 @@ public class EditProfile extends AppCompatActivity {
         editTextName = (TextInputEditText) findViewById(R.id.contact_edit_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_edit_number_editText);
         simpleDraweeView = (SimpleDraweeView) findViewById(R.id.contact_edit_image);
-
+        skillTags =(TagsEditText) findViewById(R.id.skillsTags);
         spinner = (CustomSpinner) findViewById(R.id.spinner1);
+
+
+        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        editTextName.setTypeface(ralewayRegular);
+        editTextDetails.setTypeface(ralewayRegular);
+        editTextNumber.setTypeface(ralewayRegular);
+        skillTags.setTypeface(ralewayRegular);
+        editTextEmail.setTypeface(ralewayRegular);
+
 //        Log.v("tag",email);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -123,6 +138,15 @@ public class EditProfile extends AppCompatActivity {
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
+
+
+        skillTags.setTagsListener(this);
+        skillTags.setTagsWithSpacesEnabled(true);
+
+        skillTags.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.skills)));
+        skillTags.setThreshold(1);
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -130,6 +154,7 @@ public class EditProfile extends AppCompatActivity {
 
                     PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
                     if (email != null) {
+                        if (phonebookDisplayItem.getEmail() != null) {
                         if (phonebookDisplayItem.getEmail().equals(email)) {
                             name = phonebookDisplayItem.getName();
                             details = phonebookDisplayItem.getDesc();
@@ -137,11 +162,34 @@ public class EditProfile extends AppCompatActivity {
                             imageurl = phonebookDisplayItem.getImageurl();
                             hostel = phonebookDisplayItem.getHostel();
                             category = phonebookDisplayItem.getCategory();
+                            skills=phonebookDisplayItem.getSkills();
                             editTextName.setText(name);
                             editTextNumber.setText(number);
                             simpleDraweeView.setImageURI(Uri.parse(imageurl));
                             editTextDetails.setText(details);
                             spinner.setSelection(getIndex(spinner, hostel));
+
+                            if(skills==null || skills.equalsIgnoreCase("[]")){
+
+                                skills="";
+
+                            }
+
+                            if( !skills.equals("") || skills.indexOf(',')>0) {
+                                String[] skillsArray = skills.split(",");
+
+                                skillsArray[0] = skillsArray[0].substring(1);
+                                skillsArray[skillsArray.length - 1] = skillsArray[skillsArray.length - 1]
+                                        .substring(0, skillsArray[skillsArray.length - 1].length() - 1);
+                                skillTags.setTags(skillsArray);
+                            }
+                            else {
+
+
+                                skillTags.setText(skills);
+
+                            }
+
                             if (number == null) {
                                 flag = true;
                             }
@@ -161,6 +209,7 @@ public class EditProfile extends AppCompatActivity {
                                 host = "none";
                             }
                         }
+                    }
                     }
 
                 }
@@ -280,6 +329,7 @@ public class EditProfile extends AppCompatActivity {
         email = editTextEmail.getText().toString().trim();
         details = editTextDetails.getText().toString().trim();
         number = editTextNumber.getText().toString().trim();
+        skills= skillTags.getTags().toString().trim();
         if (flag) {
             Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
@@ -288,7 +338,7 @@ public class EditProfile extends AppCompatActivity {
             snack.show();
             mProgress.dismiss();
         } else {
-        if (name != null && number != null && details != null && mImageUri != null) {
+        if (name != null && number != null && details != null && mImageUri != null && !skills.equals("")) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -303,6 +353,7 @@ public class EditProfile extends AppCompatActivity {
                     newPost.child("number").setValue(number);
                     newPost.child("category").setValue(category);
                     newPost.child("email").setValue(email);
+                    newPost.child("skills").setValue(skills);
                     if (host.equals("none")) {
                         newPost.child("hostel").setValue(hostel);
                     } else {
@@ -323,6 +374,7 @@ public class EditProfile extends AppCompatActivity {
             newPost.child("number").setValue(number);
             newPost.child("category").setValue(category);
             newPost.child("email").setValue(email);
+            newPost.child("skills").setValue(skills);
             if (host.equals("none")) {
                 newPost.child("hostel").setValue(hostel);
             } else {
@@ -333,16 +385,38 @@ public class EditProfile extends AppCompatActivity {
             mProgress.dismiss();
             startActivity(new Intent(EditProfile.this, home.class));
         } else {
+            mProgress.dismiss();
             Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
             snack.show();
-            mProgress.dismiss();
+
 
 
         }
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            skillTags.showDropDown();
+        }
+    }
+
+    @Override
+    public void onTagsChanged(Collection<String> tags) {
+
+    }
+
+    @Override
+    public void onEditingFinished() {
+        //Log.d(TAG,"OnEditing finished");
+//        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(skillTags.getWindowToken(), 0);
+//        //skillTags.clearFocus();
     }
 
 }

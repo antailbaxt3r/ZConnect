@@ -4,16 +4,17 @@ import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,10 +25,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 
 public class Homescreen extends Fragment {
+    public String type = null;
     TextView InfoneStats;
     TextView InfoneName;
     TextView InfoneStatement;
@@ -44,6 +45,7 @@ public class Homescreen extends Fragment {
     FirebaseAuth mAuth;
     String userId;
     GridLayout Grid;
+    ImageView carpool;
     DatabaseReference mDatabaseUser, mDatabaseStats;
     int UserTotalNumbers = 0, TotalNumbers = 0;
     int UserTotalProducts = 0, TotalProducts = 0;
@@ -53,7 +55,6 @@ public class Homescreen extends Fragment {
     ValueEventListener UserStats;
     ValueEventListener TotalStats;
     LinearLayout InfoneCard, StoreRoomCard, EventsCard, ShopsCard;
-    public String type = null;
     @SuppressLint("ValidFragment")
     public Homescreen() {
     }
@@ -86,6 +87,20 @@ public class Homescreen extends Fragment {
         StoreRoomName = (TextView) view.findViewById(R.id.StoreRoomName);
         StoreRoomStatement = (TextView) view.findViewById(R.id.StoreRoomStatement);
 
+        carpool = (ImageView) view.findViewById(R.id.cabpool);
+
+        carpool.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CabPooling.class);
+                startActivity(intent);
+            }
+        });
+
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        final Boolean status = sharedPref.getBoolean("mode", false);
+        //Toast.makeText(getContext(), status.toString(), Toast.LENGTH_SHORT).show();
+
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         if (user != null) {
@@ -99,14 +114,18 @@ public class Homescreen extends Fragment {
         InfoneCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterManager.InfoneOpen();
                 Intent InfoneIntent = new Intent(getContext(), Phonebook.class);
                 startActivity(InfoneIntent);
             }
         });
 
+
+
         StoreRoomCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterManager.StoreRoomOpen();
                 Intent InfoneIntent = new Intent(getContext(), TabStoreRoom.class);
                 startActivity(InfoneIntent);
             }
@@ -115,6 +134,7 @@ public class Homescreen extends Fragment {
         EventsCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterManager.EventOpen();
                 Intent InfoneIntent = new Intent(getContext(), AllEvents.class);
                 startActivity(InfoneIntent);
             }
@@ -123,6 +143,7 @@ public class Homescreen extends Fragment {
         ShopsCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterManager.ShopOpen();
                 Intent InfoneIntent = new Intent(getContext(), Shop.class);
                 startActivity(InfoneIntent);
             }
@@ -144,86 +165,54 @@ public class Homescreen extends Fragment {
 
             }
         };
-        UserStats = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("TotalNumbers").getValue() != null) {
-                    UserTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-                }
-                if (dataSnapshot.child("TotalEvents").getValue() != null) {
-                    UserTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-                }
-                if (dataSnapshot.child("TotalOffers").getValue() != null) {
-                    UserTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
-                }
-                if (dataSnapshot.child("TotalProducts").getValue() != null) {
-                    UserTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
-                }
-                setNotification();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+        if(user!=null) {
+            UserStats = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child("TotalNumbers").getValue() != null) {
+                        UserTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                    }
+                    if (dataSnapshot.child("TotalEvents").getValue() != null) {
+                        UserTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                    }
+                    if (dataSnapshot.child("TotalOffers").getValue() != null) {
+                        UserTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                    }
+                    if (dataSnapshot.child("TotalProducts").getValue() != null) {
+                        UserTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                    }
+                    setNotification();
+                }
 
-            }
-        };
-        addContactOption();
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
+                }
+            };
+        }
+
+        //changing fonts
+        Typeface ralewayExtraLight = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-ExtraLight.ttf");
+        InfoneName.setTypeface(ralewayExtraLight);
+        InfoneStats.setTypeface(ralewayExtraLight);
+        InfoneStatement.setTypeface(ralewayExtraLight);
+        EventsName.setTypeface(ralewayExtraLight);
+        EventsStats.setTypeface(ralewayExtraLight);
+        EventsStatement.setTypeface(ralewayExtraLight);
+        ShopsName.setTypeface(ralewayExtraLight);
+        ShopsStats.setTypeface(ralewayExtraLight);
+        ShopsStatement.setTypeface(ralewayExtraLight);
+        StoreRoomName.setTypeface(ralewayExtraLight);
+        StoreRoomStats.setTypeface(ralewayExtraLight);
+        StoreRoomStatement.setTypeface(ralewayExtraLight);
         return view;
     }
 
-    void  addContactOption() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Phonebook");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Boolean exists = false;
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
-
-                    if (mAuth.getCurrentUser().getEmail()!=null&&phonebookDisplayItem.getEmail()!=null&&phonebookDisplayItem.getEmail().equals(mAuth.getCurrentUser().getEmail())) {
-                        exists= true;
-                    }
-
-                }
-                if (!exists)
-                {
-                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
-                    alertBuilder.setCancelable(true);
-                    alertBuilder.setTitle("Add your contact");
-                    alertBuilder.setMessage("Welcome to ZConnect! , Add your contact on ZConnect");
-                    alertBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent addContact = new Intent(getContext(), AddContact.class);
-                            addContact.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(addContact);
-                        }
-                    });
-                    alertBuilder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-                    AlertDialog alert = alertBuilder.create();
-                    alert.show();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        }
-
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (isNetworkAvailable(getContext())&&user!=null) {
             mDatabaseStats.addValueEventListener(TotalStats);
             mDatabaseUser.addValueEventListener(UserStats);
@@ -232,9 +221,10 @@ public class Homescreen extends Fragment {
         }
     }
 
+
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         if (user != null) {
             mDatabaseUser.removeEventListener(UserStats);
             mDatabaseStats.removeEventListener(TotalStats);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_open_event_detail"
@@ -32,113 +32,117 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/od_EventImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/input_outline"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/defaultevent" />
-
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp">
-
-                    <TextView
-                        android:id="@+id/od_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="5dp"
-                        android:paddingTop="5dp"
-                        android:text="Event Date"
-                        android:textColor="@color/teal700"
-                        android:textSize="26dp"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:id="@+id/setReminder"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginRight="5dp"
-                        android:background="@drawable/reminder"
-                        android:scaleType="fitXY"
-                        android:textAlignment="textEnd" />
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="10dp"
-                    android:background="@android:color/darker_gray" />
+                android:layout_height="0dp"
+                android:layout_weight=".9">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp">
+                    android:orientation="vertical">
 
-                    <ImageButton
-                        android:id="@+id/od_directions"
-                        android:layout_width="35dp"
-                        android:layout_height="54dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/location"
-                        android:scaleType="fitXY" />
-
-
-                    <TextView
-                        android:id="@+id/od_venue"
+                    <ImageView
+                        android:id="@+id/od_EventImage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="20dp"
-                        android:text="Venue N/A"
-                        android:textColor="@color/teal700"
-                        android:textSize="20dp"
-                        android:textStyle="bold" />
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/input_outline"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/defaultevent" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/od_date"
+                            android:layout_width="0dp"
+                            android:layout_weight=".5"
+                            android:layout_height="wrap_content"
+                            android:text="Event Date"
+                            android:textColor="@color/teal700"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight=".5"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageButton
+                                android:id="@+id/od_directions"
+                                android:layout_width="16dp"
+                                android:layout_height="26dp"
+                                android:background="@drawable/location"
+                                android:scaleType="fitXY"/>
+
+
+                            <TextView
+                                android:id="@+id/od_venue"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Venue N/A"
+                                android:layout_marginLeft="10dp"
+                                android:textColor="@color/teal700"
+                                android:textSize="16dp"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/od_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:padding="5dp"
+                        android:paddingTop="5dp"
+                        android:text="Event Description"
+                        android:textColor="@color/grey700"
+                        android:textSize="16dp" />
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/od_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:padding="5dp"
-                    android:paddingTop="5dp"
-                    android:text="Event Description"
-                    android:textColor="@color/grey700"
-                    android:textSize="16dp" />
 
+            </ScrollView>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".1"
+                android:layout_gravity="bottom"
+                android:layout_margin="10dp"
+                android:weightSum="1">
+                <Button
+                    android:id="@+id/boostBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight=".5"
+                    android:layout_height="match_parent"
+                    android:text="Boost"
+                    android:background="@drawable/curvedradiusbutton_sr"
+                    android:layout_marginRight="5dp"
+                    android:textColor="@color/white"/>
+                <Button
+                    android:id="@+id/setReminder"
+                    android:layout_width="0dp"
+                    android:layout_weight=".5"
+                    android:layout_height="match_parent"
+                    android:text="Set Reminder"
+                    android:background="@drawable/curveradiusgoogle"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/white"/>
             </LinearLayout>
-
-
-        </ScrollView>
-
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
 

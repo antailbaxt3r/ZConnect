@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,6 +59,12 @@ public class ShopOfferRV extends RecyclerView.Adapter<ShopOfferRV.ViewHolder> {
             title = (TextView) itemView.findViewById(R.id.offerTitle);
             desc = (TextView) itemView.findViewById(R.id.offerDescription);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.offerImage);
+
+            //changing fonts
+            Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+            title.setTypeface(customFont);
+            desc.setTypeface(customFont2);
         }
     }
 }

@@ -7,42 +7,57 @@
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="5dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/offerTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="Title"
-            android:textColor="@android:color/black"
-
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/offerImage"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_below="@+id/offerTitle"
-            android:layout_marginTop="10dp"
-            app:actualImageScaleType="fitCenter" />
-
-        <TextView
-            android:id="@+id/offerDescription"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/offerImage"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:text="Details"
-            android:textColor="@android:color/black"
-            android:textSize="12sp"
-            android:textStyle="italic" />
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/recents_image"
+            android:background="@color/teal600"
+            android:padding="10dp"
+            android:text="Name"
+            android:textColor="@color/white"
+            android:textSize="18dp" />
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/offerImage"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_below="@+id/featurename"
+                android:layout_weight=".6"
+                android:padding="5dp"
+                android:scaleType="centerCrop" />
+
+            <RelativeLayout
+                android:id="@+id/descTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".4"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/offerDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:padding="8dp"
+                    android:text="Desc"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 </android.support.v7.widget.CardView>

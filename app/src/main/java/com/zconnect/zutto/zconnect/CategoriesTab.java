@@ -65,8 +65,8 @@ class CategoryAdapter extends BaseAdapter {
         list = new ArrayList<EachCategory>();
         Resources res = context.getResources();
         String[] categoriesNames = res.getStringArray(R.array.categories);
-        int[] categoriesIcons = {R.drawable.electronics, R.drawable.beanbags, R.drawable.speakers, R.drawable.fashion, R.drawable.storage, R.drawable.books, R.drawable.roomnecessities, R.drawable.novels, R.drawable.others};
-        for (int i = 0; i < 9; i++) {
+        int[] categoriesIcons = {R.drawable.electronics, R.drawable.speakers, R.drawable.storage, R.drawable.books, R.drawable.roomnecessities, R.drawable.novels, R.drawable.others};
+        for (int i = 0; i < 7; i++) {
             EachCategory tempCategory = new EachCategory(categoriesIcons[i], categoriesNames[i]);
             list.add(tempCategory);
         }
@@ -106,6 +106,7 @@ class CategoryAdapter extends BaseAdapter {
         row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterManager.StoroomCategory(temp.categoryName);
                 Intent intent = new Intent(view.getContext(), IndividualCategory.class);
                 intent.putExtra("Category", temp.categoryName);
                 context.startActivity(intent);

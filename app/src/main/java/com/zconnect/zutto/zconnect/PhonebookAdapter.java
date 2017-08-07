@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -68,6 +69,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    CounterManager.InfoneCallDirect();
                     PhonebookDisplayItem phonebookDisplayItem;
                     phonebookDisplayItem = phonebookItem.get(getAdapterPosition()).getPhonebookDisplayItem();
                     context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phonebookDisplayItem.getNumber())));
@@ -78,20 +80,30 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, PhonebookDetails.class);
-
                     PhonebookDisplayItem phonebookDisplayItem;
                     phonebookDisplayItem = phonebookItem.get(getAdapterPosition()).getPhonebookDisplayItem();
+
+                    CounterManager.infoneOpenContact(phonebookDisplayItem.getNumber());
+
                     intent.putExtra("desc", phonebookDisplayItem.getDesc());
                     intent.putExtra("name", phonebookDisplayItem.getName());
                     intent.putExtra("number", phonebookDisplayItem.getNumber());
                     intent.putExtra("image", phonebookDisplayItem.getImageurl());
                     intent.putExtra("email", phonebookDisplayItem.getEmail());
+                    intent.putExtra("skills", phonebookDisplayItem.getSkills());
+                    intent.putExtra("category", phonebookDisplayItem.getCategory());
                     context.startActivity(intent);
                     if (context instanceof PhonebookDetails) {
                         ((PhonebookDetails) context).finish();
                     }
                 }
             });
+
+            //chnaging fonts
+            Typeface ralewayLight = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+            Typeface ralewaySemiBold = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+            name.setTypeface(ralewaySemiBold);
+            number.setTypeface(ralewayLight);
 
 
         }

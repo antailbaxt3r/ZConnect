@@ -7,12 +7,19 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
 
     <application
         android:name=".ZConnect"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -37,10 +44,6 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".logIn"
-            android:screenOrientation="portrait"
-            android:theme="@style/login" />
-        <activity
-            android:name=".registerNewUser"
             android:screenOrientation="portrait"
             android:theme="@style/login" />
         <activity
@@ -84,7 +87,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".home" />
         </activity>
-
         <activity
             android:name=".ShopList"
             android:label="@string/title_activity_shop_list"
@@ -147,6 +149,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -179,8 +182,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.AllEvents" />
         </activity>
-        <activity android:name=".image_view">
-        </activity>
+        <activity android:name=".image_view" />
         <activity
             android:name=".MyProducts"
             android:label="My Products"
@@ -210,7 +212,6 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name=".EditProfile"
             android:label="@string/title_activity_edit_profile"
@@ -231,12 +232,13 @@
                 android:resource="@xml/infone_search_widget_info" />
         </receiver>
 
+
         <activity
             android:name=".Offers"
             android:label="@string/title_activity_offers"
             android:theme="@style/AppTheme.NoActionBar">
-        </activity>
 
+        </activity>
         <activity
             android:name=".Shop_detail"
             android:label="@string/title_activity_shop_detail"
@@ -248,12 +250,47 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM" />
+            android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM"/>
 
+        <activity
+            android:name=".CabPooling"
+            android:label="@string/title_activity_cab_pooling"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".PoolList"
+            android:label="@string/title_activity_pool_list"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".Campus_Map"
+            android:label="@string/title_activity_campus__map"
+            android:theme="@style/Map">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zconnect.zutto.zconnect.home"/>
+        </activity>
+        <activity
+            android:name=".CabListOfPeople"
+            android:label="@string/title_activity_cab_list_of_people"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".AddCabPool"
+            android:label="@string/title_activity_add_cab_pool"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".FullscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fullscreen"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity
+            android:name=".MyRides"
+            android:label="@string/title_activity_my_rides"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
-
-    <meta-data
-        android:name="com.google.android.gms.version"
-        android:value="@integer/google_play_services_version" />
 
 </manifest>
