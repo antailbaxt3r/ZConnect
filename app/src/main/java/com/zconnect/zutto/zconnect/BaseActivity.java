@@ -149,7 +149,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             TextView snackBarText = (TextView) snack.getView().findViewById(R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
             snackBarText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.black_overlay));
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal700));
 
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)
                     snack.getView().getLayoutParams();
