@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
@@ -32,20 +33,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.AdItemFormat;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static java.security.AccessController.getContext;
 
 /**
         * A simple activity showing the use of {@link NativeExpressAdView} ads in
@@ -73,7 +67,7 @@ public class Advertisement extends BaseActivity {
     private static final int NATIVE_EXPRESS_AD_HEIGHT = 150;
 
     // The Native Express ad unit ID.
-    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/1072772517";
+    private static final String AD_UNIT_ID = "ca-app-pub-9212249564562455/7570111641";
 
     // The RecyclerView that holds and displays Native Express ads and menu items.
     private RecyclerView mRecyclerView;
@@ -149,9 +143,11 @@ public class Advertisement extends BaseActivity {
         //adapter = new AdRVAdapter(this, adItemFormats);
         //recyclerView.setAdapter(adapter);
 
+        String android_id = Settings.Secure.getString(Advertisement.this.getContentResolver(),Settings.Secure.ANDROID_ID);
+
         //for banner ads
         // Initialize the Mobile Ads SDK.
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(this, "ca-app-pub-9212249564562455~7570111641");
 
         // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
         // values/strings.xml.
@@ -162,6 +158,7 @@ public class Advertisement extends BaseActivity {
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //.addTestDevice("D0C534373C4F3E50798BCF32BFF922C5")
                 .build();
 
         // Start loading the ad in the background.
@@ -310,12 +307,13 @@ public class Advertisement extends BaseActivity {
                 // the next ad in the items list.
                 Log.e("MainActivity", "The previous Native Express ad failed to load. Attempting to"
                         + " load the next Native Express ad in the items list.");
-                loadNativeExpressAd(index + ITEMS_PER_AD);
+                loadNativeExpressAd(index + 1);
             }
         });
 
         // Load the Native Express ad.
-        adView.loadAd(new AdRequest.Builder().build());
+        adView.loadAd(new AdRequest.Builder().build());//.addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
+
     }
 
 }
