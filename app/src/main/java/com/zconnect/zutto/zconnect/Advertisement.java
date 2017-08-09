@@ -26,6 +26,8 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.NativeExpressAdView;
+import com.google.android.gms.ads.VideoController;
+import com.google.android.gms.ads.VideoOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,13 +69,18 @@ public class Advertisement extends BaseActivity {
     private static final int NATIVE_EXPRESS_AD_HEIGHT = 150;
 
     // The Native Express ad unit ID.
-    private static final String AD_UNIT_ID = "ca-app-pub-9212249564562455/7570111641";
+    private static final String AD_UNIT_ID ="ca-app-pub-9212249564562455/7570111641";
 
     // The RecyclerView that holds and displays Native Express ads and menu items.
     private RecyclerView mRecyclerView;
 
     // List of Native Express ads and MenuItems that populate the RecyclerView.
     private List<Object> mRecyclerViewItems = new ArrayList<>(10);
+
+
+    //for native single
+    private NativeExpressAdView mAdViewNative,mAdViewNative2,mAdViewNative3;
+    VideoController mVideoController;
 
     //for banner
     private AdView mAdView;
@@ -134,8 +141,8 @@ public class Advertisement extends BaseActivity {
 
         // Update the RecyclerView item's list with Native Express ads.
         // addMenuItemsFromJson();
-        addNativeExpressAds();
-        setUpAndLoadNativeExpressAds();
+        //addNativeExpressAds();
+        //setUpAndLoadNativeExpressAds();
 
         RecyclerView.Adapter adapter = new RecyclerViewAdapterAdvertisement(this, mRecyclerViewItems);
         mRecyclerView.setAdapter(adapter);
@@ -152,17 +159,55 @@ public class Advertisement extends BaseActivity {
         // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
         // values/strings.xml.
         mAdView = (AdView) findViewById(R.id.ad_view);
+        mAdViewNative=(NativeExpressAdView)findViewById(R.id.adView);
+        mAdViewNative2=(NativeExpressAdView)findViewById(R.id.adView2);
+
 
         // Create an ad request. Check your logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                //.addTestDevice("D0C534373C4F3E50798BCF32BFF922C5")
+                .addTestDevice("D0C534373C4F3E50798BCF32BFF922C5")
                 .build();
 
         // Start loading the ad in the background.
         mAdView.loadAd(adRequest);
+
+        // Set its video options.
+        mAdViewNative.setVideoOptions(new VideoOptions.Builder()
+                .setStartMuted(true)
+                .build());
+
+        // The VideoController can be used to get lifecycle events and info about an ad's video
+        // asset. One will always be returned by getVideoController, even if the ad has no video
+        // asset.
+        mVideoController = mAdViewNative.getVideoController();
+        mVideoController.setVideoLifecycleCallbacks(new VideoController.VideoLifecycleCallbacks() {
+            @Override
+            public void onVideoEnd() {
+                Log.d("Ads", "Video playback is finished.");
+                super.onVideoEnd();
+            }
+        });
+
+        // Set an AdListener for the AdView, so the Activity can take action when an ad has finished
+        // loading.
+        mAdViewNative.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                if (mVideoController.hasVideoContent()) {
+                    Log.d("Ads", "Received an ad that contains a video asset.");
+                } else {
+                    Log.d("Ads", "Received an ad that does not contain a video asset.");
+                }
+            }
+        });
+
+
+        mAdViewNative.loadAd(new AdRequest.Builder().addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
+
+        mAdViewNative2.loadAd(new AdRequest.Builder().addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
 
     }
 
@@ -237,7 +282,9 @@ public class Advertisement extends BaseActivity {
         // the items List.
         for (int i = 0; i < NO_OF_ADS; i +=1) {
             final NativeExpressAdView adView = new NativeExpressAdView(Advertisement.this);
-            mRecyclerViewItems.add(adView);
+            adView.setAdSize(new AdSize(320,150));
+            adView.setAdUnitId(AD_UNIT_ID);
+            mRecyclerViewItems.add(i,adView);
         }
     }
 
@@ -260,8 +307,8 @@ public class Advertisement extends BaseActivity {
                     final int adWidth = cardView.getWidth() - cardView.getPaddingLeft()
                             - cardView.getPaddingRight();
                     AdSize adSize = new AdSize((int) (adWidth / scale), NATIVE_EXPRESS_AD_HEIGHT);
-                    adView.setAdSize(adSize);
-                    adView.setAdUnitId(AD_UNIT_ID);
+                      adView.setAdSize(adSize);
+                      adView.setAdUnitId(AD_UNIT_ID);
                 }
 
                 // Load the first Native Express ad in the items list.
@@ -305,14 +352,16 @@ public class Advertisement extends BaseActivity {
             public void onAdFailedToLoad(int errorCode) {
                 // The previous Native Express ad failed to load. Call this method again to load
                 // the next ad in the items list.
-                Log.e("MainActivity", "The previous Native Express ad failed to load. Attempting to"
+                Log.e("Ads", "The previous Native Express ad failed to load. Attempting to"
                         + " load the next Native Express ad in the items list.");
                 loadNativeExpressAd(index + 1);
             }
         });
 
         // Load the Native Express ad.
-        adView.loadAd(new AdRequest.Builder().build());//.addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
+        //adView.loadAd(new AdRequest.Builder().build());//.addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
+
+        mAdView.loadAd(new AdRequest.Builder().addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
 
     }
 

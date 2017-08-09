@@ -240,7 +240,11 @@ public class OpenEventDetail extends BaseActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user != null) {
+        if(event==null){
+
+        }
+
+        if (user != null && event!=null) {
             String boost = event.getBoosters();
             if (boost != null) {
             if (boost.contains(user.getUid())) {
@@ -480,5 +484,12 @@ public class OpenEventDetail extends BaseActivity {
         }
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent eventsIntent=new Intent(OpenEventDetail.this,AllEvents.class);
+        startActivity(eventsIntent);
     }
 }

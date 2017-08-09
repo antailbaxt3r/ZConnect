@@ -10,9 +10,15 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 public class AboutUs extends BaseActivity {
 
     ImageView fbbutton;
+
+    AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +34,23 @@ public class AboutUs extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+        //for banner ads
+        // Initialize the Mobile Ads SDK.
+        MobileAds.initialize(this, "ca-app-pub-9212249564562455~7570111641");
+
+        mAdView = (AdView) findViewById(R.id.ad_view);
+
+        // Create an ad request. Check your logcat output for the hashed device ID to
+        // get test ads on a physical device. e.g.
+        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("D0C534373C4F3E50798BCF32BFF922C5")
+                .build();
+
+        // Start loading the ad in the background.
+        mAdView.loadAd(adRequest);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
