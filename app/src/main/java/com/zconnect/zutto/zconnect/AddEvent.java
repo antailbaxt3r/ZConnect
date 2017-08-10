@@ -16,7 +16,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -131,6 +134,10 @@ public class AddEvent extends BaseActivity {
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/NotVerifiedPosts");
+
+        /*mEventDescription.setMovementMethod(LinkMovementMethod.getInstance());
+
+        Linkify.addLinks(mEventDescription, Linkify.WEB_URLS);*/
 
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (LinearLayout) findViewById(R.id.dateAndTime);

@@ -106,7 +106,9 @@
                         android:paddingTop="5dp"
                         android:text="Event Description"
                         android:textColor="@color/grey700"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"
+                        android:linksClickable="true"
+                        android:autoLink="web" />
 
                 </LinearLayout>
 
