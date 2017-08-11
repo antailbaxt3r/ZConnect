@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -108,6 +109,8 @@ public class OpenEventDetail extends BaseActivity {
 //            venueDirections.setVisibility(View.GONE);
 //        }
 
+
+        EventDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
 
 
@@ -240,7 +243,11 @@ public class OpenEventDetail extends BaseActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user != null) {
+        if(event==null){
+
+        }
+
+        if (user != null && event!=null) {
             String boost = event.getBoosters();
             if (boost != null) {
             if (boost.contains(user.getUid())) {
@@ -480,5 +487,12 @@ public class OpenEventDetail extends BaseActivity {
         }
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent eventsIntent=new Intent(OpenEventDetail.this,AllEvents.class);
+        startActivity(eventsIntent);
     }
 }
