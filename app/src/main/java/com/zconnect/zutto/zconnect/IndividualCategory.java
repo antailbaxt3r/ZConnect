@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -27,8 +29,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.RemoteMessage;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
+
+import org.json.JSONObject;
+
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IndividualCategory extends BaseActivity {
 
@@ -112,9 +124,9 @@ public class IndividualCategory extends BaseActivity {
                 viewHolder.setSellerNumber(model.getPhone_no(), category);
 
 
-                SharedPreferences sharedPref = getSharedPreferences("guestMode",MODE_PRIVATE);
+                SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
-                if(!status) {
+                if (!status) {
                     viewHolder.defaultSwitch(model.getKey(), model.getCategory());
 //                    viewHolder.mListener = new CompoundButton.OnCheckedChangeListener() {
 //                        @Override
@@ -158,6 +170,8 @@ public class IndividualCategory extends BaseActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                                     if (flag) {
+                                        CounterManager.StoroomShortListDelete(category);
+
                                         if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                             mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
                                             viewHolder.shortList.setText("Shortlisted");
@@ -166,6 +180,7 @@ public class IndividualCategory extends BaseActivity {
                                             Typeface customfont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
                                         } else {
+                                            CounterManager.StoroomShortList(category);
                                             viewHolder.shortList.setText("Shortlist");
                                             mDatabase.child(model.getKey()).child("UsersReserved")
                                                     .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
@@ -173,6 +188,10 @@ public class IndividualCategory extends BaseActivity {
                                             flag = false;
                                             Typeface customfont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
+
+                                            sendNotification notification = new sendNotification();
+                                            notification.execute(model.getKey(), model.getProductName());
+
                                         }
                                     }
                                 }
@@ -213,13 +232,13 @@ public class IndividualCategory extends BaseActivity {
         public ProductViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            sharedPref = mView.getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+            sharedPref = mView.getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
             Boolean status = sharedPref.getBoolean("mode", false);
 //            mReserve = (Switch) mView.findViewById(R.id.switch1);
 //            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
             shortList = (Button) mView.findViewById(R.id.shortList);
 
-            if(status){
+            if (status) {
                 shortList.setVisibility(View.GONE);
 //                mReserve.setVisibility(View.GONE);
 //                ReserveStatus.setVisibility(View.GONE);
@@ -242,7 +261,7 @@ public class IndividualCategory extends BaseActivity {
 //                    mReserve.setOnCheckedChangeListener(null);
                     shortList.setOnClickListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-                        CounterManager.StoroomShortList(category);
+
                         shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                         shortList.setText("Shortlisted");
                         Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
@@ -251,7 +270,6 @@ public class IndividualCategory extends BaseActivity {
 //                        mReserve.setText("Shortlisted");
                         shortList.setText("Shortlisted");
                     } else {
-                        CounterManager.StoroomShortListDelete(category);
                         shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
                         shortList.setText("Shortlist");
                         Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
@@ -345,6 +363,56 @@ public class IndividualCategory extends BaseActivity {
         }
 
 
+    }
+
+    public static class sendNotification extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                final String key = params[0];
+
+                RemoteMessage.Builder creator = new RemoteMessage.Builder(key);
+                creator.addData("Type", "Shortlist");
+                creator.addData("PersonName", user.getDisplayName());
+                creator.addData("PersonEmail", user.getEmail());
+                creator.addData("key", key);
+                creator.addData("Product", params[1]);
+
+                try {
+                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("Authorization", "key=AAAAGZIFvsE:APA91bG7rY-RLe6T3JxhFcmA4iRtihJCbD2RUwypt0aC8hVCvrm99LKZR__y3SqSIQmJocsuLaDltTuUui9BUrLwAM0SiCx0qSTrO8dpmxnjiHkaATnfYwVIN3T81lwlxYwBF7x9_3Kd");
+                    connection.setDoOutput(true);
+                    connection.connect();
+
+
+                    OutputStream os = connection.getOutputStream();
+                    OutputStreamWriter writer = new OutputStreamWriter(os);
+
+
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put("to", "/topics/" + key);
+
+                    data.put("data", creator.build().getData());
+
+                    JSONObject object = new JSONObject(data);
+                    String s2 = object.toString().replace("\\", "");
+
+                    writer.write(s2);
+                    writer.flush();
+
+                    Log.d("data", connection.getResponseMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
     }
 
 }

@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -250,6 +251,8 @@ public class AddProduct extends BaseActivity {
                     newPost.child("Phone_no").setValue(productPhoneNo);
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
+
+                    FirebaseMessaging.getInstance().subscribeToTopic(key);
 
 
                     DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();

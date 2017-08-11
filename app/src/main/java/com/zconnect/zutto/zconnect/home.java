@@ -45,6 +45,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.ArrayList;
@@ -216,10 +218,23 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         viewPager.setCurrentItem(0);
         isNetworkAvailable(this);
 
+        FirebaseMessaging.getInstance().subscribeToTopic("aweasd");
+
+        RemoteMessage.Builder creator = new RemoteMessage.Builder("/topics/aweasd");
+        creator.addData("Type", "CabPool");
+        creator.addData("Person", " asdsad");
+        creator.addData("Contact", "sadsad");
+        creator.addData("Pool", "sefse");
+
+        Log.d(creator.build().getFrom(), creator.build().getTo());
+        FirebaseMessaging.getInstance().send(creator.build());
+
+
         //changing fonts
         Typeface ralewayBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Thin.ttf");
     }
 //    @Override
+//    protected void onResume() {
 //    protected void onResume() {
 //        super.onResume();
 //

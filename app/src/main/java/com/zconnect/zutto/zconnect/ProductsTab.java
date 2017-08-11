@@ -176,6 +176,7 @@ public class ProductsTab extends Fragment {
                         @Override
                         public void onClick(View v) {
                             flag = true;
+                            final String category = model.getCategory();
                             mDatabase.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -185,11 +186,13 @@ public class ProductsTab extends Fragment {
                                             mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
                                             viewHolder.shortList.setText("Shortlisted");
                                             flag = false;
+                                            CounterManager.StoroomShortListDelete(category);
                                             viewHolder.shortList.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.curvedradiusbutton2_sr));
                                             Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
 
                                         } else {
+                                            CounterManager.StoroomShortList(category);
                                             viewHolder.shortList.setText("Shortlist");
                                             mDatabase.child(model.getKey()).child("UsersReserved")
                                                     .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
@@ -197,6 +200,10 @@ public class ProductsTab extends Fragment {
                                             flag = false;
                                             Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
+
+                                            IndividualCategory.sendNotification notification = new IndividualCategory.sendNotification();
+                                            notification.execute(model.getKey(), model.getProductName());
+
                                         }
                                     }
                                 }
@@ -269,7 +276,6 @@ public class ProductsTab extends Fragment {
 //                    mReserve.setOnCheckedChangeListener(null);
                     shortList.setOnClickListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-                        CounterManager.StoroomShortList(category);
                         shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                         shortList.setText("Shortlisted");
                         Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
