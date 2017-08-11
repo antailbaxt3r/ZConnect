@@ -189,8 +189,8 @@ public class IndividualCategory extends BaseActivity {
                                             Typeface customfont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
 
-                                           // sendNotification notification = new sendNotification();
-                                            //notification.execute(model.getKey(), model.getProductName());
+                                            sendNotification notification = new sendNotification();
+                                            notification.execute(model.getKey(), model.getProductName());
 
                                         }
                                     }

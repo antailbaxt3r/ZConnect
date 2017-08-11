@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -91,6 +92,7 @@ public class MyProducts extends BaseActivity {
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setPrice(model.getPrice());
+                viewHolder.setIntent(model.getKey());
                 viewHolder.setImage(getApplicationContext(), model.getImage());
 //                }else {
 //               }
@@ -119,7 +121,7 @@ public class MyProducts extends BaseActivity {
 //        String [] keyList;
 //        String ReservedUid;
 
-        public ProductViewHolder(View itemView) {
+        public ProductViewHolder(final View itemView) {
             super(itemView);
             mView = itemView;
             //to delete reserved items
@@ -133,6 +135,15 @@ public class MyProducts extends BaseActivity {
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
             post_name.setTypeface(ralewayMedium);
 
+        }
+
+        public void setIntent(final String key) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemView.getContext().startActivity(new Intent(itemView.getContext(),Shortlisted.class).putExtra("Key",key));
+                }
+            });
         }
 
         public void setProductDesc(String productDesc) {
