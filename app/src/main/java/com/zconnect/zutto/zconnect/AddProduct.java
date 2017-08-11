@@ -105,6 +105,8 @@ public class AddProduct extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
 
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         mAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

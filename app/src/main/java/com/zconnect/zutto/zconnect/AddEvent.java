@@ -147,6 +147,8 @@ public class AddEvent extends BaseActivity {
 
         mProgress = new ProgressDialog(this);
 
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         mAuth = FirebaseAuth.getInstance();
 
         mAddImage.setOnClickListener(new View.OnClickListener() {

@@ -21,7 +21,8 @@
             android:background="@drawable/border_filled_2"
             android:minHeight="150dp"
             android:padding="2dp"
-            android:scaleType="center" />
+            android:scaleType="center"
+            android:src="@drawable/addimage"/>
 
         <EditText
             android:id="@+id/name"
