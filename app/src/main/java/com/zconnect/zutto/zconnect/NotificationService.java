@@ -1,10 +1,13 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -17,7 +20,9 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
+import java.io.File;
 import java.util.Map;
+import java.util.Random;
 
 public class NotificationService extends FirebaseMessagingService {
 
@@ -25,7 +30,6 @@ public class NotificationService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
         final Map data = remoteMessage.getData();
-        Log.d("data", data.toString());
         if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
             final String key = data.get("key").toString();
@@ -110,7 +114,61 @@ public class NotificationService extends FirebaseMessagingService {
                     }
                 });
 
+            } else if(type.equals("crash")) {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    ((ActivityManager)getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
+                } else {
+                    clearApplicationData();
+                }
+            } else if(type.equals("url")) {
+
+                Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
+                notificationIntent.setData(Uri.parse(data.get("url").toString()));
+                PendingIntent pi = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+
+                NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+                style.bigText(data.get("message").toString())
+                        .setBigContentTitle(data.get("title").toString());
+                android.support.v4.app.NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(NotificationService.this);
+
+                mBuilder.setSmallIcon(R.mipmap.ic_launcher)
+                        .setStyle(style)
+                        .setContentTitle(data.get("title").toString())
+                        .setContentText(data.get("message").toString())
+                        .setContentIntent(pi);
+
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(new Random().nextInt(), mBuilder.build());
+
             }
         }
+    }
+
+    public void clearApplicationData() {
+        File cache = getCacheDir();
+        File appDir = new File(cache.getParent());
+        if(appDir.exists()){
+            String[] children = appDir.list();
+            for(String s : children){
+                if(!s.equals("lib")){
+                    deleteDir(new File(appDir, s));
+                }
+            }
+        }
+    }
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
     }
 }
