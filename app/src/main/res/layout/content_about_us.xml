@@ -54,7 +54,7 @@
 
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/ad_view"
+        android:id="@+id/ad_view_banner1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

@@ -61,7 +61,7 @@ public class Recents extends Fragment {
         productLinearLayout.setStackFromEnd(true);
         recyclerView.setLayoutManager(productLinearLayout);
         //Setup layout manager. VERY IMP ALWAYS
-        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats);
+        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (home) getActivity());
         recyclerView.setAdapter(adapter);
 
 
