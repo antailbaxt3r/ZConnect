@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/adView"
-            ads:adSize="340x200"
+            ads:adSize="320x300"
             ads:adUnitId="@string/native_ad_unit_id_2"
             >
         </com.google.android.gms.ads.NativeExpressAdView>
