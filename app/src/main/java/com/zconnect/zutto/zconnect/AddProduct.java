@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -43,10 +44,13 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddProduct extends BaseActivity {
+import mabbas007.tagsedittext.TagsEditText;
+
+public class AddProduct extends BaseActivity implements TagsEditText.TagsEditListener{
     private static final int GALLERY_REQUEST = 7;
     IntentHandle intentHandle;
     Intent galleryIntent;
@@ -65,6 +69,7 @@ public class AddProduct extends BaseActivity {
     private CustomSpinner spinner1;
     private FirebaseAuth mAuth;
     private String sellerName;
+    private TagsEditText productTags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +107,7 @@ public class AddProduct extends BaseActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         spinner1 = (CustomSpinner) findViewById(R.id.categories);
+        productTags =(TagsEditText) findViewById(R.id.skillsTags);
         spinner1.setSelection(6);
         mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
@@ -133,6 +139,17 @@ public class AddProduct extends BaseActivity {
         mProductDescription.setTypeface(ralewayRegular);
         mProductPhone.setTypeface(ralewayRegular);
         mProductPrice.setTypeface(ralewayRegular);
+        productTags.setTypeface(ralewayRegular);
+
+
+        productTags.setTagsListener(this);
+        productTags.setTagsWithSpacesEnabled(true);
+
+        productTags.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.productTags)));
+        productTags.setThreshold(1);
+
+
     }
 
     @Override
@@ -214,6 +231,7 @@ public class AddProduct extends BaseActivity {
         final String productDescriptionValue = mProductDescription.getText().toString().trim();
         final String productPriceValue = mProductPrice.getText().toString().trim();
         final String productPhoneNo = mProductPhone.getText().toString().trim();
+        final String productTagString= productTags.getTags().toString().trim();
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
@@ -233,7 +251,7 @@ public class AddProduct extends BaseActivity {
         });
 
 
-        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && !TextUtils.isEmpty(productPriceValue) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null && category != null) {
+        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && !TextUtils.isEmpty(productPriceValue) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null && category != null && productTagString!=null) {
             StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -251,6 +269,7 @@ public class AddProduct extends BaseActivity {
                     newPost.child("Phone_no").setValue(productPhoneNo);
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
+                    newPost.child("skills").setValue(productTagString);
 
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
 
@@ -299,6 +318,26 @@ public class AddProduct extends BaseActivity {
         }
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            productTags.showDropDown();
+        }
+    }
+
+    @Override
+    public void onTagsChanged(Collection<String> tags) {
+
+    }
+
+    @Override
+    public void onEditingFinished() {
+        //Log.d(TAG,"OnEditing finished");
+//        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(productTags.getWindowToken(), 0);
+//        //productTags.clearFocus();
+    }
 
     @Override
     public void onBackPressed() {

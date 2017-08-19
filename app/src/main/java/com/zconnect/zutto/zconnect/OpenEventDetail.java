@@ -494,5 +494,6 @@ public class OpenEventDetail extends BaseActivity {
         //super.onBackPressed();
         Intent eventsIntent=new Intent(OpenEventDetail.this,AllEvents.class);
         startActivity(eventsIntent);
+        finish();
     }
 }

@@ -58,11 +58,13 @@
         <activity
             android:name=".AllEvents"
             android:label="Events"
+            android:parentActivityName=".home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OpenEventDetail"
             android:label="Events"
+            android:parentActivityName=".AllEvents"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

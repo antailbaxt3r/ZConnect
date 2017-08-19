@@ -39,7 +39,7 @@ public class AboutUs extends BaseActivity {
         // Initialize the Mobile Ads SDK.
         MobileAds.initialize(this, "ca-app-pub-9212249564562455~7570111641");
 
-        mAdView = (AdView) findViewById(R.id.ad_view);
+        mAdView = (AdView) findViewById(R.id.ad_view_banner1);
 
         // Create an ad request. Check your logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.

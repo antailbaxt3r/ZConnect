@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,20 +27,13 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.NativeExpressAdView;
 import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.VideoOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.AdItemFormat;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static java.security.AccessController.getContext;
 
 /**
         * A simple activity showing the use of {@link NativeExpressAdView} ads in
@@ -83,8 +75,9 @@ public class Advertisement extends BaseActivity {
     VideoController mVideoController;
 
     //for banner
-    private AdView mAdView;
+    private AdView mAdViewBanner1;
     private int NO_OF_ADS=30;
+    private AdView mAdViewBanner2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +151,8 @@ public class Advertisement extends BaseActivity {
 
         // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
         // values/strings.xml.
-        mAdView = (AdView) findViewById(R.id.ad_view);
+        mAdViewBanner1 = (AdView) findViewById(R.id.ad_view_banner1);
+        mAdViewBanner2 = (AdView) findViewById(R.id.ad_view_banner2);
         mAdViewNative=(NativeExpressAdView)findViewById(R.id.adView);
         mAdViewNative2=(NativeExpressAdView)findViewById(R.id.adView2);
 
@@ -167,12 +161,17 @@ public class Advertisement extends BaseActivity {
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("D0C534373C4F3E50798BCF32BFF922C5")
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //.addTestDevice("D0C534373C4F3E50798BCF32BFF922C5")
+                .build();
+        AdRequest adRequest2 = new AdRequest.Builder()
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //.addTestDevice("D0C534373C4F3E50798BCF32BFF922C5")
                 .build();
 
         // Start loading the ad in the background.
-        mAdView.loadAd(adRequest);
+        mAdViewBanner1.loadAd(adRequest);
+        mAdViewBanner2.loadAd(adRequest2);
 
         // Set its video options.
         mAdViewNative.setVideoOptions(new VideoOptions.Builder()
@@ -205,9 +204,10 @@ public class Advertisement extends BaseActivity {
         });
 
 
-        mAdViewNative.loadAd(new AdRequest.Builder().addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
+        //mAdViewNative.loadAd(new AdRequest.Builder().addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
+        mAdViewNative.loadAd(new AdRequest.Builder().build());
 
-        mAdViewNative2.loadAd(new AdRequest.Builder().addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
+        mAdViewNative2.loadAd(new AdRequest.Builder().build());
 
     }
 
@@ -361,7 +361,7 @@ public class Advertisement extends BaseActivity {
         // Load the Native Express ad.
         //adView.loadAd(new AdRequest.Builder().build());//.addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
 
-        mAdView.loadAd(new AdRequest.Builder().addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
+        mAdViewBanner1.loadAd(new AdRequest.Builder().addTestDevice("D0C534373C4F3E50798BCF32BFF922C5").build());
 
     }
 

@@ -95,9 +95,9 @@ public class logIn extends BaseActivity {
                 guestLogIn(true);
 
                 Intent loginIntent = new Intent(logIn.this, home.class);
-                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                /*loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);*/
                 startActivity(loginIntent);
-
+                finish();
             }
         });
         mGoogleSignIn = (Button) findViewById(R.id.GoogleSignIn);

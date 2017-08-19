@@ -135,8 +135,8 @@ public class Homescreen extends Fragment {
             @Override
             public void onClick(View view) {
                 CounterManager.EventOpen();
-                Intent InfoneIntent = new Intent(getContext(), AllEvents.class);
-                startActivity(InfoneIntent);
+                Intent eventsIntent = new Intent(getContext(), AllEvents.class);
+                startActivity(eventsIntent);
             }
         });
 

@@ -563,7 +563,9 @@ public class AllEvents extends BaseActivity {
     public void onBackPressed() {
         //super.onBackPressed();
         Intent eventsIntent=new Intent(AllEvents.this,home.class);
+
         startActivity(eventsIntent);
+        finish();
     }
 
 
