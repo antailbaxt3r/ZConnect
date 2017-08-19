@@ -5,13 +5,13 @@ package com.zconnect.zutto.zconnect.ItemFormats;
  */
 
 public class Product {
-    private String ProductName, ProductDescription, Image, Key, Price, Phone_no, PostedBy, Category;
+    private String ProductName, ProductDescription, Image, Key, Price, Phone_no, PostedBy, Category, negotiable;
 
     public Product() {
 
     }
 
-    public Product(String productName, String productDescription, String image, String key, String price, String phone_no, String postedBy, String category) {
+    public Product(String productName, String productDescription, String image, String key, String price, String phone_no, String postedBy, String category ,String negotiable) {
         ProductName = productName;
         ProductDescription = productDescription;
         Image = image;
@@ -20,6 +20,15 @@ public class Product {
         Phone_no = phone_no;
         PostedBy = postedBy;
         Category = category;
+        negotiable= negotiable;
+    }
+
+    public String getNegotiable() {
+        return negotiable;
+    }
+
+    public void setNegotiable(String negotiable) {
+        this.negotiable = negotiable;
     }
 
     public String getCategory() {
