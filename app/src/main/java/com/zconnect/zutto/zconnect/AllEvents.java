@@ -99,7 +99,7 @@ public class AllEvents extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_events);
         JodaTimeAndroid.init(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
@@ -562,7 +562,7 @@ public class AllEvents extends BaseActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        Intent eventsIntent=new Intent(AllEvents.this,home.class);
+        Intent eventsIntent=new Intent(AllEvents.this,HomeActivity.class);
 
         startActivity(eventsIntent);
         finish();

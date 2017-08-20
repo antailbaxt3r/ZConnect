@@ -46,7 +46,7 @@ public class TabStoreRoom extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_store_room);
 
-        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
         getSupportActionBar().setTitle("StoreRoom");
         if (mActionBarToolbar != null) {
@@ -78,10 +78,10 @@ public class TabStoreRoom extends BaseActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager_app_bar_home);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_app_bar_home);
         tabLayout.setupWithViewPager(mViewPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -196,7 +196,7 @@ public class TabStoreRoom extends BaseActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        Intent storeIntent = new Intent(TabStoreRoom.this, home.class);
+        Intent storeIntent = new Intent(TabStoreRoom.this, HomeActivity.class);
         startActivity(storeIntent);
         finish();
     }

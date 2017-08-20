@@ -10,7 +10,7 @@
     android:paddingLeft="48dp"
     android:paddingRight="48dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.zconnect.zutto.zconnect.setDetails">
+    tools:context="com.zconnect.zutto.zconnect.SetDetailsActivity">
 
     <Button
         android:id="@+id/submitDetails"

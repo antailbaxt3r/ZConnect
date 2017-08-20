@@ -94,7 +94,7 @@ public class logIn extends BaseActivity {
 
                 guestLogIn(true);
 
-                Intent loginIntent = new Intent(logIn.this, home.class);
+                Intent loginIntent = new Intent(logIn.this, HomeActivity.class);
                 /*loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);*/
                 startActivity(loginIntent);
                 finish();
@@ -312,14 +312,14 @@ public class logIn extends BaseActivity {
 
                     if (dataSnapshot.hasChild(mAuth.getCurrentUser().getUid())) {
                         mProgress.dismiss();
-                        Intent loginIntent = new Intent(logIn.this, home.class);
+                        Intent loginIntent = new Intent(logIn.this, HomeActivity.class);
                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(loginIntent);
                         finish();
 
                     } else {
                         mProgress.dismiss();
-                        Intent loginIntent = new Intent(logIn.this, setDetails.class);
+                        Intent loginIntent = new Intent(logIn.this, SetDetailsActivity.class);
                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         loginIntent.putExtra("caller", "login");
                         startActivity(loginIntent);

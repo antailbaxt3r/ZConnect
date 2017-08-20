@@ -47,18 +47,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/login" />
         <activity
-            android:name=".setDetails"
+            android:name=".SetDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/login" />
         <activity
-            android:name=".home"
+            android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AllEvents"
             android:label="Events"
-            android:parentActivityName=".home"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -87,7 +87,7 @@
                 android:value=".ShopSearch" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".home" />
+                android:value=".HomeActivity" />
         </activity>
         <activity
             android:name=".ShopList"
@@ -114,7 +114,7 @@
                 android:value=".PhonebookCategorySearch" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".home" />
+                android:value=".HomeActivity" />
         </activity>
         <activity
             android:name=".Phonebook"
@@ -126,7 +126,7 @@
                 android:value=".PhonebookSearch" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".home" />
+                android:value=".HomeActivity" />
         </activity>
         <activity
             android:name=".PhonebookSearch"
@@ -266,7 +266,7 @@
             android:theme="@style/Map">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zconnect.zutto.zconnect.home" />
+                android:value="com.zconnect.zutto.zconnect.HomeActivity" />
         </activity>
         <activity
             android:name=".CabListOfPeople"

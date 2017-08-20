@@ -63,7 +63,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void setToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
         if (toolbar != null) {
@@ -213,14 +213,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public boolean isNetworkAvailable(final Context context) {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-        if (!(connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected())) {
-            showSnack("Internet Unavailable", Snackbar.LENGTH_INDEFINITE);
-            hideProgressDialog();
-            return false;
-        } else {
-            snack = null;
-            return true;
-        }
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
     public void makeActivityFullScreen() {

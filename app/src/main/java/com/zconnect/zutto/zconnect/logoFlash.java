@@ -100,12 +100,12 @@ public class logoFlash extends BaseActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                Intent intent = new Intent(logoFlash.this, home.class);
+                                Intent intent = new Intent(logoFlash.this, HomeActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 finish();
                             } else {
-                                Intent intent = new Intent(logoFlash.this, setDetails.class);
+                                Intent intent = new Intent(logoFlash.this, SetDetailsActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 finish();

@@ -72,7 +72,7 @@ public class OpenEventDetail extends BaseActivity {
        id=getIntent().getStringExtra("id");
         tag=getIntent().getStringExtra("Eventtag");
 
-        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
 
         boostBtn = (Button)findViewById(R.id.boostBtn);
