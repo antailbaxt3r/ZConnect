@@ -74,6 +74,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     ViewPager viewPager;
     @BindView(R.id.tab_layout_app_bar_home)
     TabLayout tabLayout;
+    @BindView(R.id.toolbar_app_bar_home)
+    Toolbar toolbar;
     View navHeader;
     TextView emailTv;
     private FirebaseUser mUser;
@@ -83,10 +85,30 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-
+        navHeader = navigationView.getHeaderView(0);
         SharedPreferences guestModePrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
-        Boolean status = guestModePrefs.getBoolean("mode", false);
+        Boolean guestMode = guestModePrefs.getBoolean("mode", false);
         SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+        usersDbRef.keepSynced(true);
+        phoneBookDbRef.keepSynced(true);
+
+        usernameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
+        emailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mUser = mAuth.getCurrentUser();
+        if (mUser != null) {
+            username = mUser.getDisplayName();
+            userEmail = mUser.getEmail();
+        } else {
+            Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
+            finish();
+        }
 
         //This code will run for first time.
         if (!defaultPrefs.getBoolean("firstTime", false)) {
@@ -113,7 +135,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             addImageDialog();
         homescreen = new Homescreen();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -133,27 +155,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-        navHeader = navigationView.getHeaderView(0);
-        if (status) {
+
+        if (guestMode) {
             navigationView.getMenu().findItem(R.id.edit_profile).setVisible(false);
         }
-        usernameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
-        emailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
 
-        mAuth = FirebaseAuth.getInstance();
-        usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
-        usersDbRef.keepSynced(true);
-        phoneBookDbRef.keepSynced(true);
-        mUser = mAuth.getCurrentUser();
-        if (mUser != null) {
-            username = mUser.getDisplayName();
-            userEmail = mUser.getEmail();
-        } else {
-            Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
-            startActivity(loginIntent);
-            finish();
-        }
         usernameTv.setText(username != null ? username : "ZConnect");
         emailTv.setText(userEmail != null ? userEmail : "The way you connect");
 
@@ -314,7 +320,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         mAuth.signOut();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
-        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(loginIntent);
         finish();
     }

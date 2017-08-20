@@ -1,10 +1,13 @@
 package com.zconnect.zutto.zconnect;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -30,11 +33,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,13 +58,14 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     private GoogleApiClient mGoogleApiClient;
     private FirebaseUser mUser;
     private String userEmail;
+    private String defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
+        mAuth = FirebaseAuth.getInstance();
         usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
         usersDbRef.keepSynced(true);
         mProgress = new ProgressDialog(this);
@@ -80,12 +81,12 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        mAuth = FirebaseAuth.getInstance();
+
         mUser = mAuth.getCurrentUser();
         if (mUser != null) {
             userEmail = mUser.getEmail();
             if (userEmail != null && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
-                checkUser(mUser);
+                setupUserData(mUser);
             } else {
                 logout();
                 mProgress.dismiss();
@@ -96,23 +97,22 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             @Override
             public void onClick(View v) {
                 guestLogIn(true);
-                Intent loginIntent = new Intent(LoginActivity.this, HomeActivity.class);
-                startActivity(loginIntent);
+                Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(homeIntent);
                 finish();
             }
         });
 
-        mGoogleSignInBtn = (Button) findViewById(R.id.GoogleSignIn);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mGoogleSignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isNetworkAvailable(getApplicationContext())) {
-                    Snackbar snack = Snackbar.make(mGoogleSignInBtn, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
-                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                    snack.show();
+                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                    snackbar.show();
                 } else {
                     signIn();
                 }
@@ -152,7 +152,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == RC_SIGN_IN && resultCode == Activity.RESULT_OK) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             mProgress.setMessage("Signing in...");
             mProgress.show();
@@ -169,6 +169,8 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                 snack.show();
             }
+        } else {
+            Log.e(TAG, "onActivityResult: " + resultCode);
         }
     }
 
@@ -198,7 +200,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                             if (mUser != null
                                     && (userEmail = mUser.getEmail()) != null
                                     && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
-                                checkUser(mUser);
+                                setupUserData(mUser);
                             } else {
                                 logout();
                                 mProgress.dismiss();
@@ -210,11 +212,13 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     }
 
 
+    @SuppressLint("ApplySharedPref")
     public void guestLogIn(Boolean mode) {
         SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
         SharedPreferences.Editor editInfo = sharedPref.edit();
         editInfo.putBoolean("mode", mode);
-        editInfo.apply();
+        editInfo.commit();
+        mAuth.signInAnonymously();
     }
 
     @Override
@@ -229,29 +233,18 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
     }
 
-    private void checkUser(@NonNull final FirebaseUser user) {
-        usersDbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                DatabaseReference currentUserDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid());
-                currentUserDbRef.child("Image").setValue(mUser.getPhotoUrl());
-                currentUserDbRef.child("Username").setValue(user.getDisplayName());
-                currentUserDbRef.child("Email").setValue(mUser.getEmail());
-                Intent editProfileIntent = new Intent(LoginActivity.this, EditProfile.class);
-                editProfileIntent.putExtra("caller", TAG);
-                editProfileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(editProfileIntent);
-                finish();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                if (databaseError.getCode() == -3 && mAuth.getCurrentUser() != null) {
-                    logout();
-                    Toast.makeText(LoginActivity.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+    private void setupUserData(@NonNull final FirebaseUser user) {
+        Uri photoUri = user.getPhotoUrl();
+        String photoUrl;
+        if (photoUri != null) photoUrl = photoUri.toString();
+        else photoUrl = defaultPhotoUrl;
+        DatabaseReference currentUserDbRef = usersDbRef.child(user.getUid());
+        currentUserDbRef.child("Image").setValue(photoUrl);
+        currentUserDbRef.child("Username").setValue(user.getDisplayName());
+        currentUserDbRef.child("Email").setValue(user.getEmail());
+        Intent editProfileIntent = new Intent(LoginActivity.this, EditProfile.class);
+        startActivity(editProfileIntent);
+        finish();
     }
 
     @Override
