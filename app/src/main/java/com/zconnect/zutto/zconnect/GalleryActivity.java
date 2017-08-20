@@ -32,16 +32,16 @@ import junit.framework.Assert;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 
 public class GalleryActivity extends BaseActivity {
     public static final String TAG = "GalleryActivity";
     public static final String EXTRA_NAME = "images";
-    @InjectView(R.id.pager)
+    @BindView(R.id.pager)
     ViewPager _pager;
-    @InjectView(R.id.thumbnails)
+    @BindView(R.id.thumbnails)
     LinearLayout _thumbnails;
-    @InjectView(R.id.btn_close)
+    @BindView(R.id.btn_close)
     ImageButton _closeButton;
     private ArrayList<String> _images;
     private GalleryPagerAdapter _adapter;
@@ -50,7 +50,7 @@ public class GalleryActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
