@@ -491,9 +491,9 @@ public class OpenEventDetail extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
-        Intent eventsIntent=new Intent(OpenEventDetail.this,AllEvents.class);
-        startActivity(eventsIntent);
+        super.onBackPressed();
+        /*Intent eventsIntent=new Intent(OpenEventDetail.this,AllEvents.class);
+        startActivity(eventsIntent);*/
         finish();
     }
 }

@@ -195,9 +195,9 @@ public class TabStoreRoom extends BaseActivity {
 //    }
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
-        Intent storeIntent = new Intent(TabStoreRoom.this, home.class);
-        startActivity(storeIntent);
+        super.onBackPressed();
+        /*Intent storeIntent = new Intent(TabStoreRoom.this, home.class);
+        startActivity(storeIntent);*/
         finish();
     }
 

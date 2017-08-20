@@ -31,6 +31,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +71,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
+    private DatabaseReference mDatabasePopUps;
     private GoogleApiClient mGoogleApiClient;
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -82,14 +84,14 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        SharedPreferences sharedPref = getSharedPreferences("guestMode",MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (!prefs.getBoolean("firstTime", false)) {
             // <---- run your one time code here
-            Intent tutIntent =new Intent(home.this,FullscreenActivity.class);
+            Intent tutIntent = new Intent(home.this, FullscreenActivity.class);
             tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(tutIntent);
             //mark first time has runned.
@@ -115,7 +117,7 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
                 .build();
         if (FirebaseAuth.getInstance().getCurrentUser() != null)
             addImageDialog();
-         homescreen = new Homescreen();
+        homescreen = new Homescreen();
         //        Intent called = getIntent();
 //        homescreen = called.hasExtra("type")?new Homescreen("new"):new Homescreen(null);
 //        if (called.hasExtra("type"))
@@ -189,21 +191,21 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
         databaseReference.keepSynced(true);
 
         if (mAuth.getCurrentUser() == null)
-        if(!status) {
-            header.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (number != null) {
-                        Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                        startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(getApplicationContext(), AddContact.class);
-                        startActivity(intent);
+            if (!status) {
+                header.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (number != null) {
+                            Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), AddContact.class);
+                            startActivity(intent);
+                        }
                     }
-                    }
-            });
+                });
 
-        }
+            }
         viewPager = (ViewPager) findViewById(R.id.container);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
 
@@ -232,9 +234,117 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
 
         //changing fonts
         Typeface ralewayBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Thin.ttf");
+
+
+        //put try catch
+
+        try {
+
+            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
+            mDatabasePopUps.keepSynced(true);
+
+            String popUpUrl;
+
+
+            //popUpUrl = "http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg";
+
+            //FirebaseDatabase database=mDatabasePopUps.getDatabase()
+
+            mDatabasePopUps.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    ArrayList<String> popUpUrl1 = new ArrayList<>();
+                    ArrayList<String> importance = new ArrayList<>();
+
+                    boolean dataComplete=true;
+
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(home.this);
+                    String first = preferences.getString("popup", "");
+
+                    boolean firstTimePopUp=Boolean.parseBoolean(first);
+
+                    for (DataSnapshot shot : dataSnapshot.getChildren()) {
+
+                        if(shot.child("imp").getValue(String.class)!=null && shot.child("imageUrl").getValue(String.class)!=null) {
+                            popUpUrl1.add(shot.child("imageUrl").getValue(String.class));
+                            importance.add(shot.child("imp").getValue(String.class));
+                            dataComplete=true;
+                        }
+                        else {
+
+                            dataComplete=false;
+
+                        }
+
+                    }
+                    for (int i = 0; i < popUpUrl1.size() && dataComplete && firstTimePopUp ; i++) {
+
+                        double random1 = Math.random();
+
+                        int random = (int) (random1 * 10);
+
+                        int importanceDigit = Integer.parseInt(importance.get(i));
+
+                        boolean show = false;
+
+                        if (importanceDigit == 3) {
+                            if (random % 2 == 0)
+                                show = true;
+                        } else if (importanceDigit == 2) {
+
+                            if (random % 3 == 0)
+                                show = true;
+
+                        } else if (importanceDigit == 1) {
+
+                            if (random % 4 == 0)
+                                show = true;
+                        } else if (importanceDigit == 4) {
+
+                            show = true;
+                        } else {
+                            show = false;
+                        }
+
+                        if (!importance.get(i).equals("0") && show) {
+                            CustomDialogClass cdd = new CustomDialogClass(home.this, popUpUrl1.get(i));
+                            cdd.show();
+                            Window window = cdd.getWindow();
+                            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+                            //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(home.this);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("popup","false");
+                            editor.apply();
+
+                            break;
+                        }
+                    }
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+
+                }
+            });
+
+        }
+        catch (Exception e)
+        {
+            Log.e("popups",e.toString());
+        }
+        //CustomDialogClass cdd = new CustomDialogClass(this, popUpUrl);
+        //cdd.show();
     }
+
+
+
+
 //    @Override
-//    protected void onResume() {
 //    protected void onResume() {
 //        super.onResume();
 //
@@ -447,7 +557,14 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
 
 
         if (doubleBackToExitPressedOnce) {
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(home.this);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("popup","true");
+            editor.apply();
+
             super.onBackPressed();
+
             return;
         }
 
@@ -462,6 +579,39 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
             }
         }, 2000);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(home.this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("popup","true");
+        editor.apply();
+
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(home.this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("popup","true");
+        editor.apply();
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(home.this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("popup","true");
+        editor.apply();
+
+        super.onPause();
     }
 
     private void setupViewPager(ViewPager viewPager) {

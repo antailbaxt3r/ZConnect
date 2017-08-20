@@ -561,10 +561,10 @@ public class AllEvents extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
-        Intent eventsIntent=new Intent(AllEvents.this,home.class);
+        super.onBackPressed();
+        /*Intent eventsIntent=new Intent(AllEvents.this,home.class);
 
-        startActivity(eventsIntent);
+        startActivity(eventsIntent);*/
         finish();
     }
 
