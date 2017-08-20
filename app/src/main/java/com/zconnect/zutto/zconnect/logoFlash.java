@@ -77,7 +77,7 @@ public class logoFlash extends BaseActivity {
 
                     new Timer().schedule(new TimerTask(){
                         public void run() {
-                            Intent intent = new Intent(logoFlash.this, logIn.class);
+                            Intent intent = new Intent(logoFlash.this, LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                             finish();
@@ -118,7 +118,7 @@ public class logoFlash extends BaseActivity {
                         }
                     });
                 } else {
-                    Intent intent = new Intent(logoFlash.this, logIn.class);
+                    Intent intent = new Intent(logoFlash.this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();

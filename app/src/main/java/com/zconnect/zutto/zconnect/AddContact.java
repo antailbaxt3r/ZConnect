@@ -82,7 +82,7 @@ public class AddContact extends BaseActivity implements TagsEditText.TagsEditLis
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             showToast("Please Login.");
-            startActivity(new Intent(this, logIn.class));
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
         intentHandle = (new IntentHandle()); //Init intent object

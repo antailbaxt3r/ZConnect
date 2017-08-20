@@ -106,7 +106,7 @@ public class TabStoreRoom extends BaseActivity {
 
                     builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(TabStoreRoom.this, logIn.class);
+                            Intent intent = new Intent(TabStoreRoom.this, LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                             finish();

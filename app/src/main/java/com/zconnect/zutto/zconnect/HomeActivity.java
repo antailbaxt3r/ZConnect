@@ -150,7 +150,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             username = mUser.getDisplayName();
             userEmail = mUser.getEmail();
         } else {
-            Intent loginIntent = new Intent(HomeActivity.this, logIn.class);
+            Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(loginIntent);
             finish();
         }
@@ -313,7 +313,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private void logout() {
         mAuth.signOut();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        Intent loginIntent = new Intent(HomeActivity.this, logIn.class);
+        Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(loginIntent);
         finish();
@@ -325,10 +325,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (!dataSnapshot.hasChild(mUser.getUid()) && !checkUser) {
-                        Intent setDetailsIntent = new Intent(HomeActivity.this, SetDetailsActivity.class);
-                        setDetailsIntent.putExtra("caller", "home");
-                        setDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(setDetailsIntent);
+                        DatabaseReference currentUserDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid());
+                        currentUserDbRef.child("Image").setValue(mUser.getPhotoUrl());
+                        currentUserDbRef.child("Username").setValue(username);
+                        currentUserDbRef.child("Email").setValue(mUser.getEmail());
+                        Intent editProfileIntent = new Intent(HomeActivity.this, EditProfile.class);
+                        editProfileIntent.putExtra("caller", "home");
+                        editProfileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(editProfileIntent);
                     }
                 }
 
