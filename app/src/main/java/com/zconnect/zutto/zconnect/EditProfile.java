@@ -17,6 +17,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -338,7 +339,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
             snack.show();
             mProgress.dismiss();
         } else {
-        if (name != null && number != null && details != null && mImageUri != null && !skills.equals("")) {
+            if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(number) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(details) && mImageUri != null && !skills.equals("")) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
