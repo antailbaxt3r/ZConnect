@@ -310,8 +310,9 @@ public class home extends BaseActivity implements NavigationView.OnNavigationIte
                         if (!importance.get(i).equals("0") && show) {
                             CustomDialogClass cdd = new CustomDialogClass(home.this, popUpUrl1.get(i));
                             cdd.show();
+                            cdd.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //style id
                             Window window = cdd.getWindow();
-                            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+                            window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
                             //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(home.this);
                             SharedPreferences.Editor editor = preferences.edit();
