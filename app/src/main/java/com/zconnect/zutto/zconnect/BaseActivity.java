@@ -192,8 +192,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void hideProgressDialog() {
         if (progress != null && progress.isShowing()) {
-            progress.dismiss();
-            progress = null;
+            try {
+                progress.dismiss();
+                progress = null;
+            } catch (Exception e) {
+            }
         }
     }
 
