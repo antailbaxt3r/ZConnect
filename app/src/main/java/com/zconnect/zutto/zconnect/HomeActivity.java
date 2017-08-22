@@ -189,7 +189,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         //put try catch
 
-        try {
+        //try {
 
             mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
             mDatabasePopUps.keepSynced(true);
@@ -284,11 +284,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             });
 
-        }
-        catch (Exception e)
+        //}
+        /*catch (Exception e)
         {
             Log.e("popups",e.toString());
-        }
+        }*/
 
     }
 

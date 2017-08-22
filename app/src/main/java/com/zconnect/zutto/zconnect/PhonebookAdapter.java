@@ -43,6 +43,17 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
 
     @Override
     public void onBindViewHolder(PhonebookAdapter.ViewHolder holder, int position) {
+
+        /*if(phonebookItem.get(position).getImgurl().equals("https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336"))
+        {
+            holder.simpleDraweeView.setBackgroundResource(R.drawable.ic_profile_icon);
+        }
+        else
+        {
+            holder.simpleDraweeView.setBackgroundResource(R.color.white);
+            holder.simpleDraweeView.setImageURI(Uri.parse(phonebookItem.get(position).getImgurl()));
+        }*/
+
         holder.simpleDraweeView.setImageURI(Uri.parse(phonebookItem.get(position).getImgurl()));
         holder.name.setText(phonebookItem.get(position).getName());
         holder.number.setText(phonebookItem.get(position).getNumber());
