@@ -53,18 +53,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener {
-    private Homescreen homescreen;
-    private boolean checkUser = true;
-    private ActionBarDrawerToggle toggle;
     private final String TAG = getClass().getSimpleName();
-    private String userEmail;
-    private String username;
     boolean doubleBackToExitPressedOnce = false;
     String number;
-    private FirebaseAuth mAuth;
-    private DatabaseReference usersDbRef;
-    private GoogleApiClient mGoogleApiClient;
-    private DatabaseReference phoneBookDbRef;
     TextView usernameTv;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -78,6 +69,15 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     Toolbar toolbar;
     View navHeader;
     TextView emailTv;
+    private Homescreen homescreen;
+    private boolean checkUser = true;
+    private ActionBarDrawerToggle toggle;
+    private String userEmail;
+    private String username;
+    private FirebaseAuth mAuth;
+    private DatabaseReference usersDbRef;
+    private GoogleApiClient mGoogleApiClient;
+    private DatabaseReference phoneBookDbRef;
     private FirebaseUser mUser;
 
     @Override
@@ -387,7 +387,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     final Long currTime = Calendar.getInstance().getTimeInMillis();
                     SharedPreferences addNumberDialogPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
                     Boolean neverAddNumber = addNumberDialogPref.getBoolean("never", false);
-                    if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 7 * 24 * 3600 * 1000)) {
+                    if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 2 * 24 * 3600 * 1000)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                         builder.setTitle("Hi " + username)
                                 .setMessage("Add your information and get discovered.")

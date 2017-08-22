@@ -65,11 +65,9 @@ public class Shop_detail extends BaseActivity {
         name = getIntent().getStringExtra("Name");
         imageurl = getIntent().getStringExtra("Imageurl");
       //  Log.v("im",imageurl);
-        String tag =getIntent().getStringExtra("Tag");
-        if(tag!=null&&tag.equals("1"))
-            getSupportActionBar().setTitle("Details");
-       else if (name != null)
-            getSupportActionBar().setTitle(name);
+        if (name == null)
+            finish();
+        getSupportActionBar().setTitle(name);
         if (imageurl != null) {
             simpleDraweeView.setImageURI(Uri.parse(imageurl));
             collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
