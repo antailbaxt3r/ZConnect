@@ -226,7 +226,7 @@ public class CabListOfPeople extends BaseActivity {
                             .setPositiveButton("Login", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent loginIntent = new Intent(CabListOfPeople.this, logIn.class);
+                                    Intent loginIntent = new Intent(CabListOfPeople.this, LoginActivity.class);
                                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(loginIntent);
                                     finish();

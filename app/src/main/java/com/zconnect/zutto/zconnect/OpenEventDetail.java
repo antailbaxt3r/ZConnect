@@ -72,7 +72,7 @@ public class OpenEventDetail extends BaseActivity {
        id=getIntent().getStringExtra("id");
         tag=getIntent().getStringExtra("Eventtag");
 
-        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
 
         boostBtn = (Button)findViewById(R.id.boostBtn);
@@ -445,7 +445,7 @@ public class OpenEventDetail extends BaseActivity {
                             .setPositiveButton("Login", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent loginIntent = new Intent(OpenEventDetail.this, logIn.class);
+                                    Intent loginIntent = new Intent(OpenEventDetail.this, LoginActivity.class);
                                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(loginIntent);
                                     finish();

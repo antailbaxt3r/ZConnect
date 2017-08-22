@@ -38,9 +38,14 @@ import butterknife.ButterKnife;
 public class GalleryActivity extends BaseActivity {
     public static final String TAG = "GalleryActivity";
     public static final String EXTRA_NAME = "images";
-    @BindView(R.id.pager) ViewPager _pager;
-    @BindView(R.id.thumbnails) LinearLayout _thumbnails;
-    @BindView(R.id.btn_close) ImageButton _closeButton;
+
+    @BindView(R.id.pager)
+    ViewPager _pager;
+    @BindView(R.id.thumbnails)
+    LinearLayout _thumbnails;
+    @BindView(R.id.btn_close)
+    ImageButton _closeButton;
+
     private ArrayList<String> _images;
     private GalleryPagerAdapter _adapter;
 

@@ -47,7 +47,7 @@ public class Phonebook extends BaseActivity {
         Fresco.initialize(this);
         setContentView(R.layout.activity_phonebook);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -97,8 +97,8 @@ public class Phonebook extends BaseActivity {
             });
         }
 
-        viewPager = (ViewPager) findViewById(R.id.container);
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        viewPager = (ViewPager) findViewById(R.id.view_pager_app_bar_home);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout_app_bar_home);
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         setSupportActionBar(toolbar);
@@ -130,7 +130,7 @@ public class Phonebook extends BaseActivity {
 
                     builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(Phonebook.this, logIn.class);
+                            Intent intent = new Intent(Phonebook.this, LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                             finish();
