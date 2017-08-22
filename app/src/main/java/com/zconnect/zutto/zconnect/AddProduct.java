@@ -236,10 +236,14 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         final String productPhoneNo = mProductPhone.getText().toString().trim();
         final String productTagString= productTags.getTags().toString().trim();
         final String negotiable;
-        if(negotiableCheckBox.isChecked())
-            negotiable= "1";
+
+        if(productPriceValue.equals("") && negotiableCheckBox.isChecked())
+            negotiable="2";
         else
-            negotiable="0";
+            if(negotiableCheckBox.isChecked())
+                negotiable= "1";
+            else
+                negotiable="0";
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
@@ -258,7 +262,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         });
 
 
-        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && !TextUtils.isEmpty(productPriceValue) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null && category != null && productTags!=null && !negotiable.equals("") && negotiableCheckBox!=null) {
+        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue) || negotiable.equals("2")) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null && category != null && productTags!=null && !negotiable.equals("") && negotiableCheckBox!=null) {
             StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override

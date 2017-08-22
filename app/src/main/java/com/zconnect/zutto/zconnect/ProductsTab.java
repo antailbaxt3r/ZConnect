@@ -1,12 +1,15 @@
 package com.zconnect.zutto.zconnect;
 
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
@@ -31,7 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -129,8 +131,8 @@ public class ProductsTab extends Fragment {
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
                 try {
-                    viewHolder.setImage(getContext(), model.getImage(), model.getProductName());
-                } catch (IOException e) {
+                    viewHolder.setImage(getActivity(), model.getProductName(), getContext(), model.getImage());
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 viewHolder.setPrice(model.getPrice(),model.getNegotiable());
@@ -244,12 +246,15 @@ public class ProductsTab extends Fragment {
         private FirebaseAuth mAuth;
         private Button shortList;
 
+        private ImageView post_image;
+
         private String negotiable;
         private String sellerName;
         // Constructor
         public ProductViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+            post_image = (ImageView) mView.findViewById(R.id.postImg);
             sharedPref = mView.getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
             Boolean status = sharedPref.getBoolean("mode", false);
 //            mReserve = (Switch) mView.findViewById(R.id.switch1);
@@ -324,15 +329,35 @@ public class ProductsTab extends Fragment {
             post_desc.setText(productDesc);
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
             post_desc.setTypeface(ralewayMedium);
+        }
+
+        public void animate(final Activity activity, final String name, String url) {
+            final Intent i = new Intent(mView.getContext(), viewImage.class);
+            i.putExtra("currentEvent", name);
+            i.putExtra("eventImage", url);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, post_image, mView.getResources().getString(R.string.transition_string));
+
+            mView.getContext().startActivity(i, optionsCompat.toBundle());
 
 
         }
 
-        //Set Product Image
-        public void setImage(final Context ctx, final String image, final String name) throws IOException {
-            ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
+        public void setImage(final Activity activity, final String name, final Context ctx, final String image) {
             Picasso.with(ctx).load(image).into(post_image);
+            post_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    ProgressDialog mProgress = new ProgressDialog(ctx);
+                    mProgress.setMessage("Loading.....");
+                    mProgress.show();
+                    animate(activity, name, image);
+                    mProgress.dismiss();
+                }
+            });
         }
+        //Set Product Imag
 
         //Set Product Price
         public void setPrice(String productPrice,String negotiable) {
@@ -342,6 +367,8 @@ public class ProductsTab extends Fragment {
             if(negotiable!=null) {
                 if (negotiable.equals("1"))
                     price = "₹" + productPrice + "/-" +"\n"+ "negotiable";
+                else if (negotiable.equals("2"))
+                    price = "negotiable";
                 else
                     price = "₹" + productPrice + "/-";
 

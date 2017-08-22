@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -118,7 +121,7 @@ public class IndividualCategory extends BaseActivity {
 
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
-                viewHolder.setImage(getApplicationContext(), model.getImage());
+                viewHolder.setImage(IndividualCategory.this, model.getProductName(), IndividualCategory.this, model.getImage());
                 viewHolder.setProductPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getPhone_no(), category);
@@ -228,12 +231,15 @@ public class IndividualCategory extends BaseActivity {
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
         private FirebaseAuth mAuth;
         private Button shortList;
+        private ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
+
 
         public ProductViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             sharedPref = mView.getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
             Boolean status = sharedPref.getBoolean("mode", false);
+            post_image = (ImageView) mView.findViewById(R.id.postImg);
 //            mReserve = (Switch) mView.findViewById(R.id.switch1);
 //            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
             shortList = (Button) mView.findViewById(R.id.shortList);
@@ -312,12 +318,32 @@ public class IndividualCategory extends BaseActivity {
         }
 
 
-        public void setImage(Context ctx, String image) {
+        public void animate(final Activity activity, final String name, String url) {
+            final Intent i = new Intent(mView.getContext(), viewImage.class);
+            i.putExtra("currentEvent", name);
+            i.putExtra("eventImage", url);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, post_image, mView.getResources().getString(R.string.transition_string));
 
-            ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
-            Picasso.with(ctx).load(image).into(post_image);
+            mView.getContext().startActivity(i, optionsCompat.toBundle());
+
+
         }
 
+        public void setImage(final Activity activity, final String name, final Context ctx, final String image) {
+            Picasso.with(ctx).load(image).into(post_image);
+            post_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    ProgressDialog mProgress = new ProgressDialog(ctx);
+                    mProgress.setMessage("Loading.....");
+                    mProgress.show();
+                    animate(activity, name, image);
+                    mProgress.dismiss();
+                }
+            });
+        }
         public void setProductPrice(String productPrice) {
             TextView post_price = (TextView) mView.findViewById(R.id.price);
             post_price.setText("₹" + productPrice + "/-");

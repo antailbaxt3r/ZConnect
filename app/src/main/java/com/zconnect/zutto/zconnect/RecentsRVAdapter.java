@@ -91,7 +91,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                             }
                         });
                         //context.startActivity(i);
-                        mHomeActivity.finish();
+                        //mHomeActivity.finish();
+                        //mHome.finish();
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                         Intent intent = new Intent(context, TabStoreRoom.class);
                         context.startActivity(intent);
