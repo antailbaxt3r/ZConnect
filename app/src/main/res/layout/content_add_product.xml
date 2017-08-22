@@ -48,10 +48,10 @@
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_below="@+id/name"
+        android:layout_below="@+id/priceNegotiable"
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/border_filled_2"
         android:ems="10"
         android:hint="Description"
@@ -108,44 +108,6 @@
         android:prompt="@string/category_prompt"
         android:spinnerMode="dialog" />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <EditText
         android:id="@+id/price"
         android:layout_width="wrap_content"
@@ -161,6 +123,14 @@
         android:inputType="numberDecimal"
         android:padding="10dp" />
 
+    <CheckBox
+        android:id="@+id/priceNegotiable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="price negotiable"
+        android:layout_below="@+id/price"
+        android:layout_toEndOf="@+id/name"
+        android:checked="true"/>
 
     <EditText
         android:id="@+id/phoneNo"
@@ -173,6 +143,7 @@
         android:background="@drawable/border_filled_2"
         android:hint="Phone No."
         android:inputType="phone"
+        android:maxLength="10"
         android:padding="10dp" />
 
 </RelativeLayout>
