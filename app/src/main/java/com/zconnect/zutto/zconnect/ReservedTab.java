@@ -1,11 +1,14 @@
 package com.zconnect.zutto.zconnect;
 
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -114,7 +117,7 @@ public class ReservedTab extends Fragment {
 //               if(reserveList.contains(model.getKey())) {
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
-                viewHolder.setImage(getContext(), model.getImage());
+                viewHolder.setImage(getActivity(), model.getProductName(), getContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getPhone_no(), getContext(), model.getCategory());
@@ -152,6 +155,7 @@ public class ReservedTab extends Fragment {
         private FirebaseAuth mAuth;
         private String sellerName;
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
+        private ImageView post_image;
 
 
         public ProductViewHolder(View itemView) {
@@ -159,6 +163,7 @@ public class ReservedTab extends Fragment {
             mView = itemView;
             //to delete reserved items
 //            noitems.setVisibility(View.VISIBLE);
+            post_image = (ImageView) mView.findViewById(R.id.postImg);
             deleteButton = (Button) mView.findViewById(R.id.delete);
             Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
             deleteButton.setTypeface(customfont);
@@ -182,13 +187,31 @@ public class ReservedTab extends Fragment {
 
         }
 
-        public void setImage(Context ctx, String image) {
+        public void animate(final Activity activity, final String name, String url) {
+            final Intent i = new Intent(mView.getContext(), viewImage.class);
+            i.putExtra("currentEvent", name);
+            i.putExtra("eventImage", url);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, post_image, mView.getResources().getString(R.string.transition_string));
+
+            mView.getContext().startActivity(i, optionsCompat.toBundle());
 
 
-            ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
+        }
+
+        public void setImage(final Activity activity, final String name, final Context ctx, final String image) {
             Picasso.with(ctx).load(image).into(post_image);
+            post_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-
+                    ProgressDialog mProgress = new ProgressDialog(ctx);
+                    mProgress.setMessage("Loading.....");
+                    mProgress.show();
+                    animate(activity, name, image);
+                    mProgress.dismiss();
+                }
+            });
         }
 
         public void setProductPrice(String productPrice) {
