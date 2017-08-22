@@ -33,7 +33,7 @@ public class PhonebookDetails extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phonebook_details);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         image = (SimpleDraweeView) findViewById(R.id.contact_details_display_image);
         editTextDetails = (TextInputEditText) findViewById(R.id.contact_details_editText_1);
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_details_email_editText);

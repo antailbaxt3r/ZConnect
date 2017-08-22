@@ -75,8 +75,8 @@ public class Shop_detail extends BaseActivity {
             collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         }
 
-        viewPager = (ViewPager) findViewById(R.id.container);
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        viewPager = (ViewPager) findViewById(R.id.view_pager_app_bar_home);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout_app_bar_home);
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 

@@ -17,6 +17,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,7 +73,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         mProgress = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
@@ -338,7 +339,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
             snack.show();
             mProgress.dismiss();
         } else {
-        if (name != null && number != null && details != null && mImageUri != null && !skills.equals("")) {
+            if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(number) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(details) && mImageUri != null && !skills.equals("")) {
             StorageReference filepath = mStorage.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -362,7 +363,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
                     }
 
                     mProgress.dismiss();
-                    startActivity(new Intent(EditProfile.this, home.class));
+                    startActivity(new Intent(EditProfile.this, HomeActivity.class));
                 }
             });
         } else if (name != null && number != null && details != null && imageurl != null) {
@@ -383,7 +384,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
             }
 
             mProgress.dismiss();
-            startActivity(new Intent(EditProfile.this, home.class));
+            startActivity(new Intent(EditProfile.this, HomeActivity.class));
         } else {
             mProgress.dismiss();
             Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);

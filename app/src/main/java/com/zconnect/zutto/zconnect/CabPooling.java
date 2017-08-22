@@ -32,7 +32,7 @@ public class CabPooling extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         CounterManager.openCabPool();
         setContentView(R.layout.activity_cab_pooling);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

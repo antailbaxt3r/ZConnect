@@ -77,7 +77,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         intentHandle = new IntentHandle();
         if (toolbar != null) {
