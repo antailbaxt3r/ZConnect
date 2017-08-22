@@ -28,12 +28,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
 
     Context context;
     Vector<RecentsItemFormat> recentsItemFormats;
-    private home mHome;
+    private HomeActivity mHomeActivity;
 
-    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, home home) {
+    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity) {
         this.context = context;
         this.recentsItemFormats = recentsItemFormats;
-        mHome = home;
+        mHomeActivity = HomeActivity;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                             }
                         });
                         //context.startActivity(i);
-                        mHome.finish();
+                        mHomeActivity.finish();
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                         Intent intent = new Intent(context, TabStoreRoom.class);
                         context.startActivity(intent);

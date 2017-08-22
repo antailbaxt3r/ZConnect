@@ -2,7 +2,6 @@ package com.zconnect.zutto.zconnect;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -61,7 +60,7 @@ public class Recents extends Fragment {
         productLinearLayout.setStackFromEnd(true);
         recyclerView.setLayoutManager(productLinearLayout);
         //Setup layout manager. VERY IMP ALWAYS
-        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (home) getActivity());
+        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity());
         recyclerView.setAdapter(adapter);
 
 

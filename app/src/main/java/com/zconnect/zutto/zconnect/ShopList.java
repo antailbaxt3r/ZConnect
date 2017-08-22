@@ -38,7 +38,7 @@ public class ShopList extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         recycleView = (RecyclerView) findViewById(R.id.content_shop_list_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_shop_list_progress);
         setSupportActionBar(toolbar);

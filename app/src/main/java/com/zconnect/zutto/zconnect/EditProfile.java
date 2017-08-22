@@ -73,7 +73,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         mProgress = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
@@ -363,7 +363,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
                     }
 
                     mProgress.dismiss();
-                    startActivity(new Intent(EditProfile.this, home.class));
+                    startActivity(new Intent(EditProfile.this, HomeActivity.class));
                 }
             });
         } else if (name != null && number != null && details != null && imageurl != null) {
@@ -384,7 +384,7 @@ public class EditProfile extends BaseActivity implements TagsEditText.TagsEditLi
             }
 
             mProgress.dismiss();
-            startActivity(new Intent(EditProfile.this, home.class));
+            startActivity(new Intent(EditProfile.this, HomeActivity.class));
         } else {
             mProgress.dismiss();
             Snackbar snack = Snackbar.make(editTextDetails, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
