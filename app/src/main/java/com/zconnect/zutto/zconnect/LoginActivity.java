@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -39,26 +38,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private final String TAG = getClass().getSimpleName();
     boolean doubleBackToExitPressedOnce = false;
     private FirebaseAuth mAuth;
     private DatabaseReference usersDbRef;
     private ProgressDialog mProgress;
-    @BindView(R.id.GoogleSignIn)
+    @BindView(R.id.btn_google_sign_in)
     Button mGoogleSignInBtn;
-    @BindView(R.id.guestLogIn)
+    @BindView(R.id.btn_guest_login)
     Button mGuestLogInBtn;
     @BindView(R.id.bitsgoaemailinfo)
     TextView bpgcEmailInfo;
-    private Typeface ralewayLight;
-    private Typeface ralewayMedium;
     private int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseUser mUser;
     private String userEmail;
-    private String defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,54 +77,35 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-
+        //TODO: what is this code doing?
         mUser = mAuth.getCurrentUser();
         if (mUser != null) {
             userEmail = mUser.getEmail();
             if (userEmail != null && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
-                setupUserData(mUser);
+                setupUserDataAndFinish(mUser);
             } else {
                 logout();
                 mProgress.dismiss();
                 Toast.makeText(LoginActivity.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
             }
         }
-        mGuestLogInBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                guestLogIn(true);
-                Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
-                startActivity(homeIntent);
-                finish();
-            }
-        });
 
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        mGoogleSignInBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isNetworkAvailable(getApplicationContext())) {
-                    Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
-                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    snackBarText.setTextColor(Color.WHITE);
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                    snackbar.show();
-                } else {
-                    signIn();
-                }
-            }
-        });
+        mGuestLogInBtn.setOnClickListener(this);
+        mGoogleSignInBtn.setOnClickListener(this);
 
-        ralewayLight = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
-        ralewayMedium = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        Typeface ralewayLight = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        Typeface ralewayMedium = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
         bpgcEmailInfo.setTypeface(ralewayLight);
         mGoogleSignInBtn.setTypeface(ralewayMedium);
         mGuestLogInBtn.setTypeface(ralewayMedium);
     }
 
-    private void signIn() {
+    private void launchGoogleSignInIntent() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+        Log.e(TAG, "launchGoogleSignInIntent: ");
     }
 
     @Override
@@ -151,29 +128,31 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.e(TAG, "onActivityResult: resCode = " + requestCode);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN && resultCode == Activity.RESULT_OK) {
+        if (requestCode == RC_SIGN_IN && resultCode != Activity.RESULT_CANCELED) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             mProgress.setMessage("Signing in...");
             mProgress.show();
             if (result.isSuccess()) {
+                Log.e(TAG, "onActivityResult: success" );
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
+                Log.e(TAG, "onActivityResult: not success" + result.getStatus().getStatusMessage() );
                 mProgress.dismiss();
-                Snackbar snack = Snackbar.make(mGoogleSignInBtn, "Login failed", Snackbar.LENGTH_LONG);
-                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Login failed", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                snack.show();
+                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snackbar.show();
             }
         } else {
-            Log.e(TAG, "onActivityResult: " + resultCode);
+            Log.d(TAG, "onActivityResult: " + resultCode);
         }
     }
-
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
@@ -189,18 +168,18 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Snackbar snack = Snackbar.make(mGoogleSignInBtn, "Authentication failed.", Snackbar.LENGTH_LONG);
-                            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Authentication failed.", Snackbar.LENGTH_LONG);
+                            TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                             snackBarText.setTextColor(Color.WHITE);
-                            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                            snack.show();
+                            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                            snackbar.show();
                             mProgress.dismiss();
                         } else {
                             mUser = mAuth.getCurrentUser();
                             if (mUser != null
                                     && (userEmail = mUser.getEmail()) != null
                                     && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
-                                setupUserData(mUser);
+                                setupUserDataAndFinish(mUser);
                             } else {
                                 logout();
                                 mProgress.dismiss();
@@ -211,20 +190,17 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 });
     }
 
-
-    @SuppressLint("ApplySharedPref")
-    public void guestLogIn(Boolean mode) {
+    public void setGuestLoginPref(Boolean mode) {
         SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
         SharedPreferences.Editor editInfo = sharedPref.edit();
         editInfo.putBoolean("mode", mode);
         editInfo.commit();
-        mAuth.signInAnonymously();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        guestLogIn(false);
+        setGuestLoginPref(false);
     }
 
     private void logout() {
@@ -233,16 +209,17 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
     }
 
-    private void setupUserData(@NonNull final FirebaseUser user) {
+    private void setupUserDataAndFinish(@NonNull final FirebaseUser user) {
         Uri photoUri = user.getPhotoUrl();
         String photoUrl;
+        String defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336";
         if (photoUri != null) photoUrl = photoUri.toString();
         else photoUrl = defaultPhotoUrl;
         DatabaseReference currentUserDbRef = usersDbRef.child(user.getUid());
         currentUserDbRef.child("Image").setValue(photoUrl);
         currentUserDbRef.child("Username").setValue(user.getDisplayName());
         currentUserDbRef.child("Email").setValue(user.getEmail());
-        Intent editProfileIntent = new Intent(LoginActivity.this, EditProfile.class);
+        Intent editProfileIntent = new Intent(LoginActivity.this, EditProfileActivity.class);
         startActivity(editProfileIntent);
         finish();
     }
@@ -250,5 +227,30 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e(TAG, "onConnectionFailed: error message is " + connectionResult.getErrorMessage());
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_google_sign_in: {
+                if (!isNetworkAvailable(getApplicationContext())) {
+                    Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                    snackbar.show();
+                } else {
+                    launchGoogleSignInIntent();
+                }
+                break;
+            }
+            case R.id.btn_guest_login: {
+                setGuestLoginPref(true);
+                Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(homeIntent);
+                finish();
+                break;
+            }
+        }
     }
 }

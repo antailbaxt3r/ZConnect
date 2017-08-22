@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,9 +54,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener {
+public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
     private Homescreen homescreen;
-    private boolean checkUser = true;
     private ActionBarDrawerToggle toggle;
     private final String TAG = getClass().getSimpleName();
     private String userEmail;
@@ -67,6 +67,27 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference phoneBookDbRef;
     private DatabaseReference mDatabasePopUps;
+    private ValueEventListener phoneBookValueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                PhonebookDisplayItem phonebookDisplayItem = child.getValue(PhonebookDisplayItem.class);
+                if (userEmail != null
+                        && phonebookDisplayItem != null
+                        && phonebookDisplayItem.getEmail() != null
+                        && phonebookDisplayItem.getEmail().equals(userEmail)) {
+                    username = phonebookDisplayItem.getName();
+                    number = phonebookDisplayItem.getNumber();
+                    Log.v(TAG, number);
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.e(TAG, "onCancelled: ", databaseError.toException());
+        }
+    };
     TextView usernameTv;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -81,64 +102,71 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     View navHeader;
     TextView emailTv;
     private FirebaseUser mUser;
+    private boolean guestMode;
 
+    @SuppressLint("ApplySharedPref")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-        navHeader = navigationView.getHeaderView(0);
-        SharedPreferences guestModePrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
-        Boolean guestMode = guestModePrefs.getBoolean("mode", false);
+
         SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
-        usersDbRef.keepSynced(true);
-        phoneBookDbRef.keepSynced(true);
-
-        usernameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
-        emailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
-
-        mAuth = FirebaseAuth.getInstance();
-
-        mUser = mAuth.getCurrentUser();
-        if (mUser != null) {
-            username = mUser.getDisplayName();
-            userEmail = mUser.getEmail();
-        } else {
-            Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
-            startActivity(loginIntent);
-            finish();
-        }
-
         //This code will run for first time.
-        if (!defaultPrefs.getBoolean("firstTime", false)) {
+        if (!defaultPrefs.getBoolean("isReturningUser", false)) {
             Intent tutIntent = new Intent(HomeActivity.this, FullscreenActivity.class);
             tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(tutIntent);
 
             //mark first time has run.
             SharedPreferences.Editor editor = defaultPrefs.edit();
-            editor.putBoolean("firstTime", true);
-            editor.apply();
+            editor.putBoolean("isReturningUser", true);
+            editor.commit();
         }
+
+        guestMode = getSharedPreferences("guestMode", MODE_PRIVATE).getBoolean("mode", false);
+
+        usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+        //TODO: put sync for all DbRef in Application Class.
+        usersDbRef.keepSynced(true);
+        phoneBookDbRef.keepSynced(true);
+
+        navHeader = navigationView.getHeaderView(0);
+        usernameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
+        emailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
+
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        if (mUser != null) {
+            username = mUser.getDisplayName();
+            userEmail = mUser.getEmail();
+        } else if (!guestMode) {
+            Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
+            finish();
+        }
+        usernameTv.setText(username != null ? username : "ZConnect");
+        emailTv.setText(userEmail != null ? userEmail : "The way to connect!");
+
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        if (FirebaseAuth.getInstance().getCurrentUser() != null)
-            addImageDialog();
+
+        addImageDialog();
+
         homescreen = new Homescreen();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -159,13 +187,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         navigationView.setNavigationItemSelectedListener(this);
 
         if (guestMode) {
-            navigationView.getMenu().findItem(R.id.edit_profile).setVisible(false);
+            MenuItem editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
+            editProfileItem.setVisible(false);
+            editProfileItem.setEnabled(false);
         }
-
-        usernameTv.setText(username != null ? username : "ZConnect");
-        emailTv.setText(userEmail != null ? userEmail : "The way you connect");
-
-        phoneBookDbRef.keepSynced(true);
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         setSupportActionBar(toolbar);
@@ -176,6 +201,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(0);
 
+        //TODO: what does this code do?
         FirebaseMessaging.getInstance().subscribeToTopic("aweasd");
 
         RemoteMessage.Builder creator = new RemoteMessage.Builder("/topics/aweasd");
@@ -301,13 +327,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit_profile: {
-                if (number != null) {
-                    Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(getApplicationContext(), AddContact.class);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                startActivity(intent);
                 break;
             }
             case R.id.infone: {
@@ -344,7 +365,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                     snack.show();
                 } else {
-                    logout();
+                    logoutAndSendToLogin();
                 }
                 break;
             }
@@ -390,6 +411,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 dialog.show();
                 break;
             }
+            default: {
+                return false;
+            }
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -398,27 +422,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStart() {
         super.onStart();
-
-        phoneBookDbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
-                    if (userEmail != null
-                            && phonebookDisplayItem != null
-                            && phonebookDisplayItem.getEmail() != null
-                            && phonebookDisplayItem.getEmail().equals(userEmail)) {
-                        username = phonebookDisplayItem.getName();
-                        number = phonebookDisplayItem.getNumber();
-                        Log.v(TAG, number);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        phoneBookDbRef.addValueEventListener(phoneBookValueEventListener);
     }
 
     @Override
@@ -434,12 +438,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     protected void onStop() {
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("popup","true");
         editor.apply();
-
+        phoneBookDbRef.removeEventListener(phoneBookValueEventListener);
         super.onStop();
     }
 
@@ -454,7 +457,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         super.onPause();
     }
 
-    private void logout() {
+    private void logoutAndSendToLogin() {
         mAuth.signOut();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
@@ -462,35 +465,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         finish();
     }
 
-    private void checkUser() {
-        if (checkUser) {
-            usersDbRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.hasChild(mUser.getUid()) && !checkUser) {
-                        DatabaseReference currentUserDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid());
-                        currentUserDbRef.child("Image").setValue(mUser.getPhotoUrl());
-                        currentUserDbRef.child("Username").setValue(username);
-                        currentUserDbRef.child("Email").setValue(mUser.getEmail());
-                        Intent editProfileIntent = new Intent(HomeActivity.this, EditProfile.class);
-                        editProfileIntent.putExtra("caller", "home");
-                        editProfileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(editProfileIntent);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        }
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+            return;
         }
 
         if (doubleBackToExitPressedOnce) {
@@ -499,7 +479,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
 
         doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Please press BACK again to exit", Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 
@@ -532,7 +512,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        startActivity(new Intent(HomeActivity.this, AddContact.class));
+                                        startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
                                     }
                                 }).setNegativeButton("Later", null)
                                 .setNeutralButton("Lite :", new DialogInterface.OnClickListener() {
@@ -553,6 +533,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: ", databaseError.toException());
             }
         });
     }
@@ -560,11 +541,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e(TAG, "onConnectionFailed: error message is " + connectionResult.getErrorMessage());
-    }
-
-    @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        checkUser();
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
