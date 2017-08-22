@@ -367,6 +367,8 @@ public class ProductsTab extends Fragment {
             if(negotiable!=null) {
                 if (negotiable.equals("1"))
                     price = "₹" + productPrice + "/-" +"\n"+ "negotiable";
+                else if (negotiable.equals("2"))
+                    price = "negotiable";
                 else
                     price = "₹" + productPrice + "/-";
 

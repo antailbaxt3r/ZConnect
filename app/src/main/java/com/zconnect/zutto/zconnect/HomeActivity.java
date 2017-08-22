@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +66,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference usersDbRef;
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference phoneBookDbRef;
+    private DatabaseReference mDatabasePopUps;
     TextView usernameTv;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -184,6 +186,110 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         Log.d(creator.build().getFrom(), creator.build().getTo());
         FirebaseMessaging.getInstance().send(creator.build());
+
+        //put try catch
+
+        try {
+
+            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
+            mDatabasePopUps.keepSynced(true);
+
+            String popUpUrl;
+
+
+            //popUpUrl = "http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg";
+
+            //FirebaseDatabase database=mDatabasePopUps.getDatabase()
+
+            mDatabasePopUps.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    ArrayList<String> popUpUrl1 = new ArrayList<>();
+                    ArrayList<String> importance = new ArrayList<>();
+
+                    boolean dataComplete=true;
+
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
+                    String first = preferences.getString("popup", "");
+
+                    boolean firstTimePopUp=Boolean.parseBoolean(first);
+
+                    for (DataSnapshot shot : dataSnapshot.getChildren()) {
+
+                        if(shot.child("imp").getValue(String.class)!=null && shot.child("imageUrl").getValue(String.class)!=null) {
+                            popUpUrl1.add(shot.child("imageUrl").getValue(String.class));
+                            importance.add(shot.child("imp").getValue(String.class));
+                            dataComplete=true;
+                        }
+                        else {
+
+                            dataComplete=false;
+
+                        }
+
+                    }
+                    for (int i = 0; i < popUpUrl1.size() && dataComplete && firstTimePopUp ; i++) {
+
+                        double random1 = Math.random();
+
+                        int random = (int) (random1 * 10);
+
+                        int importanceDigit = Integer.parseInt(importance.get(i));
+
+                        boolean show = false;
+
+                        if (importanceDigit == 3) {
+                            if (random % 2 == 0)
+                                show = true;
+                        } else if (importanceDigit == 2) {
+
+                            if (random % 3 == 0)
+                                show = true;
+
+                        } else if (importanceDigit == 1) {
+
+                            if (random % 4 == 0)
+                                show = true;
+                        } else if (importanceDigit == 4) {
+
+                            show = true;
+                        } else {
+                            show = false;
+                        }
+
+                        if (!importance.get(i).equals("0") && show) {
+                            CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, popUpUrl1.get(i));
+                            cdd.show();
+                            cdd.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //style id
+                            Window window = cdd.getWindow();
+                            window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+                            //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(home.this);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("popup","false");
+                            editor.apply();
+
+                            break;
+                        }
+                    }
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+
+                }
+            });
+
+        }
+        catch (Exception e)
+        {
+            Log.e("popups",e.toString());
+        }
+
     }
 
     @Override
@@ -315,6 +421,38 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         });
     }
 
+    @Override
+    protected void onDestroy() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("popup","true");
+        editor.apply();
+
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("popup","true");
+        editor.apply();
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("popup","true");
+        editor.apply();
+
+        super.onPause();
+    }
 
     private void logout() {
         mAuth.signOut();
