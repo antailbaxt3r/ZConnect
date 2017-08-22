@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -70,12 +71,13 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private FirebaseAuth mAuth;
     private String sellerName;
     private TagsEditText productTags;
+    private CheckBox negotiableCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         intentHandle = new IntentHandle();
         if (toolbar != null) {
@@ -108,6 +110,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
         spinner1 = (CustomSpinner) findViewById(R.id.categories);
         productTags =(TagsEditText) findViewById(R.id.skillsTags);
+        negotiableCheckBox=(CheckBox) findViewById(R.id.priceNegotiable);
         spinner1.setSelection(6);
         mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
@@ -232,6 +235,11 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         final String productPriceValue = mProductPrice.getText().toString().trim();
         final String productPhoneNo = mProductPhone.getText().toString().trim();
         final String productTagString= productTags.getTags().toString().trim();
+        final String negotiable;
+        if(negotiableCheckBox.isChecked())
+            negotiable= "1";
+        else
+            negotiable="0";
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
@@ -243,7 +251,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
             public void onDataChange(DataSnapshot dataSnapshot) {
                 sellerName = (String) dataSnapshot.child(userId).child("Username").getValue();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -251,7 +258,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         });
 
 
-        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && !TextUtils.isEmpty(productPriceValue) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null && category != null && productTagString!=null) {
+        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && !TextUtils.isEmpty(productPriceValue) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null && category != null && productTags!=null && !negotiable.equals("") && negotiableCheckBox!=null) {
             StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -270,6 +277,8 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
                     newPost.child("skills").setValue(productTagString);
+                    newPost.child("negotiable").setValue(negotiable);
+
 
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
 

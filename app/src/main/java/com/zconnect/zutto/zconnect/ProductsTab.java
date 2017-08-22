@@ -135,9 +135,10 @@ public class ProductsTab extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                viewHolder.setPrice(model.getPrice());
+                viewHolder.setPrice(model.getPrice(),model.getNegotiable());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getCategory(), model.getPhone_no(), getContext());
+
                 if(!status) {
                     viewHolder.defaultSwitch(model.getKey(), getContext(), model.getCategory());
 
@@ -247,6 +248,7 @@ public class ProductsTab extends Fragment {
 
         private ImageView post_image;
 
+        private String negotiable;
         private String sellerName;
         // Constructor
         public ProductViewHolder(View itemView) {
@@ -358,9 +360,23 @@ public class ProductsTab extends Fragment {
         //Set Product Imag
 
         //Set Product Price
-        public void setPrice(String productPrice) {
+        public void setPrice(String productPrice,String negotiable) {
             TextView post_price = (TextView) mView.findViewById(R.id.price);
-            post_price.setText("₹" + productPrice + "/-");
+
+            String price="";
+            if(negotiable!=null) {
+                if (negotiable.equals("1"))
+                    price = "₹" + productPrice + "/-" +"\n"+ "negotiable";
+                else
+                    price = "₹" + productPrice + "/-";
+
+                post_price.setText(price);
+            }
+            else
+            {
+                post_price.setText("₹" + productPrice + "/-");
+            }
+            //"₹" + productPrice + "/-"
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
             post_price.setTypeface(ralewayMedium);
         }
