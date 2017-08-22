@@ -28,6 +28,7 @@ import java.util.TimerTask;
 
 public class LogoFlashActivity extends BaseActivity {
     private FirebaseUser mUser;
+    private boolean guestMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class LogoFlashActivity extends BaseActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         handlePermission();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+        guestMode = getSharedPreferences("guestMode", MODE_PRIVATE).getBoolean("mode", false);
     }
 
     public boolean checkPermission() {
@@ -93,33 +95,34 @@ public class LogoFlashActivity extends BaseActivity {
                     Intent loginIntent = new Intent(LogoFlashActivity.this, LoginActivity.class);
                     startActivity(loginIntent);
                     finish();
-                }
-                FirebaseDatabase.getInstance().getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.hasChild(mUser.getUid())) {
-                            Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            DatabaseReference currentUserDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid());
-                            currentUserDbRef.child("Image").setValue(mUser.getPhotoUrl());
-                            currentUserDbRef.child("Username").setValue(mUser.getDisplayName());
-                            currentUserDbRef.child("Email").setValue(mUser.getEmail());
-                            Intent editProfileIntent = new Intent(LogoFlashActivity.this, EditProfile.class);
-                            editProfileIntent.putExtra("caller", "home");
-                            editProfileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(editProfileIntent);
-                            finish();
+                } else {
+                    FirebaseDatabase.getInstance().getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild(mUser.getUid())) {
+                                Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                DatabaseReference currentUserDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid());
+                                currentUserDbRef.child("Image").setValue(mUser.getPhotoUrl());
+                                currentUserDbRef.child("Username").setValue(mUser.getDisplayName());
+                                currentUserDbRef.child("Email").setValue(mUser.getEmail());
+                                Intent editProfileIntent = new Intent(LogoFlashActivity.this, EditProfile.class);
+                                editProfileIntent.putExtra("caller", "home");
+                                editProfileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(editProfileIntent);
+                                finish();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        showToast("Internet available , try again");
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            showToast("Internet available , try again");
+                        }
+                    });
+                }
             }
         }, 1700);
     }
