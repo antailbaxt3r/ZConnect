@@ -45,7 +45,7 @@ public class PhonebookCategorySearch extends BaseActivity {
         Intent intent = getIntent();
         hostel = intent.getStringExtra("hostel");
 cat=intent.getStringExtra("cat");
-        searchContactList = (android.support.v7.widget.RecyclerView) findViewById(R.id.searchActivityRecyclerView);
+        searchContactList = (android.support.v7.widget.RecyclerView) findViewById(R.id.rv_search_activity);
         databaseReference.keepSynced(true);
         queryRef.keepSynced(true);
         searchAdapter = new PhonebookAdapter(searchContact, PhonebookCategorySearch.this);

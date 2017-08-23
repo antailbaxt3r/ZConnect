@@ -27,7 +27,7 @@
             android:textSize="28sp" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/searchActivityRecyclerView"
+            android:id="@+id/rv_search_activity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
