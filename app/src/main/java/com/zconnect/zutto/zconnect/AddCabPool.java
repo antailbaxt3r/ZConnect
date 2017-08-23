@@ -18,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,9 +39,9 @@ public class AddCabPool extends AppCompatActivity {
     CabItemFormat cabItemFormat;
     String email, name, number;
     int year, month, day;
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
-    private FirebaseAuth mAuth;
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    private FirebaseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,8 @@ public class AddCabPool extends AppCompatActivity {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
 
                     PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
+                    if (phonebookDisplayItem == null)
+                        return;
                     if (email != null) {
                         if (phonebookDisplayItem.getEmail() != null) {
                         if (phonebookDisplayItem.getEmail().equals(email)) {
@@ -93,7 +96,9 @@ public class AddCabPool extends AppCompatActivity {
 
             }
         });
-        mAuth = FirebaseAuth.getInstance();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mUser == null)
+            finish();
         source = (CustomSpinner) findViewById(R.id.spinner_source);
         destination = (CustomSpinner) findViewById(R.id.spinner_destination);
         time = (CustomSpinner) findViewById(R.id.spinner_time);
@@ -143,7 +148,7 @@ public class AddCabPool extends AppCompatActivity {
                             newPost.child("cabListItemFormats").setValue(cabListItemFormats);
 
                             FirebaseMessaging.getInstance().subscribeToTopic(key);
-                            FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Topics").push().setValue(key);
+                            FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid()).child("Topics").push().setValue(key);
                             startActivity(new Intent(AddCabPool.this, CabPooling.class));
                         } else {
                             Snackbar snack = Snackbar.make(done, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
@@ -175,7 +180,7 @@ public class AddCabPool extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        email = mAuth.getCurrentUser().getEmail();
+        email = mUser.getEmail();
 
 
     }

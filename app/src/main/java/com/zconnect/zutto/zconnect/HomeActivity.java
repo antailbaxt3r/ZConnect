@@ -261,6 +261,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         if (!importance.get(i).equals("0") && show) {
                             CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, popUpUrl1.get(i));
                             cdd.show();
+                            if (cdd.getWindow() == null)
+                                return;
                             cdd.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //style id
                             Window window = cdd.getWindow();
                             window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
