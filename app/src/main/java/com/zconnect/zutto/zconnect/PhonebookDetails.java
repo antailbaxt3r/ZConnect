@@ -121,7 +121,19 @@ public class PhonebookDetails extends BaseActivity {
                     startActivity(Intent.createChooser(emailIntent, "Send Email ..."));
                 }
             });
-            image.setImageURI((Uri.parse(imagelink)));
+
+            if(imagelink.equals("https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336")){
+
+                image.setBackgroundResource(R.drawable.ic_profile_icon);
+
+            }
+            else {
+
+                image.setImageURI((Uri.parse(imagelink)));
+
+            }
+
+            //image.setImageURI((Uri.parse(imagelink)));
             editTextEmail.setText(email);
         }
 

@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +37,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class Phonebook extends BaseActivity implements View.OnClickListener {
+public class InfoneActivity extends BaseActivity implements View.OnClickListener {
     FirebaseUser mUser;
     FirebaseAuth mAuth;
     int TotalNumbers;
@@ -57,7 +58,7 @@ public class Phonebook extends BaseActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
-        setContentView(R.layout.activity_phonebook);
+        setContentView(R.layout.activity_infone);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -109,6 +110,27 @@ public class Phonebook extends BaseActivity implements View.OnClickListener {
                     Log.e(TAG, "onCancelled: ", databaseError.toException());
                 }
             });
+
+            final String userEmail = mUser.getEmail();
+            if (!TextUtils.isEmpty(userEmail)) {
+                FirebaseDatabase.getInstance().getReference("Phonebook").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        boolean userAddedToInfone = false;
+                        for (DataSnapshot child :
+                                dataSnapshot.getChildren()) {
+                            if (userEmail.equals(child.child("email").getValue(String.class)))
+                                userAddedToInfone = true;
+                        }
+                        if (userAddedToInfone) fab.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(TAG, "onCancelled: ", databaseError.toException());
+                    }
+                });
+            }
         }
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -122,7 +144,6 @@ public class Phonebook extends BaseActivity implements View.OnClickListener {
         fab.setOnClickListener(this);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_phonebook, menu);
@@ -133,7 +154,7 @@ public class Phonebook extends BaseActivity implements View.OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_search) {
+        if (id == R.id.action_search_menu_phonebook) {
             Intent phoneBookSearchIntent = new Intent(this, PhonebookSearch.class);
             startActivity(phoneBookSearchIntent);
         }
@@ -157,7 +178,8 @@ public class Phonebook extends BaseActivity implements View.OnClickListener {
         increaseCount(guestMode, viewPager.getCurrentItem());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -165,7 +187,8 @@ public class Phonebook extends BaseActivity implements View.OnClickListener {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
     }
 
@@ -190,11 +213,11 @@ public class Phonebook extends BaseActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.fab: {
                 if ((!guestMode) && mUser != null) {
-                    Intent intent = new Intent(Phonebook.this, EditProfileActivity.class);
+                    Intent intent = new Intent(InfoneActivity.this, EditProfileActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Phonebook.this);
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(InfoneActivity.this);
 
                     // 2. Chain together various setter methods to set the dialog characteristics
                     builder.setMessage("Please Log In to access this feature.")
@@ -202,7 +225,7 @@ public class Phonebook extends BaseActivity implements View.OnClickListener {
 
                     builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(Phonebook.this, LoginActivity.class);
+                            Intent intent = new Intent(InfoneActivity.this, LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                             finish();
