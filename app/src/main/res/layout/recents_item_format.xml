@@ -1,7 +1,11 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginTop="4dp"
     android:background="@drawable/roundradius">
 
     <LinearLayout
@@ -13,13 +17,11 @@
             android:id="@+id/recentname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/recents_image"
             android:background="@color/teal600"
             android:padding="10dp"
-            android:text="Name"
             android:textColor="@color/white"
-            android:textSize="18dp" />
+            android:textSize="18sp"
+            tools:text="Name" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,9 +32,7 @@
                 android:id="@+id/recents_image"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
-                android:layout_below="@+id/featurename"
                 android:layout_weight=".6"
-                android:padding="5dp"
                 android:scaleType="centerCrop" />
 
             <RelativeLayout
@@ -42,21 +42,22 @@
                 android:layout_weight=".4"
                 android:orientation="vertical">
 
-
                 <TextView
                     android:id="@+id/recentdesc"
                     android:layout_width="match_parent"
                     android:layout_height="170dp"
+                    android:ellipsize="end"
+                    android:maxLines="8"
                     android:padding="8dp"
-                    android:text="Desc"
+                    android:scrollbars="vertical"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    tools:text="Desc" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_below="@id/recentdesc">
-
 
                     <TextView
                         android:id="@+id/featurename"
@@ -64,19 +65,15 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:layout_gravity="right"
-                        android:paddingRight="10dp"
-                        android:text="Feature"
+                        android:layout_gravity="end"
+                        android:paddingEnd="10dp"
+                        android:paddingStart="0dp"
                         android:textColor="@color/teal900"
-                        android:textSize="12dp"
-                        android:textStyle="bold" />
-
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="Feature" />
                 </RelativeLayout>
-
-
             </RelativeLayout>
-
         </LinearLayout>
-
     </LinearLayout>
 </android.support.v7.widget.CardView>
