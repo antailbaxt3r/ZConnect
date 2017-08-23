@@ -53,12 +53,27 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener {
-    private Homescreen homescreen;
-    private ActionBarDrawerToggle toggle;
+public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
     private final String TAG = getClass().getSimpleName();
     boolean doubleBackToExitPressedOnce = false;
     String number;
+    TextView usernameTv;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.view_pager_app_bar_home)
+    ViewPager viewPager;
+    @BindView(R.id.tab_layout_app_bar_home)
+    TabLayout tabLayout;
+    @BindView(R.id.toolbar_app_bar_home)
+    Toolbar toolbar;
+    View navHeader;
+    TextView emailTv;
+    private Homescreen homescreen;
+    private ActionBarDrawerToggle toggle;
+    private String userEmail;
+    private String username;
     private FirebaseAuth mAuth;
     private DatabaseReference usersDbRef;
     private GoogleApiClient mGoogleApiClient;
@@ -85,29 +100,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             Log.e(TAG, "onCancelled: ", databaseError.toException());
         }
     };
-    TextView usernameTv;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-    @BindView(R.id.view_pager_app_bar_home)
-    ViewPager viewPager;
-    @BindView(R.id.tab_layout_app_bar_home)
-    TabLayout tabLayout;
-    @BindView(R.id.toolbar_app_bar_home)
-    Toolbar toolbar;
-    View navHeader;
-    TextView emailTv;
-    private Homescreen homescreen;
-    private boolean checkUser = true;
-    private ActionBarDrawerToggle toggle;
-    private String userEmail;
-    private String username;
-    private FirebaseAuth mAuth;
-    private DatabaseReference usersDbRef;
-    private GoogleApiClient mGoogleApiClient;
-    private DatabaseReference phoneBookDbRef;
-    private DatabaseReference mDatabasePopUps;
     private FirebaseUser mUser;
     private boolean guestMode;
 
@@ -264,12 +256,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                             if (random % 4 == 0)
                                 show = true;
-                        } else if (importanceDigit == 4) {
-
-                            show = true;
-                        } else {
-                            show = false;
-                        }
+                        } else show = importanceDigit == 4;
 
                         if (!importance.get(i).equals("0") && show) {
                             CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, popUpUrl1.get(i));
