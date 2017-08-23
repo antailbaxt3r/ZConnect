@@ -123,7 +123,7 @@ public class AllEvents extends BaseActivity {
             mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    TotalEvents = dataSnapshot.child("TotalEvents").getValue(String.class);
+                    TotalEvents = dataSnapshot.child("TotalEvents").getValue().toString();
                     DatabaseReference newPost = mUserStats;
                     Map<String, Object> taskMap = new HashMap<>();
                     taskMap.put("TotalEvents", TotalEvents);
