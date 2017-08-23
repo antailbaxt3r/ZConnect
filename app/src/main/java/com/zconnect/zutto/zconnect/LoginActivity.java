@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -190,6 +191,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 });
     }
 
+    @SuppressLint("ApplySharedPref")
     public void setGuestLoginPref(Boolean mode) {
         SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
         SharedPreferences.Editor editInfo = sharedPref.edit();
