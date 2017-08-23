@@ -54,16 +54,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener {
-    private Homescreen homescreen;
-    private ActionBarDrawerToggle toggle;
+
     private final String TAG = getClass().getSimpleName();
     boolean doubleBackToExitPressedOnce = false;
     String number;
-    private FirebaseAuth mAuth;
-    private DatabaseReference usersDbRef;
-    private GoogleApiClient mGoogleApiClient;
-    private DatabaseReference phoneBookDbRef;
-    private DatabaseReference mDatabasePopUps;
     private ValueEventListener phoneBookValueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -527,6 +521,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e(TAG, "onConnectionFailed: error message is " + connectionResult.getErrorMessage());
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
