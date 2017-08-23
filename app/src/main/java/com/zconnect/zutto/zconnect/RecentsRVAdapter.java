@@ -99,8 +99,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Shop")) {
                         final Intent intent = new Intent(context, Shop_detail.class);
                         intent.putExtra("ShopId", recentsItemFormats.get(getAdapterPosition()).getId());
-                        intent.putExtra("Tag", "1");
-                        intent.putExtra("Imageurl", recentsItemFormats.get(getAdapterPosition()).getDesc2());
+                        intent.putExtra("Name", recentsItemFormats.get(getAdapterPosition()).getName());
+                        intent.putExtra("Imageurl", recentsItemFormats.get(getAdapterPosition()).getImageurl());
                         //  Log.v("im1",recentsItemFormats.get(getAdapterPosition()).getDesc2());
                         context.startActivity(intent);
                     }
