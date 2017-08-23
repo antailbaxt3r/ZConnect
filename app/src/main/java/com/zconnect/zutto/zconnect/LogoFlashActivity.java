@@ -27,7 +27,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class LogoFlashActivity extends BaseActivity {
+public class
+LogoFlashActivity extends BaseActivity {
     private FirebaseUser mUser;
     private final String TAG = getClass().getSimpleName();
 
