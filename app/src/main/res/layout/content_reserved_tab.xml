@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.zconnect.zutto.zconnect.StoreRoom"
-    tools:showIn="@layout/activity_store_room">
+    tools:context="com.zconnect.zutto.zconnect.StoreRoom">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,9 +15,9 @@
         <TextView
             android:id="@+id/noitems"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:paddingTop="40dp"
+            android:layout_centerVertical="true"
             android:text="No shortlisted items"
             android:textSize="20dp" />
 

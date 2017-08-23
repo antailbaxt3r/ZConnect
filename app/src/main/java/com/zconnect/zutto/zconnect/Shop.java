@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +43,7 @@ public class Shop extends BaseActivity {
     private RecyclerView recycleView;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
+    private Button OffersButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class Shop extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         recycleView = (RecyclerView) findViewById(R.id.content_shop_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_shop_progress);
+        OffersButton = (Button) findViewById(R.id.offersButton);
         setSupportActionBar(toolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
@@ -79,6 +83,17 @@ public class Shop extends BaseActivity {
         recycleView.setAdapter(adapter);
         databaseReference.keepSynced(true);
         mAuth = FirebaseAuth.getInstance();
+        Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        OffersButton.setTypeface(customfont);
+
+        OffersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CounterManager.shopOffers();
+                Intent intent=new Intent(getApplicationContext(),Offers.class);
+                startActivity(intent);
+            }
+        });
 
         SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
@@ -121,11 +136,6 @@ public class Shop extends BaseActivity {
             CounterManager.shopSearch();
             Intent searchintent = new Intent(this, ShopSearch.class);
             startActivity(searchintent);
-        }
-        if (id==R.id.action_offer){
-            CounterManager.shopOffers();
-            Intent intent=new Intent(this,Offers.class);
-            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
