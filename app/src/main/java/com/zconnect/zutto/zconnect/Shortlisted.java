@@ -1,10 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,16 +11,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.ArrayList;
@@ -111,7 +103,6 @@ public class Shortlisted extends BaseActivity {
             }
         });
 
-        showToast(names.size()+"");
     }
     class vh extends RecyclerView.ViewHolder {
 
@@ -121,24 +112,7 @@ public class Shortlisted extends BaseActivity {
 
         private void setData(final int pos) {
             final SimpleDraweeView image = (SimpleDraweeView) itemView.findViewById(R.id.phonebook_item_format_image);
-            image.setImageResource(R.drawable.defaultprofile);
-            Picasso.with(itemView.getContext()).load(images.get(pos)).into(new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    image.setImageBitmap(bitmap);
-                }
-
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-                    image.setImageResource(R.drawable.defaultprofile);
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                }
-            });;
-
+            image.setImageURI(images.get(pos));
             ((TextView)itemView.findViewById(R.id.phonebook_name1)).setText(names.get(pos));
             ((TextView)itemView.findViewById(R.id.phonebook_number1)).setText(nos.get(pos));
             itemView.findViewById(R.id.callbutton).setOnClickListener(new View.OnClickListener() {
@@ -148,7 +122,6 @@ public class Shortlisted extends BaseActivity {
                 }
             });
 
-            showToast(names.get(pos)+"\t"+nos.get(pos));
         }
 
     }
