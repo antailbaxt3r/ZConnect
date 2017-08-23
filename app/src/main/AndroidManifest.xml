@@ -92,11 +92,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AddContact"
-            android:label="@string/title_activity_add_contact"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".PhonebookDetails"
             android:label="Details"
             android:screenOrientation="portrait"
@@ -212,8 +207,9 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".EditProfile"
+            android:name=".EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

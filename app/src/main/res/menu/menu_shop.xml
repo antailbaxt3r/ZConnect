@@ -3,14 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.zconnect.zutto.zconnect.Shop">
     <item
-        android:id="@+id/action_offer"
-        android:checkable="true"
-        android:orderInCategory="1"
-        android:title="Offers"
-        android:visible="true"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_search_menu_phonebook"
         android:icon="@drawable/ic_action_action_search"
         android:orderInCategory="2"
         android:title="Search Shops"

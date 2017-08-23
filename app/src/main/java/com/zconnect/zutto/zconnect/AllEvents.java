@@ -4,15 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -37,9 +30,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
@@ -59,8 +50,6 @@ public class AllEvents extends BaseActivity {
     DatabaseReference mUserStats, mFeaturesStats;
     String TotalEvents;
     private RecyclerView mEventList;
-    private DatabaseReference mDatabase;
-    private DatabaseReference mRequest;
     private Query queryRef;
 
     static String monthSwitcher(String mon) {
@@ -99,7 +88,7 @@ public class AllEvents extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_events);
         JodaTimeAndroid.init(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
@@ -109,7 +98,7 @@ public class AllEvents extends BaseActivity {
                     onBackPressed();
                 }
             });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -136,7 +125,7 @@ public class AllEvents extends BaseActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     TotalEvents = dataSnapshot.child("TotalEvents").getValue().toString();
                     DatabaseReference newPost = mUserStats;
-                    Map<String, Object> taskMap = new HashMap<String, Object>();
+                    Map<String, Object> taskMap = new HashMap<>();
                     taskMap.put("TotalEvents", TotalEvents);
                     newPost.updateChildren(taskMap);
                 }
@@ -160,9 +149,8 @@ public class AllEvents extends BaseActivity {
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
         queryRef = mDatabase.orderByChild("FormatDate");
-        mRequest = FirebaseDatabase.getInstance().getReference().child("Event/");
 
         mDatabase.keepSynced(true);
         queryRef.keepSynced(true);
@@ -208,36 +196,13 @@ public class AllEvents extends BaseActivity {
 
             }
         });
-        TextView venue = (TextView)findViewById(R.id.venue);
-        Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
-    }
-
-    private void writeNewPost(String email) {
-        // Create new post at /user-posts/$userid/$postid and at
-        // /posts/$postid simultaneously
-        Post post = new Post(email);
-        Map<String, Object> postValues = post.toMap();
-
-        Map<String, Object> childUpdates = new HashMap<>();
-
-
-        childUpdates.put("/Requests", postValues);
-
-        mRequest.updateChildren(childUpdates);
-    }
-
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        String flag = null;
+        String flag;
         flag = getIntent().getStringExtra("snackbar");
         if (flag != null) {
             if (flag.equals("true")) {
@@ -276,17 +241,7 @@ public class AllEvents extends BaseActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        /*Intent eventsIntent=new Intent(AllEvents.this,home.class);
-        //super.onBackPressed();
-        Intent eventsIntent=new Intent(AllEvents.this,home.class);
-
-        startActivity(eventsIntent);*/
-        finish();
-    }
-
+    @SuppressWarnings("WeakerAccess")
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
 
@@ -318,7 +273,7 @@ public class AllEvents extends BaseActivity {
         public void setBoosters(String boosters) {
             if (boosters != null) {
                 TextView count = (TextView) itemView.findViewById(R.id.Boostcount);
-                if (boosters == null || TextUtils.isEmpty(boosters))
+                if (TextUtils.isEmpty(boosters))
                     count.setText("0");
                 else {
                     count.setText(String.valueOf(boosters.trim().split(" ").length));
@@ -372,13 +327,13 @@ public class AllEvents extends BaseActivity {
             if (eventDate != null) {
                 TextView post_date = (TextView) mView.findViewById(R.id.er_date);
                 String date[] = eventDate.split("\\s+");
-                String finalDate = "";
+                StringBuilder finalDate = new StringBuilder();
 
                 for (int i = 0; i < 4; i++) {
-                    finalDate = finalDate + " " + date[i];
+                    finalDate.append(" ").append(date[i]);
                 }
 
-                post_date.setText(finalDate);
+                post_date.setText(finalDate.toString());
                 Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
                 post_date.setTypeface(customFont);
             }
@@ -399,79 +354,6 @@ public class AllEvents extends BaseActivity {
                 Reminder.setTypeface(customFont);
             }
         }
-
-
-//        public void setShareOptions(final String image) {
-//
-//            final Button share = (Button) mView.findViewById(R.id.share_button);
-//
-//            share.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    shareEvent(image, mView.getContext());
-//
-//                    /*Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-//                    shareIntent.setType("image*//*");
-//                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Hello World");
-//                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(image)); //add image path
-//                    mView.getContext().startActivity(Intent.createChooser(shareIntent, "Share image using"));
-//*/
-//                }
-//            });
-//        }
-
-
-//        private void shareEvent(final String image, final Context context) {
-//
-//            try {
-//                //shareIntent.setPackage("com.whatsapp");
-//                //Add text and then Image URI
-//                Thread thread = new Thread(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            //Your code goes here
-//                            Uri imageUri = Uri.parse(image);
-//                            Intent shareIntent = new Intent();
-//                            shareIntent.setAction(Intent.ACTION_SEND);
-//
-//                            Bitmap bm = BitmapFactory.decodeStream(new URL(image)
-//                                    .openConnection()
-//                                    .getInputStream());
-//
-//
-//                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
-//                                    R.drawable.background_icon_z), bm, context);
-//
-//                            shareIntent.putExtra(Intent.EXTRA_TEXT, "An important event @Zconnect ...");
-//                            shareIntent.setType("text/plain");
-//
-//                            String path = MediaStore.Images.Media.insertImage(
-//                                    context.getContentResolver(),
-//                                    bm, "", null);
-//                            Uri screenshotUri = Uri.parse(path);
-//
-//                            shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-//                            shareIntent.setType("image/*");
-//                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-//                            context.startActivity(shareIntent);
-//
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-//
-//                thread.start();
-//
-//            } catch (android.content.ActivityNotFoundException ex) {
-//                //ToastHelper.MakeShortText("Whatsapp have not been installed.");
-//            }
-//
-//        }
 
         private void addReminderInCalendar(String title, String desc, String time, Context context) {
 
@@ -497,78 +379,13 @@ public class AllEvents extends BaseActivity {
 
             Intent intent = new Intent(Intent.ACTION_INSERT);
             intent.setData(Events.CONTENT_URI);
-            //intent.setType("vnd.android.cursor.item/event");
             intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis());
             intent.putExtra(Events.ALL_DAY, false);
-            //intent.putExtra(Events.RRULE, "FREQ=DAILY");
-            //intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis());
             intent.putExtra(Events.TITLE, title);
             intent.putExtra(Events.DESCRIPTION, desc);
             intent.putExtra(Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_FREE);
             context.startActivity(intent);
-
-
-            // Display event id.
-            //Toast.makeText(getApplicationContext(), "Event added :: ID :: " + event.getLastPathSegment(), Toast.LENGTH_SHORT).show();
-
-            /** Adding reminder for event added. *
-             }
-             /** Returns Calendar Base URI, supports both new and old OS. */
-
         }
-
-        public Bitmap mergeBitmap(Bitmap bitmap2, Bitmap bitmap1, Context context) {
-            Bitmap mergedBitmap = null;
-
-
-            Drawable[] layers = new Drawable[2];
-
-            layers[0] = new BitmapDrawable(context.getResources(), bitmap1);
-            layers[1] = new BitmapDrawable(context.getResources(), bitmap2);
-
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
-
-            int width = layers[0].getIntrinsicWidth();
-            int height = layers[0].getIntrinsicHeight();
-
-            mergedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(mergedBitmap);
-            layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            layerDrawable.draw(canvas);
-
-
-            //mergedBitmap=BitmapFactory.decodeResourceStream(layerDrawable)
-
-            return mergedBitmap;
-        }
-
-
     }
-
-    @IgnoreExtraProperties
-    public class Post {
-
-        public String email;
-        public Map<String, Boolean> stars = new HashMap<>();
-
-        public Post() {
-            // Default constructor required for calls to DataSnapshot.getValue(Post.class)
-        }
-
-        public Post(String email) {
-
-            this.email = email;
-        }
-
-        @Exclude
-        public Map<String, Object> toMap() {
-            HashMap<String, Object> result = new HashMap<>();
-            result.put("email", email);
-            result.put("stars", stars);
-            return result;
-        }
-
-    }
-
 
 }

@@ -20,6 +20,21 @@
         android:id="@+id/content_shop_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:paddingBottom="70dp"
+        android:clipToPadding="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+    <Button
+        android:id="@+id/offersButton"
+        android:background="@drawable/curveradiusgoogle"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="@color/white"
+        android:layout_margin="10dp"
+        android:text="Offers"
+        />
+
 
 </RelativeLayout>

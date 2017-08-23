@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,22 +33,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Phonebook extends BaseActivity {
-    FirebaseUser user;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class Phonebook extends BaseActivity implements View.OnClickListener {
+    FirebaseUser mUser;
     FirebaseAuth mAuth;
-    String TotalNumbers;
-    String userId;
-    DatabaseReference mUserStats, mFeaturesStats;
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
+    int TotalNumbers;
+    DatabaseReference mUserStatsDbRef;
+    DatabaseReference mFeaturesStatsDbRef;
+    @BindView(R.id.view_pager_app_bar_home)
+    ViewPager viewPager;
+    @BindView(R.id.tab_layout_app_bar_home)
+    TabLayout tabLayout;
+    @BindView(R.id.toolbar_app_bar_home)
+    Toolbar toolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+    private Boolean guestMode;
+    private final String TAG = getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
         setContentView(R.layout.activity_phonebook);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -56,11 +68,14 @@ public class Phonebook extends BaseActivity {
                     onBackPressed();
                 }
             });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
@@ -71,57 +86,114 @@ public class Phonebook extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
-        Boolean status = sharedPref.getBoolean("mode", false);
+        SharedPreferences guestModePref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        guestMode = guestModePref.getBoolean("mode", false);
 
-        if (!status) {
-            user = mAuth.getCurrentUser();
+        if (!guestMode) {
+            mUser = mAuth.getCurrentUser();
 
-            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
-            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid()).child("Stats");
+            mFeaturesStatsDbRef = FirebaseDatabase.getInstance().getReference().child("Stats");
 
-            mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+            mFeaturesStatsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    TotalNumbers = dataSnapshot.child("TotalNumbers").getValue().toString();
-                    DatabaseReference newPost = mUserStats;
-                    Map<String, Object> taskMap = new HashMap<String, Object>();
+                    TotalNumbers = dataSnapshot.child("TotalNumbers").getValue(Integer.class);
+                    Map<String, Object> taskMap = new HashMap<>();
                     taskMap.put("TotalNumbers", TotalNumbers);
-                    newPost.updateChildren(taskMap);
+                    mUserStatsDbRef.updateChildren(taskMap);
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    Log.e(TAG, "onCancelled: ", databaseError.toException());
                 }
             });
         }
-
-        viewPager = (ViewPager) findViewById(R.id.view_pager_app_bar_home);
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout_app_bar_home);
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         setSupportActionBar(toolbar);
 
         setupViewPager(viewPager);
 
-        assert tabLayout != null;
-        //Setup tablayout with viewpager
+        //Setup tabLayout with viewpager
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
-                Boolean status = sharedPref.getBoolean("mode", false);
+        fab.setOnClickListener(this);
+    }
 
-                if (!status) {
-                    Intent intent = new Intent(Phonebook.this, AddContact.class);
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_phonebook, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_search_menu_phonebook) {
+            Intent phoneBookSearchIntent = new Intent(this, PhonebookSearch.class);
+            startActivity(phoneBookSearchIntent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+        if (!guestMode) {
+            adapter.addFragment(new PhonebookAdmin(), "Admin");
+            adapter.addFragment(new PhonebookStudents(), "Students");
+            adapter.addFragment(new PhonebookOthersCategories(), "others");
+            viewPager.setAdapter(adapter);
+        } else {
+            adapter.addFragment(new PhonebookAdmin(), "Admin");
+            adapter.addFragment(new PhonebookOthersCategories(), "others");
+            viewPager.setAdapter(adapter);
+        }
+
+        increaseCount(guestMode, viewPager.getCurrentItem());
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                increaseCount(guestMode, position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
+    }
+
+    public void increaseCount(boolean status, int position) {
+        if (!status) {
+            if (position == 0)
+                CounterManager.infoneOpenTab("Admin");
+            else if (position == 1)
+                CounterManager.infoneOpenTab("Students");
+            else if (position == 2)
+                CounterManager.infoneOpenTab("others");
+        } else {
+            if (position == 0)
+                CounterManager.infoneOpenTab("Admin");
+            else if (position == 1)
+                CounterManager.infoneOpenTab("others");
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fab: {
+                if ((!guestMode) && mUser != null) {
+                    Intent intent = new Intent(Phonebook.this, EditProfileActivity.class);
                     startActivity(intent);
                     finish();
-                }else {
-
+                } else {
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Phonebook.this);
 
                     // 2. Chain together various setter methods to set the dialog characteristics
@@ -143,95 +215,22 @@ public class Phonebook extends BaseActivity {
                     });
                     android.app.AlertDialog dialog = builder.create();
                     dialog.show();
-
                 }
-
+                break;
             }
-        });
-
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_phonebook, menu);
-        return true;
-    }
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_search) {
-            Intent searchintent = new Intent(this, PhonebookSearch.class);
-            startActivity(searchintent);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
-        final Boolean status = sharedPref.getBoolean("mode", false);
-
-        if (!status) {
-            adapter.addFragment(new PhonebookAdmin(), "Admin");
-            adapter.addFragment(new PhonebookStudents(), "Students");
-            adapter.addFragment(new PhonebookOthersCategories(), "others");
-            viewPager.setAdapter(adapter);
-        }else {
-            adapter.addFragment(new PhonebookAdmin(), "Admin");
-            adapter.addFragment(new PhonebookOthersCategories(), "others");
-            viewPager.setAdapter(adapter);
-        }
-
-        increaseCount(status, viewPager.getCurrentItem());
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                increaseCount(status, position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-    }
-
-    public void increaseCount(boolean status, int position) {
-        if (!status) {
-            if (position == 0)
-                CounterManager.infoneOpenTab("Admin");
-            else if (position == 1)
-                CounterManager.infoneOpenTab("Students");
-            else if (position == 2)
-                CounterManager.infoneOpenTab("others");
-        } else {
-            if (position == 0)
-                CounterManager.infoneOpenTab("Admin");
-            else if (position == 1)
-                CounterManager.infoneOpenTab("others");
         }
     }
+
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        public ViewPagerAdapter(FragmentManager manager) {
+        ViewPagerAdapter(FragmentManager manager) {
             super(manager);
         }
 
         @Override
         public Fragment getItem(int position) {
-
             return mFragmentList.get(position);
         }
 
@@ -240,7 +239,7 @@ public class Phonebook extends BaseActivity {
             return mFragmentList.size();
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }

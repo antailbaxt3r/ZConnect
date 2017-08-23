@@ -2,15 +2,19 @@ package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -22,23 +26,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class LogoFlashActivity extends BaseActivity {
+public class
+LogoFlashActivity extends BaseActivity {
     private FirebaseUser mUser;
-    private boolean guestMode;
+    private final String TAG = getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logo_flash);
         // Setting full screen view
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         handlePermission();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        guestMode = getSharedPreferences("guestMode", MODE_PRIVATE).getBoolean("mode", false);
     }
 
     public boolean checkPermission() {
@@ -101,17 +106,16 @@ public class LogoFlashActivity extends BaseActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(mUser.getUid())) {
                                 Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 finish();
                             } else {
                                 DatabaseReference currentUserDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid());
-                                currentUserDbRef.child("Image").setValue(mUser.getPhotoUrl());
+                                if (mUser.getPhotoUrl() != null) {
+                                    currentUserDbRef.child("Image").setValue(mUser.getPhotoUrl().toString());
+                                }
                                 currentUserDbRef.child("Username").setValue(mUser.getDisplayName());
                                 currentUserDbRef.child("Email").setValue(mUser.getEmail());
-                                Intent editProfileIntent = new Intent(LogoFlashActivity.this, EditProfile.class);
-                                editProfileIntent.putExtra("caller", "home");
-                                editProfileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                Intent editProfileIntent = new Intent(LogoFlashActivity.this, EditProfileActivity.class);
                                 startActivity(editProfileIntent);
                                 finish();
                             }
@@ -119,6 +123,7 @@ public class LogoFlashActivity extends BaseActivity {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+                            Log.e(TAG, "onCancelled: ", databaseError.toException());
                             showToast("Internet available , try again");
                         }
                     });
@@ -130,6 +135,31 @@ public class LogoFlashActivity extends BaseActivity {
     void handlePermission() {
         if (checkPermission())
             openHome();
+    }
+
+    public void clearApplicationData() {
+        File cache = getCacheDir();
+        File appDir = new File(cache.getParent());
+        if(appDir.exists()){
+            String[] children = appDir.list();
+            for(String s : children){
+                if(!s.equals("lib")){
+                    deleteDir(new File(appDir, s));
+                }
+            }
+        }
+    }
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
     }
 }
 
