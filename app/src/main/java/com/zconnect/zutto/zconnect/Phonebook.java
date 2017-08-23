@@ -133,7 +133,7 @@ public class Phonebook extends BaseActivity implements View.OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_search) {
+        if (id == R.id.action_search_menu_phonebook) {
             Intent phoneBookSearchIntent = new Intent(this, PhonebookSearch.class);
             startActivity(phoneBookSearchIntent);
         }

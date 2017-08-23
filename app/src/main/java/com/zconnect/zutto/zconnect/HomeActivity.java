@@ -427,7 +427,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     protected void onDestroy() {
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("popup","true");
