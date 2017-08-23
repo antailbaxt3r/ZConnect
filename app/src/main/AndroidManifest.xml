@@ -107,7 +107,7 @@
                 android:value=".HomeActivity" />
         </activity>
         <activity
-            android:name=".Phonebook"
+            android:name=".InfoneActivity"
             android:label="Infone"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -122,7 +122,7 @@
             android:name=".PhonebookSearch"
             android:label="Search Results"
             android:launchMode="singleTop"
-            android:parentActivityName=".Phonebook"
+            android:parentActivityName=".InfoneActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />

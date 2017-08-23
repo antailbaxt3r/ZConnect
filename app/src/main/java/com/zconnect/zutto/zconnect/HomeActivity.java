@@ -333,7 +333,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
             case R.id.infone: {
                 CounterManager.InfoneOpen();
-                Intent intent = new Intent(this, Phonebook.class);
+                Intent intent = new Intent(this, InfoneActivity.class);
                 startActivity(intent);
                 break;
             }
