@@ -190,7 +190,7 @@ public class AllEvents extends BaseActivity {
 
                     builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(AllEvents.this, logIn.class);
+                            Intent intent = new Intent(AllEvents.this, LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                             finish();
@@ -274,6 +274,17 @@ public class AllEvents extends BaseActivity {
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        /*Intent eventsIntent=new Intent(AllEvents.this,home.class);
+        //super.onBackPressed();
+        Intent eventsIntent=new Intent(AllEvents.this,home.class);
+
+        startActivity(eventsIntent);*/
+        finish();
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
@@ -557,17 +568,6 @@ public class AllEvents extends BaseActivity {
             return result;
         }
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        /*Intent eventsIntent=new Intent(AllEvents.this,home.class);
-        //super.onBackPressed();
-        Intent eventsIntent=new Intent(AllEvents.this,home.class);
-
-        startActivity(eventsIntent);*/
-        finish();
     }
 
 

@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.NotificationCompat;
@@ -20,21 +19,21 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
-import java.io.File;
 import java.util.Map;
 import java.util.Random;
 
 public class NotificationService extends FirebaseMessagingService {
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(final RemoteMessage remoteMessage) {
 
         final Map data = remoteMessage.getData();
+        Log.d("data", data.toString());
         if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
-            final String key = data.get("key").toString();
 
             if (type.equals("CabPool")) {
+                final String key = data.get("key").toString();
                 FirebaseDatabase.getInstance().getReference("Cab").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -56,6 +55,13 @@ public class NotificationService extends FirebaseMessagingService {
                             PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, call, PendingIntent.FLAG_UPDATE_CURRENT);
                             mBuilder.addAction(R.drawable.ic_phone_black_24dp, "Call", pendingIntent);
                         }
+
+                        Intent intent = new Intent(NotificationService.this, CabListOfPeople.class);
+                        intent.putExtra("Key", (String) data.get("key"));
+
+                        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mBuilder.setContentIntent(intent1);
+
 
 // Gets an instance of the NotificationMa
 
@@ -103,8 +109,14 @@ public class NotificationService extends FirebaseMessagingService {
                                 .setContentTitle("Your product shortlisted")
                                 .setContentText(personName + " shortlisted your product " + product);
 
+                        Intent intent = new Intent(NotificationService.this, Shortlisted.class);
+                        intent.putExtra("Key", (String) data.get("key"));
+
+                        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mBuilder.setContentIntent(intent1);
+
                         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                        mNotificationManager.notify((product.compareTo(personEmail)), mBuilder.build());
+                        mNotificationManager.notify((product.length()), mBuilder.build());
 
                     }
 
@@ -114,23 +126,27 @@ public class NotificationService extends FirebaseMessagingService {
                     }
                 });
 
-            } else if(type.equals("crash")) {
+            } else if (type.equals("crash")) {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    ((ActivityManager)getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
-                } else {
-                    clearApplicationData();
+                    ((ActivityManager) getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
                 }
-            } else if(type.equals("url")) {
+            } else if (type.equals("url")) {
 
-                Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-                notificationIntent.setData(Uri.parse(data.get("url").toString()));
-                PendingIntent pi = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+                String url = data.get("url").toString();
+                Log.d("data", "url fired");
+                if (!url.startsWith("http://") && !url.startsWith("https://"))
+                    url = "http://" + url;
+
+                Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                notificationIntent.setData(Uri.parse(url));
+
+                PendingIntent pi = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
                 NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-                style.bigText(data.get("message").toString())
-                        .setBigContentTitle(data.get("title").toString());
+                style.bigText(data.get("Bigmessage").toString())
+                        .setBigContentTitle(data.get("Bigtitle").toString());
                 android.support.v4.app.NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(NotificationService.this);
 
@@ -147,28 +163,4 @@ public class NotificationService extends FirebaseMessagingService {
         }
     }
 
-    public void clearApplicationData() {
-        File cache = getCacheDir();
-        File appDir = new File(cache.getParent());
-        if(appDir.exists()){
-            String[] children = appDir.list();
-            for(String s : children){
-                if(!s.equals("lib")){
-                    deleteDir(new File(appDir, s));
-                }
-            }
-        }
-    }
-    public static boolean deleteDir(File dir) {
-        if (dir != null && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-        return dir.delete();
-    }
 }

@@ -231,7 +231,7 @@ public class IndividualCategory extends BaseActivity {
         private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
         private FirebaseAuth mAuth;
         private Button shortList;
-        private ImageView post_image = (ImageView) mView.findViewById(R.id.postImg);
+        private ImageView post_image;
 
 
         public ProductViewHolder(View itemView) {
