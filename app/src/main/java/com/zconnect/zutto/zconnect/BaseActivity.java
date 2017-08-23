@@ -181,13 +181,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void showProgressDialog(String message, Context ctx) {
-        if (progress == null) {
-            progress = new ProgressDialog(ctx, ProgressDialog.STYLE_SPINNER);
-            progress.setCancelable(false);
-        }
-        progress.setMessage(message);
-        progress.show();
 
+        try {
+            if (progress == null) {
+                progress = new ProgressDialog(ctx, ProgressDialog.STYLE_SPINNER);
+                progress.setCancelable(false);
+            }
+            progress.setMessage(message);
+            progress.show();
+        } catch (Exception e) {
+        }
     }
 
     public void hideProgressDialog() {
