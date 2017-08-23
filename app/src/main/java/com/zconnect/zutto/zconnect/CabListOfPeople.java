@@ -217,7 +217,7 @@ public class CabListOfPeople extends BaseActivity {
 
                         } else {
                             showToast("Please enter your contact details to join");
-                            startActivity(new Intent(CabListOfPeople.this, AddContact.class));
+                            startActivity(new Intent(CabListOfPeople.this, EditProfileActivity.class));
                         }
                     } else {
 

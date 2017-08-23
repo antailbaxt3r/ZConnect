@@ -62,7 +62,7 @@
                     <!--android:layout_weight=".5"-->
                     <!--android:layout_height="60dp"/>-->
                     <Button
-                        android:id="@+id/GoogleSignIn"
+                        android:id="@+id/btn_google_sign_in"
                         android:layout_width="0dp"
                         android:layout_height="45dp"
                         android:layout_gravity="center_vertical"
@@ -73,7 +73,7 @@
                         android:textColor="@color/white" />
 
                     <Button
-                        android:id="@+id/guestLogIn"
+                        android:id="@+id/btn_guest_login"
                         android:layout_width="0dp"
                         android:layout_height="45dp"
                         android:layout_gravity="center_vertical"
