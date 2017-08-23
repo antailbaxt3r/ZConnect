@@ -33,8 +33,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +48,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     boolean doubleBackToExitPressedOnce = false;
     private FirebaseAuth mAuth;
     private DatabaseReference usersDbRef;
+    private DatabaseReference phoneBookDbRef;
     private ProgressDialog mProgress;
     @BindView(R.id.btn_google_sign_in)
     Button mGoogleSignInBtn;
@@ -65,6 +69,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         mAuth = FirebaseAuth.getInstance();
         usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
         usersDbRef.keepSynced(true);
+        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
         mProgress = new ProgressDialog(this);
 
         // Configure Google Sign In
@@ -136,13 +141,13 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             mProgress.setMessage("Signing in...");
             mProgress.show();
             if (result.isSuccess()) {
-                Log.e(TAG, "onActivityResult: success" );
+                Log.e(TAG, "onActivityResult: success");
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
-                Log.e(TAG, "onActivityResult: not success" + result.getStatus().getStatusMessage() );
+                Log.e(TAG, "onActivityResult: not success" + result.getStatus().getStatusMessage());
                 mProgress.dismiss();
                 Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Login failed", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
@@ -221,9 +226,29 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         currentUserDbRef.child("Image").setValue(photoUrl);
         currentUserDbRef.child("Username").setValue(user.getDisplayName());
         currentUserDbRef.child("Email").setValue(user.getEmail());
-        Intent editProfileIntent = new Intent(LoginActivity.this, EditProfileActivity.class);
-        startActivity(editProfileIntent);
-        finish();
+        phoneBookDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean addedToInfone = false;
+                for (DataSnapshot child :
+                        dataSnapshot.getChildren()) {
+                    if (user.getEmail() != null && user.getEmail().equals(child.child("email").getValue(String.class))) {
+                        addedToInfone = true;
+                    }
+                }
+                if (addedToInfone) {
+                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                } else {
+                    startActivity(new Intent(LoginActivity.this, EditProfileActivity.class));
+                }
+                finish();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: ", databaseError.toException());
+            }
+        });
     }
 
     @Override
