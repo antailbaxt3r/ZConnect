@@ -5,7 +5,9 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * Created by shubhamk on 8/2/17.
@@ -28,6 +30,8 @@ public class ZConnect extends Application {
         //initialise Fresco when app starts
         //this will speed download process and is required by this library
         //more info http://frescolib.org/
+        FirebaseApp.initializeApp(this);
+        FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         Fresco.initialize(this);
     }

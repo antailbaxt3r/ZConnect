@@ -44,7 +44,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.ArrayList;
@@ -54,12 +53,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
+public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener {
     private Homescreen homescreen;
     private ActionBarDrawerToggle toggle;
     private final String TAG = getClass().getSimpleName();
-    private String userEmail;
-    private String username;
     boolean doubleBackToExitPressedOnce = false;
     String number;
     private FirebaseAuth mAuth;
@@ -101,6 +98,16 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     Toolbar toolbar;
     View navHeader;
     TextView emailTv;
+    private Homescreen homescreen;
+    private boolean checkUser = true;
+    private ActionBarDrawerToggle toggle;
+    private String userEmail;
+    private String username;
+    private FirebaseAuth mAuth;
+    private DatabaseReference usersDbRef;
+    private GoogleApiClient mGoogleApiClient;
+    private DatabaseReference phoneBookDbRef;
+    private DatabaseReference mDatabasePopUps;
     private FirebaseUser mUser;
     private boolean guestMode;
 
@@ -201,31 +208,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(0);
 
-        //TODO: what does this code do?
-        FirebaseMessaging.getInstance().subscribeToTopic("aweasd");
-
-        RemoteMessage.Builder creator = new RemoteMessage.Builder("/topics/aweasd");
-        creator.addData("Type", "CabPool");
-        creator.addData("Person", " asdsad");
-        creator.addData("Contact", "sadsad");
-        creator.addData("Pool", "sefse");
-
-        Log.d(creator.build().getFrom(), creator.build().getTo());
-        FirebaseMessaging.getInstance().send(creator.build());
+        FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
 
         //put try catch
-
-        //try {
-
             mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
             mDatabasePopUps.keepSynced(true);
-
-            String popUpUrl;
-
-
-            //popUpUrl = "http://www.menucool.com/slider/jsImgSlider/images/image-slider-2.jpg";
-
-            //FirebaseDatabase database=mDatabasePopUps.getDatabase()
 
             mDatabasePopUps.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -293,7 +280,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                             //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(home.this);
                             SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("popup","false");
+                            editor.putString("popup", "false");
                             editor.apply();
 
                             break;
@@ -429,7 +416,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onDestroy() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("popup","true");
+        editor.putString("popup", "true");
         editor.apply();
 
         super.onDestroy();
@@ -439,7 +426,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onStop() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("popup","true");
+        editor.putString("popup", "true");
         editor.apply();
         phoneBookDbRef.removeEventListener(phoneBookValueEventListener);
         super.onStop();
@@ -450,7 +437,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("popup","true");
+        editor.putString("popup", "true");
         editor.apply();
 
         super.onPause();
@@ -504,7 +491,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     final Long currTime = Calendar.getInstance().getTimeInMillis();
                     SharedPreferences addNumberDialogPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
                     Boolean neverAddNumber = addNumberDialogPref.getBoolean("never", false);
-                    if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 7 * 24 * 3600 * 1000)) {
+                    if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 2 * 24 * 3600 * 1000)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                         builder.setTitle("Hi " + username)
                                 .setMessage("Add your information and get discovered.")
