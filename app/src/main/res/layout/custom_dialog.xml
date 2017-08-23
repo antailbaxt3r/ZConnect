@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
-
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/popUpImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="350dp"
         android:contentDescription="pop up image"
-        android:background="@drawable/aboutus"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="5dp"
         android:layout_below="@+id/txt_dia"
-        android:scaleType="centerCrop"
+        app:actualImageScaleType="fitCenter"
         />
 
 
@@ -42,7 +39,7 @@
         android:background="#3E80B4"
         android:orientation="horizontal"
         android:layout_marginBottom="0dp"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/popUpImage"
         android:layout_centerHorizontal="true"
         android:id="@+id/relativeLayout">
 
