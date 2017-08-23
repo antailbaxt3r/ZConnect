@@ -50,7 +50,7 @@ public class ShopSearch extends AppCompatActivity {
         Intent intent = getIntent();
 
 
-        searchShopList = (android.support.v7.widget.RecyclerView) findViewById(R.id.searchActivityRecyclerView);
+        searchShopList = (android.support.v7.widget.RecyclerView) findViewById(R.id.rv_search_activity);
         databaseReference.keepSynced(true);
         searchAdapter = new ShopListRV(ShopSearch.this, searchShop);
 

@@ -96,7 +96,7 @@ public class PhonebookHostelWise extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_search) {
+        if (id == R.id.action_search_menu_phonebook) {
             Intent searchintent = new Intent(this, PhonebookCategorySearch.class);
             searchintent.putExtra("hostel", hostel);
             searchintent.putExtra("cat",cat);

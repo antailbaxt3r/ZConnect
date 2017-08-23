@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,10 +44,10 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
 
     @Override
     public void onBindViewHolder(PhonebookAdapter.ViewHolder holder, int position) {
-        holder.simpleDraweeView.setImageURI(Uri.parse(phonebookItem.get(position).getImgurl()));
+        String imageUrl = phonebookItem.get(position).getImgurl();
+        if (!TextUtils.isEmpty(imageUrl)) holder.simpleDraweeView.setImageURI(Uri.parse(imageUrl));
         holder.name.setText(phonebookItem.get(position).getName());
         holder.number.setText(phonebookItem.get(position).getNumber());
-
     }
 
     @Override
@@ -56,7 +57,8 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
 
     class ViewHolder extends RecyclerView.ViewHolder {
         SimpleDraweeView simpleDraweeView;
-        TextView name, number;
+        TextView name;
+        TextView number;
         ImageView call;
         
         public ViewHolder(View itemView) {
