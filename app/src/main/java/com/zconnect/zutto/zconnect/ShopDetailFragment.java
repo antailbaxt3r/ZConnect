@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,9 +31,10 @@ import java.util.Vector;
 
 public class ShopDetailFragment extends Fragment {
 
-    TextView name, details, number;
+    TextView details;
     LinearLayout linearLayout, numberlayout;
-    SimpleDraweeView  image;
+    Button call,direction;
+
     String nam, detail, lat, lon, imageurl, num, menuurl, shopid = null;
     DatabaseReference mDatabase, mDatabaseMenu,database;
     HorizontalScrollView galleryScroll, menuScroll;
@@ -58,6 +60,8 @@ public class ShopDetailFragment extends Fragment {
         menuScroll = (HorizontalScrollView) view.findViewById(R.id.menuScroll);
         galleryScroll.setHorizontalScrollBarEnabled(false);
         menuScroll.setHorizontalScrollBarEnabled(false);
+        call = (Button) view.findViewById(R.id.call);
+        direction = (Button) view.findViewById(R.id.direction);
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -72,21 +76,13 @@ public class ShopDetailFragment extends Fragment {
 
         shopid = getActivity().getIntent().getStringExtra("ShopId");
 
-
-        name = (TextView) view.findViewById(R.id.shop_details_name);
         details = (TextView) view.findViewById(R.id.shop_details_details);
-        image = (SimpleDraweeView) view.findViewById(R.id.shop_details_image);
 
         Typeface ralewayRegular = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Medium.ttf");
 
-        name.setTypeface(ralewayRegular);
         details.setTypeface(ralewayRegular);
 
-//      Menu = (SimpleDraweeView) findViewById(R.id.shop_details_menu_image);
-        number = (TextView) view.findViewById(R.id.shop_details_number);
-        number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        numberlayout = (LinearLayout) view.findViewById(R.id.shop_details_num);
-        linearLayout = (LinearLayout) view.findViewById(R.id.shop_details_directions);
+
         if(shopid!=null){
             database=FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid);
         }
@@ -98,15 +94,10 @@ public class ShopDetailFragment extends Fragment {
                 detail=dataSnapshot.child("details").getValue().toString();
                 lat=dataSnapshot.child("lat").getValue().toString();
                 lon=dataSnapshot.child("lon").getValue().toString();
-                imageurl=dataSnapshot.child("imageurl").getValue().toString();
                 num=dataSnapshot.child("number").getValue().toString();
-                name.setText(nam);
                 details.setText(detail);
 
-                image.setImageURI(Uri.parse(imageurl));
-//            menu.setImageURI(Uri.parse(menuurl));
-                number.setText(num);
-                linearLayout.setOnClickListener(new View.OnClickListener() {
+                direction.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         CounterManager.shopDirections(nam);
@@ -115,7 +106,7 @@ public class ShopDetailFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
-                numberlayout.setOnClickListener(new View.OnClickListener() {
+                call.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         CounterManager.shopCall(nam);
@@ -142,8 +133,6 @@ public class ShopDetailFragment extends Fragment {
                 CounterManager.shopProducts(nam);
             }
         });
-        image.setVisibility(View.GONE);
-        name.setVisibility(View.GONE);
 
             mDatabase =FirebaseDatabase.getInstance().getReference().child("Shop").child("Gallery").child(shopid);
             mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Menu").child(shopid);
@@ -159,7 +148,6 @@ public class ShopDetailFragment extends Fragment {
         Typeface customFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
         TextView galleryText = (TextView)view.findViewById(R.id.galleryText);
         TextView productText = (TextView)view.findViewById(R.id.productText);
-        number.setTypeface(customFont);
         galleryText.setTypeface(customFont);
         productText.setTypeface(customFont);
 

@@ -1,105 +1,35 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ShopDetailFragment">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/shop_details_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="5dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/border"
-        app:actualImageScaleType="centerCrop"
-        app:roundedCornerRadius="12dp" />
-
-    <TextView
-        android:id="@+id/shop_details_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/shop_details_image"
-        android:padding="4dp"
-        android:text="Name"
-        android:textColor="@android:color/black"
-        android:textSize="23sp"
-        android:textStyle="bold" />
 
     <LinearLayout
-        android:id="@+id/shop_details_num"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_below="@+id/shop_details_details"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/shop_details_image"
-        android:orientation="horizontal"
-        android:padding="4dp">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_phone_black_24dp" />
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:layout_weight=".9">
 
         <TextView
-            android:id="@+id/shop_details_number"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="7dp"
-            android:autoLink="phone"
-            android:text="Num"
-            android:textColor="#2196F3"
-            android:textSize="16sp"
-            android:textStyle="italic" />
-    </LinearLayout>
+            android:id="@+id/shop_details_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:padding="4dp"
+            android:text="Details"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/shop_details_details"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/shop_details_name"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/shop_details_image"
-        android:padding="4dp"
-        android:text="Details"
-        android:textColor="@android:color/black"
-        android:textSize="16sp" />
-
-    <LinearLayout
-        android:id="@+id/shop_details_directions"
-        android:layout_width="130dp"
-        android:layout_height="30dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/shop_details_num"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/shop_details_image"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_directions_black_24dp" />
-
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="7dp"
-            android:text="Directions"
-            android:textColor="@color/grey500"
-            android:textSize="16sp"
-            android:textStyle="italic" />
-    </LinearLayout>
 
     <TextView
         android:id="@+id/galleryText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/shop_details_directions"
         android:padding="5dp"
         android:text="Gallery"
         android:textColor="@color/black"
@@ -171,4 +101,33 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-</RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".1"
+        android:layout_gravity="bottom"
+        android:layout_margin="10dp"
+        android:weightSum="1">
+        <Button
+            android:id="@+id/direction"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="match_parent"
+            android:text="Direction"
+            android:background="@drawable/curvedradiusbutton_sr"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/white"/>
+        <Button
+            android:id="@+id/call"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="match_parent"
+            android:text="Call"
+            android:background="@drawable/curveradiusgoogle"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+</LinearLayout>
