@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         android:weightSum="1"
-        android:layout_weight=".9">
+        android:layout_weight=".7">
 
         <TextView
             android:id="@+id/shop_details_details"
@@ -129,5 +129,12 @@
             android:layout_marginLeft="5dp"
             android:textColor="@color/white"/>
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"
+        android:background="@color/white"
+        />
 
 </LinearLayout>
