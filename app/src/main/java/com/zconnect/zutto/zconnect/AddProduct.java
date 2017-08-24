@@ -197,6 +197,11 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                try {
+                    throw error;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -246,6 +251,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                 negotiable="0";
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
+        assert user != null;
         final String userId = user.getUid();
         mUsername = FirebaseDatabase.getInstance().getReference().child("Users");
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
@@ -275,7 +281,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     newPost.child("Key").setValue(key);
                     newPost.child("ProductName").setValue(productNameValue);
                     newPost.child("ProductDescription").setValue(productDescriptionValue);
-                    newPost.child("Image").setValue(downloadUri.toString());
+                    newPost.child("Image").setValue(downloadUri != null ? downloadUri.toString() : null);
                     newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
                     newPost.child("Phone_no").setValue(productPhoneNo);
                     newPost.child("SellerUsername").setValue(sellerName);
@@ -290,7 +296,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
                     newPost2.child("name").setValue(productNameValue);
                     newPost2.child("desc").setValue(productDescriptionValue);
-                    newPost2.child("imageurl").setValue(downloadUri.toString());
+                    newPost2.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
                     newPost2.child("feature").setValue("StoreRoom");
                     newPost2.child("id").setValue(key);
                     newPost2.child("desc2").setValue(productPriceValue);
@@ -301,7 +307,10 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            Integer TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                            Object o = dataSnapshot.child("TotalProducts").getValue();
+                            if (o == null)
+                                o = "0";
+                            Integer TotalProducts = Integer.parseInt(o.toString());
                             TotalProducts = TotalProducts + 1;
                             DatabaseReference newPost = mFeaturesStats;
                             Map<String, Object> taskMap = new HashMap<String, Object>();

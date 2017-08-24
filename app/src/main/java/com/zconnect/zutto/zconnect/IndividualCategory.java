@@ -258,6 +258,8 @@ public class IndividualCategory extends BaseActivity {
             // Getting User ID
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
+            if (user == null)
+                return;
             final String userId = user.getUid();
 
             //Getting  data from database

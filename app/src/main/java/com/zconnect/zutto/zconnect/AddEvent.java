@@ -263,6 +263,8 @@ public class AddEvent extends BaseActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    if (downloadUri == null)
+                        downloadUri = Uri.parse("");
 
                     if (flag) {
                         DatabaseReference newPost = mDatabaseVerified.push();
@@ -293,7 +295,10 @@ public class AddEvent extends BaseActivity {
                         mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Integer TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                                Object o = dataSnapshot.child("TotalEvents").getValue();
+                                if (o == null)
+                                    o = "0";
+                                Integer TotalEvents = Integer.parseInt(o.toString());
                                 TotalEvents = TotalEvents + 1;
                                 DatabaseReference newPost = mFeaturesStats;
                                 Map<String, Object> taskMap = new HashMap<String, Object>();
@@ -396,12 +401,18 @@ public class AddEvent extends BaseActivity {
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                try {
+                    throw error;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         if (requestCode == 124 && resultCode == RESULT_OK) {
             Venue = PlacePicker.getPlace(this, data);
-            mVenue.setText(Venue.getName().toString() + Venue.getAddress());
+            String addr = Venue.getName().toString() + Venue.getAddress();
+            mVenue.setText(addr);
             selectedFromMap = true;
         }
 

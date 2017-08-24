@@ -81,7 +81,7 @@ public class Campus_Map extends FragmentActivity implements OnMapReadyCallback {
         LatLngBounds bounds = new LatLngBounds(leftBottomBound, rightTopBound);
 
         map.setLatLngBoundsForCameraTarget(bounds);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(centre, 0));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(centre, 16f));
         LatLng marker;
         marker = new LatLng(15.39244, 73.87893);
         map.addMarker(new MarkerOptions().position(marker).title("Post Box"));
