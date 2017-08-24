@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -115,12 +116,18 @@ public class PhonebookHostelWise extends BaseActivity {
                 phonebookItems.clear();
                 phonebookDisplayItems.clear();
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                    phonebookDisplayItems.add(shot.getValue(PhonebookDisplayItem.class));
+                    try {
+                        phonebookDisplayItems.add(shot.getValue(PhonebookDisplayItem.class));
+                    }catch (Exception e) {
+                        Log.d("Error Alert: ", e.getMessage());
+                    }
                 }
                 for (int i = 0; i < phonebookDisplayItems.size(); i++) {
+                    try{
                     if (phonebookDisplayItems.get(i).getCategory() != null && hostel != null &&cat!=null && phonebookDisplayItems.get(i).getCategory().equals(cat) && phonebookDisplayItems.get(i).getHostel().equals(hostel)) {
                         phonebookItems.add(new PhonebookItem(phonebookDisplayItems.get(i).getImageurl(), phonebookDisplayItems.get(i).getName(), phonebookDisplayItems.get(i).getNumber(), phonebookDisplayItems.get(i)));
+                    }}catch (Exception e) {
+                        Log.d("Error Alert: ", e.getMessage());
                     }
 
                 }

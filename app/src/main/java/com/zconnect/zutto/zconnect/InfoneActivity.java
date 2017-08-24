@@ -56,7 +56,6 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
     FloatingActionButton fab;
     private Boolean guestMode;
 
-    private final String TAG = getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

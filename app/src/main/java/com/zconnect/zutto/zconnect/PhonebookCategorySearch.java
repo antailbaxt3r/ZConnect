@@ -92,7 +92,7 @@ cat=intent.getStringExtra("cat");
                     searchContact.clear();
 
                     for (DataSnapshot childShot : dataSnapshot.getChildren()) {
-
+                        try{
                         //need to add a try catch block before release
 
                         // storage of EventFormat by individual de-serialization
@@ -143,6 +143,9 @@ cat=intent.getStringExtra("cat");
                             }
 
 
+                        }
+                        }catch (Exception e) {
+                            Log.d("Error Alert: ", e.getMessage());
                         }
                     }
                     // Need to add empty search result log message
