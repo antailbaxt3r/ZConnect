@@ -38,7 +38,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class InfoneActivity extends BaseActivity implements View.OnClickListener {
+
     private final String TAG = getClass().getSimpleName();
+
     FirebaseUser mUser;
     FirebaseAuth mAuth;
     int TotalNumbers;
@@ -53,6 +55,8 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
     @BindView(R.id.fab)
     FloatingActionButton fab;
     private Boolean guestMode;
+
+    private final String TAG = getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +103,7 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
             mFeaturesStatsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
                     try {
                         TotalNumbers = dataSnapshot.child("TotalNumbers").getValue(Integer.class);
                     } catch (Exception e) {
