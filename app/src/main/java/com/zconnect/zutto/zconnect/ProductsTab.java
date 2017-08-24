@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -247,9 +248,8 @@ public class ProductsTab extends Fragment {
         private Button shortList;
 
         private ImageView post_image;
-
-        private String negotiable;
         private String sellerName;
+        private TextView negotiableText;
         // Constructor
         public ProductViewHolder(View itemView) {
             super(itemView);
@@ -362,13 +362,16 @@ public class ProductsTab extends Fragment {
         //Set Product Price
         public void setPrice(String productPrice,String negotiable) {
             TextView post_price = (TextView) mView.findViewById(R.id.price);
-
+            negotiableText = (TextView) mView.findViewById(R.id.negotiable);
             String price="";
             if(negotiable!=null) {
-                if (negotiable.equals("1"))
-                    price = "₹" + productPrice + "/-" +"\n"+ "negotiable";
-                else if (negotiable.equals("2"))
-                    price = "negotiable";
+                if (negotiable.equals("1")) {
+                    price = "₹" + productPrice + "/-";
+                    negotiableText.setVisibility(View.VISIBLE);
+                } else if (negotiable.equals("2")){
+                    price = "Price Negotiable";
+                    post_price.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
+                }
                 else
                     price = "₹" + productPrice + "/-";
 
@@ -382,7 +385,6 @@ public class ProductsTab extends Fragment {
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
             post_price.setTypeface(ralewayMedium);
         }
-
 
         public void setSellerName(String postedBy) {
 

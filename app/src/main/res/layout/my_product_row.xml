@@ -37,7 +37,7 @@
                     android:id="@+id/productName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".7"
+                    android:layout_weight=".55"
                     android:text="Product Name"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -47,7 +47,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_weight=".3"
+                    android:layout_weight=".45"
                     android:text="Price"
                     android:textSize="20dp"
                     android:textStyle="italic" />

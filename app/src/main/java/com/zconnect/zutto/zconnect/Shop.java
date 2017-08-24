@@ -107,11 +107,15 @@ public class Shop extends BaseActivity {
             mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    TotalOffers = dataSnapshot.child("TotalOffers").getValue().toString();
-                    DatabaseReference newPost = mUserStats;
-                    Map<String, Object> taskMap = new HashMap<String, Object>();
-                    taskMap.put("TotalOffers", TotalOffers);
-                    newPost.updateChildren(taskMap);
+                    try {
+                        TotalOffers = dataSnapshot.child("TotalOffers").getValue().toString();
+                        DatabaseReference newPost = mUserStats;
+                        Map<String, Object> taskMap = new HashMap<String, Object>();
+                        taskMap.put("TotalOffers", TotalOffers);
+                        newPost.updateChildren(taskMap);
+                    }catch (Exception e) {
+                        Log.d("Error Alert: ", e.getMessage());
+                    }
                 }
 
                 @Override

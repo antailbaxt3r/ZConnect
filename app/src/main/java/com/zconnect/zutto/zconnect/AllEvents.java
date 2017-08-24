@@ -18,6 +18,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -123,11 +124,15 @@ public class AllEvents extends BaseActivity {
             mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    TotalEvents = dataSnapshot.child("TotalEvents").getValue().toString();
-                    DatabaseReference newPost = mUserStats;
-                    Map<String, Object> taskMap = new HashMap<>();
-                    taskMap.put("TotalEvents", TotalEvents);
-                    newPost.updateChildren(taskMap);
+                    try {
+                        TotalEvents = dataSnapshot.child("TotalEvents").getValue().toString();
+                        DatabaseReference newPost = mUserStats;
+                        Map<String, Object> taskMap = new HashMap<>();
+                        taskMap.put("TotalEvents", TotalEvents);
+                        newPost.updateChildren(taskMap);
+                    }catch (Exception e) {
+                        Log.d("Error Alert: ", e.getMessage());
+                    }
                 }
 
                 @Override
@@ -225,15 +230,18 @@ public class AllEvents extends BaseActivity {
             @Override
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
-                viewHolder.openEvent(model);
-                viewHolder.setEventName(model.getEventName());
-                viewHolder.setEventDesc(model.getEventDescription());
-                viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
-                viewHolder.setEventDate(model.getEventDate());
-                viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
-                viewHolder.setEventVenue(model.getVenue());
-//                viewHolder.setShareOptions(model.getEventImage());
-                viewHolder.setBoosters(model.getBoosters());
+                try {
+                    viewHolder.openEvent(model);
+                    viewHolder.setEventName(model.getEventName());
+                    viewHolder.setEventDesc(model.getEventDescription());
+                    viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
+                    viewHolder.setEventDate(model.getEventDate());
+                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
+                    viewHolder.setEventVenue(model.getVenue());
+                    viewHolder.setBoosters(model.getBoosters());
+                }catch (Exception e) {
+                    Log.d("Error Alert: ", e.getMessage());
+                }
 
             }
         };

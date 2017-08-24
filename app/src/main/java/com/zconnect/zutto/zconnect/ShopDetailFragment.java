@@ -89,31 +89,35 @@ public class ShopDetailFragment extends Fragment {
         database.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                nam=dataSnapshot.child("name").getValue().toString();
-                Log.v("TAg",nam);
-                detail=dataSnapshot.child("details").getValue().toString();
-                lat=dataSnapshot.child("lat").getValue().toString();
-                lon=dataSnapshot.child("lon").getValue().toString();
-                num=dataSnapshot.child("number").getValue().toString();
-                details.setText(detail);
 
-                direction.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        CounterManager.shopDirections(nam);
-                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
-                });
-                call.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        CounterManager.shopCall(nam);
-                        startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num)));
-                    }
-                });
+                try {
+                    nam = dataSnapshot.child("name").getValue().toString();
+                    Log.v("TAg", nam);
+                    detail = dataSnapshot.child("details").getValue().toString();
+                    lat = dataSnapshot.child("lat").getValue().toString();
+                    lon = dataSnapshot.child("lon").getValue().toString();
+                    num = dataSnapshot.child("number").getValue().toString();
+                    details.setText(detail);
 
+                    direction.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            CounterManager.shopDirections(nam);
+                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    });
+                    call.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            CounterManager.shopCall(nam);
+                            startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num)));
+                        }
+                    });
+                }catch (Exception e) {
+                    Log.d("Error Alert: ", e.getMessage());
+                }
             }
 
             @Override

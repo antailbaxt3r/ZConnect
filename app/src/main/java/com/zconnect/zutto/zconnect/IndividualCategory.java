@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -122,7 +123,7 @@ public class IndividualCategory extends BaseActivity {
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(IndividualCategory.this, model.getProductName(), IndividualCategory.this, model.getImage());
-                viewHolder.setProductPrice(model.getPrice());
+                viewHolder.setPrice(model.getPrice(),model.getNegotiable());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getPhone_no(), category);
 
@@ -232,6 +233,7 @@ public class IndividualCategory extends BaseActivity {
         private FirebaseAuth mAuth;
         private Button shortList;
         private ImageView post_image;
+        private TextView negotiableText;
 
 
         public ProductViewHolder(View itemView) {
@@ -344,9 +346,28 @@ public class IndividualCategory extends BaseActivity {
                 }
             });
         }
-        public void setProductPrice(String productPrice) {
+        public void setPrice(String productPrice,String negotiable) {
             TextView post_price = (TextView) mView.findViewById(R.id.price);
-            post_price.setText("₹" + productPrice + "/-");
+            negotiableText = (TextView) mView.findViewById(R.id.negotiable);
+            String price="";
+            if(negotiable!=null) {
+                if (negotiable.equals("1")) {
+                    price = "₹" + productPrice + "/-";
+                    negotiableText.setVisibility(View.VISIBLE);
+                } else if (negotiable.equals("2")) {
+                    price = "Price Negotiable";
+                    post_price.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            }
+                else
+                    price = "₹" + productPrice + "/-";
+
+                post_price.setText(price);
+            }
+            else
+            {
+                post_price.setText("₹" + productPrice + "/-");
+            }
+            //"₹" + productPrice + "/-"
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
             post_price.setTypeface(ralewayMedium);
         }

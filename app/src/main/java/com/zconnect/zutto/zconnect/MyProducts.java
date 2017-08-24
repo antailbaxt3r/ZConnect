@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -91,7 +92,7 @@ public class MyProducts extends BaseActivity {
 //               if(reserveList.contains(model.getKey())) {
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
-                viewHolder.setPrice(model.getPrice());
+                viewHolder.setPrice(model.getPrice(),model.getNegotiable());
                 viewHolder.setIntent(model.getKey());
                 viewHolder.setImage(getApplicationContext(), model.getImage());
 //                }else {
@@ -164,9 +165,26 @@ public class MyProducts extends BaseActivity {
         }
 
         //Set Product Price
-        public void setPrice(String productPrice) {
+        public void setPrice(String productPrice,String negotiable) {
             TextView post_price = (TextView) mView.findViewById(R.id.price);
-            post_price.setText("₹" + productPrice + "/-");
+            String price="";
+            if(negotiable!=null) {
+                if (negotiable.equals("1")) {
+                    price = "₹" + productPrice + "/-";
+                } else if (negotiable.equals("2")) {
+                    price = "Price Negotiable";
+                    post_price.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                }
+                else
+                    price = "₹" + productPrice + "/-";
+
+                post_price.setText(price);
+            }
+            else
+            {
+                post_price.setText("₹" + productPrice + "/-");
+            }
+            //"₹" + productPrice + "/-"
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
             post_price.setTypeface(ralewayMedium);
         }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,16 +64,20 @@ public class ShopOffersFragment extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                defaultmsg.setVisibility(View.INVISIBLE);
-                recyclerView.setVisibility(View.VISIBLE);
-                shopOfferItemFormats.clear();
+                try {
+                    defaultmsg.setVisibility(View.INVISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    shopOfferItemFormats.clear();
 
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    ShopOfferItemFormat shopOfferItemFormat = shot.getValue(ShopOfferItemFormat.class);
-                    if (shopOfferItemFormat.getkey().equals(shopid)) {
-                        shopOfferItemFormats.add(shopOfferItemFormat);
+                    for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                        ShopOfferItemFormat shopOfferItemFormat = shot.getValue(ShopOfferItemFormat.class);
+                        if (shopOfferItemFormat.getkey().equals(shopid)) {
+                            shopOfferItemFormats.add(shopOfferItemFormat);
+                        }
+
                     }
-
+                }catch (Exception e) {
+                    Log.d("Error Alert: ", e.getMessage());
                 }
 
                 // Need to add empty search result log message

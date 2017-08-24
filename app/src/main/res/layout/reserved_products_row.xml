@@ -31,7 +31,7 @@
                 android:id="@+id/productName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".7"
+                android:layout_weight=".55"
                 android:text="Product Name"
                 android:textSize="20dp"
                 android:textStyle="bold" />
@@ -41,29 +41,41 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_weight=".3"
+                android:layout_weight=".45"
                 android:text="Price"
                 android:textSize="20dp"
                 android:textStyle="italic" />
         </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingBottom="10dp"
-            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
             android:paddingTop="0dp">
 
             <TextView
                 android:id="@+id/sellerName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight=".55"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:text="Seller Name"
-                android:textSize="12dp" />
+                android:textSize="12sp" />
 
-        </RelativeLayout>
+            <TextView
+                android:id="@+id/negotiable"
+                android:layout_width="0dp"
+                android:layout_weight=".45"
+                android:layout_height="wrap_content"
+                android:text="Negotiable"
+                android:visibility="gone"
+                android:textColor="@color/teal800"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/productDescription"

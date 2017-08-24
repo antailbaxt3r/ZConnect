@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,22 +75,27 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                 public void onClick(View view) {
                     if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Event")) {
                         i = new Intent(context, OpenEventDetail.class);
-                        i.putExtra("id", recentsItemFormats.get(getAdapterPosition()).getId());
-                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(recentsItemFormats.get(getAdapterPosition()).getId());
-                        databaseReference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.child("EventName").getValue() != null)
-                                    nam = dataSnapshot.child("EventName").getValue().toString();
-                                if (nam != null)
-                                    context.startActivity(i);
-                            }
+                        try {
+                            i.putExtra("id", recentsItemFormats.get(getAdapterPosition()).getId());
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(recentsItemFormats.get(getAdapterPosition()).getId());
+                            databaseReference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.child("EventName").getValue() != null)
+                                        nam = dataSnapshot.child("EventName").getValue().toString();
+                                    if (nam != null)
+                                        context.startActivity(i);
+                                }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
+                                }
+                            });
+                        }catch (Exception e) {
+                            Log.d("Error Alert: ", e.getMessage());
+                        }
+
                         //context.startActivity(i);
                         //mHomeActivity.finish();
                         //mHome.finish();
@@ -97,12 +103,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         Intent intent = new Intent(context, TabStoreRoom.class);
                         context.startActivity(intent);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Shop")) {
-                        final Intent intent = new Intent(context, Shop_detail.class);
-                        intent.putExtra("ShopId", recentsItemFormats.get(getAdapterPosition()).getId());
-                        intent.putExtra("Name", recentsItemFormats.get(getAdapterPosition()).getName());
-                        intent.putExtra("Imageurl", recentsItemFormats.get(getAdapterPosition()).getImageurl());
-                        //  Log.v("im1",recentsItemFormats.get(getAdapterPosition()).getDesc2());
-                        context.startActivity(intent);
+                        try {
+                            final Intent intent = new Intent(context, Shop_detail.class);
+                            intent.putExtra("ShopId", recentsItemFormats.get(getAdapterPosition()).getId());
+                            intent.putExtra("Name", recentsItemFormats.get(getAdapterPosition()).getName());
+                            intent.putExtra("Imageurl", recentsItemFormats.get(getAdapterPosition()).getImageurl());
+                            //  Log.v("im1",recentsItemFormats.get(getAdapterPosition()).getDesc2());
+                            context.startActivity(intent);
+                        }catch (Exception e) {
+                            Log.d("Error Alert: ", e.getMessage());
+                        }
                     }
                 }
             });

@@ -21,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -132,6 +133,7 @@ public class OpenEventDetail extends BaseActivity {
                 startActivity(i, optionsCompat.toBundle());
             }
         });
+
         if(tag!=null&&tag.equals("1")){
             Bundle extras = getIntent().getExtras();
             event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
@@ -166,46 +168,50 @@ public class OpenEventDetail extends BaseActivity {
                 i++;
             }
 
-            EventDate.setText(date);
-            EventDescription.setText(event.getEventDescription());
-            EventVenue.setText(event.getVenue());
-            getSupportActionBar().setTitle(event.getEventName());
-            Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
-            EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            try {
+                EventDate.setText(date);
+                EventDescription.setText(event.getEventDescription());
+                EventVenue.setText(event.getVenue());
+                getSupportActionBar().setTitle(event.getEventName());
+                Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
+                EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-            boostCounter(event.getKey());
-            setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-
+                boostCounter(event.getKey());
+                setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
+            }catch (Exception e) {
+                Log.d("Error Alert: ", e.getMessage());
+            }
         }
         else {
             databaseReference= FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(id);
-            databaseReference.addValueEventListener(new ValueEventListener() {
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     event = dataSnapshot.getValue(Event.class);
+
                     boostCounter(event.getKey());
-                        venueDirections.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                try {
-                                    CounterManager.eventgetDirection(event.getKey());
-                                    if (event.getLat() == 0 && event.getLon() == 0) {
-                                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
-                                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                        mapIntent.setPackage("com.google.android.apps.maps");
-                                        startActivity(mapIntent);
-                                    } else {
-                                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
-                                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                        mapIntent.setPackage("com.google.android.apps.maps");
-                                        startActivity(mapIntent);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
+                    venueDirections.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                CounterManager.eventgetDirection(event.getKey());
+                                if (event.getLat() == 0 && event.getLon() == 0) {
+                                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
+                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                    mapIntent.setPackage("com.google.android.apps.maps");
+                                    startActivity(mapIntent);
+                                } else {
+                                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
+                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                    mapIntent.setPackage("com.google.android.apps.maps");
+                                    startActivity(mapIntent);
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
                             }
-                        });
+                        }
+                    });
                     String eventDate[] = (event.getEventDate().split("\\s+"));
                     String date = "";
                     int i = 0;
@@ -214,17 +220,21 @@ public class OpenEventDetail extends BaseActivity {
                         i++;
                     }
 
-                    EventDate.setText(date);
-                    EventDescription.setText(event.getEventDescription());
-                    EventVenue.setText(event.getVenue());
-                    getSupportActionBar().setTitle(event.getEventName());
-                    Picasso.with(getApplicationContext()).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
-                    EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    try {
 
+                        EventDate.setText(date);
+                        EventDescription.setText(event.getEventDescription());
+                        EventVenue.setText(event.getVenue());
+                        getSupportActionBar().setTitle(event.getEventName());
+                        Picasso.with(getApplicationContext()).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
+                        EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                        setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
+                        //  Log.v("Tag",event.getEventDate());
 
-                    setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-
-                    //  Log.v("Tag",event.getEventDate());
+                    }catch (Exception e)
+                    {
+                        Log.d("Error Alert: ", e.getMessage());
+                    }
                 }
 
                 @Override
@@ -232,6 +242,7 @@ public class OpenEventDetail extends BaseActivity {
 
                 }
             });
+
         }
 
         //changing fonts
@@ -492,8 +503,8 @@ public class OpenEventDetail extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        /*Intent eventsIntent=new Intent(OpenEventDetail.this,AllEvents.class);
-        startActivity(eventsIntent);*/
+//        Intent eventsIntent=new Intent(OpenEventDetail.this,AllEvents.class);
+//        startActivity(eventsIntent);
         finish();
     }
 }

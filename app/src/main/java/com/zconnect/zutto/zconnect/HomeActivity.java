@@ -62,14 +62,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot child : dataSnapshot.getChildren()) {
-                PhonebookDisplayItem phonebookDisplayItem = child.getValue(PhonebookDisplayItem.class);
-                if (userEmail != null
-                        && phonebookDisplayItem != null
-                        && phonebookDisplayItem.getEmail() != null
-                        && phonebookDisplayItem.getEmail().equals(userEmail)) {
-                    username = phonebookDisplayItem.getName();
-                    number = phonebookDisplayItem.getNumber();
-                    Log.v(TAG, number);
+                try {
+                    PhonebookDisplayItem phonebookDisplayItem = child.getValue(PhonebookDisplayItem.class);
+                    if (userEmail != null
+                            && phonebookDisplayItem != null
+                            && phonebookDisplayItem.getEmail() != null
+                            && phonebookDisplayItem.getEmail().equals(userEmail)) {
+                        username = phonebookDisplayItem.getName();
+                        number = phonebookDisplayItem.getNumber();
+                        Log.v(TAG, number);
+                    }
+                }catch (Exception e) {
+                    Log.d("Error Alert: ", e.getMessage());
                 }
             }
         }
@@ -212,6 +216,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
+
                     ArrayList<String> popUpUrl1 = new ArrayList<>();
                     ArrayList<String> importance = new ArrayList<>();
 
@@ -291,11 +296,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             });
 
-        //}
-        /*catch (Exception e)
-        {
-            Log.e("popups",e.toString());
-        }*/
+
 
     }
 
@@ -478,44 +479,48 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void addImageDialog() {
-        phoneBookDbRef.orderByChild("email").equalTo(userEmail).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if ((dataSnapshot.getChildrenCount()) == 0) {
-                    final Long currTime = Calendar.getInstance().getTimeInMillis();
-                    SharedPreferences addNumberDialogPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
-                    Boolean neverAddNumber = addNumberDialogPref.getBoolean("never", false);
-                    if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 2 * 24 * 3600 * 1000)) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                        builder.setTitle("Hi " + username)
-                                .setMessage("Add your information and get discovered.")
-                                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
-                                    }
-                                }).setNegativeButton("Later", null)
-                                .setNeutralButton("Lite :", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
-                                        SharedPreferences.Editor editInfo = sharedPref.edit();
-                                        editInfo.putBoolean("never", true);
-                                        editInfo.putLong("date", currTime);
-                                        editInfo.apply();
-                                    }
-                                })
-                                .setCancelable(false)
-                                .create().show();
+        try {
+            phoneBookDbRef.orderByChild("email").equalTo(userEmail).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if ((dataSnapshot.getChildrenCount()) == 0) {
+                        final Long currTime = Calendar.getInstance().getTimeInMillis();
+                        SharedPreferences addNumberDialogPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
+                        Boolean neverAddNumber = addNumberDialogPref.getBoolean("never", false);
+                        if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 2 * 24 * 3600 * 1000)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                            builder.setTitle("Hi " + username)
+                                    .setMessage("Add your information and get discovered.")
+                                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
+                                        }
+                                    }).setNegativeButton("Later", null)
+                                    .setNeutralButton("Lite :", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
+                                            SharedPreferences.Editor editInfo = sharedPref.edit();
+                                            editInfo.putBoolean("never", true);
+                                            editInfo.putLong("date", currTime);
+                                            editInfo.apply();
+                                        }
+                                    })
+                                    .setCancelable(false)
+                                    .create().show();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: ", databaseError.toException());
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e(TAG, "onCancelled: ", databaseError.toException());
+                }
+            });
+        }catch (Exception e) {
+            Log.d("Error Alert: ", e.getMessage());
+        }
     }
 
     @Override
