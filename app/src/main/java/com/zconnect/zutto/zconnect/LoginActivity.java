@@ -33,11 +33,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +45,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     boolean doubleBackToExitPressedOnce = false;
     private FirebaseAuth mAuth;
     private DatabaseReference usersDbRef;
-    private DatabaseReference phoneBookDbRef;
     private ProgressDialog mProgress;
     @BindView(R.id.btn_google_sign_in)
     Button mGoogleSignInBtn;
@@ -69,7 +65,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         mAuth = FirebaseAuth.getInstance();
         usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
         usersDbRef.keepSynced(true);
-        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
         mProgress = new ProgressDialog(this);
 
         // Configure Google Sign In
@@ -226,29 +221,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         currentUserDbRef.child("Image").setValue(photoUrl);
         currentUserDbRef.child("Username").setValue(user.getDisplayName());
         currentUserDbRef.child("Email").setValue(user.getEmail());
-        phoneBookDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean addedToInfone = false;
-                for (DataSnapshot child :
-                        dataSnapshot.getChildren()) {
-                    if (user.getEmail() != null && user.getEmail().equals(child.child("email").getValue(String.class))) {
-                        addedToInfone = true;
-                    }
-                }
-                if (addedToInfone) {
-                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                } else {
-                    startActivity(new Intent(LoginActivity.this, EditProfileActivity.class));
-                }
-                finish();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: ", databaseError.toException());
-            }
-        });
+        finish(); /*Make Sure HomeActivity exists*/
     }
 
     @Override
@@ -273,11 +246,15 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             }
             case R.id.btn_guest_login: {
                 setGuestLoginPref(true);
-                Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
-                startActivity(homeIntent);
-                finish();
+                finish(); /*Make Sure HomeActivity exists*/
                 break;
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mProgress != null) mProgress.dismiss(); //fix window leak
+        super.onDestroy();
     }
 }

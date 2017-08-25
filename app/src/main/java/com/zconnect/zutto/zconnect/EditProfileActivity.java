@@ -357,14 +357,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                             return;
                         }
                         newPost.child("imageurl").setValue(downloadUri.toString());
-                        mProgress.dismiss();
-                        finish();
+                        finish(); /*Ensure HomeActivity exists*/
                     }
                 });
             } else {
                 newPost.child("imageurl").setValue(imageUrl);
-                mProgress.dismiss();
-                finish();
+                finish(); /*Ensure HomeActivity exists*/
             }
         }
     }
@@ -401,6 +399,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     @Override
     public void onTagsChanged(Collection<String> collection) {
         /*required*/
+    }
+
+    @Override
+    protected void onDestroy() {
+        mProgress.dismiss(); /*Fix for window leak*/
+        super.onDestroy();
     }
 
     @Override
