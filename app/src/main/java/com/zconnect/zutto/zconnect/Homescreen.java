@@ -2,18 +2,17 @@ package com.zconnect.zutto.zconnect;
 
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,36 +25,65 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class Homescreen extends Fragment {
+
+public class Homescreen extends Fragment implements FirebaseAuth.AuthStateListener, View.OnClickListener {
+    private final String TAG = getClass().getSimpleName();
     public String type = null;
+
+    @BindView(R.id.InfoneStats)
     TextView InfoneStats;
+    @BindView(R.id.InfoneName)
     TextView InfoneName;
+    @BindView(R.id.InfoneStatement)
     TextView InfoneStatement;
+
+    @BindView(R.id.ShopsStats)
     TextView ShopsStats;
+    @BindView(R.id.ShopsName)
     TextView ShopsName;
+    @BindView(R.id.ShopsStatement)
     TextView ShopsStatement;
+
+    @BindView(R.id.StoreRoomStats)
     TextView StoreRoomStats;
+    @BindView(R.id.StoreRoomName)
     TextView StoreRoomName;
+    @BindView(R.id.StoreRoomStatement)
     TextView StoreRoomStatement;
+
+    @BindView(R.id.EventsStats)
     TextView EventsStats;
+    @BindView(R.id.EventsName)
     TextView EventsName;
+    @BindView(R.id.EventsStatement)
     TextView EventsStatement;
-    FirebaseUser user;
-    FirebaseAuth mAuth;
-    String userId;
-    GridLayout Grid;
+    private FirebaseUser user;
+    private FirebaseAuth mAuth;
+
+    @BindView(R.id.cabpool)
     ImageView carpool;
-    DatabaseReference mDatabaseUser, mDatabaseStats;
+
+    private DatabaseReference mDatabaseUser;
+    private DatabaseReference mDatabaseStats;
     int UserTotalNumbers = 0, TotalNumbers = 0;
     int UserTotalProducts = 0, TotalProducts = 0;
     int UserTotalOffers = 0, TotalOffers = 0;
     int UserTotalEvents = 0, TotalEvents = 0;
-    Boolean flag;
-    ValueEventListener UserStats;
-    ValueEventListener TotalStats;
-    LinearLayout InfoneCard, StoreRoomCard, EventsCard, ShopsCard;
-    @SuppressLint("ValidFragment")
+
+    private ValueEventListener UserStats;
+    private ValueEventListener TotalStats;
+    @BindView(R.id.InfoneCard)
+    LinearLayout InfoneCard;
+    @BindView(R.id.StoreRoomCard)
+    LinearLayout StoreRoomCard;
+    @BindView(R.id.EventsCard)
+    LinearLayout EventsCard;
+    @BindView(R.id.ShopsCard)
+    LinearLayout ShopsCard;
+
     public Homescreen() {
     }
 
@@ -64,133 +92,17 @@ public class Homescreen extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_homescreen, container, false);
+        ButterKnife.bind(this, view); //now all views are bind
 
-        InfoneCard = (LinearLayout) view.findViewById(R.id.InfoneCard);
-        StoreRoomCard = (LinearLayout) view.findViewById(R.id.StoreRoomCard);
-        EventsCard = (LinearLayout) view.findViewById(R.id.EventsCard);
-        ShopsCard = (LinearLayout) view.findViewById(R.id.ShopsCard);
-
-
-        InfoneStats = (TextView) view.findViewById(R.id.InfoneStats);
-        InfoneName = (TextView) view.findViewById(R.id.InfoneName);
-        InfoneStatement = (TextView) view.findViewById(R.id.InfoneStatement);
-
-        ShopsStats = (TextView) view.findViewById(R.id.ShopsStats);
-        ShopsName = (TextView) view.findViewById(R.id.ShopsName);
-        ShopsStatement = (TextView) view.findViewById(R.id.ShopsStatement);
-
-        EventsStats = (TextView) view.findViewById(R.id.EventsStats);
-        EventsName = (TextView) view.findViewById(R.id.EventsName);
-        EventsStatement = (TextView) view.findViewById(R.id.EventsStatement);
-
-        StoreRoomStats = (TextView) view.findViewById(R.id.StoreRoomStats);
-        StoreRoomName = (TextView) view.findViewById(R.id.StoreRoomName);
-        StoreRoomStatement = (TextView) view.findViewById(R.id.StoreRoomStatement);
-
-        carpool = (ImageView) view.findViewById(R.id.cabpool);
-
-        carpool.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), CabPooling.class);
-                startActivity(intent);
-            }
-        });
-
-        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-        final Boolean status = sharedPref.getBoolean("mode", false);
-        //Toast.makeText(getContext(), status.toString(), Toast.LENGTH_SHORT).show();
-
+        carpool.setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        if (user != null) {
-            userId = user.getUid();
-
-            mDatabaseUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Stats");
-            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
-        }
-
-
-        InfoneCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CounterManager.InfoneOpen();
-                Intent InfoneIntent = new Intent(getContext(), InfoneActivity.class);
-                startActivity(InfoneIntent);
-            }
-        });
-
-
-
-        StoreRoomCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CounterManager.StoreRoomOpen();
-                Intent InfoneIntent = new Intent(getContext(), TabStoreRoom.class);
-                startActivity(InfoneIntent);
-            }
-        });
-
-        EventsCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CounterManager.EventOpen();
-                Intent eventsIntent = new Intent(getContext(), AllEvents.class);
-                startActivity(eventsIntent);
-            }
-        });
-
-        ShopsCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CounterManager.ShopOpen();
-                Intent InfoneIntent = new Intent(getContext(), Shop.class);
-                startActivity(InfoneIntent);
-            }
-        });
-
-        TotalStats = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-                TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-                TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
-                TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
-                setNotification();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        if(user!=null) {
-            UserStats = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.child("TotalNumbers").getValue() != null) {
-                        UserTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-                    }
-                    if (dataSnapshot.child("TotalEvents").getValue() != null) {
-                        UserTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-                    }
-                    if (dataSnapshot.child("TotalOffers").getValue() != null) {
-                        UserTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
-                    }
-                    if (dataSnapshot.child("TotalProducts").getValue() != null) {
-                        UserTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
-                    }
-                    setNotification();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-        }
+        //https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.AuthStateListener
+        mAuth.addAuthStateListener(this);
+        InfoneCard.setOnClickListener(this);
+        StoreRoomCard.setOnClickListener(this);
+        EventsCard.setOnClickListener(this);
+        ShopsCard.setOnClickListener(this);
+        initListeners();
 
         //changing fonts
         Typeface ralewayExtraLight = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-ExtraLight.ttf");
@@ -209,11 +121,54 @@ public class Homescreen extends Fragment {
         return view;
     }
 
+    /**
+     * All {@link ValueEventListener}s for this class are defined here.
+     */
+    private void initListeners() {
+        TotalStats = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                setNotification();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: ", databaseError.toException());
+            }
+        };
+        UserStats = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child("TotalNumbers").getValue() != null) {
+                    UserTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalEvents").getValue() != null) {
+                    UserTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalOffers").getValue() != null) {
+                    UserTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalProducts").getValue() != null) {
+                    UserTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                }
+                setNotification();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: ", databaseError.toException());
+            }
+        };
+    }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (isNetworkAvailable(getContext())&&user!=null) {
+        if (isNetworkAvailable(getContext()) && user != null) {
             mDatabaseStats.addValueEventListener(TotalStats);
             mDatabaseUser.addValueEventListener(UserStats);
         } else {
@@ -225,25 +180,13 @@ public class Homescreen extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (user != null) {
-            mDatabaseUser.removeEventListener(UserStats);
-            mDatabaseStats.removeEventListener(TotalStats);
-        }
+        if (mDatabaseUser != null) mDatabaseUser.removeEventListener(UserStats);
+        if (mDatabaseStats != null) mDatabaseStats.removeEventListener(TotalStats);
     }
 
     public void setNotification() {
-
-//
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                //write your code here to be executed after 1 second
-
         if (UserTotalNumbers < TotalNumbers) {
-
-
-            InfoneName.setVisibility(View.INVISIBLE);
+            InfoneName.setVisibility(View.GONE);
             InfoneStats.setVisibility(View.VISIBLE);
             InfoneStatement.setVisibility(View.VISIBLE);
 
@@ -263,14 +206,12 @@ public class Homescreen extends Fragment {
             animator1.start();
         } else {
             InfoneName.setVisibility(View.VISIBLE);
-            InfoneStats.setVisibility(View.INVISIBLE);
-            InfoneStatement.setVisibility(View.INVISIBLE);
-
+            InfoneStats.setVisibility(View.GONE);
+            InfoneStatement.setVisibility(View.GONE);
         }
 
         if (UserTotalProducts < TotalProducts) {
-
-            StoreRoomName.setVisibility(View.INVISIBLE);
+            StoreRoomName.setVisibility(View.GONE);
             StoreRoomStats.setVisibility(View.VISIBLE);
             StoreRoomStatement.setVisibility(View.VISIBLE);
 
@@ -288,16 +229,15 @@ public class Homescreen extends Fragment {
             });
             animator2.setDuration(1000);
             animator2.start();
-
         } else {
             StoreRoomName.setVisibility(View.VISIBLE);
             StoreRoomStats.setVisibility(View.INVISIBLE);
-            StoreRoomStatement.setVisibility(View.INVISIBLE);
+            StoreRoomStatement.setVisibility(View.GONE);
         }
 
         if (UserTotalEvents < TotalEvents) {
 
-            EventsName.setVisibility(View.INVISIBLE);
+            EventsName.setVisibility(View.GONE);
             EventsStats.setVisibility(View.VISIBLE);
             EventsStatement.setVisibility(View.VISIBLE);
 
@@ -315,16 +255,15 @@ public class Homescreen extends Fragment {
             });
             animator3.setDuration(1000);
             animator3.start();
-
         } else {
             EventsName.setVisibility(View.VISIBLE);
-            EventsStats.setVisibility(View.INVISIBLE);
-            EventsStatement.setVisibility(View.INVISIBLE);
+            EventsStats.setVisibility(View.GONE);
+            EventsStatement.setVisibility(View.GONE);
         }
 
         if (UserTotalOffers < TotalOffers) {
 
-            ShopsName.setVisibility(View.INVISIBLE);
+            ShopsName.setVisibility(View.GONE);
             ShopsStats.setVisibility(View.VISIBLE);
             ShopsStatement.setVisibility(View.VISIBLE);
             ValueAnimator animator4 = new ValueAnimator();
@@ -344,16 +283,58 @@ public class Homescreen extends Fragment {
             animator4.start();
         } else {
             ShopsName.setVisibility(View.VISIBLE);
-            ShopsStats.setVisibility(View.INVISIBLE);
-            ShopsStatement.setVisibility(View.INVISIBLE);
+            ShopsStats.setVisibility(View.GONE);
+            ShopsStatement.setVisibility(View.GONE);
         }
-//            }
-//        }, 1000);
     }
 
+    //TODO: create base fragment for such methods
     public boolean isNetworkAvailable(final Context context) {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+        return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        user = mAuth.getCurrentUser();
+        if (user != null) {
+            mDatabaseUser = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.cabpool: {
+                Intent intent = new Intent(getContext(), CabPooling.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.InfoneCard: {
+                CounterManager.InfoneOpen();
+                Intent InfoneIntent = new Intent(getContext(), InfoneActivity.class);
+                startActivity(InfoneIntent);
+                break;
+            }
+            case R.id.StoreRoomCard: {
+                CounterManager.StoreRoomOpen();
+                Intent InfoneIntent = new Intent(getContext(), TabStoreRoom.class);
+                startActivity(InfoneIntent);
+                break;
+            }
+            case R.id.EventsCard: {
+                CounterManager.EventOpen();
+                Intent eventsIntent = new Intent(getContext(), AllEvents.class);
+                startActivity(eventsIntent);
+                break;
+            }
+            case R.id.ShopsCard: {
+                CounterManager.ShopOpen();
+                Intent InfoneIntent = new Intent(getContext(), Shop.class);
+                startActivity(InfoneIntent);
+                break;
+            }
+        }
+    }
 }

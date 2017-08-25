@@ -24,6 +24,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +45,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,36 +53,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener {
+public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final String TAG = getClass().getSimpleName();
-    boolean doubleBackToExitPressedOnce = false;
-    String number;
-    private ValueEventListener phoneBookValueEventListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            for (DataSnapshot child : dataSnapshot.getChildren()) {
-                try {
-                    PhonebookDisplayItem phonebookDisplayItem = child.getValue(PhonebookDisplayItem.class);
-                    if (userEmail != null
-                            && phonebookDisplayItem != null
-                            && phonebookDisplayItem.getEmail() != null
-                            && phonebookDisplayItem.getEmail().equals(userEmail)) {
-                        username = phonebookDisplayItem.getName();
-                        number = phonebookDisplayItem.getNumber();
-                        Log.v(TAG, number);
-                    }
-                }catch (Exception e) {
-                    Log.d("Error Alert: ", e.getMessage());
-                }
-            }
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            Log.e(TAG, "onCancelled: ", databaseError.toException());
-        }
-    };
+    private boolean doubleBackToExitPressedOnce = false;
+    private ValueEventListener phoneBookValueEventListener;
+    private ValueEventListener popupsListener;
     TextView usernameTv;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -94,20 +70,22 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     TabLayout tabLayout;
     @BindView(R.id.toolbar_app_bar_home)
     Toolbar toolbar;
-    View navHeader;
-    TextView emailTv;
-    private Homescreen homescreen;
-    private boolean checkUser = true;
+    private MenuItem editProfileItem;
+    private TextView emailTv;
     private ActionBarDrawerToggle toggle;
     private String userEmail;
     private String username;
     private FirebaseAuth mAuth;
-    private DatabaseReference usersDbRef;
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference phoneBookDbRef;
     private DatabaseReference mDatabasePopUps;
     private FirebaseUser mUser;
     private boolean guestMode;
+    private SharedPreferences defaultPrefs;
+    private SharedPreferences guestPrefs;
+    private AlertDialog addContactDialog;
+    private Homescreen homescreen;
+    private Recents recents;
 
     @SuppressLint("ApplySharedPref")
     @Override
@@ -115,45 +93,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-
-        SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        //This code will run for first time.
-        if (!defaultPrefs.getBoolean("isReturningUser", false)) {
-            Intent tutIntent = new Intent(HomeActivity.this, FullscreenActivity.class);
-            tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(tutIntent);
-
-            //mark first time has run.
-            SharedPreferences.Editor editor = defaultPrefs.edit();
-            editor.putBoolean("isReturningUser", true);
-            editor.commit();
-        }
-
-        guestMode = getSharedPreferences("guestMode", MODE_PRIVATE).getBoolean("mode", false);
-
-        usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        guestPrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
+        guestPrefs.registerOnSharedPreferenceChangeListener(this);
+        guestMode = guestPrefs.getBoolean("mode", false);
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(this);
         phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
-        //TODO: put sync for all DbRef in Application Class.
-        usersDbRef.keepSynced(true);
         phoneBookDbRef.keepSynced(true);
 
-        navHeader = navigationView.getHeaderView(0);
+        View navHeader = navigationView.getHeaderView(0);
         usernameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
         emailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
-
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-        if (mUser != null) {
-            username = mUser.getDisplayName();
-            userEmail = mUser.getEmail();
-        } else if (!guestMode) {
-            Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
-            startActivity(loginIntent);
-            finish();
-        }
-        usernameTv.setText(username != null ? username : "ZConnect");
-        emailTv.setText(userEmail != null ? userEmail : "The way to connect!");
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -164,12 +115,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-        addImageDialog();
-
         homescreen = new Homescreen();
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        recents = new Recents();
+        initListeners();
         setSupportActionBar(toolbar);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -190,12 +138,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-
-        if (guestMode) {
-            MenuItem editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
-            editProfileItem.setVisible(false);
-            editProfileItem.setEnabled(false);
-        }
+        editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         setSupportActionBar(toolbar);
@@ -208,98 +151,127 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
 
-        //put try catch
-            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
-            mDatabasePopUps.keepSynced(true);
+        mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
+        mDatabasePopUps.keepSynced(true);
+    }
 
-            mDatabasePopUps.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                    ArrayList<String> popUpUrl1 = new ArrayList<>();
-                    ArrayList<String> importance = new ArrayList<>();
-
-                    boolean dataComplete=true;
-
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
-                    String first = preferences.getString("popup", "");
-
-                    boolean firstTimePopUp=Boolean.parseBoolean(first);
-
-                    for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                        if(shot.child("imp").getValue(String.class)!=null && shot.child("imageUrl").getValue(String.class)!=null) {
-                            popUpUrl1.add(shot.child("imageUrl").getValue(String.class));
-                            importance.add(shot.child("imp").getValue(String.class));
-                            dataComplete=true;
-                        }
-                        else {
-
-                            dataComplete=false;
-
-                        }
-
+    /**
+     * All {@link ValueEventListener}s used in this class are defined here.
+     */
+    private void initListeners() {
+        popupsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> popUpUrl1 = new ArrayList<>();
+                ArrayList<String> importance = new ArrayList<>();
+                boolean dataComplete = true;
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
+                String first = preferences.getString("popup", "");
+                boolean firstTimePopUp = Boolean.parseBoolean(first);
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    if (shot.child("imp").getValue(String.class) != null && shot.child("imageUrl").getValue(String.class) != null) {
+                        popUpUrl1.add(shot.child("imageUrl").getValue(String.class));
+                        importance.add(shot.child("imp").getValue(String.class));
+                        dataComplete = true;
+                    } else {
+                        dataComplete = false;
                     }
-                    for (int i = 0; i < popUpUrl1.size() && dataComplete && firstTimePopUp ; i++) {
-
-                        double random1 = Math.random();
-
-                        int random = (int) (random1 * 10);
-
-                        int importanceDigit = Integer.parseInt(importance.get(i));
-
-                        boolean show = false;
-
-                        if (importanceDigit == 3) {
-                            if (random % 2 == 0)
-                                show = true;
-                        } else if (importanceDigit == 2) {
-
-                            if (random % 3 == 0)
-                                show = true;
-
-                        } else if (importanceDigit == 1) {
-
-                            if (random % 4 == 0)
-                                show = true;
-                        } else if (importanceDigit == 4) {
-
+                }
+                for (int i = 0; i < popUpUrl1.size() && dataComplete && firstTimePopUp; i++) {
+                    double random1 = Math.random();
+                    int random = (int) (random1 * 10);
+                    int importanceDigit = Integer.parseInt(importance.get(i));
+                    boolean show = false;
+                    if (importanceDigit == 3) {
+                        if (random % 2 == 0)
                             show = true;
-                        } else {
-                            show = false;
-                        }
-
-                        if (!importance.get(i).equals("0") && show) {
-                            CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, popUpUrl1.get(i));
-                            cdd.show();
-                            if (cdd.getWindow() == null)
-                                return;
-                            cdd.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //style id
-                            Window window = cdd.getWindow();
-                            window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-
-                            //SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(home.this);
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("popup", "false");
-                            editor.apply();
-
-                            break;
-                        }
+                    } else if (importanceDigit == 2) {
+                        if (random % 3 == 0)
+                            show = true;
+                    } else if (importanceDigit == 1) {
+                        if (random % 4 == 0)
+                            show = true;
+                    } else if (importanceDigit == 4) {
+                        show = true;
+                    } else {
+                        show = false;
                     }
 
-
+                    if (!importance.get(i).equals("0") && show) {
+                        CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, popUpUrl1.get(i));
+                        cdd.show();
+                        if (cdd.getWindow() == null)
+                            return;
+                        cdd.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //style id
+                        Window window = cdd.getWindow();
+                        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("popup", "false");
+                        editor.apply();
+                        break;
+                    }
                 }
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-
+            }
+        };
+        phoneBookValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean userAddedToInfone = false;
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if (TextUtils.equals(child.child("email").getValue(String.class), userEmail)) {
+                        username = child.child("name").getValue(String.class);
+                        usernameTv.setText(username);
+                        userAddedToInfone = true;
+                    }
                 }
-            });
+                if (!userAddedToInfone) promptToAddContact();
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: ", databaseError.toException());
+            }
+        };
+    }
 
+    private void updateViews() {
+        usernameTv.setText(username != null ? username : "ZConnect");
+        emailTv.setText(userEmail != null ? userEmail : "The way to connect!");
+        if (guestMode) {
+            editProfileItem.setVisible(false);
+            editProfileItem.setEnabled(false);
+        } else {
+            editProfileItem.setEnabled(true);
+            editProfileItem.setVisible(true);
+        }
+    }
 
+    // must be launched from onStart()
+    // else remove the eventListener in corresponding call.
+    // i.e. if called from onCreate() make sure onDestroy() removes phoneBookValueEventListener
+    // from phoneBookDbRef
+    @SuppressLint("ApplySharedPref")
+    private void launchRelevantActivitiesIfNeeded() {
+        //show tuts for first launch
+        if (!defaultPrefs.getBoolean("isReturningUser", false)) {
+            Intent tutIntent = new Intent(HomeActivity.this, FullscreenActivity.class);
+            tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(tutIntent);
+
+            //mark first time has run.
+            SharedPreferences.Editor editor = defaultPrefs.edit();
+            editor.putBoolean("isReturningUser", true);
+            editor.commit();
+        } else /*check if login is needed*/ if (!guestMode && mUser == null) {
+            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+        } else if (!guestMode) {
+            phoneBookDbRef.addListenerForSingleValueEvent(phoneBookValueEventListener);
+        }
     }
 
     @Override
@@ -406,37 +378,32 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStart() {
         super.onStart();
-        phoneBookDbRef.addValueEventListener(phoneBookValueEventListener);
+        launchRelevantActivitiesIfNeeded();
+        mDatabasePopUps.addValueEventListener(popupsListener);
     }
 
     @Override
-    protected void onDestroy() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("popup", "true");
-        editor.apply();
-
-        super.onDestroy();
+    protected void onResume() {
+        super.onResume();
+        updateViews();
     }
 
     @Override
     protected void onStop() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("popup", "true");
-        editor.apply();
+        mDatabasePopUps.removeEventListener(popupsListener);
         phoneBookDbRef.removeEventListener(phoneBookValueEventListener);
+        if (addContactDialog != null) addContactDialog.cancel();
         super.onStop();
     }
 
     @Override
     protected void onPause() {
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("popup", "true");
         editor.apply();
-
+        // onPause is always called before onStop,
+        // which in turn is always called before onDestroy
         super.onPause();
     }
 
@@ -445,7 +412,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
         startActivity(loginIntent);
-        finish();
     }
 
     @Override
@@ -476,52 +442,45 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private void setupViewPager(ViewPager viewPager) {
         HomeActivity.ViewPagerAdapter adapter = new HomeActivity.ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(homescreen, "Features");
-        adapter.addFragment(new Recents(), "Recents");
+        adapter.addFragment(recents, "Recents");
         viewPager.setAdapter(adapter);
     }
 
-    private void addImageDialog() {
-        try {
-            phoneBookDbRef.orderByChild("email").equalTo(userEmail).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if ((dataSnapshot.getChildrenCount()) == 0) {
-                        final Long currTime = Calendar.getInstance().getTimeInMillis();
-                        SharedPreferences addNumberDialogPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
-                        Boolean neverAddNumber = addNumberDialogPref.getBoolean("never", false);
-                        if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 2 * 24 * 3600 * 1000)) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                            builder.setTitle("Hi " + username)
-                                    .setMessage("Add your information and get discovered.")
-                                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
-                                        }
-                                    }).setNegativeButton("Later", null)
-                                    .setNeutralButton("Lite :", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
-                                            SharedPreferences.Editor editInfo = sharedPref.edit();
-                                            editInfo.putBoolean("never", true);
-                                            editInfo.putLong("date", currTime);
-                                            editInfo.apply();
-                                        }
-                                    })
-                                    .setCancelable(false)
-                                    .create().show();
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e(TAG, "onCancelled: ", databaseError.toException());
-                }
-            });
-        }catch (Exception e) {
-            Log.d("Error Alert: ", e.getMessage());
+    /**
+     * This method should be called only for logged in users.
+     */
+    @SuppressLint("ApplySharedPref")
+    private void promptToAddContact() {
+        final Long currTime = Calendar.getInstance().getTimeInMillis();
+        SharedPreferences addNumberDialogPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
+        if (!addNumberDialogPref.contains("firstLaunch")) {
+            startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
+            addNumberDialogPref.edit().putBoolean("firstLaunch", false).commit();
+        } else {
+            Boolean neverAddNumber = addNumberDialogPref.getBoolean("never", false);
+            if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 2 * 24 * 3600 * 1000)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                addContactDialog = builder.setTitle("Hi " + username)
+                        .setMessage("Add your information and get discovered.")
+                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
+                            }
+                        }).setNegativeButton("Later", null)
+                        .setNeutralButton("Lite", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
+                                SharedPreferences.Editor editInfo = sharedPref.edit();
+                                editInfo.putBoolean("never", true);
+                                editInfo.putLong("date", currTime);
+                                editInfo.apply();
+                            }
+                        })
+                        .create();
+                addContactDialog.show();
+            }
         }
     }
 
@@ -532,7 +491,28 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        mUser = mAuth.getCurrentUser();
+        username = null;
+        userEmail = null;
+        if (mUser != null) {
+            username = mUser.getDisplayName();
+            userEmail = mUser.getEmail();
+        }
+        guestMode = guestPrefs.getBoolean("mode", false);
+        updateViews();
+    }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        mUser = mAuth.getCurrentUser();
+        username = null;
+        userEmail = null;
+        if (mUser != null) {
+            username = mUser.getDisplayName();
+            userEmail = mUser.getEmail();
+        }
+        guestMode = guestPrefs.getBoolean("mode", false);
+        updateViews();
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
