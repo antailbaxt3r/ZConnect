@@ -21,7 +21,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -61,7 +63,7 @@ public class AddEvent extends BaseActivity {
     boolean flag = false;
     DatabaseReference mFeaturesStats;
     private Uri mImageUri = null;
-    private ImageView mAddImage;
+    private ImageButton mAddImage;
     private EditText mEventName;
     private EditText mEventDescription;
     private EditText mVenue;
@@ -72,6 +74,7 @@ public class AddEvent extends BaseActivity {
     private LinearLayout CalendarButton;
     private ProgressDialog mProgress;
     private TextView dateTime;
+    private CheckBox locationCheckBox;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
         @Override
         public void onDateTimeSet(Date date) {
@@ -124,11 +127,11 @@ public class AddEvent extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        mAddImage = (ImageView) findViewById(R.id.imageButton);
+        mAddImage = (ImageButton) findViewById(R.id.imageButton);
         mEventName = (EditText) findViewById(R.id.name);
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
-        mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
+        //mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/NotVerifiedPosts");
 
@@ -141,6 +144,7 @@ public class AddEvent extends BaseActivity {
         mVenue = (EditText) findViewById(R.id.VenueText);
         mDirections = (ImageView) findViewById(R.id.venuePicker);
         dateTime = (TextView) findViewById(R.id.dateText);
+        locationCheckBox=(CheckBox) findViewById(R.id.add_events_location_checkbox);
 
         mProgress = new ProgressDialog(this);
 
@@ -256,7 +260,7 @@ public class AddEvent extends BaseActivity {
         final String eventDescriptionValue = mEventDescription.getText().toString().trim();
         final String eventVenue = mVenue.getText().toString();
 
-        if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null && dateString != null) {
+        if (!TextUtils.isEmpty(eventVenue) && !TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null && dateString != null) {
             //1
             final StorageReference filepath = mStorage.child("EventImage").child(mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -412,8 +416,13 @@ public class AddEvent extends BaseActivity {
         if (requestCode == 124 && resultCode == RESULT_OK) {
             Venue = PlacePicker.getPlace(this, data);
             String addr = Venue.getName().toString() + Venue.getAddress();
-            mVenue.setText(addr);
+            //mVenue.setText(addr);
             selectedFromMap = true;
+            Snackbar snack = Snackbar.make(mEventDescription, "Event location added successfully", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+            snack.show();
         }
 
     }
