@@ -19,6 +19,9 @@ import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 
 import java.util.Vector;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
@@ -26,10 +29,13 @@ public class Recents extends Fragment {
 
     Vector<RecentsItemFormat> recentsItemFormats = new Vector<>();
     private RecentsRVAdapter adapter;
-    private RecyclerView recyclerView;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("home");
-    Query queryRef = databaseReference.limitToLast(15);
-    private ProgressBar progressBar;
+    @BindView(R.id.recent_rv)
+    RecyclerView recyclerView;
+    private DatabaseReference homeDbRef = FirebaseDatabase.getInstance().getReference().child("home");
+    Query queryRef = homeDbRef.limitToLast(15);
+    private ValueEventListener queryResponseListener;
+    @BindView(R.id.recent_progress)
+    ProgressBar progressBar;
 
     public Recents() {
         // Required empty public constructor
@@ -41,16 +47,34 @@ public class Recents extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recents, container, false);
+        ButterKnife.bind(this, view);
 
         //Reference views---------------------------------------------------------------------------
-        recyclerView = (RecyclerView) view.findViewById(R.id.recent_rv);
-        progressBar = (ProgressBar) view.findViewById(R.id.recent_progress);
+        //bind by butterKnife
 
         //MAIN--------------------------------------------------------------------------------------
 
         //Keep databaseReference in sync even without needing to call valueEventListener
-        databaseReference.keepSynced(true);
+        homeDbRef.keepSynced(true);
         queryRef.keepSynced(true);
+        queryResponseListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressBar.setVisibility(VISIBLE);
+                recentsItemFormats.clear();
+
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    recentsItemFormats.add(shot.getValue(RecentsItemFormat.class));
+                }
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(INVISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                progressBar.setVisibility(INVISIBLE);
+            }
+        };
 
         //setHasFixedSize is used to optimise RV if we know for sure that this view's bounds do not
         // change with data
@@ -62,38 +86,18 @@ public class Recents extends Fragment {
         //Setup layout manager. VERY IMP ALWAYS
         adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity());
         recyclerView.setAdapter(adapter);
-
-
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        queryRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                progressBar.setVisibility(VISIBLE);
-                recentsItemFormats.clear();
-
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                    recentsItemFormats.add(shot.getValue(RecentsItemFormat.class));
-                }
-
-
-                adapter.notifyDataSetChanged();
-                progressBar.setVisibility(INVISIBLE);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(INVISIBLE);
-            }
-        });
-
-
+        queryRef.addValueEventListener(queryResponseListener);
     }
 
+    @Override
+    public void onStop() {
+        queryRef.removeEventListener(queryResponseListener);
+        super.onStop();
+    }
 }
