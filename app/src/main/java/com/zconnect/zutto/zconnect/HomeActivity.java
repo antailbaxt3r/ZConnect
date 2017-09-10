@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -30,9 +31,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.URLUtil;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -41,6 +44,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -59,7 +63,22 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private boolean doubleBackToExitPressedOnce = false;
     private ValueEventListener phoneBookValueEventListener;
     private ValueEventListener popupsListener;
-    TextView usernameTv;
+    /**
+     * Listenes to /ui node in firebase.
+     */
+    private ValueEventListener uiDbListener;
+    /**
+     * The user name displayed in nav header.
+     */
+    private TextView navHeaderUserNameTv;
+    /**
+     * The email displayed in nav header.
+     */
+    private TextView navHeaderEmailTv;
+    /**
+     * Background of nav header.
+     */
+    private SimpleDraweeView navHeaderBackground;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
@@ -71,7 +90,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @BindView(R.id.toolbar_app_bar_home)
     Toolbar toolbar;
     private MenuItem editProfileItem;
-    private TextView emailTv;
     private ActionBarDrawerToggle toggle;
     private String userEmail;
     private String username;
@@ -79,6 +97,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference phoneBookDbRef;
     private DatabaseReference mDatabasePopUps;
+    /**
+     * /ui node
+     */
+    private DatabaseReference uiDbRef;
     private FirebaseUser mUser;
     private boolean guestMode;
     private SharedPreferences defaultPrefs;
@@ -93,6 +115,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        uiDbRef = FirebaseDatabase.getInstance().getReference("ui");
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         guestPrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
         guestPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -103,8 +126,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         phoneBookDbRef.keepSynced(true);
 
         View navHeader = navigationView.getHeaderView(0);
-        usernameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
-        emailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
+        //These initializations **can't** be done by glide
+        navHeaderUserNameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
+        navHeaderEmailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
+        navHeaderBackground = (SimpleDraweeView) navHeader.findViewById(R.id.iv_nav_header_background);
+        //necessary for icons to retain their color
+        navigationView.setItemIconTintList(null);
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -225,7 +252,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     if (TextUtils.equals(child.child("email").getValue(String.class), userEmail)) {
                         username = child.child("name").getValue(String.class);
-                        usernameTv.setText(username);
+                        navHeaderUserNameTv.setText(username);
                         userAddedToInfone = true;
                     }
                 }
@@ -237,11 +264,49 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 Log.e(TAG, "onCancelled: ", databaseError.toException());
             }
         };
+
+        uiDbListener = new ValueEventListener() {
+
+            /**
+             * Updates nav header background and nav header text colors according to firebase.
+             */
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                final DataSnapshot navDrawerNode = dataSnapshot.child("navDrawer");
+                final String textColorString = navDrawerNode.child("headerTextColor").getValue(String.class);
+                final String navHeaderBackGroundImageUrl;
+                try {
+                    if (textColorString != null && textColorString.length() > 1) {
+                        @ColorInt
+                        final int textColor = Color.parseColor(textColorString);
+                        if (navHeaderUserNameTv != null) navHeaderUserNameTv.setTextColor(textColor);
+                        if (navHeaderEmailTv != null) navHeaderEmailTv.setTextColor(textColor);
+                    }
+                    navHeaderBackGroundImageUrl = navDrawerNode.child("headerBackground").getValue(String.class);
+                    if (navHeaderBackGroundImageUrl != null
+                            && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)
+                            && navHeaderBackground != null) {
+                        navHeaderBackground.setImageURI(navHeaderBackGroundImageUrl);
+                    }
+                } catch (final DatabaseException e) {
+                    // caused when data in db is of other type than accessed
+                    Log.e(TAG, "onDataChange: ", e.fillInStackTrace());
+                } catch (final IllegalArgumentException e) {
+                    // caused when Color.parseColor is provided incorrect string
+                    Log.e(TAG, "onDataChange: illegal color in /ui/navHeader/headerTextColor", e.fillInStackTrace());
+                }
+            }
+
+            @Override
+            public void onCancelled(final DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled:", databaseError.toException());
+            }
+        };
     }
 
     private void updateViews() {
-        usernameTv.setText(username != null ? username : "ZConnect");
-        emailTv.setText(userEmail != null ? userEmail : "The way to connect!");
+        navHeaderUserNameTv.setText(username != null ? username : "ZConnect");
+        navHeaderEmailTv.setText(userEmail != null ? userEmail : "The way to connect!");
         if (guestMode) {
             editProfileItem.setVisible(false);
             editProfileItem.setEnabled(false);
@@ -315,7 +380,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
             case R.id.signOut: {
                 if (!isNetworkAvailable(getApplicationContext())) {
-                    Snackbar snack = Snackbar.make(usernameTv, "No Internet. Can't Log Out.", Snackbar.LENGTH_LONG);
+                    Snackbar snack = Snackbar.make(navHeaderUserNameTv, "No Internet. Can't Log Out.", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
                     snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
@@ -386,6 +451,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onResume() {
         super.onResume();
         updateViews();
+        uiDbRef.addValueEventListener(uiDbListener);
     }
 
     @Override
@@ -404,6 +470,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         editor.apply();
         // onPause is always called before onStop,
         // which in turn is always called before onDestroy
+
+        uiDbRef.removeEventListener(uiDbListener);
+
         super.onPause();
     }
 

@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group
-        android:id="@+id/groupMain">
+    <group android:id="@+id/groupMain">
         <item
             android:id="@+id/edit_profile"
-            android:icon="@drawable/ic_person_black_24dp"
+            android:icon="@drawable/ic_person_brown"
             android:title="Edit Profile" />
-
     </group>
 
 
-    <group
-        android:id="@+id/group">
+    <group android:id="@+id/group">
         <item
             android:id="@+id/infone"
-            android:icon="@drawable/ic_phone_black_24dp"
+            android:icon="@drawable/ic_local_phone_blue"
             android:title="Infone" />
         <item
             android:id="@+id/shop"
-            android:icon="@drawable/ic_store_black_24dp"
+            android:icon="@drawable/ic_store_green"
             android:title="Shop" />
         <item
             android:id="@+id/storeRoom"
@@ -27,25 +24,20 @@
             android:title="StoreRoom" />
         <item
             android:id="@+id/events"
-            android:icon="@drawable/ic_event_black_24dp"
+            android:icon="@drawable/ic_event_pink"
             android:title="Events" />
-
         <item
             android:id="@+id/cabpool"
-            android:icon="@drawable/ic_directions_car_black_24dp"
+            android:icon="@drawable/ic_local_taxi_orange"
             android:title="Cab Pooling" />
-
-
         <item
             android:id="@+id/mapActivity"
-            android:icon="@drawable/ic_place_black_24dp"
+            android:icon="@drawable/ic_place_red"
             android:title="Campus Map" />
-
     </group>
     <group
         android:id="@+id/group1"
         android:checkableBehavior="none">
-
         <item
             android:id="@+id/ad"
             android:icon="@drawable/ic_live_tv_black_24dp"
@@ -54,13 +46,10 @@
             android:id="@+id/about"
             android:icon="@drawable/aboutus"
             android:title="About Us" />
-
-
     </group>
     <group
         android:id="@+id/group2"
         android:checkableBehavior="none">
-
         <item
             android:id="@+id/signOut"
             android:icon="@drawable/ic_power_settings_new_black_24dp"
@@ -70,6 +59,4 @@
             android:icon="@drawable/ic_bug_report_black_24dp"
             android:title="Report Bug / Feedback" />
     </group>
-
-
 </menu>
