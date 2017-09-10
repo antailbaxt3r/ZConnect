@@ -1,40 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/bits"
-    android:gravity="bottom"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:id="@+id/iv_z_connect_logo_nav_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@mipmap/ic_launcher" />
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/iv_nav_header_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:placeholderImage="@drawable/bits"
+        app:placeholderImageScaleType="centerCrop"
+        tools:background="@drawable/bits" />
 
-    <TextView
-        android:id="@+id/tv_name_nav_header"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        tools:text="Name Surname"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="15sp"
-        android:textStyle="bold" />
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-    <TextView
-        android:id="@+id/tv_email_nav_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="f20171024@goa.bits-pilani.ac.in"
-        android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/iv_z_connect_logo_nav_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            app:srcCompat="@mipmap/ic_launcher"
+            tools:ignore="ContentDescription" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tv_name_nav_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:text="Name Surname" />
+
+        <TextView
+            android:id="@+id/tv_email_nav_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:textStyle="bold"
+            tools:text="f20171024@goa.bits-pilani.ac.in" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

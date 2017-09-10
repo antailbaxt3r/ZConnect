@@ -30,9 +30,10 @@ public class ZConnect extends Application {
         //initialise Fresco when app starts
         //this will speed download process and is required by this library
         //more info http://frescolib.org/
+        Fresco.initialize(this);
+
         FirebaseApp.initializeApp(this);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        Fresco.initialize(this);
     }
 }

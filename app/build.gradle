@@ -49,7 +49,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.commit451:PhotoView:1.2.5'
     compile 'net.danlew:android.joda:2.9.7'
-    compile 'com.facebook.fresco:fresco:0.12.0'
+    compile 'com.facebook.fresco:fresco:1.5.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'com.theartofdev.edmodo:android-image-cropper:2.4.7'
