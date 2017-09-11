@@ -42,7 +42,7 @@ public class ShopCategoryRV extends RecyclerView.Adapter<ShopCategoryRV.ViewHold
     @Override
     public void onBindViewHolder(ShopCategoryRV.ViewHolder holder, int position) {
         Picasso.with(context).load(Uri.parse(shopCategoryItemCategories.get(position).getImageurl())).into(holder.simpleDraweeView);
-//        holder.simpleDraweeView.setImageURI(Uri.parse(shopCategoryItemCategories.get(position).getImageurl()));
+//        holder.contactAvatarSdv.setImageURI(Uri.parse(shopCategoryItemCategories.get(position).getImageurl()));
         holder.category.setText(shopCategoryItemCategories.get(position).getCategory());
     }
 

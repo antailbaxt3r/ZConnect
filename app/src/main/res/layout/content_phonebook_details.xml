@@ -52,7 +52,7 @@
     <requestFocus />
 
     <ImageView
-        android:id="@+id/callbutton"
+        android:id="@+id/ib_call_contact_item"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_alignBottom="@+id/contact_details_number_text_input_layout"

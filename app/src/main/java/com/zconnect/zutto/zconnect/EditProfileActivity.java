@@ -332,11 +332,11 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             snackbar.show();
             mProgress.dismiss();
         } else {
-            //TODO: verify number [IMP]
+            //TODO: verify contactDescTv [IMP]
             final DatabaseReference newPost = phoneBookDbRef.child(number);
             newPost.child("name").setValue(userName);
             newPost.child("desc").setValue(desc);
-            newPost.child("number").setValue(number);
+            newPost.child("contactDescTv").setValue(number);
             newPost.child("category").setValue(category);
             newPost.child("email").setValue(userEmail);
             newPost.child("skills").setValue(skills);
@@ -357,12 +357,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                             return;
                         }
                         newPost.child("imageurl").setValue(downloadUri.toString());
-                        finish(); /*Ensure HomeActivity exists*/
+                        finish();
                     }
                 });
             } else {
                 newPost.child("imageurl").setValue(imageUrl);
-                finish(); /*Ensure HomeActivity exists*/
+                finish();
             }
         }
     }

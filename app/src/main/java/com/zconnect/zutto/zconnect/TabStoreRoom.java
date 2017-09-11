@@ -164,7 +164,7 @@ public class TabStoreRoom extends BaseActivity {
     //NOT NEEDED..
 //    public static class PlaceholderFragment extends Fragment {
 //        /**
-//         * The fragment argument representing the section number for this
+//         * The fragment argument representing the section contactDescTv for this
 //         * fragment.
 //         */
 //        private static final String ARG_SECTION_NUMBER = "section_number";
@@ -174,7 +174,7 @@ public class TabStoreRoom extends BaseActivity {
 //
 //        /**
 //         * Returns a new instance of this fragment for the given section
-//         * number.
+//         * contactDescTv.
 //         */
 //        public static PlaceholderFragment newInstance(int sectionNumber) {
 //            PlaceholderFragment fragment = new PlaceholderFragment();
