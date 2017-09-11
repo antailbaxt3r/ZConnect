@@ -17,7 +17,7 @@ public class ZConnect extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        //Mutlidex is used when the number of methods or method calls including android's extends
+        //Mutlidex is used when the contactDescTv of methods or method calls including android's extends
         // to more than 65536. It is often required in large projects
         //You don't need to bother about the usage, it handles everything on its own
         MultiDex.install(this);
