@@ -6,21 +6,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,11 +44,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AllEvents extends BaseActivity {
+public class AllEvents extends Fragment {
 
     LinearLayoutManager mlinearmanager;
     FirebaseAuth mAuth;
     FirebaseUser user;
+    FirebaseRecyclerAdapter<Event, EventViewHolder> firebaseRecyclerAdapter;
     DatabaseReference mUserStats, mFeaturesStats;
     String TotalEvents;
     private RecyclerView mEventList;
@@ -85,34 +87,11 @@ public class AllEvents extends BaseActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_all_events);
-        JodaTimeAndroid.init(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
-        setSupportActionBar(toolbar);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_all_events, container, false);
+        JodaTimeAndroid.init(getContext());
 
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onBackPressed();
-                }
-            });
-            if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
-        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
         if (!status) {
@@ -142,7 +121,7 @@ public class AllEvents extends BaseActivity {
             });
         }
 
-        mlinearmanager = new LinearLayoutManager(this);
+        mlinearmanager = new LinearLayoutManager(getContext());
 
         //mlinearmanager.setStackFromEnd(true);
         mlinearmanager.scrollToPosition(1);
@@ -150,7 +129,7 @@ public class AllEvents extends BaseActivity {
         StrictMode.setThreadPolicy(policy);
 
 
-        mEventList = (RecyclerView) findViewById(R.id.eventList);
+        mEventList = (RecyclerView) v.findViewById(R.id.eventList);
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 
@@ -161,21 +140,21 @@ public class AllEvents extends BaseActivity {
         queryRef.keepSynced(true);
 
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+                SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
 
                 if (!status) {
 
-                    Intent intent = new Intent(AllEvents.this, AddEvent.class);
+                    Intent intent = new Intent(getContext(), AddEvent.class);
                     startActivity(intent);
-                    finish();
+                    getActivity().finish();
                 }else {
 
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AllEvents.this);
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
 
                     // 2. Chain together various setter methods to set the dialog characteristics
                     builder.setMessage("Please Log In to access this feature.")
@@ -183,10 +162,10 @@ public class AllEvents extends BaseActivity {
 
                     builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(AllEvents.this, LoginActivity.class);
+                            Intent intent = new Intent(getContext(), LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
-                            finish();
+                            getActivity().finish();
                         }
                     });
                     builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
@@ -201,27 +180,7 @@ public class AllEvents extends BaseActivity {
 
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        String flag;
-        flag = getIntent().getStringExtra("snackbar");
-        if (flag != null) {
-            if (flag.equals("true")) {
-                Snackbar snack = Snackbar.make(mEventList, "Event sent for verification !!", Snackbar.LENGTH_LONG);
-                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                snackBarText.setTextColor(Color.WHITE);
-                Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
-                snackBarText.setTypeface(customFont);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                snack.show();
-            }
-        }
-
-        FirebaseRecyclerAdapter<Event, EventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, EventViewHolder>(
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, EventViewHolder>(
                 Event.class,
                 R.layout.events_row,
                 EventViewHolder.class,
@@ -234,7 +193,7 @@ public class AllEvents extends BaseActivity {
                     viewHolder.openEvent(model);
                     viewHolder.setEventName(model.getEventName());
                     viewHolder.setEventDesc(model.getEventDescription());
-                    viewHolder.setEventImage(getApplicationContext(), model.getEventImage());
+                    viewHolder.setEventImage(getContext(), model.getEventImage());
                     viewHolder.setEventDate(model.getEventDate());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
                     viewHolder.setEventVenue(model.getVenue());
@@ -246,6 +205,27 @@ public class AllEvents extends BaseActivity {
             }
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);
+        return v;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        String flag;
+        flag = getActivity().getIntent().getStringExtra("snackbar");
+        if (flag != null) {
+            if (flag.equals("true")) {
+                Snackbar snack = Snackbar.make(mEventList, "Event sent for verification !!", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                Typeface customFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+                snackBarText.setTypeface(customFont);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal800));
+                snack.show();
+            }
+        }
+
 
     }
 
