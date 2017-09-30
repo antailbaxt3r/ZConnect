@@ -48,17 +48,20 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
     int TotalNumbers;
     DatabaseReference mUserStatsDbRef;
     DatabaseReference mFeaturesStatsDbRef;
-
+    @BindView(R.id.view_pager_app_bar_home)
+    ViewPager viewPager;
+    @BindView(R.id.tab_layout_app_bar_home)
+    TabLayout tabLayout;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
     /**
      * References /Phonebook/
      */
     private DatabaseReference mPhoneBookDbRef;
-
     /**
      * Email of user.
      */
     private String userEmail;
-
     /**
      * Sets visibility of add contact fab according to whether user is registered in infone.
      */
@@ -71,8 +74,8 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
                 if (userEmail.equals(child.child("email").getValue(String.class)))
                     userAddedToInfone = true;
             }
-            if (!userAddedToInfone) addContactFab.setVisibility(View.VISIBLE);
-            else addContactFab.setVisibility(View.GONE);
+            if (!userAddedToInfone) fab.setVisibility(View.VISIBLE);
+            else fab.setVisibility(View.GONE);
         }
 
         @Override
@@ -80,14 +83,6 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
             Log.e(TAG, "onCancelled: ", databaseError.toException());
         }
     };
-
-    @BindView(R.id.view_pager_app_bar_home)
-    ViewPager viewPager;
-    @BindView(R.id.tab_layout_app_bar_home)
-    TabLayout tabLayout;
-
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
     private Boolean guestMode;
 
     @Override
@@ -146,27 +141,15 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);
         fab.setOnClickListener(this);
-
-        return v;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         if (!guestMode) {
             userEmail = mUser.getEmail();
             if (!TextUtils.isEmpty(userEmail)) {
                 mPhoneBookDbRef.addListenerForSingleValueEvent(phoneBookListener);
             }
         }
-        if (addContactFab != null && addContactFab.getVisibility() == View.VISIBLE) addContactFab.setOnClickListener(this);
-    }
+        if (fab != null && fab.getVisibility() == View.VISIBLE) fab.setOnClickListener(this);
 
-    @Override
-    protected void onPause() {
-        if (addContactFab != null && addContactFab.getVisibility() == View.VISIBLE ) addContactFab.setOnClickListener(null); // removes onClickListener
-        if (mPhoneBookDbRef != null) mPhoneBookDbRef.removeEventListener(phoneBookListener);
-        super.onPause();
+        return v;
     }
 
     @Override
@@ -186,7 +169,7 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new InfoneFacultyFragment(), "Admin");
         if (!guestMode) adapter.addFragment(new PhonebookStudents(), "Students");
         adapter.addFragment(new PhonebookOthersCategories(), "others");
