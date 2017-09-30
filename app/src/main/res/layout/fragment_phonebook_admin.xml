@@ -2,14 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.zconnect.zutto.zconnect.PhonebookAdmin">
+    tools:context="com.zconnect.zutto.zconnect.fragments.InfoneFacultyFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
-
     <!-- A RecyclerView with some commonly used attributes -->
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/admin_phone_rv"
+        android:id="@+id/rv_infone_faculty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />

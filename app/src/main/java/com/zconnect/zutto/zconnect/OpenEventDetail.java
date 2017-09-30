@@ -397,7 +397,7 @@ public class OpenEventDetail extends BaseActivity {
         //intent.putExtra("rrule", "FREQ=DAILY");
         intent.putExtra("endTime", time + 60 * 60 * 1000);
         intent.putExtra("title", title);
-        intent.putExtra("description", desc);
+        intent.putExtra("contactDescTv", desc);
         startActivity(intent);
 
         // Display event id.

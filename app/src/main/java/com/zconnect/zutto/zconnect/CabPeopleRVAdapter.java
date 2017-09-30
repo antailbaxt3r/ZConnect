@@ -52,7 +52,7 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
 
         public ViewHolder(View itemView) {
             super(itemView);
-            call = (ImageView) itemView.findViewById(R.id.callbutton);
+            call = (ImageView) itemView.findViewById(R.id.ib_call_contact_item);
             name = (TextView) itemView.findViewById(R.id.cab_name);
             number = (TextView) itemView.findViewById(R.id.cab_number);
 

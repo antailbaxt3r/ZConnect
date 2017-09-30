@@ -584,8 +584,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         final Long currTime = Calendar.getInstance().getTimeInMillis();
         SharedPreferences addNumberDialogPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
         if (!addNumberDialogPref.contains("firstLaunch")) {
-            startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
             addNumberDialogPref.edit().putBoolean("firstLaunch", false).commit();
+            startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
         } else {
             Boolean neverAddNumber = addNumberDialogPref.getBoolean("never", false);
             if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 2 * 24 * 3600 * 1000)) {
@@ -595,6 +595,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss(); // when user finishes the editProfile activity, he shouldn't see the dialog
                                 startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
                             }
                         }).setNegativeButton("Later", null)

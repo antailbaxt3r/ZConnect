@@ -39,7 +39,7 @@
                 android:id="@+id/cab_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/phonebook_name1"
+                android:layout_below="@+id/tv_name_contact_item"
                 android:layout_toRightOf="@+id/colon2"
                 android:paddingLeft="15dp"
                 android:paddingRight="5dp"
@@ -55,7 +55,7 @@
             android:padding="12dp">
 
             <ImageView
-                android:id="@+id/callbutton"
+                android:id="@+id/ib_call_contact_item"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"

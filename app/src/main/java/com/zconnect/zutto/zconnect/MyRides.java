@@ -124,8 +124,10 @@ public class MyRides extends AppCompatActivity {
                     int j;
                     for (j = 0; j < cabListItemFormats.size(); j++) {
                         if (name != null && number != null) {
+                            if (cabListItemFormats.get(j) != null) {
                             if (name.equals(cabListItemFormats.get(j).getName()) && number.equals(cabListItemFormats.get(j).getPhonenumber())) {
                                 cabItemFormats.add(cabItemFormat);
+                            }
                             }
                         }
                     }
