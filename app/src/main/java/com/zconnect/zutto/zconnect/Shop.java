@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -78,7 +79,8 @@ public class Shop extends BaseActivity {
         }
 
         recycleView.setHasFixedSize(true);
-        recycleView.setLayoutManager(new GridLayoutManager(this, 2));
+        //recycleView.setLayoutManager(new GridLayoutManager(this, 2));
+        recycleView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ShopCategoryRV(this, shopCategoryItemCategories);
         recycleView.setAdapter(adapter);
         databaseReference.keepSynced(true);
