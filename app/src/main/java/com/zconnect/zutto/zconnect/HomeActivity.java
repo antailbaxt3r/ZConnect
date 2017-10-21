@@ -16,11 +16,8 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -52,7 +49,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,6 +56,14 @@ import butterknife.ButterKnife;
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final String TAG = getClass().getSimpleName();
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.toolbar_app_bar_home)
+    Toolbar toolbar;
+    @BindView(R.id.navigation)
+    TabLayout tabs;
     private boolean doubleBackToExitPressedOnce = false;
     private ValueEventListener phoneBookValueEventListener;
     private ValueEventListener popupsListener;
@@ -79,16 +83,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
      * Background of nav header.
      */
     private SimpleDraweeView navHeaderBackground;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-    @BindView(R.id.view_pager_app_bar_home)
-    ViewPager viewPager;
-    @BindView(R.id.tab_layout_app_bar_home)
-    TabLayout tabLayout;
-    @BindView(R.id.toolbar_app_bar_home)
-    Toolbar toolbar;
     private MenuItem editProfileItem;
     private ActionBarDrawerToggle toggle;
     private String userEmail;
@@ -106,8 +100,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences defaultPrefs;
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
-    private Homescreen homescreen;
-    private Recents recents;
+    private Fragment recent, cab, infone, store, shop, events;
 
     @SuppressLint("ApplySharedPref")
     @Override
@@ -115,6 +108,16 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+
+        recent = new Recents();
+        cab = new CabPooling();
+        infone = new InfoneActivity();
+        store = new TabStoreRoom();
+        shop = new Shop();
+        events = new AllEvents();
+        tabs();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
         uiDbRef = FirebaseDatabase.getInstance().getReference("ui");
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         guestPrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
@@ -142,8 +145,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        homescreen = new Homescreen();
-        recents = new Recents();
         initListeners();
         setSupportActionBar(toolbar);
 
@@ -167,14 +168,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         navigationView.setNavigationItemSelectedListener(this);
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
 
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        setSupportActionBar(toolbar);
-
-        setupViewPager(viewPager);
-
-        //Setup tabLayout with viewpager
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.setCurrentItem(0);
 
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
 
@@ -182,7 +175,90 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         mDatabasePopUps.keepSynced(true);
     }
 
+    void tabs() {
+        TabLayout.Tab recentsT = tabs.newTab();
+        recentsT.setIcon(R.drawable.ic_home_white_18dp);
+
+        TabLayout.Tab storeT = tabs.newTab();
+        storeT.setIcon(R.drawable.ic_shopping_basket_white_18dp);
+        storeT.getIcon().setAlpha(127);
+
+        TabLayout.Tab shopT = tabs.newTab();
+        shopT.setIcon(R.drawable.ic_store_white_18dp);
+        shopT.getIcon().setAlpha(127);
+
+        TabLayout.Tab eventT = tabs.newTab();
+        eventT.setIcon(R.drawable.ic_event_white_18dp);
+        eventT.getIcon().setAlpha(127);
+
+        TabLayout.Tab infoneT = tabs.newTab();
+        infoneT.setIcon(R.drawable.ic_phone_white_24dp);
+        infoneT.getIcon().setAlpha(127);
+
+        TabLayout.Tab cabT = tabs.newTab();
+        cabT.setIcon(R.drawable.ic_local_taxi_white_18dp);
+        cabT.getIcon().setAlpha(127);
+
+        tabs.addTab(recentsT);
+        tabs.addTab(infoneT);
+        tabs.addTab(storeT);
+        tabs.addTab(eventT);
+        tabs.addTab(cabT);
+        tabs.addTab(shopT);
+
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int pos = tab.getPosition();
+                tab.getIcon().setAlpha(255);
+                switch (pos) {
+                    case 0: {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+                        break;
+                    }
+                    case 1: {
+                        CounterManager.InfoneOpen();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
+                        break;
+                    }
+                    case 5: {
+                        CounterManager.ShopOpen();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
+
+                        break;
+                    }
+                    case 2: {
+                        CounterManager.StoreRoomOpen();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
+                        break;
+                    }
+                    case 3: {
+                        CounterManager.EventOpen();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
+                        break;
+                    }
+                    case 4: {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tab.getIcon().setAlpha(127);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+    }
     /**
+     *
+     *
      * All {@link ValueEventListener}s used in this class are defined here.
      */
     private void initListeners() {
@@ -218,11 +294,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     } else if (importanceDigit == 1) {
                         if (random % 4 == 0)
                             show = true;
-                    } else if (importanceDigit == 4) {
-                        show = true;
-                    } else {
-                        show = false;
-                    }
+                    } else show = importanceDigit == 4;
 
                     if (!importance.get(i).equals("0") && show) {
                         CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, popUpUrl1.get(i));
@@ -354,28 +426,27 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
             case R.id.infone: {
                 CounterManager.InfoneOpen();
-                Intent intent = new Intent(this, InfoneActivity.class);
-                startActivity(intent);
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                 break;
             }
             case R.id.shop: {
                 CounterManager.ShopOpen();
-                Intent intent = new Intent(this, Shop.class);
-                startActivity(intent);
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
+
                 break;
             }
             case R.id.storeRoom: {
                 CounterManager.StoreRoomOpen();
-                startActivity(new Intent(HomeActivity.this, TabStoreRoom.class));
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
                 break;
             }
             case R.id.events: {
                 CounterManager.EventOpen();
-                startActivity(new Intent(HomeActivity.this, AllEvents.class));
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
                 break;
             }
             case R.id.cabpool: {
-                startActivity(new Intent(HomeActivity.this, CabPooling.class));
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
                 break;
             }
             case R.id.signOut: {
@@ -508,16 +579,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }, 2000);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        HomeActivity.ViewPagerAdapter adapter = new HomeActivity.ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(homescreen, "Features");
-        adapter.addFragment(recents, "Recents");
-        viewPager.setAdapter(adapter);
-    }
-
-    /**
-     * This method should be called only for logged in users.
-     */
     @SuppressLint("ApplySharedPref")
     private void promptToAddContact() {
         final Long currTime = Calendar.getInstance().getTimeInMillis();
@@ -585,32 +646,4 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         updateViews();
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
 }
