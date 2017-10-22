@@ -563,7 +563,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
 
         if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof Recents)) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+            tabs.getTabAt(0).select();
             return;
         }
         doubleBackToExitPressedOnce = true;
