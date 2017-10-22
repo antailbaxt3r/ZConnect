@@ -326,7 +326,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     });
                     CounterManager.StoroomAddProduct(category);
                     mProgress.dismiss();
-                    startActivity(new Intent(AddProduct.this, TabStoreRoom.class));
                     finish();
                 }
             });
@@ -361,12 +360,5 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 //        //productTags.clearFocus();
     }
 
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        Intent storeIntent =new Intent(AddProduct.this,TabStoreRoom.class);
-        startActivity(storeIntent);
-        finish();
-    }
 }
 

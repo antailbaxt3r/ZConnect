@@ -2,7 +2,6 @@ package com.zconnect.zutto.zconnect;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -149,7 +148,7 @@ public class AddCabPool extends AppCompatActivity {
 
                             FirebaseMessaging.getInstance().subscribeToTopic(key);
                             FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid()).child("Topics").push().setValue(key);
-                            startActivity(new Intent(AddCabPool.this, CabPooling.class));
+                            finish();
                         } else {
                             Snackbar snack = Snackbar.make(done, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
                             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);

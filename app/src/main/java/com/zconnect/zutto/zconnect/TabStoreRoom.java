@@ -66,7 +66,6 @@ public class TabStoreRoom extends Fragment {
                     CounterManager.StoreRoomFABclick();
                     Intent intent = new Intent(getContext(), AddProduct.class);
                     startActivity(intent);
-                    getActivity().finish();
                 }else
                 {
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
@@ -80,7 +79,6 @@ public class TabStoreRoom extends Fragment {
                             Intent intent = new Intent(getContext(), LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
-                            getActivity().finish();
 
                         }
                     });

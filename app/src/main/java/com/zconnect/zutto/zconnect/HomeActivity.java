@@ -425,28 +425,23 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             }
             case R.id.infone: {
-                CounterManager.InfoneOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
+                tabs.getTabAt(1).select();
                 break;
             }
             case R.id.shop: {
-                CounterManager.ShopOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
-
+                tabs.getTabAt(5).select();
                 break;
             }
             case R.id.storeRoom: {
-                CounterManager.StoreRoomOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
+                tabs.getTabAt(2).select();
                 break;
             }
             case R.id.events: {
-                CounterManager.EventOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
+                tabs.getTabAt(3).select();
                 break;
             }
             case R.id.cabpool: {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
+                tabs.getTabAt(4).select();
                 break;
             }
             case R.id.signOut: {
@@ -567,6 +562,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             return;
         }
 
+        if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof Recents)) {
+            tabs.getTabAt(0).select();
+            return;
+        }
         doubleBackToExitPressedOnce = true;
         Toast.makeText(this, "Please press BACK again to exit", Toast.LENGTH_SHORT).show();
 
@@ -646,4 +645,29 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         updateViews();
     }
 
+    public void changeFragment(int i) {
+
+        switch (i) {
+            case 0: {
+                tabs.getTabAt(1).select();
+            }
+            case 1: {
+                tabs.getTabAt(5).select();
+            }
+            case 2: {
+                tabs.getTabAt(2).select();
+
+            }
+            case 3: {
+                tabs.getTabAt(3).select();
+            }
+            case 4: {
+                tabs.getTabAt(4).select();
+            }
+            case 5: {
+                tabs.getTabAt(0).select();
+
+            }
+        }
+    }
 }

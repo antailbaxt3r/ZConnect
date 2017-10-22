@@ -38,7 +38,6 @@
             android:theme="@style/login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -58,11 +57,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name=".StoreRoom"
-            android:label="@string/title_activity_store_room"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ShopList"
             android:label="@string/title_activity_shop_list"
@@ -127,6 +122,7 @@
         <activity
             android:name=".AddProduct"
             android:label="Add Product"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -146,16 +142,19 @@
         <activity
             android:name=".MyProducts"
             android:label="My Products"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddEvent"
             android:label="Add Events"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".IndividualCategory"
             android:label="@string/title_activity_each_category"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -181,6 +180,10 @@
         </activity>
         <activity
             android:name=".GalleryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OpenEventDetail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -231,7 +234,9 @@
         <activity
             android:name=".AddCabPool"
             android:label="@string/title_activity_add_cab_pool"
+            android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -241,6 +246,7 @@
         <activity
             android:name=".MyRides"
             android:label="@string/title_activity_my_rides"
+            android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".NotificationService">
