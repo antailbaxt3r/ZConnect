@@ -567,6 +567,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             return;
         }
 
+        if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof Recents)) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+            return;
+        }
         doubleBackToExitPressedOnce = true;
         Toast.makeText(this, "Please press BACK again to exit", Toast.LENGTH_SHORT).show();
 
@@ -646,4 +650,38 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         updateViews();
     }
 
+    public void changeFragment(int i) {
+
+        switch (i) {
+            case 0: {
+                CounterManager.InfoneOpen();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
+                break;
+            }
+            case 1: {
+                CounterManager.ShopOpen();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
+
+                break;
+            }
+            case 2: {
+                CounterManager.StoreRoomOpen();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
+                break;
+            }
+            case 3: {
+                CounterManager.EventOpen();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
+                break;
+            }
+            case 4: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
+                break;
+            }
+            case 5: {
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+                break;
+            }
+        }
+    }
 }

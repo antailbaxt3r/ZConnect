@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -8,7 +9,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class CounterManager {
 
-    private final static DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Counter");
+    private final static DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
     public static void eventOpenCounter(final String eventId) {
         ref.child("Events").addListenerForSingleValueEvent(new ValueEventListener() {

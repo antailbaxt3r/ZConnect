@@ -215,7 +215,6 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
                 if ((!guestMode) && mUser != null) {
                     Intent intent = new Intent(getContext(), EditProfileActivity.class);
                     startActivity(intent);
-                    getActivity().finish();
                 } else {
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
 
@@ -228,7 +227,6 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
                             Intent intent = new Intent(getContext(), LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
-                            getActivity().finish();
                         }
                     });
                     builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {

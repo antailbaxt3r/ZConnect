@@ -151,7 +151,6 @@ public class AllEvents extends Fragment {
 
                     Intent intent = new Intent(getContext(), AddEvent.class);
                     startActivity(intent);
-                    getActivity().finish();
                 }else {
 
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
@@ -165,7 +164,6 @@ public class AllEvents extends Fragment {
                             Intent intent = new Intent(getContext(), LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
-                            getActivity().finish();
                         }
                     });
                     builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
