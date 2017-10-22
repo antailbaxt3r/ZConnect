@@ -9,7 +9,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class CounterManager {
 
-    private final static DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    private final static DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Counter");
 
     public static void eventOpenCounter(final String eventId) {
         ref.child("Events").addListenerForSingleValueEvent(new ValueEventListener() {
