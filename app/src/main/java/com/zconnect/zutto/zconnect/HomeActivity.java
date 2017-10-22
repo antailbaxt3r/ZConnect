@@ -425,28 +425,23 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             }
             case R.id.infone: {
-                CounterManager.InfoneOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
+                tabs.getTabAt(1).select();
                 break;
             }
             case R.id.shop: {
-                CounterManager.ShopOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
-
+                tabs.getTabAt(5).select();
                 break;
             }
             case R.id.storeRoom: {
-                CounterManager.StoreRoomOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
+                tabs.getTabAt(2).select();
                 break;
             }
             case R.id.events: {
-                CounterManager.EventOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
+                tabs.getTabAt(3).select();
                 break;
             }
             case R.id.cabpool: {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
+                tabs.getTabAt(4).select();
                 break;
             }
             case R.id.signOut: {
@@ -654,33 +649,24 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         switch (i) {
             case 0: {
-                CounterManager.InfoneOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
-                break;
+                tabs.getTabAt(1).select();
             }
             case 1: {
-                CounterManager.ShopOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
-
-                break;
+                tabs.getTabAt(5).select();
             }
             case 2: {
-                CounterManager.StoreRoomOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
-                break;
+                tabs.getTabAt(2).select();
+
             }
             case 3: {
-                CounterManager.EventOpen();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
-                break;
+                tabs.getTabAt(3).select();
             }
             case 4: {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
-                break;
+                tabs.getTabAt(4).select();
             }
             case 5: {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
-                break;
+                tabs.getTabAt(0).select();
+
             }
         }
     }
