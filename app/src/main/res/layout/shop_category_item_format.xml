@@ -19,8 +19,9 @@
             android:layout_height="60dp"
             fresco:actualImageScaleType="centerCrop"
             android:visibility="visible"
-            android:background="@mipmap/ic_launcher"
+            fresco:placeholderImage="@mipmap/ic_launcher"
             fresco:roundAsCircle="true"
+            android:padding="1dp"
             />
 
         <TextView

@@ -218,11 +218,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     } else if (importanceDigit == 1) {
                         if (random % 4 == 0)
                             show = true;
-                    } else if (importanceDigit == 4) {
-                        show = true;
-                    } else {
-                        show = false;
-                    }
+                    } else show = importanceDigit == 4;
 
                     if (!importance.get(i).equals("0") && show) {
                         CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, popUpUrl1.get(i));
@@ -400,6 +396,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             }
             case R.id.mapActivity: {
+
+
+
                 CounterManager.MapOpen();
                 startActivity(new Intent(this, Campus_Map.class));
                 break;

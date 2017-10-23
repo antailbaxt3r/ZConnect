@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "109824032449-sta4nossup0315rjuvha4f45k9374qtf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "d79c7e4238532cbc64834c4f72a4ea7e89c5c11a"
+          }
+        },
+        {
+          "client_id": "109824032449-8niebm5h81hd2anivbvpo249qj6altmi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "bd5eac0bdd4f1745ba78882db65d9ae428870701"
+          }
+        },
+        {
           "client_id": "109824032449-gtt76j9b4bo4e51jh6vd5sv1mildlncq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -106,6 +122,13 @@
             {
               "client_id": "109824032449-af4o8hlk6ga8490q8c1r6l6pdep1jpv0.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "109824032449-p66r4qv1kteve824cfmpr4cbtdiqrjen.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "jainvandit.ZConnect"
+              }
             }
           ]
         },
