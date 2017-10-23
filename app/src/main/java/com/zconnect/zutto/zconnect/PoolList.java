@@ -186,7 +186,6 @@ public class PoolList extends AppCompatActivity {
                                     newPost.child("cabListItemFormats").setValue(cabListItemFormats);
                                     Toast.makeText(getApplicationContext(), "CabPool Added", Toast.LENGTH_SHORT).show();
                                     finish();
-                                    startActivity(new Intent(PoolList.this, CabPooling.class));
                                 }
                                 Snackbar snack = Snackbar.make(fab, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
                                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);

@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:name=".ZConnect"
         android:allowBackup="true"
@@ -19,10 +18,13 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--Hardware acceleration is enabled by default for devices
+
+        <!--
+        Hardware acceleration is enabled by default for devices
         with API >= 11. Enabling it explicitly and globally might result
-          in some problems as described in https://developer.android.com/guide/topics/graphics/hardware-accel.html-->
-        <!--meta data should be placed inside application element-->
+          in some problems as described in https://developer.android.com/guide/topics/graphics/hardware-accel.html
+        -->
+        <!-- meta data should be placed inside application element -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -55,40 +57,8 @@
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".AllEvents"
-            android:label="Events"
-            android:parentActivityName=".HomeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".OpenEventDetail"
-            android:label="Events"
-            android:parentActivityName=".AllEvents"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".TabStoreRoom"
-            android:label="@string/title_activity_tab_store_room"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".StoreRoom"
-            android:label="@string/title_activity_store_room"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Shop"
-            android:label="@string/title_activity_shop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".ShopSearch" />
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity" />
-        </activity>
+
+
         <activity
             android:name=".ShopList"
             android:label="@string/title_activity_shop_list"
@@ -111,23 +81,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeActivity" />
         </activity>
-        <activity
-            android:name=".InfoneActivity"
-            android:label="Infone"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".PhonebookSearch" />
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity" />
-        </activity>
+
         <activity
             android:name=".PhonebookSearch"
             android:label="Search Results"
             android:launchMode="singleTop"
-            android:parentActivityName=".InfoneActivity"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -164,42 +123,46 @@
         <activity
             android:name=".AddProduct"
             android:label="Add Product"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TabStoreRoom" />
+                android:value=".HomeActivity" />
         </activity>
         <activity
             android:name=".viewImage"
             android:label="@string/title_activity_view_image"
-            android:parentActivityName=".AllEvents"
+            android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zconnect.zutto.zconnect.AllEvents" />
+                android:value="com.zconnect.zutto.zconnect.HomeActivity" />
         </activity>
         <activity android:name=".image_view" />
         <activity
             android:name=".MyProducts"
             android:label="My Products"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddEvent"
             android:label="Add Events"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".IndividualCategory"
             android:label="@string/title_activity_each_category"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ShopSearch"
             android:label="Search Results"
             android:launchMode="singleTop"
-            android:parentActivityName=".Shop"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -218,6 +181,10 @@
         </activity>
         <activity
             android:name=".GalleryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OpenEventDetail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -241,18 +208,13 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Shop" />
+                android:value=".HomeActivity" />
         </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM" />
 
-        <activity
-            android:name=".CabPooling"
-            android:label="@string/title_activity_cab_pooling"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PoolList"
             android:label="@string/title_activity_pool_list"
@@ -273,7 +235,9 @@
         <activity
             android:name=".AddCabPool"
             android:label="@string/title_activity_add_cab_pool"
+            android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -283,6 +247,7 @@
         <activity
             android:name=".MyRides"
             android:label="@string/title_activity_my_rides"
+            android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".NotificationService">
@@ -296,8 +261,7 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".Shortlisted"
+        <activity android:name=".Shortlisted"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

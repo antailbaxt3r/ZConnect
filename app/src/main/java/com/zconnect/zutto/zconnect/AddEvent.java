@@ -343,11 +343,6 @@ public class AddEvent extends BaseActivity {
                         snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                         snack.show();
                     }
-                    Intent intent = new Intent(AddEvent.this, AllEvents.class);
-                    if (!flag) {
-                        intent.putExtra("snackbar", "true");
-                    }
-                    startActivity(intent);
                     finish();
                 }
             });

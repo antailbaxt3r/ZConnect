@@ -36,9 +36,6 @@ import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ReservedTab extends Fragment {
 
     String reserveString;

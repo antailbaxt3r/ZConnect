@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.facebook.drawee.generic.RoundingParams;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.ShopCategoryItemCategory;
 
@@ -43,13 +41,7 @@ public class ShopCategoryRV extends RecyclerView.Adapter<ShopCategoryRV.ViewHold
 
     @Override
     public void onBindViewHolder(ShopCategoryRV.ViewHolder holder, int position) {
-
-        RoundingParams roundingParams = RoundingParams.fromCornersRadius(0f);
-        roundingParams.setRoundAsCircle(true);
-        holder.simpleDraweeView.getHierarchy().setRoundingParams(roundingParams);
-        holder.simpleDraweeView.setImageURI(Uri.parse(shopCategoryItemCategories.get(position).getImageurl()));
-
-        //Picasso.with(context).load(Uri.parse(shopCategoryItemCategories.get(position).getImageurl())).into(holder.simpleDraweeView);
+        Picasso.with(context).load(Uri.parse(shopCategoryItemCategories.get(position).getImageurl())).into(holder.simpleDraweeView);
 //        holder.contactAvatarSdv.setImageURI(Uri.parse(shopCategoryItemCategories.get(position).getImageurl()));
         holder.category.setText(shopCategoryItemCategories.get(position).getCategory());
     }
@@ -62,12 +54,12 @@ public class ShopCategoryRV extends RecyclerView.Adapter<ShopCategoryRV.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView category;
-        SimpleDraweeView simpleDraweeView;
+        SquareImageView simpleDraweeView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             category = (TextView) itemView.findViewById(R.id.shop_category_item_format_text);
-            simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.shop_category_item_format_image);
+            simpleDraweeView = (SquareImageView) itemView.findViewById(R.id.shop_category_item_format_image);
 
             Typeface ralewayRegular = Typeface.createFromAsset(context.getAssets(), "fonts/Raleway-Light.ttf");
             category.setTypeface(ralewayRegular);
