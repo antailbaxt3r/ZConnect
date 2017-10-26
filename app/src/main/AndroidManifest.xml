@@ -38,6 +38,7 @@
             android:theme="@style/login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -260,10 +261,8 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".Shortlisted"
-            android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity android:name=".Shortlisted"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

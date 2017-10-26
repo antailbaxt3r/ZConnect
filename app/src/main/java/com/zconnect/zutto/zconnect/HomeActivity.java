@@ -82,6 +82,22 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private TextView navHeaderEmailTv;
     /**
      * Background of nav header.
+        <activity
+            android:name=".FullscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fullscreen"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MyRides"
+            android:label="@string/title_activity_my_rides"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service android:name=".NotificationService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </inte
      */
     private SimpleDraweeView navHeaderBackground;
     private MenuItem editProfileItem;
@@ -556,6 +572,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
         startActivity(loginIntent);
+        finish();
     }
 
     @Override

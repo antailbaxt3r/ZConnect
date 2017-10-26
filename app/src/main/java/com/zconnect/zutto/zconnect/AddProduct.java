@@ -343,7 +343,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            productTags.showDropDown();
+            //productTags.showDropDown();
         }
     }
 

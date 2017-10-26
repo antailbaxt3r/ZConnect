@@ -73,7 +73,7 @@ public class PhonebookDetails extends BaseActivity {
         skills=getIntent().getStringExtra("skills");
         category=getIntent().getStringExtra("category");
 
-        if(category.equalsIgnoreCase("S")) {
+        if(category.contains("S")) {
             editTextSkills.setVisibility(View.VISIBLE);
             editTextSkills.setEnabled(false);
         }

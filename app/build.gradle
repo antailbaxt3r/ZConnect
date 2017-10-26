@@ -42,6 +42,7 @@ dependencies {
     compile 'com.google.firebase:firebase-storage:11.0.2'
     compile 'com.google.firebase:firebase-auth:11.0.2'
     compile 'com.google.firebase:firebase-ads:11.0.2'
+    compile 'com.google.firebase:firebase-perf:11.0.2'
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.github.jjobes:slideDateTimePicker:1.0.2'
@@ -57,6 +58,7 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.1.3'
     compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'com.android.support:customtabs:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.github.mabbas007:TagsEditText:1.0.5'
@@ -71,3 +73,4 @@ dependencies {
 
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.firebase-perf'
