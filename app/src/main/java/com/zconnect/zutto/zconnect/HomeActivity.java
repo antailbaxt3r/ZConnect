@@ -64,6 +64,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     Toolbar toolbar;
     @BindView(R.id.navigation)
     TabLayout tabs;
+    String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
     private boolean doubleBackToExitPressedOnce = false;
     private ValueEventListener phoneBookValueEventListener;
     private ValueEventListener popupsListener;
@@ -153,7 +154,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorPrimary = ContextCompat.getColor(this, R.color.black);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
             getWindow().setStatusBarColor(colorDarkPrimary);
             getWindow().setNavigationBarColor(colorPrimary);
@@ -497,6 +498,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 android.app.AlertDialog dialog = builder.create();
                 dialog.show();
                 break;
+            }
+            case R.id.share: {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT, "Download the ZConnect app on \n"
+                        + url);
+                intent.setType("text/plain");
+                startActivity(Intent.createChooser(intent, "Share app url via ... "));
             }
             default: {
                 return false;

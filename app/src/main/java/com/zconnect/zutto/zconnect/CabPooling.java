@@ -76,14 +76,22 @@ public class CabPooling extends Fragment {
             @Override
             public void onClick(View v) {
                 if (calender.getText() != null && source.getSelectedItem() != null && destination.getSelectedItem() != null && time.getSelectedItem() != null) {
-                    Intent intent = new Intent(getContext(), PoolList.class);
-                    intent.putExtra("date", calender.getText().toString());
-                    intent.putExtra("source", String.valueOf(source.getSelectedItem()));
-                    intent.putExtra("destination", String.valueOf(destination.getSelectedItem()));
-                    intent.putExtra("time", String.valueOf(time.getSelectedItem()));
+                    if (String.valueOf(destination.getSelectedItem()).equals(String.valueOf(source.getSelectedItem()))) {
+                        Snackbar snack = Snackbar.make(done, "Invalid fields", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal800));
+                        snack.show();
+                    } else {
+                        Intent intent = new Intent(getContext(), PoolList.class);
+                        intent.putExtra("date", calender.getText().toString());
+                        intent.putExtra("source", String.valueOf(source.getSelectedItem()));
+                        intent.putExtra("destination", String.valueOf(destination.getSelectedItem()));
+                        intent.putExtra("time", String.valueOf(time.getSelectedItem()));
 
-                    CounterManager.searchPool(String.valueOf(destination.getSelectedItem()));
-                    startActivity(intent);
+                        CounterManager.searchPool(String.valueOf(destination.getSelectedItem()));
+                        startActivity(intent);
+                    }
                 } else {
                     Snackbar snack = Snackbar.make(done, "Fields are empty", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
