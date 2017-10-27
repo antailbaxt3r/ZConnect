@@ -379,7 +379,10 @@ public class OpenEventDetail extends BaseActivity {
             @Override
             public void onClick(View view) {
                 CounterManager.eventReminderCounter(event.getKey());
-                addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
+                if (!TextUtils.isEmpty(time))
+                    addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
+                else
+                    showToast("Time unavailable");
 
             }
 
@@ -440,7 +443,7 @@ public class OpenEventDetail extends BaseActivity {
                 boostBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CounterManager.eventBoost(event.getKey());
+                        CounterManager.eventBoost(event.getKey(), "details");
                         FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(event.getKey()).child("Boosters").setValue(newBoost.trim());
                         boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
                     }
