@@ -131,7 +131,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         infone = new InfoneActivity();
         store = new TabStoreRoom();
         shop = new Shop();
-        events = new AllEvents();
+        events = new TabbedEvents();
         tabs();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();

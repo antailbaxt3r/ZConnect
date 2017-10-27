@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <com.zconnect.zutto.zconnect.SquareImageView
             android:id="@+id/shop_category_item_format_image"
             android:layout_width="60dp"
             android:layout_height="60dp"

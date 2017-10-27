@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,10 +20,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -39,7 +43,9 @@ import com.zconnect.zutto.zconnect.fragments.TrendingEvents;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TabbedEvents extends AppCompatActivity {
+import static android.content.Context.MODE_PRIVATE;
+
+public class TabbedEvents extends Fragment {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -61,47 +67,50 @@ public class TabbedEvents extends AppCompatActivity {
     DatabaseReference mUserStats, mFeaturesStats;
     String TotalEvents;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_tabbed_events, container, false);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tabbed_events);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) v.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) v.findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//
+//        if (toolbar != null) {
+//            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    onBackPressed();
+//                }
+//            });
+//            if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        }
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+//            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//        }
+        mViewPager = (ViewPager) v.findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onBackPressed();
-                }
-            });
-            if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
         if (!status) {
@@ -131,21 +140,20 @@ public class TabbedEvents extends AppCompatActivity {
             });
         }
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+                SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
 
                 if (!status) {
 
-                    Intent intent = new Intent(TabbedEvents.this, AddEvent.class);
+                    Intent intent = new Intent(getContext(), AddEvent.class);
                     startActivity(intent);
-                    finish();
                 }else {
 
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(TabbedEvents.this);
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
 
                     // 2. Chain together various setter methods to set the dialog characteristics
                     builder.setMessage("Please Log In to access this feature.")
@@ -153,10 +161,9 @@ public class TabbedEvents extends AppCompatActivity {
 
                     builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(TabbedEvents.this, LoginActivity.class);
+                            Intent intent = new Intent(getContext(), LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
-                            finish();
                         }
                     });
                     builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
@@ -171,13 +178,15 @@ public class TabbedEvents extends AppCompatActivity {
 
             }
         });
+        return v;
     }
 
+
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_tabbed_events, menu);
-        return true;
+        inflater.inflate(R.menu.menu_tabbed_events, menu);
     }
 
     @Override
@@ -263,19 +272,19 @@ public class TabbedEvents extends AppCompatActivity {
             return null;
         }
     }
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
         String flag;
-        flag = getIntent().getStringExtra("snackbar");
+        flag = getActivity().getIntent().getStringExtra("snackbar");
         if (flag != null) {
             if (flag.equals("true")) {
                 Snackbar snack = Snackbar.make(mViewPager, "Event sent for verification !!", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
+                Typeface customFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Regular.ttf");
                 snackBarText.setTypeface(customFont);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal800));
                 snack.show();
             }
         }

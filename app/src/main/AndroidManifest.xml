@@ -214,11 +214,6 @@
             android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM" />
 
         <activity
-            android:name=".CabPooling"
-            android:label="@string/title_activity_cab_pooling"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".PoolList"
             android:label="@string/title_activity_pool_list"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -266,10 +261,6 @@
         <activity
             android:name=".Shortlisted"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".TabbedEvents"
-            android:label="@string/title_activity_tabbed_events"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
