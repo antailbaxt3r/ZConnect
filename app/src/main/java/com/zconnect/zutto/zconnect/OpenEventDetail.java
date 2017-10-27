@@ -45,6 +45,8 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OpenEventDetail extends BaseActivity {
 
@@ -60,6 +62,7 @@ public class OpenEventDetail extends BaseActivity {
     Toolbar mActionBarToolbar;
     DatabaseReference databaseReference;
     Button boostBtn;
+    Boolean flag= false;
 
     ProgressDialog progressDialog;
 
@@ -134,7 +137,7 @@ public class OpenEventDetail extends BaseActivity {
             }
         });
 
-        if(tag!=null&&tag.equals("1")){
+        if(tag.equals("1")){
             Bundle extras = getIntent().getExtras();
             event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
                 venueDirections.setOnClickListener(new View.OnClickListener() {
@@ -176,7 +179,7 @@ public class OpenEventDetail extends BaseActivity {
                 Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
                 EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-                boostCounter(event.getKey());
+                boostCounter();
                 setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
             }catch (Exception e) {
                 Log.d("Error Alert: ", e.getMessage());
@@ -189,7 +192,7 @@ public class OpenEventDetail extends BaseActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     event = dataSnapshot.getValue(Event.class);
 
-                    boostCounter(event.getKey());
+                    boostCounter();
                     venueDirections.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -312,14 +315,15 @@ public class OpenEventDetail extends BaseActivity {
                             String temp = "*Event:* " + event.getEventName()
                                     + "\n*Venue:* " + event.getVenue()
                                     + "\n*Date:* " + event.getEventDate()
-                                    + "\n" + event.getEventDescription();
+                                    + "\n" + event.getEventDescription()
+                                    + "\n\n" + "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
 
                             shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
                             shareIntent.setType("text/plain");
 
                             path = MediaStore.Images.Media.insertImage(
                                     context.getContentResolver(),
-                                    bm, "", null);
+                                    bm,"", null);
                             screenshotUri = Uri.parse(path);
 
                             shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
@@ -410,56 +414,63 @@ public class OpenEventDetail extends BaseActivity {
 
     }
 
-    private void setBoost() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String boost = event.getBoosters();
-        if (boost == null || TextUtils.isEmpty(boost)) {
-            boostBtn.setText("0 Boosts");
-            boost = "";
-        } else {
-            String boosters[] = boost.trim().split(" ");
-            if (user != null && boost.contains(user.getUid()))
-                boostBtn.setText(String.valueOf(boosters.length) + " Boosted");
-            else
-                boostBtn.setText(String.valueOf(boosters.length) + " Boost");
-        }
+
+    private void boostCounter() {
+
+        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(event.getKey());
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
+
+                if(dataSnapshot.hasChild(user.getUid())){
+                    boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
+                    boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                    flag=true;
+                }else {
+                    boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                    boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+                    flag=false;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
 
         if (user != null) {
-
-            if (boost.contains(user.getUid())) {
-                final String newBoost = boost.replace(user.getUid(), "");
-                boostBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(event.getKey()).child("Boosters").setValue(newBoost.trim());
-                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+            boostBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!flag){
+                        Map<String, Object> taskMap = new HashMap<String, Object>();
+                        taskMap.put(user.getUid(), user.getUid());
+                        eventDatabase.child("BoostersUids").updateChildren(taskMap);
+                    }else {
+                        eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
                     }
-                });
-            } else {
-                final String newBoost = boost.concat(" " + user.getUid());
-                boostBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CounterManager.eventBoost(event.getKey());
-                        FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(event.getKey()).child("Boosters").setValue(newBoost.trim());
-                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                    }
-                });
-            }
+                }
+            });
 
         } else {
             boostBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(OpenEventDetail.this);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext());
                     dialog.setNegativeButton("Lite", null)
                             .setPositiveButton("Login", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent loginIntent = new Intent(OpenEventDetail.this, LoginActivity.class);
+                                    Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(loginIntent);
-                                    finish();
                                 }
                             })
                             .setTitle("Please login to boost.")
@@ -468,24 +479,10 @@ public class OpenEventDetail extends BaseActivity {
             });
         }
 
-        Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        Typeface customfont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
         boostBtn.setTypeface(customfont);
     }
 
-    private void boostCounter(String key) {
-        FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(key).child("Boosters").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                event.setBoosters(dataSnapshot.getValue(String.class));
-                setBoost();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -503,7 +500,7 @@ public class OpenEventDetail extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        Intent eventsIntent=new Intent(OpenEventDetail.this,AllEvents.class);
+//        Intent eventsIntent=new Intent(OpenEventDetail.this,TrendingEvents.class);
 //        startActivity(eventsIntent);
         finish();
     }

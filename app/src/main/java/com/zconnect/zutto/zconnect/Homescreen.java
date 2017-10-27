@@ -325,7 +325,7 @@ public class Homescreen extends Fragment implements FirebaseAuth.AuthStateListen
             }
             case R.id.EventsCard: {
                 CounterManager.EventOpen();
-                Intent eventsIntent = new Intent(getContext(), AllEvents.class);
+                Intent eventsIntent = new Intent(getContext(), TabbedEvents.class);
                 startActivity(eventsIntent);
                 break;
             }

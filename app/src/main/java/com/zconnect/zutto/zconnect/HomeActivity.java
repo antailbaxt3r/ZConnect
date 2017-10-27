@@ -371,7 +371,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
             case R.id.events: {
                 CounterManager.EventOpen();
-                startActivity(new Intent(HomeActivity.this, AllEvents.class));
+                startActivity(new Intent(HomeActivity.this, TabbedEvents.class));
                 break;
             }
             case R.id.cabpool: {

@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:name=".ZConnect"
         android:allowBackup="true"
@@ -19,10 +18,13 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--Hardware acceleration is enabled by default for devices
+
+        <!--
+        Hardware acceleration is enabled by default for devices
         with API >= 11. Enabling it explicitly and globally might result
-          in some problems as described in https://developer.android.com/guide/topics/graphics/hardware-accel.html-->
-        <!--meta data should be placed inside application element-->
+          in some problems as described in https://developer.android.com/guide/topics/graphics/hardware-accel.html
+        -->
+        <!-- meta data should be placed inside application element -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -56,15 +58,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AllEvents"
-            android:label="Events"
-            android:parentActivityName=".HomeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".OpenEventDetail"
             android:label="Events"
-            android:parentActivityName=".AllEvents"
+            android:parentActivityName=".TabbedEvents"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -173,11 +169,11 @@
         <activity
             android:name=".viewImage"
             android:label="@string/title_activity_view_image"
-            android:parentActivityName=".AllEvents"
+            android:parentActivityName=".TabbedEvents"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zconnect.zutto.zconnect.AllEvents" />
+                android:value="com.zconnect.zutto.zconnect.TabbedEvents" />
         </activity>
         <activity android:name=".image_view" />
         <activity
@@ -214,8 +210,7 @@
             android:label="@string/title_activity_edit_profile"
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".GalleryActivity"
             android:screenOrientation="portrait"
@@ -298,7 +293,11 @@
 
         <activity
             android:name=".Shortlisted"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TabbedEvents"
+            android:label="@string/title_activity_tabbed_events"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
