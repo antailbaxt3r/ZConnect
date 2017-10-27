@@ -124,7 +124,7 @@ public class PhonebookHostelWise extends BaseActivity {
                 }
                 for (int i = 0; i < phonebookDisplayItems.size(); i++) {
                     try{
-                    if (phonebookDisplayItems.get(i).getCategory() != null && hostel != null &&cat!=null && phonebookDisplayItems.get(i).getCategory().equals(cat) && phonebookDisplayItems.get(i).getHostel().equals(hostel)) {
+                    if (phonebookDisplayItems.get(i).getCategory() != null && hostel != null &&cat!=null && phonebookDisplayItems.get(i).getCategory().contains(cat) && phonebookDisplayItems.get(i).getHostel().contains(hostel)) {
                         phonebookItems.add(new PhonebookItem(phonebookDisplayItems.get(i).getImageurl(), phonebookDisplayItems.get(i).getName(), phonebookDisplayItems.get(i).getNumber(), phonebookDisplayItems.get(i)));
                     }}catch (Exception e) {
                         Log.d("Error Alert: ", e.getMessage());

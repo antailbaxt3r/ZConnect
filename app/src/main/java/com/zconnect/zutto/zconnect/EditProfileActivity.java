@@ -371,7 +371,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            skillTags.showDropDown();
+            //skillTags.showDropDown();
         }
     }
 

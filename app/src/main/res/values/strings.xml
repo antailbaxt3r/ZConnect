@@ -138,6 +138,9 @@
     <string name="native_ad_unit_id">ca-app-pub-9212249564562455/8277700418</string>
     <string name="native_ad_unit_id_2">ca-app-pub-9212249564562455/8277700418</string>
     <string name="native_ad_unit_id_3">ca-app-pub-9212249564562455/8277700418</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
     <string name="title_activity_tabbed_events">Events</string>
 
 
