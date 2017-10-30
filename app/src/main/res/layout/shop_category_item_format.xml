@@ -13,16 +13,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.zconnect.zutto.zconnect.SquareImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/shop_category_item_format_image"
             android:layout_width="60dp"
             android:layout_height="60dp"
             fresco:actualImageScaleType="centerCrop"
             android:visibility="visible"
             fresco:placeholderImage="@mipmap/ic_launcher"
-            fresco:roundAsCircle="true"
-            android:padding="1dp"
-            />
+            android:padding="1dp" />
 
         <TextView
             android:id="@+id/shop_category_item_format_text"

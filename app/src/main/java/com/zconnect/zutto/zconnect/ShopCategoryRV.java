@@ -45,9 +45,9 @@ public class ShopCategoryRV extends RecyclerView.Adapter<ShopCategoryRV.ViewHold
     public void onBindViewHolder(ShopCategoryRV.ViewHolder holder, int position) {
 
 
-        RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
+       /* RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
         roundingParams.setRoundAsCircle(true);
-        holder.simpleDraweeView.getHierarchy().setRoundingParams(roundingParams);
+        holder.simpleDraweeView.getHierarchy().setRoundingParams(roundingParams);*/
 
         holder.simpleDraweeView.setImageURI(Uri.parse(shopCategoryItemCategories.get(position).getImageurl()));
 
