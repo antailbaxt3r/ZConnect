@@ -80,25 +80,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
      * The email displayed in nav header.
      */
     private TextView navHeaderEmailTv;
-    /**
-     * Background of nav header.
-        <activity
-            android:name=".FullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_fullscreen"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".MyRides"
-            android:label="@string/title_activity_my_rides"
-            android:parentActivityName=".HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".NotificationService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </inte
-     */
     private SimpleDraweeView navHeaderBackground;
     private MenuItem editProfileItem;
     private ActionBarDrawerToggle toggle;
@@ -230,6 +212,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 tab.getIcon().setAlpha(255);
                 switch (pos) {
                     case 0: {
+                        CounterManager.RecentsOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
@@ -255,6 +238,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 4: {
+                        CounterManager.openCabPool();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
                         break;
                     }

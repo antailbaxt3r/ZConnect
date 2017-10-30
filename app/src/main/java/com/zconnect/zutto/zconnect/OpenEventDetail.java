@@ -62,7 +62,7 @@ public class OpenEventDetail extends BaseActivity {
     Toolbar mActionBarToolbar;
     DatabaseReference databaseReference;
     Button boostBtn;
-    Boolean flag= false;
+    Boolean flag = false;
 
     ProgressDialog progressDialog;
 
@@ -137,7 +137,7 @@ public class OpenEventDetail extends BaseActivity {
             }
         });
 
-        if(tag.equals("1")){
+        if (tag.equals("1")) {
             Bundle extras = getIntent().getExtras();
             event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
                 venueDirections.setOnClickListener(new View.OnClickListener() {
@@ -323,7 +323,7 @@ public class OpenEventDetail extends BaseActivity {
 
                             path = MediaStore.Images.Media.insertImage(
                                     context.getContentResolver(),
-                                    bm,"", null);
+                                    bm, "", null);
                             screenshotUri = Uri.parse(path);
 
                             shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
@@ -429,14 +429,14 @@ public class OpenEventDetail extends BaseActivity {
 
                 eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
 
-                if(dataSnapshot.hasChild(user.getUid())){
+                if (dataSnapshot.hasChild(user.getUid())) {
                     boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
                     boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                    flag=true;
-                }else {
+                    flag = true;
+                } else {
                     boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
                     boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
-                    flag=false;
+                    flag = false;
                 }
             }
 
@@ -452,11 +452,12 @@ public class OpenEventDetail extends BaseActivity {
             boostBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!flag){
+                    if (!flag) {
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
+                        CounterManager.eventBoost(event.getKey(), "Details");
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
-                    }else {
+                    } else {
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
                     }
                 }

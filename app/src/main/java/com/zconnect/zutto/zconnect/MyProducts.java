@@ -37,6 +37,7 @@ public class MyProducts extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CounterManager.StoreRoomMyProductOpen();
         setContentView(R.layout.activity_my_products);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);

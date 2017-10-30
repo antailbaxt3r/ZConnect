@@ -10,22 +10,72 @@ import com.google.firebase.database.ValueEventListener;
 import org.joda.time.LocalDate;
 
 public class CounterManager {
-    static LocalDate dateTime = new LocalDate();
+    private static LocalDate dateTime = new LocalDate();
     private final static DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(dateTime.toString());
 
-    public static void eventOpenCounter(final String eventId) {
+    public static void eventOpenTab(final String tab) {
+        ref.keepSynced(true);
+
+        ref.child("Events").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                {
+                    Long count = dataSnapshot.child(tab).child("Open").getValue(Long.class);
+                    if (count == null)
+                        count = (long) 0;
+                    count = count + 1;
+                    dataSnapshot.child(tab).child("Open").getRef().setValue(count);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void eventOpenCounter(final String eventId, final String type) {
         ref.keepSynced(true);
 
         ref.child("Events").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 {
-                    Long count = dataSnapshot.child(eventId).child("openCount").getValue(Long.class);
+                    Long count = dataSnapshot.child(eventId).child(type).child("openCount").getValue(Long.class);
                     if (count == null)
                         count = (long) 0;
                     count = count + 1;
-                    dataSnapshot.child(eventId).child("openCount").getRef().setValue(count);
+                    dataSnapshot.child(eventId).child(type).child("openCount").getRef().setValue(count);
                 }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void eventAddClick() {
+
+        ref.keepSynced(true);
+
+        ref.child("Events").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                {
+                    Long count = dataSnapshot.child("AddEvent").getValue(Long.class);
+                    if (count == null)
+                        count = (long) 0;
+                    count = count + 1;
+                    dataSnapshot.child("AddEvent").getRef().setValue(count);
+                }
+
+
             }
 
             @Override
@@ -96,7 +146,7 @@ public class CounterManager {
                     if (count == null)
                         count = (long) 0;
                     count = count + 1;
-                    dataSnapshot.child(eventId).child("Boost").getRef().setValue(count);
+                    dataSnapshot.child(eventId).child(type).child("Boost").getRef().setValue(count);
                 }
 
 
@@ -120,7 +170,7 @@ public class CounterManager {
                     if (count == null)
                         count = (long) 0;
                     count = count + 1;
-                    dataSnapshot.child(eventId).child("Edit").getRef().setValue(count);
+                    dataSnapshot.child(eventId).child(type).child("Edit").getRef().setValue(count);
                 }
 
 
@@ -468,6 +518,31 @@ public class CounterManager {
         });
     }
 
+    public static void RecentsOpen() {
+        ref.keepSynced(true);
+
+        ref.child("Recents").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                {
+                    Long count = dataSnapshot.child("Open").getValue(Long.class);
+                    if (count == null)
+                        count = (long) 0;
+                    count = count + 1;
+                    dataSnapshot.child("Open").getRef().setValue(count);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public static void infoneOpenCategory(final String tab, final String category) {
         ref.keepSynced(true);
 
@@ -562,18 +637,18 @@ public class CounterManager {
         });
     }
 
-    public static void InfoneCallAfterProfile() {
+    public static void InfoneCallAfterProfile(final String to) {
         ref.keepSynced(true);
 
         ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 {
-                    Long count = dataSnapshot.child("CallProfile").getValue(Long.class);
+                    Long count = dataSnapshot.child("CallProfile").child(to).getValue(Long.class);
                     if (count == null)
                         count = (long) 0;
                     count = count + 1;
-                    dataSnapshot.child("CallProfile").getRef().setValue(count);
+                    dataSnapshot.child("CallProfile").child(to).getRef().setValue(count);
                 }
             }
 
@@ -584,18 +659,62 @@ public class CounterManager {
         });
     }
 
-    public static void InfoneCallDirect() {
+    public static void InfoneCallDirect(final String to) {
         ref.keepSynced(true);
 
         ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 {
-                    Long count = dataSnapshot.child("CallDirect").getValue(Long.class);
+                    Long count = dataSnapshot.child("CallDirect").child(to).getValue(Long.class);
                     if (count == null)
                         count = (long) 0;
                     count = count + 1;
-                    dataSnapshot.child("CallDirect").getRef().setValue(count);
+                    dataSnapshot.child("CallDirect").child(to).getRef().setValue(count);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void email(final String to) {
+        ref.keepSynced(true);
+
+        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                {
+                    Long count = dataSnapshot.child("Email").child(to).getValue(Long.class);
+                    if (count == null)
+                        count = (long) 0;
+                    count = count + 1;
+                    dataSnapshot.child("Email").child(to).getRef().setValue(count);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void report(final String to) {
+        ref.keepSynced(true);
+
+        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                {
+                    Long count = dataSnapshot.child("report").child(to).getValue(Long.class);
+                    if (count == null)
+                        count = (long) 0;
+                    count = count + 1;
+                    dataSnapshot.child("report").child(to).getRef().setValue(count);
                 }
             }
 
@@ -620,6 +739,31 @@ public class CounterManager {
                     count = count + 1;
                     dataSnapshot.child("MyProductOpen").getRef().setValue(count);
                 }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void StoreroomOpenTab(final String tab) {
+        ref.keepSynced(true);
+
+        ref.child("StoreRoom").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                {
+                    Long count = dataSnapshot.child(tab).child("Open").getValue(Long.class);
+                    if (count == null)
+                        count = (long) 0;
+                    count = count + 1;
+                    dataSnapshot.child(tab).child("Open").getRef().setValue(count);
+                }
+
+
             }
 
             @Override
@@ -723,7 +867,7 @@ public class CounterManager {
         });
     }
 
-    public static void StoroomShortList(final String category) {
+    public static void StoroomShortList(final String category, final String key) {
         ref.keepSynced(true);
 
         ref.child("StoreRoom").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -731,11 +875,11 @@ public class CounterManager {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 {
-                    Long count = dataSnapshot.child(category).child("ShortList").getValue(Long.class);
+                    Long count = dataSnapshot.child(category).child(key).child("ShortList").getValue(Long.class);
                     if (count == null)
                         count = (long) 0;
                     count = count + 1;
-                    dataSnapshot.child(category).child("ShortList").getRef().setValue(count);
+                    dataSnapshot.child(category).child(key).child("ShortList").getRef().setValue(count);
                 }
 
 
@@ -748,7 +892,7 @@ public class CounterManager {
         });
     }
 
-    public static void StoroomShortListDelete(final String category) {
+    public static void StoroomShortListDelete(final String category, final String key) {
         ref.keepSynced(true);
 
         ref.child("StoreRoom").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -756,11 +900,11 @@ public class CounterManager {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 {
-                    Long count = dataSnapshot.child(category).child("ShortListDelete").getValue(Long.class);
+                    Long count = dataSnapshot.child(category).child(key).child("ShortListDelete").getValue(Long.class);
                     if (count == null)
                         count = (long) 0;
                     count = count + 1;
-                    dataSnapshot.child(category).child("ShortListDelete").getRef().setValue(count);
+                    dataSnapshot.child(category).child(key).child("ShortListDelete").getRef().setValue(count);
                 }
 
 

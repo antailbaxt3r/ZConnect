@@ -73,7 +73,7 @@ public class PhonebookDetails extends BaseActivity {
         skills=getIntent().getStringExtra("skills");
         category=getIntent().getStringExtra("category");
 
-        if(category.contains("S")) {
+        if (category.contains("S")) {
             editTextSkills.setVisibility(View.VISIBLE);
             editTextSkills.setEnabled(false);
         }
@@ -110,13 +110,14 @@ public class PhonebookDetails extends BaseActivity {
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    CounterManager.InfoneCallAfterProfile();
+                    CounterManager.InfoneCallAfterProfile(number);
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number)));
                 }
             });
             mail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    CounterManager.email(number);
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
                     startActivity(Intent.createChooser(emailIntent, "Send Email ..."));
                 }
@@ -158,6 +159,7 @@ public class PhonebookDetails extends BaseActivity {
         int id = item.getItemId();
         if (id == R.id.action_report) {
 
+            CounterManager.report(number);
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                     "mailto", "zconnectinc@gmail.com", null));
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Problem with the content displayed");

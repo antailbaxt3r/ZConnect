@@ -38,7 +38,7 @@ public class Event implements Serializable {
         BoostCount = boostcount;
     }
 
-    public double getBoostCount(){
+    public double getBoostCount() {
         return BoostCount;
     }
     public String getBoosters() {
@@ -94,5 +94,7 @@ public class Event implements Serializable {
         return lat;
     }
 
-    public String getUserID() {return UserId;}
+    public String getUserID() {
+        return UserId;
+    }
 }

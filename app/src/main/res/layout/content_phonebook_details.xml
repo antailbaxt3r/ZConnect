@@ -179,13 +179,13 @@
             android:inputType="text"
             android:text=""
             android:textColor="@android:color/black"
+            android:visibility="gone"
             TagsEditText:allowSpaceInTag="true"
             TagsEditText:tagsBackground="@drawable/square"
             TagsEditText:tagsCloseImageLeft="@drawable/dot"
             TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
             TagsEditText:tagsTextColor="@color/black"
-            TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize"
-            android:visibility="gone"/>
+            TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
 
     </android.support.design.widget.TextInputLayout>
 
