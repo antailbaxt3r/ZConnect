@@ -92,7 +92,6 @@ public class TrendingEvents extends Fragment {
 
 
         mlinearmanager = new LinearLayoutManager(getContext());
-        mlinearmanager.setReverseLayout(true);
 
         //mlinearmanager.setStackFromEnd(true);
         mlinearmanager.scrollToPosition(1);
@@ -105,7 +104,7 @@ public class TrendingEvents extends Fragment {
         mEventList.setLayoutManager(mlinearmanager);
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
-        queryRef = mDatabase.orderByChild("BoostCount");
+        queryRef = mDatabase.orderByChild("FormatDate");
 
         mDatabase.keepSynced(true);
         queryRef.keepSynced(true);
@@ -299,9 +298,9 @@ public class TrendingEvents extends Fragment {
                         if(!flag){
                             Map<String, Object> taskMap = new HashMap<String, Object>();
                             taskMap.put(user.getUid(), user.getUid());
-                            eventDatabase.child("BoostersUids").updateChildren(taskMap);
+                            eventDatabase.child("Boostount").updateChildren(taskMap);
                         }else {
-                            eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
+                            eventDatabase.child("Boostcount").child(user.getUid()).removeValue();
                         }
                     }
                 });

@@ -230,31 +230,37 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 tab.getIcon().setAlpha(255);
                 switch (pos) {
                     case 0: {
+                        setActionBarTitle("BITS Connect");
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
+                        setActionBarTitle("Infone");
                         CounterManager.InfoneOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         break;
                     }
                     case 5: {
+                        setActionBarTitle("Shops");
                         CounterManager.ShopOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
 
                         break;
                     }
                     case 2: {
+                        setActionBarTitle("StoreRoom");
                         CounterManager.StoreRoomOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
                         break;
                     }
                     case 3: {
+                        setActionBarTitle("Events");
                         CounterManager.EventOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
                         break;
                     }
                     case 4: {
+                        setActionBarTitle("Cab Pool");
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
                         break;
                     }
