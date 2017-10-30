@@ -42,7 +42,7 @@ public class PhonebookDetails extends BaseActivity {
         //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
 
-        call = (ImageView) findViewById(R.id.callbutton);
+        call = (ImageView) findViewById(R.id.ib_call_contact_item);
         mail = (ImageView) findViewById(R.id.mailbutton);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
@@ -67,13 +67,13 @@ public class PhonebookDetails extends BaseActivity {
 
         name = getIntent().getStringExtra("name");
         desc = getIntent().getStringExtra("desc");
-        number = getIntent().getStringExtra("number");
+        number = getIntent().getStringExtra("contactDescTv");
         imagelink = getIntent().getStringExtra("image");
         email = getIntent().getStringExtra("email");
         skills=getIntent().getStringExtra("skills");
         category=getIntent().getStringExtra("category");
 
-        if(category.equalsIgnoreCase("S")) {
+        if(category.contains("S")) {
             editTextSkills.setVisibility(View.VISIBLE);
             editTextSkills.setEnabled(false);
         }

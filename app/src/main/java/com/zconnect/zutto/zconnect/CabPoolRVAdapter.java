@@ -21,6 +21,7 @@ import java.util.Vector;
 public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.ViewHolder> {
     Context context;
     Vector<CabItemFormat> cabItemFormats;
+    String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
 
     public CabPoolRVAdapter(Context context, Vector<CabItemFormat> cabItemFormats) {
         this.context = context;
@@ -50,7 +51,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder {
        TextView source,destination,details,time,date;
         String key;
-        Button list_people;
+        Button list_people, share;
         public ViewHolder(View itemView) {
             super(itemView);
             source =(TextView)itemView.findViewById(R.id.source);
@@ -58,7 +59,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             time=(TextView)itemView.findViewById(R.id.time_range);
             date=(TextView)itemView.findViewById(R.id.date);
             list_people = (Button) itemView.findViewById(R.id.list);
-
+            share = (Button) itemView.findViewById(R.id.sharecab);
             list_people.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -68,7 +69,20 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                     context.startActivity(intent);
                 }
             });
-
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + cabItemFormats.get(getAdapterPosition()).getSource() +
+                            " to " + cabItemFormats.get(getAdapterPosition()).getDestination() + " on " +
+                            cabItemFormats.get(getAdapterPosition()).getDate() +
+                            "\n Use the ZConnect app to join the pool \n"
+                            + url);
+                    intent.setType("text/plain");
+                    context.startActivity(Intent.createChooser(intent, "Share app url via ... "));
+                }
+            });
             Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
             Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
             source.setTypeface(customFont2);
@@ -77,6 +91,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             time.setTypeface(customFont2);
             date.setTypeface(customFont2);
             list_people.setTypeface(customFont2);
+            share.setTypeface(customFont2);
 
             TextView source_head = (TextView)itemView.findViewById(R.id.source_head);
             TextView destination_head = (TextView)itemView.findViewById(R.id.destination_head);

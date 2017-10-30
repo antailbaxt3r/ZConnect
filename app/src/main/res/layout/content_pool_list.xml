@@ -18,6 +18,13 @@
         android:text="No pools.Add one for yourself!"
         android:textSize="25sp" />
 
+    <ProgressBar
+        android:id="@+id/content_pool_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/poolrv"
         android:layout_width="match_parent"
