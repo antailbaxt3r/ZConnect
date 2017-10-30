@@ -69,7 +69,7 @@ public class ShopList extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         recycleView.setHasFixedSize(true);
-        recycleView.setLayoutManager(new GridLayoutManager(this, 2));
+        recycleView.setLayoutManager(new GridLayoutManager(this, 1));
         adapter = new ShopListRV(this, shopListItems);
         recycleView.setAdapter(adapter);
         databaseReference.keepSynced(true);
