@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,7 +82,7 @@ public class Shop extends Fragment {
         OffersButton = (Button) v.findViewById(R.id.offersButton);
 
         recycleView.setHasFixedSize(true);
-        recycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ShopCategoryRV(getContext(), shopCategoryItemCategories);
         recycleView.setAdapter(adapter);
         databaseReference.keepSynced(true);
