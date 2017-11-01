@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,7 +92,6 @@ public class TrendingEvents extends Fragment {
 
 
         mlinearmanager = new LinearLayoutManager(getContext());
-        mlinearmanager.setReverseLayout(true);
 
         //mlinearmanager.setStackFromEnd(true);
         mlinearmanager.scrollToPosition(1);
@@ -104,7 +104,7 @@ public class TrendingEvents extends Fragment {
         mEventList.setLayoutManager(mlinearmanager);
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
-        queryRef = mDatabase.orderByChild("BoostCount");
+        queryRef = mDatabase.orderByChild("FormatDate");
 
         mDatabase.keepSynced(true);
         queryRef.keepSynced(true);
@@ -240,8 +240,8 @@ public class TrendingEvents extends Fragment {
         }
 
         public void setEditEvent(String UserID, final String EventID) {
-            ImageButton editButton = (ImageButton) mView.findViewById(R.id.editEvent);
-            if (mAuth.getCurrentUser().getUid().equals(UserID)) {
+           ImageButton editButton = (ImageButton) mView.findViewById(R.id.editEvent);
+            if(mAuth.getCurrentUser().getUid().equals(UserID)) {
 
                 editButton.setVisibility(View.VISIBLE);
                 editButton.setOnClickListener(new View.OnClickListener() {
@@ -256,6 +256,7 @@ public class TrendingEvents extends Fragment {
                 editButton.setVisibility(View.GONE);
             }
         }
+
 
 
         private void setBoost(final Event event) {
@@ -288,6 +289,7 @@ public class TrendingEvents extends Fragment {
 
                 }
             });
+
 
 
             if (user != null) {
