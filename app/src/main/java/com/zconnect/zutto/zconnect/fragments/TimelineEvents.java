@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -81,7 +82,7 @@ public class TimelineEvents extends Fragment {
         // Inflate the layout for this fragment
 
 
-        View view = inflater.inflate(R.layout.fragment_trending_events, container, false);
+        View view = inflater.inflate(R.layout.fragment_timeline_events, container, false);
 
         LinearLayoutManager mlinearmanager;
 
@@ -94,8 +95,9 @@ public class TimelineEvents extends Fragment {
 
 
         mEventList = (RecyclerView) view.findViewById(R.id.eventList);
-        mEventList.setHasFixedSize(true);
+//        mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
+        mlinearmanager.setReverseLayout(true);
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
         queryRef = mDatabase.orderByChild("FormatDate");
@@ -122,7 +124,7 @@ public class TimelineEvents extends Fragment {
                 try {
                     viewHolder.openEvent(model);
                     viewHolder.setEventName(model.getEventName());
-                    viewHolder.setEventDate(model.getEventDate());
+                    viewHolder.setEventDate(model.getEventDate(),model.getBoostCount());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
 //                    viewHolder.setEditEvent(model.getUserID(),model.getKey());
                 }catch (Exception e) {
@@ -179,14 +181,19 @@ public class TimelineEvents extends Fragment {
             }
         }
 
-        public void setEventDate(String eventDate) {
+        public void setEventDate(String eventDate, Double BoostCount) {
             if (eventDate != null) {
                 TextView DateText = (TextView) mView.findViewById(R.id.date_text);
                 TextView DateMonth = (TextView) mView.findViewById(R.id.date_month);
+                TextView TimeNumber = (TextView) mView.findViewById(R.id.time_number);
+                TextView TimeType = (TextView) mView.findViewById(R.id.time_type);
+                TextView Boost = (TextView) mView.findViewById(R.id.boostcount);
 
+
+                Boost.setText(BoostCount.intValue()+ " people boosted this event");
                 String arr[]=eventDate.split(" ");
 
-                String month=monthSwitcher(arr[1]);
+                String month = arr[1].trim().toUpperCase();
                 String date=arr[2];
                 String year=arr[5];
                 String times=arr[3];
@@ -194,9 +201,30 @@ public class TimelineEvents extends Fragment {
                 String timesA[]=times.split(":");
                 String hour=timesA[0];
                 String mins=timesA[1];
+                String datatype;
+                Integer finalhour;
+
+                if(Integer.parseInt(hour)>12)
+                {
+                    datatype="PM";
+                    finalhour=Integer.parseInt(hour) -12;
+                }else if(Integer.parseInt(hour)==12)
+                {
+                    datatype="PM";
+                    finalhour=12;
+                }else {
+                    datatype="AM";
+                    finalhour=Integer.parseInt(hour);
+                }
+
 
                 DateText.setText(date.toString());
                 DateMonth.setText(month);
+                TimeNumber.setText(finalhour.toString());
+                TimeType.setText(datatype);
+
+                DateText.setText(date.toString());
+                Toast.makeText(mView.getContext(), arr[1], Toast.LENGTH_SHORT).show();
                 Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
                 DateText.setTypeface(customFont);
             }

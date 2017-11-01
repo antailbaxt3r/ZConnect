@@ -200,6 +200,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         storeT.setIcon(R.drawable.ic_shopping_basket_white_18dp);
         storeT.getIcon().setAlpha(127);
 
+
         TabLayout.Tab shopT = tabs.newTab();
         shopT.setIcon(R.drawable.ic_store_white_18dp);
         shopT.getIcon().setAlpha(127);
@@ -228,20 +229,25 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
                 tab.getIcon().setAlpha(255);
+
+
                 switch (pos) {
                     case 0: {
                         setActionBarTitle("BITS Connect");
+                        tab.setText("Recents");
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
                         setActionBarTitle("Infone");
+                        tab.setText("Infone");
                         CounterManager.InfoneOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         break;
                     }
                     case 5: {
                         setActionBarTitle("Shops");
+                        tab.setText("Shops");
                         CounterManager.ShopOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
 
@@ -249,12 +255,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                     case 2: {
                         setActionBarTitle("StoreRoom");
+                        tab.setText("StoreRoom");
                         CounterManager.StoreRoomOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
                         break;
                     }
                     case 3: {
                         setActionBarTitle("Events");
+                        tab.setText("Events");
                         CounterManager.EventOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
                         break;

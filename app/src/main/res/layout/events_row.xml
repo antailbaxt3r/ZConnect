@@ -149,9 +149,9 @@
                         android:layout_alignParentStart="true"
                         android:layout_below="@id/er_maincontent"
                         android:layout_marginStart="10dp"
-                        android:background="@drawable/curveradiusgoogle"
+                        android:background="@drawable/curveradiusguest"
                         android:onClick="onDateSelectedClickEvent"
-                        android:text="Set Reminder"
+                        android:text="Boost"
                         android:textColor="@color/white" />
 
                 </RelativeLayout>

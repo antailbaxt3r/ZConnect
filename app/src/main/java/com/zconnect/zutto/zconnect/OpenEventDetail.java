@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -73,7 +74,7 @@ public class OpenEventDetail extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_event_detail);
-       id=getIntent().getStringExtra("id");
+         id=getIntent().getStringExtra("id");
         tag=getIntent().getStringExtra("Eventtag");
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
@@ -178,7 +179,6 @@ public class OpenEventDetail extends BaseActivity {
                 getSupportActionBar().setTitle(event.getEventName());
                 Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
                 EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
-
                 boostCounter();
                 setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
             }catch (Exception e) {
@@ -255,18 +255,21 @@ public class OpenEventDetail extends BaseActivity {
         EventDescription.setTypeface(customFont2);
         EventVenue.setTypeface(customFont);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        SharedPreferences sharedPref = getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
 
-        if(event==null){
+        if(!status)
+        {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        }
 
-        if (user != null && event!=null) {
-            String boost = event.getBoosters();
-            if (boost != null) {
-            if (boost.contains(user.getUid())) {
-                boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-            }
+            if (user != null && event!=null) {
+                String boost = event.getBoosters();
+                if (boost != null) {
+                if (boost.contains(user.getUid())) {
+                    boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                }
+                }
             }
         }
     }
@@ -425,15 +428,19 @@ public class OpenEventDetail extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
-
-                if(dataSnapshot.hasChild(user.getUid())){
-                    boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
-                    boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                    flag=true;
-                }else {
-                    boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                if (user!= null)
+                {
+                    if(dataSnapshot.hasChild(user.getUid())){
+                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
+                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                        flag=true;
+                    }else {
+                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+                        flag=false;
+                    }
+                }else{
                     boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
-                    flag=false;
                 }
             }
 

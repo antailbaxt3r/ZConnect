@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,15 +85,14 @@ public class TrendingEvents extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_all_events, container, false);
+        View view = inflater.inflate(R.layout.fragment_trending_event, container, false);
 
         LinearLayoutManager mlinearmanager;
-
-
         mlinearmanager = new LinearLayoutManager(getContext());
 
-        //mlinearmanager.setStackFromEnd(true);
-        mlinearmanager.scrollToPosition(1);
+        mlinearmanager.setStackFromEnd(true);
+        mlinearmanager.setReverseLayout(true);
+//        mlinearmanager.scrollToPosition(1);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -103,8 +101,9 @@ public class TrendingEvents extends Fragment {
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 
+
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
-        queryRef = mDatabase.orderByChild("FormatDate");
+        queryRef = mDatabase.orderByChild("BoostCount");
 
         mDatabase.keepSynced(true);
         queryRef.keepSynced(true);
@@ -266,6 +265,7 @@ public class TrendingEvents extends Fragment {
             final Button boostBtn = (Button) mView.findViewById(R.id.boostBtn);
 
 
+
             eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -273,7 +273,7 @@ public class TrendingEvents extends Fragment {
                     eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
 
                     if(dataSnapshot.hasChild(user.getUid())){
-                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
+                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
                         boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                         flag=true;
                     }else {
@@ -298,9 +298,9 @@ public class TrendingEvents extends Fragment {
                         if(!flag){
                             Map<String, Object> taskMap = new HashMap<String, Object>();
                             taskMap.put(user.getUid(), user.getUid());
-                            eventDatabase.child("Boostount").updateChildren(taskMap);
+                            eventDatabase.child("BoostersUids").updateChildren(taskMap);
                         }else {
-                            eventDatabase.child("Boostcount").child(user.getUid()).removeValue();
+                            eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
                         }
                     }
                 });
@@ -309,7 +309,7 @@ public class TrendingEvents extends Fragment {
                 boostBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(mView.getContext());
+                        android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(mView.getContext());
                         dialog.setNegativeButton("Lite", null)
                                 .setPositiveButton("Login", new DialogInterface.OnClickListener() {
                                     @Override
