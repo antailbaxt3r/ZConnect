@@ -195,6 +195,12 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/infone_search_widget_info" />
         </receiver>
+        <receiver android:name=".AlarmReceiver">
+            <intent-filter>
+                <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".Offers"

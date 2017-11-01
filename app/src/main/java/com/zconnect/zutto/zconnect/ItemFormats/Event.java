@@ -10,6 +10,7 @@ public class Event implements Serializable {
 
 
     private double lon = 0, lat = 0, BoostCount;
+    private long EventTimeMillis;
     private String EventName,
             EventDescription,
             EventImage,
@@ -23,13 +24,14 @@ public class Event implements Serializable {
 
     }
 
-    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key, String venue, String boosters, String userid, double boostcount) {
+    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, Long eventTimeMillis, String formatDate, String key, String venue, String boosters, String userid, double boostcount) {
         this.lon = lon;
         this.lat = lat;
         EventName = eventName;
         EventDescription = eventDescription;
         EventImage = eventImage;
         EventDate = eventDate;
+        EventTimeMillis = eventTimeMillis;
         FormatDate = formatDate;
         Key = key;
         Venue = venue;
@@ -52,6 +54,8 @@ public class Event implements Serializable {
     public String getEventDate() {
         return EventDate;
     }
+
+    public Long getEventTimeMillis() { return EventTimeMillis; }
 
     public String getFormatDate() {
         return FormatDate;
