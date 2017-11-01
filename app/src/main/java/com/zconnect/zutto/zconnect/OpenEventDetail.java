@@ -282,6 +282,7 @@ public class OpenEventDetail extends BaseActivity {
         int id = item.getItemId();
         if (id == R.id.share) {
 
+            CounterManager.eventShare(event.getKey());
             shareEvent(event.getEventImage(),this.getApplicationContext());
 
         }

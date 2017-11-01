@@ -12,11 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 
 import java.util.Vector;
@@ -77,21 +72,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         i = new Intent(context, OpenEventDetail.class);
                         try {
                             i.putExtra("id", recentsItemFormats.get(getAdapterPosition()).getId());
-                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(recentsItemFormats.get(getAdapterPosition()).getId());
-                            databaseReference.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.child("EventName").getValue() != null)
-                                        nam = dataSnapshot.child("EventName").getValue().toString();
-                                    if (nam != null)
-                                        context.startActivity(i);
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
+                            context.startActivity(i);
                         }catch (Exception e) {
                             Log.d("Error Alert: ", e.getMessage());
                         }
@@ -100,16 +81,15 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         //mHomeActivity.finish();
                         //mHome.finish();
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
-
-                        //((HomeActivity) (context)).changeFragment(2);
+                        ((HomeActivity) (context)).changeFragment(2);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Shop")) {
                         try {
-                            final Intent intent = new Intent(context, Shop_detail.class);
-                            intent.putExtra("ShopId", recentsItemFormats.get(getAdapterPosition()).getId());
-                            intent.putExtra("Name", recentsItemFormats.get(getAdapterPosition()).getName());
-                            intent.putExtra("Imageurl", recentsItemFormats.get(getAdapterPosition()).getImageurl());
+                            i = new Intent(context, Shop_detail.class);
+                            i.putExtra("ShopId", recentsItemFormats.get(getAdapterPosition()).getId());
+                            i.putExtra("Name", recentsItemFormats.get(getAdapterPosition()).getName());
+                            i.putExtra("Imageurl", recentsItemFormats.get(getAdapterPosition()).getImageurl());
                             //  Log.v("im1",recentsItemFormats.get(getAdapterPosition()).getDesc2());
-                            context.startActivity(intent);
+                            context.startActivity(i);
                         }catch (Exception e) {
                             Log.d("Error Alert: ", e.getMessage());
                         }

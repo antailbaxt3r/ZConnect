@@ -965,6 +965,7 @@ public class CounterManager {
         });
     }
 
+
     public static void createPool(final String dest) {
         ref.keepSynced(true);
 
@@ -1103,6 +1104,27 @@ public class CounterManager {
         });
     }
 
+    public static void openMyRides() {
+        ref.keepSynced(true);
+
+        ref.child("CabPool").child("MyRides").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                {
+                    Long count = dataSnapshot.child("Open").getValue(Long.class);
+                    if (count == null)
+                        count = (long) 0;
+                    count = count + 1;
+                    dataSnapshot.child("Open").getRef().setValue(count);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     public static void MapOpen() {
         ref.keepSynced(true);
 

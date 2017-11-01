@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -240,8 +239,8 @@ public class TrendingEvents extends Fragment {
         }
 
         public void setEditEvent(String UserID, final String EventID) {
-           ImageButton editButton = (ImageButton) mView.findViewById(R.id.editEvent);
-            if(mAuth.getCurrentUser().getUid().equals(UserID)) {
+            ImageButton editButton = (ImageButton) mView.findViewById(R.id.editEvent);
+            if (mAuth.getCurrentUser().getUid().equals(UserID)) {
 
                 editButton.setVisibility(View.VISIBLE);
                 editButton.setOnClickListener(new View.OnClickListener() {
@@ -249,6 +248,7 @@ public class TrendingEvents extends Fragment {
                     public void onClick(View v) {
                         Intent editIntent = new Intent(mView.getContext(), AddEvent.class);
                         editIntent.putExtra("eventID", EventID);
+                        CounterManager.eventEdit(EventID, "Trending");
                         mView.getContext().startActivity(editIntent);
                     }
                 });
@@ -256,7 +256,6 @@ public class TrendingEvents extends Fragment {
                 editButton.setVisibility(View.GONE);
             }
         }
-
 
 
         private void setBoost(final Event event) {
@@ -289,7 +288,6 @@ public class TrendingEvents extends Fragment {
 
                 }
             });
-
 
 
             if (user != null) {

@@ -139,6 +139,7 @@ public class CabPooling extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.rides) {
+            CounterManager.openMyRides();
             startActivity(new Intent(getContext(), MyRides.class));
         }
 

@@ -72,6 +72,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    CounterManager.searchPool(cabItemFormats.get(getAdapterPosition()).getKey());
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + cabItemFormats.get(getAdapterPosition()).getSource() +
