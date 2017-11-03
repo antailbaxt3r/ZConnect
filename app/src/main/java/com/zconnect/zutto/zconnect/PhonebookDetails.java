@@ -45,8 +45,8 @@ public class PhonebookDetails extends BaseActivity {
         //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
 
-        sorryCard=(CardView) findViewById(R.id.contact_details_sorry_card);
-        thankuCard=(CardView) findViewById(R.id.contact_details_thankyou_card);
+        sorryCard = (CardView) findViewById(R.id.contact_details_sorry_card);
+        thankuCard = (CardView) findViewById(R.id.contact_details_thankyou_card);
 
 
         call = (ImageView) findViewById(R.id.ib_call_contact_item);

@@ -299,11 +299,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 int versionCode = BuildConfig.VERSION_CODE;
 
-                Integer newVersion=dataSnapshot.child("update").child("versionCode").getValue(Integer.class);
+                Integer newVersion = dataSnapshot.child("update").child("versionCode").getValue(Integer.class);
 
-                if(newVersion!=null && newVersion>(versionCode)){
+                if (newVersion != null && newVersion > (versionCode)) {
 
-                    String updateImageURL=dataSnapshot.child("update").child("imageUrl").getValue(String.class);
+                    String updateImageURL = dataSnapshot.child("update").child("imageUrl").getValue(String.class);
 
                     CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, updateImageURL, "UPDATE");
                     cdd.show();

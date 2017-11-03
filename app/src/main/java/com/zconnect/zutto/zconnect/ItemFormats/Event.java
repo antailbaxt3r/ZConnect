@@ -55,7 +55,9 @@ public class Event implements Serializable {
         return EventDate;
     }
 
-    public Long getEventTimeMillis() { return EventTimeMillis; }
+    public Long getEventTimeMillis() {
+        return EventTimeMillis;
+    }
 
     public String getFormatDate() {
         return FormatDate;

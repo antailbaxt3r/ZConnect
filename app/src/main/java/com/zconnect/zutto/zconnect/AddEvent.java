@@ -77,7 +77,7 @@ public class AddEvent extends BaseActivity {
     private LinearLayout CalendarButton;
     private ProgressDialog mProgress;
     private TextView dateTime;
-    private Boolean editImageflag=false;
+    private Boolean editImageflag = false;
     private Long eventTimeMillis;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
         @Override
@@ -141,8 +141,7 @@ public class AddEvent extends BaseActivity {
 
         Bundle bundle = getIntent().getExtras();
         String EventID = null;
-        if(bundle!=null)
-        {
+        if (bundle != null) {
             EventID = bundle.getString("eventID");
         }
 
@@ -262,9 +261,8 @@ public class AddEvent extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle bundle = getIntent().getExtras();
-        String EventID=null;
-        if(bundle!=null)
-        {
+        String EventID = null;
+        if (bundle != null) {
             EventID = bundle.getString("eventID");
         }
 
@@ -300,9 +298,8 @@ public class AddEvent extends BaseActivity {
     private void startPosting(final boolean flag, final boolean edit) {
 
         Bundle bundle = getIntent().getExtras();
-        String eventID=null;
-        if(bundle!=null)
-        {
+        String eventID = null;
+        if (bundle != null) {
             eventID = bundle.getString("eventID");
         }
 
@@ -347,8 +344,7 @@ public class AddEvent extends BaseActivity {
                             SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                             try {
                                 eventTimeMillis = sdf.parse(eventDate).getTime();
-                            }
-                            catch (ParseException e) {
+                            } catch (ParseException e) {
                                 e.printStackTrace();
                             }
 
@@ -407,8 +403,7 @@ public class AddEvent extends BaseActivity {
                             SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                             try {
                                 eventTimeMillis = sdf.parse(eventDate).getTime();
-                            }
-                            catch (ParseException e) {
+                            } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                             newPost.child("EventTimeMillis").setValue(eventTimeMillis);
@@ -471,8 +466,7 @@ public class AddEvent extends BaseActivity {
                             SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                             try {
                                 eventTimeMillis = sdf.parse(eventDate).getTime();
-                            }
-                            catch (ParseException e) {
+                            } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                             taskMap.put("EventTimeMillis", eventTimeMillis);
@@ -505,8 +499,7 @@ public class AddEvent extends BaseActivity {
                     SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                     try {
                         eventTimeMillis = sdf.parse(eventDate).getTime();
-                    }
-                    catch (ParseException e) {
+                    } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     taskMap.put("EventTimeMillis", eventTimeMillis);

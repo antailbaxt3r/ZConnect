@@ -7,7 +7,6 @@ import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
@@ -23,7 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Intent notificationIntent = new Intent(context, OpenEventDetail.class);
         notificationIntent.putExtra("currentEvent", (Event) intent.getExtras().get("currentEvent"));
-        notificationIntent.putExtra("Eventtag","1");
+        notificationIntent.putExtra("Eventtag", "1");
 
         String eventName = intent.getStringExtra("EventName");
 

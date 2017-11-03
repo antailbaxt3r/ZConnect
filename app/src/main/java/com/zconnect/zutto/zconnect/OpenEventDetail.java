@@ -17,11 +17,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.media.RemotePlaybackClient;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -37,7 +35,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,12 +50,10 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.ObjectInput;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -151,7 +146,7 @@ public class OpenEventDetail extends BaseActivity {
             }
         });
 
-        if(tag!=null&&tag.equals("1")){
+        if (tag != null && tag.equals("1")) {
             Bundle extras = getIntent().getExtras();
             event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
 
@@ -203,8 +198,7 @@ public class OpenEventDetail extends BaseActivity {
             }catch (Exception e) {
                 Log.d("Error Alert: ", e.getMessage());
             }
-        }
-        else if(id!=null) {
+        } else if (id != null) {
             databaseReference= FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(id);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -482,7 +476,7 @@ public class OpenEventDetail extends BaseActivity {
                         SendNotification notification = new SendNotification();
                         notification.execute(event.getKey(), event.getEventName());
 
-                    }else {
+                    } else {
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(event.getKey().toString());
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
                     }
@@ -543,7 +537,7 @@ public class OpenEventDetail extends BaseActivity {
         protected Void doInBackground(String... params) {
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if(user != null) {
+            if (user != null) {
                 final String key = params[0];
                 Log.d("Key of event", key);
 
@@ -579,9 +573,7 @@ public class OpenEventDetail extends BaseActivity {
                     writer.flush();
 
                     Log.d("event notification", connection.getResponseMessage());
-                }
-
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

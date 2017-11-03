@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.SystemClock;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -22,7 +21,6 @@ import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
-import java.util.Calendar;
 import java.util.Map;
 import java.util.Random;
 
@@ -35,7 +33,7 @@ public class NotificationService extends FirebaseMessagingService {
         Log.d("data", data.toString());
         if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
-            if(type.equals("EventBoosted")) {
+            if (type.equals("EventBoosted")) {
                 final String key = data.get("Key").toString();
                 // use this to notify users who have boosted if event details have been changed
                 FirebaseDatabase.getInstance().getReference("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -81,9 +79,7 @@ public class NotificationService extends FirebaseMessagingService {
                 });
 
 
-            }
-
-            else if (type.equals("CabPool")) {
+            } else if (type.equals("CabPool")) {
                 final String key = data.get("key").toString();
                 FirebaseDatabase.getInstance().getReference("Cab").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
