@@ -55,7 +55,7 @@ public class ShopSearch extends AppCompatActivity {
         searchAdapter = new ShopListRV(ShopSearch.this, searchShop);
 
         searchShopList.setHasFixedSize(true);
-        searchShopList.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        searchShopList.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         //Setup layout manager. VERY IMP ALWAYS
         searchShopList.setAdapter(searchAdapter);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
@@ -108,7 +108,7 @@ public class ShopSearch extends AppCompatActivity {
                         foo.setLon(childShot.child("lon").getValue(String.class));
                         foo.setImageurl(childShot.child("imageurl").getValue(String.class));
                         foo.setName(childShot.child("name").getValue(String.class));
-                        foo.setNumber(childShot.child("number").getValue(String.class));
+                        foo.setNumber(childShot.child("contactDescTv").getValue(String.class));
                         foo.setMenuurl(childShot.child("menuurl").getValue(String.class));
                         foo.setDetails(childShot.child("details").getValue(String.class));
                         foo.setShopid(childShot.child("shopid").getValue(String.class));
@@ -117,7 +117,7 @@ public class ShopSearch extends AppCompatActivity {
 
 
                         String name = childShot.child("name").getValue(String.class);
-                        String number = childShot.child("number").getValue(String.class);
+                        String number = childShot.child("contactDescTv").getValue(String.class);
 
                         String imageurl = childShot.child("imageurl").getValue(String.class);
 

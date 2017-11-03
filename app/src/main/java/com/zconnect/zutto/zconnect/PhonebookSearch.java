@@ -95,12 +95,12 @@ public class PhonebookSearch extends BaseActivity {
                         item.setEmail(child.child("email").getValue(String.class));
                         item.setImageurl(child.child("imageurl").getValue(String.class));
                         item.setName(child.child("name").getValue(String.class));
-                        item.setNumber(child.child("number").getValue(String.class));
+                        item.setNumber(child.child("contactDescTv").getValue(String.class));
                         item.setSkills(child.child("skills").getValue(String.class));
 
 
                         String name = child.child("name").getValue(String.class);
-                        String number = child.child("number").getValue(String.class);
+                        String number = child.child("contactDescTv").getValue(String.class);
                         String details = child.child("desc").getValue(String.class);
                         String skills = child.child("skills").getValue(String.class);
 

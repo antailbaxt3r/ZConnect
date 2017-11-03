@@ -26,7 +26,7 @@
         android:background="@drawable/border_filled_2"
         android:padding="10dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/addimage" />
+        tools:src="@drawable/addimage" />
 
     <EditText
         android:id="@+id/name"
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="7dp"
         android:background="@drawable/border_filled_2"
         android:ems="10"
         android:hint="Product name"
@@ -51,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_weight=".6"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/border_filled_2"
             android:ems="10"
             android:hint="Price"
@@ -66,8 +66,9 @@
             android:layout_marginTop="15dp"
             android:layout_height="wrap_content"
             android:text="Negotiable"
-            android:textSize="16dp"
-            android:checked="true"/>
+            android:textSize="16sp"
+            android:checked="true"
+            />
     </LinearLayout>
 
 
@@ -91,7 +92,7 @@
         android:layout_below="@+id/description"
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="5dp"
         android:clickable="false"
         android:paddingEnd="6dp"
         android:paddingLeft="6dp"
@@ -104,11 +105,13 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/contact_edit_email_text_input_layout"
             android:hint="Product Tags (Optional)"
-            android:inputType="text"
+            android:inputType="textFilter"
             android:text=""
             android:textColor="@android:color/black"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="0dp"
             android:backgroundTint="@color/white"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             TagsEditText:allowSpaceInTag="true"
             TagsEditText:tagsCloseImageRight="@drawable/tag_close"
             TagsEditText:tagsBackground="@drawable/square"
@@ -117,7 +120,9 @@
             TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize"
             TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
             />
+        <requestFocus/>
     </android.support.design.widget.TextInputLayout>
+
 
     <com.zconnect.zutto.zconnect.CustomSpinner
         android:id="@+id/categories"
@@ -125,7 +130,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/border_filled_2"
         android:entries="@array/categories"
         android:padding="10dp"
@@ -138,8 +143,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/border_filled_2"
         android:hint="Phone No."
         android:inputType="phone"

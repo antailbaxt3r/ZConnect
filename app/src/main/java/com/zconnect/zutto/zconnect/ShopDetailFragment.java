@@ -96,7 +96,7 @@ public class ShopDetailFragment extends Fragment {
                     detail = dataSnapshot.child("details").getValue().toString();
                     lat = dataSnapshot.child("lat").getValue().toString();
                     lon = dataSnapshot.child("lon").getValue().toString();
-                    num = dataSnapshot.child("number").getValue().toString();
+                    num = dataSnapshot.child("contactDescTv").getValue().toString();
                     details.setText(detail);
 
                     direction.setOnClickListener(new View.OnClickListener() {

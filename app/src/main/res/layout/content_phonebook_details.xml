@@ -12,19 +12,143 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/contact_details_display_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_centerHorizontal="true"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         android:background="@drawable/defaultprofile"
         app:roundAsCircle="true" />
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/contact_details_like_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/contact_details_display_image"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:src="@drawable/black_heart"
+                android:background="@color/white"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:layout_marginStart="15dp"
+                />
+
+            <TextView
+                android:id="@+id/heart_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1.8"
+                android:gravity="center_vertical"
+                android:layout_marginStart="15dp"
+                android:text="15 likes"
+                android:textSize="18sp"
+                android:textColor="@color/red500"/>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/contact_details_thankyou_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contact_details_like_card"
+        android:layout_toEndOf="@+id/contact_details_display_image"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="36dp"
+        android:padding="5dp"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/thanyu_emoji"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/thanku_emoji"
+                android:background="@color/white"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:layout_marginStart="0dp"
+                />
+
+            <TextView
+                android:id="@+id/thanyu_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="center_vertical"
+                android:layout_marginStart="0dp"
+                android:text="Thank You"
+                android:textSize="14sp"
+                android:textColor="@color/red500"
+                android:padding="2dp"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/contact_details_sorry_card"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contact_details_like_card"
+        android:layout_toEndOf="@+id/contact_details_thankyou_card"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:padding="5dp">
+
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/sorry_emoji"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/sorry_emoji"
+                android:background="@color/white"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:layout_marginStart="0dp"
+                />
+
+            <TextView
+                android:id="@+id/sorry_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="center_vertical"
+                android:layout_marginStart="0dp"
+                android:text="Sorry"
+                android:layout_gravity="center_horizontal"
+                android:textSize="14sp"
+                android:textColor="@color/red500"
+                android:padding="2dp"/>
+
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/contact_details_name_text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contact_details_display_image"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:clickable="false"
         android:paddingEnd="16dp"
         android:paddingLeft="16dp"
@@ -52,7 +176,7 @@
     <requestFocus />
 
     <ImageView
-        android:id="@+id/callbutton"
+        android:id="@+id/ib_call_contact_item"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_alignBottom="@+id/contact_details_number_text_input_layout"

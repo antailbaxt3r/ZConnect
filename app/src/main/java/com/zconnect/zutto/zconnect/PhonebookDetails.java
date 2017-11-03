@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,8 @@ public class PhonebookDetails extends BaseActivity {
     private TagsEditText editTextSkills;
     private SimpleDraweeView image;
     private ImageView mail, call;
+    private CardView thankuCard;
+    private CardView sorryCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,11 @@ public class PhonebookDetails extends BaseActivity {
         //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
 
-        call = (ImageView) findViewById(R.id.callbutton);
+        sorryCard=(CardView) findViewById(R.id.contact_details_sorry_card);
+        thankuCard=(CardView) findViewById(R.id.contact_details_thankyou_card);
+
+
+        call = (ImageView) findViewById(R.id.ib_call_contact_item);
         mail = (ImageView) findViewById(R.id.mailbutton);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
@@ -67,13 +74,13 @@ public class PhonebookDetails extends BaseActivity {
 
         name = getIntent().getStringExtra("name");
         desc = getIntent().getStringExtra("desc");
-        number = getIntent().getStringExtra("number");
+        number = getIntent().getStringExtra("contactDescTv");
         imagelink = getIntent().getStringExtra("image");
         email = getIntent().getStringExtra("email");
         skills=getIntent().getStringExtra("skills");
         category=getIntent().getStringExtra("category");
 
-        if(category.equalsIgnoreCase("S")) {
+        if(category.contains("S")) {
             editTextSkills.setVisibility(View.VISIBLE);
             editTextSkills.setEnabled(false);
         }
