@@ -296,6 +296,26 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
                 String first = preferences.getString("popup", "");
                 boolean firstTimePopUp = Boolean.parseBoolean(first);
+
+                int versionCode = BuildConfig.VERSION_CODE;
+
+                Integer newVersion=dataSnapshot.child("update").child("versionCode").getValue(Integer.class);
+
+                if(newVersion!=null && newVersion>(versionCode)){
+
+                    String updateImageURL=dataSnapshot.child("update").child("imageUrl").getValue(String.class);
+
+                    CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, updateImageURL, "UPDATE");
+                    cdd.show();
+                    if (cdd.getWindow() == null)
+                        return;
+                    cdd.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //style id
+                    Window window = cdd.getWindow();
+                    window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+                }
+
+
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     if (shot.child("imp").getValue(String.class) != null && shot.child("imageUrl").getValue(String.class) != null) {
                         popUpUrl1.add(shot.child("imageUrl").getValue(String.class));

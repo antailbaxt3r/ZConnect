@@ -55,7 +55,7 @@ public class ShopSearch extends AppCompatActivity {
         searchAdapter = new ShopListRV(ShopSearch.this, searchShop);
 
         searchShopList.setHasFixedSize(true);
-        searchShopList.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        searchShopList.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         //Setup layout manager. VERY IMP ALWAYS
         searchShopList.setAdapter(searchAdapter);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {

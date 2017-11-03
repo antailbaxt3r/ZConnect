@@ -48,6 +48,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -76,7 +77,8 @@ public class AddEvent extends BaseActivity {
     private LinearLayout CalendarButton;
     private ProgressDialog mProgress;
     private TextView dateTime;
-    private Boolean editImageflag = false;
+    private Boolean editImageflag=false;
+    private Long eventTimeMillis;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
         @Override
         public void onDateTimeSet(Date date) {
@@ -138,7 +140,12 @@ public class AddEvent extends BaseActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/NotVerifiedPosts");
 
         Bundle bundle = getIntent().getExtras();
-        String EventID = bundle.getString("eventID");
+        String EventID = null;
+        if(bundle!=null)
+        {
+            EventID = bundle.getString("eventID");
+        }
+
         Toast.makeText(this, EventID, Toast.LENGTH_SHORT).show();
 
         /*mEventDescription.setMovementMethod(LinkMovementMethod.getInstance());
@@ -255,7 +262,12 @@ public class AddEvent extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle bundle = getIntent().getExtras();
-        String EventID = bundle.getString("eventID");
+        String EventID=null;
+        if(bundle!=null)
+        {
+            EventID = bundle.getString("eventID");
+        }
+
 
 
         int id = item.getItemId();
@@ -288,7 +300,13 @@ public class AddEvent extends BaseActivity {
     private void startPosting(final boolean flag, final boolean edit) {
 
         Bundle bundle = getIntent().getExtras();
-        final String EventID = bundle.getString("eventID");
+        String eventID=null;
+        if(bundle!=null)
+        {
+            eventID = bundle.getString("eventID");
+        }
+
+        final String EventID = eventID;
 
         mProgress.setMessage("Posting Event..");
         mProgress.show();
@@ -325,6 +343,17 @@ public class AddEvent extends BaseActivity {
                             newPost.child("lat").setValue(latLng.latitude);
                             newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
                             newPost.child("BoostCount").setValue(0);
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                            try {
+                                eventTimeMillis = sdf.parse(eventDate).getTime();
+                            }
+                            catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            newPost.child("EventTimeMillis").setValue(eventTimeMillis);
+
 
                             //For Everything
                             DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
@@ -374,6 +403,15 @@ public class AddEvent extends BaseActivity {
                             newPost.child("lat").setValue(latLng.latitude);
                             newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
                             newPost.child("BoostCount").setValue(0);
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                            try {
+                                eventTimeMillis = sdf.parse(eventDate).getTime();
+                            }
+                            catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            newPost.child("EventTimeMillis").setValue(eventTimeMillis);
 
                             CounterManager.addEventUnVerified(key, eventNameValue);
                         }
@@ -429,6 +467,16 @@ public class AddEvent extends BaseActivity {
                             LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
                             taskMap.put("log", latLng.longitude);
                             taskMap.put("lat", latLng.latitude);
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                            try {
+                                eventTimeMillis = sdf.parse(eventDate).getTime();
+                            }
+                            catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            taskMap.put("EventTimeMillis", eventTimeMillis);
+
                             mEventDatabase.updateChildren(taskMap);
                             mProgress.dismiss();
                         }
@@ -454,6 +502,14 @@ public class AddEvent extends BaseActivity {
                     LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
                     taskMap.put("log", latLng.longitude);
                     taskMap.put("lat", latLng.latitude);
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                    try {
+                        eventTimeMillis = sdf.parse(eventDate).getTime();
+                    }
+                    catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    taskMap.put("EventTimeMillis", eventTimeMillis);
                     mEventDatabase.updateChildren(taskMap);
                     mProgress.dismiss();
                 }

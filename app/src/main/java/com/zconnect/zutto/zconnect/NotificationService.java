@@ -1,12 +1,14 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -17,8 +19,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
+import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
+import java.util.Calendar;
 import java.util.Map;
 import java.util.Random;
 
@@ -31,8 +35,55 @@ public class NotificationService extends FirebaseMessagingService {
         Log.d("data", data.toString());
         if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
+            if(type.equals("EventBoosted")) {
+                final String key = data.get("Key").toString();
+                // use this to notify users who have boosted if event details have been changed
+                FirebaseDatabase.getInstance().getReference("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Event format = dataSnapshot.getValue(Event.class);
+                        Log.d("Entered ", format.getKey());
+                        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationService.this);
 
-            if (type.equals("CabPool")) {
+                        String event = data.get("Event").toString();
+                        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+                        style.bigText("Congrats! You just subscribed to an event - " + event)
+                                .setBigContentTitle("Event Subscription");
+                        mBuilder.setSmallIcon(R.mipmap.ic_alarm_black_24dp)
+                                .setStyle(style)
+                                .setContentTitle("NB Event Subscription")
+                                .setContentText("NB Congrats! You just subscribed to an event - " + event);
+
+//                        Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
+//                        intent.putExtra("currentEvent", format);
+//                        intent.putExtra("Eventtag","1");
+
+//                        PendingIntent pIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+//                        mBuilder.setContentIntent(pIntent);
+
+                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+                        Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
+                        notificationIntent.addCategory("android.intent.category.DEFAULT");
+                        notificationIntent.putExtra("Eventtag", "1");
+                        notificationIntent.putExtra("currentEvent", format);
+                        notificationIntent.putExtra("EventName", event);
+
+                        PendingIntent broadcast = PendingIntent.getBroadcast(NotificationService.this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, (Long.parseLong(format.getEventTimeMillis().toString()) - Long.parseLong(data.get("TimeInMilli").toString()) - (5 * 60 * 1000)), broadcast);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+            }
+
+            else if (type.equals("CabPool")) {
                 final String key = data.get("key").toString();
                 FirebaseDatabase.getInstance().getReference("Cab").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

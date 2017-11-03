@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,8 @@ public class PhonebookDetails extends BaseActivity {
     private TagsEditText editTextSkills;
     private SimpleDraweeView image;
     private ImageView mail, call;
+    private CardView thankuCard;
+    private CardView sorryCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,10 @@ public class PhonebookDetails extends BaseActivity {
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_details_number_editText);
         //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
+
+        sorryCard=(CardView) findViewById(R.id.contact_details_sorry_card);
+        thankuCard=(CardView) findViewById(R.id.contact_details_thankyou_card);
+
 
         call = (ImageView) findViewById(R.id.ib_call_contact_item);
         mail = (ImageView) findViewById(R.id.mailbutton);
