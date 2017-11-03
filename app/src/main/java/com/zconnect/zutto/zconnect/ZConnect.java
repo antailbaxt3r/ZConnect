@@ -6,7 +6,6 @@ import android.support.multidex.MultiDex;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
@@ -34,6 +33,5 @@ public class ZConnect extends Application {
 
         FirebaseApp.initializeApp(this);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 }

@@ -14,6 +14,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 
 public class
 LogoFlashActivity extends BaseActivity {
@@ -24,6 +26,11 @@ LogoFlashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        } catch (Exception ignore) {
+        }
         setContentView(R.layout.activity_logo_flash);
         // Setting full screen view
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
