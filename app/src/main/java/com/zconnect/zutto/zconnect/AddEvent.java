@@ -344,6 +344,7 @@ public class AddEvent extends BaseActivity {
                             newPost.child("log").setValue(latLng.longitude);
                             newPost.child("lat").setValue(latLng.latitude);
                             newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
+                            newPost.child("Verified").setValue("true");
                             newPost.child("BoostCount").setValue(0);
 
                             SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
@@ -390,7 +391,7 @@ public class AddEvent extends BaseActivity {
                             });
 
                         } else {
-                            DatabaseReference newPost = mDatabase.push();
+                            DatabaseReference newPost = mDatabaseVerified.push();
                             String key = newPost.getKey();
                             newPost.child("Key").setValue(key);
                             newPost.child("EventName").setValue(eventNameValue);
@@ -403,6 +404,7 @@ public class AddEvent extends BaseActivity {
                             newPost.child("Key").setValue(newPost.getKey());
                             newPost.child("log").setValue(latLng.longitude);
                             newPost.child("lat").setValue(latLng.latitude);
+                            newPost.child("Verified").setValue("false");
                             newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
                             newPost.child("BoostCount").setValue(0);
 
@@ -416,6 +418,15 @@ public class AddEvent extends BaseActivity {
                             newPost.child("EventTimeMillis").setValue(eventTimeMillis);
 
                             CounterManager.addEventUnVerified(key, eventNameValue);
+
+                            //For Everything
+                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+                            newPost2.child("name").setValue(eventNameValue);
+                            newPost2.child("desc").setValue(eventDescriptionValue);
+                            newPost2.child("imageurl").setValue(downloadUri.toString());
+                            newPost2.child("feature").setValue("Event");
+                            newPost2.child("id").setValue(key);
+                            newPost2.child("desc2").setValue(eventDate);
                         }
 
                         mProgress.dismiss();

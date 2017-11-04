@@ -123,13 +123,18 @@ public class TimelineEvents extends Fragment {
                                               int position) {
                 try {
                     viewHolder.openEvent(model);
-                    viewHolder.setEventName(model.getEventName());
-                    viewHolder.setEventDate(model.getEventDate(),model.getBoostCount());
-                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
-//                    viewHolder.setEditEvent(model.getUserID(),model.getKey());
                 }catch (Exception e) {
                     Log.d("Error Alert: ", e.getMessage());
                 }
+                try {
+                    viewHolder.setEventName(model.getEventName(),model.getVerified());
+                }catch (Exception e) {
+                    Log.d("Error Alert: ", e.getMessage());
+                }
+                    viewHolder.setEventDate(model.getEventDate(),model.getBoostCount());
+                    viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
+//                    viewHolder.setEditEvent(model.getUserID(),model.getKey());
+
 
             }
         };
@@ -158,6 +163,7 @@ public class TimelineEvents extends Fragment {
         public void openEvent(final Event event) {
 
             key = event.getKey();
+
             mView.setOnClickListener(new View.OnClickListener()
 
             {
@@ -172,13 +178,18 @@ public class TimelineEvents extends Fragment {
             });
         }
 
-        public void setEventName(String eventName) {
+        public void setEventName(String eventName,String verified) {
             if (eventName != null) {
                 TextView post_name = (TextView) mView.findViewById(R.id.title);
+                if(verified.equals("true")){
+                    eventName = eventName + " ☑";
+                }
                 post_name.setText(eventName);
                 Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
                 post_name.setTypeface(customFont);
+
             }
+
         }
 
         public void setEventDate(String eventDate, Double BoostCount) {

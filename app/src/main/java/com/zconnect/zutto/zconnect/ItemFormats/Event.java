@@ -19,12 +19,13 @@ public class Event implements Serializable {
             Key,
             Venue,
             Boosters,
-            UserId;
+            UserId,
+            Verified;
     public Event() {
 
     }
 
-    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, Long eventTimeMillis, String formatDate, String key, String venue, String boosters, String userid, double boostcount) {
+    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, Long eventTimeMillis, String formatDate, String key, String venue, String boosters, String userid, double boostcount,String verified) {
         this.lon = lon;
         this.lat = lat;
         EventName = eventName;
@@ -38,11 +39,17 @@ public class Event implements Serializable {
         Boosters = boosters;
         UserId = userid;
         BoostCount = boostcount;
+        Verified = verified;
+    }
+
+    public String getVerified(){
+        return Verified;
     }
 
     public double getBoostCount(){
         return BoostCount;
     }
+
     public String getBoosters() {
         return Boosters;
     }
