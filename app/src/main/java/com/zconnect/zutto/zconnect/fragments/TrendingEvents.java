@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,9 +131,9 @@ public class TrendingEvents extends Fragment {
                     viewHolder.setEventImage(getContext(), model.getEventImage());
                     viewHolder.setEventDate(model.getEventDate());
                     viewHolder.setEventVenue(model.getVenue());
-                    viewHolder.setEditEvent(model.getUserID(),model.getKey());
+                    viewHolder.setEditEvent(model.getUserID(), model.getKey());
                     viewHolder.setBoost(model);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     Log.d("Error Alert: ", e.getMessage());
                 }
 
@@ -147,7 +146,7 @@ public class TrendingEvents extends Fragment {
 
         View mView;
         String key;
-        Boolean flag= false;
+        Boolean flag = false;
 
         FirebaseAuth mAuth;
         SharedPreferences sharedPref;
@@ -158,7 +157,7 @@ public class TrendingEvents extends Fragment {
             mView = itemView;
             sharedPref = mView.getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
             status = sharedPref.getBoolean("mode", false);
-            if(!status) {
+            if (!status) {
                 mAuth = FirebaseAuth.getInstance();
             }
         }
@@ -171,10 +170,10 @@ public class TrendingEvents extends Fragment {
             {
                 @Override
                 public void onClick(View view) {
-                    CounterManager.eventOpenCounter(key);
+                    CounterManager.eventOpenCounter(key, "Trending");
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
                     i.putExtra("currentEvent", event);
-                    i.putExtra("Eventtag","1");
+                    i.putExtra("Eventtag", "1");
                     mView.getContext().startActivity(i);
                 }
             });
@@ -215,6 +214,7 @@ public class TrendingEvents extends Fragment {
                 post_venue.setTypeface(customFont);
             }
         }
+
         public void setEventImage(Context ctx, String image) {
             if (image != null) {
                 ImageView post_image = (ImageView) mView.findViewById(R.id.er_postImg);
@@ -239,23 +239,23 @@ public class TrendingEvents extends Fragment {
         }
 
         public void setEditEvent(String UserID, final String EventID) {
-           ImageButton editButton = (ImageButton) mView.findViewById(R.id.editEvent);
-            if(mAuth.getCurrentUser().getUid().equals(UserID)) {
+            ImageButton editButton = (ImageButton) mView.findViewById(R.id.editEvent);
+            if (mAuth.getCurrentUser().getUid().equals(UserID)) {
 
-                    editButton.setVisibility(View.VISIBLE);
-                    editButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent editIntent = new Intent(mView.getContext(), AddEvent.class);
-                            editIntent.putExtra("eventID", EventID);
-                            mView.getContext().startActivity(editIntent);
-                        }
-                    });
-                }else {
-                    editButton.setVisibility(View.GONE);
-                }
+                editButton.setVisibility(View.VISIBLE);
+                editButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent editIntent = new Intent(mView.getContext(), AddEvent.class);
+                        editIntent.putExtra("eventID", EventID);
+                        CounterManager.eventEdit(EventID, "Trending");
+                        mView.getContext().startActivity(editIntent);
+                    }
+                });
+            } else {
+                editButton.setVisibility(View.GONE);
+            }
         }
-
 
 
         private void setBoost(final Event event) {
@@ -272,14 +272,14 @@ public class TrendingEvents extends Fragment {
 
                     eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
 
-                    if(dataSnapshot.hasChild(user.getUid())){
+                    if (dataSnapshot.hasChild(user.getUid())) {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
                         boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
-                        flag=true;
-                    }else {
+                        flag = true;
+                    } else {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
                         boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
-                        flag=false;
+                        flag = false;
                     }
                 }
 
@@ -290,17 +290,17 @@ public class TrendingEvents extends Fragment {
             });
 
 
-
             if (user != null) {
                 boostBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!flag){
+                        if (!flag) {
                             Map<String, Object> taskMap = new HashMap<String, Object>();
                             taskMap.put(user.getUid(), user.getUid());
-                            eventDatabase.child("Boostount").updateChildren(taskMap);
-                        }else {
-                            eventDatabase.child("Boostcount").child(user.getUid()).removeValue();
+                            CounterManager.eventBoost(event.getKey(), "Trending-Out");
+                            eventDatabase.child("BoostersUids").updateChildren(taskMap);
+                        } else {
+                            eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
                         }
                     }
                 });

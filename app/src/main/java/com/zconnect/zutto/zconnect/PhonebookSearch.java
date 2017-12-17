@@ -32,9 +32,9 @@ public class PhonebookSearch extends BaseActivity {
     private final String TAG = getClass().getSimpleName();
     @BindView(R.id.rv_search_activity)
     android.support.v7.widget.RecyclerView recyclerView;
-    private PhonebookAdapter searchAdapter;
     @BindView(R.id.errorMessage)
     TextView errorMessage;
+    private PhonebookAdapter searchAdapter;
     private DatabaseReference phonebookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     Query queryRef = phonebookDbRef.orderByChild("name");
     private Vector<PhonebookItem> searchContact = new Vector<>();

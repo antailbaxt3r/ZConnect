@@ -23,7 +23,7 @@
             android:minHeight="150dp"
             android:padding="2dp"
             android:scaleType="center"
-            tools:src="@drawable/addimage"/>
+            tools:src="@drawable/addimage" />
 
         <EditText
             android:id="@+id/name"
@@ -43,7 +43,6 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="80dp"
             android:layout_below="@+id/name"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
@@ -52,6 +51,7 @@
             android:ems="10"
             android:hint="Description"
             android:inputType="textMultiLine"
+            android:minHeight="80dp"
             android:padding="10dp" />
 
         <LinearLayout
@@ -61,10 +61,10 @@
             android:layout_below="@+id/description"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:orientation="horizontal"
-            android:padding="10dp"
+            android:layout_marginTop="7dp"
             android:background="@drawable/border_filled_2"
-            android:layout_marginTop="7dp">
+            android:orientation="horizontal"
+            android:padding="10dp">
 
             <ImageButton
                 android:id="@+id/dateIcon"
@@ -92,14 +92,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/dateAndTime"
+            android:layout_marginBottom="7dp"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:orientation="vertical"
-            android:background="@drawable/border_filled_2"
             android:layout_marginTop="7dp"
-            android:layout_marginBottom="7dp">
+            android:background="@drawable/border_filled_2"
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginLeft="2dp"
@@ -110,42 +111,42 @@
                 android:textAlignment="textStart"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:id="@+id/textView" />
+                android:textStyle="bold" />
 
                 <ImageButton
                     android:id="@+id/venuePicker"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_gravity="center_vertical"
                     android:layout_below="@+id/VenueText"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toEndOf="@+id/add_event_tv"
                     android:backgroundTint="@android:color/transparent"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/ic_directions_black_24dp"
-                    android:layout_toEndOf="@+id/add_event_tv"/>
+                    app:srcCompat="@drawable/ic_directions_black_24dp" />
 
                 <TextView
                     android:id="@+id/add_event_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/VenueText"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="10dp"
                     android:text="Pick on Gmaps ->"
-                    android:textSize="16sp"
-                    android:layout_below="@+id/VenueText"/>
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/VenueText"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
                     android:layout_gravity="center_vertical"
-                    tools:hint="type venue here, you may pick a location"
+                    android:layout_toEndOf="@+id/textView"
+                    android:inputType="textAutoComplete"
                     android:lines="200"
                     android:textColor="@color/teal500"
                     android:textSize="14sp"
-                    android:inputType="textAutoComplete"
-                    android:layout_alignParentTop="true"
-                    android:layout_toEndOf="@+id/textView" />
+                    tools:hint="type venue here, you may pick a location" />
+
             <CheckBox
                 android:id="@+id/add_events_location_checkbox"
                 android:layout_width="wrap_content"
@@ -153,7 +154,7 @@
                 android:layout_alignBaseline="@+id/add_event_tv"
                 android:layout_alignBottom="@+id/add_event_tv"
                 android:layout_toEndOf="@+id/venuePicker"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
         </RelativeLayout>
 

@@ -82,22 +82,22 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private TextView navHeaderEmailTv;
     /**
      * Background of nav header.
-        <activity
-            android:name=".FullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_fullscreen"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".MyRides"
-            android:label="@string/title_activity_my_rides"
-            android:parentActivityName=".HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+     <activity
+     android:name=".FullscreenActivity"
+     android:configChanges="orientation|keyboardHidden|screenSize"
+     android:label="@string/title_activity_fullscreen"
+     android:screenOrientation="portrait"
+     android:theme="@style/AppTheme.NoActionBar" />
+     <activity
+     android:name=".MyRides"
+     android:label="@string/title_activity_my_rides"
+     android:parentActivityName=".HomeActivity"
+     android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".NotificationService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </inte
+     <service android:name=".NotificationService">
+     <intent-filter>
+     <action android:name="com.google.firebase.MESSAGING_EVENT" />
+     </inte
      */
     private SimpleDraweeView navHeaderBackground;
     private MenuItem editProfileItem;
@@ -231,6 +231,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 switch (pos) {
                     case 0: {
                         setActionBarTitle("BITS Connect");
+                        CounterManager.RecentsOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
@@ -261,6 +262,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                     case 4: {
                         setActionBarTitle("Cab Pool");
+                        CounterManager.openCabPool();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
                         break;
                     }
@@ -297,11 +299,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 int versionCode = BuildConfig.VERSION_CODE;
 
-                Integer newVersion=dataSnapshot.child("update").child("versionCode").getValue(Integer.class);
+                Integer newVersion = dataSnapshot.child("update").child("versionCode").getValue(Integer.class);
 
-                if(newVersion!=null && newVersion>(versionCode)){
+                if (newVersion != null && newVersion > (versionCode)) {
 
-                    String updateImageURL=dataSnapshot.child("update").child("imageUrl").getValue(String.class);
+                    String updateImageURL = dataSnapshot.child("update").child("imageUrl").getValue(String.class);
 
                     CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, updateImageURL, "UPDATE");
                     cdd.show();
@@ -699,27 +701,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     public void changeFragment(int i) {
 
-        switch (i) {
-            case 0: {
-                tabs.getTabAt(1).select();
-            }
-            case 1: {
-                tabs.getTabAt(5).select();
-            }
-            case 2: {
-                tabs.getTabAt(2).select();
-
-            }
-            case 3: {
-                tabs.getTabAt(3).select();
-            }
-            case 4: {
-                tabs.getTabAt(4).select();
-            }
-            case 5: {
-                tabs.getTabAt(0).select();
-
-            }
-        }
+        tabs.getTabAt(i).select();
     }
 }

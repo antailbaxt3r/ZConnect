@@ -19,13 +19,13 @@ import com.facebook.drawee.view.SimpleDraweeView;
 public class CustomDialogClass extends Dialog implements
         android.view.View.OnClickListener {
 
-    String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
     public Activity c;
     public String Url;
     public Dialog d;
     public Button updateButton, skipButton;
     public SimpleDraweeView popUpImage;
-    private String buttonName="";
+    String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
+    private String buttonName = "";
 
     public CustomDialogClass(Activity a, String Url) {
         super(a);
@@ -35,12 +35,12 @@ public class CustomDialogClass extends Dialog implements
 
     }
 
-    public CustomDialogClass(Activity a, String Url,String buttonName) {
+    public CustomDialogClass(Activity a, String Url, String buttonName) {
         super(a);
         // TODO Auto-generated constructor stub
         this.c = a;
-        this.Url=Url;
-        this.buttonName=buttonName;
+        this.Url = Url;
+        this.buttonName = buttonName;
 
     }
 
@@ -58,7 +58,7 @@ public class CustomDialogClass extends Dialog implements
 
         popUpImage.setImageURI(Uri.parse(Url));
 
-        if(!buttonName.equals("")) {
+        if (!buttonName.equals("")) {
             //skipButton.setVisibility(View.GONE);
             updateButton.setText(buttonName);
             updateButton.setVisibility(View.VISIBLE);

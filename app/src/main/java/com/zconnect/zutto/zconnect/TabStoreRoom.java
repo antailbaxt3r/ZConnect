@@ -66,8 +66,7 @@ public class TabStoreRoom extends Fragment {
                     CounterManager.StoreRoomFABclick();
                     Intent intent = new Intent(getContext(), AddProduct.class);
                     startActivity(intent);
-                }else
-                {
+                } else {
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
 
                     // 2. Chain together various setter methods to set the dialog characteristics
@@ -90,6 +89,28 @@ public class TabStoreRoom extends Fragment {
                     android.app.AlertDialog dialog = builder.create();
                     dialog.show();
                 }
+            }
+        });
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int pos = tab.getPosition();
+                if (pos == 0)
+                    CounterManager.StoreroomOpenTab("ProductsTab");
+                else if (pos == 1)
+                    CounterManager.StoreroomOpenTab("ReservedTab");
+                else
+                    CounterManager.StoreroomOpenTab("CategoriesTab");
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
 

@@ -17,11 +17,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.media.RemotePlaybackClient;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -37,7 +35,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,12 +50,10 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.ObjectInput;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,7 +71,7 @@ public class OpenEventDetail extends BaseActivity {
     Toolbar mActionBarToolbar;
     DatabaseReference databaseReference;
     Button boostBtn;
-    Boolean flag= false;
+    Boolean flag = false;
 
     ProgressDialog progressDialog;
 
@@ -151,7 +146,7 @@ public class OpenEventDetail extends BaseActivity {
             }
         });
 
-        if(tag!=null&&tag.equals("1")){
+        if (tag != null && tag.equals("1")) {
             Bundle extras = getIntent().getExtras();
             event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
 
@@ -203,8 +198,7 @@ public class OpenEventDetail extends BaseActivity {
             }catch (Exception e) {
                 Log.d("Error Alert: ", e.getMessage());
             }
-        }
-        else if(id!=null) {
+        } else if (id != null) {
             databaseReference= FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(id);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -301,6 +295,7 @@ public class OpenEventDetail extends BaseActivity {
         int id = item.getItemId();
         if (id == R.id.share) {
 
+            CounterManager.eventShare(event.getKey());
             shareEvent(event.getEventImage(),this.getApplicationContext());
 
         }
@@ -342,7 +337,7 @@ public class OpenEventDetail extends BaseActivity {
 
                             path = MediaStore.Images.Media.insertImage(
                                     context.getContentResolver(),
-                                    bm,"", null);
+                                    bm, "", null);
                             screenshotUri = Uri.parse(path);
 
                             shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
@@ -402,7 +397,10 @@ public class OpenEventDetail extends BaseActivity {
             @Override
             public void onClick(View view) {
                 CounterManager.eventReminderCounter(event.getKey());
-                addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
+                if (!TextUtils.isEmpty(time))
+                    addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
+                else
+                    showToast("Time unavailable");
 
             }
 
@@ -445,14 +443,14 @@ public class OpenEventDetail extends BaseActivity {
 
                 eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
 
-                if(dataSnapshot.hasChild(user.getUid())){
+                if (dataSnapshot.hasChild(user.getUid())) {
                     boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
                     boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                    flag=true;
-                }else {
+                    flag = true;
+                } else {
                     boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
                     boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
-                    flag=false;
+                    flag = false;
                 }
             }
 
@@ -468,16 +466,17 @@ public class OpenEventDetail extends BaseActivity {
             boostBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!flag){
+                    if (!flag) {
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
+                        CounterManager.eventBoost(event.getKey(), "Details");
                         FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
 //                        Log.d("SUBSCRIBED TO TOPIC", event.getKey().toString());
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
                         SendNotification notification = new SendNotification();
                         notification.execute(event.getKey(), event.getEventName());
 
-                    }else {
+                    } else {
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(event.getKey().toString());
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
                     }
@@ -496,6 +495,7 @@ public class OpenEventDetail extends BaseActivity {
                                     Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(loginIntent);
+                                    finish();
                                 }
                             })
                             .setTitle("Please login to boost.")
@@ -525,7 +525,7 @@ public class OpenEventDetail extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        Intent eventsIntent=new Intent(OpenEventDetail.this,TrendingEvents.class);
+//        Intent eventsIntent=new Intent(OpenEventDetail.this,AllEvents.class);
 //        startActivity(eventsIntent);
         finish();
     }
@@ -537,7 +537,7 @@ public class OpenEventDetail extends BaseActivity {
         protected Void doInBackground(String... params) {
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if(user != null) {
+            if (user != null) {
                 final String key = params[0];
                 Log.d("Key of event", key);
 
@@ -573,9 +573,7 @@ public class OpenEventDetail extends BaseActivity {
                     writer.flush();
 
                     Log.d("event notification", connection.getResponseMessage());
-                }
-
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

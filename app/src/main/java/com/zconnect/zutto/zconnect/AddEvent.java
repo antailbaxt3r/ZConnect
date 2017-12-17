@@ -54,7 +54,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 public class AddEvent extends BaseActivity {
     private static final int GALLERY_REQUEST = 7;
@@ -78,7 +77,7 @@ public class AddEvent extends BaseActivity {
     private LinearLayout CalendarButton;
     private ProgressDialog mProgress;
     private TextView dateTime;
-    private Boolean editImageflag=false;
+    private Boolean editImageflag = false;
     private Long eventTimeMillis;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
         @Override
@@ -142,8 +141,7 @@ public class AddEvent extends BaseActivity {
 
         Bundle bundle = getIntent().getExtras();
         String EventID = null;
-        if(bundle!=null)
-        {
+        if (bundle != null) {
             EventID = bundle.getString("eventID");
         }
 
@@ -204,24 +202,24 @@ public class AddEvent extends BaseActivity {
 
             }
         });
-        if(EventID!=null){
-        mDatabaseVerified.child(EventID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mEventName.setText(dataSnapshot.child("EventName").getValue().toString());
-                mEventDescription.setText(dataSnapshot.child("EventDescription").getValue().toString());
-                mVenue.setText(dataSnapshot.child("Venue").getValue().toString());
-                dateTime.setText(dataSnapshot.child("EventDate").getValue().toString());
-                eventDate=dataSnapshot.child("EventDate").getValue().toString();
-                Picasso.with(getApplicationContext()).load(dataSnapshot.child("EventImage").getValue().toString()).into(mAddImage);
-                mImageUri=Uri.parse(dataSnapshot.child("EventImage").getValue().toString());
-            }
+        if (EventID != null) {
+            mDatabaseVerified.child(EventID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mEventName.setText(dataSnapshot.child("EventName").getValue().toString());
+                    mEventDescription.setText(dataSnapshot.child("EventDescription").getValue().toString());
+                    mVenue.setText(dataSnapshot.child("Venue").getValue().toString());
+                    dateTime.setText(dataSnapshot.child("EventDate").getValue().toString());
+                    eventDate = dataSnapshot.child("EventDate").getValue().toString();
+                    Picasso.with(getApplicationContext()).load(dataSnapshot.child("EventImage").getValue().toString()).into(mAddImage);
+                    mImageUri = Uri.parse(dataSnapshot.child("EventImage").getValue().toString());
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
         }
     }
 
@@ -263,9 +261,8 @@ public class AddEvent extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Bundle bundle = getIntent().getExtras();
-        String EventID=null;
-        if(bundle!=null)
-        {
+        String EventID = null;
+        if (bundle != null) {
             EventID = bundle.getString("eventID");
         }
 
@@ -282,11 +279,10 @@ public class AddEvent extends BaseActivity {
                 snack.show();
 
             } else {
-                if(EventID==null)
-                {
-                    startPosting(flag,false);
-                }else {
-                    startPosting(flag,true);
+                if (EventID == null) {
+                    startPosting(flag, false);
+                } else {
+                    startPosting(flag, true);
                 }
             }
             return true;
@@ -299,12 +295,11 @@ public class AddEvent extends BaseActivity {
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
-    private void startPosting(final boolean flag,final boolean edit) {
+    private void startPosting(final boolean flag, final boolean edit) {
 
         Bundle bundle = getIntent().getExtras();
-        String eventID=null;
-        if(bundle!=null)
-        {
+        String eventID = null;
+        if (bundle != null) {
             eventID = bundle.getString("eventID");
         }
 
@@ -349,8 +344,7 @@ public class AddEvent extends BaseActivity {
                             SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                             try {
                                 eventTimeMillis = sdf.parse(eventDate).getTime();
-                            }
-                            catch (ParseException e) {
+                            } catch (ParseException e) {
                                 e.printStackTrace();
                             }
 
@@ -409,8 +403,7 @@ public class AddEvent extends BaseActivity {
                             SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                             try {
                                 eventTimeMillis = sdf.parse(eventDate).getTime();
-                            }
-                            catch (ParseException e) {
+                            } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                             newPost.child("EventTimeMillis").setValue(eventTimeMillis);
@@ -443,8 +436,8 @@ public class AddEvent extends BaseActivity {
                 mProgress.dismiss();
             }
 
-        }else {
-            if(editImageflag) {
+        } else {
+            if (editImageflag) {
                 if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null) {
                     Calendar c = Calendar.getInstance();
                     SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -473,8 +466,7 @@ public class AddEvent extends BaseActivity {
                             SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                             try {
                                 eventTimeMillis = sdf.parse(eventDate).getTime();
-                            }
-                            catch (ParseException e) {
+                            } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                             taskMap.put("EventTimeMillis", eventTimeMillis);
@@ -483,7 +475,7 @@ public class AddEvent extends BaseActivity {
                             mProgress.dismiss();
                         }
                     });
-                }else {
+                } else {
                     Snackbar snack = Snackbar.make(mEventDescription, "Fields are empty. Can't Add Event.", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
@@ -491,8 +483,8 @@ public class AddEvent extends BaseActivity {
                     snack.show();
                     mProgress.dismiss();
                 }
-            }else {
-                if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null){
+            } else {
+                if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null) {
 
                     DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(EventID);
                     Map<String, Object> taskMap = new HashMap<String, Object>();
@@ -507,8 +499,7 @@ public class AddEvent extends BaseActivity {
                     SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                     try {
                         eventTimeMillis = sdf.parse(eventDate).getTime();
-                    }
-                    catch (ParseException e) {
+                    } catch (ParseException e) {
                         e.printStackTrace();
                     }
                     taskMap.put("EventTimeMillis", eventTimeMillis);

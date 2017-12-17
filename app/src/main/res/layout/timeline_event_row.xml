@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
     <RelativeLayout
         android:id="@+id/date"
@@ -16,42 +16,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="01"
             android:layout_marginTop="4dp"
             android:padding="0dp"
+            android:text="01"
             android:textSize="30dp" />
+
         <TextView
             android:id="@+id/date_month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/date_text"
-            android:text="Jan"
             android:layout_centerHorizontal="true"
-            android:textSize="15dp"
-            android:layout_marginBottom="4dp"/>
+            android:layout_marginBottom="4dp"
+            android:text="Jan"
+            android:textSize="15dp" />
 
     </RelativeLayout>
 
     <View
-        android:layout_margin="4dp"
         android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
         android:layout_weight=".005"
-        android:background="@color/gray_holo_dark"
-        android:layout_height="match_parent">
+        android:background="@color/gray_holo_dark">
 
     </View>
+
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_weight=".795"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight=".795">
+
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
-            android:text="Title"
-            android:textSize="25dp"
-            android:layout_marginLeft="15dp"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_height="wrap_content"/>
+            android:layout_marginLeft="15dp"
+            android:text="Title"
+            android:textSize="25dp" />
     </RelativeLayout>
 
 

@@ -125,7 +125,7 @@ public class TimelineEvents extends Fragment {
                     viewHolder.setEventDate(model.getEventDate());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
 //                    viewHolder.setEditEvent(model.getUserID(),model.getKey());
-                }catch (Exception e) {
+                } catch (Exception e) {
                     Log.d("Error Alert: ", e.getMessage());
                 }
 
@@ -148,7 +148,7 @@ public class TimelineEvents extends Fragment {
             mView = itemView;
             sharedPref = mView.getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
             status = sharedPref.getBoolean("mode", false);
-            if(!status) {
+            if (!status) {
                 mAuth = FirebaseAuth.getInstance();
             }
         }
@@ -161,10 +161,10 @@ public class TimelineEvents extends Fragment {
             {
                 @Override
                 public void onClick(View view) {
-                    CounterManager.eventOpenCounter(key);
+                    CounterManager.eventOpenCounter(key, "Timeline");
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
                     i.putExtra("currentEvent", event);
-                    i.putExtra("Eventtag","1");
+                    i.putExtra("Eventtag", "1");
                     mView.getContext().startActivity(i);
                 }
             });
@@ -184,16 +184,16 @@ public class TimelineEvents extends Fragment {
                 TextView DateText = (TextView) mView.findViewById(R.id.date_text);
                 TextView DateMonth = (TextView) mView.findViewById(R.id.date_month);
 
-                String arr[]=eventDate.split(" ");
+                String arr[] = eventDate.split(" ");
 
-                String month=monthSwitcher(arr[1]);
-                String date=arr[2];
-                String year=arr[5];
-                String times=arr[3];
+                String month = monthSwitcher(arr[1]);
+                String date = arr[2];
+                String year = arr[5];
+                String times = arr[3];
 
-                String timesA[]=times.split(":");
-                String hour=timesA[0];
-                String mins=timesA[1];
+                String timesA[] = times.split(":");
+                String hour = timesA[0];
+                String mins = timesA[1];
 
                 DateText.setText(date.toString());
                 DateMonth.setText(month);
@@ -202,7 +202,7 @@ public class TimelineEvents extends Fragment {
             }
         }
 
-//        public void setEditEvent(String UserID, final String EventID) {
+        //        public void setEditEvent(String UserID, final String EventID) {
 //            ImageButton editButton = (ImageButton) mView.findViewById(R.id.editEvent);
 //            if(mAuth.getCurrentUser().getUid().equals(UserID)) {
 //
@@ -236,24 +236,24 @@ public class TimelineEvents extends Fragment {
 
         private void addReminderInCalendar(String title, String desc, String time, Context context) {
 
-            String arr[]=time.split(" ");
+            String arr[] = time.split(" ");
 
-            String month=monthSwitcher(arr[1]);
-            String date=arr[2];
-            String year=arr[5];
-            String times=arr[3];
+            String month = monthSwitcher(arr[1]);
+            String date = arr[2];
+            String year = arr[5];
+            String times = arr[3];
 
-            String timesA[]=times.split(":");
-            String hour=timesA[0];
-            String mins=timesA[1];
+            String timesA[] = times.split(":");
+            String hour = timesA[0];
+            String mins = timesA[1];
 
 
             Calendar beginTime = Calendar.getInstance();
-            beginTime.set(Integer.parseInt(year),Integer.parseInt(month)-1, Integer.parseInt(date),
+            beginTime.set(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(date),
                     Integer.parseInt(hour), Integer.parseInt(mins));
             Calendar endTime = Calendar.getInstance();
-            endTime.set(Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(date),
-                    Integer.parseInt(hour)+1, Integer.parseInt(mins));
+            endTime.set(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(date),
+                    Integer.parseInt(hour) + 1, Integer.parseInt(mins));
 
 
             Intent intent = new Intent(Intent.ACTION_INSERT);

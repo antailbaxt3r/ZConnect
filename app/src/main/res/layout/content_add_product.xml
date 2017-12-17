@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:TagsEditText="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:TagsEditText="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_add_product"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.zconnect.zutto.zconnect.AddProduct"
     tools:showIn="@layout/activity_add_product">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     <ImageButton
         android:id="@+id/imageButton"
@@ -49,9 +49,9 @@
         <EditText
             android:id="@+id/price"
             android:layout_width="0dp"
-            android:layout_weight=".6"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:layout_weight=".6"
             android:background="@drawable/border_filled_2"
             android:ems="10"
             android:hint="Price"
@@ -61,14 +61,13 @@
         <CheckBox
             android:id="@+id/priceNegotiable"
             android:layout_width="0dp"
-            android:layout_weight=".4"
-            android:ems="10"
-            android:layout_marginTop="15dp"
             android:layout_height="wrap_content"
-            android:text="Negotiable"
-            android:textSize="16sp"
+            android:layout_marginTop="15dp"
+            android:layout_weight=".4"
             android:checked="true"
-            />
+            android:ems="10"
+            android:text="Negotiable"
+            android:textSize="16sp" />
     </LinearLayout>
 
 
@@ -93,34 +92,35 @@
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
         android:layout_marginTop="5dp"
+        android:background="@drawable/border_filled_2"
         android:clickable="false"
         android:paddingEnd="6dp"
         android:paddingLeft="6dp"
         android:paddingRight="6dp"
-        android:paddingStart="6dp"
-        android:background="@drawable/border_filled_2">
+        android:paddingStart="6dp">
         <mabbas007.tagsedittext.TagsEditText
             android:id="@+id/skillsTags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/contact_edit_email_text_input_layout"
-            android:hint="Product Tags (Optional)"
-            android:inputType="textFilter"
-            android:text=""
-            android:textColor="@android:color/black"
             android:layout_marginTop="0dp"
             android:backgroundTint="@color/white"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:hint="Product Tags (Optional)"
+            android:inputType="textFilter"
+            android:text=""
+            android:textColor="@android:color/black"
             TagsEditText:allowSpaceInTag="true"
-            TagsEditText:tagsCloseImageRight="@drawable/tag_close"
             TagsEditText:tagsBackground="@drawable/square"
             TagsEditText:tagsCloseImageLeft="@drawable/dot"
+            TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
+            TagsEditText:tagsCloseImageRight="@drawable/tag_close"
             TagsEditText:tagsTextColor="@color/black"
             TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize"
-            TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
             />
-        <requestFocus/>
+
+        <requestFocus />
     </android.support.design.widget.TextInputLayout>
 
 
@@ -141,10 +141,10 @@
         android:id="@+id/phoneNo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"
         android:background="@drawable/border_filled_2"
         android:hint="Phone No."
         android:inputType="phone"

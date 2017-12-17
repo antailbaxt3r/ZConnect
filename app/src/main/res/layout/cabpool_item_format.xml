@@ -139,7 +139,7 @@
                 android:background="@drawable/curveradiusgoogle"
                 android:text="Share"
                 android:textColor="@color/white"
-                android:textSize="16dp"/>
+                android:textSize="16dp" />
         </LinearLayout>
     </LinearLayout>
 

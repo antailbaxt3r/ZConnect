@@ -50,24 +50,9 @@ import mabbas007.tagsedittext.TagsEditText;
 public class EditProfileActivity extends BaseActivity implements TagsEditText.TagsEditListener, View.OnClickListener {
 
     private static final int GALLERY_REQUEST = 7;
+    private static final String DEFAULT_PHOTO_URL = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336";
     private final String TAG = getClass().getSimpleName();
     public ProgressDialog mProgress;
-    private String userEmail;
-    private String userName;
-    private String desc;
-    private String imageUrl;
-    private String number;
-    private String hostel;
-    private String host;
-    private String category;
-    private String skills;
-    private Uri mImageUri;
-    private StorageReference mStorageRef;
-    private FirebaseUser mUser;
-    private DatabaseReference phoneBookDbRef;
-    private static final String DEFAULT_PHOTO_URL = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336";
-    private boolean newContact = true;
-
     @BindView(R.id.toolbar_app_bar_home)
     Toolbar toolbar;
     @BindView(R.id.contact_edit_details_editText)
@@ -84,6 +69,20 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     TagsEditText skillTags;
     @BindView(R.id.spinner1)
     CustomSpinner spinner;
+    private String userEmail;
+    private String userName;
+    private String desc;
+    private String imageUrl;
+    private String number;
+    private String hostel;
+    private String host;
+    private String category;
+    private String skills;
+    private Uri mImageUri;
+    private StorageReference mStorageRef;
+    private FirebaseUser mUser;
+    private DatabaseReference phoneBookDbRef;
+    private boolean newContact = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

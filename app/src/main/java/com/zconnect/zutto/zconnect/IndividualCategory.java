@@ -174,7 +174,7 @@ public class IndividualCategory extends BaseActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                                     if (flag) {
-                                        CounterManager.StoroomShortListDelete(category);
+                                        CounterManager.StoroomShortListDelete(category, model.getKey());
 
                                         if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                             mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
@@ -184,7 +184,7 @@ public class IndividualCategory extends BaseActivity {
                                             Typeface customfont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
                                         } else {
-                                            CounterManager.StoroomShortList(category);
+                                            CounterManager.StoroomShortList(category, model.getKey());
                                             viewHolder.shortList.setText("Shortlist");
                                             mDatabase.child(model.getKey()).child("UsersReserved")
                                                     .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
