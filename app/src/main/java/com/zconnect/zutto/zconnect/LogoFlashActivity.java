@@ -18,6 +18,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,6 +41,11 @@ public class LogoFlashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        } catch (Exception ignore) {
+        }
         setContentView(R.layout.activity_logo_flash);
         bgImage = (ImageView) findViewById(R.id.bgImage);
         bgColor = (View) findViewById(R.id.bgColor);
