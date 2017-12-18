@@ -24,11 +24,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,6 +121,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
     private Fragment recent, cab, infone, store, shop, events;
+    private DatabaseReference mDatabaseStats;
+    private DatabaseReference mDatabaseUserStats;
+    int UsersTotalNumbers = 0, TotalNumbers = 0;
+    int UsersTotalProducts = 0, TotalProducts = 0;
+    int UsersTotalOffers = 0, TotalOffers = 0;
+    int UsersTotalEvents = 0, TotalEvents = 0;
+    private ValueEventListener UserStats;
+    private ValueEventListener TotalStats;
+
+    TextView[] tabTitle= new TextView[6];
+    ImageView[] tabImage = new ImageView[6];
+    ImageView[] tabNotificationCircle = new ImageView[6];
+
+
 
     @SuppressLint("ApplySharedPref")
     @Override
@@ -162,6 +179,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
         initListeners();
         setSupportActionBar(toolbar);
 
@@ -190,32 +208,134 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
         mDatabasePopUps.keepSynced(true);
+
+        if(mAuth.getCurrentUser()!=null) {
+            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid()).child("Stats");
+            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mDatabaseStats.addValueEventListener(TotalStats);
+            mDatabaseUserStats.addValueEventListener(UserStats);
+//            Toast.makeText(this, "Not null", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+
+    void setNotificationCircle(){
+        if(TotalEvents>UsersTotalEvents){
+            tabNotificationCircle[4].setVisibility(View.VISIBLE);
+        }else{
+            tabNotificationCircle[4].setVisibility(View.GONE);
+        }
+        if (TotalNumbers>UsersTotalNumbers){
+            tabNotificationCircle[1].setVisibility(View.VISIBLE);
+        }else{
+            tabNotificationCircle[1].setVisibility(View.GONE);
+        }
+        if(TotalOffers>UsersTotalOffers){
+            tabNotificationCircle[5].setVisibility(View.VISIBLE);
+        }else{
+            tabNotificationCircle[5].setVisibility(View.GONE);
+        }
+        if(TotalProducts>UsersTotalProducts){
+            tabNotificationCircle[2].setVisibility(View.VISIBLE);
+        }else{
+            tabNotificationCircle[2].setVisibility(View.GONE);
+        }
     }
 
     void tabs() {
+
+        View vRecents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab recentsT = tabs.newTab();
-        recentsT.setIcon(R.drawable.ic_home_white_18dp);
 
-        TabLayout.Tab storeT = tabs.newTab();
-        storeT.setIcon(R.drawable.ic_shopping_basket_white_18dp);
-        storeT.getIcon().setAlpha(127);
+        tabTitle[0] = (TextView) vRecents.findViewById(R.id.tabTitle);
+        tabTitle[0].setText("Recents");
+
+        tabImage[0] = (ImageView) vRecents.findViewById(R.id.tabImage);
+        tabImage[0].setImageResource(R.drawable.ic_home_white_24dp);
+
+        tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
+
+        recentsT.setCustomView(vRecents);
 
 
-        TabLayout.Tab shopT = tabs.newTab();
-        shopT.setIcon(R.drawable.ic_store_white_18dp);
-        shopT.getIcon().setAlpha(127);
 
-        TabLayout.Tab eventT = tabs.newTab();
-        eventT.setIcon(R.drawable.ic_event_white_18dp);
-        eventT.getIcon().setAlpha(127);
 
+        View vInfone = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab infoneT = tabs.newTab();
-        infoneT.setIcon(R.drawable.ic_phone_white_24dp);
-        infoneT.getIcon().setAlpha(127);
 
+        tabTitle[1] = (TextView) vInfone.findViewById(R.id.tabTitle);
+        tabTitle[1].setText("Infone");
+
+        tabImage[1] = (ImageView) vInfone.findViewById(R.id.tabImage);
+        tabImage[1].setImageResource(R.drawable.ic_people_white_24dp);
+
+        tabNotificationCircle[1] = (ImageView) vInfone.findViewById(R.id.notification_circle);
+        vInfone.setAlpha((float) 0.7);
+        infoneT.setCustomView(vInfone);
+
+
+        View vStore = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab storeT = tabs.newTab();
+
+        tabTitle[2] = (TextView) vStore.findViewById(R.id.tabTitle);
+        tabTitle[2].setText("StoreRoom");
+
+        tabImage[2] = (ImageView) vStore.findViewById(R.id.tabImage);
+        tabImage[2].setImageResource(R.drawable.ic_local_mall_white_24dp);
+
+        tabNotificationCircle[2] = (ImageView) vStore.findViewById(R.id.notification_circle);
+        vStore.setAlpha((float) 0.7);
+        storeT.setCustomView(vStore);
+
+
+
+        View vCab = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab cabT = tabs.newTab();
-        cabT.setIcon(R.drawable.ic_local_taxi_white_18dp);
-        cabT.getIcon().setAlpha(127);
+
+        tabTitle[3] = (TextView) vCab.findViewById(R.id.tabTitle);
+        tabTitle[3].setText("CabPool");
+
+        tabImage[3] = (ImageView) vCab.findViewById(R.id.tabImage);
+        tabImage[3].setImageResource(R.drawable.ic_local_taxi_white_24dp);
+
+        tabNotificationCircle[3] = (ImageView) vCab.findViewById(R.id.notification_circle);
+        vCab.setAlpha((float) 0.7);
+        cabT.setCustomView(vCab);
+
+
+
+
+        View vEvents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab eventT = tabs.newTab();
+
+        tabTitle[4] = (TextView) vEvents.findViewById(R.id.tabTitle);
+        tabTitle[4].setText("Events");
+
+        tabImage[4] = (ImageView) vEvents.findViewById(R.id.tabImage);
+        tabImage[4].setImageResource(R.drawable.ic_event_white_24dp);
+
+        tabNotificationCircle[4] = (ImageView) vEvents.findViewById(R.id.notification_circle);
+        vEvents.setAlpha((float) 0.7);
+        eventT.setCustomView(vEvents);
+
+
+
+
+        View vShop = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab shopT = tabs.newTab();
+
+        tabTitle[5] = (TextView) vShop.findViewById(R.id.tabTitle);
+        tabTitle[5].setText("Shops");
+
+        tabImage[5] = (ImageView) vShop.findViewById(R.id.tabImage);
+        tabImage[5].setImageResource(R.drawable.ic_store_white_24dp);
+
+        tabNotificationCircle[5] = (ImageView) vShop.findViewById(R.id.notification_circle);
+        vShop.setAlpha((float) 0.7);
+        shopT.setCustomView(vShop);
+
 
         tabs.addTab(recentsT);
         tabs.addTab(infoneT);
@@ -224,30 +344,26 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabs.addTab(cabT);
         tabs.addTab(shopT);
 
+
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
-                tab.getIcon().setAlpha(255);
-
-
+                tab.getCustomView().setAlpha((float) 1);
                 switch (pos) {
                     case 0: {
                         setActionBarTitle("BITS Connect");
-                        tab.setText("Recents");
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
                         setActionBarTitle("Infone");
-                        tab.setText("Infone");
                         CounterManager.InfoneOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         break;
                     }
                     case 5: {
                         setActionBarTitle("Shops");
-                        tab.setText("Shops");
                         CounterManager.ShopOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
 
@@ -255,14 +371,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                     case 2: {
                         setActionBarTitle("StoreRoom");
-                        tab.setText("StoreRoom");
                         CounterManager.StoreRoomOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
                         break;
                     }
                     case 3: {
                         setActionBarTitle("Events");
-                        tab.setText("Events");
                         CounterManager.EventOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
                         break;
@@ -277,7 +391,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.getIcon().setAlpha(127);
+                tab.getCustomView().setAlpha((float) .7);
             }
 
             @Override
@@ -293,6 +407,51 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
      * All {@link ValueEventListener}s used in this class are defined here.
      */
     private void initListeners() {
+
+        TotalStats = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+
+//                setNotificationCircle();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: ", databaseError.toException());
+            }
+
+
+        };
+        UserStats = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child("TotalNumbers").getValue() != null) {
+                    UsersTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalEvents").getValue() != null) {
+                    UsersTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalOffers").getValue() != null) {
+                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalProducts").getValue() != null) {
+                    UsersTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                }
+
+                setNotificationCircle();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: ", databaseError.toException());
+            }
+        };
+
+
         popupsListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -684,6 +843,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         mUser = mAuth.getCurrentUser();
         username = null;
         userEmail = null;
+        if (mUser != null) {
+            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid()).child("Stats");
+            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        }
         if (mUser != null) {
             username = mUser.getDisplayName();
             userEmail = mUser.getEmail();

@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -31,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
@@ -51,6 +53,7 @@ public class ProductsTab extends Fragment {
     DatabaseReference mUserStats, mFeaturesStats;
     private RecyclerView mProductList;
     private DatabaseReference mDatabase;
+    private Query query;
     private boolean flag = false;
     private FirebaseAuth mAuth;
 
@@ -67,12 +70,17 @@ public class ProductsTab extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_products_tab, container, false);
 
+
+        GridLayoutManager productGridLayout = new GridLayoutManager(getContext(), 2);
+//        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
+
+        productGridLayout.setReverseLayout(true);
+//        productGridLayout.setStackFromEnd(true);
+//        productLinearLayout.setReverseLayout(true);
+//        productLinearLayout.setStackFromEnd(true);
         mProductList = (RecyclerView) view.findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
-        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
-        productLinearLayout.setReverseLayout(true);
-        productLinearLayout.setStackFromEnd(true);
-        mProductList.setLayoutManager(productLinearLayout);
+        mProductList.setLayoutManager(productGridLayout);
 
         mAuth = FirebaseAuth.getInstance();
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
@@ -130,13 +138,13 @@ public class ProductsTab extends Fragment {
                 SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 viewHolder.setProductName(model.getProductName());
-                viewHolder.setProductDesc(model.getProductDescription());
+//                viewHolder.setProductDesc(model.getProductDescription());
                 try {
                     viewHolder.setImage(getActivity(), model.getProductName(), getContext(), model.getImage());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                viewHolder.setPrice(model.getPrice(),model.getNegotiable());
+//                viewHolder.setPrice(model.getPrice(),model.getNegotiable());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getCategory(), model.getPhone_no(), getContext());
 
@@ -425,3 +433,4 @@ public class ProductsTab extends Fragment {
     }
 
 }
+
