@@ -5,29 +5,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,7 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.fragments.*;
+import com.zconnect.zutto.zconnect.fragments.TimelineEvents;
 import com.zconnect.zutto.zconnect.fragments.TrendingEvents;
 
 import java.util.HashMap;
@@ -47,6 +41,10 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class TabbedEvents extends Fragment {
 
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+    DatabaseReference mUserStats, mFeaturesStats;
+    String TotalEvents;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -56,16 +54,10 @@ public class TabbedEvents extends Fragment {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
-    FirebaseAuth mAuth;
-    FirebaseUser user;
-    DatabaseReference mUserStats, mFeaturesStats;
-    String TotalEvents;
 
     @Nullable
     @Override
@@ -81,33 +73,31 @@ public class TabbedEvents extends Fragment {
         mViewPager = (ViewPager) v.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-//        Toolbar toolbar = (Toolbar) v.findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//
-//        if (toolbar != null) {
-//            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    onBackPressed();
-//                }
-//            });
-//            if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//        }
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-//            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-//            getWindow().setStatusBarColor(colorDarkPrimary);
-//            getWindow().setNavigationBarColor(colorPrimary);
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//        }
+
         mViewPager = (ViewPager) v.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabs);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0)
+                    CounterManager.eventOpenTab("Trending");
+                else
+                    CounterManager.eventOpenTab("Timeline");
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         tabLayout.setupWithViewPager(mViewPager);
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
@@ -128,7 +118,7 @@ public class TabbedEvents extends Fragment {
                         Map<String, Object> taskMap = new HashMap<>();
                         taskMap.put("TotalEvents", TotalEvents);
                         newPost.updateChildren(taskMap);
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         Log.d("Error Alert: ", e.getMessage());
                     }
                 }
@@ -144,6 +134,7 @@ public class TabbedEvents extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterManager.eventAddClick();
                 SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
 
@@ -151,22 +142,20 @@ public class TabbedEvents extends Fragment {
 
                     Intent intent = new Intent(getContext(), AddEvent.class);
                     startActivity(intent);
-                }else {
+                } else {
 
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
 
                     // 2. Chain together various setter methods to set the dialog characteristics
                     builder.setMessage("Please Log In to access this feature.")
-                            .setTitle("Dear Guest!");
-
-                    builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(getContext(), LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                        }
-                    });
-                    builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
+                            .setTitle("Dear Guest!")
+                            .setPositiveButton("Log In", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                }
+                            }).setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.dismiss();
                         }
@@ -180,7 +169,6 @@ public class TabbedEvents extends Fragment {
         });
         return v;
     }
-
 
 
     @Override
@@ -202,6 +190,24 @@ public class TabbedEvents extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onStart() {
+        super.onStart();
+
+        String flag;
+        flag = getActivity().getIntent().getStringExtra("snackbar");
+        if (flag != null) {
+            if (flag.equals("true")) {
+                Snackbar snack = Snackbar.make(mViewPager, "Event sent for verification !!", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                Typeface customFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+                snackBarText.setTypeface(customFont);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal800));
+                snack.show();
+            }
+        }
     }
 
     /**
@@ -245,11 +251,9 @@ public class TabbedEvents extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    TrendingEvents trendingEvents = new TrendingEvents();
-                    return trendingEvents;
+                    return new TrendingEvents();
                 case 1:
-                    TimelineEvents timelineEvents = new TimelineEvents();
-                    return timelineEvents;
+                    return new TimelineEvents();
                 default:
                     return null;
             }
@@ -257,7 +261,6 @@ public class TabbedEvents extends Fragment {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 2;
         }
 
@@ -270,23 +273,6 @@ public class TabbedEvents extends Fragment {
                     return "Timeline";
             }
             return null;
-        }
-    }
-    public void onStart() {
-        super.onStart();
-
-        String flag;
-        flag = getActivity().getIntent().getStringExtra("snackbar");
-        if (flag != null) {
-            if (flag.equals("true")) {
-                Snackbar snack = Snackbar.make(mViewPager, "Event sent for verification !!", Snackbar.LENGTH_LONG);
-                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                snackBarText.setTextColor(Color.WHITE);
-                Typeface customFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-                snackBarText.setTypeface(customFont);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal800));
-                snack.show();
-            }
         }
     }
 

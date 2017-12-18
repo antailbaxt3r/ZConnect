@@ -198,13 +198,13 @@ public class ProductsTab extends Fragment {
                                             mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
                                             viewHolder.shortList.setText("Shortlisted");
                                             flag = false;
-                                            CounterManager.StoroomShortListDelete(category);
+                                            CounterManager.StoroomShortListDelete(category, model.getKey());
                                             viewHolder.shortList.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.curvedradiusbutton2_sr));
                                             Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
 
                                         } else {
-                                            CounterManager.StoroomShortList(category);
+                                            CounterManager.StoroomShortList(category, model.getKey());
                                             viewHolder.shortList.setText("Shortlist");
                                             mDatabase.child(model.getKey()).child("UsersReserved")
                                                     .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
@@ -293,6 +293,7 @@ public class ProductsTab extends Fragment {
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
                         shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                         shortList.setText("Shortlisted");
+                        CounterManager.StoroomShortList(category, key);
                         Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
                         shortList.setTypeface(customfont);
                         //ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
@@ -306,7 +307,7 @@ public class ProductsTab extends Fragment {
 //                        mReserve.setChecked(false);
 //                        mReserve.setText("Shortlist");
 //                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
-                        CounterManager.StoroomShortListDelete(category);
+                        CounterManager.StoroomShortListDelete(category, key);
                     }
                     shortList.setOnClickListener(mListener);
 

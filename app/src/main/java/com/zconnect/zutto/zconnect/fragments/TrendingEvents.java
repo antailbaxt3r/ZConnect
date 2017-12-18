@@ -131,9 +131,9 @@ public class TrendingEvents extends Fragment {
                     viewHolder.setEventImage(getContext(), model.getEventImage());
                     viewHolder.setEventDate(model.getEventDate());
                     viewHolder.setEventVenue(model.getVenue());
-                    viewHolder.setEditEvent(model.getUserID(),model.getKey());
+                    viewHolder.setEditEvent(model.getUserID(), model.getKey());
                     viewHolder.setBoost(model);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     Log.d("Error Alert: ", e.getMessage());
                 }
 
@@ -170,10 +170,10 @@ public class TrendingEvents extends Fragment {
             {
                 @Override
                 public void onClick(View view) {
-                    CounterManager.eventOpenCounter(key);
+                    CounterManager.eventOpenCounter(key, "Trending");
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
                     i.putExtra("currentEvent", event);
-                    i.putExtra("Eventtag","1");
+                    i.putExtra("Eventtag", "1");
                     mView.getContext().startActivity(i);
                 }
             });
@@ -238,21 +238,22 @@ public class TrendingEvents extends Fragment {
         }
 
         public void setEditEvent(String UserID, final String EventID) {
-           ImageButton editButton = (ImageButton) mView.findViewById(R.id.editEvent);
-            if(mAuth.getCurrentUser().getUid().equals(UserID)) {
+            ImageButton editButton = (ImageButton) mView.findViewById(R.id.editEvent);
+            if (mAuth.getCurrentUser().getUid().equals(UserID)) {
 
-                    editButton.setVisibility(View.VISIBLE);
-                    editButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent editIntent = new Intent(mView.getContext(), AddEvent.class);
-                            editIntent.putExtra("eventID", EventID);
-                            mView.getContext().startActivity(editIntent);
-                        }
-                    });
-                }else {
-                    editButton.setVisibility(View.GONE);
-                }
+                editButton.setVisibility(View.VISIBLE);
+                editButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent editIntent = new Intent(mView.getContext(), AddEvent.class);
+                        editIntent.putExtra("eventID", EventID);
+                        CounterManager.eventEdit(EventID, "Trending");
+                        mView.getContext().startActivity(editIntent);
+                    }
+                });
+            } else {
+                editButton.setVisibility(View.GONE);
+            }
         }
 
 
@@ -298,6 +299,7 @@ public class TrendingEvents extends Fragment {
                         if(!flag){
                             Map<String, Object> taskMap = new HashMap<String, Object>();
                             taskMap.put(user.getUid(), user.getUid());
+                            CounterManager.eventBoost(event.getKey(), "Trending-Out");
                             eventDatabase.child("BoostersUids").updateChildren(taskMap);
                         }else {
                             eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();

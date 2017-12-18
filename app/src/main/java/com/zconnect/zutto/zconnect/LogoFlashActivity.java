@@ -18,12 +18,13 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -39,9 +40,14 @@ public class LogoFlashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        } catch (Exception ignore) {
+        }
         setContentView(R.layout.activity_logo_flash);
         bgImage = (ImageView) findViewById(R.id.bgImage);
-        bgColor = (View) findViewById(R.id.bgColor);
+        bgColor = findViewById(R.id.bgColor);
 
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("ui/logoFlash");
@@ -49,10 +55,9 @@ public class LogoFlashActivity extends BaseActivity {
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("bgUrl").getValue()!=null)
-                {
+                if (dataSnapshot.child("bgUrl").getValue() != null) {
                     bgImage.setImageURI(Uri.parse(dataSnapshot.child("bgUrl").getValue(String.class)));
-                } else{
+                } else {
                     bgColor.setVisibility(View.GONE);
                     bgImage.setBackground(null);
                     bgImage.setBackgroundColor(Color.parseColor(dataSnapshot.child("bgUrl").getValue().toString()));
@@ -71,13 +76,14 @@ public class LogoFlashActivity extends BaseActivity {
             @Override
             public void run() {
 
-                if(checkPermission()){
+                if (checkPermission()) {
                     // Do not wait so that user doesn't realise this is a new launch.
                     startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
                     finish();
-            }
+                }
 
-        }},2000);
+            }
+        }, 2000);
     }
 
     public boolean checkPermission() {

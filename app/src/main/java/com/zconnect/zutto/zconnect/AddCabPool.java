@@ -146,6 +146,7 @@ public class AddCabPool extends AppCompatActivity {
                             newPost.child("date").setValue(date.getText().toString());
                             newPost.child("cabListItemFormats").setValue(cabListItemFormats);
 
+                            CounterManager.createPool(String.valueOf(destination.getSelectedItem()));
                             FirebaseMessaging.getInstance().subscribeToTopic(key);
                             FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid()).child("Topics").push().setValue(key);
                             finish();

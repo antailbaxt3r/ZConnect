@@ -169,16 +169,16 @@ public class TimelineEvents extends Fragment {
             {
                 @Override
                 public void onClick(View view) {
-                    CounterManager.eventOpenCounter(key);
+                    CounterManager.eventOpenCounter(key, "Timeline");
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
                     i.putExtra("currentEvent", event);
-                    i.putExtra("Eventtag","1");
+                    i.putExtra("Eventtag", "1");
                     mView.getContext().startActivity(i);
                 }
             });
         }
 
-        public void setEventName(String eventName,String verified) {
+        public void setEventName(String eventName) {
             if (eventName != null) {
                 TextView post_name = (TextView) mView.findViewById(R.id.title);
                 if(verified.equals("true")){
@@ -187,9 +187,7 @@ public class TimelineEvents extends Fragment {
                 post_name.setText(eventName);
                 Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
                 post_name.setTypeface(customFont);
-
             }
-
         }
 
         public void setEventDate(String eventDate, Double BoostCount) {

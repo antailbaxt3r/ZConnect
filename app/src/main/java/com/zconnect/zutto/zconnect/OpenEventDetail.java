@@ -198,13 +198,13 @@ public class OpenEventDetail extends BaseActivity {
                 getSupportActionBar().setTitle(event.getEventName());
                 Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
                 EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
                 boostCounter();
                 setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
             }catch (Exception e) {
                 Log.d("Error Alert: ", e.getMessage());
             }
-        }
-        else if(id!=null) {
+        } else if (id != null) {
             databaseReference= FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(id);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -304,6 +304,7 @@ public class OpenEventDetail extends BaseActivity {
         int id = item.getItemId();
         if (id == R.id.share) {
 
+            CounterManager.eventShare(event.getKey());
             shareEvent(event.getEventImage(),this.getApplicationContext());
 
         }
@@ -405,7 +406,10 @@ public class OpenEventDetail extends BaseActivity {
             @Override
             public void onClick(View view) {
                 CounterManager.eventReminderCounter(event.getKey());
-                addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
+                if (!TextUtils.isEmpty(time))
+                    addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
+                else
+                    showToast("Time unavailable");
 
             }
 
@@ -478,6 +482,7 @@ public class OpenEventDetail extends BaseActivity {
                     if(!flag){
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
+                        CounterManager.eventBoost(event.getKey(), "Details");
                         FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
 //                        Log.d("SUBSCRIBED TO TOPIC", event.getKey().toString());
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
@@ -503,6 +508,7 @@ public class OpenEventDetail extends BaseActivity {
                                     Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(loginIntent);
+                                    finish();
                                 }
                             })
                             .setTitle("Please login to boost.")
@@ -580,9 +586,7 @@ public class OpenEventDetail extends BaseActivity {
                     writer.flush();
 
                     Log.d("event notification", connection.getResponseMessage());
-                }
-
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

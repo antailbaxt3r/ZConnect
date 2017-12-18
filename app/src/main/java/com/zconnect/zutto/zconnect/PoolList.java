@@ -150,11 +150,11 @@ public class PoolList extends AppCompatActivity {
                     if (source != null && destination != null && date != null && cabItemFormatVector != null) {
                         if (cabItemFormatVector.get(i).getSource() != null && cabItemFormatVector.get(i).getDestination() != null
                                 && cabItemFormatVector.get(i).getDate() != null) {
-                        if(cabItemFormatVector.get(i).getSource().equals(source)&&
-                                cabItemFormatVector.get(i).getDestination().equals(destination) &&
-                                cabItemFormatVector.get(i).getDate().equals(date)){
-                            cabItemFormats.add(cabItemFormatVector.get(i));
-                        }
+                            if (cabItemFormatVector.get(i).getSource().equals(source) &&
+                                    cabItemFormatVector.get(i).getDestination().equals(destination) &&
+                                    cabItemFormatVector.get(i).getDate().equals(date)) {
+                                cabItemFormats.add(cabItemFormatVector.get(i));
+                            }
                         }
                     }
                 }

@@ -46,7 +46,7 @@ public class Event implements Serializable {
         return Verified;
     }
 
-    public double getBoostCount(){
+    public double getBoostCount() {
         return BoostCount;
     }
 
@@ -62,7 +62,9 @@ public class Event implements Serializable {
         return EventDate;
     }
 
-    public Long getEventTimeMillis() { return EventTimeMillis; }
+    public Long getEventTimeMillis() {
+        return EventTimeMillis;
+    }
 
     public String getFormatDate() {
         return FormatDate;
@@ -105,5 +107,7 @@ public class Event implements Serializable {
         return lat;
     }
 
-    public String getUserID() {return UserId;}
+    public String getUserID() {
+        return UserId;
+    }
 }

@@ -113,7 +113,7 @@ public class Shortlisted extends BaseActivity {
         private void setData(final int pos) {
             final SimpleDraweeView image = (SimpleDraweeView) itemView.findViewById(R.id.sdv_avatar_contact_item);
             image.setImageURI(images.get(pos));
-            ((TextView)itemView.findViewById(R.id.tv_name_contact_item)).setText(names.get(pos));
+            ((TextView) itemView.findViewById(R.id.tv_name_contact_item)).setText(names.get(pos));
             itemView.findViewById(R.id.ib_call_contact_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

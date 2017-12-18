@@ -92,6 +92,7 @@ public class CabListOfPeople extends BaseActivity {
                 }
 
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
