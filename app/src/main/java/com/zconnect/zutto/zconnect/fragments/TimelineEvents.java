@@ -178,7 +178,7 @@ public class TimelineEvents extends Fragment {
             });
         }
 
-        public void setEventName(String eventName) {
+        public void setEventName(String eventName, String verified) {
             if (eventName != null) {
                 TextView post_name = (TextView) mView.findViewById(R.id.title);
                 if(verified.equals("true")){

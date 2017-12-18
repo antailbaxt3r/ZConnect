@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -37,6 +38,7 @@ public class NotificationService extends FirebaseMessagingService {
                 final String key = data.get("Key").toString();
                 // use this to notify users who have boosted if event details have been changed
                 FirebaseDatabase.getInstance().getReference("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Event format = dataSnapshot.getValue(Event.class);
