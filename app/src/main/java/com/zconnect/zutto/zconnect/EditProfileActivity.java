@@ -339,6 +339,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newPost.child("category").setValue(category);
             newPost.child("email").setValue(userEmail);
             newPost.child("skills").setValue(skills);
+            newPost.child("Uid").setValue(mUser.getUid().toString());
             if (host.equals("none")) {
                 newPost.child("hostel").setValue(hostel);
             } else {

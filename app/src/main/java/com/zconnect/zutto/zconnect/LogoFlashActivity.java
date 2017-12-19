@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -26,6 +27,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -83,8 +87,89 @@ public class LogoFlashActivity extends BaseActivity {
                 }
 
             }
-        }, 2000);
+        },2000);
+
+
     }
+
+//    void link(){
+//
+//        final DatabaseReference mData, mPhone;
+//        mData= FirebaseDatabase.getInstance().getReference().child("Users");
+//        mPhone= FirebaseDatabase.getInstance().getReference().child("Phonebook");
+//
+//                mPhone.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot2) {
+//
+//                        int s=0,t=0,a=0;
+//                            for (DataSnapshot Phone: dataSnapshot2.getChildren()) {
+//                                t++;
+//
+//                                if(Phone.child("category").getValue().equals("A")){
+//                                    a++;
+//                                }
+//                                try{
+//                                    if (Phone.hasChild("Uid")) {
+//                                        s++;
+////                                        DatabaseReference addUID = mPhone.child(Phone.getKey().toString());
+////                                        Map<String, Object> taskMap = new HashMap<>();
+////                                        taskMap.put("Uid", User.getKey().toString());
+////                                        addUID.updateChildren(taskMap);
+//                                    }
+//                                }catch (Exception e){
+//
+//                                }
+//                            }
+//                        Toast.makeText( LogoFlashActivity.this,"Contains UID"+ String.valueOf(s)+"  "+"Total" + String.valueOf(t)+"  Faculty"+  String.valueOf(a) , Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//
+//
+////        mData.addValueEventListener(new ValueEventListener() {
+////            @Override
+////            public void onDataChange(DataSnapshot dataSnapshot) {
+////
+//////                mPhone.addValueEventListener(new ValueEventListener() {
+//////                    @Override
+//////                    public void onDataChange(DataSnapshot dataSnapshot2) {
+//////                        for (DataSnapshot User: dataSnapshot.getChildren()) {
+//////                            for (DataSnapshot Phone: dataSnapshot2.getChildren()){
+//////                                if (User.child("Email").getValue().equals(Phone.child("email").getValue()) && User.child("Email").getValue().equals("f2015418@goa.bits-pilani.ac.in")){
+////////                                    DatabaseReference addUID = mPhone.child(Phone.getKey().toString());
+////////                                    Map<String, Object> taskMap = new HashMap<>();
+////////                                    taskMap.put("Uid", User.getKey().toString());
+////////                                    addUID.updateChildren(taskMap);
+//////                                   // Toast.makeText(LogoFlashActivity.this, Phone.child("email").getValue().toString(), Toast.LENGTH_SHORT).show();
+//////
+//////                                }
+//////                                Log.i("Uid",Phone.child("email").getValue().toString());
+//////                            }
+//////                        }
+//////                    }
+//////
+//////                    @Override
+//////                    public void onCancelled(DatabaseError databaseError) {
+//////
+//////                    }
+//////                });
+////
+////
+////
+////            }
+////
+////            @Override
+////            public void onCancelled(DatabaseError databaseError) {
+////
+////            }
+////        });
+//
 
     public boolean checkPermission() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
