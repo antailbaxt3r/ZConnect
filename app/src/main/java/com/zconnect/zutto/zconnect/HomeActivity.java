@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -30,6 +32,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -111,6 +115,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference phoneBookDbRef;
     private DatabaseReference mDatabasePopUps;
+
+    private Boolean isFabOpen = false;
+    private FloatingActionButton fab,fab1,fab2,fab3;
+    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+
     /**
      * /ui node
      */
@@ -194,6 +203,65 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+        //Floating Buttons
+        fab = (FloatingActionButton)findViewById(R.id.fab);
+        fab1 = (FloatingActionButton)findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton)findViewById(R.id.fab2);
+        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+                if (!status) {
+                    animateFAB();
+                }else {
+                    alertBox();
+                }
+            }
+        });
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+                if (!status) {
+                    CounterManager.StoreRoomFABclick();
+                    Intent intent = new Intent(getApplicationContext(), AddProduct.class);
+                    startActivity(intent);
+                }
+            }
+        });
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+                if (!status) {
+                    CounterManager.eventAddClick();
+                    Intent intent = new Intent(getApplicationContext(), AddEvent.class);
+                    startActivity(intent);
+                }
+            }
+        });
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+                if (!status) {
+                    Intent intent = new Intent(getApplicationContext(), AddEvent.class);
+                    startActivity(intent);
+                }
+            }
+        });
+
+
 
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -218,6 +286,60 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
 
 
+    }
+
+    void alertBox(){
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getApplicationContext());
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage("Please Log In to access this feature.")
+                .setTitle("Dear Guest!");
+
+        builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+            }
+        });
+        builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+    public void animateFAB() {
+
+        if (isFabOpen) {
+
+            fab.startAnimation(rotate_backward);
+            fab1.startAnimation(fab_close);
+            fab2.startAnimation(fab_close);
+            fab3.startAnimation(fab_close);
+            fab1.setClickable(false);
+            fab2.setClickable(false);
+            fab3.setClickable(false);
+            isFabOpen = false;
+            Log.d("Raj", "close");
+
+        } else {
+
+            fab.startAnimation(rotate_forward);
+            fab1.startAnimation(fab_open);
+            fab2.startAnimation(fab_open);
+            fab3.startAnimation(fab_open);
+            fab1.setClickable(true);
+            fab2.setClickable(true);
+            fab3.setClickable(true);
+            isFabOpen = true;
+            Log.d("Raj", "open");
+
+        }
     }
 
 

@@ -55,42 +55,6 @@ public class TabStoreRoom extends Fragment {
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tab_layout_app_bar_home);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-                Boolean status = sharedPref.getBoolean("mode", false);
-                if (!status) {
-                    CounterManager.StoreRoomFABclick();
-                    Intent intent = new Intent(getContext(), AddProduct.class);
-                    startActivity(intent);
-                } else {
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
-
-                    // 2. Chain together various setter methods to set the dialog characteristics
-                    builder.setMessage("Please Log In to access this feature.")
-                            .setTitle("Dear Guest!");
-
-                    builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(getContext(), LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-
-                        }
-                    });
-                    builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                        }
-                    });
-                    android.app.AlertDialog dialog = builder.create();
-                    dialog.show();
-                }
-            }
-        });
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
