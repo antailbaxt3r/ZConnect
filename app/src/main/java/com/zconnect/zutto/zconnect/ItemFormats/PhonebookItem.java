@@ -8,18 +8,24 @@ public class PhonebookItem {
     String imgurl;
     String name;
     String number;
+    String Uid;
     PhonebookDisplayItem phonebookDisplayItem;
 
-    public PhonebookItem(String imgurl, String name, String number, PhonebookDisplayItem phonebookDisplayItem) {
+    public PhonebookItem(String imgurl, String name, String number, String Uid, PhonebookDisplayItem phonebookDisplayItem) {
         this.imgurl = imgurl;
         this.name = name;
         this.number = number;
         this.phonebookDisplayItem = phonebookDisplayItem;
+        this.Uid = Uid;
     }
 
     public PhonebookItem() {
     }
 
+    public String getUid(){
+        if (phonebookDisplayItem != null) return phonebookDisplayItem.getUid();
+        else return "";
+    }
     public PhonebookDisplayItem getPhonebookDisplayItem() {
         return phonebookDisplayItem;
     }

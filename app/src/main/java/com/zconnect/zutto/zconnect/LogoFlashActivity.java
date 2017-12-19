@@ -73,6 +73,8 @@ public class LogoFlashActivity extends BaseActivity {
 
             }
         });
+
+//        link();
         // Setting full screen view
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         new Timer().schedule(new TimerTask() {
@@ -104,18 +106,18 @@ public class LogoFlashActivity extends BaseActivity {
 //
 //                        int s=0,t=0,a=0;
 //                            for (DataSnapshot Phone: dataSnapshot2.getChildren()) {
-//                                t++;
-//
-//                                if(Phone.child("category").getValue().equals("A")){
-//                                    a++;
-//                                }
+////                                t++;
+////
+////                                if(Phone.child("category").getValue().equals("A")){
+////                                    a++;
+////                                }
 //                                try{
-//                                    if (Phone.hasChild("Uid")) {
-//                                        s++;
-////                                        DatabaseReference addUID = mPhone.child(Phone.getKey().toString());
-////                                        Map<String, Object> taskMap = new HashMap<>();
-////                                        taskMap.put("Uid", User.getKey().toString());
-////                                        addUID.updateChildren(taskMap);
+//                                    if (!Phone.hasChild("Uid")) {
+//
+//                                        DatabaseReference addUID = mPhone.child(Phone.getKey().toString());
+//                                        Map<String, Object> taskMap = new HashMap<>();
+//                                        taskMap.put("Uid", "null");
+//                                        addUID.updateChildren(taskMap);
 //                                    }
 //                                }catch (Exception e){
 //
@@ -130,7 +132,7 @@ public class LogoFlashActivity extends BaseActivity {
 //                    }
 //                });
 //            }
-//
+
 //
 ////        mData.addValueEventListener(new ValueEventListener() {
 ////            @Override

@@ -1,6 +1,9 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -8,19 +11,29 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.auth.api.Auth;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import mabbas007.tagsedittext.TagsEditText;
 
 public class PhonebookDetails extends BaseActivity {
-    String name, number, email, desc, imagelink ,skills ,category;
+    String name, number, email, desc, imagelink ,skills ,category, Uid;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
@@ -31,7 +44,11 @@ public class PhonebookDetails extends BaseActivity {
     private ImageView mail, call;
     private CardView thankuCard;
     private CardView sorryCard;
-
+    private EditText textMessage;
+    private LinearLayout anonymMessageLayout;
+    private ImageButton sendButton;
+    private Boolean flagforNull=false;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +64,13 @@ public class PhonebookDetails extends BaseActivity {
 
         sorryCard = (CardView) findViewById(R.id.contact_details_sorry_card);
         thankuCard = (CardView) findViewById(R.id.contact_details_thankyou_card);
-
+        textMessage = (EditText) findViewById(R.id.textInput);
+        anonymMessageLayout = (LinearLayout) findViewById(R.id.anonymTextInput);
+        sendButton = (ImageButton) findViewById(R.id.send);
 
         call = (ImageView) findViewById(R.id.ib_call_contact_item);
         mail = (ImageView) findViewById(R.id.mailbutton);
+        mAuth = FirebaseAuth.getInstance();
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -79,6 +99,30 @@ public class PhonebookDetails extends BaseActivity {
         email = getIntent().getStringExtra("email");
         skills=getIntent().getStringExtra("skills");
         category=getIntent().getStringExtra("category");
+        Uid=getIntent().getStringExtra("Uid");
+
+        if (Uid.equals("null"))
+        {
+            anonymMessageLayout.setVisibility(View.GONE);
+            flagforNull=true;
+        }
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String textMessageString;
+                textMessageString = textMessage.getText().toString();
+                if (textMessageString!=null && !flagforNull){
+                    DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("Users").child(Uid).child("Messages").push();
+                    UsersReference.child("Message").setValue(textMessageString);
+                    UsersReference.child("MessageId").setValue(UsersReference.getKey());
+                    UsersReference.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
+                    textMessage.setText(null);
+                    Toast.makeText(PhonebookDetails.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         if (category.contains("S")) {
             editTextSkills.setVisibility(View.VISIBLE);
@@ -144,6 +188,11 @@ public class PhonebookDetails extends BaseActivity {
             //image.setImageURI((Uri.parse(imagelink)));
             editTextEmail.setText(email);
         }
+
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+
 
         //changing fonts
         Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");

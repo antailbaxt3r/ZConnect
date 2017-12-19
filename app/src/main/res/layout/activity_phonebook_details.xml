@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/CoordinatorLt"
@@ -9,6 +9,7 @@
     tools:context="com.zconnect.zutto.zconnect.PhonebookDetails">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/topToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -23,12 +24,54 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:layout_below="@id/topToolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <include layout="@layout/content_phonebook_details" />
+
     </android.support.v4.widget.NestedScrollView>
 
+    <LinearLayout
+        android:id="@+id/anonymTextInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
-</android.support.design.widget.CoordinatorLayout>
+
+        <EditText
+            android:id="@+id/textInput"
+            android:layout_margin="10dp"
+            android:padding="5dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circular_text_background"
+            android:textSize="18dp"
+            android:hint="Send Anonymously"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/send"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:scaleType="fitXY"
+                android:background="@drawable/ic_send_white_24dp"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

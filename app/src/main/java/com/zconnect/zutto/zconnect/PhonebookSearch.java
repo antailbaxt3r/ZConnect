@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -97,18 +98,19 @@ public class PhonebookSearch extends BaseActivity {
                         item.setName(child.child("name").getValue(String.class));
                         item.setNumber(child.child("contactDescTv").getValue(String.class));
                         item.setSkills(child.child("skills").getValue(String.class));
-
+                        item.setUid(child.child("Uid").getValue(String.class));
 
                         String name = child.child("name").getValue(String.class);
                         String number = child.child("contactDescTv").getValue(String.class);
                         String details = child.child("desc").getValue(String.class);
                         String skills = child.child("skills").getValue(String.class);
+                        String uid = child.child("Uid").getValue(String.class);
 
                         String imageurl = child.child("imageurl").getValue(String.class);
                         String title = name + number + details + skills;
 
                         //Type 1 and 2 check
-                        PhonebookItem temp = new PhonebookItem(imageurl, name, number, item);
+                        PhonebookItem temp = new PhonebookItem(imageurl, name, number,uid, item);
                         if (title.toLowerCase().contains(query.toLowerCase())) {
                             searchContact.add(temp);
                         } else {
