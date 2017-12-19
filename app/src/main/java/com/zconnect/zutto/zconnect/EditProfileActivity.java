@@ -331,11 +331,10 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             snackbar.show();
             mProgress.dismiss();
         } else {
-            //TODO: verify contactDescTv [IMP]
             final DatabaseReference newPost = phoneBookDbRef.child(number);
             newPost.child("name").setValue(userName);
             newPost.child("desc").setValue(desc);
-            newPost.child("contactDescTv").setValue(number);
+            newPost.child("number").setValue(number);
             newPost.child("category").setValue(category);
             newPost.child("email").setValue(userEmail);
             newPost.child("skills").setValue(skills);
