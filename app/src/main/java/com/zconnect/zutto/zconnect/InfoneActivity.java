@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.fragments.AnonymMessages;
 import com.zconnect.zutto.zconnect.fragments.InfoneFacultyFragment;
 
 import java.util.ArrayList;
@@ -173,6 +174,7 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
         adapter.addFragment(new InfoneFacultyFragment(), "Admin");
         if (!guestMode) adapter.addFragment(new PhonebookStudents(), "Students");
         adapter.addFragment(new PhonebookOthersCategories(), "others");
+        adapter.addFragment(new AnonymMessages(), "Messages");
         viewPager.setAdapter(adapter);
 
         increaseCount(guestMode, viewPager.getCurrentItem());
@@ -200,6 +202,10 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
                 CounterManager.infoneOpenTab("Students");
             else if (position == 2)
                 CounterManager.infoneOpenTab("others");
+            else if (position ==3)
+            {
+                CounterManager.infoneOpenTab("AnonymousMessages");
+            }
         } else {
             if (position == 0)
                 CounterManager.infoneOpenTab("Admin");
