@@ -4,9 +4,11 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,10 +18,19 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Campus_Map extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
+    private DatabaseReference mDatabaseMapLocation;
+    private String centerLatS, centerLongS;
+    private double centerLat, centerLong, nameLat, nameLong, rightTopLat, rightTopLong,
+            leftBottomLat, leftBottomLong;
 
     public static void setTranslucentStatusBar(Window window) {
         if (window == null) return;
@@ -72,6 +83,9 @@ public class Campus_Map extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
+        getLatLong(map);
+
+        /*
         LatLng leftBottomBound = new LatLng(15.385178, 73.868207);
         LatLng rightTopBound = new LatLng(15.394957, 73.885857);
         LatLng centre = new LatLng(15.389557, 73.876974);
@@ -156,7 +170,76 @@ public class Campus_Map extends FragmentActivity implements OnMapReadyCallback {
                 .tilt(50)
                 .build();
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+*/
 
+    }
+
+    void getLatLong(final GoogleMap map) {
+
+        mDatabaseMapLocation = FirebaseDatabase.getInstance().getReference().child("Maps");
+
+        mDatabaseMapLocation.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                DataSnapshot child = snapshot.child("Center");
+
+
+                String lat = child.child("centerLat").getValue(String.class);
+                String log = child.child("centerLong").getValue(String.class);
+                String latName = child.child("nameLat").getValue(String.class);
+                String logName = child.child("nameLong").getValue(String.class);
+                String latLB = child.child("leftBottomBoundLat").getValue(String.class);
+                String logLB = child.child("leftBottomBoundLong").getValue(String.class);
+                String latRT = child.child("rightTopBoundLat").getValue(String.class);
+                String logRT = child.child("rightTopBoundLong").getValue(String.class);
+                String placeName = child.child("name").getValue(String.class);
+
+                if (log!= null && lat!= null && latName!= null&& latLB!= null&& latRT!= null &&
+                        logLB!=null && logRT!=null && logName!=null) {
+
+                    centerLong=Double.parseDouble(log);
+                    centerLat=Double.parseDouble(lat);
+
+                    nameLat=Double.parseDouble(latName);
+                    nameLong=Double.parseDouble(logName);
+                    rightTopLat=Double.parseDouble(latRT);
+                    rightTopLong=Double.parseDouble(logRT);
+                    leftBottomLat=Double.parseDouble(latLB);
+                    leftBottomLong=Double.parseDouble(logLB);
+                }
+
+                LatLng leftBottomBound = new LatLng(leftBottomLat, leftBottomLong);
+                LatLng rightTopBound = new LatLng(rightTopLat, rightTopLong);
+                LatLng centre = new LatLng(centerLat, centerLong);
+                // Add a marker in Sydney and move the camera
+                LatLng bits = new LatLng(nameLat, nameLong);
+                map.moveCamera(CameraUpdateFactory.newLatLng(bits));
+                LatLngBounds bounds = new LatLngBounds(leftBottomBound, rightTopBound);
+
+                map.setLatLngBoundsForCameraTarget(bounds);
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(centre, 16f));
+
+                LatLng marker;
+                marker = new LatLng(nameLat, nameLong);
+                map.addMarker(new MarkerOptions().position(marker).title(placeName));
+
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(centre)
+                        .zoom(16f)
+                        .tilt(50)
+                        .build();
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+                Log.e("Campus_Map", " Maps center etc database fetch Cancelled");
+                Toast.makeText(Campus_Map.this, "Need Internet Connection for Maps", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
     }
 }
