@@ -17,10 +17,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -50,6 +54,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,16 +74,18 @@ public class AddEvent extends BaseActivity {
     private ImageView mAddImage;
     private EditText mEventName;
     private EditText mEventDescription;
-    private EditText mVenue;
+    private AutoCompleteTextView mVenue;
     private ImageView mDirections;
     private StorageReference mStorage;
     private DatabaseReference mDatabaseVerified;
     private DatabaseReference mDatabase;
+    private DatabaseReference mDatabaseVenues;
     private LinearLayout CalendarButton;
     private ProgressDialog mProgress;
     private TextView dateTime;
     private Boolean editImageflag = false;
     private Long eventTimeMillis;
+    private CheckBox gmapLocationTaken;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
         @Override
         public void onDateTimeSet(Date date) {
@@ -88,6 +95,9 @@ public class AddEvent extends BaseActivity {
 
         }
     };
+
+    ArrayList<String> venueOptions = new ArrayList<>();
+
     private IntentHandle intentHandle = new IntentHandle();
 
     private FirebaseAuth mAuth;
@@ -136,8 +146,11 @@ public class AddEvent extends BaseActivity {
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
+        gmapLocationTaken=(CheckBox) findViewById(R.id.add_events_location_checkbox);
         mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/NotVerifiedPosts");
+
+        gmapLocationTaken.setVisibility(View.INVISIBLE);
 
         Bundle bundle = getIntent().getExtras();
         String EventID = null;
@@ -147,13 +160,9 @@ public class AddEvent extends BaseActivity {
 
         Toast.makeText(this, EventID, Toast.LENGTH_SHORT).show();
 
-        /*mEventDescription.setMovementMethod(LinkMovementMethod.getInstance());
-
-        Linkify.addLinks(mEventDescription, Linkify.WEB_URLS);*/
-
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (LinearLayout) findViewById(R.id.dateAndTime);
-        mVenue = (EditText) findViewById(R.id.VenueText);
+        mVenue = (AutoCompleteTextView) findViewById(R.id.VenueText);
         mDirections = (ImageView) findViewById(R.id.venuePicker);
         dateTime = (TextView) findViewById(R.id.dateText);
 
@@ -237,7 +246,7 @@ public class AddEvent extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    if (child.getValue().equals(emailId)) {
+                    if (child.getValue()!=null && child.getValue().equals(emailId)) {
                         flag = true;
                     }
                 }
@@ -249,6 +258,43 @@ public class AddEvent extends BaseActivity {
             }
         });
 
+        // to get venues from firebase depending on college location( venue names only)
+        // which will then be given as auto correct options in the edit text for event venue
+        mDatabaseVenues= FirebaseDatabase.getInstance().getReference().child("Event/Venues/");
+
+        mDatabaseVenues.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                int i=0;
+                for (DataSnapshot child : snapshot.getChildren()) {
+
+                    if(child.getValue()!=null){
+                        venueOptions.add(i,child.getValue().toString());
+                        i++;
+                    }
+                    else {
+                        venueOptions.add("Auditorium");
+                        venueOptions.add("Main lawns");
+                        break;
+                    }
+                }
+
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(AddEvent.this,
+                        android.R.layout.select_dialog_item, venueOptions);
+                mVenue.setAdapter(arrayAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+                Log.e("AddEvent"," Venue database fetch Cancelled");
+                venueOptions.add("Auditorium");
+                venueOptions.add("Main lawns");
+
+            }
+        });
 
     }
 
@@ -586,12 +632,11 @@ public class AddEvent extends BaseActivity {
         if (requestCode == 124 && resultCode == RESULT_OK) {
             Venue = PlacePicker.getPlace(this, data);
             String addr = Venue.getName().toString() + Venue.getAddress();
-            mVenue.setText(addr);
+            //mVenue.setText(addr);
+            gmapLocationTaken.setVisibility(View.VISIBLE);
+            gmapLocationTaken.setChecked(true);
             selectedFromMap = true;
         }
 
     }
 }
-
-
-
