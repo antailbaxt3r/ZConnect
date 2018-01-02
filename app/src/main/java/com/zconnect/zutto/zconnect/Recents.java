@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,6 +18,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import butterknife.BindView;
@@ -31,6 +34,8 @@ public class Recents extends Fragment {
     private RecentsRVAdapter adapter;
     @BindView(R.id.recent_rv)
     RecyclerView recyclerView;
+    private Query mStoreroomDatabase;
+    List<String> storeroomProductList = new ArrayList<String>();
     private DatabaseReference homeDbRef = FirebaseDatabase.getInstance().getReference().child("home");
     Query queryRef = homeDbRef.limitToLast(15);
     private ValueEventListener queryResponseListener;
@@ -57,6 +62,21 @@ public class Recents extends Fragment {
         //Keep databaseReference in sync even without needing to call valueEventListener
         homeDbRef.keepSynced(true);
         queryRef.keepSynced(true);
+        mStoreroomDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        mStoreroomDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    storeroomProductList.add(shot.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         queryResponseListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -84,7 +104,7 @@ public class Recents extends Fragment {
         productLinearLayout.setStackFromEnd(true);
         recyclerView.setLayoutManager(productLinearLayout);
         //Setup layout manager. VERY IMP ALWAYS
-        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity());
+        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(),storeroomProductList);
         recyclerView.setAdapter(adapter);
         return view;
     }

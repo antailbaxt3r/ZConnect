@@ -63,7 +63,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OpenEventDetail extends BaseActivity {
+public class  OpenEventDetail extends BaseActivity {
 
     DatabaseReference mDatabase;
     ImageView EventImage;
@@ -150,60 +150,60 @@ public class OpenEventDetail extends BaseActivity {
                 mProg.dismiss();
                 startActivity(i, optionsCompat.toBundle());
             }
+        });            Bundle extras = getIntent().getExtras();
+        event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(event.getEventName(), 1);
+
+
+        venueDirections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CounterManager.eventgetDirection(event.getKey());
+                try {
+                    if (event.getLat() == 0 && event.getLon() == 0) {
+                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                    } else {
+                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
+                }
+            }
         });
 
+        String eventDate[] = (event.getEventDate().split("\\s+"));
+        String date = "";
+        int i = 0;
+        while (i < 3) {
+            date = date + " " + eventDate[i];
+            i++;
+        }
+
+        try {
+            EventDate.setText(date);
+            EventDescription.setText(event.getEventDescription());
+            EventVenue.setText(event.getVenue());
+            getSupportActionBar().setTitle(event.getEventName());
+            Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
+            EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+            boostCounter();
+            setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
+        }catch (Exception e) {
+            Log.d("Error Alert: ", e.getMessage());
+        }
+
+
         if(tag!=null&&tag.equals("1")){
-            Bundle extras = getIntent().getExtras();
-            event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
-
-            NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            mNotificationManager.cancel(event.getEventName(), 1);
-
-
-                venueDirections.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CounterManager.eventgetDirection(event.getKey());
-                        try {
-                            if (event.getLat() == 0 && event.getLon() == 0) {
-                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
-                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                mapIntent.setPackage("com.google.android.apps.maps");
-                                startActivity(mapIntent);
-                            } else {
-                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
-                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                mapIntent.setPackage("com.google.android.apps.maps");
-                                startActivity(mapIntent);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-
-            String eventDate[] = (event.getEventDate().split("\\s+"));
-            String date = "";
-            int i = 0;
-            while (i < 3) {
-                date = date + " " + eventDate[i];
-                i++;
-            }
-
-            try {
-                EventDate.setText(date);
-                EventDescription.setText(event.getEventDescription());
-                EventVenue.setText(event.getVenue());
-                getSupportActionBar().setTitle(event.getEventName());
-                Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
-                EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-                boostCounter();
-                setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-            }catch (Exception e) {
-                Log.d("Error Alert: ", e.getMessage());
-            }
         } else if (id != null) {
             databaseReference= FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(id);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
