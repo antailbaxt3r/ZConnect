@@ -149,7 +149,8 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         productTags.setTagsWithSpacesEnabled(true);
 
         productTags.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.productTags)));
+                android.R.layout.simple_dropdown_item_1line,
+                getResources().getStringArray(R.array.productTags)));
         productTags.setThreshold(1);
 
 
@@ -361,4 +362,3 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     }
 
 }
-
