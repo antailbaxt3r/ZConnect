@@ -111,11 +111,10 @@ public class Shortlisted extends BaseActivity {
         }
 
         private void setData(final int pos) {
-            final SimpleDraweeView image = (SimpleDraweeView) itemView.findViewById(R.id.phonebook_item_format_image);
+            final SimpleDraweeView image = (SimpleDraweeView) itemView.findViewById(R.id.sdv_avatar_contact_item);
             image.setImageURI(images.get(pos));
-            ((TextView)itemView.findViewById(R.id.phonebook_name1)).setText(names.get(pos));
-            ((TextView)itemView.findViewById(R.id.phonebook_number1)).setText(nos.get(pos));
-            itemView.findViewById(R.id.callbutton).setOnClickListener(new View.OnClickListener() {
+            ((TextView) itemView.findViewById(R.id.tv_name_contact_item)).setText(names.get(pos));
+            itemView.findViewById(R.id.ib_call_contact_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + nos.get(pos))));
@@ -130,7 +129,7 @@ public class Shortlisted extends BaseActivity {
         @Override
         public vh onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            View person = inflater.inflate(R.layout.phonebook_item_format, parent, false);
+            View person = inflater.inflate(R.layout.view_contect_item, parent, false);
             return new vh(person);
         }
 

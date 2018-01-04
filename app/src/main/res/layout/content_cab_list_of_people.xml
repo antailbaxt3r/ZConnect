@@ -18,17 +18,20 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/content_cabpeople_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+
+        android:layout_alignParentTop="true"
+        android:clipToPadding="false"
         android:scrollbars="vertical"/>
 
     <Button
         android:id="@+id/join"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/content_cabpeople_rv"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
         android:background="@drawable/curveradiusgoogle"
         android:text="Join"
-        android:textColor="@color/white"
-        android:textSize="20dp" />
+        android:textColor="@color/white" />
 </RelativeLayout>

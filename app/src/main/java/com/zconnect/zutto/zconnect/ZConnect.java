@@ -34,6 +34,5 @@ public class ZConnect extends Application {
 
         FirebaseApp.initializeApp(this);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 }

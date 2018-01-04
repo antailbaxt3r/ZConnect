@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/postImg"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/product"
             android:transitionName="@string/transition_string" />
@@ -28,25 +28,24 @@
             android:paddingBottom="0dp"
             android:paddingStart="10dp"
             android:paddingEnd="0dp"
-            android:paddingTop="10dp">
+            android:paddingTop="5dp">
 
             <TextView
                 android:id="@+id/productName"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight=".55"
                 tools:text="Product Name"
-                android:textSize="20sp"
+                android:textSize="16dp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".45"
-                tools:text="Price"
-                android:textSize="20sp"
-                android:textStyle="italic" />
+            <!--<TextView-->
+                <!--android:id="@+id/price"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight=".45"-->
+                <!--tools:text="Price"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textStyle="italic" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -79,40 +78,40 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/productDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            tools:text="Product Description"
-            android:textSize="14sp" />
+        <!--<TextView-->
+            <!--android:id="@+id/productDescription"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:paddingBottom="10dp"-->
+            <!--android:paddingLeft="10dp"-->
+            <!--android:paddingRight="10dp"-->
+            <!--tools:text="Product Description"-->
+            <!--android:textSize="14sp" />-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp">
+            android:padding="2dp">
 
             <Button
-                style="?attr/buttonBarButtonStyle"
                 android:id="@+id/shortList"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_height="30dp"
+                android:layout_margin="3dp"
                 android:layout_weight=".5"
                 android:background="@drawable/curvedradiusbutton_sr"
+                android:textSize="10dp"
                 android:text="Shortlist"
                 android:textColor="@color/white" />
 
             <Button
-                style="?attr/buttonBarButtonStyle"
                 android:id="@+id/sellerNumber"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_height="30dp"
+                android:layout_margin="3dp"
                 android:layout_weight=".5"
                 android:background="@drawable/curvedradiusbutton_sr"
+                android:textSize="10dp"
                 android:text="Call"
                 android:textColor="@color/white" />
         </LinearLayout>

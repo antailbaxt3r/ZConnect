@@ -36,9 +36,6 @@ import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ReservedTab extends Fragment {
 
     String reserveString;
@@ -127,7 +124,7 @@ public class ReservedTab extends Fragment {
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        CounterManager.StoroomShortListDelete(model.getCategory());
+                        CounterManager.StoroomShortListDelete(model.getCategory(), model.getKey());
                         viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key + "/UsersReserved");
 
                         mAuth = FirebaseAuth.getInstance();

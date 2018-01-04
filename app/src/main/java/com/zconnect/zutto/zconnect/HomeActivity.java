@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,26 +13,29 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +56,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,6 +63,15 @@ import butterknife.ButterKnife;
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final String TAG = getClass().getSimpleName();
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.toolbar_app_bar_home)
+    Toolbar toolbar;
+    @BindView(R.id.navigation)
+    TabLayout tabs;
+    String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
     private boolean doubleBackToExitPressedOnce = false;
     private ValueEventListener phoneBookValueEventListener;
     private ValueEventListener popupsListener;
@@ -77,18 +89,24 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private TextView navHeaderEmailTv;
     /**
      * Background of nav header.
+     <activity
+     android:name=".FullscreenActivity"
+     android:configChanges="orientation|keyboardHidden|screenSize"
+     android:label="@string/title_activity_fullscreen"
+     android:screenOrientation="portrait"
+     android:theme="@style/AppTheme.NoActionBar" />
+     <activity
+     android:name=".MyRides"
+     android:label="@string/title_activity_my_rides"
+     android:parentActivityName=".HomeActivity"
+     android:theme="@style/AppTheme.NoActionBar" />
+
+     <service android:name=".NotificationService">
+     <intent-filter>
+     <action android:name="com.google.firebase.MESSAGING_EVENT" />
+     </inte
      */
     private SimpleDraweeView navHeaderBackground;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-    @BindView(R.id.view_pager_app_bar_home)
-    ViewPager viewPager;
-    @BindView(R.id.tab_layout_app_bar_home)
-    TabLayout tabLayout;
-    @BindView(R.id.toolbar_app_bar_home)
-    Toolbar toolbar;
     private MenuItem editProfileItem;
     private ActionBarDrawerToggle toggle;
     private String userEmail;
@@ -97,6 +115,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference phoneBookDbRef;
     private DatabaseReference mDatabasePopUps;
+
+    private Boolean isFabOpen = false;
+    private FloatingActionButton fab,fab1,fab2,fab3;
+    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+
     /**
      * /ui node
      */
@@ -106,8 +129,21 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences defaultPrefs;
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
-    private Homescreen homescreen;
-    private Recents recents;
+    private Fragment recent, cab, infone, store, shop, events;
+    private DatabaseReference mDatabaseStats;
+    private DatabaseReference mDatabaseUserStats;
+    int UsersTotalNumbers = 0, TotalNumbers = 0;
+    int UsersTotalProducts = 0, TotalProducts = 0;
+    int UsersTotalOffers = 0, TotalOffers = 0;
+    int UsersTotalEvents = 0, TotalEvents = 0;
+    private ValueEventListener UserStats;
+    private ValueEventListener TotalStats;
+
+    TextView[] tabTitle= new TextView[6];
+    ImageView[] tabImage = new ImageView[6];
+    ImageView[] tabNotificationCircle = new ImageView[6];
+
+
 
     @SuppressLint("ApplySharedPref")
     @Override
@@ -115,6 +151,16 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+
+        recent = new Recents();
+        cab = new CabPooling();
+        infone = new InfoneActivity();
+        store = new TabStoreRoom();
+        shop = new Shop();
+        events = new TabbedEvents();
+        tabs();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
         uiDbRef = FirebaseDatabase.getInstance().getReference("ui");
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         guestPrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
@@ -142,8 +188,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        homescreen = new Homescreen();
-        recents = new Recents();
+
         initListeners();
         setSupportActionBar(toolbar);
 
@@ -152,12 +197,71 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorPrimary = ContextCompat.getColor(this, R.color.black);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
             getWindow().setStatusBarColor(colorDarkPrimary);
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+        //Floating Buttons
+        fab = (FloatingActionButton)findViewById(R.id.fab);
+        fab1 = (FloatingActionButton)findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton)findViewById(R.id.fab2);
+        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+                if (!status) {
+                    animateFAB();
+                }else {
+                    alertBox();
+                }
+            }
+        });
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+                if (!status) {
+                    CounterManager.StoreRoomFABclick();
+                    Intent intent = new Intent(getApplicationContext(), AddProduct.class);
+                    startActivity(intent);
+                }
+            }
+        });
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+                if (!status) {
+                    CounterManager.eventAddClick();
+                    Intent intent = new Intent(getApplicationContext(), AddEvent.class);
+                    startActivity(intent);
+                }
+            }
+        });
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+                if (!status) {
+                    Intent intent = new Intent(getApplicationContext(), AddEvent.class);
+                    startActivity(intent);
+                }
+            }
+        });
+
+
 
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -167,25 +271,311 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         navigationView.setNavigationItemSelectedListener(this);
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
 
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        setSupportActionBar(toolbar);
-
-        setupViewPager(viewPager);
-
-        //Setup tabLayout with viewpager
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.setCurrentItem(0);
 
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
 
         mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
         mDatabasePopUps.keepSynced(true);
+
+        if(mAuth.getCurrentUser()!=null) {
+            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid()).child("Stats");
+            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mDatabaseStats.addValueEventListener(TotalStats);
+            mDatabaseUserStats.addValueEventListener(UserStats);
+//            Toast.makeText(this, "Not null", Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
+    void alertBox(){
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getApplicationContext());
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage("Please Log In to access this feature.")
+                .setTitle("Dear Guest!");
+
+        builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+            }
+        });
+        builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+    public void animateFAB() {
+
+        if (isFabOpen) {
+
+            fab.startAnimation(rotate_backward);
+            fab1.startAnimation(fab_close);
+            fab2.startAnimation(fab_close);
+            fab3.startAnimation(fab_close);
+            fab1.setClickable(false);
+            fab2.setClickable(false);
+            fab3.setClickable(false);
+            isFabOpen = false;
+            Log.d("Raj", "close");
+
+        } else {
+
+            fab.startAnimation(rotate_forward);
+            fab1.startAnimation(fab_open);
+            fab2.startAnimation(fab_open);
+            fab3.startAnimation(fab_open);
+            fab1.setClickable(true);
+            fab2.setClickable(true);
+            fab3.setClickable(true);
+            isFabOpen = true;
+            Log.d("Raj", "open");
+
+        }
+    }
+
+
+    void setNotificationCircle(){
+        if(TotalEvents>UsersTotalEvents){
+            tabNotificationCircle[4].setVisibility(View.VISIBLE);
+        }else{
+            tabNotificationCircle[4].setVisibility(View.GONE);
+        }
+        if (TotalNumbers>UsersTotalNumbers){
+            tabNotificationCircle[1].setVisibility(View.VISIBLE);
+        }else{
+            tabNotificationCircle[1].setVisibility(View.GONE);
+        }
+        if(TotalOffers>UsersTotalOffers){
+            tabNotificationCircle[5].setVisibility(View.VISIBLE);
+        }else{
+            tabNotificationCircle[5].setVisibility(View.GONE);
+        }
+        if(TotalProducts>UsersTotalProducts){
+            tabNotificationCircle[2].setVisibility(View.VISIBLE);
+        }else{
+            tabNotificationCircle[2].setVisibility(View.GONE);
+        }
+    }
+
+    void tabs() {
+
+        View vRecents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab recentsT = tabs.newTab();
+
+        tabTitle[0] = (TextView) vRecents.findViewById(R.id.tabTitle);
+        tabTitle[0].setText("Recents");
+
+        tabImage[0] = (ImageView) vRecents.findViewById(R.id.tabImage);
+        tabImage[0].setImageResource(R.drawable.ic_home_white_24dp);
+
+        tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
+
+        recentsT.setCustomView(vRecents);
+
+
+
+
+        View vInfone = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab infoneT = tabs.newTab();
+
+        tabTitle[1] = (TextView) vInfone.findViewById(R.id.tabTitle);
+        tabTitle[1].setText("Infone");
+
+        tabImage[1] = (ImageView) vInfone.findViewById(R.id.tabImage);
+        tabImage[1].setImageResource(R.drawable.ic_people_white_24dp);
+
+        tabNotificationCircle[1] = (ImageView) vInfone.findViewById(R.id.notification_circle);
+        vInfone.setAlpha((float) 0.7);
+        infoneT.setCustomView(vInfone);
+
+
+        View vStore = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab storeT = tabs.newTab();
+
+        tabTitle[2] = (TextView) vStore.findViewById(R.id.tabTitle);
+        tabTitle[2].setText("StoreRoom");
+
+        tabImage[2] = (ImageView) vStore.findViewById(R.id.tabImage);
+        tabImage[2].setImageResource(R.drawable.ic_local_mall_white_24dp);
+
+        tabNotificationCircle[2] = (ImageView) vStore.findViewById(R.id.notification_circle);
+        vStore.setAlpha((float) 0.7);
+        storeT.setCustomView(vStore);
+
+
+
+        View vCab = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab cabT = tabs.newTab();
+
+        tabTitle[3] = (TextView) vCab.findViewById(R.id.tabTitle);
+        tabTitle[3].setText("CabPool");
+
+        tabImage[3] = (ImageView) vCab.findViewById(R.id.tabImage);
+        tabImage[3].setImageResource(R.drawable.ic_local_taxi_white_24dp);
+
+        tabNotificationCircle[3] = (ImageView) vCab.findViewById(R.id.notification_circle);
+        vCab.setAlpha((float) 0.7);
+        cabT.setCustomView(vCab);
+
+
+
+
+        View vEvents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab eventT = tabs.newTab();
+
+        tabTitle[4] = (TextView) vEvents.findViewById(R.id.tabTitle);
+        tabTitle[4].setText("Events");
+
+        tabImage[4] = (ImageView) vEvents.findViewById(R.id.tabImage);
+        tabImage[4].setImageResource(R.drawable.ic_event_white_24dp);
+
+        tabNotificationCircle[4] = (ImageView) vEvents.findViewById(R.id.notification_circle);
+        vEvents.setAlpha((float) 0.7);
+        eventT.setCustomView(vEvents);
+
+
+
+
+        View vShop = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab shopT = tabs.newTab();
+
+        tabTitle[5] = (TextView) vShop.findViewById(R.id.tabTitle);
+        tabTitle[5].setText("Shops");
+
+        tabImage[5] = (ImageView) vShop.findViewById(R.id.tabImage);
+        tabImage[5].setImageResource(R.drawable.ic_store_white_24dp);
+
+        tabNotificationCircle[5] = (ImageView) vShop.findViewById(R.id.notification_circle);
+        vShop.setAlpha((float) 0.7);
+        shopT.setCustomView(vShop);
+
+
+        tabs.addTab(recentsT);
+        tabs.addTab(infoneT);
+        tabs.addTab(storeT);
+        tabs.addTab(eventT);
+        tabs.addTab(cabT);
+        tabs.addTab(shopT);
+
+
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int pos = tab.getPosition();
+                tab.getCustomView().setAlpha((float) 1);
+                switch (pos) {
+                    case 0: {
+                        setActionBarTitle("BITS Connect");
+                        CounterManager.RecentsOpen();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+                        break;
+                    }
+                    case 1: {
+                        setActionBarTitle("Infone");
+                        CounterManager.InfoneOpen();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
+                        break;
+                    }
+                    case 5: {
+                        setActionBarTitle("Shops");
+                        CounterManager.ShopOpen();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
+
+                        break;
+                    }
+                    case 2: {
+                        setActionBarTitle("StoreRoom");
+                        CounterManager.StoreRoomOpen();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
+                        break;
+                    }
+                    case 3: {
+                        setActionBarTitle("Events");
+                        CounterManager.EventOpen();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
+                        break;
+                    }
+                    case 4: {
+                        setActionBarTitle("Cab Pool");
+                        CounterManager.openCabPool();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tab.getCustomView().setAlpha((float) .7);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+    }
     /**
+     *
+     *
      * All {@link ValueEventListener}s used in this class are defined here.
      */
     private void initListeners() {
+
+        TotalStats = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+
+//                setNotificationCircle();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: ", databaseError.toException());
+            }
+
+
+        };
+        UserStats = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child("TotalNumbers").getValue() != null) {
+                    UsersTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalEvents").getValue() != null) {
+                    UsersTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalOffers").getValue() != null) {
+                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalProducts").getValue() != null) {
+                    UsersTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                }
+
+                setNotificationCircle();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: ", databaseError.toException());
+            }
+        };
+
+
         popupsListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -195,6 +585,26 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
                 String first = preferences.getString("popup", "");
                 boolean firstTimePopUp = Boolean.parseBoolean(first);
+
+                int versionCode = BuildConfig.VERSION_CODE;
+
+                Integer newVersion = dataSnapshot.child("update").child("versionCode").getValue(Integer.class);
+
+                if (newVersion != null && newVersion > (versionCode)) {
+
+                    String updateImageURL = dataSnapshot.child("update").child("imageUrl").getValue(String.class);
+
+                    CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, updateImageURL, "UPDATE");
+                    cdd.show();
+                    if (cdd.getWindow() == null)
+                        return;
+                    cdd.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //style id
+                    Window window = cdd.getWindow();
+                    window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+                }
+
+
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     if (shot.child("imp").getValue(String.class) != null && shot.child("imageUrl").getValue(String.class) != null) {
                         popUpUrl1.add(shot.child("imageUrl").getValue(String.class));
@@ -218,11 +628,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     } else if (importanceDigit == 1) {
                         if (random % 4 == 0)
                             show = true;
-                    } else if (importanceDigit == 4) {
-                        show = true;
-                    } else {
-                        show = false;
-                    }
+                    } else show = importanceDigit == 4;
 
                     if (!importance.get(i).equals("0") && show) {
                         CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, popUpUrl1.get(i));
@@ -353,29 +759,23 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             }
             case R.id.infone: {
-                CounterManager.InfoneOpen();
-                Intent intent = new Intent(this, InfoneActivity.class);
-                startActivity(intent);
+                tabs.getTabAt(1).select();
                 break;
             }
             case R.id.shop: {
-                CounterManager.ShopOpen();
-                Intent intent = new Intent(this, Shop.class);
-                startActivity(intent);
+                tabs.getTabAt(5).select();
                 break;
             }
             case R.id.storeRoom: {
-                CounterManager.StoreRoomOpen();
-                startActivity(new Intent(HomeActivity.this, TabStoreRoom.class));
+                tabs.getTabAt(2).select();
                 break;
             }
             case R.id.events: {
-                CounterManager.EventOpen();
-                startActivity(new Intent(HomeActivity.this, AllEvents.class));
+                tabs.getTabAt(3).select();
                 break;
             }
             case R.id.cabpool: {
-                startActivity(new Intent(HomeActivity.this, CabPooling.class));
+                tabs.getTabAt(4).select();
                 break;
             }
             case R.id.signOut: {
@@ -432,6 +832,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 dialog.show();
                 break;
             }
+            case R.id.share: {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT, "Download the ZConnect app on \n"
+                        + url);
+                intent.setType("text/plain");
+                startActivity(Intent.createChooser(intent, "Share app url via ... "));
+            }
             default: {
                 return false;
             }
@@ -481,6 +889,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
         startActivity(loginIntent);
+        finish();
     }
 
     @Override
@@ -496,6 +905,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             return;
         }
 
+        if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof Recents)) {
+            tabs.getTabAt(0).select();
+            return;
+        }
         doubleBackToExitPressedOnce = true;
         Toast.makeText(this, "Please press BACK again to exit", Toast.LENGTH_SHORT).show();
 
@@ -508,23 +921,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }, 2000);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        HomeActivity.ViewPagerAdapter adapter = new HomeActivity.ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(homescreen, "Features");
-        adapter.addFragment(recents, "Recents");
-        viewPager.setAdapter(adapter);
-    }
-
-    /**
-     * This method should be called only for logged in users.
-     */
     @SuppressLint("ApplySharedPref")
     private void promptToAddContact() {
         final Long currTime = Calendar.getInstance().getTimeInMillis();
         SharedPreferences addNumberDialogPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
         if (!addNumberDialogPref.contains("firstLaunch")) {
-            startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
             addNumberDialogPref.edit().putBoolean("firstLaunch", false).commit();
+            startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
         } else {
             Boolean neverAddNumber = addNumberDialogPref.getBoolean("never", false);
             if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 2 * 24 * 3600 * 1000)) {
@@ -534,6 +937,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss(); // when user finishes the editProfile activity, he shouldn't see the dialog
                                 startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
                             }
                         }).setNegativeButton("Later", null)
@@ -564,6 +968,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         username = null;
         userEmail = null;
         if (mUser != null) {
+            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid()).child("Stats");
+            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        }
+        if (mUser != null) {
             username = mUser.getDisplayName();
             userEmail = mUser.getEmail();
         }
@@ -584,32 +992,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         updateViews();
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+    public void changeFragment(int i) {
 
-        ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
+        tabs.getTabAt(i).select();
     }
 }

@@ -88,7 +88,7 @@
         <item>Photography</item>
         <item>Java development</item>
         <item>Accounting</item>
-        <item>Marionberry</item>
+        <item>Marketing</item>
         <item>Sponsorship</item>
         <item>AutoCAD</item>
         <item>Communications</item>
@@ -112,14 +112,14 @@
         <item>Running</item>
         <item>Sketching</item>
         <item>Arts</item>
-        <item>Ardino</item>
-        <item>Quizing</item>
+        <item>Arduino</item>
+        <item>Quizzing</item>
         <item>Swimming</item>
         <item>Raspberry pie</item>
         <item>Ruby</item>
         <item>HTML and CSS</item>
         <item>PHP</item>
-        <item>Ilustrator</item>
+        <item>Illustrator</item>
         <item>Studying</item>
         <item>Database Managment</item>
         <item>Entrepreneurship</item>
@@ -128,20 +128,29 @@
         <item>Engines</item>
         <item>React Native</item>
         <item>Frisbee</item>
-        <item>Table Tenis</item>
-        <item>Tenis</item>
+        <item>Table Tennis</item>
+        <item>Tennis</item>
         <item>Squash</item>
         <item>Orator</item>
-        <item>Philospher</item>
+        <item>Philosopher</item>
         <item>Guitar</item>
         <item>Flute</item>
         <item>Drummer</item>
         <item>Singing</item>
         <item>Dancer</item>
         <item>Chemist</item>
-        <item>Acadamic Research</item>
+        <item>Academic Research</item>
         <item>Historical Research</item>
         <item>Vocalist</item>
+        <item>Kho-Kho</item>
+        <item>UI UX design</item>
+        <item>Cooking</item>
+        <item>Chemist</item>
+        <item>Business Storytelling</item>
+        <item>Fundraising</item>
+        <item>Financial Report Auditing</item>
+        <item>Current Governmental Affairs</item>
+        <item>Carpentry</item>
 
 
     </array>

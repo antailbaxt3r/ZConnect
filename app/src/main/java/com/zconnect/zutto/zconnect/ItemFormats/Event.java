@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class Event implements Serializable {
 
 
-    double lon = 0, lat = 0;
+    private double lon = 0, lat = 0, BoostCount;
+    private long EventTimeMillis;
     private String EventName,
             EventDescription,
             EventImage,
@@ -17,22 +18,36 @@ public class Event implements Serializable {
             FormatDate,
             Key,
             Venue,
-            Boosters;
+            Boosters,
+            UserId,
+            Verified;
     public Event() {
 
     }
 
-    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, String formatDate, String key, String venue, String boosters) {
+    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, Long eventTimeMillis, String formatDate, String key, String venue, String boosters, String userid, double boostcount,String verified) {
         this.lon = lon;
         this.lat = lat;
         EventName = eventName;
         EventDescription = eventDescription;
         EventImage = eventImage;
         EventDate = eventDate;
+        EventTimeMillis = eventTimeMillis;
         FormatDate = formatDate;
         Key = key;
         Venue = venue;
         Boosters = boosters;
+        UserId = userid;
+        BoostCount = boostcount;
+        Verified = verified;
+    }
+
+    public String getVerified(){
+        return Verified;
+    }
+
+    public double getBoostCount() {
+        return BoostCount;
     }
 
     public String getBoosters() {
@@ -45,6 +60,10 @@ public class Event implements Serializable {
 
     public String getEventDate() {
         return EventDate;
+    }
+
+    public Long getEventTimeMillis() {
+        return EventTimeMillis;
     }
 
     public String getFormatDate() {
@@ -86,5 +105,9 @@ public class Event implements Serializable {
 
     public double getLat() {
         return lat;
+    }
+
+    public String getUserID() {
+        return UserId;
     }
 }

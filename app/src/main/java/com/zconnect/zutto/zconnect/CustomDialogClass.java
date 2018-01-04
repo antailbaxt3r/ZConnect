@@ -2,13 +2,12 @@ package com.zconnect.zutto.zconnect;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.media.Image;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -23,8 +22,10 @@ public class CustomDialogClass extends Dialog implements
     public Activity c;
     public String Url;
     public Dialog d;
-    public Button yes, no;
+    public Button updateButton, skipButton;
     public SimpleDraweeView popUpImage;
+    String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
+    private String buttonName = "";
 
     public CustomDialogClass(Activity a, String Url) {
         super(a);
@@ -34,6 +35,16 @@ public class CustomDialogClass extends Dialog implements
 
     }
 
+    public CustomDialogClass(Activity a, String Url, String buttonName) {
+        super(a);
+        // TODO Auto-generated constructor stub
+        this.c = a;
+        this.Url = Url;
+        this.buttonName = buttonName;
+
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,24 +52,34 @@ public class CustomDialogClass extends Dialog implements
         setContentView(R.layout.custom_dialog);
         Fresco.initialize(getContext());
 
-        yes = (Button) findViewById(R.id.btn_yes);
-        no = (Button) findViewById(R.id.btn_no);
+        updateButton = (Button) findViewById(R.id.btn_update);
+        skipButton = (Button) findViewById(R.id.btn_skip);
         popUpImage=(SimpleDraweeView) findViewById(R.id.popUpImage);
 
         popUpImage.setImageURI(Uri.parse(Url));
 
-        yes.setOnClickListener(this);
-        no.setOnClickListener(this);
+        if (!buttonName.equals("")) {
+            //skipButton.setVisibility(View.GONE);
+            updateButton.setText(buttonName);
+            updateButton.setVisibility(View.VISIBLE);
+        }
+
+        updateButton.setOnClickListener(this);
+        skipButton.setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_yes:
-                c.finish();
+            case R.id.btn_update:
+                //c.finish();
+
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                c.startActivity(browserIntent);
+
                 break;
-            case R.id.btn_no:
+            case R.id.btn_skip:
                 dismiss();
                 break;
             default:

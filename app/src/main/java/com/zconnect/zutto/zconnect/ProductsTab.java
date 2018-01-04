@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -31,8 +32,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 import java.util.HashMap;
@@ -51,6 +54,7 @@ public class ProductsTab extends Fragment {
     DatabaseReference mUserStats, mFeaturesStats;
     private RecyclerView mProductList;
     private DatabaseReference mDatabase;
+    private Query query;
     private boolean flag = false;
     private FirebaseAuth mAuth;
 
@@ -67,12 +71,17 @@ public class ProductsTab extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_products_tab, container, false);
 
+
+        GridLayoutManager productGridLayout = new GridLayoutManager(getContext(), 2);
+//        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
+
+        productGridLayout.setReverseLayout(true);
+//        productGridLayout.setStackFromEnd(true);
+//        productLinearLayout.setReverseLayout(true);
+//        productLinearLayout.setStackFromEnd(true);
         mProductList = (RecyclerView) view.findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
-        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
-        productLinearLayout.setReverseLayout(true);
-        productLinearLayout.setStackFromEnd(true);
-        mProductList.setLayoutManager(productLinearLayout);
+        mProductList.setLayoutManager(productGridLayout);
 
         mAuth = FirebaseAuth.getInstance();
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
@@ -130,13 +139,14 @@ public class ProductsTab extends Fragment {
                 SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 viewHolder.setProductName(model.getProductName());
-                viewHolder.setProductDesc(model.getProductDescription());
+                viewHolder.openProduct(model.getKey());
+//                viewHolder.setProductDesc(model.getProductDescription());
                 try {
                     viewHolder.setImage(getActivity(), model.getProductName(), getContext(), model.getImage());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                viewHolder.setPrice(model.getPrice(),model.getNegotiable());
+//                viewHolder.setPrice(model.getPrice(),model.getNegotiable());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getCategory(), model.getPhone_no(), getContext());
 
@@ -190,13 +200,13 @@ public class ProductsTab extends Fragment {
                                             mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
                                             viewHolder.shortList.setText("Shortlisted");
                                             flag = false;
-                                            CounterManager.StoroomShortListDelete(category);
+                                            CounterManager.StoroomShortListDelete(category, model.getKey());
                                             viewHolder.shortList.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.curvedradiusbutton2_sr));
                                             Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
 
                                         } else {
-                                            CounterManager.StoroomShortList(category);
+                                            CounterManager.StoroomShortList(category, model.getKey());
                                             viewHolder.shortList.setText("Shortlist");
                                             mDatabase.child(model.getKey()).child("UsersReserved")
                                                     .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
@@ -268,6 +278,21 @@ public class ProductsTab extends Fragment {
             StoreRoom.keepSynced(true);
         }
 
+        public void openProduct(final String key){
+
+
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent= new Intent(mView.getContext(),OpenProductDetails.class);
+                    intent.putExtra("key", key);
+                    mView.getContext().startActivity(intent);
+
+                }
+            });
+
+        }
         // Setting default switch
         public void defaultSwitch(final String key, final Context ctx, final String category) {
             // Getting User ID
@@ -285,6 +310,7 @@ public class ProductsTab extends Fragment {
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
                         shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                         shortList.setText("Shortlisted");
+                        CounterManager.StoroomShortList(category, key);
                         Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
                         shortList.setTypeface(customfont);
                         //ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
@@ -298,7 +324,7 @@ public class ProductsTab extends Fragment {
 //                        mReserve.setChecked(false);
 //                        mReserve.setText("Shortlist");
 //                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
-                        CounterManager.StoroomShortListDelete(category);
+                        CounterManager.StoroomShortListDelete(category, key);
                     }
                     shortList.setOnClickListener(mListener);
 
@@ -425,3 +451,4 @@ public class ProductsTab extends Fragment {
     }
 
 }
+

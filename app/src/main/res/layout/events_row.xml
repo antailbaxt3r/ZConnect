@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="3dp">
 
@@ -14,15 +14,31 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/er_event"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Event Name"
-            android:textColor="@color/teal600"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/er_event"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".8"
+                android:padding="10dp"
+                android:text="Event Name"
+                android:textColor="@color/teal600"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/editEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:src="@drawable/ic_mode_edit_black_24dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
 
         <View
             android:layout_width="match_parent"
@@ -47,29 +63,6 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/input_outline"
                 android:scaleType="centerCrop" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="#55000000"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/ic_boost" />
-
-                    <TextView
-                        android:id="@+id/Boostcount"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp" />
-                </LinearLayout>
             </android.support.design.widget.CoordinatorLayout>
 
 
@@ -150,26 +143,16 @@
 
 
                     <Button
-                        android:id="@+id/er_reminder"
+                        android:id="@+id/boostBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_below="@id/er_maincontent"
                         android:layout_marginStart="10dp"
-                        android:background="@drawable/curveradiusgoogle"
+                        android:background="@drawable/curveradiusguest"
                         android:onClick="onDateSelectedClickEvent"
-                        android:text="Set Reminder"
+                        android:text="Boost"
                         android:textColor="@color/white" />
-
-                    <!--<Button-->
-                        <!--android:id="@+id/share_button"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_below="@+id/er_reminder"-->
-                        <!--android:layout_marginStart="10dp"-->
-                        <!--android:background="@color/white"-->
-                        <!--android:text="share" />-->
-
 
                 </RelativeLayout>
 

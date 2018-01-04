@@ -13,9 +13,10 @@ public class PhonebookDisplayItem {
     private String email;
     private String hostel;
     private String skills;
+    private String Uid;
 
     public PhonebookDisplayItem(String imageurl, String name, String desc, String number,
-                                String category, String email, String hostel, String skills) {
+                                String category, String email, String hostel, String skills, String Uid) {
         this.imageurl = imageurl;
         this.name = name;
         this.desc = desc;
@@ -24,11 +25,17 @@ public class PhonebookDisplayItem {
         this.email = email;
         this.hostel = hostel;
         this.skills=skills;
+        this.Uid=Uid;
     }
 
     public PhonebookDisplayItem() {
     }
 
+    public  String getUid(){return Uid;};
+
+    public  void setUid(String uid){
+        this.Uid=uid;
+    }
     public String getSkills() {
         return skills;
     }

@@ -53,8 +53,8 @@ public class CabListOfPeople extends BaseActivity {
     Vector<CabListItemFormat> cabListItemFormatVector = new Vector<>();
     CabItemFormat cabItemFormat, cabItemFormat1;
     CabPeopleRVAdapter adapter;
+    Boolean flag, numberFlag;
     private FirebaseAuth mAuth;
-    private Boolean flag = false, numberFlag = false;
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
 
@@ -66,13 +66,14 @@ public class CabListOfPeople extends BaseActivity {
         setToolbarTitle("List of people");
         showBackButton();
         setSupportActionBar(getToolbar());
-        showProgressDialog();
+        //      showProgressDialog();
 
         try {
             key = getIntent().getStringExtra("key");
         } catch (Exception e) {
             finish();
         }
+
         flag=false;
         pool = databaseReference.child(key);
         mAuth = FirebaseAuth.getInstance();
@@ -135,42 +136,48 @@ public class CabListOfPeople extends BaseActivity {
                 }
 
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-        if (email != null) {
-            databaseReference.child("Users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    flag = dataSnapshot.getChildrenCount() != 0;
 
-                    hideProgressDialog();
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    hideProgressDialog();
-                }
-            });
-        } else
-            hideProgressDialog();
+        pool = databaseReference.child(key);
+        mAuth = FirebaseAuth.getInstance();
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_cabpeople_progress);
         join = (Button) findViewById(R.id.join);
         Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
         join.setTypeface(customFont);
-        adapter = new CabPeopleRVAdapter(this, cabListItemFormatVector);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
-        recyclerView.setAdapter(adapter);
-        pool.keepSynced(true);
+        progressBar.setVisibility(VISIBLE);
+        join.setVisibility(INVISIBLE);
 
+        if (mAuth.getCurrentUser() != null)
+            email = mAuth.getCurrentUser().getEmail();
         pool.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                cabItemFormat1 = dataSnapshot.getValue(CabItemFormat.class);
+                flag = false;
+
+                cabListItemFormatVector.clear();
+
+                cabItemFormat = dataSnapshot.getValue(CabItemFormat.class);
+                if (cabItemFormat != null && cabItemFormat.getCabListItemFormats() != null) {
+                    cabListItemFormatVector.addAll(cabItemFormat.getCabListItemFormats());
+                    for (CabListItemFormat format : cabItemFormat.getCabListItemFormats()) {
+                        if (format.getPhonenumber().equals(number)) {
+                            flag = true;
+                            join.setText("LEAVE");
+                            break;
+                        } else
+                            join.setText("JOIN");
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                join.setVisibility(VISIBLE);
+                progressBar.setVisibility(INVISIBLE);
             }
 
             @Override
@@ -179,17 +186,47 @@ public class CabListOfPeople extends BaseActivity {
             }
         });
 
+
+        adapter = new CabPeopleRVAdapter(this, cabListItemFormatVector);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
+        recyclerView.setAdapter(adapter);
+        pool.keepSynced(true);
+
+
+//        if(flag && numberFlag){
+//            join.setText("Leave");
+//        }
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (email != null) {
                         if (numberFlag) {
                             if (flag) {
-                                Snackbar snack = Snackbar.make(join, "Already Joined", Snackbar.LENGTH_LONG);
-                                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                                snackBarText.setTextColor(Color.WHITE);
-                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                                snack.show();
+                                ArrayList<CabListItemFormat> cabListItemFormats;
+                                if (cabItemFormat != null) {
+                                    cabListItemFormats = cabItemFormat.getCabListItemFormats();
+                                    if (cabListItemFormats == null)
+                                        cabListItemFormats = new ArrayList<CabListItemFormat>();
+                                    for (int i = 0; i < cabListItemFormats.size(); i++) {
+                                        if (cabListItemFormats.get(i).getPhonenumber().equals(number) &&
+                                                cabListItemFormats.get(i).getName().equals(name)) {
+                                            cabListItemFormats.remove(i);
+                                            break;
+                                        }
+                                    }
+                                    cabItemFormat.setCabListItemFormats(cabListItemFormats);
+                                    databaseReference.child(cabItemFormat.getKey()).setValue(cabItemFormat);
+                                    Toast.makeText(getApplicationContext(), "Removed", Toast.LENGTH_SHORT).show();
+
+                                }
+
+//                                Snackbar snack = Snackbar.make(join, "Already Joined", Snackbar.LENGTH_LONG);
+//                                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+//                                snackBarText.setTextColor(Color.WHITE);
+//                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+//                                snack.show();
                             } else {
                                 if (name != null && number != null) {
                                     CabListItemFormat cabListItemFormat = new CabListItemFormat();
@@ -197,13 +234,13 @@ public class CabListOfPeople extends BaseActivity {
                                     cabListItemFormat.setPhonenumber(number);
 
                                     ArrayList<CabListItemFormat> cabListItemFormats;
-                                    if (cabItemFormat1 != null) {
-                                        cabListItemFormats = cabItemFormat1.getCabListItemFormats();
+                                    if (cabItemFormat != null) {
+                                        cabListItemFormats = cabItemFormat.getCabListItemFormats();
                                         if(cabListItemFormats == null)
                                             cabListItemFormats = new ArrayList<CabListItemFormat>();
                                         cabListItemFormats.add(cabListItemFormat);
-                                        cabItemFormat1.setCabListItemFormats(cabListItemFormats);
-                                        databaseReference.child(cabItemFormat1.getKey()).setValue(cabItemFormat1);
+                                        cabItemFormat.setCabListItemFormats(cabListItemFormats);
+                                        databaseReference.child(cabItemFormat.getKey()).setValue(cabItemFormat);
                                         Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
 
                                         FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Topics").push().setValue(key);

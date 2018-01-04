@@ -1,7 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,8 +16,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.android.gms.vision.text.Text;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -96,7 +93,7 @@ public class ShopDetailFragment extends Fragment {
                     detail = dataSnapshot.child("details").getValue().toString();
                     lat = dataSnapshot.child("lat").getValue().toString();
                     lon = dataSnapshot.child("lon").getValue().toString();
-                    num = dataSnapshot.child("number").getValue().toString();
+                    num = dataSnapshot.child("contactDescTv").getValue().toString();
                     details.setText(detail);
 
                     direction.setOnClickListener(new View.OnClickListener() {

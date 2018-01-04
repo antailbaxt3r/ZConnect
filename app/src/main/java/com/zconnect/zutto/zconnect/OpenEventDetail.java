@@ -1,9 +1,11 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,12 +14,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.media.RemotePlaybackClient;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -33,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,13 +46,24 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
-import java.io.File;
-import java.net.URL;
+import org.json.JSONObject;
 
-public class OpenEventDetail extends BaseActivity {
+import java.io.File;
+import java.io.ObjectInput;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+public class  OpenEventDetail extends BaseActivity {
 
     DatabaseReference mDatabase;
     ImageView EventImage;
@@ -60,6 +77,7 @@ public class OpenEventDetail extends BaseActivity {
     Toolbar mActionBarToolbar;
     DatabaseReference databaseReference;
     Button boostBtn;
+    Boolean flag= false;
 
     ProgressDialog progressDialog;
 
@@ -70,7 +88,7 @@ public class OpenEventDetail extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_event_detail);
-       id=getIntent().getStringExtra("id");
+         id=getIntent().getStringExtra("id");
         tag=getIntent().getStringExtra("Eventtag");
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
@@ -132,64 +150,68 @@ public class OpenEventDetail extends BaseActivity {
                 mProg.dismiss();
                 startActivity(i, optionsCompat.toBundle());
             }
+        });            Bundle extras = getIntent().getExtras();
+        event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(event.getEventName(), 1);
+
+
+        venueDirections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CounterManager.eventgetDirection(event.getKey());
+                try {
+                    if (event.getLat() == 0 && event.getLon() == 0) {
+                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                    } else {
+                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
+                }
+            }
         });
 
-        if(tag!=null&&tag.equals("1")){
-            Bundle extras = getIntent().getExtras();
-            event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
-                venueDirections.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CounterManager.eventgetDirection(event.getKey());
-                        try {
-                            if (event.getLat() == 0 && event.getLon() == 0) {
-                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
-                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                mapIntent.setPackage("com.google.android.apps.maps");
-                                startActivity(mapIntent);
-                            } else {
-                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
-                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                mapIntent.setPackage("com.google.android.apps.maps");
-                                startActivity(mapIntent);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-
-            String eventDate[] = (event.getEventDate().split("\\s+"));
-            String date = "";
-            int i = 0;
-            while (i < 3) {
-                date = date + " " + eventDate[i];
-                i++;
-            }
-
-            try {
-                EventDate.setText(date);
-                EventDescription.setText(event.getEventDescription());
-                EventVenue.setText(event.getVenue());
-                getSupportActionBar().setTitle(event.getEventName());
-                Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
-                EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-                boostCounter(event.getKey());
-                setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-            }catch (Exception e) {
-                Log.d("Error Alert: ", e.getMessage());
-            }
+        String eventDate[] = (event.getEventDate().split("\\s+"));
+        String date = "";
+        int i = 0;
+        while (i < 3) {
+            date = date + " " + eventDate[i];
+            i++;
         }
-        else {
+
+        try {
+            EventDate.setText(date);
+            EventDescription.setText(event.getEventDescription());
+            EventVenue.setText(event.getVenue());
+            getSupportActionBar().setTitle(event.getEventName());
+            Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
+            EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+            boostCounter();
+            setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
+        }catch (Exception e) {
+            Log.d("Error Alert: ", e.getMessage());
+        }
+
+
+        if(tag!=null&&tag.equals("1")){
+        } else if (id != null) {
             databaseReference= FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(id);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     event = dataSnapshot.getValue(Event.class);
 
-                    boostCounter(event.getKey());
+                    boostCounter();
                     venueDirections.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -252,18 +274,21 @@ public class OpenEventDetail extends BaseActivity {
         EventDescription.setTypeface(customFont2);
         EventVenue.setTypeface(customFont);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        SharedPreferences sharedPref = getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
 
-        if(event==null){
+        if(!status)
+        {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        }
 
-        if (user != null && event!=null) {
-            String boost = event.getBoosters();
-            if (boost != null) {
-            if (boost.contains(user.getUid())) {
-                boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-            }
+            if (user != null && event!=null) {
+                String boost = event.getBoosters();
+                if (boost != null) {
+                if (boost.contains(user.getUid())) {
+                    boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                }
+                }
             }
         }
     }
@@ -279,6 +304,7 @@ public class OpenEventDetail extends BaseActivity {
         int id = item.getItemId();
         if (id == R.id.share) {
 
+            CounterManager.eventShare(event.getKey());
             shareEvent(event.getEventImage(),this.getApplicationContext());
 
         }
@@ -312,14 +338,15 @@ public class OpenEventDetail extends BaseActivity {
                             String temp = "*Event:* " + event.getEventName()
                                     + "\n*Venue:* " + event.getVenue()
                                     + "\n*Date:* " + event.getEventDate()
-                                    + "\n" + event.getEventDescription();
+                                    + "\n" + event.getEventDescription()
+                                    + "\n\n" + "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
 
                             shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
                             shareIntent.setType("text/plain");
 
                             path = MediaStore.Images.Media.insertImage(
                                     context.getContentResolver(),
-                                    bm, "", null);
+                                    bm,"", null);
                             screenshotUri = Uri.parse(path);
 
                             shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
@@ -379,7 +406,10 @@ public class OpenEventDetail extends BaseActivity {
             @Override
             public void onClick(View view) {
                 CounterManager.eventReminderCounter(event.getKey());
-                addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
+                if (!TextUtils.isEmpty(time))
+                    addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
+                else
+                    showToast("Time unavailable");
 
             }
 
@@ -397,7 +427,7 @@ public class OpenEventDetail extends BaseActivity {
         //intent.putExtra("rrule", "FREQ=DAILY");
         intent.putExtra("endTime", time + 60 * 60 * 1000);
         intent.putExtra("title", title);
-        intent.putExtra("description", desc);
+        intent.putExtra("contactDescTv", desc);
         startActivity(intent);
 
         // Display event id.
@@ -410,53 +440,72 @@ public class OpenEventDetail extends BaseActivity {
 
     }
 
-    private void setBoost() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String boost = event.getBoosters();
-        if (boost == null || TextUtils.isEmpty(boost)) {
-            boostBtn.setText("0 Boosts");
-            boost = "";
-        } else {
-            String boosters[] = boost.trim().split(" ");
-            if (user != null && boost.contains(user.getUid()))
-                boostBtn.setText(String.valueOf(boosters.length) + " Boosted");
-            else
-                boostBtn.setText(String.valueOf(boosters.length) + " Boost");
-        }
+
+    private void boostCounter() {
+
+        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(event.getKey());
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
+                if (user!= null)
+                {
+                    if(dataSnapshot.hasChild(user.getUid())){
+                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
+                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                        flag=true;
+                    }else {
+                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+                        flag=false;
+                    }
+                }else{
+                    boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
 
         if (user != null) {
+            boostBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!flag){
+                        Map<String, Object> taskMap = new HashMap<String, Object>();
+                        taskMap.put(user.getUid(), user.getUid());
+                        CounterManager.eventBoost(event.getKey(), "Details");
+                        FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
+//                        Log.d("SUBSCRIBED TO TOPIC", event.getKey().toString());
+                        eventDatabase.child("BoostersUids").updateChildren(taskMap);
+                        SendNotification notification = new SendNotification();
+                        notification.execute(event.getKey(), event.getEventName());
 
-            if (boost.contains(user.getUid())) {
-                final String newBoost = boost.replace(user.getUid(), "");
-                boostBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(event.getKey()).child("Boosters").setValue(newBoost.trim());
-                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+                    }else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(event.getKey().toString());
+                        eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
                     }
-                });
-            } else {
-                final String newBoost = boost.concat(" " + user.getUid());
-                boostBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CounterManager.eventBoost(event.getKey());
-                        FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(event.getKey()).child("Boosters").setValue(newBoost.trim());
-                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                    }
-                });
-            }
+                }
+            });
 
         } else {
             boostBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(OpenEventDetail.this);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext());
                     dialog.setNegativeButton("Lite", null)
                             .setPositiveButton("Login", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent loginIntent = new Intent(OpenEventDetail.this, LoginActivity.class);
+                                    Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
                                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(loginIntent);
                                     finish();
@@ -468,24 +517,10 @@ public class OpenEventDetail extends BaseActivity {
             });
         }
 
-        Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        Typeface customfont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
         boostBtn.setTypeface(customfont);
     }
 
-    private void boostCounter(String key) {
-        FirebaseDatabase.getInstance().getReference("Event/VerifiedPosts").child(key).child("Boosters").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                event.setBoosters(dataSnapshot.getValue(String.class));
-                setBoost();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -503,8 +538,60 @@ public class OpenEventDetail extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        Intent eventsIntent=new Intent(OpenEventDetail.this,AllEvents.class);
+//        Intent eventsIntent=new Intent(OpenEventDetail.this,TrendingEvents.class);
 //        startActivity(eventsIntent);
         finish();
+    }
+
+
+    public static class SendNotification extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if(user != null) {
+                final String key = params[0];
+                Log.d("Key of event", key);
+
+                RemoteMessage.Builder creator = new RemoteMessage.Builder(key);
+                creator.addData("Type", "EventBoosted");//for a 5 min before notif
+                creator.addData("PersonName", user.getDisplayName());
+                creator.addData("Key", key);
+                creator.addData("TimeInMilli", String.valueOf(System.currentTimeMillis()));
+                Log.d("TIME AT BOOST = ", String.valueOf(System.currentTimeMillis()));
+                creator.addData("Event", params[1]);
+
+                try {
+                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("Authorization", "key=AAAAGZIFvsE:APA91bG7rY-RLe6T3JxhFcmA4iRtihJCbD2RUwypt0aC8hVCvrm99LKZR__y3SqSIQmJocsuLaDltTuUui9BUrLwAM0SiCx0qSTrO8dpmxnjiHkaATnfYwVIN3T81lwlxYwBF7x9_3Kd");
+                    connection.setDoOutput(true);
+                    connection.connect();
+
+                    OutputStream os = connection.getOutputStream();
+                    OutputStreamWriter writer = new OutputStreamWriter(os);
+
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put("to", "/topics/" + key);
+
+                    data.put("data", creator.build().getData());
+
+                    JSONObject object = new JSONObject(data);
+                    String jsonString = object.toString().replace("\\", "");
+
+                    writer.write(jsonString);
+                    writer.flush();
+
+                    Log.d("event notification", connection.getResponseMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+            return null;
+        }
     }
 }

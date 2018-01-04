@@ -149,7 +149,8 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         productTags.setTagsWithSpacesEnabled(true);
 
         productTags.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.productTags)));
+                android.R.layout.simple_dropdown_item_1line,
+                getResources().getStringArray(R.array.productTags)));
         productTags.setThreshold(1);
 
 
@@ -326,7 +327,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     });
                     CounterManager.StoroomAddProduct(category);
                     mProgress.dismiss();
-                    startActivity(new Intent(AddProduct.this, TabStoreRoom.class));
                     finish();
                 }
             });
@@ -344,7 +344,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            productTags.showDropDown();
+            //productTags.showDropDown();
         }
     }
 
@@ -361,12 +361,4 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 //        //productTags.clearFocus();
     }
 
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        Intent storeIntent =new Intent(AddProduct.this,TabStoreRoom.class);
-        startActivity(storeIntent);
-        finish();
-    }
 }
-

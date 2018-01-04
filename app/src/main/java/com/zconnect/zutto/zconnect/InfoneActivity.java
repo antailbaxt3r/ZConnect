@@ -1,24 +1,25 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.fragments.AnonymMessages;
+import com.zconnect.zutto.zconnect.fragments.InfoneFacultyFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +40,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class InfoneActivity extends BaseActivity implements View.OnClickListener {
+public class InfoneActivity extends Fragment implements View.OnClickListener {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -50,47 +53,56 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
     ViewPager viewPager;
     @BindView(R.id.tab_layout_app_bar_home)
     TabLayout tabLayout;
-    @BindView(R.id.toolbar_app_bar_home)
-    Toolbar toolbar;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    /**
+     * References /Phonebook/
+     */
+    private DatabaseReference mPhoneBookDbRef;
+    /**
+     * Email of user.
+     */
+    private String userEmail;
+    /**
+     * Sets visibility of add contact fab according to whether user is registered in infone.
+     */
+    private ValueEventListener phoneBookListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            boolean userAddedToInfone = false;
+            for (DataSnapshot child :
+                    dataSnapshot.getChildren()) {
+                if (userEmail.equals(child.child("email").getValue(String.class)))
+                    userAddedToInfone = true;
+            }
+            if (!userAddedToInfone) fab.setVisibility(View.VISIBLE);
+            else fab.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.e(TAG, "onCancelled: ", databaseError.toException());
+        }
+    };
     private Boolean guestMode;
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fresco.initialize(this);
-        setContentView(R.layout.activity_infone);
-        ButterKnife.bind(this);
+        setHasOptionsMenu(true);
+    }
 
-        setSupportActionBar(toolbar);
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onBackPressed();
-                }
-            });
-            if (getSupportActionBar() != null)
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Fresco.initialize(getContext());
+        View v = inflater.inflate(R.layout.activity_infone, container, false);
+        ButterKnife.bind(this, v);
 
         mAuth = FirebaseAuth.getInstance();
-
-        SharedPreferences guestModePref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        SharedPreferences guestModePref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         guestMode = guestModePref.getBoolean("mode", false);
 
         if (!guestMode) {
@@ -98,6 +110,7 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
 
             mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid()).child("Stats");
             mFeaturesStatsDbRef = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mPhoneBookDbRef = FirebaseDatabase.getInstance().getReference("Phonebook");
 
             mFeaturesStatsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -119,31 +132,9 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
                     Log.e(TAG, "onCancelled: ", databaseError.toException());
                 }
             });
-
-            final String userEmail = mUser.getEmail();
-            if (!TextUtils.isEmpty(userEmail)) {
-                FirebaseDatabase.getInstance().getReference("Phonebook").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        boolean userAddedToInfone = false;
-                        for (DataSnapshot child :
-                                dataSnapshot.getChildren()) {
-                            if (userEmail.equals(child.child("email").getValue(String.class)))
-                                userAddedToInfone = true;
-                        }
-                        if (userAddedToInfone) fab.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.e(TAG, "onCancelled: ", databaseError.toException());
-                    }
-                });
-            }
         }
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        setSupportActionBar(toolbar);
 
         setupViewPager(viewPager);
 
@@ -151,12 +142,20 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);
         fab.setOnClickListener(this);
+        if (!guestMode) {
+            userEmail = mUser.getEmail();
+            if (!TextUtils.isEmpty(userEmail)) {
+                mPhoneBookDbRef.addListenerForSingleValueEvent(phoneBookListener);
+            }
+        }
+        if (fab != null && fab.getVisibility() == View.VISIBLE) fab.setOnClickListener(this);
+
+        return v;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_phonebook, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_phonebook, menu);
     }
 
 
@@ -164,25 +163,19 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_search_menu_phonebook) {
-            Intent phoneBookSearchIntent = new Intent(this, PhonebookSearch.class);
+            Intent phoneBookSearchIntent = new Intent(getContext(), PhonebookSearch.class);
             startActivity(phoneBookSearchIntent);
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        if (!guestMode) {
-            adapter.addFragment(new PhonebookAdmin(), "Admin");
-            adapter.addFragment(new PhonebookStudents(), "Students");
-            adapter.addFragment(new PhonebookOthersCategories(), "others");
-            viewPager.setAdapter(adapter);
-        } else {
-            adapter.addFragment(new PhonebookAdmin(), "Admin");
-            adapter.addFragment(new PhonebookOthersCategories(), "others");
-            viewPager.setAdapter(adapter);
-        }
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        adapter.addFragment(new InfoneFacultyFragment(), "Admin");
+        if (!guestMode) adapter.addFragment(new PhonebookStudents(), "Students");
+        adapter.addFragment(new PhonebookOthersCategories(), "others");
+        adapter.addFragment(new AnonymMessages(), "Messages");
+        viewPager.setAdapter(adapter);
 
         increaseCount(guestMode, viewPager.getCurrentItem());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -209,6 +202,10 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
                 CounterManager.infoneOpenTab("Students");
             else if (position == 2)
                 CounterManager.infoneOpenTab("others");
+            else if (position ==3)
+            {
+                CounterManager.infoneOpenTab("AnonymousMessages");
+            }
         } else {
             if (position == 0)
                 CounterManager.infoneOpenTab("Admin");
@@ -222,11 +219,10 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
         switch (v.getId()) {
             case R.id.fab: {
                 if ((!guestMode) && mUser != null) {
-                    Intent intent = new Intent(InfoneActivity.this, EditProfileActivity.class);
+                    Intent intent = new Intent(getContext(), EditProfileActivity.class);
                     startActivity(intent);
-                    finish();
                 } else {
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(InfoneActivity.this);
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
 
                     // 2. Chain together various setter methods to set the dialog characteristics
                     builder.setMessage("Please Log In to access this feature.")
@@ -234,10 +230,9 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
 
                     builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(InfoneActivity.this, LoginActivity.class);
+                            Intent intent = new Intent(getContext(), LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
-                            finish();
                         }
                     });
                     builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
@@ -253,7 +248,7 @@ public class InfoneActivity extends BaseActivity implements View.OnClickListener
         }
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 

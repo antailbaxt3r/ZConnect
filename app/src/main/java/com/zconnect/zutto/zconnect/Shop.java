@@ -1,19 +1,21 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
@@ -33,7 +35,7 @@ import java.util.Vector;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-public class Shop extends BaseActivity {
+public class Shop extends Fragment {
     ShopCategoryRV adapter;
     DatabaseReference mUserStats, mFeaturesStats;
     FirebaseUser user;
@@ -46,56 +48,57 @@ public class Shop extends BaseActivity {
     private Button OffersButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shop);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
-        recycleView = (RecyclerView) findViewById(R.id.content_shop_rv);
-        progressBar = (ProgressBar) findViewById(R.id.content_shop_progress);
-        OffersButton = (Button) findViewById(R.id.offersButton);
-        setSupportActionBar(toolbar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
+        setHasOptionsMenu(true);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressBar.setVisibility(VISIBLE);
+                shopCategoryItemCategories.clear();
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    shopCategoryItemCategories.add(shot.getValue(ShopCategoryItemCategory.class));
+                }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(INVISIBLE);
+            }
 
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            onBackPressed();
-                        }
-                    });
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                progressBar.setVisibility(INVISIBLE);
+                Log.e("TAG", databaseError.getDetails());
+            }
+        });
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_shop, container, false);
+        recycleView = (RecyclerView) v.findViewById(R.id.content_shop_rv);
+        progressBar = (ProgressBar) v.findViewById(R.id.content_shop_progress);
+        OffersButton = (Button) v.findViewById(R.id.offersButton);
 
         recycleView.setHasFixedSize(true);
-        recycleView.setLayoutManager(new GridLayoutManager(this, 2));
-        adapter = new ShopCategoryRV(this, shopCategoryItemCategories);
+        recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new ShopCategoryRV(getContext(), shopCategoryItemCategories);
         recycleView.setAdapter(adapter);
         databaseReference.keepSynced(true);
         mAuth = FirebaseAuth.getInstance();
-        Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
+        Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
         OffersButton.setTypeface(customfont);
 
         OffersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CounterManager.shopOffers();
-                Intent intent=new Intent(getApplicationContext(),Offers.class);
+                Intent intent = new Intent(getContext(), Offers.class);
                 startActivity(intent);
             }
         });
 
-        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
         if (!status) {
@@ -124,12 +127,12 @@ public class Shop extends BaseActivity {
                 }
             });
         }
+        return v;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_shop, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_shop, menu);
     }
 
 
@@ -138,36 +141,9 @@ public class Shop extends BaseActivity {
         int id = item.getItemId();
         if (id == R.id.action_search_menu_phonebook) {
             CounterManager.shopSearch();
-            Intent searchintent = new Intent(this, ShopSearch.class);
+            Intent searchintent = new Intent(getContext(), ShopSearch.class);
             startActivity(searchintent);
         }
         return super.onOptionsItemSelected(item);
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Log.e("TAG","omg pro boy");
-                progressBar.setVisibility(VISIBLE);
-                shopCategoryItemCategories.clear();
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    shopCategoryItemCategories.add(shot.getValue(ShopCategoryItemCategory.class));
-                }
-
-                adapter.notifyDataSetChanged();
-                progressBar.setVisibility(INVISIBLE);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(INVISIBLE);
-                Log.e("TAG", databaseError.getDetails());
-            }
-        });
-
-
     }
 }

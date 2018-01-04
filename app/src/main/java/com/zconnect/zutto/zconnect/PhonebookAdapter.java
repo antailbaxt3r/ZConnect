@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -18,15 +18,22 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
 
 import java.util.Vector;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by shubhamk on 9/2/17.
  */
 
 public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.ViewHolder> {
     Context context;
-    Vector<PhonebookItem> phonebookItem;
+    private Vector<PhonebookItem> phonebookItem;
+    private Typeface ralewayLight;
+    private Typeface ralewaySemiBold;
 
     public PhonebookAdapter(Vector<PhonebookItem> phonebookItem, Context context) {
+        ralewayLight = Typeface.createFromAsset(context.getAssets(), "fonts/Raleway-Light.ttf");
+        ralewaySemiBold = Typeface.createFromAsset(context.getAssets(), "fonts/Raleway-SemiBold.ttf");
         this.phonebookItem = phonebookItem;
         this.context = context;
     }
@@ -36,7 +43,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.phonebook_item_format, parent, false);
+        View contactView = inflater.inflate(R.layout.view_contect_item, parent, false);
 
         // Return a new holder instance
         return new PhonebookAdapter.ViewHolder(contactView);
@@ -44,22 +51,11 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
 
     @Override
     public void onBindViewHolder(PhonebookAdapter.ViewHolder holder, int position) {
-
-        /*if(phonebookItem.get(position).getImgurl().equals("https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336"))
-        {
-            holder.simpleDraweeView.setBackgroundResource(R.drawable.ic_profile_icon);
-        }
-        else
-        {
-            holder.simpleDraweeView.setBackgroundResource(R.color.white);
-            holder.simpleDraweeView.setImageURI(Uri.parse(phonebookItem.get(position).getImgurl()));
-        }*/
-
-        holder.simpleDraweeView.setImageURI(Uri.parse(phonebookItem.get(position).getImgurl()));
+        holder.contactAvatarSdv.setImageURI(Uri.parse(phonebookItem.get(position).getImgurl()));
         String imageUrl = phonebookItem.get(position).getImgurl();
-        if (!TextUtils.isEmpty(imageUrl)) holder.simpleDraweeView.setImageURI(Uri.parse(imageUrl));
-        holder.name.setText(phonebookItem.get(position).getName());
-        holder.number.setText(phonebookItem.get(position).getNumber());
+        if (!TextUtils.isEmpty(imageUrl)) holder.contactAvatarSdv.setImageURI(Uri.parse(imageUrl));
+        holder.contactNameTv.setText(phonebookItem.get(position).getName());
+        holder.contactDescTv.setText(phonebookItem.get(position).getPhonebookDisplayItem().getDesc());
     }
 
     @Override
@@ -68,24 +64,27 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        SimpleDraweeView simpleDraweeView;
-        TextView name;
-        TextView number;
-        ImageView call;
-        
+        @BindView(R.id.sdv_avatar_contact_item)
+        SimpleDraweeView contactAvatarSdv;
+        @BindView(R.id.tv_name_contact_item)
+        TextView contactNameTv;
+        @BindView(R.id.tv_description_contact_item)
+        TextView contactDescTv;
+        @BindView(R.id.ib_call_contact_item)
+        ImageButton callBtn;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.phonebook_item_format_image);
-            name = (TextView) itemView.findViewById(R.id.phonebook_name1);
-            number = (TextView) itemView.findViewById(R.id.phonebook_number1);
-            call = (ImageView) itemView.findViewById(R.id.callbutton);
+            ButterKnife.bind(this, itemView);
+            contactNameTv.setTypeface(ralewaySemiBold);
+            contactDescTv.setTypeface(ralewayLight);
 
-            call.setOnClickListener(new View.OnClickListener() {
+            callBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CounterManager.InfoneCallDirect();
                     PhonebookDisplayItem phonebookDisplayItem;
                     phonebookDisplayItem = phonebookItem.get(getAdapterPosition()).getPhonebookDisplayItem();
+                    CounterManager.InfoneCallDirect(phonebookDisplayItem.getNumber());
                     context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phonebookDisplayItem.getNumber())));
                 }
             });
@@ -101,25 +100,18 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
 
                     intent.putExtra("desc", phonebookDisplayItem.getDesc());
                     intent.putExtra("name", phonebookDisplayItem.getName());
-                    intent.putExtra("number", phonebookDisplayItem.getNumber());
+                    intent.putExtra("contactDescTv", phonebookDisplayItem.getNumber());
                     intent.putExtra("image", phonebookDisplayItem.getImageurl());
                     intent.putExtra("email", phonebookDisplayItem.getEmail());
                     intent.putExtra("skills", phonebookDisplayItem.getSkills());
                     intent.putExtra("category", phonebookDisplayItem.getCategory());
+                    intent.putExtra("Uid",phonebookDisplayItem.getUid());
                     context.startActivity(intent);
                     if (context instanceof PhonebookDetails) {
                         ((PhonebookDetails) context).finish();
                     }
                 }
             });
-
-            //chnaging fonts
-            Typeface ralewayLight = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-            Typeface ralewaySemiBold = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
-            name.setTypeface(ralewaySemiBold);
-            number.setTypeface(ralewayLight);
-
-
         }
     }
 }
