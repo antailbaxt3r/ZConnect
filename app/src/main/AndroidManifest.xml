@@ -268,13 +268,18 @@
         <activity
             android:name=".Shortlisted"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".ChatActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+
+        </activity>
         <activity
             android:name=".OpenProductDetails"
             android:label="Product Details"
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
-
     </application>
 
 </manifest>
