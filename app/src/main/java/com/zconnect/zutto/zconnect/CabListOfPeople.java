@@ -77,6 +77,14 @@ public class CabListOfPeople extends BaseActivity {
         pool = databaseReference.child(key);
         mAuth = FirebaseAuth.getInstance();
 
+        findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CabListOfPeople.this,ChatActivity.class);
+                intent.putExtra("ref",pool.toString());
+                startActivity(intent);
+            }
+        });
         if (mAuth.getCurrentUser() != null)
             email = mAuth.getCurrentUser().getEmail();
         pool.addValueEventListener(new ValueEventListener() {

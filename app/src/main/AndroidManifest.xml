@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:name=".ZConnect"
         android:allowBackup="true"
@@ -19,10 +18,13 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--Hardware acceleration is enabled by default for devices
+
+        <!--
+        Hardware acceleration is enabled by default for devices
         with API >= 11. Enabling it explicitly and globally might result
-          in some problems as described in https://developer.android.com/guide/topics/graphics/hardware-accel.html-->
-        <!--meta data should be placed inside application element-->
+          in some problems as described in https://developer.android.com/guide/topics/graphics/hardware-accel.html
+        -->
+        <!-- meta data should be placed inside application element -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -301,7 +303,12 @@
 
         <activity
             android:name=".Shortlisted"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ChatActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+
+        </activity>
     </application>
 
 </manifest>
