@@ -16,8 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -233,7 +231,6 @@ public class TimelineEvents extends Fragment {
                 TimeType.setText(datatype);
 
                 DateText.setText(date.toString());
-                Toast.makeText(mView.getContext(), arr[1], Toast.LENGTH_SHORT).show();
                 Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
                 DateText.setTypeface(customFont);
             }
