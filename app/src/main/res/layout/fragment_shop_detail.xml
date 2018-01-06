@@ -1,0 +1,140 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ShopDetailFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:layout_weight=".7">
+
+        <TextView
+            android:id="@+id/shop_details_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:padding="4dp"
+            android:text="Details"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+
+    <TextView
+        android:id="@+id/galleryText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="Gallery"
+        android:textColor="@color/black"
+        android:textSize="18dp" />
+
+    <HorizontalScrollView
+        android:id="@+id/galleryScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/galleryText">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/galleryRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="fill_parent"
+        android:layout_height="2dip"
+        android:layout_below="@id/galleryScroll"
+        android:background="#000000" />
+
+
+    <TextView
+        android:id="@+id/productText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider"
+        android:padding="5dp"
+        android:text="Products"
+        android:textColor="@color/black"
+        android:textSize="18dp" />
+
+    <HorizontalScrollView
+        android:id="@+id/menuScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/productText">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/menuRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".1"
+        android:layout_gravity="bottom"
+        android:layout_margin="10dp"
+        android:weightSum="1">
+        <Button
+            android:id="@+id/direction"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="match_parent"
+            android:text="Direction"
+            android:background="@drawable/curvedradiusbutton_sr"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/white"/>
+        <Button
+            android:id="@+id/call"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="match_parent"
+            android:text="Call"
+            android:background="@drawable/curveradiusgoogle"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"
+        android:background="@color/white"
+        />
+
+</LinearLayout>

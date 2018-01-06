@@ -1,0 +1,146 @@
+package com.zconnect.zutto.zconnect;
+
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
+
+import java.util.Vector;
+
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+
+public class PhonebookHostelWise extends BaseActivity {
+    String hostel;
+    String cat;
+    Vector<PhonebookItem> phonebookItems = new Vector<>();
+    Vector<PhonebookDisplayItem> phonebookDisplayItems = new Vector<>();
+    private PhonebookAdapter adapter;
+    private RecyclerView recyclerView;
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    Query queryRef = databaseReference.orderByChild("name");
+    private ProgressBar progressBar;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_phonebook_hostel_wise);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+
+        recyclerView = (RecyclerView) findViewById(R.id.content_phonebook_hostel_rv);
+        progressBar = (ProgressBar) findViewById(R.id.content_phonebook_hostel_progress);
+
+        //MAIN--------------------------------------------------------------------------------------
+
+        //Keep databaseReference in sync even without needing to call valueEventListener
+        databaseReference.keepSynced(true);
+        queryRef.keepSynced(true);
+        hostel = getIntent().getStringExtra("Hostel");
+        cat=getIntent().getStringExtra("Cat");
+        getSupportActionBar().setTitle(hostel + " Phonebook");
+        //setHasFixedSize is used to optimise RV if we know for sure that this view's bounds do not
+        // change with data
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+        //Setup layout manager. VERY IMP ALWAYS
+        adapter = new PhonebookAdapter(phonebookItems, this);
+        recyclerView.setAdapter(adapter);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_phonebook, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_search_menu_phonebook) {
+            Intent searchintent = new Intent(this, PhonebookCategorySearch.class);
+            searchintent.putExtra("hostel", hostel);
+            searchintent.putExtra("cat",cat);
+            startActivity(searchintent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        queryRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressBar.setVisibility(VISIBLE);
+                phonebookItems.clear();
+                phonebookDisplayItems.clear();
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    try {
+                        phonebookDisplayItems.add(shot.getValue(PhonebookDisplayItem.class));
+                    }catch (Exception e) {
+                        Log.d("Error Alert: ", e.getMessage());
+                    }
+                }
+                for (int i = 0; i < phonebookDisplayItems.size(); i++) {
+                    try{
+                        if (phonebookDisplayItems.get(i).getCategory() != null && hostel != null && cat != null && phonebookDisplayItems.get(i).getCategory().contains(cat) && phonebookDisplayItems.get(i).getHostel().contains(hostel)) {
+                        phonebookItems.add(new PhonebookItem(phonebookDisplayItems.get(i).getImageurl(), phonebookDisplayItems.get(i).getName(), phonebookDisplayItems.get(i).getNumber(), phonebookDisplayItems.get(i).getUid(), phonebookDisplayItems.get(i)));
+                    }}catch (Exception e) {
+                        Log.d("Error Alert: ", e.getMessage());
+                    }
+
+                }
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(INVISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+    }
+
+
+}

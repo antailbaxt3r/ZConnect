@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.zconnect.zutto.zconnect.AddEvent"
+    tools:showIn="@layout/activity_add_event">
+
+    <RelativeLayout
+        android:id="@+id/content_add_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/border_filled_2"
+            android:minHeight="150dp"
+            android:padding="2dp"
+            android:scaleType="center"
+            tools:src="@drawable/addimage"
+            android:contentDescription="Event image"
+            android:elevation="5dp"/>
+
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageButton"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/border_filled_2"
+            android:ems="10"
+            android:hint="Event name"
+            android:inputType="textPersonName"
+            android:padding="10dp"
+            android:elevation="5dp"/>
+
+
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/name"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/border_filled_2"
+            android:ems="10"
+            android:hint="Event description"
+            android:inputType="textMultiLine"
+            android:minHeight="80dp"
+            android:padding="10dp"
+            android:elevation="5dp"/>
+
+        <LinearLayout
+            android:id="@+id/dateAndTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/description"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/border_filled_2"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:elevation="5dp">
+
+
+            <ImageButton
+                android:id="@+id/dateIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:background="@android:drawable/screen_background_light_transparent"
+                android:backgroundTint="@android:color/transparent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@mipmap/ic_date_range_black_24dp" />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="352dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:text="Event date and time"
+                android:textColor="@color/teal500" />
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/venueLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dateAndTime"
+            android:layout_marginBottom="7dp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/border_filled_2"
+            android:orientation="vertical"
+            android:elevation="5dp">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginLeft="2dp"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:paddingTop="5dp"
+                android:text="Venue : "
+                android:textAlignment="textStart"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/venuePicker"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/VenueText"
+                android:layout_gravity="center_vertical"
+                android:layout_toEndOf="@+id/add_event_tv"
+                android:backgroundTint="@android:color/transparent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/ic_directions_black_24dp" />
+
+            <TextView
+                android:id="@+id/add_event_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/VenueText"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:text="Pick on Google maps "
+                android:textSize="15sp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/VenueText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center_vertical"
+                android:layout_toEndOf="@+id/textView"
+                android:inputType="textAutoComplete"
+                android:lines="200"
+                android:textColor="@color/teal500"
+                android:textSize="14sp"
+                tools:hint="type venue here" />
+
+
+            <CheckBox
+                android:id="@+id/add_events_location_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/add_event_tv"
+                android:shadowColor="@color/colorPrimary"
+                android:background="@color/colorPrimary"
+                android:checked="true"
+                android:padding="0dp"
+                android:text="Location Stored"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

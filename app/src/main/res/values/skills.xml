@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="productTags">
+        <item>electronics</item>
+        <item>fiction</item>
+        <item>course book(s)</item>
+        <item>novel</item>
+        <item>biography</item>
+        <item>bags</item>
+        <item>shoes</item>
+        <item>watches</item>
+        <item>clothing</item>
+        <item>phone charger</item>
+        <item>pendrive</item>
+        <item>bean bag</item>
+        <item>refrigerator</item>
+        <item>gym stuff</item>
+        <item>monitor</item>
+        <item>accessories</item>
+        <item>earphones</item>
+        <item>head phones</item>
+        <item>torch</item>
+        <item>ornaments</item>
+        <item>memory cards</item>
+        <item>fidget spinner</item>
+        <item>hats</item>
+        <item>speakers</item>
+        <item>mattress</item>
+        <item>table fan</item>
+        <item>kettle</item>
+        <item>table fan</item>
+        <item>raspberry pie</item>
+        <item>tennis gear</item>
+        <item>cricket gear</item>
+        <item>football gear</item>
+        <item>storage devices</item>
+        <item>instrument</item>
+        <item>music</item>
+        <item>prop</item>
+        <item>cheap</item>
+        <item>exclusive</item>
+        <item> negotiable</item>
+
+    </array>
+
+    <array name="skills">
+        <item>Android App Dev</item>
+        <item>iOS App Dev</item>
+        <item>Javascript</item>
+        <item>Node JS</item>
+        <item>React JS</item>
+        <item>Jquery</item>
+        <item>Angular 1</item>
+        <item>Angular 2</item>
+        <item>Spring(Java)</item>
+        <item>Django</item>
+        <item>My SQL</item>
+        <item>Competitive Coding</item>
+        <item>Ethical Hacking</item>
+        <item>Data Mining</item>
+        <item>Machine Learning</item>
+        <item>Text Analytics</item>
+        <item>2D animation</item>
+        <item>3D animation</item>
+        <item>Graphic Design</item>
+        <item>Handicraft</item>
+        <item>Logo Design</item>
+        <item>Algorithms</item>
+        <item>Electronics</item>
+        <item>VLSI Design</item>
+        <item>Computer hardware</item>
+        <item>Gaming</item>
+        <item>Game Dev</item>
+        <item>Electrical Machines</item>
+        <item>Quantum Physics</item>
+        <item>Content marketing</item>
+        <item>Blogging</item>
+        <item>Direction (Drama)</item>
+        <item>Acting</item>
+        <item>Modeling</item>
+        <item>Natural language processing</item>
+        <item>R development</item>
+        <item>Information security</item>
+        <item>Amazon Web Services</item>
+        <item>.NET Dev</item>
+        <item>Video editing</item>
+        <item>Photography</item>
+        <item>Java development</item>
+        <item>Accounting</item>
+        <item>Marketing</item>
+        <item>Sponsorship</item>
+        <item>AutoCAD</item>
+        <item>Communications</item>
+        <item>Advertising</item>
+        <item>Accounting</item>
+        <item>C#</item>
+        <item>Photoshop</item>
+        <item>C/C++</item>
+        <item>Debater</item>
+        <item>WordPress</item>
+        <item>Creative writer</item>
+        <item>Badminton</item>
+        <item>Football</item>
+        <item>Cricket</item>
+        <item>Futsal</item>
+        <item>Chess</item>
+        <item>Carrom</item>
+        <item>Hockey</item>
+        <item>Mechanics</item>
+        <item>Frisbee</item>
+        <item>Running</item>
+        <item>Sketching</item>
+        <item>Arts</item>
+        <item>Arduino</item>
+        <item>Quizzing</item>
+        <item>Swimming</item>
+        <item>Raspberry pie</item>
+        <item>Ruby</item>
+        <item>HTML and CSS</item>
+        <item>PHP</item>
+        <item>Illustrator</item>
+        <item>Studying</item>
+        <item>Database Managment</item>
+        <item>Entrepreneurship</item>
+        <item>Pencil Art</item>
+        <item>Writing</item>
+        <item>Engines</item>
+        <item>React Native</item>
+        <item>Frisbee</item>
+        <item>Table Tennis</item>
+        <item>Tennis</item>
+        <item>Squash</item>
+        <item>Orator</item>
+        <item>Philosopher</item>
+        <item>Guitar</item>
+        <item>Flute</item>
+        <item>Drummer</item>
+        <item>Singing</item>
+        <item>Dancer</item>
+        <item>Chemist</item>
+        <item>Academic Research</item>
+        <item>Historical Research</item>
+        <item>Vocalist</item>
+        <item>Kho-Kho</item>
+        <item>UI UX design</item>
+        <item>Cooking</item>
+        <item>Chemist</item>
+        <item>Business Storytelling</item>
+        <item>Fundraising</item>
+        <item>Financial Report Auditing</item>
+        <item>Current Governmental Affairs</item>
+        <item>Carpentry</item>
+
+
+    </array>
+</resources>

@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.zconnect.zutto.zconnect.InfoneActivity">
+    <item
+        android:id="@+id/action_search_menu_phonebook"
+        android:icon="@drawable/ic_action_action_search"
+        android:orderInCategory="2"
+        android:title="Search Contact"
+        app:showAsAction="ifRoom" />
+</menu>

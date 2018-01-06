@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/groupMain">
+        <item
+            android:id="@+id/edit_profile"
+            android:icon="@drawable/ic_person_brown"
+            android:title="Edit Profile" />
+    </group>
+
+
+    <group android:id="@+id/group">
+        <item
+            android:id="@+id/messages"
+            android:icon="@drawable/ic_local_phone_blue"
+            android:title="My messages" />
+        <item
+            android:id="@+id/Shop"
+            android:icon="@drawable/ic_store_green"
+            android:title="My Offers" />
+        <item
+            android:id="@+id/MyProducts"
+            android:icon="@drawable/storeroom"
+            android:title="My Products" />
+        <item
+            android:id="@+id/Timeline"
+            android:icon="@drawable/ic_event_pink"
+            android:title="My Timeline" />
+        <item
+            android:id="@+id/MyRides"
+            android:icon="@drawable/ic_local_taxi_orange"
+            android:title="My Rides" />
+        <item
+            android:id="@+id/mapActivity"
+            android:icon="@drawable/ic_place_red"
+            android:title="Campus Map" />
+    </group>
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/ad"
+            android:icon="@drawable/ic_live_tv_black_24dp"
+            android:title="Advertisement" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/aboutus"
+            android:title="About Us" />
+        <item
+            android:id="@+id/share"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Share" />
+    </group>
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/signOut"
+            android:icon="@drawable/ic_power_settings_new_black_24dp"
+            android:title="Sign Out" />
+        <item
+            android:id="@+id/bugReport"
+            android:icon="@drawable/ic_bug_report_black_24dp"
+            android:title="Report Bug / Feedback" />
+    </group>
+</menu>
