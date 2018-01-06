@@ -82,6 +82,50 @@ public class CabListOfPeople extends BaseActivity {
             finish();
         }
 
+        flag=false;
+        pool = databaseReference.child(key);
+        mAuth = FirebaseAuth.getInstance();
+
+        findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CabListOfPeople.this,ChatActivity.class);
+                intent.putExtra("ref",pool.toString());
+                startActivity(intent);
+            }
+        });
+        if (mAuth.getCurrentUser() != null)
+            email = mAuth.getCurrentUser().getEmail();
+        pool.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                flag = false;
+                progressBar.setVisibility(VISIBLE);
+                join.setVisibility(INVISIBLE);
+                cabListItemFormatVector.clear();
+
+                cabItemFormat = dataSnapshot.getValue(CabItemFormat.class);
+                if(cabItemFormat != null&&cabItemFormat.getCabListItemFormats()!=null) {
+                    cabListItemFormatVector.addAll(cabItemFormat.getCabListItemFormats());
+                    for (CabListItemFormat format : cabItemFormat.getCabListItemFormats()) {
+                        if (format.getPhonenumber().equals(number)) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                }                adapter.notifyDataSetChanged();
+                join.setVisibility(VISIBLE);
+                progressBar.setVisibility(INVISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                progressBar.setVisibility(INVISIBLE);
+            }
+        });
+
+
+
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override

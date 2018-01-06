@@ -147,7 +147,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_tabbed_events">Events</string>
-
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</string>
 
     <!--test one-->
     <!--<string name="native_ad_unit_id">ca-app-pub-3940256099942544/2177258514</string>-->

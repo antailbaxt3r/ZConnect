@@ -35,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 import java.util.HashMap;
@@ -138,6 +139,7 @@ public class ProductsTab extends Fragment {
                 SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 viewHolder.setProductName(model.getProductName());
+                viewHolder.openProduct(model.getKey());
 //                viewHolder.setProductDesc(model.getProductDescription());
                 try {
                     viewHolder.setImage(getActivity(), model.getProductName(), getContext(), model.getImage());
@@ -276,6 +278,21 @@ public class ProductsTab extends Fragment {
             StoreRoom.keepSynced(true);
         }
 
+        public void openProduct(final String key){
+
+
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent= new Intent(mView.getContext(),OpenProductDetails.class);
+                    intent.putExtra("key", key);
+                    mView.getContext().startActivity(intent);
+
+                }
+            });
+
+        }
         // Setting default switch
         public void defaultSwitch(final String key, final Context ctx, final String category) {
             // Getting User ID

@@ -56,4 +56,5 @@
     <color name="brownA900">#3e2723</color>
     <color name="black_background">#f0000000</color>
     <color name="seventyBlack">#32000000</color>
+    <color name="black_transparent">#48000000</color>
 </resources>

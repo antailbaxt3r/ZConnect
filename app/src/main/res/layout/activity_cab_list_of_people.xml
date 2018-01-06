@@ -12,12 +12,28 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_app_bar_home"
+        <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <android.support.v7.widget.Toolbar
+
+            android:id="@+id/toolbar_app_bar_home"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+        <Button
+            android:id="@+id/chat"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:text="Chat"
+            android:padding="8dp"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimary"/>
+        </LinearLayout>
 
     </android.support.design.widget.AppBarLayout>
 

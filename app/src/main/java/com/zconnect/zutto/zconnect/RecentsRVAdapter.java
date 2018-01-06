@@ -10,10 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 
+import java.lang.reflect.Array;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -25,11 +33,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
     Context context;
     Vector<RecentsItemFormat> recentsItemFormats;
     private HomeActivity mHomeActivity;
+    List<String> storeroomProductList;
 
-    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity) {
+    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity,List<String> storeroomProductList) {
         this.context = context;
         this.recentsItemFormats = recentsItemFormats;
         mHomeActivity = HomeActivity;
+        this.storeroomProductList = storeroomProductList;
     }
 
     @Override
@@ -59,6 +69,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
         Intent i;
         String nam;
 
+
+
+
         public ViewHolder(View itemView) {
             super(itemView);
             simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.recents_image);
@@ -81,7 +94,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         //mHomeActivity.finish();
                         //mHome.finish();
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
-                        ((HomeActivity) (context)).changeFragment(2);
+                          try{
+                              if (storeroomProductList.contains(recentsItemFormats.get(getAdapterPosition()).getId())) {
+                                  i = new Intent(context, OpenProductDetails.class);
+                                  i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getId());
+                                  context.startActivity(i);
+                              }else {
+                                  Toast.makeText(view.getContext(), "Product Already Sold", Toast.LENGTH_SHORT).show();
+                              }
+                          } catch(Exception e) {
+                              Log.d("Error Alert: ", e.getMessage());
+                            }
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Shop")) {
                         try {
                             i = new Intent(context, Shop_detail.class);
