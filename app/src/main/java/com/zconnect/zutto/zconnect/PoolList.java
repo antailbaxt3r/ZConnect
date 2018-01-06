@@ -257,7 +257,7 @@ public class PoolList extends AppCompatActivity {
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(PoolList.this);
                     // 2. Chain together various setter methods to set the dialog characteristics
                     builder.setMessage("No CabPools found . \n Would you like to add one ?")
-                            .setTitle("Alert");      
+                            .setTitle("Alert");
 
                     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

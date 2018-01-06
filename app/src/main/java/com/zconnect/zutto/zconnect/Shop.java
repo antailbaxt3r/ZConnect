@@ -86,6 +86,8 @@ public class Shop extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
 
+
+
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 

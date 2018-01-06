@@ -27,7 +27,6 @@
             android:contentDescription="Event image"
             android:elevation="5dp"/>
 
-
         <EditText
             android:id="@+id/name"
             android:layout_width="match_parent"
@@ -42,7 +41,6 @@
             android:inputType="textPersonName"
             android:padding="10dp"
             android:elevation="5dp"/>
-
 
         <EditText
             android:id="@+id/description"
@@ -72,7 +70,6 @@
             android:orientation="horizontal"
             android:padding="10dp"
             android:elevation="5dp">
-
 
             <ImageButton
                 android:id="@+id/dateIcon"
@@ -155,7 +152,6 @@
                 android:textColor="@color/teal500"
                 android:textSize="14sp"
                 tools:hint="type venue here" />
-
 
             <CheckBox
                 android:id="@+id/add_events_location_checkbox"

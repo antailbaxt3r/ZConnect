@@ -26,6 +26,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -174,7 +175,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         //These initializations **can't** be done by glide
         navHeaderUserNameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
         navHeaderEmailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
-        navHeaderBackground = (SimpleDraweeView) navHeader.findViewById(R.id.iv_nav_header_background);
         navHeaderBackground = (SimpleDraweeView) navHeader.findViewById(R.id.iv_nav_header_background);
         //necessary for icons to retain their color
         navigationView.setItemIconTintList(null);

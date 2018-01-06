@@ -31,7 +31,6 @@
 
         <include layout="@layout/content_phonebook_details" />
 
-
     </android.support.v4.widget.NestedScrollView>
 
     <LinearLayout
@@ -76,4 +75,3 @@
 
 
 </RelativeLayout>
-
