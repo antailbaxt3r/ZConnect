@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,9 +38,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -49,6 +47,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 public class CabListOfPeople extends BaseActivity {
+
     RecyclerView recyclerView;
     ProgressBar progressBar;
     DatabaseReference pool;
@@ -57,6 +56,7 @@ public class CabListOfPeople extends BaseActivity {
     String name, number, email;
     Vector<CabListItemFormat> cabListItemFormatVector = new Vector<>();
     CabPeopleRVAdapter adapter;
+    CabItemFormat cabItemFormat;
     Boolean flag, numberFlag;
     //numberFlag person is registered on infone
     //flag person is in cabpool
@@ -94,36 +94,6 @@ public class CabListOfPeople extends BaseActivity {
                 startActivity(intent);
             }
         });
-        if (mAuth.getCurrentUser() != null)
-            email = mAuth.getCurrentUser().getEmail();
-        pool.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                flag = false;
-                progressBar.setVisibility(VISIBLE);
-                join.setVisibility(INVISIBLE);
-                cabListItemFormatVector.clear();
-
-                cabItemFormat = dataSnapshot.getValue(CabItemFormat.class);
-                if(cabItemFormat != null&&cabItemFormat.getCabListItemFormats()!=null) {
-                    cabListItemFormatVector.addAll(cabItemFormat.getCabListItemFormats());
-                    for (CabListItemFormat format : cabItemFormat.getCabListItemFormats()) {
-                        if (format.getPhonenumber().equals(number)) {
-                            flag = true;
-                            break;
-                        }
-                    }
-                }                adapter.notifyDataSetChanged();
-                join.setVisibility(VISIBLE);
-                progressBar.setVisibility(INVISIBLE);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(INVISIBLE);
-            }
-        });
-
 
 
 
