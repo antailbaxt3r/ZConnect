@@ -83,7 +83,6 @@ public class CabListOfPeople extends BaseActivity {
         }
 
         flag=false;
-        pool = databaseReference.child(key);
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
@@ -245,8 +244,8 @@ public class CabListOfPeople extends BaseActivity {
                         snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                         snack.show();
                     }
-
- /*               } else {
+/*
+                } else {
                             showToast("Please enter your contact details to join");
                             startActivity(new Intent(CabListOfPeople.this, EditProfileActivity.class));
                         }*/

@@ -41,7 +41,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     public CabPoolRVAdapter(Context context, TreeMap<String,CabItemFormat> treeMap_string ,int a) {
         this.context = context;
         this.treeMap_string = treeMap_string;
-        array=new ArrayList<CabItemFormat>(treeMap_string.values());
+        array=new ArrayList<>(treeMap_string.values());
         i=0;
         Log.e("RV","tree map");
     }
@@ -50,7 +50,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     public CabPoolRVAdapter(Context context, TreeMap<Double,CabItemFormat> treeMap_double) {
         this.context = context;
         this.treeMap_double = treeMap_double;
-        array=new ArrayList<CabItemFormat>(treeMap_double.values());
+        array=new ArrayList<>(treeMap_double.values());
         i=0;
         Log.e("RV","tree map");
     }
@@ -99,7 +99,8 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
       if(cabItemFormat.get(position).getFrom()!=0)  {
           holder.time.setText(cabItemFormat.get(position).getFrom()+":00 to "+cabItemFormat.get(position).getTo()+":00");
       } else{
-          holder.time.setText(cabItemFormat.get(position).getTime());}
+          holder.time.setText(cabItemFormat.get(position).getTime());
+       }
         }
 
     }

@@ -190,7 +190,7 @@ public class AddCabPool extends AppCompatActivity {
                                         cabListItemFormats.add(cabListItemFormat);
 
 
-                                        //writing new added pool to database
+                                            //writing new added pool to database
                                         DatabaseReference newPost = databaseReference.push();
                                         String key = newPost.getKey();
                                         newPost.child("key").setValue(key);
@@ -207,17 +207,24 @@ public class AddCabPool extends AppCompatActivity {
                                         FirebaseMessaging.getInstance().subscribeToTopic(key);
                                         FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid()).child("Topics").push().setValue(key);
 
-                         /*   //writing to database for recent items
-                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
-                            newPost2.child("name").setValue("Cabpool to "+ destination.getSelectedItem().toString());
-                            newPost2.child("desc").setValue("Hey! a friend is asking for a cabpool from "+source.getSelectedItem().toString()+" to "+destination.getSelectedItem().toString()+" on "+date.getText()+" between "+time+". Do you want to join?");
-                            newPost2.child("imageurl").setValue("https://blog.grabon.in/wp-content/uploads/2016/09/Cab-Services.jpg");
-                            newPost2.child("feature").setValue("CabPool");
-                            newPost2.child("id").setValue(key);
-                            newPost2.child("desc2").setValue("");
+                                          //writing to database for recent items
+                                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+
+                                        newPost2.child("name").setValue("Cabpool to "+ destination.getSelectedItem().toString());
+                                        newPost2.child("desc").setValue("Hey! a friend is asking for a cabpool from "+source.getSelectedItem().toString()+" to "+destination.getSelectedItem().toString()+" on "+calender.getText().toString()+" between "+time+". Do you want to join?");
+                                        newPost2.child("imageurl").setValue("https://blog.grabon.in/wp-content/uploads/2016/09/Cab-Services.jpg");
+                                        newPost2.child("feature").setValue("CabPool");
+                                        newPost2.child("id").setValue(key);
+                                        newPost2.child("Key").setValue(key);
+                                        newPost2.child("desc2").setValue("");
+
+                                        Snackbar snack = Snackbar.make(done, "Added", Snackbar.LENGTH_LONG);
+                                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                        snackBarText.setTextColor(Color.WHITE);
+                                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                        snack.show();
+
                        
-                            finish();
-*/
                                     } else {
                                         Snackbar snack = Snackbar.make(done, "Add pool for a single day", Snackbar.LENGTH_LONG);
                                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
@@ -226,7 +233,7 @@ public class AddCabPool extends AppCompatActivity {
                                         snack.show();
 
 
-                                    }
+                                        }
 
                                 }
                         }
@@ -253,6 +260,8 @@ public class AddCabPool extends AppCompatActivity {
                     snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                     snack.show();
                 }
+
+
             }
         });
 

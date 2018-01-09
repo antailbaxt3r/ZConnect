@@ -46,6 +46,7 @@ public class CabPoolMain extends Fragment {
     Vector<CabItemFormat> vector_fetched=new Vector<>();
     Vector<CabItemFormat>  vector_final=new Vector<>();
     TextView error;
+    String DT;
     View.OnClickListener onEmpty;
 
 
@@ -95,7 +96,7 @@ public class CabPoolMain extends Fragment {
         cabPoolRVAdapter=new CabPoolRVAdapter(getActivity(),vector_final);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
         recyclerView.setAdapter(cabPoolRVAdapter);
-        databaseReference.keepSynced(true);
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -107,7 +108,7 @@ public class CabPoolMain extends Fragment {
                     vector_fetched.add(shot.getValue(CabItemFormat.class));
 
                 }
-                int i;
+
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat input = new SimpleDateFormat("dd/M/yyyy");
                 SimpleDateFormat output = new SimpleDateFormat("yyyyMMdd");
@@ -116,9 +117,8 @@ public class CabPoolMain extends Fragment {
                 String date = output.format(c.getTime());
                 Log.e("ABC", date);
 
-                for (i = 0; i < vector_fetched.size(); i++) {
+                for (int i = 0; i < vector_fetched.size(); i++) {
 
-                    String DT;
 
                     fetchedDate = vector_fetched.get(i).getDate();
 
@@ -126,15 +126,24 @@ public class CabPoolMain extends Fragment {
                     //check if DT is there or not
                     //if not, then will add DT to it.
                     if (vector_fetched.get(i).getDT() != null) {
+
                         DT = vector_fetched.get(i).getDT();
+
                     } else {
+
                         //getting fetched date to required format
                         try {
+
                             Log.e("ABC1", fetchedDate);
                             fDate = input.parse(fetchedDate);
+
                         } catch (ParseException e) {
+
                             System.err.println("Could not parse date: " + fetchedDate);
+
                         }
+
+
                         String date1 = output.format(fDate);
                         Log.e("ABC", date1);
 
@@ -156,12 +165,17 @@ public class CabPoolMain extends Fragment {
                         DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("Cab").child(vector_fetched.get(i).getKey());
                         newPost2.child("DT").setValue(DT);
                         Log.e("ABC", DT);
+                        vector_fetched.get(i).setDT(DT);
 
                     }
 
+
                     if (date.compareTo(DT) <= 0) {
+
                         treeMap.put(DT, vector_fetched.get(i));
+
                     } else {
+
                         String key = vector_fetched.get(i).getKey();
                         moveGameRoom(firebaseDatabase.getReference().child("Cab").child(key), firebaseDatabase.getReference().child("archive/Cab").child(key));
 

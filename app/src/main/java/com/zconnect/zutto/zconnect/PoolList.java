@@ -214,7 +214,6 @@ public class PoolList extends AppCompatActivity {
                 }else{
                     Av_asked=0.0;
                 }
-                Log.e("ABC",String.valueOf(cabItemFormatVector.size()));
 
                 for(int i=0;i<cabItemFormatVector.size();i++) {
                   //  Log.e("ABC",String.valueOf(cabItemFormatVector.get(i).getSource()));
@@ -232,7 +231,6 @@ public class PoolList extends AppCompatActivity {
                             continue;
                         }
                     }
-                    Log.e("ABC12","WTF");
 
                     if (hasDate) {
                         if (equalDate(i, formatted_date)) {
@@ -241,11 +239,12 @@ public class PoolList extends AppCompatActivity {
                         }
                     }
 
-                    Log.e("ABC1","NOT THIS");
 
-                    if(hasTime_from){treeMap_double.put(equalTime(i,Av_asked),cabItemFormatVector.get(i));}
-                 else{treeMap_string.put(cabItemFormatVector.get(i).getDT(),cabItemFormatVector.get(i));}
-                    Log.e("ABC1","MOTHER FUCKER");
+                    if(hasTime_from){
+                        treeMap_double.put(equalTime(i,Av_asked),cabItemFormatVector.get(i));
+                    } else{
+                        treeMap_string.put(cabItemFormatVector.get(i).getDT(),cabItemFormatVector.get(i));
+                    }
 
                 }
 
