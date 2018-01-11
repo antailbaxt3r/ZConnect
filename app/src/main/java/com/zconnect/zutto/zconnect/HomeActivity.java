@@ -585,6 +585,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
                 String first = preferences.getString("popup", "");
                 boolean firstTimePopUp = Boolean.parseBoolean(first);
+                boolean updateAvailable=true;
 
                 int versionCode = BuildConfig.VERSION_CODE;
 
@@ -592,6 +593,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 if (newVersion != null && newVersion > (versionCode)) {
 
+                    updateAvailable=false;
                     String updateImageURL = dataSnapshot.child("update").child("imageUrl").getValue(String.class);
 
                     CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, updateImageURL, "UPDATE");
@@ -603,6 +605,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
                 }
+                else {
+                    updateAvailable=false;
+                }
 
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
@@ -610,7 +615,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         popUpUrl1.add(shot.child("imageUrl").getValue(String.class));
                         importance.add(shot.child("imp").getValue(String.class));
                         dataComplete = true;
-                    } else {
+                    } else if(!shot.getKey().equalsIgnoreCase("update")){
                         dataComplete = false;
                     }
                 }

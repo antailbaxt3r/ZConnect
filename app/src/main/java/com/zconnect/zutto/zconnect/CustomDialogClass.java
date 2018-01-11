@@ -32,7 +32,7 @@ public class CustomDialogClass extends Dialog implements
         // TODO Auto-generated constructor stub
         this.c = a;
         this.Url=Url;
-
+        this.buttonName="";
     }
 
     public CustomDialogClass(Activity a, String Url, String buttonName) {
@@ -58,10 +58,12 @@ public class CustomDialogClass extends Dialog implements
 
         popUpImage.setImageURI(Uri.parse(Url));
 
-        if (!buttonName.equals("")) {
+        if (buttonName.equals("")) {
             //skipButton.setVisibility(View.GONE);
+            updateButton.setVisibility(View.GONE);
+        }
+        else {
             updateButton.setText(buttonName);
-            updateButton.setVisibility(View.VISIBLE);
         }
 
         updateButton.setOnClickListener(this);
