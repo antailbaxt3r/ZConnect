@@ -110,10 +110,26 @@
             android:textSize="20dp" />
 
         <com.zconnect.zutto.zconnect.CustomSpinner
-            android:id="@+id/spinner_time"
+            android:id="@+id/spinner_time_from"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".6"
+            android:layout_weight=".3"
+            android:entries="@array/time"
+            android:prompt="@string/time_prompt" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".1"
+            android:textAlignment="center"
+            android:text="to"
+            android:textSize="20dp"/>
+
+        <com.zconnect.zutto.zconnect.CustomSpinner
+            android:id="@+id/spinner_time_to"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
             android:entries="@array/time"
             android:prompt="@string/time_prompt" />
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,40 +13,106 @@ import android.widget.TextView;
 
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 
+import java.sql.Array;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.TreeMap;
 import java.util.Vector;
 
 /**
  * Created by shubhamk on 26/7/17.
  */
 
+
 public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.ViewHolder> {
     Context context;
-    Vector<CabItemFormat> cabItemFormats;
-    String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
+    TreeMap<Double,CabItemFormat> treeMap_double;
+    TreeMap<String,CabItemFormat> treeMap_string;
 
-    public CabPoolRVAdapter(Context context, Vector<CabItemFormat> cabItemFormats) {
+
+    ArrayList<CabItemFormat> array;
+    String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
+    Vector<CabItemFormat> cabItemFormat;
+    int i;
+
+    public CabPoolRVAdapter(Context context, TreeMap<String,CabItemFormat> treeMap_string ,int a) {
         this.context = context;
-        this.cabItemFormats = cabItemFormats;
+        this.treeMap_string = treeMap_string;
+        array=new ArrayList<>(treeMap_string.values());
+        i=0;
+        Log.e("RV","tree map");
+    }
+
+
+    public CabPoolRVAdapter(Context context, TreeMap<Double,CabItemFormat> treeMap_double) {
+        this.context = context;
+        this.treeMap_double = treeMap_double;
+        array=new ArrayList<>(treeMap_double.values());
+        i=0;
+        Log.e("RV","tree map");
+    }
+
+    public CabPoolRVAdapter(Context context, Vector<CabItemFormat> cabItemFormat){
+        this.context = context;
+        this.cabItemFormat=cabItemFormat;
+        i=1;
+        Log.e("RV","cabitem");
     }
 
     @Override
     public CabPoolRVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View contactView = inflater.inflate(R.layout.cabpool_item_format, parent, false);
+
         return new CabPoolRVAdapter.ViewHolder(contactView);
+
     }
 
     @Override
     public void onBindViewHolder(CabPoolRVAdapter.ViewHolder holder, int position) {
-        holder.date.setText(cabItemFormats.get(position).getDate());
-        holder.destination.setText(cabItemFormats.get(position).getDestination());
-        holder.source.setText(cabItemFormats.get(position).getSource());
-        holder.time.setText(cabItemFormats.get(position).getTime());
+
+       if(i==0){
+           Date date=null;
+           try {
+               date=(new SimpleDateFormat("yyyyMMdd").parse(array.get(position).getDT().substring(0,8)));
+           }catch (Exception e){}
+           SimpleDateFormat Outputformat=new SimpleDateFormat("dd/M/yyyy");
+           holder.date.setText(Outputformat.format(date));
+           holder.destination.setText(array.get(position).getDestination());
+        holder.source.setText(array.get(position).getSource());
+       if(array.get(position).getFrom()!=0){ holder.time.setText(array.get(position).getFrom()+":00 to "+array.get(position).getTo()+":00");}
+       else{holder.time.setText(array.get(position).getTime());}
+           Log.e("RV","array");
+       }
+        if(i==1){
+            Date date=null;
+            try {
+                date=(new SimpleDateFormat("yyyyMMdd").parse(cabItemFormat.get(position).getDT().substring(0,8)));
+            }catch (Exception e){}
+            SimpleDateFormat Outputformat=new SimpleDateFormat("dd/M/yyyy");
+            holder.date.setText(Outputformat.format(date));
+            holder.destination.setText(cabItemFormat.get(position).getDestination());
+            holder.source.setText(cabItemFormat.get(position).getSource());
+      if(cabItemFormat.get(position).getFrom()!=0)  {
+          holder.time.setText(cabItemFormat.get(position).getFrom()+":00 to "+cabItemFormat.get(position).getTo()+":00");
+      } else{
+          holder.time.setText(cabItemFormat.get(position).getTime());
+       }
+        }
+
     }
 
     @Override
     public int getItemCount() {
-        return cabItemFormats.size();
+      if(i==0){
+          Log.e("ABC1",String.valueOf(array.size()));
+          return array.size();
+       }else{
+          return cabItemFormat.size();
+      }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -63,25 +130,47 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             list_people.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                if(i==0) {
                     Intent intent = new Intent(context, CabListOfPeople.class);
-                    intent.putExtra("key", cabItemFormats.get(getAdapterPosition()).getKey());
-
+                    intent.putExtra("key", array.get(getAdapterPosition()).getKey());
+                    intent.putExtra("date", (array.get(getAdapterPosition()).getDT()).substring(0,8));
                     context.startActivity(intent);
                 }
+
+                if(i==1) {
+                        Intent intent = new Intent(context, CabListOfPeople.class);
+                        intent.putExtra("key", cabItemFormat.get(getAdapterPosition()).getKey());
+                        intent.putExtra("date", (cabItemFormat.get(getAdapterPosition()).getDT()).substring(0,8));
+                        context.startActivity(intent);
+                    }}
             });
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CounterManager.searchPool(cabItemFormats.get(getAdapterPosition()).getKey());
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_SEND);
-                    intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + cabItemFormats.get(getAdapterPosition()).getSource() +
-                            " to " + cabItemFormats.get(getAdapterPosition()).getDestination() + " on " +
-                            cabItemFormats.get(getAdapterPosition()).getDate() +
-                            "\n Use the ZConnect app to join the pool \n"
-                            + url);
-                    intent.setType("text/plain");
-                    context.startActivity(Intent.createChooser(intent, "Share app url via ... "));
+                  if(i==0) {
+                      CounterManager.searchPool(array.get(getAdapterPosition()).getKey());
+                      Intent intent = new Intent();
+                      intent.setAction(Intent.ACTION_SEND);
+                      intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + array.get(getAdapterPosition()).getSource() +
+                              " to " + array.get(getAdapterPosition()).getDestination() + " on " +
+                              array.get(getAdapterPosition()).getDate() +
+                              "\n Use the ZConnect app to join the pool \n"
+                              + url);
+                      intent.setType("text/plain");
+                      context.startActivity(Intent.createChooser(intent, "Share app url via ... "));
+                  }
+                    if(i==1) {
+                        CounterManager.searchPool(cabItemFormat.get(getAdapterPosition()).getKey());
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + cabItemFormat.get(getAdapterPosition()).getSource() +
+                                " to " + cabItemFormat.get(getAdapterPosition()).getDestination() + " on " +
+                                cabItemFormat.get(getAdapterPosition()).getDate() +
+                                "\n Use the ZConnect app to join the pool \n"
+                                + url);
+                        intent.setType("text/plain");
+                        context.startActivity(Intent.createChooser(intent, "Share app url via ... "));
+                    }
                 }
             });
             Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");

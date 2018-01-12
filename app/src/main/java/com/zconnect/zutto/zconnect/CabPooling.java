@@ -6,47 +6,72 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Calendar;
 
-public class CabPooling extends Fragment {
+public class CabPooling extends AppCompatActivity {
     Button done;
-    CustomSpinner source, destination, time;
+    ImageButton clear;
+    CustomSpinner source, destination, time_to, time_from;
     TextView calender;
     int year, month, day;
+    Object Source,Destination,Time_From,Time_To;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
+        setContentView(R.layout.activity_cab_pooling);
 
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
 
-        View v = inflater.inflate((R.layout.activity_cab_pooling), container, false);
-        source = (CustomSpinner) v.findViewById(R.id.spinner_source);
-        destination = (CustomSpinner) v.findViewById(R.id.spinner_destination);
-        time = (CustomSpinner) v.findViewById(R.id.spinner_time);
-        done = (Button) v.findViewById(R.id.done);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
 
-        calender = (TextView) v.findViewById(R.id.calender);
+
+        source = (CustomSpinner) findViewById(R.id.spinner_source);
+        destination = (CustomSpinner) findViewById(R.id.spinner_destination);
+        time_to = (CustomSpinner) findViewById(R.id.spinner_time_to);
+        time_from = (CustomSpinner) findViewById(R.id.spinner_time_from);
+        done = (Button) findViewById(R.id.done);
+        clear=(ImageButton) findViewById(R.id.clear);
+
+        calender = (TextView) findViewById(R.id.calender);
         calender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,7 +79,7 @@ public class CabPooling extends Fragment {
                 year = c.get(Calendar.YEAR);
                 month = c.get(Calendar.MONTH);
                 day = c.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                DatePickerDialog datePickerDialog = new DatePickerDialog(CabPooling.this,
                         new DatePickerDialog.OnDateSetListener() {
 
                             @Override
@@ -66,65 +91,129 @@ public class CabPooling extends Fragment {
                             }
                         }, year, month, day);
                 datePickerDialog.show();
-
+                clear.setVisibility(View.VISIBLE);
             }
         });
 
-
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calender.setText("Click to choose");
+                clear.setVisibility(View.GONE);
+            }
+        });
 
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (calender.getText() != null && source.getSelectedItem() != null && destination.getSelectedItem() != null && time.getSelectedItem() != null) {
-                    if (String.valueOf(destination.getSelectedItem()).equals(String.valueOf(source.getSelectedItem()))) {
-                        Snackbar snack = Snackbar.make(done, "Invalid fields", Snackbar.LENGTH_LONG);
-                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                        snackBarText.setTextColor(Color.WHITE);
-                        snack.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal800));
-                        snack.show();
-                    } else {
-                        Intent intent = new Intent(getContext(), PoolList.class);
-                        intent.putExtra("date", calender.getText().toString());
-                        intent.putExtra("source", String.valueOf(source.getSelectedItem()));
-                        intent.putExtra("destination", String.valueOf(destination.getSelectedItem()));
-                        intent.putExtra("time", String.valueOf(time.getSelectedItem()));
+                if((String.valueOf(source.getSelectedItem()).equals("Anywhere"))){
+                    Source=null;
+                }else{
+                    Source=source.getSelectedItem();
+                }
+                if((String.valueOf(destination.getSelectedItem()).equals("Anywhere"))){
+                    Destination=null;
+                }else{
+                    Destination=destination.getSelectedItem();
+                }
+                if((String.valueOf(time_from.getSelectedItem()).equals("Anytime"))){
+                    Time_From=null;
+                }else{
+                    Time_From=time_from.getSelectedItem();
+                }
+                if((String.valueOf(time_to.getSelectedItem()).equals("Anytime"))){
+                    Time_To=null;
+                }else{
+                    Time_To=time_to.getSelectedItem();
+                }
 
-                        CounterManager.searchPool(String.valueOf(destination.getSelectedItem()));
-                        startActivity(intent);
-                    }
-                } else {
-                    Snackbar snack = Snackbar.make(done, "Fields are empty", Snackbar.LENGTH_LONG);
+
+
+                Intent intent = new Intent(CabPooling.this, PoolList.class);
+                if (Source == null && Destination == null && Time_From == null && Time_To == null && calender.getText().equals("Click to choose")) {
+                    //check if all fields are not null
+                    Snackbar snack = Snackbar.make(done, "All fields can't be simultaneously empty", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
-                    snack.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal800));
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
                     snack.show();
-                }
+
+                } else {
+                    if (Source!=null &&Destination!=null&&Source == Destination) {
+                        Snackbar snack = Snackbar.make(done, "Source and Destination can't be same", Snackbar.LENGTH_LONG);
+                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                        snackBarText.setTextColor(Color.WHITE);
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
+                        snack.show();
+
+                    } else {
+                        if (Source != null) {
+                            intent.putExtra("source", String.valueOf(Source));}
+                            if (Destination != null) {
+                                intent.putExtra("destination", String.valueOf(Destination));}
+                                if (!calender.getText().toString().equals("Click to choose")) {
+                                    intent.putExtra("date", calender.getText().toString());}
+                                    if ((Time_From != null && Time_To == null) || (Time_From == null && Time_To != null)) {
+
+                                        //show snack time interval cant be this
+                                        Snackbar snack = Snackbar.make(done, "Mention proper time intervals", Snackbar.LENGTH_LONG);
+                                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                        snackBarText.setTextColor(Color.WHITE);
+                                        snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
+                                        snack.show();
+                                    } else {
+
+                                        if (Time_To==Time_From&&Time_To!=null){
+
+                                            //show snack time cant be equal
+                                            Snackbar snack = Snackbar.make(done, "Mention proper time intervals", Snackbar.LENGTH_LONG);
+                                            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                            snackBarText.setTextColor(Color.WHITE);
+                                            snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
+                                            snack.show();
+
+                                        }else{
+                                            if (Time_To != null) {
+                                                intent.putExtra("time_to", String.valueOf(Time_To));
+                                            }
+                                            if (Time_From != null) {
+                                                intent.putExtra("time_from", String.valueOf(Time_From));}
+                                            CounterManager.searchPool(String.valueOf(Destination));
+                                            startActivity(intent);
+
+                                        }
+                        }
+                    }
+
+                                    }
             }
         });
 
-        Typeface customFont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-        Typeface customFont2 = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
+
+
+
+            Typeface customFont = Typeface.createFromAsset(CabPooling.this.getAssets(), "fonts/Raleway-Regular.ttf");
+            Typeface customFont2 = Typeface.createFromAsset(CabPooling.this.getAssets(), "fonts/Raleway-Light.ttf");
         done.setTypeface(customFont2);
         calender.setTypeface(customFont2);
 
-        TextView from = (TextView) v.findViewById(R.id.from);
-        TextView destination = (TextView) v.findViewById(R.id.destination);
-        TextView date = (TextView) v.findViewById(R.id.date);
-        TextView timeslot = (TextView) v.findViewById(R.id.timeslot);
-        TextView search_for_rides = (TextView) v.findViewById(R.id.search_for_rides);
+            TextView from = (TextView) findViewById(R.id.from);
+            TextView destination = (TextView) findViewById(R.id.destination);
+            TextView date = (TextView) findViewById(R.id.date);
+            TextView timeslot = (TextView) findViewById(R.id.timeslot);
+            TextView search_for_rides = (TextView) findViewById(R.id.search_for_rides);
         from.setTypeface(customFont);
         destination.setTypeface(customFont);
         date.setTypeface(customFont);
         timeslot.setTypeface(customFont);
-        search_for_rides.setTypeface(customFont);
-        return v;
-    }
+        search_for_rides.setTypeface(customFont);}
 
 
-    @Override
+
+
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the Menu; this adds items to the action bar if it is present.
-        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = CabPooling.this.getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
         if (!status){
             inflater.inflate(R.menu.myrides, menu);
@@ -140,10 +229,11 @@ public class CabPooling extends Fragment {
 
         if (id == R.id.rides) {
             CounterManager.openMyRides();
-            startActivity(new Intent(getContext(), MyRides.class));
+            startActivity(new Intent(CabPooling.this, MyRides.class));
         }
 
         return super.onOptionsItemSelected(item);
-    }
 
 }
+
+    }

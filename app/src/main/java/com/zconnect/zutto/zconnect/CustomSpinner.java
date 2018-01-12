@@ -36,7 +36,7 @@ public class CustomSpinner extends android.support.v7.widget.AppCompatSpinner {
 
         super.setAdapter(adapter);
 
-        try {
+       /* try {
             final Method m = AdapterView.class.getDeclaredMethod(
                     "setNextSelectedPositionInt", int.class);
             m.setAccessible(true);
@@ -48,7 +48,7 @@ public class CustomSpinner extends android.support.v7.widget.AppCompatSpinner {
             n.invoke(this, -1);
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     protected SpinnerAdapter newProxy(SpinnerAdapter obj) {
