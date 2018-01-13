@@ -13,16 +13,22 @@ public class CabItemFormat {
     String details;
     String time;
     String key;
+    String DT;
+    int from;
+    int to;
     ArrayList<CabListItemFormat> cabListItemFormats;
 
 
-    public CabItemFormat(String source, String destination, String date, String details, String time, String key, ArrayList<CabListItemFormat> cabListItemFormats) {
+    public CabItemFormat(String source, String destination, String date, String details, String time, String key,String DT,int from,int to, ArrayList<CabListItemFormat> cabListItemFormats) {
         this.source = source;
         this.destination = destination;
         this.date = date;
         this.details = details;
         this.time = time;
         this.key = key;
+        this.DT=DT;
+        this.from=from;
+        this.to=to;
         this.cabListItemFormats = cabListItemFormats;
     }
 
@@ -47,6 +53,26 @@ public class CabItemFormat {
 
     public String getDate() {
         return date;
+    }
+
+    public void setDT(String DT) {
+        this.DT=DT;
+    }
+
+    public String getDT() {
+        return DT;
+    }
+
+    public int getFrom(){return from;}
+
+    public void setFrom(int from){
+        this.from=from;
+    }
+
+    public int getTo(){return to;}
+
+    public void setTo(int to){
+        this.to=to;
     }
 
     public void setDate(String date) {

@@ -11,25 +11,25 @@
 
     <group android:id="@+id/group">
         <item
-            android:id="@+id/infone"
+            android:id="@+id/messages"
             android:icon="@drawable/ic_local_phone_blue"
-            android:title="Infone" />
+            android:title="My messages" />
         <item
-            android:id="@+id/shop"
+            android:id="@+id/Shop"
             android:icon="@drawable/ic_store_green"
-            android:title="Shop" />
+            android:title="My Offers" />
         <item
-            android:id="@+id/storeRoom"
+            android:id="@+id/MyProducts"
             android:icon="@drawable/storeroom"
-            android:title="StoreRoom" />
+            android:title="My Products" />
         <item
-            android:id="@+id/events"
+            android:id="@+id/Timeline"
             android:icon="@drawable/ic_event_pink"
-            android:title="Events" />
+            android:title="My Timeline" />
         <item
-            android:id="@+id/cabpool"
+            android:id="@+id/MyRides"
             android:icon="@drawable/ic_local_taxi_orange"
-            android:title="Cab Pooling" />
+            android:title="My Rides" />
         <item
             android:id="@+id/mapActivity"
             android:icon="@drawable/ic_place_red"

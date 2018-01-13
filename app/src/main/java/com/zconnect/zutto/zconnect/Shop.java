@@ -45,7 +45,6 @@ public class Shop extends Fragment {
     private RecyclerView recycleView;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
-    private Button OffersButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +77,6 @@ public class Shop extends Fragment {
         View v = inflater.inflate(R.layout.activity_shop, container, false);
         recycleView = (RecyclerView) v.findViewById(R.id.content_shop_rv);
         progressBar = (ProgressBar) v.findViewById(R.id.content_shop_progress);
-        OffersButton = (Button) v.findViewById(R.id.offersButton);
 
         recycleView.setHasFixedSize(true);
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -86,17 +84,9 @@ public class Shop extends Fragment {
         recycleView.setAdapter(adapter);
         databaseReference.keepSynced(true);
         mAuth = FirebaseAuth.getInstance();
-        Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
-        OffersButton.setTypeface(customfont);
 
-        OffersButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CounterManager.shopOffers();
-                Intent intent = new Intent(getContext(), Offers.class);
-                startActivity(intent);
-            }
-        });
+
+
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);

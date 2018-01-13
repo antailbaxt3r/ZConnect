@@ -24,16 +24,6 @@
         android:paddingBottom="70dp"
         android:scrollbars="vertical" />
 
-    <Button
-        android:id="@+id/offersButton"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="8dp"
-        android:background="@drawable/curveradiusgoogle"
-        android:text="Offers"
-        android:textColor="@color/white"
-        />
 
 
 </RelativeLayout>

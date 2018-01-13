@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -31,22 +33,37 @@ import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TreeMap;
+
 import java.util.Vector;
+
+import static android.icu.util.HebrewCalendar.AV;
 
 public class PoolList extends AppCompatActivity {
     RecyclerView poolrv;
-    DatabaseReference pool = FirebaseDatabase.getInstance().getReference().child("Cab");
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
-    Query query = pool.orderByChild("time");
+    DatabaseReference pool;
+    Query query;
+    String Date;//present date
     TextView defaultmsg;
-    String source,destination,date,time;
+    String source,destination,date,formatted_date,time_to,time_from;
+    String reference;
+    String reference_default="Cab";
+    String reference_Old="archive/Cab";
     Vector<CabItemFormat> cabItemFormatVector = new Vector<>();
-    Vector<CabItemFormat> cabItemFormats = new Vector<>();
     CabPoolRVAdapter adapter;
     ValueEventListener newListener;
     String name, number, email;
     ProgressBar progressBar;
+    TreeMap<Double,CabItemFormat> treeMap_double=new TreeMap<>();
+    TreeMap<String,CabItemFormat> treeMap_string=new TreeMap<>();
+
+    Context mcontext;
+
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
     private FirebaseAuth mUser;
 
@@ -85,6 +102,51 @@ public class PoolList extends AppCompatActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
+        //getting present dates and defining format for input and output date
+        final Calendar c = Calendar.getInstance();
+        SimpleDateFormat input = new SimpleDateFormat("dd/M/yyyy");
+        SimpleDateFormat output = new SimpleDateFormat("yyyyMMdd");
+        Date = output.format(c.getTime());
+
+        //getting values from intent
+        try {
+            source = getIntent().getStringExtra("source");
+            destination = getIntent().getStringExtra("destination");
+            date = getIntent().getStringExtra("date");
+            time_to = getIntent().getStringExtra("time_to");
+            time_from = getIntent().getStringExtra("time_from");
+
+        } catch (Exception e) {
+
+        }
+   //     Log.e("ABC",source);
+//        Log.e("ABC",destination);
+
+
+
+            try {
+                Date abc=input.parse(date);
+                formatted_date=output.format(abc);
+
+            }catch (Exception e){}
+
+        //Setting old database or new database
+        if(date==null){
+
+        reference=reference_default;
+
+            }else{
+                if(Date.compareTo(formatted_date)>0){
+                reference=reference_Old;
+                }else{
+                reference=reference_default;
+           }
+        }
+
+        pool = FirebaseDatabase.getInstance().getReference().child(reference);
+        query=pool.orderByChild("DT");
+
         mUser = FirebaseAuth.getInstance();
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -113,24 +175,16 @@ public class PoolList extends AppCompatActivity {
 
             }
         });
-        try {
-            source = getIntent().getStringExtra("source");
-            destination = getIntent().getStringExtra("destination");
-            date = getIntent().getStringExtra("date");
-            time = getIntent().getStringExtra("time");
-        } catch (Exception e) {
 
-        }
 
         poolrv = (RecyclerView) findViewById(R.id.poolrv);
         defaultmsg = (TextView) findViewById(R.id.pool_errorMessage1);
         progressBar = (ProgressBar) findViewById(R.id.content_pool_progress);
         defaultmsg.setVisibility(View.INVISIBLE);
-        adapter = new CabPoolRVAdapter(this, cabItemFormats);
-        poolrv.setHasFixedSize(true);
-        poolrv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
-        poolrv.setAdapter(adapter);
         query.keepSynced(true);
+         mcontext=this;
+
+
 
         newListener = new ValueEventListener() {
             @Override
@@ -139,26 +193,63 @@ public class PoolList extends AppCompatActivity {
                 defaultmsg.setVisibility(View.INVISIBLE);
                 poolrv.setVisibility(View.VISIBLE);
                 cabItemFormatVector.clear();
-                cabItemFormats.clear();
+                treeMap_double.clear();
+                treeMap_string.clear();
+
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
 
                     cabItemFormatVector.add(cabItemFormat);
                 }
-                int i;
-                for(i=0;i<cabItemFormatVector.size();i++){
-                    if (source != null && destination != null && date != null && cabItemFormatVector != null) {
-                        if (cabItemFormatVector.get(i).getSource() != null && cabItemFormatVector.get(i).getDestination() != null
-                                && cabItemFormatVector.get(i).getDate() != null) {
-                            if (cabItemFormatVector.get(i).getSource().equals(source) &&
-                                    cabItemFormatVector.get(i).getDestination().equals(destination) &&
-                                    cabItemFormatVector.get(i).getDate().equals(date)) {
-                                cabItemFormats.add(cabItemFormatVector.get(i));
-                            }
+
+                Double Av_asked;
+                Boolean hasSource=check(source);
+                Boolean hasDestination=check(destination);
+                Boolean hasDate=check(date);
+                Boolean hasTime_from=check(time_from);
+                if(hasTime_from){
+                    double time1 = Double.valueOf(time_to.substring(0, 2));
+                    double time2 = Double.valueOf(time_from.substring(0, 2));
+                    Av_asked=(time1+time2)/2;
+                }else{
+                    Av_asked=0.0;
+                }
+
+                for(int i=0;i<cabItemFormatVector.size();i++) {
+                  //  Log.e("ABC",String.valueOf(cabItemFormatVector.get(i).getSource()));
+
+                    if (hasSource) {
+                        if (equalSource(i, source)) {
+                        } else {
+                            continue;
+                        }
+                       // Log.e("ABC1",destination);
+                    }
+                    if (hasDestination) {
+                        if (equalDestination(i, destination)) {
+                        } else {
+                            continue;
                         }
                     }
+
+                    if (hasDate) {
+                        if (equalDate(i, formatted_date)) {
+                        } else {
+                            continue;
+                        }
+                    }
+
+
+                    if(hasTime_from){
+                        treeMap_double.put(equalTime(i,Av_asked),cabItemFormatVector.get(i));
+                    } else{
+                        treeMap_string.put(cabItemFormatVector.get(i).getDT(),cabItemFormatVector.get(i));
+                    }
+
                 }
-                if (cabItemFormats.isEmpty()) {
+
+
+                if (treeMap_string.isEmpty()&&treeMap_double.isEmpty()) {
                     defaultmsg.setVisibility(View.VISIBLE);
                     poolrv.setVisibility(View.INVISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
@@ -171,28 +262,17 @@ public class PoolList extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             if (isNetworkAvailable(getApplicationContext())) {
                                 if (name != null && number != null) {
-                                    CabListItemFormat cabListItemFormat = new CabListItemFormat();
-                                    cabListItemFormat.setName(name);
-                                    cabListItemFormat.setPhonenumber(number);
-                                    ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
-                                    cabListItemFormats.add(cabListItemFormat);
-                                    DatabaseReference newPost = databaseReference.push();
-                                    String key = newPost.getKey();
-                                    newPost.child("key").setValue(key);
-                                    newPost.child("source").setValue(String.valueOf(source));
-                                    newPost.child("destination").setValue(String.valueOf(destination));
-                                    newPost.child("time").setValue(String.valueOf(time));
-                                    newPost.child("date").setValue(date);
-                                    newPost.child("cabListItemFormats").setValue(cabListItemFormats);
-                                    Toast.makeText(getApplicationContext(), "CabPool Added", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }
+
+                                     Intent intent=new Intent(PoolList.this,AddCabPool.class);
+                                    startActivity(intent);
+
+                                }else{
                                 Snackbar snack = Snackbar.make(fab, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
                                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                 snackBarText.setTextColor(Color.WHITE);
                                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                                 snack.show();
-                            } else {
+                            }} else {
                                 Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
                                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                 snackBarText.setTextColor(Color.WHITE);
@@ -211,8 +291,17 @@ public class PoolList extends AppCompatActivity {
 
                 } else {
                     progressBar.setVisibility(View.INVISIBLE);
-                    poolrv.setAdapter(adapter);
+
                     //   Toast.makeText(getApplicationContext(), String.valueOf(cabItemFormats.size()), Toast.LENGTH_SHORT).show();
+                    poolrv.setHasFixedSize(true);
+                    poolrv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
+                   if(hasTime_from) {
+                       adapter = new CabPoolRVAdapter(mcontext, treeMap_double);
+                   }else{
+                       adapter = new CabPoolRVAdapter(mcontext, treeMap_string,1);
+
+                   }
+                   poolrv.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }
 
@@ -250,4 +339,53 @@ public class PoolList extends AppCompatActivity {
         super.onStop();
         query.removeEventListener(newListener);
     }
-}
+
+
+    public boolean check(String abc){
+        if(abc!=null){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean equalSource(int i,String source){
+        if(cabItemFormatVector.get(i).getSource().equals(source)){
+            return true;
+        }else {
+                return false;
+        }
+    }
+
+
+    public boolean equalDestination(int i,String destination){
+        if(cabItemFormatVector.get(i).getDestination().equals(destination)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean equalDate(int i,String dateyyyyMdd){
+        String pooldate=cabItemFormatVector.get(i).getDT().substring(0,8);
+        Log.e("ABC_d",pooldate);
+
+        if(pooldate.equals(dateyyyyMdd)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public double equalTime(int i,double AV_asked){
+        double poolAv=Double.valueOf(cabItemFormatVector.get(i).getDT().substring(9,11));
+
+         if(poolAv>AV_asked){
+             return poolAv-AV_asked;
+         }else{
+             return AV_asked-poolAv;
+         }
+
+        }
+    }
+

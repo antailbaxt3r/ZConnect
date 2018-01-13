@@ -269,6 +269,9 @@
             android:name=".Shortlisted"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity
+            android:name=".CabPooling"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ChatActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >

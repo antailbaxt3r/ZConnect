@@ -362,3 +362,4 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     }
 
 }
+

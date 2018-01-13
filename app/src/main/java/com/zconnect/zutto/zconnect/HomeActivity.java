@@ -153,7 +153,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         ButterKnife.bind(this);
 
         recent = new Recents();
-        cab = new CabPooling();
+        cab = new CabPoolMain();
         infone = new InfoneActivity();
         store = new TabStoreRoom();
         shop = new Shop();
@@ -217,12 +217,62 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public void onClick(View v) {
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
+                int i=tabs.getSelectedTabPosition();
+                if(i==0){//Recents
                 if (!status) {
                     animateFAB();
                 }else {
                     alertBox();
+                    }
                 }
+                if(i==1){//Infone
+                    if (!status) {
+                        Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                        startActivity(intent);
+
+                    }else {
+                        alertBox();
+                    }
+                }
+                if(i==2){//Storeroom
+                    if (!status) {
+                        CounterManager.StoreRoomFABclick();
+                        Intent intent = new Intent(getApplicationContext(), AddProduct.class);
+                        startActivity(intent);
+                    }else {
+                        alertBox();
+                    }
+                }
+                if(i==3){//Events
+                    if (!status) {
+                        CounterManager.eventAddClick();
+                        Intent intent = new Intent(getApplicationContext(), AddEvent.class);
+                        startActivity(intent);   }else {
+                        alertBox();
+                    }
+                }
+                if(i==4){//CabPool
+                    if (!status) {
+                            setActionBarTitle("Search Pool");
+                            CounterManager.RecentsOpen();
+                            Intent intent = new Intent(HomeActivity.this, CabPooling.class);
+                            startActivity(intent);
+                       }else {
+                        alertBox();
+                    }
+                }
+                if(i==5){//Shops
+                    if (!status) {
+                        CounterManager.shopOffers();
+                        Intent intent = new Intent(HomeActivity.this, Offers.class);
+                        startActivity(intent);
+                    }else {
+                        alertBox();
+                    }
+                }
+
             }
+
         });
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,7 +305,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 if (!status) {
-                    Intent intent = new Intent(getApplicationContext(), AddEvent.class);
+                    setActionBarTitle("Search Pool");
+                    CounterManager.RecentsOpen();
+                    Intent intent = new Intent(getApplicationContext(), CabPooling.class);
                     startActivity(intent);
                 }
             }
@@ -476,17 +528,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     case 0: {
                         setActionBarTitle("BITS Connect");
                         CounterManager.RecentsOpen();
+                        fab.setImageResource(R.drawable.ic_add_white_36dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
                         setActionBarTitle("Infone");
                         CounterManager.InfoneOpen();
+                        fab.setImageResource(R.drawable.ic_edit_white_24dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         break;
                     }
                     case 5: {
                         setActionBarTitle("Shops");
+                        fab.setImageResource(R.drawable.procent_badge_256);
                         CounterManager.ShopOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
 
@@ -495,18 +550,21 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     case 2: {
                         setActionBarTitle("StoreRoom");
                         CounterManager.StoreRoomOpen();
+                        fab.setImageResource(R.drawable.ic_add_shopping_cart_white_24dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
                         break;
                     }
                     case 3: {
                         setActionBarTitle("Events");
                         CounterManager.EventOpen();
+                        fab.setImageResource(R.drawable.ic_add_white_36dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
                         break;
                     }
                     case 4: {
                         setActionBarTitle("Cab Pool");
                         CounterManager.openCabPool();
+                        fab.setImageResource(R.drawable.ic_search_white_24dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
                         break;
                     }
@@ -585,6 +643,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
                 String first = preferences.getString("popup", "");
                 boolean firstTimePopUp = Boolean.parseBoolean(first);
+                boolean updateAvailable=true;
 
                 int versionCode = BuildConfig.VERSION_CODE;
 
@@ -592,6 +651,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 if (newVersion != null && newVersion > (versionCode)) {
 
+                    updateAvailable=false;
                     String updateImageURL = dataSnapshot.child("update").child("imageUrl").getValue(String.class);
 
                     CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, updateImageURL, "UPDATE");
@@ -603,6 +663,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
                 }
+                else {
+                    updateAvailable=false;
+                }
 
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
@@ -610,7 +673,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         popUpUrl1.add(shot.child("imageUrl").getValue(String.class));
                         importance.add(shot.child("imp").getValue(String.class));
                         dataComplete = true;
-                    } else {
+                    } else if(!shot.getKey().equalsIgnoreCase("update")){
                         dataComplete = false;
                     }
                 }
@@ -758,24 +821,25 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(intent);
                 break;
             }
-            case R.id.infone: {
+            case R.id.messages: {
                 tabs.getTabAt(1).select();
                 break;
             }
-            case R.id.shop: {
+            case R.id.Shop: {
                 tabs.getTabAt(5).select();
                 break;
             }
-            case R.id.storeRoom: {
+            case R.id.MyProducts: {
                 tabs.getTabAt(2).select();
                 break;
             }
-            case R.id.events: {
+            case R.id.Timeline: {
                 tabs.getTabAt(3).select();
                 break;
             }
-            case R.id.cabpool: {
-                tabs.getTabAt(4).select();
+            case R.id.MyRides: {
+                Intent intent=new Intent(HomeActivity.this, MyRides.class);
+                startActivity(intent);
                 break;
             }
             case R.id.signOut: {

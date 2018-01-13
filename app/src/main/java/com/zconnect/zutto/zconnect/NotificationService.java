@@ -31,8 +31,7 @@ public class NotificationService extends FirebaseMessagingService {
     public void onMessageReceived(final RemoteMessage remoteMessage) {
 
         final Map data = remoteMessage.getData();
-        Log.d("data", data.toString());
-        if (data.containsKey("Type")) {
+       if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
             if (type.equals("EventBoosted")) {
                 final String key = data.get("Key").toString();
