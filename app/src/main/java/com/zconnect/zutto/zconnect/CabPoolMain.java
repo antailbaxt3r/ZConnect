@@ -119,7 +119,6 @@ public class CabPoolMain extends Fragment {
 
                 for (int i = 0; i < vector_fetched.size(); i++) {
 
-
                     fetchedDate = vector_fetched.get(i).getDate();
 
 
@@ -212,10 +211,6 @@ public class CabPoolMain extends Fragment {
                 startActivity(intent);
             }
         };
-
-
-
-
 
         return view;
     }

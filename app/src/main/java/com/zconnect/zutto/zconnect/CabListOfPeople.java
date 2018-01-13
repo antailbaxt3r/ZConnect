@@ -50,7 +50,7 @@ public class CabListOfPeople extends BaseActivity {
 
     RecyclerView recyclerView;
     ProgressBar progressBar;
-    DatabaseReference pool;
+    DatabaseReference pool,chatRef;
     Button join;
     String key;
     String name, number, email;
@@ -61,6 +61,7 @@ public class CabListOfPeople extends BaseActivity {
     //numberFlag person is registered on infone
     //flag person is in cabpool
     String reference,reference_old="archive/Cab",reference_default="Cab";
+
     String formatted_date,Date;
     private FirebaseAuth mAuth;
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");

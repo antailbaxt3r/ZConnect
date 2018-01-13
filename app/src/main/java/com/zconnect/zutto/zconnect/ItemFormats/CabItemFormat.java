@@ -7,15 +7,15 @@ import java.util.ArrayList;
  */
 
 public class CabItemFormat {
-    String source;
-    String destination;
-    String date;
-    String details;
-    String time;
-    String key;
-    String DT;
-    int from;
-    int to;
+    private String source;
+    private String destination;
+    private String date;
+    private String details;
+    private String time;
+    private String key;
+    private String DT;
+    private int from;
+    private int to;
     ArrayList<CabListItemFormat> cabListItemFormats;
 
 
@@ -55,12 +55,12 @@ public class CabItemFormat {
         return date;
     }
 
-    public void setDT(String DT) {
-        this.DT=DT;
-    }
-
     public String getDT() {
         return DT;
+    }
+
+    public void setDT(String DT) {
+        this.DT=DT;
     }
 
     public int getFrom(){return from;}
