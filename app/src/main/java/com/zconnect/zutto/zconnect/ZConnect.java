@@ -14,6 +14,17 @@ import com.google.firebase.messaging.FirebaseMessaging;
  */
 
 public class ZConnect extends Application {
+
+    private String community= new String("");
+
+    public String getData(){
+        return this.community;
+    }
+
+    public void setData(String d){
+        this.community=d;
+    }
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -21,7 +32,6 @@ public class ZConnect extends Application {
         // to more than 65536. It is often required in large projects
         //You don't need to bother about the usage, it handles everything on its own
         MultiDex.install(this);
-
     }
 
     @Override
