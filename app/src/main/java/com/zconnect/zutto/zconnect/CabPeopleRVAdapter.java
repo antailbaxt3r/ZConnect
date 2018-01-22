@@ -22,8 +22,6 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.Vector;
 
-import static com.zconnect.zutto.zconnect.PostEmails.email;
-
 /**
  * Created by shubhamk on 27/7/17.
  */
@@ -95,7 +93,7 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
                             Log.e("ABC",phonebookDisplayItem.getName());
                                    intent.putExtra("name",phonebookDisplayItem.getName());
                                     intent.putExtra("desc",phonebookDisplayItem.getDesc());
-                                   // intent.putExtra("contactDescTv",phonebookDisplayItem.get());
+                                    intent.putExtra("contactDescTv",phonebookDisplayItem.getNumber());
                                     intent.putExtra("image",phonebookDisplayItem.getImageurl());
                                     intent.putExtra("email",phonebookDisplayItem.getEmail());
                                     intent.putExtra("skills",phonebookDisplayItem.getSkills());

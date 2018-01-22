@@ -13,14 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Vector;
 
@@ -116,6 +110,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         }catch (Exception e) {
                             Log.d("Error Alert: ", e.getMessage());
                         }
+                    }else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("CabPool")){
+                        i=new Intent(context,CabListOfPeople.class);
+                        Log.e("check","executed");
+                        i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getId());
+                        i.putExtra("date",recentsItemFormats.get(getAdapterPosition()).getDT());
+                        context.startActivity(i);
                     }
                 }
             });

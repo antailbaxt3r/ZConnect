@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,8 +10,8 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,11 +20,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -100,6 +97,15 @@ public class PhonebookDetails extends BaseActivity {
         skills=getIntent().getStringExtra("skills");
         category=getIntent().getStringExtra("category");
         Uid=getIntent().getStringExtra("Uid");
+
+        Log.e("msg",name);
+        Log.e("msg",desc);
+        Log.e("msg",number);
+        Log.e("msg",imagelink);
+        Log.e("msg",email);
+        Log.e("msg",skills);
+        Log.e("msg",category);
+        Log.e("msg",Uid);
 
         if (Uid.equals("null"))
         {

@@ -163,7 +163,7 @@ public class CabPooling extends AppCompatActivity {
                                         snack.show();
                                     } else {
 
-                                        if (Time_To==Time_From&&Time_To!=null){
+                                        if (Time_To==Time_From && Time_To!=null){
 
                                             //show snack time cant be equal
                                             Snackbar snack = Snackbar.make(done, "Mention proper time intervals", Snackbar.LENGTH_LONG);
@@ -180,6 +180,7 @@ public class CabPooling extends AppCompatActivity {
                                                 intent.putExtra("time_from", String.valueOf(Time_From));}
                                             CounterManager.searchPool(String.valueOf(Destination));
                                             startActivity(intent);
+                                            finish();
 
                                         }
                         }
@@ -202,11 +203,12 @@ public class CabPooling extends AppCompatActivity {
             TextView date = (TextView) findViewById(R.id.date);
             TextView timeslot = (TextView) findViewById(R.id.timeslot);
             TextView search_for_rides = (TextView) findViewById(R.id.search_for_rides);
-        from.setTypeface(customFont);
-        destination.setTypeface(customFont);
-        date.setTypeface(customFont);
-        timeslot.setTypeface(customFont);
-        search_for_rides.setTypeface(customFont);}
+
+            from.setTypeface(customFont);
+            destination.setTypeface(customFont);
+            date.setTypeface(customFont);
+            timeslot.setTypeface(customFont);
+            search_for_rides.setTypeface(customFont);}
 
 
 

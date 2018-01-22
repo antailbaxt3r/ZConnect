@@ -45,6 +45,7 @@ public class InfoneFacultyFragment extends Fragment {
         adapter = new PhonebookStudentHostelRV(phonebookStudentHostelItems, getContext());
         recyclerView.setAdapter(adapter);
 
+
         return view;
     }
 
