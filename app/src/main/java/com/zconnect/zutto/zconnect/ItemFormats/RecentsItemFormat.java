@@ -11,14 +11,16 @@ public class RecentsItemFormat {
     String imageurl;
     String feature;
     String id;
+    private String DT;
 
-    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id) {
+    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
         this.imageurl = imageurl;
         this.feature = feature;
         this.id = id;
+        this.DT=DT;
     }
 
     public RecentsItemFormat() {
@@ -28,6 +30,7 @@ public class RecentsItemFormat {
     public String getId() {
         return id;
     }
+
 
     public void setId(String id) {
         this.id = id;
@@ -76,5 +79,16 @@ public class RecentsItemFormat {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getDT() {
+        return DT;
+    }
+
+
+    public void setDT(String DT) {
+        this.DT = DT;
+    }
+
+
 }
 
