@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +26,7 @@ import java.util.Vector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
@@ -36,8 +38,12 @@ public class Recents extends Fragment {
     RecyclerView recyclerView;
     private Query mStoreroomDatabase;
     List<String> storeroomProductList = new ArrayList<String>();
-    private DatabaseReference homeDbRef = FirebaseDatabase.getInstance().getReference().child("home");
-    Query queryRef = homeDbRef.limitToLast(15);
+    private SharedPreferences communitySP;
+    public String communityReference;
+
+
+    private DatabaseReference homeDbRef;
+    Query queryRef;
     private ValueEventListener queryResponseListener;
     @BindView(R.id.recent_progress)
     ProgressBar progressBar;
@@ -54,15 +60,15 @@ public class Recents extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recents, container, false);
         ButterKnife.bind(this, view);
 
-        //Reference views---------------------------------------------------------------------------
-        //bind by butterKnife
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
 
-        //MAIN--------------------------------------------------------------------------------------
-
+        homeDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
         //Keep databaseReference in sync even without needing to call valueEventListener
         homeDbRef.keepSynced(true);
+        queryRef = homeDbRef.limitToLast(15);
         queryRef.keepSynced(true);
-        mStoreroomDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        mStoreroomDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
         mStoreroomDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

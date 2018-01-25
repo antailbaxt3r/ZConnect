@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,11 +27,16 @@ import com.zconnect.zutto.zconnect.ItemFormats.GalleryFormat;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class ShopDetailFragment extends Fragment {
 
     TextView details;
     LinearLayout linearLayout, numberlayout;
     Button call,direction;
+
+    private SharedPreferences communitySP;
+    public String communityReference;
 
     String nam, detail, lat, lon, imageurl, num, menuurl, shopid = null;
     DatabaseReference mDatabase, mDatabaseMenu,database;
@@ -60,6 +66,9 @@ public class ShopDetailFragment extends Fragment {
         call = (Button) view.findViewById(R.id.call);
         direction = (Button) view.findViewById(R.id.direction);
 
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         galleryRecycler = (RecyclerView) view.findViewById(R.id.galleryRecycler);
@@ -81,7 +90,8 @@ public class ShopDetailFragment extends Fragment {
 
 
         if(shopid!=null){
-            database=FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops").child(shopid);
+            database=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+                    .child("Shop").child("Shops").child(shopid);
         }
         database.addValueEventListener(new ValueEventListener() {
             @Override
@@ -135,8 +145,10 @@ public class ShopDetailFragment extends Fragment {
             }
         });
 
-            mDatabase =FirebaseDatabase.getInstance().getReference().child("Shop").child("Gallery").child(shopid);
-            mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("Shop").child("Menu").child(shopid);
+            mDatabase =FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+                    .child("Shop").child("Gallery").child(shopid);
+            mDatabaseMenu = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+                    .child("Shop").child("Menu").child(shopid);
 
         mDatabase.keepSynced(true);
         mDatabaseMenu.keepSynced(true);

@@ -31,7 +31,7 @@ public class PhonebookCategorySearch extends BaseActivity {
     private PhonebookAdapter searchAdapter;
     private Toolbar toolbar;
     private TextView errorMessage;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
     Query queryRef = databaseReference.orderByChild("name");
     private Vector<PhonebookItem> searchContact = new Vector<>();
 

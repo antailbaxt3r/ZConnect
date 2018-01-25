@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,6 +28,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeMap;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,11 +52,16 @@ public class CabPoolMain extends Fragment {
     String DT;
     View.OnClickListener onEmpty;
 
+    private SharedPreferences communitySP;
+    public String communityReference;
+
+
+
 
     String fetchedDate;
     Date fDate;
     FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-    DatabaseReference databaseReference=firebaseDatabase.getReference().child("Cab");
+    DatabaseReference databaseReference;
 
 
 
@@ -96,6 +104,11 @@ public class CabPoolMain extends Fragment {
         cabPoolRVAdapter=new CabPoolRVAdapter(getActivity(),vector_final);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
         recyclerView.setAdapter(cabPoolRVAdapter);
+
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
+        databaseReference = firebaseDatabase.getReference().child("communities").child(communityReference).child("Cab");
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -161,7 +174,7 @@ public class CabPoolMain extends Fragment {
                         Log.e("ABC", time);
 
                         DT = date1 + " " + time;
-                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("Cab").child(vector_fetched.get(i).getKey());
+                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab").child(vector_fetched.get(i).getKey());
                         newPost2.child("DT").setValue(DT);
                         Log.e("ABC", DT);
                         vector_fetched.get(i).setDT(DT);

@@ -99,7 +99,7 @@ public class IndividualCategory extends BaseActivity {
         mProductList.setLayoutManager(linearLayoutManager);
         mAuth = FirebaseAuth.getInstance();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
         queryCategory = mDatabase.orderByChild("Category").equalTo(category);
         mDatabase.keepSynced(true);
 
@@ -221,6 +221,10 @@ public class IndividualCategory extends BaseActivity {
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
+        private SharedPreferences communitySP;
+        public String communityReference;
+
+
         public View.OnClickListener mListener;
         View mView;
         String[] keyList;
@@ -228,8 +232,8 @@ public class IndividualCategory extends BaseActivity {
         SharedPreferences sharedPref;
         private Switch mReserve;
         private TextView ReserveStatus;
-        private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
-        private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
+        private DatabaseReference StoreRoom;
+        private DatabaseReference Users;
         private FirebaseAuth mAuth;
         private Button shortList;
         private ImageView post_image;
@@ -245,6 +249,12 @@ public class IndividualCategory extends BaseActivity {
 //            mReserve = (Switch) mView.findViewById(R.id.switch1);
 //            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
             shortList = (Button) mView.findViewById(R.id.shortList);
+
+            communitySP = mView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
+            communityReference = communitySP.getString("communityReference", null);
+
+            StoreRoom = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+            Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
 
             if (status) {
                 shortList.setVisibility(View.GONE);

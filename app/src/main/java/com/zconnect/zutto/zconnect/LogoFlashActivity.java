@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -53,26 +54,28 @@ public class LogoFlashActivity extends BaseActivity {
         bgImage = (ImageView) findViewById(R.id.bgImage);
         bgColor = findViewById(R.id.bgColor);
 
+        if(communityReference!=null) {
+            mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ui/logoFlash");
-
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("bgUrl").getValue() != null) {
-                    bgImage.setImageURI(Uri.parse(dataSnapshot.child("bgUrl").getValue(String.class)));
-                } else {
-                    bgColor.setVisibility(View.GONE);
-                    bgImage.setBackground(null);
-                    bgImage.setBackgroundColor(Color.parseColor(dataSnapshot.child("bgUrl").getValue().toString()));
+            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child("bgUrl").getValue() != null) {
+                        bgImage.setImageURI(Uri.parse(dataSnapshot.child("bgUrl").getValue(String.class)));
+                    } else {
+                        bgColor.setVisibility(View.GONE);
+                        bgImage.setBackground(null);
+                        bgImage.setBackgroundColor(Color.parseColor(dataSnapshot.child("bgUrl").getValue().toString()));
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
+
 
 //        link();
         // Setting full screen view

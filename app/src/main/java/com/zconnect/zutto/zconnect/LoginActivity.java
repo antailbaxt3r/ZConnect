@@ -57,14 +57,13 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     private FirebaseUser mUser;
     private String userEmail;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
-        usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        usersDbRef.keepSynced(true);
         mProgress = new ProgressDialog(this);
 
         // Configure Google Sign In
@@ -78,18 +77,19 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        //TODO: what is this code doing?
-        mUser = mAuth.getCurrentUser();
-        if (mUser != null) {
-            userEmail = mUser.getEmail();
-            if (userEmail != null && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
-                setupUserDataAndFinish(mUser);
-            } else {
-                logout();
-                mProgress.dismiss();
-                Toast.makeText(LoginActivity.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
-            }
-        }
+//        //TODO: what is this code doing?
+//        mUser = mAuth.getCurrentUser();
+//        if (mUser != null) {
+//            userEmail = mUser.getEmail();
+//            if (userEmail != null && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
+//                setCommunity("bitsGoa");
+//                setupUserDataAndFinish(mUser);
+//            } else {
+//                logout();
+//                mProgress.dismiss();
+//                Toast.makeText(LoginActivity.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
         mGuestLogInBtn.setOnClickListener(this);
         mGoogleSignInBtn.setOnClickListener(this);
@@ -180,6 +180,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                             if (mUser != null
                                     && (userEmail = mUser.getEmail()) != null
                                     && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
+                                setCommunity("bitsGoa");
                                 setupUserDataAndFinish(mUser);
                             } else {
                                 logout();
@@ -197,6 +198,13 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         SharedPreferences.Editor editInfo = sharedPref.edit();
         editInfo.putBoolean("mode", mode);
         editInfo.commit();
+    }
+
+    public void setCommunity(String communityName){
+        SharedPreferences sharedPref2 = getSharedPreferences("communityName", MODE_PRIVATE);
+        SharedPreferences.Editor editInfo2 = sharedPref2.edit();
+        editInfo2.putString("communityReference", communityName);
+        editInfo2.commit();
     }
 
     @Override
@@ -217,11 +225,17 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         String defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336";
         if (photoUri != null) photoUrl = photoUri.toString();
         else photoUrl = defaultPhotoUrl;
-        DatabaseReference currentUserDbRef = usersDbRef.child(user.getUid());
-        currentUserDbRef.child("Image").setValue(photoUrl);
-        currentUserDbRef.child("Username").setValue(user.getDisplayName());
-        currentUserDbRef.child("Email").setValue(user.getEmail());
-        finish(); /*Make Sure HomeActivity exists*/
+        try {
+            usersDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
+            usersDbRef.keepSynced(true);
+            DatabaseReference currentUserDbRef = usersDbRef.child(user.getUid());
+            currentUserDbRef.child("Image").setValue(photoUrl);
+            currentUserDbRef.child("Username").setValue(user.getDisplayName());
+            currentUserDbRef.child("Email").setValue(user.getEmail());
+            finish(); /*Make Sure HomeActivity exists*/
+        }catch (Exception e){
+
+        }
     }
 
     @Override

@@ -40,6 +40,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class InfoneActivity extends Fragment implements View.OnClickListener {
 
     private final String TAG = getClass().getSimpleName();
@@ -63,6 +65,11 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
      * Email of user.
      */
     private String userEmail;
+
+    private SharedPreferences communitySP;
+    public String communityReference;
+
+
     /**
      * Sets visibility of add contact fab according to whether user is registered in infone.
      */
@@ -101,16 +108,20 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.activity_infone, container, false);
         ButterKnife.bind(this, v);
 
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
+
         mAuth = FirebaseAuth.getInstance();
-        SharedPreferences guestModePref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        SharedPreferences guestModePref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         guestMode = guestModePref.getBoolean("mode", false);
 
         if (!guestMode) {
             mUser = mAuth.getCurrentUser();
 
-            mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid()).child("Stats");
-            mFeaturesStatsDbRef = FirebaseDatabase.getInstance().getReference().child("Stats");
-            mPhoneBookDbRef = FirebaseDatabase.getInstance().getReference("Phonebook");
+            mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(mUser.getUid()).child("Stats");
+            mFeaturesStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
+            mPhoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
 
             mFeaturesStatsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

@@ -36,15 +36,15 @@ import java.util.Calendar;
 
 import static java.lang.Integer.valueOf;
 
-public class AddCabPool extends AppCompatActivity {
+public class AddCabPool extends BaseActivity {
     Button done;
     CustomSpinner source, destination, time_from, time_to;
     TextView date, calender;
     String email, name, number,goingTime,returnTime;
     String s_year,s_monthOfYear,s_dayOfMonth;
     double T1,T2;
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
     private FirebaseUser mUser;
 
     @Override

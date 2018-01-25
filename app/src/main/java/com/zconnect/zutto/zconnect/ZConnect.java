@@ -15,16 +15,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class ZConnect extends Application {
 
-    private String community= new String("");
-
-    public String getData(){
-        return this.community;
-    }
-
-    public void setData(String d){
-        this.community=d;
-    }
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -44,5 +34,15 @@ public class ZConnect extends Application {
 
         FirebaseApp.initializeApp(this);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
+    }
+
+    private String community= new String("Yo");
+
+    public String getData(){
+        return this.community;
+    }
+
+    public void setData(String d){
+        this.community=d;
     }
 }

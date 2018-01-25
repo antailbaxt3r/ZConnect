@@ -147,8 +147,8 @@ public class AddEvent extends BaseActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         gmapLocationTaken=(CheckBox) findViewById(R.id.add_events_location_checkbox);
-        mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/NotVerifiedPosts");
+        mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/NotVerifiedPosts");
 
         gmapLocationTaken.setVisibility(View.INVISIBLE);
 
@@ -239,7 +239,7 @@ public class AddEvent extends BaseActivity {
 
 
         DatabaseReference mPrivileges;
-        mPrivileges = FirebaseDatabase.getInstance().getReference().child("Event/Privileges/");
+        mPrivileges = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/Privileges/");
 
         final String emailId = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         mPrivileges.addValueEventListener(new ValueEventListener() {
@@ -260,7 +260,7 @@ public class AddEvent extends BaseActivity {
 
         // to get venues from firebase depending on college location( venue names only)
         // which will then be given as auto correct options in the edit text for event venue
-        mDatabaseVenues= FirebaseDatabase.getInstance().getReference().child("Event/Venues/");
+        mDatabaseVenues= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/Venues/");
 
         mDatabaseVenues.addValueEventListener(new ValueEventListener() {
             @Override
@@ -353,7 +353,7 @@ public class AddEvent extends BaseActivity {
 
         mProgress.setMessage("Posting Event..");
         mProgress.show();
-        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
         final String eventNameValue = mEventName.getText().toString().trim();
         final String eventDescriptionValue = mEventDescription.getText().toString().trim();
         final String eventVenue = mVenue.getText().toString();
@@ -399,7 +399,7 @@ public class AddEvent extends BaseActivity {
 
 
                             //For Everything
-                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
                             newPost2.child("name").setValue(eventNameValue);
                             newPost2.child("desc").setValue(eventDescriptionValue);
                             newPost2.child("imageurl").setValue(downloadUri.toString());
@@ -459,7 +459,7 @@ public class AddEvent extends BaseActivity {
                             CounterManager.addEventUnVerified(key, eventNameValue);
 
                             //For Everything
-                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
                             newPost2.child("name").setValue(eventNameValue);
                             newPost2.child("desc").setValue(eventDescriptionValue);
                             newPost2.child("imageurl").setValue(downloadUri.toString());
@@ -507,7 +507,7 @@ public class AddEvent extends BaseActivity {
                             if (downloadUri == null)
                                 downloadUri = Uri.parse("");
 
-                            DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(EventID);
+                            DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts").child(EventID);
                             Map<String, Object> taskMap = new HashMap<String, Object>();
 
                             taskMap.put("EventName", eventNameValue);
@@ -543,7 +543,7 @@ public class AddEvent extends BaseActivity {
             } else {
                 if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null) {
 
-                    DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(EventID);
+                    DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts").child(EventID);
                     Map<String, Object> taskMap = new HashMap<String, Object>();
                     taskMap.put("EventName", eventNameValue);
                     taskMap.put("EventDescription", eventDescriptionValue);

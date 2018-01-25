@@ -64,7 +64,7 @@ public class CabListOfPeople extends BaseActivity {
 
     String formatted_date,Date;
     private FirebaseAuth mAuth;
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
     private DatabaseReference databaseReference;
 
     @Override
@@ -142,7 +142,7 @@ public class CabListOfPeople extends BaseActivity {
         }
 
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child(reference);
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(reference);
         pool = databaseReference.child(key).child("cabListItemFormats");
         mAuth = FirebaseAuth.getInstance();
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);

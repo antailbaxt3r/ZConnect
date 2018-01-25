@@ -43,9 +43,9 @@ import java.util.Vector;
 
 import static android.icu.util.HebrewCalendar.AV;
 
-public class PoolList extends AppCompatActivity {
+public class PoolList extends BaseActivity {
     RecyclerView poolrv;
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
     DatabaseReference pool;
     Query query;
     String Date;//present date
@@ -64,7 +64,7 @@ public class PoolList extends AppCompatActivity {
 
     Context mcontext;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
     private FirebaseAuth mUser;
 
     @Override
@@ -144,7 +144,7 @@ public class PoolList extends AppCompatActivity {
            }
         }
 
-        pool = FirebaseDatabase.getInstance().getReference().child(reference);
+        pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(reference);
         query=pool.orderByChild("DT");
 
         mUser = FirebaseAuth.getInstance();

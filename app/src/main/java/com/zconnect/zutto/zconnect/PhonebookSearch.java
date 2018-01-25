@@ -36,7 +36,7 @@ public class PhonebookSearch extends BaseActivity {
     @BindView(R.id.errorMessage)
     TextView errorMessage;
     private PhonebookAdapter searchAdapter;
-    private DatabaseReference phonebookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    private DatabaseReference phonebookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
     Query queryRef = phonebookDbRef.orderByChild("name");
     private Vector<PhonebookItem> searchContact = new Vector<>();
     private boolean guestMode;

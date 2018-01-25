@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +41,8 @@ import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -58,20 +61,16 @@ public class ProductsTab extends Fragment {
     private boolean flag = false;
     private FirebaseAuth mAuth;
 
-    public ProductsTab() {
-        // Required empty public constructor
+    public ProductsTab(){
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_products_tab, container, false);
-
-
         GridLayoutManager productGridLayout = new GridLayoutManager(getContext(), 2);
 //        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
 
@@ -84,18 +83,24 @@ public class ProductsTab extends Fragment {
         mProductList.setLayoutManager(productGridLayout);
 
         mAuth = FirebaseAuth.getInstance();
-        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
+        SharedPreferences communitySP;
+        String communityReference;
+
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
         // StoreRoom feature Reference
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
         mDatabase.keepSynced(true);
 
         if(!status){
             user = mAuth.getCurrentUser();
 
-            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
-            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
 
             mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -136,7 +141,7 @@ public class ProductsTab extends Fragment {
             @Override
             protected void populateViewHolder(final ProductsTab.ProductViewHolder viewHolder, final Product model, int position) {
 
-                SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.openProduct(model.getKey());
@@ -251,8 +256,13 @@ public class ProductsTab extends Fragment {
         // Flag to get combined user Id
         String ReservedUid;
         SharedPreferences sharedPref;
-        private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
-        private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
+
+        private SharedPreferences communitySP;
+        public String communityReference;
+
+
+        private DatabaseReference Users;
+        private DatabaseReference StoreRoom;
         // Auth to get Current User
         private FirebaseAuth mAuth;
         private Button shortList;
@@ -264,8 +274,15 @@ public class ProductsTab extends Fragment {
         public ProductViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+
+            communitySP = mView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
+            communityReference = communitySP.getString("communityReference", null);
+
+            Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
+            StoreRoom = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+
             post_image = (ImageView) mView.findViewById(R.id.postImg);
-            sharedPref = mView.getContext().getSharedPreferences("guestMode",Context.MODE_PRIVATE);
+            sharedPref = mView.getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
             Boolean status = sharedPref.getBoolean("mode", false);
 //            mReserve = (Switch) mView.findViewById(R.id.switch1);
 //            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);

@@ -132,7 +132,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         if (mUser.getPhotoUrl() != null) imageUrl = mUser.getPhotoUrl().toString();
         else imageUrl = DEFAULT_PHOTO_URL;
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
         phoneBookDbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

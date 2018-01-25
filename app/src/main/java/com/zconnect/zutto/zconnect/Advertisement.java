@@ -49,7 +49,7 @@ public class Advertisement extends BaseActivity {
     Vector<AdItemFormat> adItemFormats = new Vector<>();
     private AdRVAdapter adapter;
     private RecyclerView recyclerView;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Advertisement");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Advertisement");
     private ProgressBar progressBar;
 
 

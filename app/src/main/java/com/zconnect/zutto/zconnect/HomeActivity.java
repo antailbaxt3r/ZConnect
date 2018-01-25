@@ -75,6 +75,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private boolean doubleBackToExitPressedOnce = false;
     private ValueEventListener phoneBookValueEventListener;
     private ValueEventListener popupsListener;
+
     /**
      * Listenes to /ui node in firebase.
      */
@@ -87,25 +88,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
      * The email displayed in nav header.
      */
     private TextView navHeaderEmailTv;
-    /**
-     * Background of nav header.
-     <activity
-     android:name=".FullscreenActivity"
-     android:configChanges="orientation|keyboardHidden|screenSize"
-     android:label="@string/title_activity_fullscreen"
-     android:screenOrientation="portrait"
-     android:theme="@style/AppTheme.NoActionBar" />
-     <activity
-     android:name=".MyRides"
-     android:label="@string/title_activity_my_rides"
-     android:parentActivityName=".HomeActivity"
-     android:theme="@style/AppTheme.NoActionBar" />
-
-     <service android:name=".NotificationService">
-     <intent-filter>
-     <action android:name="com.google.firebase.MESSAGING_EVENT" />
-     </inte
-     */
     private SimpleDraweeView navHeaderBackground;
     private MenuItem editProfileItem;
     private ActionBarDrawerToggle toggle;
@@ -115,7 +97,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference phoneBookDbRef;
     private DatabaseReference mDatabasePopUps;
-
     private Boolean isFabOpen = false;
     private FloatingActionButton fab,fab1,fab2,fab3;
     private Animation fab_open,fab_close,rotate_forward,rotate_backward;
@@ -139,11 +120,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private ValueEventListener UserStats;
     private ValueEventListener TotalStats;
 
+    String flag;
+
     TextView[] tabTitle= new TextView[6];
     ImageView[] tabImage = new ImageView[6];
     ImageView[] tabNotificationCircle = new ImageView[6];
-
-
 
     @SuppressLint("ApplySharedPref")
     @Override
@@ -152,24 +133,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        recent = new Recents();
-        cab = new CabPoolMain();
-        infone = new InfoneActivity();
-        store = new TabStoreRoom();
-        shop = new Shop();
-        events = new TabbedEvents();
-        tabs();
+        Toast.makeText(this,communityReference, Toast.LENGTH_SHORT).show();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
-        uiDbRef = FirebaseDatabase.getInstance().getReference("ui");
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         guestPrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
         guestPrefs.registerOnSharedPreferenceChangeListener(this);
         guestMode = guestPrefs.getBoolean("mode", false);
         mAuth = FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(this);
-        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
-        phoneBookDbRef.keepSynced(true);
 
         View navHeader = navigationView.getHeaderView(0);
         //These initializations **can't** be done by glide
@@ -203,6 +174,27 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
+//        try {
+//            Toast.makeText(this, datareference.getData(), Toast.LENGTH_SHORT).show();
+//        } catch (Exception e){
+//  }
+        launchRelevantActivitiesIfNeeded();
+
+        if(communityReference!=null) {
+
+
+
+        }
+
+        recent = new Recents();
+        cab = new CabPoolMain();
+        infone = new InfoneActivity();
+        store = new TabStoreRoom();
+        shop = new Shop();
+        events = new TabbedEvents();
+        tabs();
+
         //Floating Buttons
         fab = (FloatingActionButton)findViewById(R.id.fab);
         fab1 = (FloatingActionButton)findViewById(R.id.fab1);
@@ -274,6 +266,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
 
         });
+
+
+
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -325,17 +320,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
 
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
-
-        mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
-        mDatabasePopUps.keepSynced(true);
-
-        if(mAuth.getCurrentUser()!=null) {
-            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid()).child("Stats");
-            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
-            mDatabaseStats.addValueEventListener(TotalStats);
-            mDatabaseUserStats.addValueEventListener(UserStats);
-//            Toast.makeText(this, "Not null", Toast.LENGTH_SHORT).show();
-        }
 
 
     }
@@ -915,23 +899,49 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStart() {
         super.onStart();
-        launchRelevantActivitiesIfNeeded();
-        mDatabasePopUps.addValueEventListener(popupsListener);
+
+        if(communityReference!=null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+
+
+            uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
+            phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+            phoneBookDbRef.keepSynced(true);
+
+            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
+            mDatabasePopUps.keepSynced(true);
+
+            if(mAuth.getCurrentUser()!=null) {
+                mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(mAuth.getCurrentUser().getUid()).child("Stats");
+                mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
+                mDatabaseStats.addValueEventListener(TotalStats);
+                mDatabaseUserStats.addValueEventListener(UserStats);
+//            Toast.makeText(this, "Not null", Toast.LENGTH_SHORT).show();
+            }
+
+            mDatabasePopUps.addValueEventListener(popupsListener);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         updateViews();
-        uiDbRef.addValueEventListener(uiDbListener);
+        if(communityReference!=null) {
+            uiDbRef.addValueEventListener(uiDbListener);
+        }
     }
 
     @Override
     protected void onStop() {
-        mDatabasePopUps.removeEventListener(popupsListener);
-        phoneBookDbRef.removeEventListener(phoneBookValueEventListener);
-        if (addContactDialog != null) addContactDialog.cancel();
         super.onStop();
+        if(communityReference!=null) {
+            try {
+                mDatabasePopUps.removeEventListener(popupsListener);
+                phoneBookDbRef.removeEventListener(phoneBookValueEventListener);
+            }catch (Exception e){}
+            if (addContactDialog != null) addContactDialog.cancel();
+        }
     }
 
     @Override
@@ -943,7 +953,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         // onPause is always called before onStop,
         // which in turn is always called before onDestroy
 
-        uiDbRef.removeEventListener(uiDbListener);
+        if(communityReference!=null) {
+            uiDbRef.removeEventListener(uiDbListener);
+        }
 
         super.onPause();
     }
@@ -1029,11 +1041,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         mUser = mAuth.getCurrentUser();
+        setCommunity("bitsGoa");
         username = null;
         userEmail = null;
         if (mUser != null) {
-            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid()).child("Stats");
-            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(mUser.getUid()).child("Stats");
+            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
         }
         if (mUser != null) {
             username = mUser.getDisplayName();
@@ -1054,6 +1067,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
         guestMode = guestPrefs.getBoolean("mode", false);
         updateViews();
+    }
+
+    public void setCommunity(String communityName){
+        SharedPreferences sharedPref2 = getSharedPreferences("communityName", MODE_PRIVATE);
+        SharedPreferences.Editor editInfo2 = sharedPref2.edit();
+        editInfo2.putString("communityReference", communityName);
+        editInfo2.commit();
     }
 
     public void changeFragment(int i) {

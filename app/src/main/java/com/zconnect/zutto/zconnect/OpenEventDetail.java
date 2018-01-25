@@ -205,7 +205,7 @@ public class  OpenEventDetail extends BaseActivity {
 
         if(tag!=null&&tag.equals("1")){
         } else if (id != null) {
-            databaseReference= FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(id);
+            databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(id);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -443,7 +443,7 @@ public class  OpenEventDetail extends BaseActivity {
 
     private void boostCounter() {
 
-        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(event.getKey());
+        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts").child(event.getKey());
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {

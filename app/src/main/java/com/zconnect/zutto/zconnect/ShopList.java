@@ -27,7 +27,7 @@ import static android.view.View.VISIBLE;
 public class ShopList extends BaseActivity {
     ShopListRV adapter;
     String temp;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Shop").child("Shops");
     private Vector<ShopListItem> shopListItems = new Vector<>();
     private Vector<ShopDetailsItem> shopDetailsItems = new Vector<>();
     private RecyclerView recycleView;

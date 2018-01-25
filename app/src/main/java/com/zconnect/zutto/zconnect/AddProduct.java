@@ -107,7 +107,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mProductPrice = (EditText) findViewById(R.id.price);
         mProductPhone = (EditText) findViewById(R.id.phoneNo);
         mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
         spinner1 = (CustomSpinner) findViewById(R.id.categories);
         productTags =(TagsEditText) findViewById(R.id.skillsTags);
         negotiableCheckBox=(CheckBox) findViewById(R.id.priceNegotiable);
@@ -254,8 +254,8 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
         final String userId = user.getUid();
-        mUsername = FirebaseDatabase.getInstance().getReference().child("Users");
-        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
         final String category = spinner1.getSelectedItem().toString();
         mUsername.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -294,7 +294,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
 
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
                     newPost2.child("name").setValue(productNameValue);
                     newPost2.child("desc").setValue(productDescriptionValue);
                     newPost2.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);

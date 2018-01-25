@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.Vector;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.zconnect.zutto.zconnect.PostEmails.email;
 
 /**
@@ -32,9 +34,14 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
     Context context;
     Vector<CabListItemFormat> cabListItemFormats;
 
+
+    private SharedPreferences communitySP;
+    public String communityReference;
+
     public CabPeopleRVAdapter(Context context, Vector<CabListItemFormat> cabListItemFormats) {
         this.context = context;
         this.cabListItemFormats = cabListItemFormats;
+
     }
 
     @Override
@@ -61,8 +68,14 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
         View rv_item;
         Intent intent;
 
+
+
         public ViewHolder(View itemView) {
             super(itemView);
+
+            communitySP = context.getSharedPreferences("communityName", MODE_PRIVATE);
+            communityReference = communitySP.getString("communityReference", null);
+
             call = (ImageView) itemView.findViewById(R.id.ib_call_contact_item);
             name = (TextView) itemView.findViewById(R.id.cab_name);
             number = (TextView) itemView.findViewById(R.id.cab_number);
@@ -86,7 +99,7 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
                     String  name = cabListItemFormats.get(getAdapterPosition()).getName();
                     String number = cabListItemFormats.get(getAdapterPosition()).getPhonenumber();
 
-                    DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("Phonebook").child(number);
+                    DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook").child(number);
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
