@@ -26,7 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
-import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
@@ -49,19 +48,20 @@ public class CabListOfPeople extends BaseActivity {
 
     RecyclerView recyclerView;
     ProgressBar progressBar;
-    DatabaseReference pool,chatRef;
+    DatabaseReference pool, chatRef;
     Button join;
     String key;
     String name, number, email;
     Vector<CabListItemFormat> cabListItemFormatVector = new Vector<>();
     CabPeopleRVAdapter adapter;
-    CabItemFormat cabItemFormat;
     Boolean flag, numberFlag;
     //numberFlag person is registered on infone
     //flag person is in cabpool
-    String reference,reference_old="archive/Cab",reference_default="Cab";
+    String reference, reference_old = "archive/Cab", reference_default = "Cab";
+    Long default_frequency;
+    Long current_frequency;
 
-    String formatted_date,Date;
+    String formatted_date, Date;
     private FirebaseAuth mAuth;
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
     private DatabaseReference databaseReference;
@@ -82,19 +82,20 @@ public class CabListOfPeople extends BaseActivity {
             finish();
         }
 
-        flag=false;
+        flag = false;
         mAuth = FirebaseAuth.getInstance();
+
 
         findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CabListOfPeople.this,ChatActivity.class);
-                intent.putExtra("ref",pool.toString());
+                Intent intent = new Intent(CabListOfPeople.this, ChatActivity.class);
+                intent.putExtra("ref", databaseReference.child(key).toString());
                 startActivity(intent);
+                Log.e("msg",databaseReference.child(key).toString());
+
             }
         });
-
-
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -125,21 +126,21 @@ public class CabListOfPeople extends BaseActivity {
         SimpleDateFormat output = new SimpleDateFormat("yyyyMMdd");
         Date = output.format(c.getTime());
 
-        formatted_date=getIntent().getStringExtra("date");
+        formatted_date = getIntent().getStringExtra("date");
 
         //Setting old database or new database
-        if(formatted_date==null){
+        if (formatted_date == null) {
 
-            reference=reference_default;
+            reference = reference_default;
 
-        }else{
-            if(Date.compareTo(formatted_date)>0){
-                reference=reference_old;
-            }else{
-                reference=reference_default;
+        } else {
+            if (Date.compareTo(formatted_date) > 0) {
+                reference = reference_old;
+            } else {
+                reference = reference_default;
             }
         }
-
+    Log.d("msg",reference);
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child(reference);
         pool = databaseReference.child(key).child("cabListItemFormats");
@@ -162,22 +163,20 @@ public class CabListOfPeople extends BaseActivity {
 
                 dataSnapshot.getChildrenCount();
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                        cabListItemFormatVector.add(shot.getValue(CabListItemFormat.class));
-                    }
-                int i=0;
-                Log.e("value i",number);
-
-                while(i<cabListItemFormatVector.size()&& !cabListItemFormatVector.get(i).getPhonenumber().equals(number)){i++;}
-                Log.e("value i",String.valueOf(i));
-                if(i==cabListItemFormatVector.size()){
+                    cabListItemFormatVector.add(shot.getValue(CabListItemFormat.class));
+                }
+                int i = 0;
+                while (i < cabListItemFormatVector.size() && !cabListItemFormatVector.get(i).getPhonenumber().equals(number)) {
+                    i++;
+                }
+                if (i == cabListItemFormatVector.size()) {
                     //no number
                     join.setText("JOIN");
-                }else {
+                } else {
                     //number
                     flag = true;
                     join.setText("LEAVE");
                 }
-
 
                 adapter.notifyDataSetChanged();
                 join.setVisibility(VISIBLE);
@@ -198,14 +197,36 @@ public class CabListOfPeople extends BaseActivity {
         pool.keepSynced(true);
 
 
+        final DatabaseReference db_default = FirebaseDatabase.getInstance().getReference().child("Notifications");
+        db_default.child("frequency").child("AR_Cabpool").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                default_frequency = dataSnapshot.getValue(Long.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        db_default.child("current").child("AR_Cabpool").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                current_frequency = dataSnapshot.getValue(Long.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         join.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Log.e("value i", String.valueOf(email));
-                Log.e("value i", String.valueOf(numberFlag));
-                Log.e("value i", String.valueOf(flag));
-
 
                 if (email != null) {
                     if (numberFlag) {
@@ -228,8 +249,13 @@ public class CabListOfPeople extends BaseActivity {
                             if (name != null && number != null) {
                                 cabListItemFormatVector.add(new CabListItemFormat(name, number));
                                 pool.setValue(cabListItemFormatVector);
-                                sendNotification notification = new sendNotification();
-                                notification.execute();
+                                if (default_frequency.equals(current_frequency)) {
+                                    db_default.child("current").child("AR_Cabpool").setValue(1);
+                                    sendNotification notification = new sendNotification();
+                                    notification.execute();
+                                }else{
+                                    db_default.child("current").child("AR_Cabpool").setValue(Long.valueOf(current_frequency)+1);
+                                }
 
                             } else {
                                 Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
@@ -273,48 +299,56 @@ public class CabListOfPeople extends BaseActivity {
 
     private class sendNotification extends AsyncTask<Void, Void, Void> {
 
+
         @Override
         protected Void doInBackground(Void... params) {
 
-            String pName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-            RemoteMessage.Builder creator = new RemoteMessage.Builder(key);
-            creator.addData("Type", "CabPool");
-            creator.addData("Person", pName == null ? name : pName);
-            creator.addData("Contact", number);
-            creator.addData("key", key);
 
-            try {
-                URL url = new URL("https://fcm.googleapis.com/fcm/send");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", "key=AAAAGZIFvsE:APA91bG7rY-RLe6T3JxhFcmA4iRtihJCbD2RUwypt0aC8hVCvrm99LKZR__y3SqSIQmJocsuLaDltTuUui9BUrLwAM0SiCx0qSTrO8dpmxnjiHkaATnfYwVIN3T81lwlxYwBF7x9_3Kd");
-                connection.setDoOutput(true);
-                connection.connect();
+                String pName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                RemoteMessage.Builder creator = new RemoteMessage.Builder(key);
+                creator.addData("Type", "CabPool");
+                creator.addData("Person", pName == null ? name : pName);
+                creator.addData("Contact", number);
+                creator.addData("key", key);
 
+                try {
 
-                OutputStream os = connection.getOutputStream();
-                OutputStreamWriter writer = new OutputStreamWriter(os);
+                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("Authorization", "key=AAAAGZIFvsE:APA91bG7rY-RLe6T3JxhFcmA4iRtihJCbD2RUwypt0aC8hVCvrm99LKZR__y3SqSIQmJocsuLaDltTuUui9BUrLwAM0SiCx0qSTrO8dpmxnjiHkaATnfYwVIN3T81lwlxYwBF7x9_3Kd");
+                    connection.setDoOutput(true);
+                    connection.connect();
 
 
-                Map<String, Object> data = new HashMap<String, Object>();
-                data.put("to", "/topics/" + key);
-                data.put("data", creator.build().getData());
+                    OutputStream os = connection.getOutputStream();
+                    OutputStreamWriter writer = new OutputStreamWriter(os);
 
-                JSONObject object = new JSONObject(data);
-                String s2 = object.toString().replace("\\", "");
 
-                writer.write(s2);
-                writer.flush();
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put("to", "/topics/" + "CabPool");
+                    data.put("data", creator.build().getData());
 
-                showToast(connection.getResponseMessage());
-                FirebaseMessaging.getInstance().subscribeToTopic(key);
+                    JSONObject object = new JSONObject(data);
+                    String s2 = object.toString().replace("\\", "");
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                    writer.write(s2);
+                    writer.flush();
+
+                    showToast(connection.getResponseMessage());
+                    FirebaseMessaging.getInstance().subscribeToTopic("CabPool");
+
+
+                } catch (Exception e) {
+                    Log.e("msg","nahi ho raha");
+                    e.printStackTrace();
+                }
+
             return null;
-        }
-    }
 
+        }
+
+    }
 }
+
