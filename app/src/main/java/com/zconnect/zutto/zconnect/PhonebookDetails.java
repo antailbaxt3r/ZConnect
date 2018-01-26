@@ -11,7 +11,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -98,14 +97,14 @@ public class PhonebookDetails extends BaseActivity {
         category=getIntent().getStringExtra("category");
         Uid=getIntent().getStringExtra("Uid");
 
-        Log.e("msg",name);
-        Log.e("msg",desc);
-        Log.e("msg",number);
-        Log.e("msg",imagelink);
-        Log.e("msg",email);
-        Log.e("msg",skills);
-        Log.e("msg",category);
-        Log.e("msg",Uid);
+//        Log.e("msg",name);
+//        Log.e("msg",desc);
+//        Log.e("msg",number);
+//        Log.e("msg",imagelink);
+//        Log.e("msg",email);
+//        Log.e("msg",skills);
+//        Log.e("msg",category);
+//        Log.e("msg",Uid);
 
         if (Uid.equals("null"))
         {
@@ -141,27 +140,18 @@ public class PhonebookDetails extends BaseActivity {
             skills=skills.substring(1,skills.length()-1);
 
         String[] skillsArray = {""};
-
-        if (name != null && desc != null && number != null && imagelink != null && email != null) {
+        if (name != null) {
             editTextName.setText(name);
+        }
+        if (desc != null) {
             editTextDetails.setText(desc);
+        }
+        if (number != null) {
             editTextNumber.setText(number);
-
-            if (!skills.equals(""))
-                skillsArray = skills.split(",");
-
-            editTextSkills.setTags(skillsArray);
             editTextNumber.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number)));
-                }
-            });
-            editTextEmail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
-                    startActivity(Intent.createChooser(emailIntent, "Send Email ..."));
                 }
             });
             call.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +161,20 @@ public class PhonebookDetails extends BaseActivity {
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number)));
                 }
             });
+        }
+        if (imagelink != null) {
+            if (imagelink.equals("https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336")) {
+
+                image.setBackgroundResource(R.drawable.ic_profile_icon);
+
+            } else {
+
+                image.setImageURI((Uri.parse(imagelink)));
+
+            }
+
+        }
+        if (email != null) {
             mail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -180,21 +184,21 @@ public class PhonebookDetails extends BaseActivity {
                 }
             });
 
-            if(imagelink.equals("https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336")){
-
-                image.setBackgroundResource(R.drawable.ic_profile_icon);
-
-            }
-            else {
-
-                image.setImageURI((Uri.parse(imagelink)));
-
-            }
 
             //image.setImageURI((Uri.parse(imagelink)));
             editTextEmail.setText(email);
+            editTextEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
+                    startActivity(Intent.createChooser(emailIntent, "Send Email ..."));
+                }
+            });
         }
+        if (!skills.equals(""))
+            skillsArray = skills.split(",");
 
+        editTextSkills.setTags(skillsArray);
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 

@@ -104,13 +104,13 @@ cat=intent.getStringExtra("cat");
                             foo.setEmail(childShot.child("email").getValue(String.class));
                             foo.setImageurl(childShot.child("imageurl").getValue(String.class));
                             foo.setName(childShot.child("name").getValue(String.class));
-                            foo.setNumber(childShot.child("contactDescTv").getValue(String.class));
+                            foo.setNumber(childShot.getKey());
                             foo.setSkills(childShot.child("skills").getValue(String.class));
                             foo.setUid(childShot.child("Uid").getValue(String.class));
 
 
                             String name = childShot.child("name").getValue(String.class);
-                            String number = childShot.child("contactDescTv").getValue(String.class);
+                            String number = childShot.getKey();
                             String details = childShot.child("desc").getValue(String.class);
                             String skills = childShot.child("skills").getValue(String.class);
                             String uid = childShot.child("Uid").getValue(String.class);
