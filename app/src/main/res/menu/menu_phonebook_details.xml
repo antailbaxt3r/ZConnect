@@ -3,8 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.zconnect.zutto.zconnect.PhonebookDetails">
     <item
+        android:id="@+id/menu_share_conatct"
+        android:title="share"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_menu_share"
+        />
+    <item
         android:id="@+id/action_report"
         android:orderInCategory="1"
         android:title="Report"
-        app:showAsAction="collapseActionView|ifRoom" />
+        app:showAsAction="collapseActionView" />
 </menu>

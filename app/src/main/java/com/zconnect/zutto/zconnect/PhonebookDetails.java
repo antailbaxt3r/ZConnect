@@ -1,12 +1,17 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.ContactsContract;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -30,6 +35,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 import mabbas007.tagsedittext.TagsEditText;
 
@@ -329,6 +338,19 @@ public class PhonebookDetails extends BaseActivity {
             startActivity(Intent.createChooser(emailIntent, "Send email..."));
 
             return true;
+        }else if (id==R.id.menu_share_conatct) {
+            String send = "";
+            String format1 = "%1$-20s %2$-20s\n";
+            String format2 = "%1$-40s\n";
+            send =
+                    String.format(format1,"Name :",name)+
+                    String.format(format1,"Number :",number)+
+                    "\n               \t\t\t  Zconnect";
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/*");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, send);
+            startActivity(sharingIntent);
+
         }
         return super.onOptionsItemSelected(item);
     }
