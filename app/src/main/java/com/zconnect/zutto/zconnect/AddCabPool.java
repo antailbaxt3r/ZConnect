@@ -29,8 +29,10 @@ import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddCabPool extends AppCompatActivity {
     Button done;
@@ -106,6 +108,15 @@ public class AddCabPool extends AppCompatActivity {
 
             String date = getIntent().getStringExtra("date");
             if(!date.equals("null")){
+                SimpleDateFormat abc=new SimpleDateFormat("dd/M/yyyy");
+                Date a=abc.parse(date);
+                Log.e("msg",String.valueOf(a));
+                s_dayOfMonth= (new SimpleDateFormat("dd")).format(a);
+                s_monthOfYear= (new SimpleDateFormat("MM")).format(a);
+                s_year= (new SimpleDateFormat("yyyy")).format(a);
+                Log.e("msg",s_dayOfMonth);
+                Log.e("msg",s_monthOfYear);
+                Log.e("msg",s_year);
                 this.calender.setText(date);
             }
 

@@ -153,7 +153,7 @@ public class CabPoolMain extends Fragment {
                         String time;
 
                         if (Av == ((int) Av)) {
-                            time = decimalFormat.format((int) Av + 00) + ":00";
+                            time = decimalFormat.format((int)Av + 00) + ":00";
                         } else {
                             time = (decimalFormat.format((int) Av + 00) + ":30");
                         }
