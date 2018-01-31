@@ -12,6 +12,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -44,6 +46,7 @@ public class OpenProductDetails extends AppCompatActivity {
     private Boolean flag;
     private ProgressBar progressBar;
     private LinearLayout productContent;
+    private String productKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +93,7 @@ public class OpenProductDetails extends AppCompatActivity {
 
         mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("storeroom");
         Intent intent = getIntent();
-        final String productKey = intent.getStringExtra("key");
+        productKey = intent.getStringExtra("key");
 
         progressBar.setVisibility(VISIBLE);
         productContent.setVisibility(INVISIBLE);
@@ -133,6 +136,29 @@ public class OpenProductDetails extends AppCompatActivity {
 
 
 
+    }
+
+    //Menu Overwrite
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_open_product_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_chat_room:
+                //char room clicked
+                Intent intent = new Intent(OpenProductDetails.this,ChatActivity.class);
+                intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("storeroom").child(productKey).toString());
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override

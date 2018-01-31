@@ -361,7 +361,7 @@ public class AddEvent extends BaseActivity {
         if (!edit) {
             if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null) {
                 Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmm");
                 String formattedDate = df.format(c.getTime());
                 final StorageReference filepath = mStorage.child("EventImage").child(formattedDate + mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
                 filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -374,6 +374,7 @@ public class AddEvent extends BaseActivity {
                             DatabaseReference newPost = mDatabaseVerified.push();
                             String key = newPost.getKey();
                             newPost.child("Key").setValue(key);
+                            newPost.child("Creator").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             newPost.child("EventName").setValue(eventNameValue);
                             newPost.child("EventDescription").setValue(eventDescriptionValue);
                             newPost.child("EventImage").setValue(downloadUri.toString());

@@ -134,7 +134,7 @@ public class TimelineEvents extends Fragment {
                 try {
                     viewHolder.setEventName(model.getEventName(),model.getVerified());
                 }catch (Exception e) {
-                    Log.d("Error Alert: ", e.getMessage());
+                   // Log.d("Error Alert: ", e.getMessage());
                 }
                     viewHolder.setEventDate(model.getEventDate(),model.getBoostCount());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());

@@ -302,6 +302,11 @@ public class  OpenEventDetail extends BaseActivity {
             CounterManager.eventShare(event.getKey());
             shareEvent(event.getEventImage(),this.getApplicationContext());
 
+        }else if (id == R.id.menu_chat_room){
+            //chat room clicked;
+            Intent intent = new Intent(OpenEventDetail.this,ChatActivity.class);
+            intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("Event").child(event.getKey()).toString());
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
