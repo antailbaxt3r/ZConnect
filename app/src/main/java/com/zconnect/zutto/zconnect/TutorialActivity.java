@@ -18,7 +18,7 @@ import android.widget.RelativeLayout;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends BaseActivity {
+public class TutorialActivity extends BaseActivity {
     Drawable pageData[]=new Drawable[4];	        //Stores the text to swipe.
     LayoutInflater inflater;	//Used to create individual pages
     ViewPager vp;	            //Reference to class to swipe views

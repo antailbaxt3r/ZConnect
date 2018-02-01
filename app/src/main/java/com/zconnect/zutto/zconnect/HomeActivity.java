@@ -26,7 +26,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -133,8 +132,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        Toast.makeText(this,communityReference, Toast.LENGTH_SHORT).show();
-
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         guestPrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
         guestPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -175,27 +172,22 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-//        try {
-//            Toast.makeText(this, datareference.getData(), Toast.LENGTH_SHORT).show();
-//        } catch (Exception e){
-//  }
-        launchRelevantActivitiesIfNeeded();
-
-        if(communityReference!=null) {
-
-
-
-        }
-
+        //getting all the tabs Instances
         recent = new Recents();
         cab = new CabPoolMain();
         infone = new InfoneActivity();
         store = new TabStoreRoom();
         shop = new Shop();
         events = new TabbedEvents();
+
+        //Setting launching tab
         tabs();
 
-        //Floating Buttons
+        if(communityReference!=null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+        }
+
+            //Floating Buttons
         fab = (FloatingActionButton)findViewById(R.id.fab);
         fab1 = (FloatingActionButton)findViewById(R.id.fab1);
         fab2 = (FloatingActionButton)findViewById(R.id.fab2);
@@ -204,6 +196,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+
+        //different fab results in different tab fragments
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -211,13 +205,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 Boolean status = sharedPref.getBoolean("mode", false);
                 int i=tabs.getSelectedTabPosition();
                 if(i==0){//Recents
-                if (!status) {
-                    animateFAB();
-                }else {
-                    alertBox();
-                    }
-                }
-                if(i==1){//Infone
+                    if (!status) {
+                        animateFAB();
+                    }else {
+                        alertBox();
+                        }
+                }else if(i==1){//Infone
                     if (!status) {
                         Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
                         startActivity(intent);
@@ -225,8 +218,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }else {
                         alertBox();
                     }
-                }
-                if(i==2){//Storeroom
+                } else if(i==2){//Storeroom
                     if (!status) {
                         CounterManager.StoreRoomFABclick();
                         Intent intent = new Intent(getApplicationContext(), AddProduct.class);
@@ -234,16 +226,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }else {
                         alertBox();
                     }
-                }
-                if(i==3){//Events
+                } else if(i==3){//Events
                     if (!status) {
                         CounterManager.eventAddClick();
                         Intent intent = new Intent(getApplicationContext(), AddEvent.class);
                         startActivity(intent);   }else {
                         alertBox();
                     }
-                }
-                if(i==4){//CabPool
+                }else if(i==4){//CabPool
                     if (!status) {
                             setActionBarTitle("Search Pool");
                             CounterManager.RecentsOpen();
@@ -252,8 +242,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                        }else {
                         alertBox();
                     }
-                }
-                if(i==5){//Shops
+                }else if(i==5){//Shops
                     if (!status) {
                         CounterManager.shopOffers();
                         Intent intent = new Intent(HomeActivity.this, Offers.class);
@@ -262,17 +251,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         alertBox();
                     }
                 }
-
             }
-
         });
 
-
-
+        //fab to add product
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 if (!status) {
@@ -282,6 +267,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             }
         });
+
+        //fab to add event
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -294,6 +281,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             }
         });
+
+        //fab to add search pool
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -310,24 +299,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
 
 
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
 
-
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
-
-
     }
 
+    //Alert box to display guest login
     void alertBox(){
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getApplicationContext());
 
-        // 2. Chain together various setter methods to set the dialog characteristics
         builder.setMessage("Please Log In to access this feature.")
                 .setTitle("Dear Guest!");
 
@@ -349,6 +334,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
 
+    // Function to open fab notification
     public void animateFAB() {
 
         if (isFabOpen) {
@@ -379,6 +365,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
 
+    //Circular notification in the bottom navigation
     void setNotificationCircle(){
         if(TotalEvents>UsersTotalEvents){
             tabNotificationCircle[4].setVisibility(View.VISIBLE);
@@ -402,8 +389,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
+    //Setting contents in the different tabs
     void tabs() {
-
         View vRecents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab recentsT = tabs.newTab();
 
@@ -416,9 +403,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
 
         recentsT.setCustomView(vRecents);
-
-
-
 
         View vInfone = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab infoneT = tabs.newTab();
@@ -447,8 +431,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         vStore.setAlpha((float) 0.7);
         storeT.setCustomView(vStore);
 
-
-
         View vCab = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab cabT = tabs.newTab();
 
@@ -461,9 +443,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabNotificationCircle[3] = (ImageView) vCab.findViewById(R.id.notification_circle);
         vCab.setAlpha((float) 0.7);
         cabT.setCustomView(vCab);
-
-
-
 
         View vEvents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab eventT = tabs.newTab();
@@ -478,9 +457,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         vEvents.setAlpha((float) 0.7);
         eventT.setCustomView(vEvents);
 
-
-
-
         View vShop = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab shopT = tabs.newTab();
 
@@ -494,14 +470,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         vShop.setAlpha((float) 0.7);
         shopT.setCustomView(vShop);
 
-
         tabs.addTab(recentsT);
         tabs.addTab(infoneT);
         tabs.addTab(storeT);
         tabs.addTab(eventT);
         tabs.addTab(cabT);
         tabs.addTab(shopT);
-
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -523,6 +497,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         break;
                     }
+                    case 3: {
+                        setActionBarTitle("Events");
+                        CounterManager.EventOpen();
+                        fab.setImageResource(R.drawable.ic_add_white_36dp);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
+                        break;
+                    }
                     case 5: {
                         setActionBarTitle("Shops");
                         fab.setImageResource(R.drawable.procent_badge_256);
@@ -536,13 +517,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         CounterManager.StoreRoomOpen();
                         fab.setImageResource(R.drawable.ic_add_shopping_cart_white_24dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
-                        break;
-                    }
-                    case 3: {
-                        setActionBarTitle("Events");
-                        CounterManager.EventOpen();
-                        fab.setImageResource(R.drawable.ic_add_white_36dp);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
                         break;
                     }
                     case 4: {
@@ -567,11 +541,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         });
 
     }
-    /**
-     *
-     *
-     * All {@link ValueEventListener}s used in this class are defined here.
-     */
+
+
+    //All ValueEventListener used in this class are defined here.
     private void initListeners() {
 
         TotalStats = new ValueEventListener() {
@@ -581,17 +553,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
                 TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
                 TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
-
-//                setNotificationCircle();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(TAG, "onCancelled: ", databaseError.toException());
             }
-
-
         };
+
         UserStats = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -616,7 +584,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 Log.e(TAG, "onCancelled: ", databaseError.toException());
             }
         };
-
 
         popupsListener = new ValueEventListener() {
             @Override
@@ -661,6 +628,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         dataComplete = false;
                     }
                 }
+
                 for (int i = 0; i < popUpUrl1.size() && dataComplete && firstTimePopUp; i++) {
                     double random1 = Math.random();
                     int random = (int) (random1 * 10);
@@ -698,6 +666,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             }
         };
+
         phoneBookValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -719,7 +688,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         };
 
         uiDbListener = new ValueEventListener() {
-
             /**
              * Updates nav header background and nav header text colors according to firebase.
              */
@@ -776,19 +744,24 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @SuppressLint("ApplySharedPref")
     private void launchRelevantActivitiesIfNeeded() {
         //show tuts for first launch
-        if (!defaultPrefs.getBoolean("isReturningUser", false)) {
-            Intent tutIntent = new Intent(HomeActivity.this, FullscreenActivity.class);
-            tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(tutIntent);
-
-            //mark first time has run.
-            SharedPreferences.Editor editor = defaultPrefs.edit();
-            editor.putBoolean("isReturningUser", true);
-            editor.commit();
-        } else /*check if login is needed*/ if (!guestMode && mUser == null) {
-            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-        } else if (!guestMode) {
-            phoneBookDbRef.addListenerForSingleValueEvent(phoneBookValueEventListener);
+        if(!guestMode){
+            if (mUser == null) {
+                startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+            } else if (mUser != null) {
+                if (!defaultPrefs.getBoolean("isReturningUser", false)) {
+                    Intent tutIntent = new Intent(HomeActivity.this, TutorialActivity.class);
+                    tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(tutIntent);
+                    //mark first time has run.
+                    SharedPreferences.Editor editor = defaultPrefs.edit();
+                    editor.putBoolean("isReturningUser", true);
+                    editor.commit();
+                } else if(communityReference!=null) {
+                    phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+                    phoneBookDbRef.keepSynced(true);
+                    phoneBookDbRef.addListenerForSingleValueEvent(phoneBookValueEventListener);
+                }
+            }
         }
     }
 
@@ -797,6 +770,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         return toggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
+    //Navigation Bar
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -899,14 +873,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStart() {
         super.onStart();
+        mUser = mAuth.getCurrentUser();
+
+        launchRelevantActivitiesIfNeeded();
 
         if(communityReference!=null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
-
-
             uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
-            phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
-            phoneBookDbRef.keepSynced(true);
 
             mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
             mDatabasePopUps.keepSynced(true);
@@ -916,7 +888,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
                 mDatabaseStats.addValueEventListener(TotalStats);
                 mDatabaseUserStats.addValueEventListener(UserStats);
-//            Toast.makeText(this, "Not null", Toast.LENGTH_SHORT).show();
             }
 
             mDatabasePopUps.addValueEventListener(popupsListener);
@@ -926,6 +897,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
+        mUser = mAuth.getCurrentUser();
         updateViews();
         if(communityReference!=null) {
             uiDbRef.addValueEventListener(uiDbListener);

@@ -57,7 +57,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     private FirebaseUser mUser;
     private String userEmail;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,20 +75,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-//        //TODO: what is this code doing?
-//        mUser = mAuth.getCurrentUser();
-//        if (mUser != null) {
-//            userEmail = mUser.getEmail();
-//            if (userEmail != null && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
-//                setCommunity("bitsGoa");
-//                setupUserDataAndFinish(mUser);
-//            } else {
-//                logout();
-//                mProgress.dismiss();
-//                Toast.makeText(LoginActivity.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
-//            }
-//        }
 
         mGuestLogInBtn.setOnClickListener(this);
         mGoogleSignInBtn.setOnClickListener(this);
@@ -180,7 +165,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                             if (mUser != null
                                     && (userEmail = mUser.getEmail()) != null
                                     && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
-                                setCommunity("bitsGoa");
+
                                 setupUserDataAndFinish(mUser);
                             } else {
                                 logout();
@@ -198,13 +183,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         SharedPreferences.Editor editInfo = sharedPref.edit();
         editInfo.putBoolean("mode", mode);
         editInfo.commit();
-    }
-
-    public void setCommunity(String communityName){
-        SharedPreferences sharedPref2 = getSharedPreferences("communityName", MODE_PRIVATE);
-        SharedPreferences.Editor editInfo2 = sharedPref2.edit();
-        editInfo2.putString("communityReference", communityName);
-        editInfo2.commit();
     }
 
     @Override
@@ -232,7 +210,10 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             currentUserDbRef.child("Image").setValue(photoUrl);
             currentUserDbRef.child("Username").setValue(user.getDisplayName());
             currentUserDbRef.child("Email").setValue(user.getEmail());
+            Intent i = new Intent(LoginActivity.this,HomeActivity.class);
+            startActivity(i);
             finish(); /*Make Sure HomeActivity exists*/
+
         }catch (Exception e){
 
         }

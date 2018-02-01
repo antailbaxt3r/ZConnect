@@ -74,6 +74,26 @@ public class LogoFlashActivity extends BaseActivity {
 
                 }
             });
+        }else {
+            mDatabase = FirebaseDatabase.getInstance().getReference().child("ui/logoFlash");
+
+            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child("bgUrl").getValue() != null) {
+                        bgImage.setImageURI(Uri.parse(dataSnapshot.child("bgUrl").getValue(String.class)));
+                    } else {
+                        bgColor.setVisibility(View.GONE);
+                        bgImage.setBackground(null);
+                        bgImage.setBackgroundColor(Color.parseColor(dataSnapshot.child("bgUrl").getValue().toString()));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
 
@@ -94,9 +114,7 @@ public class LogoFlashActivity extends BaseActivity {
             }
         },2000);
 
-
     }
-
 //    void link(){
 //
 //        final DatabaseReference mData, mPhone;

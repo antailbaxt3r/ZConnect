@@ -357,17 +357,14 @@ public class ProductsTab extends Fragment {
 
         //Set name of product
         public void setProductName(String productName) {
-
             TextView post_name = (TextView) mView.findViewById(R.id.productName);
             post_name.setText(productName);
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
             post_name.setTypeface(ralewayMedium);
-
         }
 
         //Set Product Description
         public void setProductDesc(String productDesc) {
-
             TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
             post_desc.setText(productDesc);
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
@@ -382,8 +379,6 @@ public class ProductsTab extends Fragment {
             final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, post_image, mView.getResources().getString(R.string.transition_string));
 
             mView.getContext().startActivity(i, optionsCompat.toBundle());
-
-
         }
 
         public void setImage(final Activity activity, final String name, final Context ctx, final String image) {
@@ -430,14 +425,17 @@ public class ProductsTab extends Fragment {
         }
 
         public void setSellerName(String postedBy) {
-
-
             Users.child(postedBy).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    sellerName = dataSnapshot.child("Username").getValue().toString();
                     TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-                    post_seller_name.setText("Sold By: " + sellerName);
+
+                    if (dataSnapshot.child("Username").getValue()!=null) {
+                        sellerName = dataSnapshot.child("Username").getValue().toString();
+                        post_seller_name.setText("Sold By: " + sellerName);
+                    }else {
+                        post_seller_name.setText("");
+                    }
                     Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
                     post_seller_name.setTypeface(ralewayMedium);
                 }
@@ -447,8 +445,6 @@ public class ProductsTab extends Fragment {
 
                 }
             });
-
-
         }
 
         public void setSellerNumber(final String category, final String sellerNumber, final Context ctx) {
@@ -462,10 +458,7 @@ public class ProductsTab extends Fragment {
                     ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });
-
         }
-
     }
-
 }
 
