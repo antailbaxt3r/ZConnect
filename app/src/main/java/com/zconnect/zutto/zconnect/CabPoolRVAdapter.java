@@ -13,12 +13,9 @@ import android.widget.TextView;
 
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 
-import java.sql.Array;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TreeMap;
 import java.util.Vector;
 

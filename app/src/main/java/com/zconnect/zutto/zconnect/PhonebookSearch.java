@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -96,12 +95,13 @@ public class PhonebookSearch extends BaseActivity {
                         item.setEmail(child.child("email").getValue(String.class));
                         item.setImageurl(child.child("imageurl").getValue(String.class));
                         item.setName(child.child("name").getValue(String.class));
-                        item.setNumber(child.child("contactDescTv").getValue(String.class));
+                        item.setNumber(child.getKey());
                         item.setSkills(child.child("skills").getValue(String.class));
                         item.setUid(child.child("Uid").getValue(String.class));
 
                         String name = child.child("name").getValue(String.class);
-                        String number = child.child("contactDescTv").getValue(String.class);
+                        String number = child.getKey();
+                        //    Log.v("number",number);
                         String details = child.child("desc").getValue(String.class);
                         String skills = child.child("skills").getValue(String.class);
                         String uid = child.child("Uid").getValue(String.class);
@@ -113,6 +113,10 @@ public class PhonebookSearch extends BaseActivity {
                         PhonebookItem temp = new PhonebookItem(imageurl, name, number,uid, item);
                         if (title.toLowerCase().contains(query.toLowerCase())) {
                             searchContact.add(temp);
+                            Log.v("name", temp.getName());
+                            // Log.v("number",temp.getNumber());
+//                            Log.v("uid",temp.getUid());
+                            // Log.v("",temp.getName());
                         } else {
                             String wordSplit[] = title.split("");
                             for (String word : wordSplit) {

@@ -15,137 +15,92 @@
         android:id="@+id/contact_details_display_image"
         android:layout_width="120dp"
         android:layout_height="120dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="25dp"
         android:background="@drawable/defaultprofile"
         app:roundAsCircle="true" />
 
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/contact_details_like_card"
+    <LinearLayout
+        android:id="@+id/ll_love_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
-        android:layout_toEndOf="@+id/contact_details_display_image">
+        android:layout_below="@id/contact_details_display_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:minHeight="16dp">
+
+
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="70dp"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="70dp"
+            <ImageButton
+                android:id="@+id/btn_like"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
                 android:layout_gravity="center"
                 android:layout_marginStart="15dp"
                 android:layout_weight="1"
-                android:background="@color/white"
-                android:src="@drawable/black_heart" />
+                android:src="@drawable/like" />
 
             <TextView
-                android:id="@+id/heart_text"
+                android:id="@+id/like_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="15dp"
                 android:layout_weight="1.8"
                 android:gravity="center_vertical"
-                android:text="15 likes"
+                android:minWidth="32dp"
+                android:text="0 Likes"
                 android:textColor="@color/red500"
                 android:textSize="18sp" />
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
-
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/contact_details_thankyou_card"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/contact_details_like_card"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/contact_details_display_image"
-        android:padding="5dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/thanyu_emoji"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="0dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:src="@drawable/thanku_emoji" />
-
-            <TextView
-                android:id="@+id/thanyu_text"
+            <ImageButton
+                android:id="@+id/btn_love"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="0dp"
-                android:layout_weight="4"
-                android:gravity="center_vertical"
-                android:padding="2dp"
-                android:text="Thank You"
-                android:textColor="@color/red500"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/contact_details_sorry_card"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/contact_details_like_card"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/contact_details_thankyou_card"
-        android:padding="5dp">
-
-        <LinearLayout
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/sorry_emoji"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="0dp"
+                android:layout_marginStart="15dp"
                 android:layout_weight="1"
-                android:background="@color/white"
-                android:src="@drawable/sorry_emoji" />
+                android:background="@android:color/transparent"
+
+                android:src="@drawable/heart" />
 
             <TextView
-                android:id="@+id/sorry_text"
+                android:id="@+id/love_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="0dp"
-                android:layout_weight="4"
+                android:layout_marginStart="15dp"
+                android:layout_weight="1.8"
                 android:gravity="center_vertical"
-                android:padding="2dp"
-                android:text="Sorry"
+                android:minWidth="32dp"
+                android:text="0 Loves"
                 android:textColor="@color/red500"
-                android:textSize="14sp" />
-
-
+                android:textSize="18sp" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+
+
+    </LinearLayout>
+
+
+
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/contact_details_name_text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/contact_details_display_image"
+        android:layout_below="@+id/ll_love_like"
         android:layout_marginTop="16dp"
         android:clickable="false"
         android:paddingEnd="16dp"

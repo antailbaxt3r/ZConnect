@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -20,13 +19,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
+
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Vector;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import static android.content.Context.MODE_PRIVATE;
 

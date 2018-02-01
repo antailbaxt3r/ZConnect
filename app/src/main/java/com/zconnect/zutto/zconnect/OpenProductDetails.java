@@ -2,18 +2,18 @@ package com.zconnect.zutto.zconnect;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -31,14 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.util.EventListener;
-
-import butterknife.BindView;
-
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.zconnect.zutto.zconnect.R.id.shortList;
-import static java.security.AccessController.getContext;
 
 public class OpenProductDetails extends BaseActivity {
 
@@ -52,6 +46,7 @@ public class OpenProductDetails extends BaseActivity {
     private Boolean flag;
     private ProgressBar progressBar;
     private LinearLayout productContent;
+    private String productKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +93,7 @@ public class OpenProductDetails extends BaseActivity {
 
         mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
         Intent intent = getIntent();
-        final String productKey = intent.getStringExtra("key");
+        productKey = intent.getStringExtra("key");
 
         progressBar.setVisibility(VISIBLE);
         productContent.setVisibility(INVISIBLE);
@@ -141,6 +136,29 @@ public class OpenProductDetails extends BaseActivity {
 
 
 
+    }
+
+    //Menu Overwrite
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_open_product_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_chat_room:
+                //char room clicked
+                Intent intent = new Intent(OpenProductDetails.this,ChatActivity.class);
+                intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("storeroom").child(productKey).toString());
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override

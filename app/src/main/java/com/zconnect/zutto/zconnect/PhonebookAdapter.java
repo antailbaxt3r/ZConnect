@@ -96,7 +96,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
                     PhonebookDisplayItem phonebookDisplayItem;
                     phonebookDisplayItem = phonebookItem.get(getAdapterPosition()).getPhonebookDisplayItem();
 
-                    CounterManager.infoneOpenContact(phonebookDisplayItem.getNumber());
+                    //   CounterManager.infoneOpenContact(phonebookDisplayItem.getNumber());
 
                     intent.putExtra("desc", phonebookDisplayItem.getDesc());
                     intent.putExtra("name", phonebookDisplayItem.getName());

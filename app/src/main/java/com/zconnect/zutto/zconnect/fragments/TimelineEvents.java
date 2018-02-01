@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -127,7 +128,7 @@ public class TimelineEvents extends Fragment {
                 try {
                     viewHolder.setEventName(model.getEventName(),model.getVerified());
                 }catch (Exception e) {
-                    Log.d("Error Alert: ", e.getMessage());
+                   // Log.d("Error Alert: ", e.getMessage());
                 }
                     viewHolder.setEventDate(model.getEventDate(),model.getBoostCount());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());

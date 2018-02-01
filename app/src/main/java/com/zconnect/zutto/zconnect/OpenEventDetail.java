@@ -18,11 +18,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.media.RemotePlaybackClient;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -38,7 +36,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -54,12 +51,10 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.ObjectInput;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -307,6 +302,11 @@ public class  OpenEventDetail extends BaseActivity {
             CounterManager.eventShare(event.getKey());
             shareEvent(event.getEventImage(),this.getApplicationContext());
 
+        }else if (id == R.id.menu_chat_room){
+            //chat room clicked;
+            Intent intent = new Intent(OpenEventDetail.this,ChatActivity.class);
+            intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("Event").child(event.getKey()).toString());
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

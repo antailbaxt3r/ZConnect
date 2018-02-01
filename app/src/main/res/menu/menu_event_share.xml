@@ -9,4 +9,10 @@
         android:orderInCategory="1"
         android:title="Share"
         app:showAsAction="collapseActionView|ifRoom" />
+    <item
+        android:id="@+id/menu_chat_room"
+        android:icon="@drawable/ic_chat_black_24dp"
+        android:orderInCategory="1"
+        android:title="Char Room"
+        app:showAsAction="collapseActionView|ifRoom" />
 </menu>

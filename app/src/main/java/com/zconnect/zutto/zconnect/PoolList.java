@@ -15,7 +15,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -34,11 +33,9 @@ import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeMap;
-
 import java.util.Vector;
 
 import static android.icu.util.HebrewCalendar.AV;
@@ -48,6 +45,7 @@ public class PoolList extends BaseActivity {
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
     DatabaseReference pool;
     Query query;
+    Intent intent;
     String Date;//present date
     TextView defaultmsg;
     String source,destination,date,formatted_date,time_to,time_from;
@@ -79,7 +77,17 @@ public class PoolList extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PoolList.this, AddCabPool.class);
+                try {
+                    intent.putExtra("source", String.valueOf(source));
+                    intent.putExtra("destination", String.valueOf(destination));
+                    intent.putExtra("date", String.valueOf(date));
+                    intent.putExtra("time_from", String.valueOf(time_from));
+                    intent.putExtra("time_to", String.valueOf(time_to));
+                }catch (Exception e){
+                    Log.e("TAG","Intent not successfull");
+                }
                 startActivity(intent);
+                finish();
             }
         });
         if (toolbar != null) {
@@ -120,10 +128,6 @@ public class PoolList extends BaseActivity {
         } catch (Exception e) {
 
         }
-   //     Log.e("ABC",source);
-//        Log.e("ABC",destination);
-
-
 
             try {
                 Date abc=input.parse(date);
@@ -144,7 +148,7 @@ public class PoolList extends BaseActivity {
            }
         }
 
-        pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(reference);
+        pool = FirebaseDatabase.getInstance().getReference().child(reference);
         query=pool.orderByChild("DT");
 
         mUser = FirebaseAuth.getInstance();
@@ -263,8 +267,19 @@ public class PoolList extends BaseActivity {
                             if (isNetworkAvailable(getApplicationContext())) {
                                 if (name != null && number != null) {
 
-                                     Intent intent=new Intent(PoolList.this,AddCabPool.class);
+                                    Intent intent=new Intent(PoolList.this,AddCabPool.class);
+                                    try {
+                                        intent.putExtra("source", String.valueOf(source));
+                                        intent.putExtra("destination", String.valueOf(destination));
+                                        intent.putExtra("date", String.valueOf(date));
+                                        intent.putExtra("time_from", String.valueOf(time_from));
+                                        intent.putExtra("time_to", String.valueOf(time_to));
+                                    }catch (Exception e){
+                                        Log.e("TAG","Intent not successfull");
+                                    }
+
                                     startActivity(intent);
+                                    finish();
 
                                 }else{
                                 Snackbar snack = Snackbar.make(fab, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);

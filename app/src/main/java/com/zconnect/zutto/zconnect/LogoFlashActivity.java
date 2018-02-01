@@ -54,7 +54,7 @@ public class LogoFlashActivity extends BaseActivity {
         bgImage = (ImageView) findViewById(R.id.bgImage);
         bgColor = findViewById(R.id.bgColor);
 
-        if(communityReference!=null) {
+        if (communityReference != null) {
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -74,7 +74,7 @@ public class LogoFlashActivity extends BaseActivity {
 
                 }
             });
-        }else {
+        } else {
             mDatabase = FirebaseDatabase.getInstance().getReference().child("ui/logoFlash");
 
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -98,23 +98,25 @@ public class LogoFlashActivity extends BaseActivity {
 
 
 //        link();
-        // Setting full screen view
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        new Timer().schedule(new TimerTask() {
+            // Setting full screen view
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            new Timer().schedule(new TimerTask() {
 
-            @Override
-            public void run() {
+                @Override
+                public void run() {
 
-                if (checkPermission()) {
-                    // Do not wait so that user doesn't realise this is a new launch.
-                    startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
-                    finish();
+                    if (checkPermission()) {
+                        // Do not wait so that user doesn't realise this is a new launch.
+                        startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
+                        finish();
+                    }
+
                 }
+            }, 2000);
 
-            }
-        },2000);
+        }
 
-    }
+
 //    void link(){
 //
 //        final DatabaseReference mData, mPhone;

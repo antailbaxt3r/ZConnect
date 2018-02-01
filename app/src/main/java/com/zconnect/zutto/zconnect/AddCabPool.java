@@ -73,6 +73,66 @@ public class AddCabPool extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
+        source = (CustomSpinner) findViewById(R.id.spinner_source);
+        destination = (CustomSpinner) findViewById(R.id.spinner_destination);
+        time_from = (CustomSpinner) findViewById(R.id.spinner_time_from);
+        time_to = (CustomSpinner) findViewById(R.id.spinner_time_to);
+
+        done = (Button) findViewById(R.id.done);
+        calender = (TextView) findViewById(R.id.calender);
+
+
+        try {
+
+            String source = getIntent().getStringExtra("source");
+            Log.e("TAG",source);
+
+            String[] location=getResources().getStringArray(R.array.location);
+            String[] time=getResources().getStringArray(R.array.time);
+            for(int i=0;i<location.length;i++){
+                if(location[i].equals(source)){
+                    Log.e("TAG",location[i]);
+
+                    this.source.setSelection(i);
+                    Log.e("TAG","hua");
+                    break;
+                }
+            }
+
+            String destination = getIntent().getStringExtra("destination");
+            for(int i=0;i<location.length;i++){
+                if(location[i].equals(destination)){
+                    this.destination.setSelection(i);
+                    break;
+                }
+            }
+
+            String date = getIntent().getStringExtra("date");
+            if(!date.equals("null")){
+                this.calender.setText(date);
+            }
+
+            String time_to = getIntent().getStringExtra("time_to");
+            for(int i=0;i<time.length;i++){
+                if(time[i].equals(time_to)){
+                    this.time_to.setSelection(i);
+                    break;
+                }
+            }
+
+            String time_from = getIntent().getStringExtra("time_from");
+            for(int i=0;i<time.length;i++){
+                if(time[i].equals(time_from)){
+                    this.time_from.setSelection(i);
+                    break;
+                }
+            }
+
+        } catch (Exception e) {
+
+        }
+
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -103,13 +163,6 @@ public class AddCabPool extends BaseActivity {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mUser == null)
             finish();
-        source = (CustomSpinner) findViewById(R.id.spinner_source);
-        destination = (CustomSpinner) findViewById(R.id.spinner_destination);
-        time_from = (CustomSpinner) findViewById(R.id.spinner_time_from);
-        time_to = (CustomSpinner) findViewById(R.id.spinner_time_to);
-
-        done = (Button) findViewById(R.id.done);
-        calender = (TextView) findViewById(R.id.calender);
         final Calendar c = Calendar.getInstance();
         calender.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,6 +270,7 @@ public class AddCabPool extends BaseActivity {
                                         newPost2.child("id").setValue(key);
                                         newPost2.child("Key").setValue(key);
                                         newPost2.child("desc2").setValue("");
+                                        newPost2.child("DT").setValue(s_year + s_monthOfYear + s_dayOfMonth + " " + getTime());
 
                                         Snackbar snack = Snackbar.make(done, "Added", Snackbar.LENGTH_LONG);
                                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);

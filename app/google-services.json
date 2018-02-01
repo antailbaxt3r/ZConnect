@@ -15,6 +15,46 @@
       },
       "oauth_client": [
         {
+          "client_id": "90228986993-e3416p18jlbbnjfe517p9r2240fi0l5b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "f7f8e94224f16d425c618ca85d6a99cd5eeaad28"
+          }
+        },
+        {
+          "client_id": "90228986993-sqenkc6i2okbtjj27lpj2l7lqjtcgum3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "3b671ed1d2f5f1936948b9d4c3221aae91f6b5b7"
+          }
+        },
+        {
+          "client_id": "90228986993-nqb4hvks04o05gb93uv0iaqjibl2dafe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "315b75e3a6b1965e1e516f59a364a1d0c0f8c28c"
+          }
+        },
+        {
+          "client_id": "90228986993-cfg0js7953ds7p5r7l7i192pprk3hf0b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "d79c7e4238532cbc64834c4f72a4ea7e89c5c11a"
+          }
+        },
+        {
+          "client_id": "90228986993-d8eekboafijrp3epnbip6v2rquifg00e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "9bd8fd8347cd2021778be4a046f7683a1bbe9781"
+          }
+        },
+        {
           "client_id": "90228986993-3b6q3v2je3mjpct9k6se50k7p9qrhgnm.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +69,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90228986993-3b6q3v2je3mjpct9k6se50k7p9qrhgnm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

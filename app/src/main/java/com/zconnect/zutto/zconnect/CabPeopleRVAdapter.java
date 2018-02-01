@@ -41,7 +41,6 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
     public CabPeopleRVAdapter(Context context, Vector<CabListItemFormat> cabListItemFormats) {
         this.context = context;
         this.cabListItemFormats = cabListItemFormats;
-
     }
 
     @Override
@@ -67,8 +66,6 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
         ImageView call;
         View rv_item;
         Intent intent;
-
-
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -108,7 +105,7 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
                             Log.e("ABC",phonebookDisplayItem.getName());
                                    intent.putExtra("name",phonebookDisplayItem.getName());
                                     intent.putExtra("desc",phonebookDisplayItem.getDesc());
-                                   // intent.putExtra("contactDescTv",phonebookDisplayItem.get());
+                                    intent.putExtra("contactDescTv",phonebookDisplayItem.getNumber());
                                     intent.putExtra("image",phonebookDisplayItem.getImageurl());
                                     intent.putExtra("email",phonebookDisplayItem.getEmail());
                                     intent.putExtra("skills",phonebookDisplayItem.getSkills());
