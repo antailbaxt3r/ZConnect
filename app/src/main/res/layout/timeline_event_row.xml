@@ -18,7 +18,8 @@
             android:layout_centerVertical="true"
             android:textColor="@color/white"
             android:text="Event Over"
-            android:textSize="25dp"/>
+            android:textSize="25dp"
+            android:id="@+id/event_over"/>
 
     </RelativeLayout>
 

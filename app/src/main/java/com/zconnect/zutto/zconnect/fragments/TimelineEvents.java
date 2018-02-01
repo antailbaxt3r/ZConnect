@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -121,20 +122,18 @@ public class TimelineEvents extends Fragment {
             @Override
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
-
-
+                viewHolder.setEventStatus(model.getEventDate());
                 try {
                     viewHolder.openEvent(model);
                 }catch (Exception e) {
                     Log.d("Error Alert: ", e.getMessage());
                 }
-                if(model.getVerified().equals(null)) {
-                    model.setVerified("false");
-                }
                 try {
                     viewHolder.setEventName(model.getEventName(),model.getVerified());
                 }catch (Exception e) {
                    // Log.d("Error Alert: ", e.getMessage());
+                    model.setVerified("false");
+                    viewHolder.setEventName(model.getEventName(),model.getVerified());
                 }
                     viewHolder.setEventDate(model.getEventDate(),model.getBoostCount());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
@@ -156,6 +155,7 @@ public class TimelineEvents extends Fragment {
         Boolean status;
 
         RelativeLayout eventStatus;
+        TextView eventOver;
 
         public EventViewHolder(View itemView) {
             super(itemView);
@@ -312,6 +312,7 @@ public class TimelineEvents extends Fragment {
         public void setEventStatus( String eventDate) {
 
             eventStatus = (RelativeLayout) itemView.findViewById(R.id.event_status);
+            eventOver = (TextView) itemView.findViewById(R.id.event_over);
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
             String currFormattedDate = simpleDateFormat.format(calendar.getTime());
@@ -324,11 +325,17 @@ public class TimelineEvents extends Fragment {
 
             String formattedDate[] = currFormattedDate.split("-");
 
-            String currDate = formattedDate[1];
-            String currMonth = formattedDate[2];
-            String currYear = formattedDate[3];
+            String currDate = formattedDate[0];
+            String currMonth = formattedDate[1];
+            String currYear = formattedDate[2];
 
-            if(Integer.parseInt(currDate) >= Integer.parseInt(date) && Integer.parseInt(currMonth) >= Integer.parseInt(month) && Integer.parseInt(currYear) >= Integer.parseInt(year)) {
+            if(Integer.parseInt(currYear)>Integer.parseInt(year)) {
+                eventStatus.setVisibility(View.VISIBLE);
+            }
+            else if(Integer.parseInt(currMonth)>Integer.parseInt(month)) {
+                eventStatus.setVisibility(View.VISIBLE);
+            }
+            else if(Integer.parseInt(currDate) > Integer.parseInt(date)) {
                 eventStatus.setVisibility(View.VISIBLE);
             }
         }
