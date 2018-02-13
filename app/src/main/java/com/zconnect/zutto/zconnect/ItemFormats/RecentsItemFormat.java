@@ -13,7 +13,19 @@ public class RecentsItemFormat {
     String id;
     private String DT;
 
-    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT) {
+    //new ui
+    String postedBy;
+    String postedByUID;
+        //for cabpool
+    String cabpoolSource;
+    String cabpoolDestination;
+        //for events
+    String eventDate;
+        //for stoerroom
+    String productPrice;
+    //
+
+    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT, String postedBy, String postedByUID, String cabpoolSource, String cabpoolDestination, String eventDate, String productPrice) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -21,6 +33,15 @@ public class RecentsItemFormat {
         this.feature = feature;
         this.id = id;
         this.DT=DT;
+
+        //new ui
+        this.postedBy = postedBy;
+        this.postedByUID = postedByUID;
+        this.cabpoolSource = cabpoolSource;
+        this.cabpoolDestination = cabpoolDestination;
+        this.eventDate = eventDate;
+        this.productPrice = productPrice;
+        //
     }
 
     public RecentsItemFormat() {
@@ -89,6 +110,17 @@ public class RecentsItemFormat {
         this.DT = DT;
     }
 
+    //new ui
+    public String getPostedBy() { return postedBy; }
+    public String getPostedByUID() { return postedByUID; }
+        //for cabpool
+    public String getCabpoolSource() { return cabpoolSource; }
+    public String getCabpoolDestination() { return cabpoolDestination; }
+        //for events
+    public String getEventDate() { return  eventDate; }
+        //for storeroom
+    public String getProductPrice() { return productPrice; }
+    //
 
 }
 

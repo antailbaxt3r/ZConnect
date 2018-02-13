@@ -1,14 +1,20 @@
 package com.zconnect.zutto.zconnect;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +28,7 @@ import java.util.Vector;
  * Created by shubhamk on 20/3/17.
  */
 
-public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.ViewHolder> {
+@TargetApi(21)public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.ViewHolder> {
 
     Context context;
     Vector<RecentsItemFormat> recentsItemFormats;
@@ -49,6 +55,90 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
         holder.feature.setText(recentsItemFormats.get(position).getFeature());
         holder.name.setText(recentsItemFormats.get(position).getName());
         holder.desc.setText(recentsItemFormats.get(position).getDesc());
+
+        //new ui
+        if(recentsItemFormats.get(position).getPostedBy() != null)
+        {
+            holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy());
+        }
+        if(recentsItemFormats.get(position).getFeature().equals("Infone"))
+        {
+//            Drawable[] layers = new Drawable[2];
+//            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
+//            layers[0].setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
+//            layers[1] = context.getResources().getDrawable(R.drawable.ic_people_white_24dp);
+//            LayerDrawable layerDrawable = new LayerDrawable(layers);
+//            holder.featureCircle.setBackground(layerDrawable);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
+            holder.postConjunction.setText(" just joined your community. ");
+            holder.post.setText(recentsItemFormats.get(position).getFeature());
+        }
+        else if (recentsItemFormats.get(position).getFeature().equals("Event"))
+        {
+            holder.storeroomRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.GONE);
+            holder.eventsRecentItem.setVisibility(View.VISIBLE);
+//            Drawable[] layers = new Drawable[2];
+//            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
+//            layers[0].setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
+//            layers[1] = context.getResources().getDrawable(R.drawable.ic_event_white_18dp);
+//            LayerDrawable layerDrawable = new LayerDrawable(layers);
+//            holder.featureCircle.setBackground(layerDrawable);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
+            holder.postConjunction.setText(" posted an ");
+            holder.post.setText(recentsItemFormats.get(position).getFeature());
+            holder.eventName.setText(recentsItemFormats.get(position).getName());
+            holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());
+            holder.eventImage.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
+        }
+        else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
+        {
+            holder.eventsRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.GONE);
+            holder.storeroomRecentItem.setVisibility(View.VISIBLE);
+//            Drawable[] layers = new Drawable[2];
+//            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
+//            layers[0].setColorFilter(context.getResources().getColor(R.color.storeroom), PorterDuff.Mode.SRC_ATOP);
+//            layers[1] = context.getResources().getDrawable(R.drawable.ic_local_mall_white_24dp);
+//            LayerDrawable layerDrawable = new LayerDrawable(layers);
+//            holder.featureCircle.setBackground(layerDrawable);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.storeroom), PorterDuff.Mode.SRC_ATOP);
+            holder.postConjunction.setText(" added a ");
+            holder.post.setText("Product");
+            holder.productName.setText(recentsItemFormats.get(position).getName());
+            holder.productDesc.setText(recentsItemFormats.get(position).getDesc());
+            holder.productImage.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
+            //set product price
+        }
+        else if (recentsItemFormats.get(position).getFeature().equals("CabPool"))
+        {
+            holder.eventsRecentItem.setVisibility(View.GONE);
+            holder.storeroomRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.VISIBLE);
+            holder.postConjunction.setText(" started a ");
+            holder.post.setText(recentsItemFormats.get(position).getFeature());
+//            Drawable[] layers = new Drawable[2];
+//            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
+//            layers[0].setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
+//            layers[1] = context.getResources().getDrawable(R.drawable.ic_local_taxi_white_18dp);
+//            LayerDrawable layerDrawable = new LayerDrawable(layers);
+//            holder.featureCircle.setBackground(layerDrawable);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
+            //set text for source and destination...
+        }
+        else if (recentsItemFormats.get(position).getFeature().equals("Shop"))
+        {
+//            Drawable[] layers = new Drawable[2];
+//            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
+//            layers[0].setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
+//            layers[1] = context.getResources().getDrawable(R.drawable.ic_store_white_18dp);
+//            LayerDrawable layerDrawable = new LayerDrawable(layers);
+//            holder.featureCircle.setBackground(layerDrawable);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
+            holder.postConjunction.setText(" put an ");
+            holder.post.setText("Offer");
+        }
+        //
     }
 
     @Override
@@ -63,6 +153,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
         Intent i;
         String nam;
 
+        //new ui
+        TextView postedBy, postConjunction, post,
+                cabpoolSource, cabpoolDestination,
+                eventName, eventDate, eventDesc,
+                productName, productPrice, productDesc;
+        SimpleDraweeView featureCircle, avatarCircle,
+                eventImage,
+                productImage;
+        LinearLayout cabpoolRecentItem, eventsRecentItem, storeroomRecentItem;
+        //
 
 
 
@@ -72,6 +172,28 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             name = (TextView) itemView.findViewById(R.id.recentname);
             feature = (TextView) itemView.findViewById(R.id.featurename);
             desc = (TextView) itemView.findViewById(R.id.recentdesc);
+
+            //new ui
+            postedBy = (TextView) itemView.findViewById(R.id.postedBy);
+            postConjunction = (TextView) itemView.findViewById(R.id.postConjunction);
+            post = (TextView) itemView.findViewById(R.id.post);
+            featureCircle = (SimpleDraweeView) itemView.findViewById(R.id.featureCircle);
+            avatarCircle = (SimpleDraweeView) itemView.findViewById(R.id.avatarCircle);
+            cabpoolRecentItem = (LinearLayout) itemView.findViewById(R.id.cabpoolRecentItem);
+            cabpoolSource = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_source);
+            cabpoolDestination = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_destination);
+            eventsRecentItem = (LinearLayout) itemView.findViewById(R.id.eventsRecentItem);
+            eventName = (TextView) itemView.findViewById(R.id.eventsRecentItem_name);
+            eventDate = (TextView) itemView.findViewById(R.id.eventsRecentItem_date);
+            eventDesc = (TextView) itemView.findViewById(R.id.eventsRecentItem_description);
+            eventImage = (SimpleDraweeView) itemView.findViewById(R.id.eventsRecentItem_image);
+            storeroomRecentItem = (LinearLayout) itemView.findViewById(R.id.storeroomRecentItem);
+            productName = (TextView) itemView.findViewById(R.id.storeroomRecentItem_name);
+            productPrice = (TextView) itemView.findViewById(R.id.storeroomRecentItem_price);
+            productDesc = (TextView) itemView.findViewById(R.id.storeroomRecentItem_description);
+            productImage = (SimpleDraweeView) itemView.findViewById(R.id.storeroomRecentItem_image);
+            //
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
