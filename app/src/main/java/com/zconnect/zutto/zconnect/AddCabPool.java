@@ -49,6 +49,8 @@ public class AddCabPool extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cab_pool);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
@@ -264,7 +266,6 @@ public class AddCabPool extends AppCompatActivity {
                                         newPost.child("cabListItemFormats").setValue(cabListItemFormats);
 
                                         CounterManager.createPool(String.valueOf(destination.getSelectedItem()));
-                                        FirebaseMessaging.getInstance().subscribeToTopic(key);
                                         FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid()).child("Topics").push().setValue(key);
 
                                           //writing to database for recent items
@@ -285,7 +286,10 @@ public class AddCabPool extends AppCompatActivity {
                                         snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                                         snack.show();
 
-                       
+                                        FirebaseMessaging.getInstance().subscribeToTopic("AddCabPool");
+                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,"AddCabPool",true,false);
+                                        notificationSender.execute();
+
                                     } else {
                                         Snackbar snack = Snackbar.make(done, "Add pool for a single day", Snackbar.LENGTH_LONG);
                                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
@@ -343,7 +347,6 @@ public class AddCabPool extends AppCompatActivity {
         Log.e("ABC",String.valueOf(Av));
         Log.e("ABC",String.valueOf((int)Av));
         if(Av==(int)Av){
-            Log.e("ABC","545454545");
 
             String str=decimalFormat.format((int)Av-00)+":00";
             return str;

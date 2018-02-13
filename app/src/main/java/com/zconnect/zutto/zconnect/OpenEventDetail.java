@@ -483,15 +483,18 @@ public class  OpenEventDetail extends BaseActivity {
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
                         CounterManager.eventBoost(event.getKey(), "Details");
-                        FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
 //                        Log.d("SUBSCRIBED TO TOPIC", event.getKey().toString());
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
-                        SendNotification notification = new SendNotification();
-                        notification.execute(event.getKey(), event.getEventName());
+                        //Sending Notifications
+                        FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
+                        NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,"EventBoosted",false,true);
+                        notificationSender.execute();
 
                     }else {
+
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(event.getKey().toString());
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
+
                     }
                 }
             });

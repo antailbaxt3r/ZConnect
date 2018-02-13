@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -25,20 +24,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
-import org.json.JSONObject;
-
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 import static android.view.View.INVISIBLE;
@@ -196,33 +186,6 @@ public class CabListOfPeople extends BaseActivity {
         recyclerView.setAdapter(adapter);
         pool.keepSynced(true);
 
-
-        final DatabaseReference db_default = FirebaseDatabase.getInstance().getReference().child("Notifications");
-        db_default.child("frequency").child("AR_Cabpool").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                default_frequency = dataSnapshot.getValue(Long.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        db_default.child("current").child("AR_Cabpool").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                current_frequency = dataSnapshot.getValue(Long.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
         join.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -243,19 +206,16 @@ public class CabListOfPeople extends BaseActivity {
 
 
                             pool.setValue(cabListItemFormatVector);
+                            FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
                             Toast.makeText(getApplicationContext(), "Removed", Toast.LENGTH_SHORT).show();
 
                         } else {
                             if (name != null && number != null) {
                                 cabListItemFormatVector.add(new CabListItemFormat(name, number));
                                 pool.setValue(cabListItemFormatVector);
-                                if (default_frequency.equals(current_frequency)) {
-                                    db_default.child("current").child("AR_Cabpool").setValue(1);
-                                    sendNotification notification = new sendNotification();
-                                    notification.execute();
-                                }else{
-                                    db_default.child("current").child("AR_Cabpool").setValue(Long.valueOf(current_frequency)+1);
-                                }
+                                FirebaseMessaging.getInstance().subscribeToTopic(key);
+                                NotificationSender notification = new NotificationSender(key,number,null,null,null,null,"CabPool",false,true);
+                                notification.execute();
 
                             } else {
                                 Toast.makeText(getApplicationContext(), "Try later !", Toast.LENGTH_SHORT).show();
@@ -297,58 +257,6 @@ public class CabListOfPeople extends BaseActivity {
 
     }
 
-    private class sendNotification extends AsyncTask<Void, Void, Void> {
 
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-
-                String pName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                RemoteMessage.Builder creator = new RemoteMessage.Builder(key);
-                creator.addData("Type", "CabPool");
-                creator.addData("Person", pName == null ? name : pName);
-                creator.addData("Contact", number);
-                creator.addData("key", key);
-
-                try {
-
-                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Content-Type", "application/json");
-                    connection.setRequestProperty("Authorization", "key=AAAAGZIFvsE:APA91bG7rY-RLe6T3JxhFcmA4iRtihJCbD2RUwypt0aC8hVCvrm99LKZR__y3SqSIQmJocsuLaDltTuUui9BUrLwAM0SiCx0qSTrO8dpmxnjiHkaATnfYwVIN3T81lwlxYwBF7x9_3Kd");
-                    connection.setDoOutput(true);
-                    connection.connect();
-
-
-                    OutputStream os = connection.getOutputStream();
-                    OutputStreamWriter writer = new OutputStreamWriter(os);
-
-
-                    Map<String, Object> data = new HashMap<String, Object>();
-                    data.put("to", "/topics/" + "CabPool");
-                    data.put("data", creator.build().getData());
-
-                    JSONObject object = new JSONObject(data);
-                    String s2 = object.toString().replace("\\", "");
-
-                    writer.write(s2);
-                    writer.flush();
-
-                    showToast(connection.getResponseMessage());
-                    FirebaseMessaging.getInstance().subscribeToTopic("CabPool");
-
-
-                } catch (Exception e) {
-                    Log.e("msg","nahi ho raha");
-                    e.printStackTrace();
-                }
-
-            return null;
-
-        }
-
-    }
 }
 
