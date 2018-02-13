@@ -31,6 +31,7 @@ import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL_JOIN;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT_BOOST;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_PRODUCT;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_STOREROOM;
 
 public class NotificationService extends FirebaseMessagingService {
 
@@ -285,7 +286,26 @@ public class NotificationService extends FirebaseMessagingService {
                });
 
 
-           }
+           }else if(type.equals(KEY_STOREROOM)){
+
+                        NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
+                        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+                        String name=FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                        style.bigText("Hey! "+name+" lot of products have been added since, you last visited. Check what your friend's are selling!")
+                                .setBigContentTitle("New Products");
+                        mBuilder.setSmallIcon(R.mipmap.ic_shopping_basket_black_36dp)
+                                .setStyle(style)
+                                .setContentTitle("StoreRoom")
+                                .setContentText("New Products are added in the Storeroom");
+
+                        Intent intent = new Intent(NotificationService.this, HomeActivity.class);
+                        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mBuilder.setContentIntent(intent1);
+
+                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        mNotificationManager.notify(1, mBuilder.build());
+
+                    }
         }
     }
 
