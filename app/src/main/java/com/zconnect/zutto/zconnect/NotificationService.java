@@ -26,6 +26,12 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import java.util.Map;
 import java.util.Random;
 
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL_JOIN;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT_BOOST;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_PRODUCT;
+
 public class NotificationService extends FirebaseMessagingService {
 
     @Override
@@ -34,7 +40,7 @@ public class NotificationService extends FirebaseMessagingService {
         final Map data = remoteMessage.getData();
        if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
-            if (type.equals("EventBoosted")) {
+            if (type.equals(KEY_EVENT_BOOST)) {
                 final String key = data.get("Key").toString();
                 // use this to notify users who have boosted if event details have been changed
                 FirebaseDatabase.getInstance().getReference("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -81,7 +87,7 @@ public class NotificationService extends FirebaseMessagingService {
                 });
 
 
-            } else if (type.equals("CabPool")) {
+            } else if (type.equals(KEY_CABPOOL_JOIN)) {
                 final String key = data.get("Key").toString();
                 FirebaseDatabase.getInstance().getReference("Cab").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -124,7 +130,7 @@ public class NotificationService extends FirebaseMessagingService {
                     }
                 });
 
-            } else if (type.equals("Shortlist")) {
+            } else if (type.equals(KEY_PRODUCT)) {
                 final String personEmail = data.get("PersonEmail").toString();
                 FirebaseDatabase.getInstance().getReference("Phonebook").orderByChild("email").equalTo(personEmail).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -208,7 +214,7 @@ public class NotificationService extends FirebaseMessagingService {
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(new Random().nextInt(), mBuilder.build());
 
-            }else if (type.equals("AddCabPool")) {
+            }else if (type.equals(KEY_CABPOOL)) {
 
                 String name= FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
@@ -232,7 +238,7 @@ public class NotificationService extends FirebaseMessagingService {
                         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                         mNotificationManager.notify(1, mBuilder.build());
 
-            } else if (type.equals("AddEvent")) {
+            } else if (type.equals(KEY_EVENT)) {
                final String key = data.get("Key").toString();
                // use this to notify users who have boosted if event details have been changed
                FirebaseDatabase.getInstance().getReference("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {

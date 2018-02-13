@@ -24,7 +24,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
@@ -33,6 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL;
 
 public class AddCabPool extends AppCompatActivity {
     Button done;
@@ -286,8 +287,7 @@ public class AddCabPool extends AppCompatActivity {
                                         snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                                         snack.show();
 
-                                        FirebaseMessaging.getInstance().subscribeToTopic("AddCabPool");
-                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,"AddCabPool",true,false);
+                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,KEY_CABPOOL,true,false);
                                         notificationSender.execute();
 
                                     } else {
