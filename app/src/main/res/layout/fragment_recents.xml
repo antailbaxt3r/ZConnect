@@ -8,7 +8,8 @@
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@color/secondaryText"
-        android:layout_marginLeft="20dp"/>
+        android:layout_marginLeft="20dp"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/recent_progress"

@@ -144,7 +144,7 @@ public class ProductsTab extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-//                viewHolder.setPrice(model.getPrice(),model.getNegotiable());
+                viewHolder.setPrice(model.getPrice(),model.getNegotiable());
                 viewHolder.setSellerName(model.getPostedBy());
                 viewHolder.setSellerNumber(model.getCategory(), model.getPhone_no(), getContext());
 

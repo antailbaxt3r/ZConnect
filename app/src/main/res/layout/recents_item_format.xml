@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginBottom="4dp"
-    android:layout_marginEnd="5dp"
-    android:layout_marginStart="5dp"
-    android:layout_marginTop="4dp"
-    app:cardBackgroundColor="@android:color/transparent"
+    android:layout_marginBottom="5dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="5dp"
+    app:cardBackgroundColor="@android:color/white"
     app:cardElevation="0dp"
     android:background="@drawable/roundradius">
 
@@ -15,14 +15,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginLeft="11dp">
+        android:layout_marginLeft="0dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="5dp" >
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginLeft="15dp">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/featureCircle"
@@ -88,8 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="20dp">
+            android:layout_marginLeft="0dp">
             <LinearLayout
                 android:id="@+id/cabpoolRecentItem"
                 android:layout_width="match_parent"
@@ -98,7 +101,10 @@
                 android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
                     <TextView
                         android:id="@+id/cabpoolRecentItem_source"
                         android:layout_width="wrap_content"
@@ -117,17 +123,85 @@
                         android:text="Destination"
                         android:textColor="@color/primaryText"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+                    <TextView
+                        android:id="@+id/cabpoolRecentItem_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date"
+                        android:textColor="@color/primaryText"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" at "
+                        android:textColor="@color/primaryText"/>
+                    <TextView
+                        android:id="@+id/cabpoolRecentItem_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time"
+                        android:textColor="@color/primaryText"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/secondaryText"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp" >
+                    <Button
+                        android:id="@+id/cabpoolRecentItem_call"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_weight="0.33"
+                        android:textColor="@color/primaryText"
+                        android:background="@color/transparent"
+                        android:textAllCaps="false"
+                        android:text="Call"/>
+                    <Button
+                        android:id="@+id/cabpoolRecentItem_chat"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_weight="0.33"
+                        android:textColor="@color/primaryText"
+                        android:background="@color/transparent"
+                        android:text="Chat"
+                        android:textAllCaps="false"/>
+                    <Button
+                        android:id="@+id/cabpoolRecentItem_join"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_weight="0.33"
+                        android:text="Join"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primaryText"
+                        android:background="@color/transparent"/>
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/eventsRecentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp">
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:layout_marginLeft="15dp">
                     <TextView
                         android:id="@+id/eventsRecentItem_name"
                         android:layout_width="wrap_content"
@@ -147,24 +221,71 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/primaryText"
-                    android:layout_marginBottom="5dp"/>
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginStart="15dp"/>
                 <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/eventsRecentItem_image"
-                    android:layout_width="310dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    fresco:viewAspectRatio="1.33"/>
+                    fresco:viewAspectRatio="1.33"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/secondaryText"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp" >
+                    <Button
+                        android:id="@+id/eventsRecentItem_boost"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_weight="0.33"
+                        android:text="Boost"
+                        android:textAllCaps="false"
+                        android:background="@color/transparent"
+                        android:textColor="@color/primaryText"/>
+                    <Button
+                        android:id="@+id/eventsRecentItem_chat"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_weight="0.33"
+                        android:text="Chat"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primaryText"
+                        android:background="@color/transparent"/>
+                    <Button
+                        android:id="@+id/eventsRecentItem_reminder"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_weight="0.33"
+                        android:text="Remainder"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primaryText"
+                        android:background="@color/transparent"/>
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/storeroomRecentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone" >
+                android:orientation="vertical" >
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginLeft="15dp">
                     <TextView
                         android:id="@+id/storeroomRecentItem_name"
                         android:layout_width="wrap_content"
@@ -184,14 +305,51 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/primaryText"
-                    android:layout_marginBottom="5dp"/>
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginLeft="15dp"/>
                 <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/storeroomRecentItem_image"
-                    android:layout_width="310dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    fresco:viewAspectRatio="1.33"/>
+                    fresco:viewAspectRatio="1.33"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp" >
+                    <Button
+                        android:id="@+id/storeroomRecentItem_call"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_weight="0.33"
+                        android:text="Call"
+                        android:textAllCaps="false"
+                        android:background="@color/transparent"
+                        android:textColor="@color/primaryText"/>
+                    <Button
+                        android:id="@+id/storeroomRecentItem_chat"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_weight="0.33"
+                        android:text="Chat"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primaryText"
+                        android:background="@color/transparent"/>
+                    <Button
+                        android:id="@+id/storeroomRecentItem_save"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_weight="0.33"
+                        android:text="Save"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primaryText"
+                        android:background="@color/transparent"/>
+                </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
 
         <!--old ui-->
