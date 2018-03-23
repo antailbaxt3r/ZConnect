@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -37,16 +38,19 @@ import static android.view.View.VISIBLE;
 public class OpenProductDetails extends AppCompatActivity {
 
     private ImageView productImage;
-    private TextView productName, productPrice, productPriceType,productDescription,productSellerName;
+    private TextView productName, productPrice, productPriceType, productDescription, productSellerName;
     private Button productShortlist, productCall;
     private String productCategory;
     private DatabaseReference mDatabaseProduct;
+    private DatabaseReference mDatabaseViews;
     private FirebaseAuth mAuth;
     private View.OnClickListener mListener;
     private Boolean flag;
     private ProgressBar progressBar;
     private LinearLayout productContent;
     private String productKey;
+    private FirebaseUser user;
+    private ValueEventListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +82,7 @@ public class OpenProductDetails extends AppCompatActivity {
         }
 
         productImage = (ImageView) findViewById(R.id.product_image);
-        productName =(TextView) findViewById(R.id.product_name);
+        productName = (TextView) findViewById(R.id.product_name);
         productPrice = (TextView) findViewById(R.id.product_price);
         productPriceType = (TextView) findViewById(R.id.product_price_type);
         productDescription = (TextView) findViewById(R.id.product_description);
@@ -98,6 +102,45 @@ public class OpenProductDetails extends AppCompatActivity {
         progressBar.setVisibility(VISIBLE);
         productContent.setVisibility(INVISIBLE);
 
+        SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("storeroom").child(productKey).child("views");
+
+        if (!status) {
+            mAuth = FirebaseAuth.getInstance();
+            user = mAuth.getCurrentUser();
+
+            listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    boolean userExists = false;
+                    for (DataSnapshot childSnapshot :
+                            dataSnapshot.getChildren()) {
+                        if (childSnapshot.getKey().equals(user.getUid()) && childSnapshot.exists() && childSnapshot.getValue(Integer.class) != null) {
+                            userExists = true;
+                            int originalViews = childSnapshot.getValue(Integer.class);
+                            mDatabaseViews.child(user.getUid()).setValue(originalViews + 1);
+
+                            break;
+                        } else {
+                            userExists = false;
+                        }
+                    }
+                    if (!userExists) {
+                        mDatabaseViews.child(user.getUid()).setValue(1);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+
+            mDatabaseViews.addListenerForSingleValueEvent(listener);
+        }
         mDatabaseProduct.child(productKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -114,16 +157,15 @@ public class OpenProductDetails extends AppCompatActivity {
                 });
 
                 productSellerName.setText("by " + dataSnapshot.child("SellerUsername").getValue().toString());
-                setImage(OpenProductDetails.this,dataSnapshot.child("ProductName").getValue().toString(),dataSnapshot.child("Image").getValue().toString(),productImage);
+                setImage(OpenProductDetails.this, dataSnapshot.child("ProductName").getValue().toString(), dataSnapshot.child("Image").getValue().toString(), productImage);
 
-                if(dataSnapshot.hasChild("negotiable"))
-                {
-                    setProductPrice(productPrice,productPriceType,dataSnapshot.child("Price").getValue().toString(),dataSnapshot.child("negotiable").getValue().toString());
-                }else {
-                    setProductPrice(productPrice,productPriceType,dataSnapshot.child("Price").getValue().toString(),null);
+                if (dataSnapshot.hasChild("negotiable")) {
+                    setProductPrice(productPrice, productPriceType, dataSnapshot.child("Price").getValue().toString(), dataSnapshot.child("negotiable").getValue().toString());
+                } else {
+                    setProductPrice(productPrice, productPriceType, dataSnapshot.child("Price").getValue().toString(), null);
                 }
 
-                defaultSwitch(productKey,productCategory,productShortlist);
+                defaultSwitch(productKey, productCategory, productShortlist);
             }
 
             @Override
@@ -135,7 +177,13 @@ public class OpenProductDetails extends AppCompatActivity {
         });
 
 
+    }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDatabaseViews.removeEventListener(listener);
     }
 
     //Menu Overwrite
@@ -151,8 +199,8 @@ public class OpenProductDetails extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_chat_room:
                 //char room clicked
-                Intent intent = new Intent(OpenProductDetails.this,ChatActivity.class);
-                intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("storeroom").child(productKey).toString());
+                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("storeroom").child(productKey).toString());
                 startActivity(intent);
                 break;
             default:
@@ -175,8 +223,8 @@ public class OpenProductDetails extends AppCompatActivity {
             public void onClick(View v) {
                 flag = true;
                 final String category = productCategory;
-                final DatabaseReference userReservedReference=  mDatabaseProduct.child(productKey).child("UsersReserved");
-               userReservedReference.addValueEventListener(new ValueEventListener() {
+                final DatabaseReference userReservedReference = mDatabaseProduct.child(productKey).child("UsersReserved");
+                userReservedReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (flag) {
@@ -219,22 +267,19 @@ public class OpenProductDetails extends AppCompatActivity {
     }
 
     public void setProductPrice(TextView productPrice, TextView productPriceType, String productPriceValue, String negotiable) {
-        String price="";
-        if(negotiable!=null) {
+        String price = "";
+        if (negotiable != null) {
             if (negotiable.equals("1")) {
                 price = "₹" + productPriceValue + "/-";
                 productPriceType.setVisibility(View.VISIBLE);
-            } else if (negotiable.equals("2")){
+            } else if (negotiable.equals("2")) {
                 price = "Price Negotiable";
-                productPrice.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
-            }
-            else
+                productPrice.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            } else
                 price = "₹" + productPriceValue + "/-";
 
             productPrice.setText(price);
-        }
-        else
-        {
+        } else {
             productPrice.setText("₹" + productPriceValue + "/-");
         }
 
@@ -244,7 +289,7 @@ public class OpenProductDetails extends AppCompatActivity {
     }
 
     public void setImage(final Activity activity, final String productName, final String imageUrl, final ImageView productImage) {
-        Picasso.with(this).load(imageUrl).into(productImage,new com.squareup.picasso.Callback() {
+        Picasso.with(this).load(imageUrl).into(productImage, new com.squareup.picasso.Callback() {
             @Override
             public void onSuccess() {
                 progressBar.setVisibility(INVISIBLE);
@@ -263,7 +308,7 @@ public class OpenProductDetails extends AppCompatActivity {
                 ProgressDialog mProgress = new ProgressDialog(OpenProductDetails.this);
                 mProgress.setMessage("Loading.....");
                 mProgress.show();
-                animate(activity, productName, imageUrl,productImage);
+                animate(activity, productName, imageUrl, productImage);
                 mProgress.dismiss();
             }
         });

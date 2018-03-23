@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -35,6 +36,7 @@ public class LogoFlashActivity extends BaseActivity {
     private ImageView bgImage;
     private DatabaseReference mDatabase;
     private View bgColor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,6 @@ public class LogoFlashActivity extends BaseActivity {
         setContentView(R.layout.activity_logo_flash);
         bgImage = (ImageView) findViewById(R.id.bgImage);
         bgColor = findViewById(R.id.bgColor);
-
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("ui/logoFlash");
 
@@ -82,7 +83,7 @@ public class LogoFlashActivity extends BaseActivity {
                 }
 
             }
-        },2000);
+        }, 2000);
 
 
     }

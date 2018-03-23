@@ -58,7 +58,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class  OpenEventDetail extends BaseActivity {
+public class OpenEventDetail extends BaseActivity {
 
     DatabaseReference mDatabase;
     ImageView EventImage;
@@ -72,9 +72,14 @@ public class  OpenEventDetail extends BaseActivity {
     Toolbar mActionBarToolbar;
     DatabaseReference databaseReference;
     Button boostBtn;
-    Boolean flag= false;
+    Boolean flag = false;
 
     ProgressDialog progressDialog;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private ValueEventListener listener;
+    private DatabaseReference mDatabaseViews;
 
     Uri screenshotUri;
     String path;
@@ -83,15 +88,15 @@ public class  OpenEventDetail extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_event_detail);
-         id=getIntent().getStringExtra("id");
-        tag=getIntent().getStringExtra("Eventtag");
+        id = getIntent().getStringExtra("id");
+        tag = getIntent().getStringExtra("Eventtag");
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
 
-        boostBtn = (Button)findViewById(R.id.boostBtn);
+        boostBtn = (Button) findViewById(R.id.boostBtn);
 
-        progressDialog=new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this);
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -127,7 +132,6 @@ public class  OpenEventDetail extends BaseActivity {
         EventDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
 
-
         EventDate = (TextView) findViewById(R.id.od_date);
         EventImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,11 +149,16 @@ public class  OpenEventDetail extends BaseActivity {
                 mProg.dismiss();
                 startActivity(i, optionsCompat.toBundle());
             }
-        });            Bundle extras = getIntent().getExtras();
+        });
+        Bundle extras = getIntent().getExtras();
         event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotificationManager.cancel(event.getEventName(), 1);
+
+        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("Event")
+                .child("VerifiedPosts").child(event.getKey()).child("views");
+        updateViews();
 
 
         venueDirections.setOnClickListener(new View.OnClickListener() {
@@ -193,14 +202,14 @@ public class  OpenEventDetail extends BaseActivity {
 
             boostCounter();
             setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.d("Error Alert: ", e.getMessage());
         }
 
 
-        if(tag!=null&&tag.equals("1")){
+        if (tag != null && tag.equals("1")) {
         } else if (id != null) {
-            databaseReference= FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(id);
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(id);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -248,8 +257,7 @@ public class  OpenEventDetail extends BaseActivity {
                         setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
                         //  Log.v("Tag",event.getEventDate());
 
-                    }catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         Log.d("Error Alert: ", e.getMessage());
                     }
                 }
@@ -272,17 +280,16 @@ public class  OpenEventDetail extends BaseActivity {
         SharedPreferences sharedPref = getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
-        if(!status)
-        {
+        if (!status) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
-            if (user != null && event!=null) {
+            if (user != null && event != null) {
                 String boost = event.getBoosters();
                 if (boost != null) {
-                if (boost.contains(user.getUid())) {
-                    boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                }
+                    if (boost.contains(user.getUid())) {
+                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                    }
                 }
             }
         }
@@ -300,12 +307,12 @@ public class  OpenEventDetail extends BaseActivity {
         if (id == R.id.share) {
 
             CounterManager.eventShare(event.getKey());
-            shareEvent(event.getEventImage(),this.getApplicationContext());
+            shareEvent(event.getEventImage(), this.getApplicationContext());
 
-        }else if (id == R.id.menu_chat_room){
+        } else if (id == R.id.menu_chat_room) {
             //chat room clicked;
-            Intent intent = new Intent(OpenEventDetail.this,ChatActivity.class);
-            intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("Event").child(event.getKey()).toString());
+            Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("Event").child(event.getKey()).toString());
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -313,63 +320,106 @@ public class  OpenEventDetail extends BaseActivity {
 
     private void shareEvent(final String image, final Context context) {
 
-            try {
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
-                //shareIntent.setPackage("com.whatsapp");
-                //Add text and then Image URI
-                Thread thread = new Thread(new Runnable() {
+        try {
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+            //shareIntent.setPackage("com.whatsapp");
+            //Add text and then Image URI
+            Thread thread = new Thread(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        try {
-                            //Your code goes here
-                            Uri imageUri = Uri.parse(image);
-                            Intent shareIntent = new Intent();
-                            shareIntent.setAction(Intent.ACTION_SEND);
+                @Override
+                public void run() {
+                    try {
+                        //Your code goes here
+                        Uri imageUri = Uri.parse(image);
+                        Intent shareIntent = new Intent();
+                        shareIntent.setAction(Intent.ACTION_SEND);
 
-                            Bitmap bm = BitmapFactory.decodeStream(new URL(image)
-                                    .openConnection()
-                                    .getInputStream());
+                        Bitmap bm = BitmapFactory.decodeStream(new URL(image)
+                                .openConnection()
+                                .getInputStream());
 
 
-                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
-                                    R.drawable.background_icon_z), bm, context);
-                            String temp = "*Event:* " + event.getEventName()
-                                    + "\n*Venue:* " + event.getVenue()
-                                    + "\n*Date:* " + event.getEventDate()
-                                    + "\n" + event.getEventDescription()
-                                    + "\n\n" + "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
+                        bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
+                                R.drawable.background_icon_z), bm, context);
+                        String temp = "*Event:* " + event.getEventName()
+                                + "\n*Venue:* " + event.getVenue()
+                                + "\n*Date:* " + event.getEventDate()
+                                + "\n" + event.getEventDescription()
+                                + "\n\n" + "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
 
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
-                            shareIntent.setType("text/plain");
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
+                        shareIntent.setType("text/plain");
 
-                            path = MediaStore.Images.Media.insertImage(
-                                    context.getContentResolver(),
-                                    bm,"", null);
-                            screenshotUri = Uri.parse(path);
+                        path = MediaStore.Images.Media.insertImage(
+                                context.getContentResolver(),
+                                bm, "", null);
+                        screenshotUri = Uri.parse(path);
 
-                            shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                            shareIntent.setType("image/png");
-                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                        shareIntent.setType("image/png");
+                        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                            progressDialog.dismiss();
-                            startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
-                            //context.startActivity(shareIntent);
+                        progressDialog.dismiss();
+                        startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
+                        //context.startActivity(shareIntent);
 
-                        } catch (Exception e) {
-                            progressDialog.dismiss();
-                            e.printStackTrace();
+                    } catch (Exception e) {
+                        progressDialog.dismiss();
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            thread.start();
+
+        } catch (android.content.ActivityNotFoundException ex) {
+            progressDialog.dismiss();
+            //ToastHelper.MakeShortText("Whatsapp have not been installed.");
+        }
+
+    }
+
+    //this function will update the views of people who have visited this activity
+    private void updateViews() {
+
+        SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+        if (!status) {
+            mAuth = FirebaseAuth.getInstance();
+            user = mAuth.getCurrentUser();
+
+            listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    boolean userExists = false;
+                    for (DataSnapshot childSnapshot :
+                            dataSnapshot.getChildren()) {
+                        if (childSnapshot.getKey().equals(user.getUid()) && childSnapshot.exists() &&
+                                childSnapshot.getValue(Integer.class) != null) {
+                            userExists = true;
+                            int originalViews = childSnapshot.getValue(Integer.class);
+                            mDatabaseViews.child(user.getUid()).setValue(originalViews + 1);
+                            break;
+                        } else {
+                            userExists = false;
                         }
                     }
-                });
+                    if (!userExists) {
+                        mDatabaseViews.child(user.getUid()).setValue(1);
+                    }
+                }
 
-                thread.start();
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            } catch (android.content.ActivityNotFoundException ex) {
-                progressDialog.dismiss();
-                //ToastHelper.MakeShortText("Whatsapp have not been installed.");
-            }
+                }
+            };
+
+            mDatabaseViews.addListenerForSingleValueEvent(listener);
+        }
 
     }
 
@@ -397,7 +447,6 @@ public class  OpenEventDetail extends BaseActivity {
 
         return mergedBitmap;
     }
-
 
 
     public void setEventReminder(final String eventDescription, final String eventName, final String time) {
@@ -451,18 +500,17 @@ public class  OpenEventDetail extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
-                if (user!= null)
-                {
-                    if(dataSnapshot.hasChild(user.getUid())){
+                if (user != null) {
+                    if (dataSnapshot.hasChild(user.getUid())) {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
                         boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                        flag=true;
-                    }else {
+                        flag = true;
+                    } else {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
                         boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
-                        flag=false;
+                        flag = false;
                     }
-                }else{
+                } else {
                     boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
                 }
             }
@@ -474,12 +522,11 @@ public class  OpenEventDetail extends BaseActivity {
         });
 
 
-
         if (user != null) {
             boostBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!flag){
+                    if (!flag) {
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
                         CounterManager.eventBoost(event.getKey(), "Details");
@@ -489,7 +536,7 @@ public class  OpenEventDetail extends BaseActivity {
                         SendNotification notification = new SendNotification();
                         notification.execute(event.getKey(), event.getEventName());
 
-                    }else {
+                    } else {
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(event.getKey().toString());
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
                     }
@@ -543,6 +590,11 @@ public class  OpenEventDetail extends BaseActivity {
         finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDatabaseViews.removeEventListener(listener);
+    }
 
     public static class SendNotification extends AsyncTask<String, Void, Void> {
 
@@ -550,7 +602,7 @@ public class  OpenEventDetail extends BaseActivity {
         protected Void doInBackground(String... params) {
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if(user != null) {
+            if (user != null) {
                 final String key = params[0];
                 Log.d("Key of event", key);
 

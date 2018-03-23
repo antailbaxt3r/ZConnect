@@ -88,22 +88,22 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private TextView navHeaderEmailTv;
     /**
      * Background of nav header.
-     <activity
-     android:name=".FullscreenActivity"
-     android:configChanges="orientation|keyboardHidden|screenSize"
-     android:label="@string/title_activity_fullscreen"
-     android:screenOrientation="portrait"
-     android:theme="@style/AppTheme.NoActionBar" />
-     <activity
-     android:name=".MyRides"
-     android:label="@string/title_activity_my_rides"
-     android:parentActivityName=".HomeActivity"
-     android:theme="@style/AppTheme.NoActionBar" />
-
-     <service android:name=".NotificationService">
-     <intent-filter>
-     <action android:name="com.google.firebase.MESSAGING_EVENT" />
-     </inte
+     * <activity
+     * android:name=".FullscreenActivity"
+     * android:configChanges="orientation|keyboardHidden|screenSize"
+     * android:label="@string/title_activity_fullscreen"
+     * android:screenOrientation="portrait"
+     * android:theme="@style/AppTheme.NoActionBar" />
+     * <activity
+     * android:name=".MyRides"
+     * android:label="@string/title_activity_my_rides"
+     * android:parentActivityName=".HomeActivity"
+     * android:theme="@style/AppTheme.NoActionBar" />
+     * <p>
+     * <service android:name=".NotificationService">
+     * <intent-filter>
+     * <action android:name="com.google.firebase.MESSAGING_EVENT" />
+     * </inte
      */
     private SimpleDraweeView navHeaderBackground;
     private MenuItem editProfileItem;
@@ -116,8 +116,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference mDatabasePopUps;
 
     private Boolean isFabOpen = false;
-    private FloatingActionButton fab,fab1,fab2,fab3;
-    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+    private FloatingActionButton fab, fab1, fab2, fab3;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
 
     /**
      * /ui node
@@ -135,13 +135,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     int UsersTotalProducts = 0, TotalProducts = 0;
     int UsersTotalOffers = 0, TotalOffers = 0;
     int UsersTotalEvents = 0, TotalEvents = 0;
+    int UsersTotalCabpools = 0, TotalCabpools = 0;
     private ValueEventListener UserStats;
     private ValueEventListener TotalStats;
 
-    TextView[] tabTitle= new TextView[6];
+    TextView[] tabTitle = new TextView[6];
     ImageView[] tabImage = new ImageView[6];
     ImageView[] tabNotificationCircle = new ImageView[6];
-
 
 
     @SuppressLint("ApplySharedPref")
@@ -203,69 +203,70 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
         //Floating Buttons
-        fab = (FloatingActionButton)findViewById(R.id.fab);
-        fab1 = (FloatingActionButton)findViewById(R.id.fab1);
-        fab2 = (FloatingActionButton)findViewById(R.id.fab2);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab1 = (FloatingActionButton) findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab3 = (FloatingActionButton) findViewById(R.id.fab3);
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
-                int i=tabs.getSelectedTabPosition();
-                if(i==0){//Recents
-                if (!status) {
-                    animateFAB();
-                }else {
-                    alertBox();
+                int i = tabs.getSelectedTabPosition();
+                if (i == 0) {//Recents
+                    if (!status) {
+                        animateFAB();
+                    } else {
+                        alertBox();
                     }
                 }
-                if(i==1){//Infone
+                if (i == 1) {//Infone
                     if (!status) {
                         Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
                         startActivity(intent);
 
-                    }else {
+                    } else {
                         alertBox();
                     }
                 }
-                if(i==2){//Storeroom
+                if (i == 2) {//Storeroom
                     if (!status) {
                         CounterManager.StoreRoomFABclick();
                         Intent intent = new Intent(getApplicationContext(), AddProduct.class);
                         startActivity(intent);
-                    }else {
+                    } else {
                         alertBox();
                     }
                 }
-                if(i==3){//Events
+                if (i == 3) {//Events
                     if (!status) {
                         CounterManager.eventAddClick();
                         Intent intent = new Intent(getApplicationContext(), AddEvent.class);
-                        startActivity(intent);   }else {
+                        startActivity(intent);
+                    } else {
                         alertBox();
                     }
                 }
-                if(i==4){//CabPool
+                if (i == 4) {//CabPool
                     if (!status) {
-                            setActionBarTitle("Search Pool");
-                            CounterManager.RecentsOpen();
-                            Intent intent = new Intent(HomeActivity.this, CabPooling.class);
-                            startActivity(intent);
-                       }else {
+                        setActionBarTitle("Search Pool");
+                        CounterManager.RecentsOpen();
+                        Intent intent = new Intent(HomeActivity.this, CabPooling.class);
+                        startActivity(intent);
+                    } else {
                         alertBox();
                     }
                 }
-                if(i==5){//Shops
+                if (i == 5) {//Shops
                     if (!status) {
                         CounterManager.shopOffers();
                         Intent intent = new Intent(HomeActivity.this, Offers.class);
                         startActivity(intent);
-                    }else {
+                    } else {
                         alertBox();
                     }
                 }
@@ -313,7 +314,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         });
 
 
-
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -328,7 +328,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
         mDatabasePopUps.keepSynced(true);
 
-        if(mAuth.getCurrentUser()!=null) {
+        if (mAuth.getCurrentUser() != null) {
             mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid()).child("Stats");
             mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
             mDatabaseStats.addValueEventListener(TotalStats);
@@ -339,7 +339,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     }
 
-    void alertBox(){
+    void alertBox() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getApplicationContext());
 
         // 2. Chain together various setter methods to set the dialog characteristics
@@ -394,26 +394,36 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
 
-    void setNotificationCircle(){
-        if(TotalEvents>UsersTotalEvents){
+    void setNotificationCircle() {
+        if (TotalEvents > UsersTotalEvents) {
             tabNotificationCircle[4].setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tabNotificationCircle[4].setVisibility(View.GONE);
         }
-        if (TotalNumbers>UsersTotalNumbers){
+        if (TotalNumbers > UsersTotalNumbers) {
             tabNotificationCircle[1].setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tabNotificationCircle[1].setVisibility(View.GONE);
         }
-        if(TotalOffers>UsersTotalOffers){
+        if (TotalOffers > UsersTotalOffers) {
             tabNotificationCircle[5].setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tabNotificationCircle[5].setVisibility(View.GONE);
         }
-        if(TotalProducts>UsersTotalProducts){
+        if (TotalProducts > UsersTotalProducts) {
             tabNotificationCircle[2].setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tabNotificationCircle[2].setVisibility(View.GONE);
+        }
+        if (TotalProducts > UsersTotalProducts) {
+            tabNotificationCircle[2].setVisibility(View.VISIBLE);
+        } else {
+            tabNotificationCircle[2].setVisibility(View.GONE);
+        }
+        if (TotalCabpools > UsersTotalCabpools) {
+            tabNotificationCircle[3].setVisibility(View.VISIBLE);
+        } else {
+            tabNotificationCircle[3].setVisibility(View.GONE);
         }
     }
 
@@ -431,8 +441,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
 
         recentsT.setCustomView(vRecents);
-
-
 
 
         View vInfone = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
@@ -463,7 +471,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         storeT.setCustomView(vStore);
 
 
-
         View vCab = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab cabT = tabs.newTab();
 
@@ -478,8 +485,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         cabT.setCustomView(vCab);
 
 
-
-
         View vEvents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab eventT = tabs.newTab();
 
@@ -492,8 +497,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabNotificationCircle[4] = (ImageView) vEvents.findViewById(R.id.notification_circle);
         vEvents.setAlpha((float) 0.7);
         eventT.setCustomView(vEvents);
-
-
 
 
         View vShop = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
@@ -582,9 +585,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         });
 
     }
+
     /**
-     *
-     *
      * All {@link ValueEventListener}s used in this class are defined here.
      */
     private void initListeners() {
@@ -592,10 +594,16 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         TotalStats = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-                TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-                TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
-                TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                if (dataSnapshot.child("TotalNumbers").getValue() != null)
+                    TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                if (dataSnapshot.child("TotalEvents").getValue() != null)
+                    TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                if (dataSnapshot.child("TotalOffers").getValue() != null)
+                    TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
+                if (dataSnapshot.child("TotalProducts").getValue() != null)
+                    TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                if (dataSnapshot.child("TotalCabpools").getValue() != null)
+                    TotalCabpools = Integer.parseInt(dataSnapshot.child("TotalCabpools").getValue().toString());
 
 //                setNotificationCircle();
             }
@@ -617,10 +625,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     UsersTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
                 }
                 if (dataSnapshot.child("TotalOffers").getValue() != null) {
-                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
                 }
                 if (dataSnapshot.child("TotalProducts").getValue() != null) {
                     UsersTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalCabpools").getValue() != null) {
+                    UsersTotalCabpools = Integer.parseInt(dataSnapshot.child("TotalCabpools").getValue().toString());
                 }
 
                 setNotificationCircle();
@@ -642,7 +653,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
                 String first = preferences.getString("popup", "");
                 boolean firstTimePopUp = Boolean.parseBoolean(first);
-                boolean updateAvailable=true;
+                boolean updateAvailable = true;
 
                 int versionCode = BuildConfig.VERSION_CODE;
 
@@ -650,7 +661,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 if (newVersion != null && newVersion > (versionCode)) {
 
-                    updateAvailable=false;
+                    updateAvailable = false;
                     String updateImageURL = dataSnapshot.child("update").child("imageUrl").getValue(String.class);
 
                     CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, updateImageURL, "UPDATE");
@@ -661,9 +672,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     Window window = cdd.getWindow();
                     window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
-                }
-                else {
-                    updateAvailable=false;
+                } else {
+                    updateAvailable = false;
                 }
 
 
@@ -672,7 +682,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         popUpUrl1.add(shot.child("imageUrl").getValue(String.class));
                         importance.add(shot.child("imp").getValue(String.class));
                         dataComplete = true;
-                    } else if(!shot.getKey().equalsIgnoreCase("update")){
+                    } else if (!shot.getKey().equalsIgnoreCase("update")) {
                         dataComplete = false;
                     }
                 }
@@ -745,9 +755,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 final String navHeaderBackGroundImageUrl;
                 try {
                     if (textColorString != null && textColorString.length() > 1) {
-                        @ColorInt
-                        final int textColor = Color.parseColor(textColorString);
-                        if (navHeaderUserNameTv != null) navHeaderUserNameTv.setTextColor(textColor);
+                        @ColorInt final int textColor = Color.parseColor(textColorString);
+                        if (navHeaderUserNameTv != null)
+                            navHeaderUserNameTv.setTextColor(textColor);
                         if (navHeaderEmailTv != null) navHeaderEmailTv.setTextColor(textColor);
                     }
                     navHeaderBackGroundImageUrl = navDrawerNode.child("headerBackground").getValue(String.class);
@@ -837,7 +847,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             }
             case R.id.MyRides: {
-                Intent intent=new Intent(HomeActivity.this, MyRides.class);
+                Intent intent = new Intent(HomeActivity.this, MyRides.class);
                 startActivity(intent);
                 break;
             }

@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,8 +27,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -39,12 +46,17 @@ public class CabPoolMain extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+    DatabaseReference mUserStats, mFeaturesStats;
+    String TotalEvents;
+
     // TODO: Rename and change types of parameters
     RecyclerView recyclerView;
     CabPoolRVAdapter cabPoolRVAdapter;
-    TreeMap<String,CabItemFormat> treeMap=new TreeMap<>();
-    Vector<CabItemFormat> vector_fetched=new Vector<>();
-    Vector<CabItemFormat>  vector_final=new Vector<>();
+    TreeMap<String, CabItemFormat> treeMap = new TreeMap<>();
+    Vector<CabItemFormat> vector_fetched = new Vector<>();
+    Vector<CabItemFormat> vector_final = new Vector<>();
     TextView error;
     String DT;
     View.OnClickListener onEmpty;
@@ -52,9 +64,8 @@ public class CabPoolMain extends Fragment {
 
     String fetchedDate;
     Date fDate;
-    FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-    DatabaseReference databaseReference=firebaseDatabase.getReference().child("Cab");
-
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference = firebaseDatabase.getReference().child("Cab");
 
 
     public CabPoolMain() {
@@ -90,11 +101,11 @@ public class CabPoolMain extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View view=inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
-        recyclerView=(RecyclerView) view.findViewById(R.id.pool_main_rv);
-            error=(TextView)view.findViewById(R.id.message);
-        cabPoolRVAdapter=new CabPoolRVAdapter(getActivity(),vector_final);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
+        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
+        recyclerView = (RecyclerView) view.findViewById(R.id.pool_main_rv);
+        error = (TextView) view.findViewById(R.id.message);
+        cabPoolRVAdapter = new CabPoolRVAdapter(getActivity(), vector_final);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         recyclerView.setAdapter(cabPoolRVAdapter);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -185,9 +196,9 @@ public class CabPoolMain extends Fragment {
                 Log.e("ABC1", String.valueOf(vector_final.size()));
 
                 if (vector_final.size() == 0) {
-                recyclerView.setVisibility(View.GONE);
-                error.setVisibility(View.VISIBLE);
-                error.setOnClickListener(onEmpty);
+                    recyclerView.setVisibility(View.GONE);
+                    error.setVisibility(View.VISIBLE);
+                    error.setOnClickListener(onEmpty);
 
                 } else {
                     recyclerView.setVisibility(View.VISIBLE);
@@ -198,26 +209,54 @@ public class CabPoolMain extends Fragment {
 
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-    });
+        });
 
-        onEmpty=new View.OnClickListener() {
+        onEmpty = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(getActivity(),AddCabPool.class);
+                Intent intent = new Intent(getActivity(), AddCabPool.class);
                 startActivity(intent);
             }
         };
 
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+        if (!status) {
+            mAuth = FirebaseAuth.getInstance();
+            user = mAuth.getCurrentUser();
+
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    try {
+                        TotalEvents = dataSnapshot.child("TotalCabpools").getValue().toString();
+                        DatabaseReference newPost = mUserStats;
+                        Map<String, Object> taskMap = new HashMap<>();
+                        taskMap.put("TotalCabpools", TotalEvents);
+                        newPost.updateChildren(taskMap);
+                    } catch (Exception e) {
+                        Log.d("Error Alert: ", e.getMessage());
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
         return view;
     }
-
-
-
-
 
 
     private void moveGameRoom(final DatabaseReference fromPath, final DatabaseReference toPath) {
@@ -246,7 +285,6 @@ public class CabPoolMain extends Fragment {
             }
         });
     }
-
 
 
 }
