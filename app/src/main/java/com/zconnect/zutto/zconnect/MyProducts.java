@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
@@ -104,6 +105,7 @@ public class MyProducts extends BaseActivity {
                         CounterManager.StoreRoomMyProductDelete();
                         viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key);
                         viewHolder.ReserveReference.getRef().removeValue();
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(product_key);
                     }
                 });
 

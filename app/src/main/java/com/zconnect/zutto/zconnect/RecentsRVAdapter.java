@@ -234,7 +234,6 @@ import java.util.Vector;
                         }
                     }else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("CabPool")){
                         i=new Intent(context,CabListOfPeople.class);
-                        Log.e("check","executed");
                         i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getId());
                         i.putExtra("date",recentsItemFormats.get(getAdapterPosition()).getDT());
                         context.startActivity(i);

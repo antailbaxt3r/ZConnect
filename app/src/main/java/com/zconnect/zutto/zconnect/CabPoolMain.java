@@ -97,7 +97,7 @@ public class CabPoolMain extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
         recyclerView.setAdapter(cabPoolRVAdapter);
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 vector_fetched.clear();
@@ -116,10 +116,13 @@ public class CabPoolMain extends Fragment {
 
                 String date = output.format(c.getTime());
                 Log.e("ABC", date);
-
+                Log.e("RV", "SIZE:"+String.valueOf(vector_fetched.size()));
                 for (int i = 0; i < vector_fetched.size(); i++) {
+                    Log.e("RV", "value of i:"+String.valueOf(i));
 
                     fetchedDate = vector_fetched.get(i).getDate();
+                    Log.e("RV", "FETCHED DATE:"+fetchedDate);
+
 
 
                     //check if DT is there or not
@@ -127,13 +130,13 @@ public class CabPoolMain extends Fragment {
                     if (vector_fetched.get(i).getDT() != null) {
 
                         DT = vector_fetched.get(i).getDT();
+                        Log.e("RV", "value of DT:"+String.valueOf(DT));
 
                     } else {
 
                         //getting fetched date to required format
                         try {
 
-                            Log.e("ABC1", fetchedDate);
                             fDate = input.parse(fetchedDate);
 
                         } catch (ParseException e) {
@@ -144,7 +147,7 @@ public class CabPoolMain extends Fragment {
 
 
                         String date1 = output.format(fDate);
-                        Log.e("ABC", date1);
+                       // Log.e("ABC", date1);
 
 
                         double T1 = Integer.valueOf((vector_fetched.get(i).getTime()).substring(0, 2));
@@ -153,12 +156,12 @@ public class CabPoolMain extends Fragment {
                         String time;
 
                         if (Av == ((int) Av)) {
-                            time = decimalFormat.format((int) Av + 00) + ":00";
+                            time = decimalFormat.format((int)Av + 00) + ":00";
                         } else {
                             time = (decimalFormat.format((int) Av + 00) + ":30");
                         }
 
-                        Log.e("ABC", time);
+                     //   Log.e("ABC", time);
 
                         DT = date1 + " " + time;
                         DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("Cab").child(vector_fetched.get(i).getKey());

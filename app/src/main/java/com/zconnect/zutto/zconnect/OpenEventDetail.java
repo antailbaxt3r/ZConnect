@@ -14,7 +14,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -44,19 +43,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT_BOOST;
 
 public class  OpenEventDetail extends BaseActivity {
 
@@ -483,15 +478,18 @@ public class  OpenEventDetail extends BaseActivity {
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
                         CounterManager.eventBoost(event.getKey(), "Details");
-                        FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
 //                        Log.d("SUBSCRIBED TO TOPIC", event.getKey().toString());
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
-                        SendNotification notification = new SendNotification();
-                        notification.execute(event.getKey(), event.getEventName());
+                        //Sending Notifications
+                        FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
+                        NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT_BOOST,false,true);
+                        notificationSender.execute();
 
                     }else {
+
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(event.getKey().toString());
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
+
                     }
                 }
             });
@@ -544,54 +542,4 @@ public class  OpenEventDetail extends BaseActivity {
     }
 
 
-    public static class SendNotification extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if(user != null) {
-                final String key = params[0];
-                Log.d("Key of event", key);
-
-                RemoteMessage.Builder creator = new RemoteMessage.Builder(key);
-                creator.addData("Type", "EventBoosted");//for a 5 min before notif
-                creator.addData("PersonName", user.getDisplayName());
-                creator.addData("Key", key);
-                creator.addData("TimeInMilli", String.valueOf(System.currentTimeMillis()));
-                Log.d("TIME AT BOOST = ", String.valueOf(System.currentTimeMillis()));
-                creator.addData("Event", params[1]);
-
-                try {
-                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Content-Type", "application/json");
-                    connection.setRequestProperty("Authorization", "key=AAAAGZIFvsE:APA91bG7rY-RLe6T3JxhFcmA4iRtihJCbD2RUwypt0aC8hVCvrm99LKZR__y3SqSIQmJocsuLaDltTuUui9BUrLwAM0SiCx0qSTrO8dpmxnjiHkaATnfYwVIN3T81lwlxYwBF7x9_3Kd");
-                    connection.setDoOutput(true);
-                    connection.connect();
-
-                    OutputStream os = connection.getOutputStream();
-                    OutputStreamWriter writer = new OutputStreamWriter(os);
-
-                    Map<String, Object> data = new HashMap<String, Object>();
-                    data.put("to", "/topics/" + key);
-
-                    data.put("data", creator.build().getData());
-
-                    JSONObject object = new JSONObject(data);
-                    String jsonString = object.toString().replace("\\", "");
-
-                    writer.write(jsonString);
-                    writer.flush();
-
-                    Log.d("event notification", connection.getResponseMessage());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-            return null;
-        }
     }
-}

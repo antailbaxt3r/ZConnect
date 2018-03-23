@@ -39,6 +39,8 @@ import com.zconnect.zutto.zconnect.ItemFormats.Product;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_PRODUCT;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -213,8 +215,8 @@ public class ProductsTab extends Fragment {
                                             Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
 
-                                            IndividualCategory.sendNotification notification = new IndividualCategory.sendNotification();
-                                            notification.execute(model.getKey(), model.getProductName());
+                                            NotificationSender notificationSender=new NotificationSender(model.getKey(),null,null,null,mAuth.getCurrentUser().getEmail(),model.getProductName(),KEY_PRODUCT,false,true);
+                                            notificationSender.execute();
 
                                         }
                                     }
