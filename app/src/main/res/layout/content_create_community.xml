@@ -28,6 +28,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <EditText
+        android:id="@+id/community_code"
+        android:hint="Community Code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/create_community"
         android:layout_width="wrap_content"

@@ -934,6 +934,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void logoutAndSendToLogin() {
         mAuth.signOut();
+        SharedPreferences preferences = getSharedPreferences("communityName", 0);
+        preferences.edit().remove("communityReference").commit();
+
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
         startActivity(loginIntent);
@@ -1013,7 +1016,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         mUser = mAuth.getCurrentUser();
-        setCommunity("bitsGoa");
         username = null;
         userEmail = null;
         if (mUser != null) {
@@ -1041,12 +1043,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         updateViews();
     }
 
-    public void setCommunity(String communityName){
-        SharedPreferences sharedPref2 = getSharedPreferences("communityName", MODE_PRIVATE);
-        SharedPreferences.Editor editInfo2 = sharedPref2.edit();
-        editInfo2.putString("communityReference", communityName);
-        editInfo2.commit();
-    }
+
 
     public void changeFragment(int i) {
 

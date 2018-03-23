@@ -33,8 +33,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ItemFormats.CommunitiesItemFormat;
+
+import java.util.Vector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +51,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     boolean doubleBackToExitPressedOnce = false;
     private FirebaseAuth mAuth;
     private DatabaseReference usersDbRef;
+    private DatabaseReference CommunitiesDatabaseReference;
     private ProgressDialog mProgress;
     @BindView(R.id.btn_google_sign_in)
     Button mGoogleSignInBtn;
@@ -56,6 +63,8 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     private GoogleApiClient mGoogleApiClient;
     private FirebaseUser mUser;
     private String userEmail;
+    private Vector<CommunitiesItemFormat> CommunitiesEmails = new Vector<>();;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,15 +171,15 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                             mProgress.dismiss();
                         } else {
                             mUser = mAuth.getCurrentUser();
-                            if (mUser != null
-                                    && (userEmail = mUser.getEmail()) != null
-                                    && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
+                            if (mUser != null) {
+                                String userCommunity;
+                                userEmail = mUser.getEmail();
+                                userCommunity = userEmail.substring(userEmail.lastIndexOf('@'));
 
-                                setupUserDataAndFinish(mUser);
-                            } else {
+                                setCommunity(userCommunity);
+                            }else {
                                 logout();
                                 mProgress.dismiss();
-                                Toast.makeText(LoginActivity.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -185,9 +194,59 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         editInfo.commit();
     }
 
+    public void setCommunity(String communityName){
+
+        String communityCode = null;
+        for (int i=0;i<CommunitiesEmails.size();i++)
+        {
+            if(CommunitiesEmails.get(i).getEmail().equals(communityName))
+            {
+                communityCode = CommunitiesEmails.get(i).getCode();
+            }
+        }
+
+        if(communityCode!=null)
+        {
+            SharedPreferences sharedPref2 = getSharedPreferences("communityName", MODE_PRIVATE);
+            SharedPreferences.Editor editInfo2 = sharedPref2.edit();
+            editInfo2.putString("communityReference", communityCode);
+            editInfo2.commit();
+            setupUserDataAndFinish(mUser);
+        }else {
+            logout();
+            mProgress.dismiss();
+            Toast.makeText(LoginActivity.this, "Login through your College Email", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
     @Override
     public void onStart() {
         super.onStart();
+
+        CommunitiesDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
+
+        CommunitiesDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                CommunitiesEmails.clear();
+                for(DataSnapshot shot : dataSnapshot.getChildren()) {
+                    try {
+                        CommunitiesEmails.add(shot.getValue(CommunitiesItemFormat.class));
+                    }catch (Exception e){
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
         setGuestLoginPref(false);
     }
 

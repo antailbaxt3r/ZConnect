@@ -6,18 +6,26 @@ package com.zconnect.zutto.zconnect.ItemFormats;
 
 public class CommunitiesItemFormat {
 
-    String name, image, email;
+    String name, image, email,code;
 
-
-    public CommunitiesItemFormat(String Name, String Image, String email) {
+    public CommunitiesItemFormat(String Name, String Image, String email, String code) {
         this.name=Name;
         this.image=Image;
         this.email=email;
+        this.code=code;
 
     }
 
     public CommunitiesItemFormat() {
 
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {

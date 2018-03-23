@@ -41,7 +41,7 @@ public class CreateCommunity extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
     IntentHandle intentHandle;
     ImageButton communityImage;
-    EditText communityName,communityEmail;
+    EditText communityName,communityEmail,communityCode;
     Button createCommunity;
     Intent galleryIntent;
     StorageReference mStorage;
@@ -82,6 +82,7 @@ public class CreateCommunity extends AppCompatActivity {
 
         communityEmail= (EditText) findViewById(R.id.community_email);
         communityName= (EditText) findViewById(R.id.community_name);
+        communityCode = (EditText) findViewById(R.id.community_code);
         communityImage = (ImageButton) findViewById(R.id.community_image);
         createCommunity = (Button) findViewById(R.id.create_community);
         mProgress = new ProgressDialog(this);
@@ -166,12 +167,14 @@ public class CreateCommunity extends AppCompatActivity {
         mProgress.setMessage("Posting Product..");
         mProgress.show();
 
-        final String communityNameString,communityEmailString,communityImageString;
+        final String communityNameString,communityEmailString,communityImageString,communityCodeString;
 
 
         communityEmailString= communityEmail.getText().toString().trim();
         communityImageString= mImageUri.toString();
         communityNameString= communityName.getText().toString().trim();
+        communityCodeString= communityCode.getText().toString().trim();
+
 
 
         mAuth = FirebaseAuth.getInstance();
