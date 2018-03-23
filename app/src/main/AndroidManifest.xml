@@ -70,9 +70,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PhonebookDetails"
+            android:exported="true"
             android:label="Details"
             android:screenOrientation="portrait"
-            android:exported="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PhonebookHostelWise"
@@ -269,21 +269,27 @@
         <activity
             android:name=".Shortlisted"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".CabPooling"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ChatActivity"
+        <activity
+            android:name=".ChatActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OpenProductDetails"
             android:label="Product Details"
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CommunitiesAround"
+            android:label="@string/title_activity_guest_login"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateCommunity"
+            android:label="@string/title_activity_create_community"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

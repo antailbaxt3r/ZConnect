@@ -240,7 +240,9 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 break;
             }
             case R.id.btn_guest_login: {
-                setGuestLoginPref(true);
+                Intent i = new Intent(LoginActivity.this,CommunitiesAround.class);
+                startActivity(i);
+                setGuestLoginPref(false);// need to work on this
                 finish(); /*Make Sure HomeActivity exists*/
                 break;
             }

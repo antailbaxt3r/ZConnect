@@ -180,7 +180,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 
                 try {
                     mImageUri = result.getUri();
-                    mAddImage.setImageURI(mImageUri);
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
 

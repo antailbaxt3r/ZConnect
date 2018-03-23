@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.zconnect.zutto.zconnect.CreateCommunity"
+    tools:showIn="@layout/activity_create_community">
+
+    <ImageButton
+        android:id="@+id/community_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/default_community_image"/>
+
+    <EditText
+        android:id="@+id/community_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Community Name"
+        android:textSize="16dp"/>
+
+    <EditText
+        android:id="@+id/community_email"
+        android:hint="Community Email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/create_community"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Community" />
+
+</LinearLayout>

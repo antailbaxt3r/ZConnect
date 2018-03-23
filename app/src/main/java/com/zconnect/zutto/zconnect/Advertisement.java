@@ -35,16 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-/**
-        * A simple activity showing the use of {@link NativeExpressAdView} ads in
-        * a {@link RecyclerView} widget.
-        * <p>The {@link RecyclerView} widget is a more advanced and flexible version of
-        * ListView. This widget helps simplify the display and handling of large data sets
-        * by allowing the layout manager to determine when to reuse (recycle) item views that
-        * are no longer visible to the user. Recycling views improves performance by avoiding
-        * the creation of unnecessary views or performing expensive findViewByID() lookups.</p>
-        */
-
 public class Advertisement extends BaseActivity {
     Vector<AdItemFormat> adItemFormats = new Vector<>();
     private AdRVAdapter adapter;
