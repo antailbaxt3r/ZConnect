@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -35,6 +36,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +54,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -143,6 +146,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     ImageView[] tabImage = new ImageView[6];
     ImageView[] tabNotificationCircle = new ImageView[6];
 
+    BottomSheetBehavior sheetBehavior;
+    LinearLayout layoutBottomSheet;
+
 
     @SuppressLint("ApplySharedPref")
     @Override
@@ -207,21 +213,28 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         fab1 = (FloatingActionButton) findViewById(R.id.fab1);
         fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+        layoutBottomSheet = (LinearLayout) findViewById(R.id.home_bottom_sheet);
+
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
+        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
+        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+
+        final HomeBottomSheet bottomSheetFragment = new HomeBottomSheet();
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.content_home_bottomsheet, null);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
-                int i = tabs.getSelectedTabPosition();
-                if (i == 0) {//Recents
-                    if (!status) {
-                        animateFAB();
-                    } else {
-                        alertBox();
+                int i=tabs.getSelectedTabPosition();
+                if(i==0){//Recents
+                if (!status) {
+                    bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+                    //animateFAB();
+                }else {
+                    alertBox();
                     }
                 }
                 if (i == 1) {//Infone
@@ -861,6 +874,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 } else {
                     logoutAndSendToLogin();
                 }
+                break;
+            }
+            case R.id.Noti_Settings:{
+                startActivity(new Intent(HomeActivity.this,NotificationSettings.class));
                 break;
             }
             case R.id.ad: {

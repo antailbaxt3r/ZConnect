@@ -44,6 +44,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -59,6 +60,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT;
 
 public class AddEvent extends BaseActivity {
     private static final int GALLERY_REQUEST = 7;
@@ -431,6 +434,11 @@ public class AddEvent extends BaseActivity {
                                 }
                             });
 
+                            //Sending Notifications
+                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                            notificationSender.execute();
+
+
                         } else {
                             DatabaseReference newPost = mDatabaseVerified.push();
                             String key = newPost.getKey();
@@ -467,6 +475,11 @@ public class AddEvent extends BaseActivity {
                             newPost2.child("feature").setValue("Event");
                             newPost2.child("id").setValue(key);
                             newPost2.child("desc2").setValue(eventDate);
+
+                            //Sending Notifications
+                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                            notificationSender.execute();
+
                         }
 
                         mProgress.dismiss();
@@ -529,6 +542,10 @@ public class AddEvent extends BaseActivity {
                             }
                             taskMap.put("EventTimeMillis", eventTimeMillis);
 
+                            //Sending Notifications
+                            NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                            notificationSender.execute();
+
                             mEventDatabase.updateChildren(taskMap);
                             mProgress.dismiss();
                         }
@@ -561,6 +578,14 @@ public class AddEvent extends BaseActivity {
                         e.printStackTrace();
                     }
                     taskMap.put("EventTimeMillis", eventTimeMillis);
+
+
+                    //Sending Notifications
+                    FirebaseMessaging.getInstance().subscribeToTopic(KEY_EVENT);
+                    NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                    notificationSender.execute();
+
+
                     mEventDatabase.updateChildren(taskMap);
                     mProgress.dismiss();
                 }
