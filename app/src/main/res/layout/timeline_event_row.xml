@@ -1,103 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/date"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight=".2"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparentGray"
+        android:id="@+id/event_status"
+        android:visibility="gone">
 
         <TextView
-            android:id="@+id/date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="4dp"
-            android:padding="0dp"
-            android:text="01"
-            android:textSize="30dp"/>
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:text="Event Over"
+            android:textSize="25dp"
+            android:id="@+id/event_over"/>
 
-
-
-        <TextView
-            android:id="@+id/date_month"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/date_text"
-            android:text="Jan"
-            android:layout_centerHorizontal="true"
-            android:textSize="15dp"
-            android:layout_marginBottom="4dp"/>
     </RelativeLayout>
 
-    <View
-        android:layout_margin="4dp"
-        android:layout_width="0dp"
-        android:layout_weight=".005"
-        android:background="@color/gray_holo_dark"
-        android:layout_height="match_parent">
-    </View>
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_weight=".695"
-        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:text="Title"
-                android:textSize="25dp"
-                android:layout_marginLeft="15dp"
-                android:layout_height="wrap_content"/>
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".2"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/boostcount"
-                android:layout_width="match_parent"
+                android:id="@+id/date_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/title"
-                android:textSize="9dp"
-                android:layout_alignLeft="@id/title"
-                android:text="7 people boosted this event"/>
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:padding="0dp"
+                android:text="01"
+                android:textSize="30dp"/>
+
+
+
+            <TextView
+                android:id="@+id/date_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/date_text"
+                android:text="Jan"
+                android:layout_centerHorizontal="true"
+                android:textSize="15dp"
+                android:layout_marginBottom="4dp"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_margin="4dp"
+            android:layout_width="0dp"
+            android:layout_weight=".005"
+            android:background="@color/gray_holo_dark"
+            android:layout_height="match_parent">
+        </View>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight=".695"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:text="Title"
+                    android:textSize="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/boostcount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/title"
+                    android:textSize="9dp"
+                    android:layout_alignLeft="@id/title"
+                    android:text="7 people boosted this event"/>
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/time"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight=".1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/time_number"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/time"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="7"
-            android:layout_marginTop="4dp"
-            android:padding="0dp"
-            android:textSize="15dp" />
+            android:layout_weight=".1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/time_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/time_number"
-            android:text="pm"
-            android:layout_centerHorizontal="true"
-            android:textSize="8dp"
-            android:layout_marginBottom="4dp"/>
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/time_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="7"
+                android:layout_marginTop="4dp"
+                android:padding="0dp"
+                android:textSize="15dp" />
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/time_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/time_number"
+                android:text="pm"
+                android:layout_centerHorizontal="true"
+                android:textSize="8dp"
+                android:layout_marginBottom="4dp"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+</FrameLayout>
