@@ -33,6 +33,7 @@ import com.squareup.picasso.Picasso;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_PRODUCT;
 
 public class OpenProductDetails extends AppCompatActivity {
 
@@ -198,8 +199,8 @@ public class OpenProductDetails extends AppCompatActivity {
                                 flag = false;
                                 Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
                                 productShortlist.setTypeface(customfont);
-                                IndividualCategory.sendNotification notification = new IndividualCategory.sendNotification();
-                                notification.execute(dataSnapshot.getKey(), productName.getText().toString());
+                                NotificationSender notificationSender=new NotificationSender(dataSnapshot.getKey(),null,null,null,null,productName.getText().toString(),KEY_PRODUCT,false,false);
+                                notificationSender.execute();
 
                             }
                         }

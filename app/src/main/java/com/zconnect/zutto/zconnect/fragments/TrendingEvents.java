@@ -29,11 +29,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.AddEvent;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.LoginActivity;
+import com.zconnect.zutto.zconnect.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
 
@@ -300,8 +302,15 @@ public class TrendingEvents extends Fragment {
                             taskMap.put(user.getUid(), user.getUid());
                             CounterManager.eventBoost(event.getKey(), "Trending-Out");
                             eventDatabase.child("BoostersUids").updateChildren(taskMap);
+
+                            //Sending Notifications
+                            FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
+                            NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,"EventBoosted",false,true);
+                            notificationSender.execute();
+
                         }else {
                             eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
+
                         }
                     }
                 });

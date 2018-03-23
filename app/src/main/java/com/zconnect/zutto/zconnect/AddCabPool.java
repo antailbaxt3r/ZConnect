@@ -24,13 +24,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL;
 
 public class AddCabPool extends AppCompatActivity {
     Button done;
@@ -47,6 +50,8 @@ public class AddCabPool extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cab_pool);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
@@ -106,6 +111,15 @@ public class AddCabPool extends AppCompatActivity {
 
             String date = getIntent().getStringExtra("date");
             if(!date.equals("null")){
+                SimpleDateFormat abc=new SimpleDateFormat("dd/M/yyyy");
+                Date a=abc.parse(date);
+                Log.e("msg",String.valueOf(a));
+                s_dayOfMonth= (new SimpleDateFormat("dd")).format(a);
+                s_monthOfYear= (new SimpleDateFormat("MM")).format(a);
+                s_year= (new SimpleDateFormat("yyyy")).format(a);
+                Log.e("msg",s_dayOfMonth);
+                Log.e("msg",s_monthOfYear);
+                Log.e("msg",s_year);
                 this.calender.setText(date);
             }
 
@@ -253,7 +267,6 @@ public class AddCabPool extends AppCompatActivity {
                                         newPost.child("cabListItemFormats").setValue(cabListItemFormats);
 
                                         CounterManager.createPool(String.valueOf(destination.getSelectedItem()));
-                                        FirebaseMessaging.getInstance().subscribeToTopic(key);
                                         FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid()).child("Topics").push().setValue(key);
 
                                           //writing to database for recent items
@@ -274,7 +287,9 @@ public class AddCabPool extends AppCompatActivity {
                                         snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                                         snack.show();
 
-                       
+                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,KEY_CABPOOL,true,false);
+                                        notificationSender.execute();
+
                                     } else {
                                         Snackbar snack = Snackbar.make(done, "Add pool for a single day", Snackbar.LENGTH_LONG);
                                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
@@ -332,7 +347,6 @@ public class AddCabPool extends AppCompatActivity {
         Log.e("ABC",String.valueOf(Av));
         Log.e("ABC",String.valueOf((int)Av));
         if(Av==(int)Av){
-            Log.e("ABC","545454545");
 
             String str=decimalFormat.format((int)Av-00)+":00";
             return str;

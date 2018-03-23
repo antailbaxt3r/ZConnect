@@ -84,7 +84,29 @@ public class LogoFlashActivity extends BaseActivity {
             }
         },2000);
 
+       /* final DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("Users");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot:dataSnapshot.getChildren()){
 
+                    DatabaseReference db=databaseReference.child(snapshot.getKey()).child("NotificationChannels");
+                    db.setValue(null);
+                    db.child(KEY_CABPOOL).setValue(true);
+                    db.child(KEY_EVENT).setValue(true);
+                    db.child(KEY_OFFERS).setValue(true);
+                    db.child(KEY_STOREROOM).setValue(true);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+*/
     }
 
 
