@@ -45,10 +45,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
 
     @Override
     public void onBindViewHolder(RecentsRVAdapter.ViewHolder holder, int position) {
-        holder.simpleDraweeView.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
-        holder.feature.setText(recentsItemFormats.get(position).getFeature());
-        holder.name.setText(recentsItemFormats.get(position).getName());
-        holder.desc.setText(recentsItemFormats.get(position).getDesc());
+        try {
+            holder.simpleDraweeView.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
+            holder.feature.setText(recentsItemFormats.get(position).getFeature());
+            holder.name.setText(recentsItemFormats.get(position).getName());
+            holder.desc.setText(recentsItemFormats.get(position).getDesc());
+        }catch (Exception e){
+
+        }
     }
 
     @Override
