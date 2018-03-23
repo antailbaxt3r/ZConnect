@@ -864,6 +864,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 }
                 break;
             }
+            case R.id.Noti_Settings:{
+                startActivity(new Intent(HomeActivity.this,NotificationSettings.class));
+                break;
+            }
             case R.id.ad: {
                 CounterManager.AdvertisementOpen();
                 startActivity(new Intent(HomeActivity.this, Advertisement.class));

@@ -46,6 +46,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_PRODUCT;
+
 public class IndividualCategory extends BaseActivity {
 
     public String category;
@@ -193,8 +195,8 @@ public class IndividualCategory extends BaseActivity {
                                             Typeface customfont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
 
-                                            sendNotification notification = new sendNotification();
-                                            notification.execute(model.getKey(), model.getProductName());
+                                            NotificationSender notificationSender=new NotificationSender(model.getKey(),null,null,null,null,model.getProductName(),KEY_PRODUCT,false,true);
+                                            notificationSender.execute();
 
                                         }
                                     }
