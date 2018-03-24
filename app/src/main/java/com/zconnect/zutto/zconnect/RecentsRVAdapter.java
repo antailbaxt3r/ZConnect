@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 
 import java.util.List;
@@ -34,6 +36,7 @@ import java.util.Vector;
     Vector<RecentsItemFormat> recentsItemFormats;
     private HomeActivity mHomeActivity;
     List<String> storeroomProductList;
+    DatabaseReference mRef;
 
     public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity,List<String> storeroomProductList) {
         this.context = context;
@@ -51,10 +54,11 @@ import java.util.Vector;
 
     @Override
     public void onBindViewHolder(RecentsRVAdapter.ViewHolder holder, int position) {
+        try{
         holder.simpleDraweeView.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
         holder.feature.setText(recentsItemFormats.get(position).getFeature());
-        holder.name.setText(recentsItemFormats.get(position).getName());
         holder.desc.setText(recentsItemFormats.get(position).getDesc());
+//<<<<<<< HEAD
 
         //new ui
         if(recentsItemFormats.get(position).getPostedBy() != null)
@@ -139,6 +143,19 @@ import java.util.Vector;
             holder.post.setText("Offer");
         }
         //
+//=======
+        if(recentsItemFormats.get(position).getFeature().equals("Message")&&recentsItemFormats.get(position).getDesc2().equals("y")) {
+            //Message is anonymous
+            holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
+        } else {
+            //Message is not anonymous
+            holder.name.setText(recentsItemFormats.get(position).getName());
+        }
+        }
+        catch (Exception e) {
+
+        }
+//>>>>>>> master
     }
 
     @Override
@@ -234,8 +251,14 @@ import java.util.Vector;
                         }
                     }else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("CabPool")){
                         i=new Intent(context,CabListOfPeople.class);
+                        Log.e("check","executed");
                         i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getId());
                         i.putExtra("date",recentsItemFormats.get(getAdapterPosition()).getDT());
+                        context.startActivity(i);
+                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Message")) {
+                        i=new Intent(context,ChatActivity.class);
+                        mRef = FirebaseDatabase.getInstance().getReference().child("home/"+recentsItemFormats.get(getAdapterPosition()).getKey());
+                        i.putExtra("ref",mRef.toString());
                         context.startActivity(i);
                     }
                 }

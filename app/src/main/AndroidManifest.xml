@@ -244,7 +244,7 @@
             android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".FullscreenActivity"
+            android:name=".TutorialActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fullscreen"
             android:screenOrientation="portrait"
@@ -275,7 +275,7 @@
         <activity
             android:name=".ChatActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OpenProductDetails"
             android:label="Product Details"
@@ -283,9 +283,22 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".CommunitiesAround"
+            android:label="@string/title_activity_guest_login"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateCommunity"
+            android:label="@string/title_activity_create_community"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".NewMessageActivity"
+            android:label="@string/title_activity_new_message"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".NotificationSettings"
             android:label="@string/title_activity_nitification_settings"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

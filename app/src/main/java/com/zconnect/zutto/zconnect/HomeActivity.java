@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -35,6 +36,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +54,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -86,25 +89,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
      * The email displayed in nav header.
      */
     private TextView navHeaderEmailTv;
-    /**
-     * Background of nav header.
-     <activity
-     android:name=".FullscreenActivity"
-     android:configChanges="orientation|keyboardHidden|screenSize"
-     android:label="@string/title_activity_fullscreen"
-     android:screenOrientation="portrait"
-     android:theme="@style/AppTheme.NoActionBar" />
-     <activity
-     android:name=".MyRides"
-     android:label="@string/title_activity_my_rides"
-     android:parentActivityName=".HomeActivity"
-     android:theme="@style/AppTheme.NoActionBar" />
-
-     <service android:name=".NotificationService">
-     <intent-filter>
-     <action android:name="com.google.firebase.MESSAGING_EVENT" />
-     </inte
-     */
     private SimpleDraweeView navHeaderBackground;
     private MenuItem editProfileItem;
     private ActionBarDrawerToggle toggle;
@@ -114,10 +98,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference phoneBookDbRef;
     private DatabaseReference mDatabasePopUps;
-
     private Boolean isFabOpen = false;
-    private FloatingActionButton fab,fab1,fab2,fab3;
-    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+    private FloatingActionButton fab, fab1, fab2, fab3;
+    private Animation fab_open, fab_close, rotate_forward, rotate_backward;
 
     /**
      * /ui node
@@ -135,13 +118,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     int UsersTotalProducts = 0, TotalProducts = 0;
     int UsersTotalOffers = 0, TotalOffers = 0;
     int UsersTotalEvents = 0, TotalEvents = 0;
+    int UsersTotalCabpools = 0, TotalCabpools = 0;
     private ValueEventListener UserStats;
     private ValueEventListener TotalStats;
+
+    String flag;
 
     TextView[] tabTitle= new TextView[6];
     ImageView[] tabImage = new ImageView[6];
     ImageView[] tabNotificationCircle = new ImageView[6];
 
+    BottomSheetBehavior sheetBehavior;
+    LinearLayout layoutBottomSheet;
 
 
     @SuppressLint("ApplySharedPref")
@@ -151,24 +139,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        recent = new Recents();
-        cab = new CabPoolMain();
-        infone = new InfoneActivity();
-        store = new TabStoreRoom();
-        shop = new Shop();
-        events = new TabbedEvents();
-        tabs();
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
-        uiDbRef = FirebaseDatabase.getInstance().getReference("ui");
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         guestPrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
         guestPrefs.registerOnSharedPreferenceChangeListener(this);
         guestMode = guestPrefs.getBoolean("mode", false);
         mAuth = FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(this);
-        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook");
-        phoneBookDbRef.keepSynced(true);
 
         View navHeader = navigationView.getHeaderView(0);
         //These initializations **can't** be done by glide
@@ -202,15 +178,37 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        //Floating Buttons
+
+        //getting all the tabs Instances
+        recent = new Recents();
+        cab = new CabPoolMain();
+        infone = new InfoneActivity();
+        store = new TabStoreRoom();
+        shop = new Shop();
+        events = new TabbedEvents();
+
+        //Setting launching tab
+        tabs();
+
+        if(communityReference!=null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+        }
+
+            //Floating Buttons
         fab = (FloatingActionButton)findViewById(R.id.fab);
         fab1 = (FloatingActionButton)findViewById(R.id.fab1);
         fab2 = (FloatingActionButton)findViewById(R.id.fab2);
         fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+        layoutBottomSheet = (LinearLayout) findViewById(R.id.home_bottom_sheet);
+
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+
+        final HomeBottomSheet bottomSheetFragment = new HomeBottomSheet();
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.content_home_bottomsheet, null);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,53 +217,55 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 int i=tabs.getSelectedTabPosition();
                 if(i==0){//Recents
                 if (!status) {
-                    animateFAB();
+                    bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+                    //animateFAB();
                 }else {
                     alertBox();
                     }
                 }
-                if(i==1){//Infone
+                if (i == 1) {//Infone
                     if (!status) {
                         Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
                         startActivity(intent);
 
-                    }else {
+                    } else {
                         alertBox();
                     }
                 }
-                if(i==2){//Storeroom
+                if (i == 2) {//Storeroom
                     if (!status) {
                         CounterManager.StoreRoomFABclick();
                         Intent intent = new Intent(getApplicationContext(), AddProduct.class);
                         startActivity(intent);
-                    }else {
+                    } else {
                         alertBox();
                     }
                 }
-                if(i==3){//Events
+                if (i == 3) {//Events
                     if (!status) {
                         CounterManager.eventAddClick();
                         Intent intent = new Intent(getApplicationContext(), AddEvent.class);
-                        startActivity(intent);   }else {
+                        startActivity(intent);
+                    } else {
                         alertBox();
                     }
                 }
-                if(i==4){//CabPool
+                if (i == 4) {//CabPool
                     if (!status) {
-                            setActionBarTitle("Search Pool");
-                            CounterManager.RecentsOpen();
-                            Intent intent = new Intent(HomeActivity.this, CabPooling.class);
-                            startActivity(intent);
-                       }else {
+                        setActionBarTitle("Search Pool");
+                        CounterManager.RecentsOpen();
+                        Intent intent = new Intent(HomeActivity.this, CabPooling.class);
+                        startActivity(intent);
+                    } else {
                         alertBox();
                     }
                 }
-                if(i==5){//Shops
+                if (i == 5) {//Shops
                     if (!status) {
                         CounterManager.shopOffers();
                         Intent intent = new Intent(HomeActivity.this, Offers.class);
                         startActivity(intent);
-                    }else {
+                    } else {
                         alertBox();
                     }
                 }
@@ -273,10 +273,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
 
         });
+
+        //fab to add product
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 if (!status) {
@@ -286,6 +287,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             }
         });
+
+        //fab to add event
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,6 +301,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             }
         });
+
+        //fab to add search pool
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -313,7 +318,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         });
 
 
-
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -322,27 +326,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         navigationView.setNavigationItemSelectedListener(this);
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
 
-
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
-
-        mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("PopUps");
-        mDatabasePopUps.keepSynced(true);
-
-        if(mAuth.getCurrentUser()!=null) {
-            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid()).child("Stats");
-            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
-            mDatabaseStats.addValueEventListener(TotalStats);
-            mDatabaseUserStats.addValueEventListener(UserStats);
-//            Toast.makeText(this, "Not null", Toast.LENGTH_SHORT).show();
-        }
-
-
     }
 
+    //Alert box to display guest login
     void alertBox(){
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getApplicationContext());
 
-        // 2. Chain together various setter methods to set the dialog characteristics
         builder.setMessage("Please Log In to access this feature.")
                 .setTitle("Dear Guest!");
 
@@ -364,6 +354,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
 
+    // Function to open fab notification
     public void animateFAB() {
 
         if (isFabOpen) {
@@ -394,31 +385,37 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
 
+    //Circular notification in the bottom navigation
     void setNotificationCircle(){
         if(TotalEvents>UsersTotalEvents){
             tabNotificationCircle[4].setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tabNotificationCircle[4].setVisibility(View.GONE);
         }
-        if (TotalNumbers>UsersTotalNumbers){
+        if (TotalNumbers > UsersTotalNumbers) {
             tabNotificationCircle[1].setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tabNotificationCircle[1].setVisibility(View.GONE);
         }
-        if(TotalOffers>UsersTotalOffers){
+        if (TotalOffers > UsersTotalOffers) {
             tabNotificationCircle[5].setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tabNotificationCircle[5].setVisibility(View.GONE);
         }
-        if(TotalProducts>UsersTotalProducts){
+        if (TotalProducts > UsersTotalProducts) {
             tabNotificationCircle[2].setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tabNotificationCircle[2].setVisibility(View.GONE);
+        }
+        if (TotalCabpools > UsersTotalCabpools) {
+            tabNotificationCircle[3].setVisibility(View.VISIBLE);
+        } else {
+            tabNotificationCircle[3].setVisibility(View.GONE);
         }
     }
 
+    //Setting contents in the different tabs
     void tabs() {
-
         View vRecents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab recentsT = tabs.newTab();
 
@@ -431,8 +428,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
 
         recentsT.setCustomView(vRecents);
-
-
 
 
         View vInfone = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
@@ -463,7 +458,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         storeT.setCustomView(vStore);
 
 
-
         View vCab = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab cabT = tabs.newTab();
 
@@ -476,8 +470,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabNotificationCircle[3] = (ImageView) vCab.findViewById(R.id.notification_circle);
         vCab.setAlpha((float) 0.7);
         cabT.setCustomView(vCab);
-
-
 
 
         View vEvents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
@@ -494,8 +486,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         eventT.setCustomView(vEvents);
 
 
-
-
         View vShop = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab shopT = tabs.newTab();
 
@@ -509,14 +499,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         vShop.setAlpha((float) 0.7);
         shopT.setCustomView(vShop);
 
-
         tabs.addTab(recentsT);
         tabs.addTab(infoneT);
         tabs.addTab(storeT);
         tabs.addTab(eventT);
         tabs.addTab(cabT);
         tabs.addTab(shopT);
-
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -538,6 +526,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         break;
                     }
+                    case 3: {
+                        setActionBarTitle("Events");
+                        CounterManager.EventOpen();
+                        fab.setImageResource(R.drawable.ic_add_white_36dp);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
+                        break;
+                    }
                     case 5: {
                         setActionBarTitle("Shops");
                         fab.setImageResource(R.drawable.procent_badge_256);
@@ -551,13 +546,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         CounterManager.StoreRoomOpen();
                         fab.setImageResource(R.drawable.ic_add_shopping_cart_white_24dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
-                        break;
-                    }
-                    case 3: {
-                        setActionBarTitle("Events");
-                        CounterManager.EventOpen();
-                        fab.setImageResource(R.drawable.ic_add_white_36dp);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
                         break;
                     }
                     case 4: {
@@ -582,31 +570,33 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         });
 
     }
-    /**
-     *
-     *
-     * All {@link ValueEventListener}s used in this class are defined here.
-     */
+
+
+    //All ValueEventListener used in this class are defined here.
     private void initListeners() {
 
         TotalStats = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-                TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-                TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
-                TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                if (dataSnapshot.child("TotalNumbers").getValue() != null)
+                    TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+                if (dataSnapshot.child("TotalEvents").getValue() != null)
+                    TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+                if (dataSnapshot.child("TotalOffers").getValue() != null)
+                    TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
+                if (dataSnapshot.child("TotalProducts").getValue() != null)
+                    TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                if (dataSnapshot.child("TotalCabpools").getValue() != null)
+                    TotalCabpools = Integer.parseInt(dataSnapshot.child("TotalCabpools").getValue().toString());
 
 //                setNotificationCircle();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(TAG, "onCancelled: ", databaseError.toException());
             }
-
-
         };
+
         UserStats = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -617,10 +607,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     UsersTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
                 }
                 if (dataSnapshot.child("TotalOffers").getValue() != null) {
-                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue().toString());
+                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
                 }
                 if (dataSnapshot.child("TotalProducts").getValue() != null) {
                     UsersTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+                }
+                if (dataSnapshot.child("TotalCabpools").getValue() != null) {
+                    UsersTotalCabpools = Integer.parseInt(dataSnapshot.child("TotalCabpools").getValue().toString());
                 }
 
                 setNotificationCircle();
@@ -632,7 +625,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
         };
 
-
         popupsListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -642,7 +634,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
                 String first = preferences.getString("popup", "");
                 boolean firstTimePopUp = Boolean.parseBoolean(first);
-                boolean updateAvailable=true;
+                boolean updateAvailable = true;
 
                 int versionCode = BuildConfig.VERSION_CODE;
 
@@ -650,7 +642,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 if (newVersion != null && newVersion > (versionCode)) {
 
-                    updateAvailable=false;
+                    updateAvailable = false;
                     String updateImageURL = dataSnapshot.child("update").child("imageUrl").getValue(String.class);
 
                     CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, updateImageURL, "UPDATE");
@@ -661,9 +653,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     Window window = cdd.getWindow();
                     window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
-                }
-                else {
-                    updateAvailable=false;
+                } else {
+                    updateAvailable = false;
                 }
 
 
@@ -672,10 +663,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         popUpUrl1.add(shot.child("imageUrl").getValue(String.class));
                         importance.add(shot.child("imp").getValue(String.class));
                         dataComplete = true;
-                    } else if(!shot.getKey().equalsIgnoreCase("update")){
+                    } else if (!shot.getKey().equalsIgnoreCase("update")) {
                         dataComplete = false;
                     }
                 }
+
                 for (int i = 0; i < popUpUrl1.size() && dataComplete && firstTimePopUp; i++) {
                     double random1 = Math.random();
                     int random = (int) (random1 * 10);
@@ -713,6 +705,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             }
         };
+
         phoneBookValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -734,7 +727,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         };
 
         uiDbListener = new ValueEventListener() {
-
             /**
              * Updates nav header background and nav header text colors according to firebase.
              */
@@ -745,9 +737,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 final String navHeaderBackGroundImageUrl;
                 try {
                     if (textColorString != null && textColorString.length() > 1) {
-                        @ColorInt
-                        final int textColor = Color.parseColor(textColorString);
-                        if (navHeaderUserNameTv != null) navHeaderUserNameTv.setTextColor(textColor);
+                        @ColorInt final int textColor = Color.parseColor(textColorString);
+                        if (navHeaderUserNameTv != null)
+                            navHeaderUserNameTv.setTextColor(textColor);
                         if (navHeaderEmailTv != null) navHeaderEmailTv.setTextColor(textColor);
                     }
                     navHeaderBackGroundImageUrl = navDrawerNode.child("headerBackground").getValue(String.class);
@@ -791,19 +783,24 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @SuppressLint("ApplySharedPref")
     private void launchRelevantActivitiesIfNeeded() {
         //show tuts for first launch
-        if (!defaultPrefs.getBoolean("isReturningUser", false)) {
-            Intent tutIntent = new Intent(HomeActivity.this, FullscreenActivity.class);
-            tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(tutIntent);
-
-            //mark first time has run.
-            SharedPreferences.Editor editor = defaultPrefs.edit();
-            editor.putBoolean("isReturningUser", true);
-            editor.commit();
-        } else /*check if login is needed*/ if (!guestMode && mUser == null) {
-            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-        } else if (!guestMode) {
-            phoneBookDbRef.addListenerForSingleValueEvent(phoneBookValueEventListener);
+        if(!guestMode){
+            if (mUser == null) {
+                startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+            } else if (mUser != null) {
+                if (!defaultPrefs.getBoolean("isReturningUser", false)) {
+                    Intent tutIntent = new Intent(HomeActivity.this, TutorialActivity.class);
+                    tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(tutIntent);
+                    //mark first time has run.
+                    SharedPreferences.Editor editor = defaultPrefs.edit();
+                    editor.putBoolean("isReturningUser", true);
+                    editor.commit();
+                } else if(communityReference!=null) {
+                    phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+                    phoneBookDbRef.keepSynced(true);
+                    phoneBookDbRef.addListenerForSingleValueEvent(phoneBookValueEventListener);
+                }
+            }
         }
     }
 
@@ -812,6 +809,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         return toggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
+    //Navigation Bar
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -837,7 +835,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             }
             case R.id.MyRides: {
-                Intent intent=new Intent(HomeActivity.this, MyRides.class);
+                Intent intent = new Intent(HomeActivity.this, MyRides.class);
                 startActivity(intent);
                 break;
             }
@@ -918,23 +916,47 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStart() {
         super.onStart();
+        mUser = mAuth.getCurrentUser();
+
         launchRelevantActivitiesIfNeeded();
-        mDatabasePopUps.addValueEventListener(popupsListener);
+
+        if(communityReference!=null) {
+            uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
+
+            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
+            mDatabasePopUps.keepSynced(true);
+
+            if(mAuth.getCurrentUser()!=null) {
+                mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(mAuth.getCurrentUser().getUid()).child("Stats");
+                mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
+                mDatabaseStats.addValueEventListener(TotalStats);
+                mDatabaseUserStats.addValueEventListener(UserStats);
+            }
+
+            mDatabasePopUps.addValueEventListener(popupsListener);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        mUser = mAuth.getCurrentUser();
         updateViews();
-        uiDbRef.addValueEventListener(uiDbListener);
+        if(communityReference!=null) {
+            uiDbRef.addValueEventListener(uiDbListener);
+        }
     }
 
     @Override
     protected void onStop() {
-        mDatabasePopUps.removeEventListener(popupsListener);
-        phoneBookDbRef.removeEventListener(phoneBookValueEventListener);
-        if (addContactDialog != null) addContactDialog.cancel();
         super.onStop();
+        if(communityReference!=null) {
+            try {
+                mDatabasePopUps.removeEventListener(popupsListener);
+                phoneBookDbRef.removeEventListener(phoneBookValueEventListener);
+            }catch (Exception e){}
+            if (addContactDialog != null) addContactDialog.cancel();
+        }
     }
 
     @Override
@@ -946,13 +968,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         // onPause is always called before onStop,
         // which in turn is always called before onDestroy
 
-        uiDbRef.removeEventListener(uiDbListener);
+        if(communityReference!=null) {
+            uiDbRef.removeEventListener(uiDbListener);
+        }
 
         super.onPause();
     }
 
     private void logoutAndSendToLogin() {
         mAuth.signOut();
+        SharedPreferences preferences = getSharedPreferences("communityName", 0);
+        preferences.edit().remove("communityReference").commit();
+
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
         startActivity(loginIntent);
@@ -1032,11 +1059,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         mUser = mAuth.getCurrentUser();
+        setCommunity("bitsGoa");
         username = null;
         userEmail = null;
         if (mUser != null) {
-            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid()).child("Stats");
-            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Users").child(mUser.getUid()).child("Stats");
+            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Stats");
         }
         if (mUser != null) {
             username = mUser.getDisplayName();
@@ -1058,6 +1086,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         guestMode = guestPrefs.getBoolean("mode", false);
         updateViews();
     }
+
+    public void setCommunity(String communityName){
+        SharedPreferences sharedPref2 = getSharedPreferences("communityName", MODE_PRIVATE);
+        SharedPreferences.Editor editInfo2 = sharedPref2.edit();
+        editInfo2.putString("communityReference", communityName);
+        editInfo2.commit();
+    }
+
 
     public void changeFragment(int i) {
 

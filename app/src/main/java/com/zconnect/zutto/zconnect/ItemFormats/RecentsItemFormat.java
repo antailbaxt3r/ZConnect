@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect.ItemFormats;
 
+import java.security.Key;
+
 /**
  * Created by shubhamk on 20/3/17.
  */
@@ -11,6 +13,7 @@ public class RecentsItemFormat {
     String imageurl;
     String feature;
     String id;
+    private String Key;
     private String DT;
 
     //new ui
@@ -21,16 +24,17 @@ public class RecentsItemFormat {
     String cabpoolDestination;
         //for events
     String eventDate;
-        //for stoerroom
+        //for storeroom
     String productPrice;
     //
 
-    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT, String postedBy, String postedByUID, String cabpoolSource, String cabpoolDestination, String eventDate, String productPrice) {
+    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT, String postedBy, String postedByUID, String cabpoolSource, String cabpoolDestination, String eventDate, String productPrice, String Key) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
         this.imageurl = imageurl;
         this.feature = feature;
+        this.Key= Key;
         this.id = id;
         this.DT=DT;
 
@@ -121,6 +125,13 @@ public class RecentsItemFormat {
         //for storeroom
     public String getProductPrice() { return productPrice; }
     //
+    public String getKey() {
+        return Key;
+    }
+
+    public void setKey(String Key) {
+        this.Key = Key;
+    }
 
 }
 

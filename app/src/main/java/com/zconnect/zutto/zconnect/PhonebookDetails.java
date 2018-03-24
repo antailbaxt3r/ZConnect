@@ -207,7 +207,6 @@ public class PhonebookDetails extends BaseActivity {
 
         }
 
-
         if (Uid.equals("null"))
         {
             anonymMessageLayout.setVisibility(View.GONE);
@@ -221,7 +220,7 @@ public class PhonebookDetails extends BaseActivity {
                 String textMessageString;
                 textMessageString = textMessage.getText().toString();
                 if (textMessageString!=null && !flagforNull){
-                    DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("Users").child(Uid).child("Messages").push();
+                    DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(Uid).child("Messages").push();
                     UsersReference.child("Message").setValue(textMessageString);
                     UsersReference.child("MessageId").setValue(UsersReference.getKey());
                     UsersReference.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());

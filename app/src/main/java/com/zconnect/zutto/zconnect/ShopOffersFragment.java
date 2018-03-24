@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,13 +21,18 @@ import com.zconnect.zutto.zconnect.ItemFormats.ShopOfferItemFormat;
 
 import java.util.Vector;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class ShopOffersFragment extends Fragment {
     TextView defaultmsg;
     RecyclerView recyclerView;
     String shopid;
     ShopOfferRV adapter;
+    private SharedPreferences communitySP;
+    public String communityReference;
+
     Vector<ShopOfferItemFormat> shopOfferItemFormats = new Vector<>();
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Shop").child("Offers");
+    private DatabaseReference databaseReference;
     public ShopOffersFragment() {
         // Required empty public constructor
     }
@@ -38,6 +44,12 @@ public class ShopOffersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_shop_offers, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.fragment_shop_rv);
         defaultmsg = (TextView) view.findViewById(R.id.shop_errorMessage);
+
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Shop").child("Offers");
+
         shopid = getActivity().getIntent().getStringExtra("ShopId");
         databaseReference.keepSynced(true);
 

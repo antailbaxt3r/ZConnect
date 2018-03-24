@@ -42,6 +42,8 @@ import com.zconnect.zutto.zconnect.R;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class TrendingEvents extends Fragment {
 
     private Query queryRef;
@@ -102,8 +104,13 @@ public class TrendingEvents extends Fragment {
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 
+        SharedPreferences communitySP;
+        String communityReference;
 
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts");
         queryRef = mDatabase.orderByChild("BoostCount");
 
         mDatabase.keepSynced(true);
@@ -173,8 +180,7 @@ public class TrendingEvents extends Fragment {
                 public void onClick(View view) {
                     CounterManager.eventOpenCounter(key, "Trending");
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
-                    i.putExtra("currentEvent", event);
-                    i.putExtra("Eventtag", "1");
+                    i.putExtra("id", event.getKey());
                     mView.getContext().startActivity(i);
                 }
             });

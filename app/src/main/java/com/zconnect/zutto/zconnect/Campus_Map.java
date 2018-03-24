@@ -24,7 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class Campus_Map extends FragmentActivity implements OnMapReadyCallback {
+public class Campus_Map extends BaseActivity implements OnMapReadyCallback {
 
     private GoogleMap map;
     private DatabaseReference mDatabaseMapLocation;
@@ -176,7 +176,7 @@ public class Campus_Map extends FragmentActivity implements OnMapReadyCallback {
 
     void getLatLong(final GoogleMap map) {
 
-        mDatabaseMapLocation = FirebaseDatabase.getInstance().getReference().child("Maps");
+        mDatabaseMapLocation = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Maps");
 
         mDatabaseMapLocation.addValueEventListener(new ValueEventListener() {
             @Override
