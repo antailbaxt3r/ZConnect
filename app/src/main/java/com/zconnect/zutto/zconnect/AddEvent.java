@@ -422,7 +422,7 @@ public class AddEvent extends BaseActivity {
                                     Integer TotalEvents = Integer.parseInt(o.toString());
                                     TotalEvents = TotalEvents + 1;
                                     DatabaseReference newPost = mFeaturesStats;
-                                    Map<String, Object> taskMap = new HashMap<String, Object>();
+                                    Map<String, Object> taskMap = new HashMap<>();
                                     taskMap.put("TotalEvents", TotalEvents);
                                     newPost.updateChildren(taskMap);
                                 }
