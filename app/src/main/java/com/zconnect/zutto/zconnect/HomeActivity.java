@@ -1059,11 +1059,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         mUser = mAuth.getCurrentUser();
+        setCommunity("bitsGoa");
         username = null;
         userEmail = null;
         if (mUser != null) {
-            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(mUser.getUid()).child("Stats");
-            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
+            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Users").child(mUser.getUid()).child("Stats");
+            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Stats");
         }
         if (mUser != null) {
             username = mUser.getDisplayName();
@@ -1086,6 +1087,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         updateViews();
     }
 
+    public void setCommunity(String communityName){
+        SharedPreferences sharedPref2 = getSharedPreferences("communityName", MODE_PRIVATE);
+        SharedPreferences.Editor editInfo2 = sharedPref2.edit();
+        editInfo2.putString("communityReference", communityName);
+        editInfo2.commit();
+    }
 
 
     public void changeFragment(int i) {

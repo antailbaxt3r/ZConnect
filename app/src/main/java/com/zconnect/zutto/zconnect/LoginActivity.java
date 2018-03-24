@@ -62,6 +62,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     private int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseUser mUser;
+    String communityCode;
     private String userEmail;
     private Vector<CommunitiesItemFormat> CommunitiesEmails = new Vector<>();;
 
@@ -196,12 +197,15 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
     public void setCommunity(String communityName){
 
-        String communityCode = null;
+        Toast.makeText(this, "Set Community", Toast.LENGTH_SHORT).show();
+        communityCode = null;
         for (int i=0;i<CommunitiesEmails.size();i++)
         {
             if(CommunitiesEmails.get(i).getEmail().equals(communityName))
             {
+                Toast.makeText(this, communityName, Toast.LENGTH_SHORT).show();
                 communityCode = CommunitiesEmails.get(i).getCode();
+                Toast.makeText(this, communityCode, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -263,7 +267,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         if (photoUri != null) photoUrl = photoUri.toString();
         else photoUrl = defaultPhotoUrl;
         try {
-            usersDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
+            usersDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityCode).child("Users");
             usersDbRef.keepSynced(true);
             DatabaseReference currentUserDbRef = usersDbRef.child(user.getUid());
             currentUserDbRef.child("Image").setValue(photoUrl);

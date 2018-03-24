@@ -240,7 +240,6 @@ public class AddEvent extends BaseActivity {
 
         super.onStart();
 
-
         DatabaseReference mPrivileges;
         mPrivileges = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/Privileges/");
 
@@ -490,11 +489,11 @@ public class AddEvent extends BaseActivity {
                             snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                             snack.show();
                         }
-                        Intent intent = new Intent(AddEvent.this, TabbedEvents.class);
-                        if (!flag) {
-                            intent.putExtra("snackbar", "true");
-                        }
-                        startActivity(intent);
+//                        Intent intent = new Intent(AddEvent.this, TabbedEvents.class);
+//                        if (!flag) {
+//                            intent.putExtra("snackbar", "true");
+//                        }
+//                        startActivity(intent);
                         finish();
                     }
                 });
@@ -592,11 +591,11 @@ public class AddEvent extends BaseActivity {
 
             }
 
-            Intent intent = new Intent(AddEvent.this, TabbedEvents.class);
-            if (!flag) {
-                intent.putExtra("snackbar", "true");
-            }
-            startActivity(intent);
+//            Intent intent = new Intent(AddEvent.this, TabbedEvents.class);
+//            if (!flag) {
+//                intent.putExtra("snackbar", "true");
+//            }
+//            startActivity(intent);
             finish();
 
         }

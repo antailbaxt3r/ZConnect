@@ -83,13 +83,18 @@ public class  OpenEventDetail extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_event_detail);
-        id = getIntent().getStringExtra("id");
-        tag = getIntent().getStringExtra("Eventtag");
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
 
         boostBtn = (Button) findViewById(R.id.boostBtn);
+        EventImage = (ImageView) findViewById(R.id.od_EventImage);
+        EventDescription = (TextView) findViewById(R.id.od_description);
+        EventDescription.setMovementMethod(LinkMovementMethod.getInstance());
+        EventDate = (TextView) findViewById(R.id.od_date);
+
+        EventVenue = (TextView) findViewById(R.id.od_venue);
+        venueDirections = (ImageButton) findViewById(R.id.od_directions);
 
         progressDialog = new ProgressDialog(this);
 
@@ -113,156 +118,93 @@ public class  OpenEventDetail extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
+        Bundle extras = getIntent().getExtras();
+        id = (String) extras.get("id");
 
-//      Event = (TextView) findViewById(R.id.event);
-        EventImage = (ImageView) findViewById(R.id.od_EventImage);
-        EventDescription = (TextView) findViewById(R.id.od_description);
-        EventVenue = (TextView) findViewById(R.id.od_venue);
-        venueDirections = (ImageButton) findViewById(R.id.od_directions);
-//        if (event.getLon() == null) {
-//            venueDirections.setVisibility(View.GONE);
-//        }
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(id);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                event = dataSnapshot.getValue(Event.class);
 
+                boostCounter();
+                venueDirections.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            CounterManager.eventgetDirection(event.getKey());
+                            if (event.getLat() == 0 && event.getLon() == 0) {
+                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            } else {
+                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                String eventDate[] = (event.getEventDate().split("\\s+"));
+                String date = "";
+                int i = 0;
+                while (i < 3) {
+                    date = date + " " + eventDate[i];
+                    i++;
+                }
 
-        EventDescription.setMovementMethod(LinkMovementMethod.getInstance());
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(event.getEventName(), 1);
 
+                try {
 
-        EventDate = (TextView) findViewById(R.id.od_date);
+                    EventDate.setText(date);
+                    EventDescription.setText(event.getEventDescription());
+                    EventVenue.setText(event.getVenue());
+                    getSupportActionBar().setTitle(event.getEventName());
+                    Picasso.with(getApplicationContext()).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
+                    EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
+                    mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("Event").child("communities").child(communityReference).child("VerifiedPosts").child(event.getKey()).child("views");
+                    updateViews();
+
+                } catch (Exception e) {
+                    Log.d("Error Alert: ", e.getMessage());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         EventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                CounterManager.eventOpenPic(event.getKey());
-                ProgressDialog mProg = new ProgressDialog(OpenEventDetail.this);
-                mProg.setMessage("Loading....");
-                mProg.show();
-                final Intent i = new Intent(OpenEventDetail.this, viewImage.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(OpenEventDetail.this, EventImage, getResources().getString(R.string.transition_string));
-                i.putExtra("currentEvent", event.getEventName());
-                i.putExtra("eventImage", event.getEventImage());
-                mProg.dismiss();
-                startActivity(i, optionsCompat.toBundle());
-            }
-        });
-        Bundle extras = getIntent().getExtras();
-        event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
-
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(event.getEventName(), 1);
-
-        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("Event").child("communities").child(communityReference).child("VerifiedPosts").child(event.getKey()).child("views");
-        updateViews();
-
-
-        venueDirections.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CounterManager.eventgetDirection(event.getKey());
-                try {
-                    if (event.getLat() == 0 && event.getLon() == 0) {
-                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
-                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                        mapIntent.setPackage("com.google.android.apps.maps");
-                        startActivity(mapIntent);
-                    } else {
-                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
-                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                        mapIntent.setPackage("com.google.android.apps.maps");
-                        startActivity(mapIntent);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
-                }
+            CounterManager.eventOpenPic(event.getKey());
+            ProgressDialog mProg = new ProgressDialog(OpenEventDetail.this);
+            mProg.setMessage("Loading....");
+            mProg.show();
+            final Intent i = new Intent(OpenEventDetail.this, viewImage.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(OpenEventDetail.this, EventImage, getResources().getString(R.string.transition_string));
+            i.putExtra("currentEvent", event.getEventName());
+            i.putExtra("eventImage", event.getEventImage());
+            mProg.dismiss();
+            startActivity(i, optionsCompat.toBundle());
             }
         });
 
-        String eventDate[] = (event.getEventDate().split("\\s+"));
-        String date = "";
-        int i = 0;
-        while (i < 3) {
-            date = date + " " + eventDate[i];
-            i++;
-        }
-
-        try {
-            EventDate.setText(date);
-            EventDescription.setText(event.getEventDescription());
-            EventVenue.setText(event.getVenue());
-            getSupportActionBar().setTitle(event.getEventName());
-            Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
-            EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-            boostCounter();
-            setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-        } catch (Exception e) {
-            Log.d("Error Alert: ", e.getMessage());
-        }
 
 
-        if (tag != null && tag.equals("1")) {
-        } else if (id != null) {
-            databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(id);
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    event = dataSnapshot.getValue(Event.class);
 
-                    boostCounter();
-                    venueDirections.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                CounterManager.eventgetDirection(event.getKey());
-                                if (event.getLat() == 0 && event.getLon() == 0) {
-                                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
-                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                    mapIntent.setPackage("com.google.android.apps.maps");
-                                    startActivity(mapIntent);
-                                } else {
-                                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
-                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                    mapIntent.setPackage("com.google.android.apps.maps");
-                                    startActivity(mapIntent);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                    String eventDate[] = (event.getEventDate().split("\\s+"));
-                    String date = "";
-                    int i = 0;
-                    while (i < 3) {
-                        date = date + " " + eventDate[i];
-                        i++;
-                    }
 
-                    try {
-
-                        EventDate.setText(date);
-                        EventDescription.setText(event.getEventDescription());
-                        EventVenue.setText(event.getVenue());
-                        getSupportActionBar().setTitle(event.getEventName());
-                        Picasso.with(getApplicationContext()).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
-                        EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                        setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-                        //  Log.v("Tag",event.getEventDate());
-
-                    } catch (Exception e) {
-                        Log.d("Error Alert: ", e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-        }
 
         //changing fonts
         Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
@@ -276,7 +218,6 @@ public class  OpenEventDetail extends BaseActivity {
 
         if (!status) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
 
             if (user != null && event != null) {
                 String boost = event.getBoosters();
