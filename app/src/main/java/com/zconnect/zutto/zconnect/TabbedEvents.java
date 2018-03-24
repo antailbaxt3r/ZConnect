@@ -55,12 +55,15 @@ public class TabbedEvents extends Fragment {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private SharedPreferences communitySP;
+    public String communityReference;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_tabbed_events, container, false);
         super.onCreate(savedInstanceState);
+
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -73,6 +76,9 @@ public class TabbedEvents extends Fragment {
 
         mViewPager = (ViewPager) v.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
 
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tabs);
 
@@ -104,8 +110,8 @@ public class TabbedEvents extends Fragment {
             mAuth = FirebaseAuth.getInstance();
             user = mAuth.getCurrentUser();
 
-            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
-            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
             mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

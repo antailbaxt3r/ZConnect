@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,6 +16,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookStudentHostelItem;
 
 import java.util.Vector;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class PhonebookOthersCategories extends Fragment {
@@ -53,7 +56,12 @@ public class PhonebookOthersCategories extends Fragment {
     }
 
     public void data() {
-        FirebaseDatabase.getInstance().getReference("PhonebookOtherCategories").addListenerForSingleValueEvent(new ValueEventListener() {
+        SharedPreferences communitySP;
+        String communityReference;
+
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PhonebookOtherCategories").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 phonebookStudentHostelItems.clear();

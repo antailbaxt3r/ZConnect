@@ -36,7 +36,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_PRODUCT;
 
-public class OpenProductDetails extends AppCompatActivity {
+public class OpenProductDetails extends BaseActivity {
 
     private ImageView productImage;
     private TextView productName, productPrice, productPriceType, productDescription, productSellerName;
@@ -96,7 +96,7 @@ public class OpenProductDetails extends AppCompatActivity {
         productShortlist.setTypeface(customfont);
         productCall = (Button) findViewById(R.id.product_call);
 
-        mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
         Intent intent = getIntent();
         productKey = intent.getStringExtra("key");
 
@@ -330,7 +330,7 @@ public class OpenProductDetails extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
-        DatabaseReference storeroomReference = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        DatabaseReference storeroomReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
 
         storeroomReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -17,7 +17,7 @@ public class PostEmails extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_emails);
-        final DatabaseReference mdb = FirebaseDatabase.getInstance().getReference("Phonebook");
+        final DatabaseReference mdb = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
         mdb.addValueEventListener(new ValueEventListener() {
             int i = 0;
 

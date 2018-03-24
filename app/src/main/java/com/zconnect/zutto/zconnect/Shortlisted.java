@@ -45,7 +45,8 @@ public class Shortlisted extends BaseActivity {
         rv.setLayoutManager(productLinearLayout);
         rv.setAdapter(adapter);
 
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("storeroom").child(key).child("UsersReserved");
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+                .child("storeroom").child(key).child("UsersReserved");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -56,11 +57,13 @@ public class Shortlisted extends BaseActivity {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren())
                 {
                     String user = snapshot.getKey();
-                    FirebaseDatabase.getInstance().getReference("Users").child(user).addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+                            .child("Users").child(user).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String email = dataSnapshot.child("Email").getValue(String.class);
-                            FirebaseDatabase.getInstance().getReference("Phonebook").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+                                    .child("Phonebook").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.getChildrenCount() != 0) {

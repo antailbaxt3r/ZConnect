@@ -25,9 +25,9 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class MyRides extends AppCompatActivity {
+public class MyRides extends BaseActivity {
     RecyclerView poolrv;
-    DatabaseReference pool = FirebaseDatabase.getInstance().getReference().child("Cab");
+    DatabaseReference pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
     Query query = pool.orderByChild("time");
     TextView defaultmsg;
     Vector<CabItemFormat> cabItemFormatVector = new Vector<>();
@@ -35,7 +35,7 @@ public class MyRides extends AppCompatActivity {
     CabPoolRVAdapter adapter;
     ValueEventListener newListener;
     String name, number, email;
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
     private FirebaseAuth mAuth;
 
     @Override

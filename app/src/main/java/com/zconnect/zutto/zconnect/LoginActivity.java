@@ -33,8 +33,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ItemFormats.CommunitiesItemFormat;
+
+import java.util.Vector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +51,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     boolean doubleBackToExitPressedOnce = false;
     private FirebaseAuth mAuth;
     private DatabaseReference usersDbRef;
+    private DatabaseReference CommunitiesDatabaseReference;
     private ProgressDialog mProgress;
     @BindView(R.id.btn_google_sign_in)
     Button mGoogleSignInBtn;
@@ -55,7 +62,10 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     private int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseUser mUser;
+    String communityCode;
     private String userEmail;
+    private Vector<CommunitiesItemFormat> CommunitiesEmails = new Vector<>();;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +73,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
-        usersDbRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        usersDbRef.keepSynced(true);
         mProgress = new ProgressDialog(this);
 
         // Configure Google Sign In
@@ -77,19 +85,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-        //TODO: what is this code doing?
-        mUser = mAuth.getCurrentUser();
-        if (mUser != null) {
-            userEmail = mUser.getEmail();
-            if (userEmail != null && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
-                setupUserDataAndFinish(mUser);
-            } else {
-                logout();
-                mProgress.dismiss();
-                Toast.makeText(LoginActivity.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
-            }
-        }
 
         mGuestLogInBtn.setOnClickListener(this);
         mGoogleSignInBtn.setOnClickListener(this);
@@ -177,14 +172,15 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                             mProgress.dismiss();
                         } else {
                             mUser = mAuth.getCurrentUser();
-                            if (mUser != null
-                                    && (userEmail = mUser.getEmail()) != null
-                                    && userEmail.endsWith("@goa.bits-pilani.ac.in")) {
-                                setupUserDataAndFinish(mUser);
-                            } else {
+                            if (mUser != null) {
+                                String userCommunity;
+                                userEmail = mUser.getEmail();
+                                userCommunity = userEmail.substring(userEmail.lastIndexOf('@'));
+
+                                setCommunity(userCommunity);
+                            }else {
                                 logout();
                                 mProgress.dismiss();
-                                Toast.makeText(LoginActivity.this, "Login through your BITS email", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -199,9 +195,62 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         editInfo.commit();
     }
 
+    public void setCommunity(String communityName){
+
+        Toast.makeText(this, "Set Community", Toast.LENGTH_SHORT).show();
+        communityCode = null;
+        for (int i=0;i<CommunitiesEmails.size();i++)
+        {
+            if(CommunitiesEmails.get(i).getEmail().equals(communityName))
+            {
+                Toast.makeText(this, communityName, Toast.LENGTH_SHORT).show();
+                communityCode = CommunitiesEmails.get(i).getCode();
+                Toast.makeText(this, communityCode, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if(communityCode!=null)
+        {
+            SharedPreferences sharedPref2 = getSharedPreferences("communityName", MODE_PRIVATE);
+            SharedPreferences.Editor editInfo2 = sharedPref2.edit();
+            editInfo2.putString("communityReference", communityCode);
+            editInfo2.commit();
+            setupUserDataAndFinish(mUser);
+        }else {
+            logout();
+            mProgress.dismiss();
+            Toast.makeText(LoginActivity.this, "Login through your College Email", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
     @Override
     public void onStart() {
         super.onStart();
+
+        CommunitiesDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
+
+        CommunitiesDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                CommunitiesEmails.clear();
+                for(DataSnapshot shot : dataSnapshot.getChildren()) {
+                    try {
+                        CommunitiesEmails.add(shot.getValue(CommunitiesItemFormat.class));
+                    }catch (Exception e){
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
         setGuestLoginPref(false);
     }
 
@@ -217,11 +266,20 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         String defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336";
         if (photoUri != null) photoUrl = photoUri.toString();
         else photoUrl = defaultPhotoUrl;
-        DatabaseReference currentUserDbRef = usersDbRef.child(user.getUid());
-        currentUserDbRef.child("Image").setValue(photoUrl);
-        currentUserDbRef.child("Username").setValue(user.getDisplayName());
-        currentUserDbRef.child("Email").setValue(user.getEmail());
-        finish(); /*Make Sure HomeActivity exists*/
+        try {
+            usersDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityCode).child("Users");
+            usersDbRef.keepSynced(true);
+            DatabaseReference currentUserDbRef = usersDbRef.child(user.getUid());
+            currentUserDbRef.child("Image").setValue(photoUrl);
+            currentUserDbRef.child("Username").setValue(user.getDisplayName());
+            currentUserDbRef.child("Email").setValue(user.getEmail());
+            Intent i = new Intent(LoginActivity.this,HomeActivity.class);
+            startActivity(i);
+            finish(); /*Make Sure HomeActivity exists*/
+
+        }catch (Exception e){
+
+        }
     }
 
     @Override
@@ -245,7 +303,9 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 break;
             }
             case R.id.btn_guest_login: {
-                setGuestLoginPref(true);
+                Intent i = new Intent(LoginActivity.this,CommunitiesAround.class);
+                startActivity(i);
+                setGuestLoginPref(false);// need to work on this
                 finish(); /*Make Sure HomeActivity exists*/
                 break;
             }

@@ -61,11 +61,16 @@ public class CabPoolMain extends Fragment {
     String DT;
     View.OnClickListener onEmpty;
 
+    private SharedPreferences communitySP;
+    public String communityReference;
+
+
+
 
     String fetchedDate;
     Date fDate;
-    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    DatabaseReference databaseReference = firebaseDatabase.getReference().child("Cab");
+    FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference;
 
 
     public CabPoolMain() {
@@ -108,7 +113,12 @@ public class CabPoolMain extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         recyclerView.setAdapter(cabPoolRVAdapter);
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
+        databaseReference = firebaseDatabase.getReference().child("communities").child(communityReference).child("Cab");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 vector_fetched.clear();
@@ -175,7 +185,7 @@ public class CabPoolMain extends Fragment {
                      //   Log.e("ABC", time);
 
                         DT = date1 + " " + time;
-                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("Cab").child(vector_fetched.get(i).getKey());
+                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab").child(vector_fetched.get(i).getKey());
                         newPost2.child("DT").setValue(DT);
                         Log.e("ABC", DT);
                         vector_fetched.get(i).setDT(DT);

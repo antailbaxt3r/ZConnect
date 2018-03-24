@@ -35,7 +35,7 @@ public class PhonebookHostelWise extends BaseActivity {
     Vector<PhonebookDisplayItem> phonebookDisplayItems = new Vector<>();
     private PhonebookAdapter adapter;
     private RecyclerView recyclerView;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
     Query queryRef = databaseReference.orderByChild("name");
     private ProgressBar progressBar;
 

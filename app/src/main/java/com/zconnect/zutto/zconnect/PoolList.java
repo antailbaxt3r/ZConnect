@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
+import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.text.SimpleDateFormat;
@@ -36,9 +38,11 @@ import java.util.Date;
 import java.util.TreeMap;
 import java.util.Vector;
 
-public class PoolList extends AppCompatActivity {
+import static android.icu.util.HebrewCalendar.AV;
+
+public class PoolList extends BaseActivity {
     RecyclerView poolrv;
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
     DatabaseReference pool;
     Query query;
     Intent intent;
@@ -58,7 +62,7 @@ public class PoolList extends AppCompatActivity {
 
     Context mcontext;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
     private FirebaseAuth mUser;
 
     @Override

@@ -31,6 +31,8 @@ import com.zconnect.zutto.zconnect.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class TimelineEvents extends Fragment {
     private Query queryRef;
@@ -100,7 +102,13 @@ public class TimelineEvents extends Fragment {
         mEventList.setLayoutManager(mlinearmanager);
         mlinearmanager.setReverseLayout(true);
 
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
+        SharedPreferences communitySP;
+        String communityReference;
+
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts");
         queryRef = mDatabase.orderByChild("FormatDate");
 
         mDatabase.keepSynced(true);
@@ -122,7 +130,11 @@ public class TimelineEvents extends Fragment {
             @Override
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
-                viewHolder.setEventStatus(model.getEventDate());
+
+                try{
+                    viewHolder.setEventStatus(model.getEventDate());
+                }catch (Exception e){}
+
                 try {
                     viewHolder.openEvent(model);
                 }catch (Exception e) {
@@ -178,8 +190,7 @@ public class TimelineEvents extends Fragment {
                 public void onClick(View view) {
                     CounterManager.eventOpenCounter(key, "Timeline");
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
-                    i.putExtra("currentEvent", event);
-                    i.putExtra("Eventtag", "1");
+                    i.putExtra("id", event.getKey());
                     mView.getContext().startActivity(i);
                 }
             });
