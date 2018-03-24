@@ -116,10 +116,10 @@ public class TabbedEvents extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     try {
-                        TotalEvents = dataSnapshot.child("TotalEvents").getValue().toString();
+                        TotalEvents = dataSnapshot.child("TotalCabpools").getValue().toString();
                         DatabaseReference newPost = mUserStats;
                         Map<String, Object> taskMap = new HashMap<>();
-                        taskMap.put("TotalEvents", TotalEvents);
+                        taskMap.put("TotalCabpools", TotalEvents);
                         newPost.updateChildren(taskMap);
                     } catch (Exception e) {
                         Log.d("Error Alert: ", e.getMessage());

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +28,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
@@ -120,6 +122,7 @@ public class TimelineEvents extends Fragment {
             @Override
             protected void populateViewHolder(EventViewHolder viewHolder, Event model,
                                               int position) {
+                viewHolder.setEventStatus(model.getEventDate());
                 try {
                     viewHolder.openEvent(model);
                 }catch (Exception e) {
@@ -129,6 +132,8 @@ public class TimelineEvents extends Fragment {
                     viewHolder.setEventName(model.getEventName(),model.getVerified());
                 }catch (Exception e) {
                    // Log.d("Error Alert: ", e.getMessage());
+                    model.setVerified("false");
+                    viewHolder.setEventName(model.getEventName(),model.getVerified());
                 }
                     viewHolder.setEventDate(model.getEventDate(),model.getBoostCount());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
@@ -148,6 +153,9 @@ public class TimelineEvents extends Fragment {
         FirebaseAuth mAuth;
         SharedPreferences sharedPref;
         Boolean status;
+
+        RelativeLayout eventStatus;
+        TextView eventOver;
 
         public EventViewHolder(View itemView) {
             super(itemView);
@@ -299,6 +307,37 @@ public class TimelineEvents extends Fragment {
             intent.putExtra(CalendarContract.Events.DESCRIPTION, desc);
             intent.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_FREE);
             context.startActivity(intent);
+        }
+
+        public void setEventStatus( String eventDate) {
+
+            eventStatus = (RelativeLayout) itemView.findViewById(R.id.event_status);
+            eventOver = (TextView) itemView.findViewById(R.id.event_over);
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String currFormattedDate = simpleDateFormat.format(calendar.getTime());
+
+            String currEventDate[]=eventDate.split(" ");
+
+            String month = monthSwitcher(currEventDate[1]);
+            String date=currEventDate[2];
+            String year=currEventDate[5];
+
+            String formattedDate[] = currFormattedDate.split("-");
+
+            String currDate = formattedDate[0];
+            String currMonth = formattedDate[1];
+            String currYear = formattedDate[2];
+
+            if(Integer.parseInt(currYear)>Integer.parseInt(year)) {
+                eventStatus.setVisibility(View.VISIBLE);
+            }
+            else if(Integer.parseInt(currMonth)>Integer.parseInt(month)) {
+                eventStatus.setVisibility(View.VISIBLE);
+            }
+            else if(Integer.parseInt(currDate) > Integer.parseInt(date)) {
+                eventStatus.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

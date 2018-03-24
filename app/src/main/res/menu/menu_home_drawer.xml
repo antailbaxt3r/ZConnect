@@ -34,6 +34,10 @@
             android:id="@+id/mapActivity"
             android:icon="@drawable/ic_place_red"
             android:title="Campus Map" />
+        <item
+            android:id="@+id/Noti_Settings"
+            android:icon="@drawable/ic_notifications_black_24dp"
+            android:title="Notifications"/>
     </group>
     <group
         android:id="@+id/group1"

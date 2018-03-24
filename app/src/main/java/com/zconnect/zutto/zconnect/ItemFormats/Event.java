@@ -90,6 +90,10 @@ public class Event implements Serializable {
         EventDescription = eventDescription;
     }
 
+    public void setVerified(String verified) {
+        this.Verified = verified;
+    }
+
     public String getEventImage() {
         return EventImage;
     }

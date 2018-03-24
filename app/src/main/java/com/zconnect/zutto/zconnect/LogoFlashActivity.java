@@ -42,10 +42,10 @@ public class LogoFlashActivity extends BaseActivity {
     private ImageView bgImage;
     private DatabaseReference mDatabase;
     private View bgColor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         try {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         } catch (Exception ignore) {
@@ -111,10 +111,9 @@ public class LogoFlashActivity extends BaseActivity {
                         finish();
                     }
 
-                }
-            }, 2000);
-
-        }
+            }
+        }, 2000);
+    }
 
 
 //    void link(){

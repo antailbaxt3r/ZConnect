@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -79,6 +80,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private String category;
     private String skills;
     private Uri mImageUri;
+    private Uri mImageUriSmall;
     private StorageReference mStorageRef;
     private FirebaseUser mUser;
     private DatabaseReference phoneBookDbRef;
@@ -269,7 +271,11 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                 snack.show();
             } else {
-                attemptUpdate();
+                try {
+                    attemptUpdate();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             return true;
         }
@@ -293,16 +299,22 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             if (resultCode == RESULT_OK) {
                 try {
                     mImageUri = result.getUri();
+                    mImageUriSmall=result.getUri();
                     if (mImageUri == null) {
                         Log.e(TAG, "onActivityResult: got empty imageUri");
                         return;
                     }
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Bitmap bitmapSmall = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUriSmall);
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, out);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
+                    bitmapSmall.compress(Bitmap.CompressFormat.JPEG, 5, out);
                     Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+                    Bitmap bitmap2Small = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
                     String path = MediaStore.Images.Media.insertImage(EditProfileActivity.this.getContentResolver(), bitmap2, mImageUri.getLastPathSegment(), null);
+                    String pathSmall = MediaStore.Images.Media.insertImage(EditProfileActivity.this.getContentResolver(), bitmap2Small, mImageUri.getLastPathSegment(), null);
                     mImageUri = Uri.parse(path);
+                    mImageUriSmall = Uri.parse(pathSmall);
                     profileImageSdv.setImageURI(mImageUri);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -313,7 +325,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         }
     }
 
-    public void attemptUpdate() {
+    public void attemptUpdate() throws IOException {
         mProgress.setMessage("Updating...");
         mProgress.show();
         userName = editTextName.getText().toString();
@@ -356,6 +368,19 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                             return;
                         }
                         newPost.child("imageurl").setValue(downloadUri.toString());
+                        finish();
+                    }
+                });
+                StorageReference filepathThumb = mStorageRef.child("PhonebookImageSmall").child(mImageUriSmall.getLastPathSegment() + mUser.getUid() + "Thumbnail");
+                filepathThumb.putFile(mImageUriSmall).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUriThumb = taskSnapshot.getDownloadUrl();
+                        if (downloadUriThumb == null) {
+                            Log.e(TAG, "onSuccess: error got empty downloadUri");
+                            return;
+                        }
+                        newPost.child("imageurlThumb").setValue(downloadUriThumb.toString());
                         finish();
                     }
                 });

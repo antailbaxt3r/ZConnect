@@ -51,6 +51,8 @@ import java.util.Map;
 
 import mabbas007.tagsedittext.TagsEditText;
 
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_STOREROOM;
+
 public class AddProduct extends BaseActivity implements TagsEditText.TagsEditListener{
     private static final int GALLERY_REQUEST = 7;
     IntentHandle intentHandle;
@@ -59,6 +61,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private Uri mImageUri = null;
     private ImageButton mAddImage;
     private Button mPostBtn;
+    String key;
     private EditText mProductName;
     private EditText mProductDescription;
     private EditText mProductPrice;
@@ -80,6 +83,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         intentHandle = new IntentHandle();
+
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,6 +93,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
             });
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -276,7 +281,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
 
                     DatabaseReference newPost = mDatabase.push();
-                    String key = newPost.getKey();
+                    key = newPost.getKey();
                     newPost.child("Category").setValue(String.valueOf(spinner1.getSelectedItem()));
                     newPost.child("Key").setValue(key);
                     newPost.child("ProductName").setValue(productNameValue);
@@ -329,6 +334,10 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     finish();
                 }
             });
+
+            NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,null,KEY_STOREROOM,true,false);
+            notificationSender.execute();
+
         } else {
             Snackbar snack = Snackbar.make(mProductDescription, "Fields are empty. Can't Add Product.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);

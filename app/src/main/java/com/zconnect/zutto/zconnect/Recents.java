@@ -114,15 +114,22 @@ public class Recents extends Fragment {
         return view;
     }
 
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        //queryRef.addValueEventListener(queryResponseListener);
+//    }
+
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         queryRef.addValueEventListener(queryResponseListener);
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         queryRef.removeEventListener(queryResponseListener);
-        super.onStop();
+
     }
 }

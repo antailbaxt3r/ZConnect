@@ -15,6 +15,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "90228986993-4u8tqd0tidrre27k18lfotvgje65h53t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "d64ada42ae667b208e5b128bf6c1108f63304b1a"
+          }
+        },
+        {
+          "client_id": "90228986993-cthq7esobqaf2seclom549d1hrcgqkh9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "2d030797ff9a140976f81908e4ebdaa72b368560"
+          }
+        },
+        {
+          "client_id": "90228986993-u2rgqvg14vr9o8s9dt951ob18m9eq0ic.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "4b6e4744d6b6e05f018fbebf1bdd53f40f0ecc6b"
+          }
+        },
+        {
           "client_id": "90228986993-e3416p18jlbbnjfe517p9r2240fi0l5b.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
