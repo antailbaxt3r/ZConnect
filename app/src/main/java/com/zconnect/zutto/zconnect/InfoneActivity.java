@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,21 +28,24 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.fragments.AnonymMessages;
-import com.zconnect.zutto.zconnect.fragments.InfoneFacultyFragment;
+import com.zconnect.zutto.zconnect.ItemFormats.InfoneTabs;
+import com.zconnect.zutto.zconnect.fragments.InfoneFragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Vector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class InfoneActivity extends Fragment implements View.OnClickListener {
 
-    private final String TAG = getClass().getSimpleName();
+    /**
+     * Sets visibility of add contact fab according to whether user is registered in infone.
+     */
 
+    public static Vector<InfoneTabs> infoneTabs = new Vector<>();
+    private final String TAG = getClass().getSimpleName();
     FirebaseUser mUser;
     FirebaseAuth mAuth;
     int TotalNumbers;
@@ -58,14 +60,11 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
     /**
      * References /Phonebook/
      */
-    private DatabaseReference mPhoneBookDbRef;
+    private DatabaseReference mPhoneBookDbRef, tabDbRef;
     /**
      * Email of user.
      */
     private String userEmail;
-    /**
-     * Sets visibility of add contact fab according to whether user is registered in infone.
-     */
     private ValueEventListener phoneBookListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -100,39 +99,39 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
         Fresco.initialize(getContext());
         View v = inflater.inflate(R.layout.activity_infone, container, false);
         ButterKnife.bind(this, v);
-
+        tabDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook").child("Tabs");
         mAuth = FirebaseAuth.getInstance();
         SharedPreferences guestModePref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         guestMode = guestModePref.getBoolean("mode", false);
 
-        if (!guestMode) {
-            mUser = mAuth.getCurrentUser();
-
-            mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid()).child("Stats");
-            mFeaturesStatsDbRef = FirebaseDatabase.getInstance().getReference().child("Stats");
-            mPhoneBookDbRef = FirebaseDatabase.getInstance().getReference("Phonebook");
-
-            mFeaturesStatsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    try {
-                        TotalNumbers = dataSnapshot.child("TotalNumbers").getValue(Integer.class);
-                    } catch (Exception e) {
-                        TotalNumbers = 0;
-                    }
-
-                    Map<String, Object> taskMap = new HashMap<>();
-                    taskMap.put("TotalNumbers", TotalNumbers);
-                    mUserStatsDbRef.updateChildren(taskMap);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e(TAG, "onCancelled: ", databaseError.toException());
-                }
-            });
-        }
+//        if (!guestMode) {
+//            mUser = mAuth.getCurrentUser();
+//
+//            mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid()).child("Stats");
+//            mFeaturesStatsDbRef = FirebaseDatabase.getInstance().getReference().child("Stats");
+//            mPhoneBookDbRef = FirebaseDatabase.getInstance().getReference("Phonebook");
+//
+//            mFeaturesStatsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                    try {
+//                        TotalNumbers = dataSnapshot.child("TotalNumbers").getValue(Integer.class);
+//                    } catch (Exception e) {
+//                        TotalNumbers = 0;
+//                    }
+//
+//                    Map<String, Object> taskMap = new HashMap<>();
+//                    taskMap.put("TotalNumbers", TotalNumbers);
+//                    mUserStatsDbRef.updateChildren(taskMap);
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//                    Log.e(TAG, "onCancelled: ", databaseError.toException());
+//                }
+//            });
+//        }
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
@@ -142,12 +141,11 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);
         fab.setOnClickListener(this);
-        if (!guestMode) {
-            userEmail = mUser.getEmail();
-            if (!TextUtils.isEmpty(userEmail)) {
-                mPhoneBookDbRef.addListenerForSingleValueEvent(phoneBookListener);
-            }
-        }
+//        if (!guestMode) {
+//            userEmail = mUser.getEmail();
+//            if (!TextUtils.isEmpty(userEmail)) {
+//                mPhoneBookDbRef.addListenerForSingleValueEvent(phoneBookListener);
+//            }
         if (fab != null && fab.getVisibility() == View.VISIBLE) fab.setOnClickListener(this);
 
         return v;
@@ -170,11 +168,34 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new InfoneFacultyFragment(), "Admin");
-        if (!guestMode) adapter.addFragment(new PhonebookStudents(), "Students");
-        adapter.addFragment(new PhonebookOthersCategories(), "others");
-        adapter.addFragment(new AnonymMessages(), "Messages");
+        final ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        //adapter.addFragment(new InfoneFacultyFragment(), "Admin");
+        //if (!guestMode) adapter.addFragment(new PhonebookStudents(), "Students");
+        //adapter.addFragment(new PhonebookOthersCategories(), "others");
+        //adapter.addFragment(new AnonymMessages(), "Messages");
+        tabDbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                infoneTabs.clear();
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+
+                    infoneTabs.add(shot.getValue(InfoneTabs.class));
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Error", databaseError.toString());
+            }
+        });
+        for (int i = 0; i < infoneTabs.size(); i++) {
+            Fragment fragment = new InfoneFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("index", i);
+            fragment.setArguments(bundle);
+            adapter.addFragment(fragment, infoneTabs.get(i).getTitle());
+        }
         viewPager.setAdapter(adapter);
 
         increaseCount(guestMode, viewPager.getCurrentItem());
