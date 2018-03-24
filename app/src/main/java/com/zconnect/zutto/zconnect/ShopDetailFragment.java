@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +32,10 @@ public class ShopDetailFragment extends Fragment {
     TextView details;
     LinearLayout linearLayout, numberlayout;
     Button call,direction;
+
+    //rating ui elements
+    Button rateShopBtn;
+    RatingBar ratingBar;
 
     String nam, detail, lat, lon, imageurl, num, menuurl, shopid = null;
     DatabaseReference mDatabase, mDatabaseMenu,database;
@@ -60,6 +65,9 @@ public class ShopDetailFragment extends Fragment {
         call = (Button) view.findViewById(R.id.call);
         direction = (Button) view.findViewById(R.id.direction);
 
+        rateShopBtn=(Button) view.findViewById(R.id.rating_btn);
+        ratingBar=(RatingBar) view.findViewById(R.id.rating_bar_shop);
+
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         galleryRecycler = (RecyclerView) view.findViewById(R.id.galleryRecycler);
@@ -68,7 +76,6 @@ public class ShopDetailFragment extends Fragment {
         LinearLayoutManager layoutManagerMenu = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         menuRecycler = (RecyclerView) view.findViewById(R.id.menuRecycler);
         menuRecycler.setLayoutManager(layoutManagerMenu);
-
 
 
         shopid = getActivity().getIntent().getStringExtra("ShopId");
