@@ -200,7 +200,7 @@ public class CabPoolMain extends Fragment {
                     } else {
 
                         String key = vector_fetched.get(i).getKey();
-                        moveGameRoom(firebaseDatabase.getReference().child("Cab").child(key), firebaseDatabase.getReference().child("archive/Cab").child(key));
+                        moveGameRoom(firebaseDatabase.getReference().child("communities").child(communityReference).child("Cab").child(key), firebaseDatabase.getReference().child("communities").child(communityReference).child("archive/Cab").child(key));
 
                     }
                 }
@@ -244,8 +244,8 @@ public class CabPoolMain extends Fragment {
             mAuth = FirebaseAuth.getInstance();
             user = mAuth.getCurrentUser();
 
-            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
-            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
             mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

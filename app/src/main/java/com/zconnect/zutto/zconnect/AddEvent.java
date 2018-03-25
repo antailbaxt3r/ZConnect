@@ -434,7 +434,7 @@ public class AddEvent extends BaseActivity {
                             });
 
                             //Sending Notifications
-                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                             notificationSender.execute();
 
 
@@ -476,7 +476,7 @@ public class AddEvent extends BaseActivity {
                             newPost2.child("desc2").setValue(eventDate);
 
                             //Sending Notifications
-                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                             notificationSender.execute();
 
                         }
@@ -542,7 +542,7 @@ public class AddEvent extends BaseActivity {
                             taskMap.put("EventTimeMillis", eventTimeMillis);
 
                             //Sending Notifications
-                            NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                            NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                             notificationSender.execute();
 
                             mEventDatabase.updateChildren(taskMap);
@@ -581,7 +581,7 @@ public class AddEvent extends BaseActivity {
 
                     //Sending Notifications
                     FirebaseMessaging.getInstance().subscribeToTopic(KEY_EVENT);
-                    NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                    NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                     notificationSender.execute();
 
 
