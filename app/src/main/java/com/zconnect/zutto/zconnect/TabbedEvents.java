@@ -115,15 +115,13 @@ public class TabbedEvents extends Fragment {
             mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    try {
-                        TotalEvents = dataSnapshot.child("TotalCabpools").getValue().toString();
+
+                        TotalEvents = dataSnapshot.child("TotalEvents").getValue().toString();
                         DatabaseReference newPost = mUserStats;
                         Map<String, Object> taskMap = new HashMap<>();
-                        taskMap.put("TotalCabpools", TotalEvents);
+                        taskMap.put("TotalEvents", TotalEvents);
                         newPost.updateChildren(taskMap);
-                    } catch (Exception e) {
-                        Log.d("Error Alert: ", e.getMessage());
-                    }
+
                 }
 
                 @Override
