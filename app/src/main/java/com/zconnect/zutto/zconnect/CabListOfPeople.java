@@ -235,7 +235,7 @@ public class CabListOfPeople extends BaseActivity {
                                 cabListItemFormatVector.add(new CabListItemFormat(name, number));
                                 pool.setValue(cabListItemFormatVector);
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
-                                NotificationSender notification = new NotificationSender(key,number,null,null,null,null,"CabPool",false,true);
+                                NotificationSender notification = new NotificationSender(key,number,null,null,null,null,"CabPool",false,true,getApplicationContext());
                                 notification.execute();
 
                             } else {

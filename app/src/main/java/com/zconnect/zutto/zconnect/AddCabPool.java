@@ -49,8 +49,9 @@ public class AddCabPool extends BaseActivity {
     String s_year, s_monthOfYear, s_dayOfMonth;
     double T1, T2;
     DatabaseReference mFeaturesStats;
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Cab");
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
+    private DatabaseReference homeReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
     private FirebaseUser mUser;
 
     @Override
@@ -161,11 +162,9 @@ public class AddCabPool extends BaseActivity {
                             if (phonebookDisplayItem.getEmail().equals(email)) {
                                 name = phonebookDisplayItem.getName();
                                 number = phonebookDisplayItem.getNumber();
-
                             }
                         }
                     }
-
                 }
 
             }
@@ -275,7 +274,7 @@ public class AddCabPool extends BaseActivity {
                                         FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid()).child("Topics").push().setValue(key);
 
                                         //writing to database for recent items
-                                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+                                        DatabaseReference newPost2 = homeReference.push();
 
                                         newPost2.child("name").setValue("Cabpool to " + destination.getSelectedItem().toString());
                                         newPost2.child("desc").setValue("Hey! a friend is asking for a cabpool from " + source.getSelectedItem().toString() + " to " + destination.getSelectedItem().toString() + " on " + calender.getText().toString() + " between " + time + ". Do you want to join?");
@@ -317,7 +316,7 @@ public class AddCabPool extends BaseActivity {
                                         snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                                         snack.show();
 
-                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,KEY_CABPOOL,true,false);
+                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,KEY_CABPOOL,true,false,getApplicationContext());
                                         notificationSender.execute();
 
 

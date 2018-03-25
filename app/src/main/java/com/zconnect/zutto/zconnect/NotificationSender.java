@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
@@ -23,6 +25,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by aayush on 12/2/18.
  */
@@ -36,10 +40,12 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
     private long normal_frequency;
     private boolean sendToKey;
     private boolean result;
+    SharedPreferences communitySP;
+    String communityReference;
 
 
     public NotificationSender(String key,String number,String event,String timeInMilli,String PersonEmail,
-                              String Product,String type,boolean checkFrequency,boolean sendToKey){
+                              String Product,String type,boolean checkFrequency,boolean sendToKey,Context ctx){
         String pName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         if(sendToKey)
             creator = new RemoteMessage.Builder(key);
@@ -58,10 +64,10 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
         this.sendToKey=sendToKey;
         this.checkFrequency=checkFrequency;
 
+        communitySP = ctx.getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
 
     }
-
-
 
     @Override
     protected Void doInBackground(Void... voids) {
@@ -74,17 +80,13 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
 
                 }
 
-
-
         return null;
     }
 
 
-
-
     private void CompareFrequency(){
 
-        DatabaseReference DB_NORMAL = FirebaseDatabase.getInstance().getReference().child("Notifications").child("frequency").child(type);
+        DatabaseReference DB_NORMAL = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("frequency").child(type);
         DB_NORMAL.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -100,7 +102,7 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
         });
 
 
-        final DatabaseReference DB_CURRENT = FirebaseDatabase.getInstance().getReference().child("Notifications").child("current").child(type);
+        final DatabaseReference DB_CURRENT = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("current").child(type);
         DB_CURRENT.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

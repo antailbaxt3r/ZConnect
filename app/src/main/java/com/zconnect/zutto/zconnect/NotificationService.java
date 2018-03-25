@@ -249,7 +249,7 @@ public class NotificationService extends FirebaseMessagingService {
             } else if (type.equals(KEY_EVENT)) {
                final String key = data.get("Key").toString();
                // use this to notify users who have boosted if event details have been changed
-               FirebaseDatabase.getInstance().getReference("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+               FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                    @Override
                    public void onDataChange(DataSnapshot dataSnapshot) {

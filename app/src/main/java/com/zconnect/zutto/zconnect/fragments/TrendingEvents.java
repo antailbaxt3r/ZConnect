@@ -311,7 +311,7 @@ public class TrendingEvents extends Fragment {
 
                             //Sending Notifications
                             FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
-                            NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,"EventBoosted",false,true);
+                            NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,"EventBoosted",false,true,itemView.getContext());
                             notificationSender.execute();
 
                         }else {
