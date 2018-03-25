@@ -21,8 +21,13 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.zconnect.zutto.zconnect.fragments.ChatTabFragment;
 import com.zconnect.zutto.zconnect.fragments.MessageTabFragment;
 
+/* messages activity has 2 tabs and each one has a rv with its adapter and viewholder
+                   in the packages(holders and adapters) namely MessageTabRVAdapter,ChatTabRVAdapter
+                   along with the item class ChatTabRVItem,MessageTabRVItem(item format package).
+                */
 public class MessagesActivity extends BaseActivity {
 
     /**
@@ -60,7 +65,6 @@ public class MessagesActivity extends BaseActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,18 +96,16 @@ public class MessagesActivity extends BaseActivity {
             if (!status) {
                 switch (position) {
                     case 0:
-                        MessageTabFragment messageTabFragment=new MessageTabFragment();
+                        MessageTabFragment messageTabFragment = new MessageTabFragment();
                         return messageTabFragment;
-//                    case 1:
-                        //return;
+                    case 1:
+                        ChatTabFragment chatTabFragment = new ChatTabFragment();
+                        return chatTabFragment;
                     default:
                         return null;
-
                 }
-            }
-            else
+            } else
                 return null;
-
             //return PlaceholderFragment.newInstance(position + 1);
         }
 

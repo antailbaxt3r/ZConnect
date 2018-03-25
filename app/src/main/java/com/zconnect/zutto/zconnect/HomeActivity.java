@@ -819,6 +819,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             }
             case R.id.messages: {
+                Intent messagesIntent = new Intent(HomeActivity.this,MessagesActivity.class);
+                startActivity(messagesIntent);
+                /* messages activity has 2 tabs and each one has a rv with its adapter and viewholder
+                   in the packages(holders and adapters) namely MessageTabRVAdapter,ChatTabRVAdapter
+                   along with the item class ChatTabRVItem,MessageTabRVItem(item format package).
+                */
                 tabs.getTabAt(1).select();
                 break;
             }
