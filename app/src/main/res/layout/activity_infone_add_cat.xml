@@ -5,37 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.zconnect.zutto.zconnect.InfoneAddContactActivity">
+    tools:context="com.zconnect.zutto.zconnect.InfoneAddCatActivity">
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/image_add_infone_add"
+        android:id="@+id/image_add_cat_infone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@mipmap/ic_launcher" />
 
     <EditText
-        android:id="@+id/name_et_infone_add"
+        android:id="@+id/et_name_cat_add_infone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="name"
-        android:inputType="text" />
-
-    <EditText
-        android:id="@+id/phone_et_infone_add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="phone mobile"
-        android:inputType="number" />
-
-    <EditText
-        android:id="@+id/phone2_et_infone_add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="mobile official"
-        android:inputType="number" />
+        android:hint="category name" />
 
     <Button
-        android:id="@+id/btn_save_infone_add"
+        android:id="@+id/save_image_add_cat_infone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="save" />

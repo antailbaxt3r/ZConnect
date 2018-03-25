@@ -71,6 +71,7 @@ public class  OpenEventDetail extends BaseActivity {
 
     ProgressDialog progressDialog;
 
+    /*db elements needed for views calculation*/
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private ValueEventListener listener;
@@ -170,7 +171,7 @@ public class  OpenEventDetail extends BaseActivity {
                     Picasso.with(getApplicationContext()).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
                     EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-                    mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("Event").child("communities").child(communityReference).child("VerifiedPosts").child(event.getKey()).child("views");
+                    mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(event.getKey()).child("views");
                     updateViews();
 
                 } catch (Exception e) {
@@ -247,7 +248,7 @@ public class  OpenEventDetail extends BaseActivity {
         } else if (id == R.id.menu_chat_room) {
             //chat room clicked;
             Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
-            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("Event").child(event.getKey()).toString());
+            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child(event.getKey()).toString());
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

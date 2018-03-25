@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -25,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.Infone2CategoryModel;
+import com.zconnect.zutto.zconnect.adapters.Infone2RVAdapter;
 
 import java.util.ArrayList;
 
@@ -36,8 +39,9 @@ public class Infone2Activity extends AppCompatActivity {
     DatabaseReference databaseReferenceCat;
     ValueEventListener listener;
     Infone2RVAdapter infone2RVAdapter;
-    FirebaseAuth mAuth;
     private static final int REQUEST_PHONE_CALL = 1;
+    private SharedPreferences communitySP;
+    public String communityReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +52,12 @@ public class Infone2Activity extends AppCompatActivity {
 
         fabCatAdd = (FloatingActionButton) findViewById(R.id.fab_cat_infone);
 
+
+        communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
         databaseReferenceCat = FirebaseDatabase.getInstance().getReference().child("communities")
-                .child("bitsGoa").child("infone").child("categories");
+                .child(communityReference).child("infone").child("categoriesInfo");
 
         recyclerViewCat.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
@@ -61,8 +69,11 @@ public class Infone2Activity extends AppCompatActivity {
                 categoriesList = new ArrayList<>();
                 for (DataSnapshot childSnapShot :
                         dataSnapshot.getChildren()) {
-                    String name = childSnapShot.getKey();
-                    Infone2CategoryModel infone2CategoryModel = new Infone2CategoryModel(name);
+                    String name = childSnapShot.child("name").getValue(String.class);
+                    String imageurl = childSnapShot.child("imageurl").getValue(String.class);
+                    String admin = childSnapShot.child("admin").getValue(String.class);
+                    String catId = childSnapShot.getKey();
+                    Infone2CategoryModel infone2CategoryModel = new Infone2CategoryModel(name, imageurl, admin, catId);
                     categoriesList.add(infone2CategoryModel);
 
                 }
@@ -89,7 +100,10 @@ public class Infone2Activity extends AppCompatActivity {
                 Boolean status = sharedPref.getBoolean("mode", false);
 
                 if (!status) {
-                    addDialog();
+                    Intent addCatIntent = new Intent(Infone2Activity.this,InfoneAddCatActivity.class);
+                    //addCatIntent("categoryId",);
+                    startActivity(addCatIntent);
+                    //addDialog();
                 } else {
                     Toast.makeText(Infone2Activity.this, "Log in to use this function", Toast.LENGTH_SHORT).show();
                 }
@@ -106,9 +120,11 @@ public class Infone2Activity extends AppCompatActivity {
         Log.e("tt", "data fab");
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("Add new infone Category");
-        alertDialog.setMessage("Category name");
+        //alertDialog.setMessage("Category name");
 
         final EditText newCategoryET = new EditText(this);
+        newCategoryET.setInputType(InputType.TYPE_CLASS_TEXT);
+        newCategoryET.setHint("Category name");
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
@@ -121,37 +137,15 @@ public class Infone2Activity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
 
                         final String newCat = newCategoryET.getText().toString();
-                        mAuth = FirebaseAuth.getInstance();
-                        String uid = mAuth.getCurrentUser().getUid();
-                        final DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference()
-                                /*.child("communities").child("bitsGoa")*/.child("Users").child(uid);
 
-                        databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                String phoneNum = dataSnapshot.child("phoneNumber").getValue(String.class);
-                                String name = dataSnapshot.child("Username").getValue(String.class);
-                                String image = dataSnapshot.child("Image").getValue(String.class);
-
-                                Log.e("tt", "data " + phoneNum + " " + name + " " + image);
-
-                                ArrayList<String> arrayList = new ArrayList<>();
-                                arrayList.add(phoneNum);
-                                String key = databaseReferenceCat.push().getKey();
-                                databaseReferenceCat.child(newCat).child(key).child("name").setValue(name);
-                                databaseReferenceCat.child(newCat).child(key).child("thumbnail").setValue(image);
-                                databaseReferenceCat.child(newCat).child(key).child("phone").setValue(arrayList);
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-
+                        if (!newCat.isEmpty()) {
+                            Toast.makeText(Infone2Activity.this, "Add a contact in your new category",
+                                    Toast.LENGTH_SHORT).show();
+                            Intent addContactIntent = new Intent(Infone2Activity.this,
+                                    InfoneAddContactActivity.class);
+                            addContactIntent.putExtra("categoryName", newCat);
+                            startActivity(addContactIntent);
+                        }
                     }
                 });
 
@@ -168,10 +162,8 @@ public class Infone2Activity extends AppCompatActivity {
     private void askCallPermissions() {
 
         if (ContextCompat.checkSelfPermission(Infone2Activity.this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Infone2Activity.this, new String[]{android.Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
-        }
-        else
-        {
+            ActivityCompat.requestPermissions(Infone2Activity.this, new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
+        } else {
 
         }
 
@@ -184,9 +176,7 @@ public class Infone2Activity extends AppCompatActivity {
             case REQUEST_PHONE_CALL: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //startActivity(intent);
-                }
-                else
-                {
+                } else {
                     askCallPermissions();
                 }
                 return;
