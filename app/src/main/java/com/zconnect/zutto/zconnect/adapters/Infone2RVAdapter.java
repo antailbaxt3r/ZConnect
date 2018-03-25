@@ -56,6 +56,7 @@ public class Infone2RVAdapter extends RecyclerView.Adapter<Infone2RVViewHolder> 
                 intentInfoneList.putExtra("catId", categoriesList.get(position).getCatId());
                 intentInfoneList.putExtra("catName",categoriesList.get(position).getName());
                 intentInfoneList.putExtra("catImageurl",categoriesList.get(position).getImageurl());
+                intentInfoneList.putExtra("catAdmin",categoriesList.get(position).getAdmin());
                 context.startActivity(intentInfoneList);
 
             }

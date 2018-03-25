@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,6 +49,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
     ArrayList<String> phoneNumbs;
     private final String TAG = getClass().getSimpleName();
     private String catName, catImageurl;
+    private String catAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
         catId = getIntent().getExtras().getString("catId");
         catName = getIntent().getExtras().getString("catName");
         catImageurl = getIntent().getExtras().getString("catImageurl");
+        catAdmin = getIntent().getExtras().getString("catAdmin");
 
         Log.e(TAG,"data: "+catId+" "+ catName);
 
@@ -193,7 +196,9 @@ public class InfoneContactListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_edit) {
 
-            editCategory();
+            if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(catAdmin)) {
+                editCategory();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
