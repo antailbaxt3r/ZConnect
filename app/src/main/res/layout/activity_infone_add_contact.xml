@@ -1,10 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.zconnect.zutto.zconnect.InfoneAddContactActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/image_add_infone_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/ic_launcher" />
+
+    <EditText
+        android:id="@+id/name_et_infone_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="name"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/phone_et_infone_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="phone mobile"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/phone2_et_infone_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="mobile official"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/btn_save_infone_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="save" />
+
+</LinearLayout>

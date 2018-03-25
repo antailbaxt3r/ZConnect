@@ -299,7 +299,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             if (resultCode == RESULT_OK) {
                 try {
                     mImageUri = result.getUri();
-                    mImageUriSmall=result.getUri();
+                    mImageUriSmall = result.getUri();
                     if (mImageUri == null) {
                         Log.e(TAG, "onActivityResult: got empty imageUri");
                         return;

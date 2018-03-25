@@ -11,18 +11,28 @@
         android:id="@+id/image_profile_infone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@mipmap/ic_launcher" />
+        android:background="@mipmap/ic_launcher"
+        android:padding="10dp"/>
 
     <TextView
         android:id="@+id/tv_name_infone_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="name"/>
+        android:text="name"
+        android:padding="10dp"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_phone_infone_profile"
+    <TextView
+        android:id="@+id/tv_phone1_infone_profile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:text="phone1"
+        android:padding="10dp"/>
 
+    <TextView
+        android:id="@+id/tv_phone2_infone_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="phone2"
+        android:padding="10dp"/>
 
 </LinearLayout>

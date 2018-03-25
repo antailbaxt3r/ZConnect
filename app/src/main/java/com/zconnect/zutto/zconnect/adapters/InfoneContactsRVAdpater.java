@@ -1,4 +1,4 @@
-package com.zconnect.zutto.zconnect;
+package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.zconnect.zutto.zconnect.holders.InfoneContactsRVViewHolder;
+import com.zconnect.zutto.zconnect.InfoneProfileActivity;
 import com.zconnect.zutto.zconnect.ItemFormats.InfoneContactsRVItem;
+import com.zconnect.zutto.zconnect.R;
 
 import java.util.ArrayList;
 
@@ -45,9 +48,10 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
 
         holder.nametv.setText(infoneContactsRVItems.get(position).getName());
         holder.viewstv.setText(infoneContactsRVItems.get(position).getViews());
-        Uri imageuri = Uri.parse(infoneContactsRVItems.get(position).getImageThumb());
-        holder.simpleDraweeView.setImageURI(imageuri);
-
+        if (infoneContactsRVItems.get(position).getImageThumb() != null) {
+            Uri imageuri = Uri.parse(infoneContactsRVItems.get(position).getImageThumb());
+            holder.simpleDraweeView.setImageURI(imageuri);
+        }
         final ArrayList<String> phoneNums = infoneContactsRVItems.get(position).getPhoneNums();
 
         holder.callImageBtn.setOnClickListener(new View.OnClickListener() {
@@ -109,33 +113,6 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                 context.startActivity(intent);
 
                 Toast.makeText(context, "call being made to " + strName, Toast.LENGTH_SHORT).show();
-                /*AlertDialog.Builder builderInner = new AlertDialog.Builder(context);
-                builderInner.setMessage(strName);
-                builderInner.setTitle("Your Selected Item is");
-                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Intent intent = new Intent(Intent.ACTION_CALL);
-
-                        intent.setData(Uri.parse("tel:" + strName));
-                        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
-                            return;
-                        }
-                        context.startActivity(intent);
-
-                        Toast.makeText(context, "call being made to " + strName, Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    }
-                });
-                builderInner.show();*/
             }
         });
         builderSingle.show();

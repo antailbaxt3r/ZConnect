@@ -1,4 +1,4 @@
-package com.zconnect.zutto.zconnect;
+package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zconnect.zutto.zconnect.holders.Infone2RVViewHolder;
+import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.ItemFormats.Infone2CategoryModel;
+import com.zconnect.zutto.zconnect.R;
 
 import java.util.ArrayList;
 

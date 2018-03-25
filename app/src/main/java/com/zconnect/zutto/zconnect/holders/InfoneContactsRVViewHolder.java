@@ -1,4 +1,4 @@
-package com.zconnect.zutto.zconnect;
+package com.zconnect.zutto.zconnect.holders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zconnect.zutto.zconnect.R;
 
 /**
  * Created by tanmay on 24/3/18.
@@ -16,11 +17,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 public class InfoneContactsRVViewHolder extends RecyclerView.ViewHolder {
 
-    TextView nametv;
-    TextView viewstv;
-    ImageButton callImageBtn;
-    LinearLayout linearLayout;
-    SimpleDraweeView simpleDraweeView;
+    public TextView nametv;
+    public TextView viewstv;
+    public ImageButton callImageBtn;
+    public LinearLayout linearLayout;
+    public SimpleDraweeView simpleDraweeView;
 
     public InfoneContactsRVViewHolder(View itemView) {
         super(itemView);

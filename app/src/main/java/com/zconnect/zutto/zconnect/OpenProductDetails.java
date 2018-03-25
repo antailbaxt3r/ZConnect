@@ -106,7 +106,7 @@ public class OpenProductDetails extends BaseActivity {
         SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
-        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("storeroom").child(productKey).child("views");
+        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom").child(productKey).child("views");
 
         if (!status) {
             mAuth = FirebaseAuth.getInstance();
@@ -247,7 +247,7 @@ public class OpenProductDetails extends BaseActivity {
                                 flag = false;
                                 Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
                                 productShortlist.setTypeface(customfont);
-                                NotificationSender notificationSender=new NotificationSender(dataSnapshot.getKey(),null,null,null,null,productName.getText().toString(),KEY_PRODUCT,false,false);
+                                NotificationSender notificationSender = new NotificationSender(dataSnapshot.getKey(), null, null, null, null, productName.getText().toString(), KEY_PRODUCT, false, false);
                                 notificationSender.execute();
 
                             }
