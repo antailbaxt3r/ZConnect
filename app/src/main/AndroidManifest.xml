@@ -300,11 +300,19 @@
             android:label="@string/title_activity_nitification_settings"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Infone2Activity" />
-        <activity android:name=".InfoneContactListActivity" />
+        <activity
+            android:name=".InfoneContactListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
         <activity
             android:name=".InfoneProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".InfoneAddContactActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".InfoneAddContactActivity" />
+        <activity
+            android:name=".MessagesActivity"
+            android:label="@string/title_activity_messages"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".InfoneAddCatActivity"></activity>
     </application>
 
 </manifest>

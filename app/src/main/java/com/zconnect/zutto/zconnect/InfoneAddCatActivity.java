@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.MediaRouter;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -14,9 +15,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -28,97 +31,96 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class InfoneAddContactActivity extends AppCompatActivity {
+public class InfoneAddCatActivity extends AppCompatActivity {
 
-    String catId;
+
     private SharedPreferences communitySP;
     public String communityReference;
-    DatabaseReference databaseReferenceInfone;
-    DatabaseReference newContactRef;
+
     EditText nameEt;
-    EditText phone1Et, phone2Et;
     Button saveButton;
     SimpleDraweeView addImage;
-    String key;
+
+    DatabaseReference databaseReferenceInfone;
+    DatabaseReference newCategoryRef;
+    DatabaseReference editCategoryRef;
+    String categoryName;
+    String catId;
+    String catName;
+    boolean toAdd;
     private final String TAG = getClass().getSimpleName();
 
+    /*uploading elements*/
     private Uri mImageUri = null;
     private static final int GALLERY_REQUEST = 7;
     private Uri mImageUriSmall;
     private StorageReference mStorageRef;
-    private DatabaseReference newContactNumRef;
+
+    FirebaseAuth mAuth;
+    private String catImageurl;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_infone_add_cat);
 
-        setContentView(R.layout.activity_infone_add_contact);
-
-        catId = getIntent().getExtras().getString("catId");
-
-        nameEt = (EditText) findViewById(R.id.name_et_infone_add);
-        phone1Et = (EditText) findViewById(R.id.phone_et_infone_add);
-        phone2Et = (EditText) findViewById(R.id.phone2_et_infone_add);
-        saveButton = (Button) findViewById(R.id.btn_save_infone_add);
-        addImage = (SimpleDraweeView) findViewById(R.id.image_add_infone_add);
+        nameEt = (EditText) findViewById(R.id.et_name_cat_add_infone);
+        addImage = (SimpleDraweeView) findViewById(R.id.image_add_cat_infone);
+        saveButton = (Button) findViewById(R.id.save_image_add_cat_infone);
 
         communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
         databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities")
-                .child(communityReference).child("infone");
+                .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW);
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        try{
+            if (getIntent().getExtras().getString("catId") != null) {
+                catId = getIntent().getExtras().getString("catId");
+                catName = getIntent().getExtras().getString("catName");
+                catImageurl=getIntent().getExtras().getString("catImageurl");
 
-                String name = nameEt.getText().toString();
-                String phoneNum1 = phone1Et.getText().toString();
-                String phoneNum2 = phone2Et.getText().toString();
+                Log.e(TAG,"Exception : "+catName+" "+catId+" "+catImageurl);
 
-                if (phoneNum1.isEmpty() && !phoneNum2.isEmpty()) {
-                    phoneNum1 = phoneNum2;
-                    phoneNum2 = "";
-                }
+                Uri imageUri= Uri.parse(catImageurl);
+                addImage.setImageURI(imageUri);
 
-                Log.e(TAG, "data cat name:" + catId);
+                nameEt.setText(catName);
 
-                if (!name.isEmpty() && !phoneNum1.isEmpty()) {
-
-                    key = databaseReferenceInfone.child("numbers").push().getKey();
-                    newContactNumRef = databaseReferenceInfone.child("numbers").child(key);
-                    newContactRef = databaseReferenceInfone.child("categories").child(catId).child(key);
-
-                    Log.e(TAG, "data phone:" + key + " " + phoneNum1);
-
-                    newContactRef.child("name").setValue(name);
-                    newContactRef.child("phone").child("0").setValue(phoneNum1);
-                    newContactRef.child("phone").child("1").setValue(phoneNum2);
-                    newContactNumRef.child("category").setValue(catId);
-                    newContactNumRef.child("name").setValue(name);
-                    newContactNumRef.child("phone").child("0").setValue(phoneNum1);
-                    newContactNumRef.child("phone").child("1").setValue(phoneNum2);
-                    uploadImage();
-                }
-
+                toAdd = false;
+            } else {
+                catId = "";
             }
-        });
+        }
+        catch (Exception e){
+            Log.e(TAG,"Exception : "+e.toString());
+            toAdd=true;
+            //finish();
+        }
 
-        if (mImageUri == null) {
+
+        if (mImageUri == null && toAdd) {
 
             addImage.setActualImageResource(R.mipmap.ic_launcher);
 
         }
 
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveChanges();
+            }
+        });
+
         addImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (ContextCompat.checkSelfPermission(InfoneAddContactActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                if (ContextCompat.checkSelfPermission(InfoneAddCatActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                         PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(
-                            InfoneAddContactActivity.this,
+                            InfoneAddCatActivity.this,
                             new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             12345
                     );
@@ -128,12 +130,52 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
+
+    }
+
+    private void saveChanges() {
+
+        String name = nameEt.getText().toString();
+        //String im = phone1Et.getText().toString();
+
+        //Log.e(TAG, "data cat name:" + categoryName);
+        SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+        if (toAdd && !name.isEmpty() && !status) {
+
+            catId = databaseReferenceInfone.child("categoriesInfo").push().getKey();
+            newCategoryRef = databaseReferenceInfone.child("categoriesInfo").child(catId);
+            newCategoryRef.child("name").setValue(name);
+            newCategoryRef.child("admin").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            uploadImage();
+
+            Toast.makeText(InfoneAddCatActivity.this, "Add a contact in your new category",
+                    Toast.LENGTH_SHORT).show();
+            Intent addContactIntent = new Intent(InfoneAddCatActivity.this,
+                    InfoneAddContactActivity.class);
+            addContactIntent.putExtra("catId", catId);
+            startActivity(addContactIntent);
+
+        } else if (!toAdd && !status) {
+
+            newCategoryRef = databaseReferenceInfone.child("categoriesInfo").child(catId);
+            newCategoryRef.child("name").setValue(name);
+
+
+            uploadImage();
+
+        } else {
+            Toast.makeText(InfoneAddCatActivity.this, "Details in complete",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void uploadImage() {
 
         if (mImageUri != null) {
-            StorageReference filepath = mStorageRef.child("InfoneImage").child(mImageUri.getLastPathSegment() + key);
+            StorageReference filepath = mStorageRef.child("InfoneImage").child(mImageUri.getLastPathSegment() + catId);
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -142,12 +184,11 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                         Log.e(TAG, "onSuccess: error got empty downloadUri");
                         return;
                     }
-                    //newContactRef.child("imageurl").setValue(downloadUri.toString());
-                    newContactNumRef.child("imageurl").setValue(downloadUri.toString());
+                    newCategoryRef.child("imageurl").setValue(downloadUri.toString());
                     finish();
                 }
             });
-            StorageReference filepathThumb = mStorageRef.child("InfoneImageSmall").child(mImageUriSmall.getLastPathSegment() + key + "Thumbnail");
+            StorageReference filepathThumb = mStorageRef.child("InfoneImageSmall").child(mImageUriSmall.getLastPathSegment() + catId + "Thumbnail");
             filepathThumb.putFile(mImageUriSmall).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -156,15 +197,13 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                         Log.e(TAG, "onSuccess: error got empty downloadUri");
                         return;
                     }
-                    newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
-                    newContactNumRef.child("thumbnail").setValue(downloadUriThumb.toString());
+                    newCategoryRef.child("thumbnail").setValue(downloadUriThumb.toString());
                     finish();
                 }
             });
         } else {
-            newContactNumRef.child("imageurl").setValue("default");
-            newContactRef.child("thumbnail").setValue("default");
-            newContactNumRef.child("thumbnail").setValue("default");
+            newCategoryRef.child("imageurl").setValue("default");
+            newCategoryRef.child("thumbnail").setValue("default");
             finish();
         }
     }
@@ -198,8 +237,8 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                     bitmapSmall.compress(Bitmap.CompressFormat.JPEG, 5, out);
                     Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
                     Bitmap bitmap2Small = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
-                    String path = MediaStore.Images.Media.insertImage(InfoneAddContactActivity.this.getContentResolver(), bitmap2, mImageUri.getLastPathSegment(), null);
-                    String pathSmall = MediaStore.Images.Media.insertImage(InfoneAddContactActivity.this.getContentResolver(), bitmap2Small, mImageUri.getLastPathSegment(), null);
+                    String path = MediaStore.Images.Media.insertImage(InfoneAddCatActivity.this.getContentResolver(), bitmap2, mImageUri.getLastPathSegment(), null);
+                    String pathSmall = MediaStore.Images.Media.insertImage(InfoneAddCatActivity.this.getContentResolver(), bitmap2Small, mImageUri.getLastPathSegment(), null);
                     mImageUri = Uri.parse(path);
                     mImageUriSmall = Uri.parse(pathSmall);
                     addImage.setImageURI(mImageUri);
@@ -211,4 +250,5 @@ public class InfoneAddContactActivity extends AppCompatActivity {
             }
         }
     }
+
 }

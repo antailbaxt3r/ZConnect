@@ -77,7 +77,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseViews;
 
     private final String TAG = getClass().getSimpleName();
-    private String categoryName;
+    private String catId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +110,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
         saveEditBtn.setVisibility(View.GONE);
 
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
-        categoryName= getIntent().getExtras().getString("categoryName");
+        catId= getIntent().getExtras().getString("catId");
 
         Log.e(InfoneProfileActivity.class.getName(), "data :" + infoneUserId);
 
@@ -220,7 +220,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
     private void saveEdits() {
 
-        databaseRefEdit=databaseReferenceInfone.child("categories").child(categoryName).child(infoneUserId);
+        databaseRefEdit=databaseReferenceInfone.child("categories").child(catId).child(infoneUserId);
         databaseRefEditNum=databaseReferenceContact;
 
         String name=nameEt.getText().toString();
@@ -239,7 +239,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
             databaseRefEdit.child("name").setValue(name);
             databaseRefEdit.child("phone").child("0").setValue(phone1);
             databaseRefEdit.child("phone").child("1").setValue(phone2);
-            databaseRefEditNum.child("category").setValue(categoryName);
+            databaseRefEditNum.child("category").setValue(catId);
             uploadImage();
 
         }

@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,12 +42,20 @@ public class Infone2RVAdapter extends RecyclerView.Adapter<Infone2RVViewHolder> 
 
         holder.nametv.setText(categoriesList.get(position).getName());
 
+        if (categoriesList.get(position).getImageurl() != null &&
+                !categoriesList.get(position).getImageurl().equalsIgnoreCase("default")) {
+            Uri imageUri = Uri.parse(categoriesList.get(position).getImageurl());
+            holder.catImage.setImageURI(imageUri);
+        }
+
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intentInfoneList=new Intent(context,InfoneContactListActivity.class);
-                intentInfoneList.putExtra("category",categoriesList.get(position).getName());
+                Intent intentInfoneList = new Intent(context, InfoneContactListActivity.class);
+                intentInfoneList.putExtra("catId", categoriesList.get(position).getCatId());
+                intentInfoneList.putExtra("catName",categoriesList.get(position).getName());
+                intentInfoneList.putExtra("catImageurl",categoriesList.get(position).getImageurl());
                 context.startActivity(intentInfoneList);
 
             }

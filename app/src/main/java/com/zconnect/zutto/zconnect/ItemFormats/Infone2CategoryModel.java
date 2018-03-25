@@ -7,13 +7,23 @@ package com.zconnect.zutto.zconnect.ItemFormats;
 public class Infone2CategoryModel {
 
     String name;
+    String imageurl;
+    String admin;
+    String catId;
 
-    public Infone2CategoryModel() {
-
+    public Infone2CategoryModel(String name, String imageurl, String admin,String catId) {
+        this.name = name;
+        this.imageurl = imageurl;
+        this.admin = admin;
+        this.catId=catId;
     }
 
-    public Infone2CategoryModel(String name) {
-        this.name = name;
+    public String getCatId() {
+        return catId;
+    }
+
+    public void setCatId(String catId) {
+        this.catId = catId;
     }
 
     public String getName() {
@@ -22,5 +32,21 @@ public class Infone2CategoryModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImageurl() {
+        return imageurl;
+    }
+
+    public void setImageurl(String imageurl) {
+        this.imageurl = imageurl;
+    }
+
+    public String getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(String admin) {
+        this.admin = admin;
     }
 }

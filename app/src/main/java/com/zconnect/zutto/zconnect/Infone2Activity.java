@@ -39,7 +39,6 @@ public class Infone2Activity extends AppCompatActivity {
     DatabaseReference databaseReferenceCat;
     ValueEventListener listener;
     Infone2RVAdapter infone2RVAdapter;
-    FirebaseAuth mAuth;
     private static final int REQUEST_PHONE_CALL = 1;
     private SharedPreferences communitySP;
     public String communityReference;
@@ -58,7 +57,7 @@ public class Infone2Activity extends AppCompatActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         databaseReferenceCat = FirebaseDatabase.getInstance().getReference().child("communities")
-                .child(communityReference).child("infone").child("categories");
+                .child(communityReference).child("infone").child("categoriesInfo");
 
         recyclerViewCat.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
@@ -70,8 +69,11 @@ public class Infone2Activity extends AppCompatActivity {
                 categoriesList = new ArrayList<>();
                 for (DataSnapshot childSnapShot :
                         dataSnapshot.getChildren()) {
-                    String name = childSnapShot.getKey();
-                    Infone2CategoryModel infone2CategoryModel = new Infone2CategoryModel(name);
+                    String name = childSnapShot.child("name").getValue(String.class);
+                    String imageurl = childSnapShot.child("imageurl").getValue(String.class);
+                    String admin = childSnapShot.child("admin").getValue(String.class);
+                    String catId = childSnapShot.getKey();
+                    Infone2CategoryModel infone2CategoryModel = new Infone2CategoryModel(name, imageurl, admin, catId);
                     categoriesList.add(infone2CategoryModel);
 
                 }
@@ -98,7 +100,10 @@ public class Infone2Activity extends AppCompatActivity {
                 Boolean status = sharedPref.getBoolean("mode", false);
 
                 if (!status) {
-                    addDialog();
+                    Intent addCatIntent = new Intent(Infone2Activity.this,InfoneAddCatActivity.class);
+                    //addCatIntent("categoryId",);
+                    startActivity(addCatIntent);
+                    //addDialog();
                 } else {
                     Toast.makeText(Infone2Activity.this, "Log in to use this function", Toast.LENGTH_SHORT).show();
                 }
