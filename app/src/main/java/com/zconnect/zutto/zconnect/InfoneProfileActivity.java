@@ -3,18 +3,24 @@ package com.zconnect.zutto.zconnect;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,25 +28,43 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class InfoneProfileActivity extends AppCompatActivity {
 
     /*UI elements*/
-    private TextView nametv;
+    private EditText nameEt;
     //private TextView desc;
-    TextView phone1tv;
-    TextView phone2tv;
+    EditText phone1Et;
+    EditText phone2Et;
+    Button saveEditBtn;
     SimpleDraweeView profileImage;
+    Toolbar toolbar;
+
+    /*image uploading elements*/
+    private Uri mImageUri = null;
+    private static final int GALLERY_REQUEST = 7;
+    private Uri mImageUriSmall;
+    private StorageReference mStorageRef;
 
     ArrayList<String> phoneNums;
     /*user id of the current infone contact in /infone/numbers */
     String infoneUserId;
 
     /*DB elements*/
+    DatabaseReference databaseReferenceContact;
     DatabaseReference databaseReferenceInfone;
     ValueEventListener listener;
+    DatabaseReference databaseRefEdit;
+    DatabaseReference databaseRefEditNum;
 
     /*to get current community*/
     private SharedPreferences communitySP;
@@ -51,32 +75,58 @@ public class InfoneProfileActivity extends AppCompatActivity {
     private FirebaseUser user;
     private ValueEventListener listenerView;
     private DatabaseReference mDatabaseViews;
+
     private final String TAG = getClass().getSimpleName();
+    private String categoryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infone_profile);
 
-        nametv = (TextView) findViewById(R.id.tv_name_infone_profile);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        nameEt = (EditText) findViewById(R.id.et_name_infone_profile);
         profileImage = (SimpleDraweeView) findViewById(R.id.image_profile_infone);
-        phone1tv = (TextView) findViewById(R.id.tv_phone1_infone_profile);
-        phone2tv = (TextView) findViewById(R.id.tv_phone2_infone_profile);
+        phone1Et = (EditText) findViewById(R.id.et_phone1_infone_profile);
+        phone2Et = (EditText) findViewById(R.id.et_phone2_infone_profile);
+        saveEditBtn = (Button) findViewById(R.id.save_edit_infone_profile);
+
+        nameEt.setEnabled(false);
+        phone1Et.setEnabled(false);
+        phone2Et.setEnabled(false);
+        profileImage.setEnabled(false);
+        saveEditBtn.setVisibility(View.GONE);
 
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
+        categoryName= getIntent().getExtras().getString("categoryName");
 
         Log.e(InfoneProfileActivity.class.getName(), "data :" + infoneUserId);
 
         communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities")
-                .child(communityReference).child("infone").child("numbers").child(infoneUserId);
-        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities")
-                .child(communityReference).child("infone").child("numbers").child(infoneUserId).child("views");
+        databaseReferenceInfone=FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW);
+        databaseReferenceContact = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW).child("numbers").child(infoneUserId);
+        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW).child("numbers").child(infoneUserId).child("views");
 
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        Log.e(InfoneProfileActivity.class.getName(), "data :" + communityReference);
+        Log.e(TAG, "data comRef:" + communityReference);
 
         updateViews();
         Log.e(TAG, "inside" + infoneUserId);
@@ -86,7 +136,8 @@ public class InfoneProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 String name = dataSnapshot.child("name").getValue(String.class);
-                nametv.setText(name);
+                nameEt.setText(name);
+                toolbar.setTitle(name);
 
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);
@@ -105,8 +156,8 @@ public class InfoneProfileActivity extends AppCompatActivity {
                     phoneNums.add(phone);
                 }
 
-                phone1tv.setText(phoneNums.get(0));
-                phone2tv.setText(phoneNums.get(1));
+                phone1Et.setText(phoneNums.get(0));
+                phone2Et.setText(phoneNums.get(1));
 
             }
 
@@ -115,23 +166,123 @@ public class InfoneProfileActivity extends AppCompatActivity {
                 Log.e(TAG, "Database error :" + databaseError.toString());
             }
         };
-        databaseReferenceInfone.addValueEventListener(listener);
+        databaseReferenceContact.addValueEventListener(listener);
 
-        phone1tv.setOnClickListener(new View.OnClickListener() {
+        phone1Et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!phone1tv.getText().toString().isEmpty())
-                    makeCall(phone1tv.getText().toString());
+                if (!phone1Et.getText().toString().isEmpty())
+                    makeCall(phone1Et.getText().toString());
             }
         });
-        phone2tv.setOnClickListener(new View.OnClickListener() {
+        phone2Et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!phone2tv.getText().toString().isEmpty())
-                    makeCall(phone2tv.getText().toString());
+                if (!phone2Et.getText().toString().isEmpty())
+                    makeCall(phone2Et.getText().toString());
             }
         });
 
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(InfoneProfileActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            InfoneProfileActivity.this,
+                            new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            12345
+                    );
+                }
+                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent, GALLERY_REQUEST);
+            }
+        });
+
+        saveEditBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveEdits();
+            }
+        });
+    }
+
+
+    private void editProfile() {
+
+        nameEt.setEnabled(true);
+        phone1Et.setEnabled(true);
+        phone2Et.setEnabled(true);
+        profileImage.setEnabled(true);
+        saveEditBtn.setVisibility(View.VISIBLE);
+    }
+
+    private void saveEdits() {
+
+        databaseRefEdit=databaseReferenceInfone.child("categories").child(categoryName).child(infoneUserId);
+        databaseRefEditNum=databaseReferenceContact;
+
+        String name=nameEt.getText().toString();
+        String phone1=phone1Et.getText().toString();
+        String phone2=phone2Et.getText().toString();
+
+        if (phone1.isEmpty() && !phone2.isEmpty()) {
+            phone1 = phone2;
+            phone2 = "";
+        }
+
+        if(!name.isEmpty() && !phone1.isEmpty()){
+            databaseRefEditNum.child("name").setValue(name);
+            databaseRefEditNum.child("phone").child("0").setValue(phone1);
+            databaseRefEditNum.child("phone").child("1").setValue(phone2);
+            databaseRefEdit.child("name").setValue(name);
+            databaseRefEdit.child("phone").child("0").setValue(phone1);
+            databaseRefEdit.child("phone").child("1").setValue(phone2);
+            databaseRefEditNum.child("category").setValue(categoryName);
+            uploadImage();
+
+        }
+
+    }
+
+    private void uploadImage() {
+
+        if (mImageUri != null) {
+            StorageReference filepath = mStorageRef.child("InfoneImage").child(mImageUri.getLastPathSegment() + infoneUserId);
+            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    if (downloadUri == null) {
+                        Log.e(TAG, "onSuccess: error got empty downloadUri");
+                        return;
+                    }
+                    //newContactRef.child("imageurl").setValue(downloadUri.toString());
+                    databaseRefEditNum.child("imageurl").setValue(downloadUri.toString());
+                    finish();
+                }
+            });
+            StorageReference filepathThumb = mStorageRef.child("InfoneImageSmall").child(mImageUriSmall.getLastPathSegment() + infoneUserId + "Thumbnail");
+            filepathThumb.putFile(mImageUriSmall).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUriThumb = taskSnapshot.getDownloadUrl();
+                    if (downloadUriThumb == null) {
+                        Log.e(TAG, "onSuccess: error got empty downloadUri");
+                        return;
+                    }
+                    databaseRefEdit.child("thumbnail").setValue(downloadUriThumb.toString());
+                    databaseRefEditNum.child("thumbnail").setValue(downloadUriThumb.toString());
+                    finish();
+                }
+            });
+        } else {
+            databaseRefEditNum.child("imageurl").setValue("default");
+            databaseRefEdit.child("thumbnail").setValue("default");
+            databaseRefEditNum.child("thumbnail").setValue("default");
+            finish();
+        }
     }
 
     private void makeCall(String number) {
@@ -206,7 +357,65 @@ public class InfoneProfileActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        databaseReferenceInfone.removeEventListener(listener);
+        databaseReferenceContact.removeEventListener(listener);
         mDatabaseViews.removeEventListener(listenerView);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+            Uri imageUri = data.getData();
+            CropImage.activity(imageUri)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(1, 1)
+                    .setBackgroundColor(R.color.white)
+                    .setSnapRadius(2)
+                    .start(this);
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                try {
+                    mImageUri = result.getUri();
+                    mImageUriSmall = result.getUri();
+                    if (mImageUri == null) {
+                        Log.e(TAG, "onActivityResult: got empty imageUri");
+                        return;
+                    }
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Bitmap bitmapSmall = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUriSmall);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
+                    bitmapSmall.compress(Bitmap.CompressFormat.JPEG, 5, out);
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+                    Bitmap bitmap2Small = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
+                    String path = MediaStore.Images.Media.insertImage(InfoneProfileActivity.this.getContentResolver(), bitmap2, mImageUri.getLastPathSegment(), null);
+                    String pathSmall = MediaStore.Images.Media.insertImage(InfoneProfileActivity.this.getContentResolver(), bitmap2Small, mImageUri.getLastPathSegment(), null);
+                    mImageUri = Uri.parse(path);
+                    mImageUriSmall = Uri.parse(pathSmall);
+                    profileImage.setImageURI(mImageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Log.e(TAG, "onActivityResult: ", result.getError());
+            }
+        }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_edit_infone_profile, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_edit) {
+            editProfile();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

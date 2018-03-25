@@ -301,7 +301,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Infone2Activity" />
         <activity android:name=".InfoneContactListActivity" />
-        <activity android:name=".InfoneProfileActivity" />
+        <activity
+            android:name=".InfoneProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".InfoneAddContactActivity"></activity>
     </application>
 

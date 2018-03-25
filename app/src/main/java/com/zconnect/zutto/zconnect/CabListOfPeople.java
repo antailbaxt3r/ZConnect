@@ -105,7 +105,7 @@ public class CabListOfPeople extends BaseActivity {
             }
         });
 
-        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("Cab").child(key).child("views");
+        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference).child("Cab").child(key).child("views");
         updateViews();
 
         ref.addValueEventListener(new ValueEventListener() {

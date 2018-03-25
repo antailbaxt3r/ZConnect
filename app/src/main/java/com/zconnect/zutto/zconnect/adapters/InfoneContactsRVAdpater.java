@@ -29,10 +29,12 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
 
     Context context;
     ArrayList<InfoneContactsRVItem> infoneContactsRVItems;
+    String categoryName;
 
-    public InfoneContactsRVAdpater(Context context, ArrayList<InfoneContactsRVItem> infoneContactsRVItems) {
+    public InfoneContactsRVAdpater(Context context, ArrayList<InfoneContactsRVItem> infoneContactsRVItems, String categoryName) {
         this.context = context;
         this.infoneContactsRVItems = infoneContactsRVItems;
+        this.categoryName=categoryName;
     }
 
     @Override
@@ -69,6 +71,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
 
                 Intent profileIntent = new Intent(context, InfoneProfileActivity.class);
                 profileIntent.putExtra("infoneUserId", infoneContactsRVItems.get(position).getInfoneUserId());
+                profileIntent.putExtra("categoryName", categoryName);
                 context.startActivity(profileIntent);
             }
         });

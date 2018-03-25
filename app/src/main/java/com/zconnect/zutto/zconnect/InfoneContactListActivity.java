@@ -90,7 +90,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
                     contactsRVItems.add(infoneContactsRVItem);
                 }
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this,
-                        contactsRVItems);
+                        contactsRVItems,categoryName);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
             }
 
