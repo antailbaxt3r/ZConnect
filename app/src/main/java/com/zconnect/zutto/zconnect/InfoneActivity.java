@@ -213,8 +213,7 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
                 CounterManager.infoneOpenTab("Students");
             else if (position == 2)
                 CounterManager.infoneOpenTab("others");
-            else if (position ==3)
-            {
+            else if (position == 3) {
                 CounterManager.infoneOpenTab("AnonymousMessages");
             }
         } else {

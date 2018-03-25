@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.zconnect.zutto.zconnect.Infone2Activity">
+    <item
+        android:id="@+id/action_open_menu_phonebook"
+        android:icon="@android:drawable/ic_menu_call"
+        android:orderInCategory="2"
+        android:title="Open Infone"
+        app:showAsAction="ifRoom" />
+</menu>
