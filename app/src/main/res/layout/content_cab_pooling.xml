@@ -85,20 +85,30 @@
             android:id="@+id/calender"
             android:paddingLeft="8dp"
             android:layout_width="0dp"
-            android:layout_weight=".6"
+            android:layout_weight=".5"
             android:textSize="20dp"
             android:layout_height="wrap_content"
             android:text="Click to choose" />
 
-        <ImageButton
-            android:id="@+id/clear"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="#00ffffff"
-            android:src="@drawable/ic_action_cancel"
-            android:scaleType="fitXY"
-            android:layout_gravity="right|center"
-            android:visibility="gone"/>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight=".1"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/clear"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="#00ffffff"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_action_cancel"
+                android:scaleType="fitXY"
+                android:layout_gravity="right|center"
+                android:visibility="gone"
+                />
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 

@@ -68,28 +68,11 @@ public class PoolList extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_pool_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PoolList.this, AddCabPool.class);
-                try {
-                    intent.putExtra("source", String.valueOf(source));
-                    intent.putExtra("destination", String.valueOf(destination));
-                    intent.putExtra("date", String.valueOf(date));
-                    intent.putExtra("time_from", String.valueOf(time_from));
-                    intent.putExtra("time_to", String.valueOf(time_to));
-                }catch (Exception e){
-                    Log.e("TAG","Intent not successfull");
-                }
-                startActivity(intent);
-                finish();
-            }
-        });
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -111,11 +94,6 @@ public class PoolList extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        //getting present dates and defining format for input and output date
-        final Calendar c = Calendar.getInstance();
-        SimpleDateFormat input = new SimpleDateFormat("dd/M/yyyy");
-        SimpleDateFormat output = new SimpleDateFormat("yyyyMMdd");
-        Date = output.format(c.getTime());
 
         //getting values from intent
         try {
@@ -125,30 +103,54 @@ public class PoolList extends BaseActivity {
             time_to = getIntent().getStringExtra("time_to");
             time_from = getIntent().getStringExtra("time_from");
 
-        } catch (Exception e) {
+        } catch (Exception e) {}
 
-        }
-
+        // Fab for creating this
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            Intent intent = new Intent(PoolList.this, AddCabPool.class);
             try {
-                Date abc=input.parse(date);
-                formatted_date=output.format(abc);
+                intent.putExtra("source", String.valueOf(source));
+                intent.putExtra("destination", String.valueOf(destination));
+                intent.putExtra("date", String.valueOf(date));
+                intent.putExtra("time_from", String.valueOf(time_from));
+                intent.putExtra("time_to", String.valueOf(time_to));
+            }catch (Exception e){
+                Log.e("TAG","Intent not successfull");
+            }
+            startActivity(intent);
+            finish();
+            }
+        });
 
-            }catch (Exception e){}
+        //getting present dates and defining format for input and output date
+        final Calendar c = Calendar.getInstance();
+        SimpleDateFormat input = new SimpleDateFormat("dd/M/yyyy");
+        SimpleDateFormat output = new SimpleDateFormat("yyyyMMdd");
+        Date = output.format(c.getTime());
+
+        try {
+            Date abc=input.parse(date);
+            formatted_date=output.format(abc);
+
+        }catch (Exception e){}
 
         //Setting old database or new database
         if(date==null){
+            reference=reference_default;
 
-        reference=reference_default;
-
-            }else{
-                if(Date.compareTo(formatted_date)>0){
+        }else{
+            if(Date.compareTo(formatted_date)>0){
                 reference=reference_Old;
-                }else{
+            }else{
                 reference=reference_default;
-           }
+            }
         }
 
-        pool = FirebaseDatabase.getInstance().getReference().child(reference);
+        pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(reference);
+
         query=pool.orderByChild("DT");
 
         mUser = FirebaseAuth.getInstance();

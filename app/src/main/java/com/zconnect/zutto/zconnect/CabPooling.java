@@ -26,6 +26,7 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 public class CabPooling extends AppCompatActivity {
+
     Button done;
     ImageButton clear;
     CustomSpinner source, destination, time_to, time_from;
@@ -106,112 +107,119 @@ public class CabPooling extends AppCompatActivity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if((String.valueOf(source.getSelectedItem()).equals("Anywhere"))){
-                    Source=null;
-                }else{
-                    Source=source.getSelectedItem();
-                }
-                if((String.valueOf(destination.getSelectedItem()).equals("Anywhere"))){
-                    Destination=null;
-                }else{
-                    Destination=destination.getSelectedItem();
-                }
-                if((String.valueOf(time_from.getSelectedItem()).equals("Anytime"))){
-                    Time_From=null;
-                }else{
-                    Time_From=time_from.getSelectedItem();
-                }
-                if((String.valueOf(time_to.getSelectedItem()).equals("Anytime"))){
-                    Time_To=null;
-                }else{
-                    Time_To=time_to.getSelectedItem();
-                }
 
+            if((String.valueOf(source.getSelectedItem()).equals("Anywhere"))){
+                Source=null;
+            }else{
+                Source=source.getSelectedItem();
+            }
+            if((String.valueOf(destination.getSelectedItem()).equals("Anywhere"))){
+                Destination=null;
+            }else{
+                Destination=destination.getSelectedItem();
+            }
+            if((String.valueOf(time_from.getSelectedItem()).equals("Anytime"))){
+                Time_From=null;
+            }else{
+                Time_From=time_from.getSelectedItem();
+            }
+            if((String.valueOf(time_to.getSelectedItem()).equals("Anytime"))){
+                Time_To=null;
+            }else{
+                Time_To=time_to.getSelectedItem();
+            }
 
+            Intent intent = new Intent(CabPooling.this, PoolList.class);
 
-                Intent intent = new Intent(CabPooling.this, PoolList.class);
-                if (Source == null && Destination == null && Time_From == null && Time_To == null && calender.getText().equals("Click to choose")) {
-                    //check if all fields are not null
-                    Snackbar snack = Snackbar.make(done, "All fields can't be simultaneously empty", Snackbar.LENGTH_LONG);
+            if (Source == null && Destination == null && Time_From == null && Time_To == null && calender.getText().equals("Click to choose")) {
+                //check if all fields are not null
+                Snackbar snack = Snackbar.make(done, "All fields can't be simultaneously empty", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
+                snack.show();
+
+            } else {
+                if (Source!=null &&Destination!=null&&Source == Destination) {
+                    Snackbar snack = Snackbar.make(done, "Source and Destination can't be same", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
                     snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
                     snack.show();
 
                 } else {
-                    if (Source!=null &&Destination!=null&&Source == Destination) {
-                        Snackbar snack = Snackbar.make(done, "Source and Destination can't be same", Snackbar.LENGTH_LONG);
+
+                    if (Source != null) {
+                        intent.putExtra("source", String.valueOf(Source));
+                    }
+
+                    if (Destination != null) {
+                        intent.putExtra("destination", String.valueOf(Destination));
+                    }
+
+                    if (!calender.getText().toString().equals("Click to choose")) {
+                        intent.putExtra("date", calender.getText().toString());
+                    }
+
+                    if ((Time_From != null && Time_To == null) || (Time_From == null && Time_To != null)) {
+
+                        //show snack time interval cant be this
+                        Snackbar snack = Snackbar.make(done, "Mention proper time intervals", Snackbar.LENGTH_LONG);
                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                         snackBarText.setTextColor(Color.WHITE);
                         snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
                         snack.show();
-
                     } else {
-                        if (Source != null) {
-                            intent.putExtra("source", String.valueOf(Source));}
-                            if (Destination != null) {
-                                intent.putExtra("destination", String.valueOf(Destination));}
-                                if (!calender.getText().toString().equals("Click to choose")) {
-                                    intent.putExtra("date", calender.getText().toString());}
-                                    if ((Time_From != null && Time_To == null) || (Time_From == null && Time_To != null)) {
 
-                                        //show snack time interval cant be this
-                                        Snackbar snack = Snackbar.make(done, "Mention proper time intervals", Snackbar.LENGTH_LONG);
-                                        TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                                        snackBarText.setTextColor(Color.WHITE);
-                                        snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
-                                        snack.show();
-                                    } else {
+                        if (Time_To==Time_From && Time_To!=null){
 
-                                        if (Time_To==Time_From && Time_To!=null){
+                            //show snack time cant be equal
+                            Snackbar snack = Snackbar.make(done, "Mention proper time intervals", Snackbar.LENGTH_LONG);
+                            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            snackBarText.setTextColor(Color.WHITE);
+                            snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
+                            snack.show();
 
-                                            //show snack time cant be equal
-                                            Snackbar snack = Snackbar.make(done, "Mention proper time intervals", Snackbar.LENGTH_LONG);
-                                            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                                            snackBarText.setTextColor(Color.WHITE);
-                                            snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
-                                            snack.show();
+                        }else{
 
-                                        }else{
-                                            if (Time_To != null) {
-                                                intent.putExtra("time_to", String.valueOf(Time_To));
-                                            }
-                                            if (Time_From != null) {
-                                                intent.putExtra("time_from", String.valueOf(Time_From));}
-                                            CounterManager.searchPool(String.valueOf(Destination));
-                                            startActivity(intent);
-                                            finish();
+                            if (Time_To != null) {
+                                intent.putExtra("time_to", String.valueOf(Time_To));
+                            }
 
-                                        }
+                            if (Time_From != null) {
+                                intent.putExtra("time_from", String.valueOf(Time_From));
+                            }
+
+                            CounterManager.searchPool(String.valueOf(Destination));
+                            startActivity(intent);
+                            finish();
+
                         }
                     }
-
-                                    }
+                }
+            }
             }
         });
 
 
+        Typeface customFont = Typeface.createFromAsset(CabPooling.this.getAssets(), "fonts/Raleway-Regular.ttf");
+        Typeface customFont2 = Typeface.createFromAsset(CabPooling.this.getAssets(), "fonts/Raleway-Light.ttf");
 
-
-            Typeface customFont = Typeface.createFromAsset(CabPooling.this.getAssets(), "fonts/Raleway-Regular.ttf");
-            Typeface customFont2 = Typeface.createFromAsset(CabPooling.this.getAssets(), "fonts/Raleway-Light.ttf");
         done.setTypeface(customFont2);
         calender.setTypeface(customFont2);
 
-            TextView from = (TextView) findViewById(R.id.from);
-            TextView destination = (TextView) findViewById(R.id.destination);
-            TextView date = (TextView) findViewById(R.id.date);
-            TextView timeslot = (TextView) findViewById(R.id.timeslot);
-            TextView search_for_rides = (TextView) findViewById(R.id.search_for_rides);
+        TextView from = (TextView) findViewById(R.id.from);
+        TextView destination = (TextView) findViewById(R.id.destination);
+        TextView date = (TextView) findViewById(R.id.date);
+        TextView timeslot = (TextView) findViewById(R.id.timeslot);
+        TextView search_for_rides = (TextView) findViewById(R.id.search_for_rides);
 
-            from.setTypeface(customFont);
-            destination.setTypeface(customFont);
-            date.setTypeface(customFont);
-            timeslot.setTypeface(customFont);
-            search_for_rides.setTypeface(customFont);}
-
-
-
+        from.setTypeface(customFont);
+        destination.setTypeface(customFont);
+        date.setTypeface(customFont);
+        timeslot.setTypeface(customFont);
+        search_for_rides.setTypeface(customFont);
+    }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the Menu; this adds items to the action bar if it is present.
@@ -235,7 +243,6 @@ public class CabPooling extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
 
 }
-
-    }

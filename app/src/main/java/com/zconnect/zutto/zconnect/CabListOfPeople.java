@@ -77,6 +77,7 @@ public class CabListOfPeople extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_cab_list_of_people);
         setToolbar();
         setToolbarTitle("List of people");
