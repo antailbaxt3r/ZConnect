@@ -52,6 +52,8 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -88,7 +90,11 @@ public class AddEvent extends BaseActivity {
     private TextView dateTime;
     private Boolean editImageflag = false;
     private Long eventTimeMillis;
+    private Long postTimeMillis;
     private CheckBox gmapLocationTaken;
+
+    //new reference created
+    private DatabaseReference mPostedByDetails;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
         @Override
         public void onDateTimeSet(Date date) {
@@ -102,7 +108,6 @@ public class AddEvent extends BaseActivity {
     ArrayList<String> venueOptions = new ArrayList<>();
 
     private IntentHandle intentHandle = new IntentHandle();
-
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +157,7 @@ public class AddEvent extends BaseActivity {
         gmapLocationTaken=(CheckBox) findViewById(R.id.add_events_location_checkbox);
         mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts");
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/NotVerifiedPosts");
+        mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         gmapLocationTaken.setVisibility(View.INVISIBLE);
 
@@ -374,9 +380,25 @@ public class AddEvent extends BaseActivity {
                             downloadUri = Uri.parse("");
                         if (flag) {
                             DatabaseReference newPost = mDatabaseVerified.push();
+                            final DatabaseReference postedByDetails = newPost.child("PostedBy");
+                            postedByDetails.setValue(null);
+                            postedByDetails.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    postedByDetails.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                                    //needs to be changed after image thumbnail is put
+                                    postedByDetails.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                            postTimeMillis = System.currentTimeMillis();
                             String key = newPost.getKey();
                             newPost.child("Key").setValue(key);
-                            newPost.child("Creator").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             newPost.child("EventName").setValue(eventNameValue);
                             newPost.child("EventDescription").setValue(eventDescriptionValue);
                             newPost.child("EventImage").setValue(downloadUri.toString());
@@ -392,6 +414,7 @@ public class AddEvent extends BaseActivity {
                             newPost.child("BoostCount").setValue(0);
 
                             SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                            Log.d("Event Date", eventDate);
                             try {
                                 eventTimeMillis = sdf.parse(eventDate).getTime();
                             } catch (ParseException e) {
@@ -399,16 +422,34 @@ public class AddEvent extends BaseActivity {
                             }
 
                             newPost.child("EventTimeMillis").setValue(eventTimeMillis);
-
+                            newPost.child("PostTimeMillis").setValue(postTimeMillis);
 
                             //For Everything
                             DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
+                            final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
+                            newPost2PostedBy.setValue(null);
                             newPost2.child("name").setValue(eventNameValue);
                             newPost2.child("desc").setValue(eventDescriptionValue);
                             newPost2.child("imageurl").setValue(downloadUri.toString());
                             newPost2.child("feature").setValue("Event");
                             newPost2.child("id").setValue(key);
                             newPost2.child("desc2").setValue(eventDate);
+                            newPost2.child("PostTimeMillis").setValue(postTimeMillis);
+                            //posted by in home
+                            newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    newPost2PostedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                                    //needs to be changed after image thumbnail is put
+                                    newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
 
                             // Adding stats
                             CounterManager.addEventVerified(key, eventNameValue);
@@ -440,6 +481,25 @@ public class AddEvent extends BaseActivity {
 
                         } else {
                             DatabaseReference newPost = mDatabaseVerified.push();
+                            final DatabaseReference postedByDetails = newPost.child("PostedBy");
+                            postedByDetails.setValue(null);
+                            postedByDetails.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                            mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    postedByDetails.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                                    //needs to be changed after image thumbnail is put
+                                    postedByDetails.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                            postTimeMillis = System.currentTimeMillis();
                             String key = newPost.getKey();
                             newPost.child("Key").setValue(key);
                             newPost.child("EventName").setValue(eventNameValue);
@@ -457,24 +517,43 @@ public class AddEvent extends BaseActivity {
                             newPost.child("BoostCount").setValue(0);
 
                             SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                            Log.d("Event Date", eventDate);
                             try {
                                 eventTimeMillis = sdf.parse(eventDate).getTime();
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
                             newPost.child("EventTimeMillis").setValue(eventTimeMillis);
+                            newPost.child("PostTimeMillis").setValue(postTimeMillis);
 
                             CounterManager.addEventUnVerified(key, eventNameValue);
 
                             //For Everything
                             DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
+                            final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
+                            newPost2PostedBy.setValue(null);
                             newPost2.child("name").setValue(eventNameValue);
                             newPost2.child("desc").setValue(eventDescriptionValue);
                             newPost2.child("imageurl").setValue(downloadUri.toString());
                             newPost2.child("feature").setValue("Event");
                             newPost2.child("id").setValue(key);
                             newPost2.child("desc2").setValue(eventDate);
+                            newPost2.child("PostTimeMillis").setValue(postTimeMillis);
+                            //posted by in home
+                            newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    newPost2PostedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                                    //needs to be changed after image thumbnail is put
+                                    newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                }
 
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                             //Sending Notifications
                             NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
                             notificationSender.execute();

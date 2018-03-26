@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,10 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.common.time.Clock;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 
 import java.util.List;
 import java.util.Vector;
@@ -61,9 +64,15 @@ import java.util.Vector;
 //<<<<<<< HEAD
 
         //new ui
-        if(recentsItemFormats.get(position).getPostedBy() != null)
+        if(recentsItemFormats.get(position).getPostTimeMillis() > 0)
         {
-            holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy());
+            Log.d("EventName" , recentsItemFormats.get(position).getName());
+            TimeAgo ta = new TimeAgo(recentsItemFormats.get(position).getPostTimeMillis(), System.currentTimeMillis());
+            holder.postTime.setText(ta.calculateTimeAgo());
+        }
+        if(recentsItemFormats.get(position).getPostedBy().getUsername() != null)
+        {
+            holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
         }
         if(recentsItemFormats.get(position).getFeature().equals("Infone"))
         {
@@ -171,7 +180,7 @@ import java.util.Vector;
         String nam;
 
         //new ui
-        TextView postedBy, postConjunction, post,
+        TextView postedBy, postConjunction, post, postTime,
                 cabpoolSource, cabpoolDestination,
                 eventName, eventDate, eventDesc,
                 productName, productPrice, productDesc;
@@ -194,6 +203,7 @@ import java.util.Vector;
             postedBy = (TextView) itemView.findViewById(R.id.postedBy);
             postConjunction = (TextView) itemView.findViewById(R.id.postConjunction);
             post = (TextView) itemView.findViewById(R.id.post);
+            postTime = (TextView) itemView.findViewById(R.id.postTime);
             featureCircle = (SimpleDraweeView) itemView.findViewById(R.id.featureCircle);
             avatarCircle = (SimpleDraweeView) itemView.findViewById(R.id.avatarCircle);
             cabpoolRecentItem = (LinearLayout) itemView.findViewById(R.id.cabpoolRecentItem);

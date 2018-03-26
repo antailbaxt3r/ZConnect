@@ -170,13 +170,14 @@ public class  OpenEventDetail extends BaseActivity {
                     Picasso.with(getApplicationContext()).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
                     EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-                    mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("Event").child("communities").child(communityReference).child("VerifiedPosts").child(event.getKey()).child("views");
+                    mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(event.getKey()).child("views");
                     updateViews();
 
                 } catch (Exception e) {
                     Log.d("Error Alert: ", e.getMessage());
                 }
             }
+//<<<<<<< Updated upstream
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -187,25 +188,71 @@ public class  OpenEventDetail extends BaseActivity {
         EventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            CounterManager.eventOpenPic(event.getKey());
-            ProgressDialog mProg = new ProgressDialog(OpenEventDetail.this);
-            mProg.setMessage("Loading....");
-            mProg.show();
-            final Intent i = new Intent(OpenEventDetail.this, viewImage.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(OpenEventDetail.this, EventImage, getResources().getString(R.string.transition_string));
-            i.putExtra("currentEvent", event.getEventName());
-            i.putExtra("eventImage", event.getEventImage());
-            mProg.dismiss();
-            startActivity(i, optionsCompat.toBundle());
+                CounterManager.eventOpenPic(event.getKey());
+                ProgressDialog mProg = new ProgressDialog(OpenEventDetail.this);
+                mProg.setMessage("Loading....");
+                mProg.show();
+                final Intent i = new Intent(OpenEventDetail.this, viewImage.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(OpenEventDetail.this, EventImage, getResources().getString(R.string.transition_string));
+                i.putExtra("currentEvent", event.getEventName());
+                i.putExtra("eventImage", event.getEventImage());
+                mProg.dismiss();
+                startActivity(i, optionsCompat.toBundle());
             }
         });
+        extras = getIntent().getExtras();
+        event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
+        if(event != null) {
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(event.getEventName(), 1);
 
 
+            venueDirections.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CounterManager.eventgetDirection(event.getKey());
+                    try {
+                        if (event.getLat() == 0 && event.getLon() == 0) {
+                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            startActivity(mapIntent);
+                        } else {
+                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            startActivity(mapIntent);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
 
+            String eventDate[] = (event.getEventDate().split("\\s+"));
+            String date = "";
+            int i = 0;
+            while (i < 3) {
+                date = date + " " + eventDate[i];
+                i++;
+            }
 
+            try {
+                EventDate.setText(date);
+                EventDescription.setText(event.getEventDescription());
+                EventVenue.setText(event.getVenue());
+                getSupportActionBar().setTitle(event.getEventName());
+                Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
+                EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-
+                boostCounter();
+                setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
+            }catch (Exception e) {
+                Log.d("Error Alert: ", e.getMessage());
+            }
+        }
         //changing fonts
         Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
         Typeface customFont2 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
@@ -247,7 +294,7 @@ public class  OpenEventDetail extends BaseActivity {
         } else if (id == R.id.menu_chat_room) {
             //chat room clicked;
             Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
-            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("Event").child(event.getKey()).toString());
+            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child(event.getKey()).toString());
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

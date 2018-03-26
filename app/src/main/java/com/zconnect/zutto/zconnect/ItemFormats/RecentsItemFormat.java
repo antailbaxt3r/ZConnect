@@ -17,18 +17,19 @@ public class RecentsItemFormat {
     private String DT;
 
     //new ui
-    String postedBy;
-    String postedByUID;
-        //for cabpool
+    private long PostTimeMillis;
+    //for cabpool
     String cabpoolSource;
     String cabpoolDestination;
         //for events
     String eventDate;
         //for storeroom
     String productPrice;
+
+    private PostedByDetails PostedBy;
     //
 
-    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT, String postedBy, String postedByUID, String cabpoolSource, String cabpoolDestination, String eventDate, String productPrice, String Key) {
+    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT, String cabpoolSource, String cabpoolDestination, String eventDate, String productPrice, String Key, long PostTimeMillis, PostedByDetails PostedBy) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -39,8 +40,8 @@ public class RecentsItemFormat {
         this.DT=DT;
 
         //new ui
-        this.postedBy = postedBy;
-        this.postedByUID = postedByUID;
+        this.PostTimeMillis = PostTimeMillis;
+        this.PostedBy = PostedBy;
         this.cabpoolSource = cabpoolSource;
         this.cabpoolDestination = cabpoolDestination;
         this.eventDate = eventDate;
@@ -115,8 +116,7 @@ public class RecentsItemFormat {
     }
 
     //new ui
-    public String getPostedBy() { return postedBy; }
-    public String getPostedByUID() { return postedByUID; }
+    public long getPostTimeMillis() { return PostTimeMillis; }
         //for cabpool
     public String getCabpoolSource() { return cabpoolSource; }
     public String getCabpoolDestination() { return cabpoolDestination; }
@@ -131,6 +131,14 @@ public class RecentsItemFormat {
 
     public void setKey(String Key) {
         this.Key = Key;
+    }
+
+    public PostedByDetails getPostedBy() {
+        return PostedBy;
+    }
+
+    public void setPostedBy(PostedByDetails postedBy) {
+        PostedBy = postedBy;
     }
 
 }
