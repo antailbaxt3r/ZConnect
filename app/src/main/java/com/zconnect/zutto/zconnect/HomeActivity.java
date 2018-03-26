@@ -181,7 +181,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         //getting all the tabs Instances
         recent = new Recents();
-        cab = new CabPoolMain();
+        cab = new CabPoolAll();
         infone = new InfoneActivity();
         store = new TabStoreRoom();
         shop = new Shop();
@@ -194,11 +194,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
         }
 
-            //Floating Buttons
+//            //Floating Buttons
         fab = (FloatingActionButton)findViewById(R.id.fab);
-        fab1 = (FloatingActionButton)findViewById(R.id.fab1);
-        fab2 = (FloatingActionButton)findViewById(R.id.fab2);
-        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+//        fab1 = (FloatingActionButton)findViewById(R.id.fab1);
+//        fab2 = (FloatingActionButton)findViewById(R.id.fab2);
+//        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
         layoutBottomSheet = (LinearLayout) findViewById(R.id.home_bottom_sheet);
 
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
@@ -215,107 +215,107 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 int i=tabs.getSelectedTabPosition();
-                if(i==0){//Recents
-                if (!status) {
+//                if(i==0){//Recents
+//                if (!status) {
                     bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                     //animateFAB();
-                }else {
-                    alertBox();
-                    }
-                }
-                if (i == 1) {//Infone
-                    if (!status) {
-                        Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-                        startActivity(intent);
-
-                    } else {
-                        alertBox();
-                    }
-                }
-                if (i == 2) {//Storeroom
-                    if (!status) {
-                        CounterManager.StoreRoomFABclick();
-                        Intent intent = new Intent(getApplicationContext(), AddProduct.class);
-                        startActivity(intent);
-                    } else {
-                        alertBox();
-                    }
-                }
-                if (i == 3) {//Events
-                    if (!status) {
-                        CounterManager.eventAddClick();
-                        Intent intent = new Intent(getApplicationContext(), AddEvent.class);
-                        startActivity(intent);
-                    } else {
-                        alertBox();
-                    }
-                }
-                if (i == 4) {//CabPool
-                    if (!status) {
-                        setActionBarTitle("Search Pool");
-                        CounterManager.RecentsOpen();
-                        Intent intent = new Intent(HomeActivity.this, CabPooling.class);
-                        startActivity(intent);
-                    } else {
-                        alertBox();
-                    }
-                }
-                if (i == 5) {//Shops
-                    if (!status) {
-                        CounterManager.shopOffers();
-                        Intent intent = new Intent(HomeActivity.this, Offers.class);
-                        startActivity(intent);
-                    } else {
-                        alertBox();
-                    }
-                }
+//                }else {
+//                    alertBox();
+//                    }
+//                }
+//                if (i == 1) {//Infone
+//                    if (!status) {
+//                        Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+//                        startActivity(intent);
+//
+//                    } else {
+//                        alertBox();
+//                    }
+//                }
+//                if (i == 2) {//Storeroom
+//                    if (!status) {
+//                        CounterManager.StoreRoomFABclick();
+//                        Intent intent = new Intent(getApplicationContext(), AddProduct.class);
+//                        startActivity(intent);
+//                    } else {
+//                        alertBox();
+//                    }
+//                }
+//                if (i == 3) {//Events
+//                    if (!status) {
+//                        CounterManager.eventAddClick();
+//                        Intent intent = new Intent(getApplicationContext(), AddEvent.class);
+//                        startActivity(intent);
+//                    } else {
+//                        alertBox();
+//                    }
+//                }
+//                if (i == 4) {//CabPool
+//                    if (!status) {
+//                        setActionBarTitle("Search Pool");
+//                        CounterManager.RecentsOpen();
+//                        Intent intent = new Intent(HomeActivity.this, CabPooling.class);
+//                        startActivity(intent);
+//                    } else {
+//                        alertBox();
+//                    }
+//                }
+//                if (i == 5) {//Shops
+//                    if (!status) {
+//                        CounterManager.shopOffers();
+//                        Intent intent = new Intent(HomeActivity.this, Offers.class);
+//                        startActivity(intent);
+//                    } else {
+//                        alertBox();
+//                    }
+//                }
 
             }
 
         });
 
-        //fab to add product
-        fab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-                Boolean status = sharedPref.getBoolean("mode", false);
-                if (!status) {
-                    CounterManager.StoreRoomFABclick();
-                    Intent intent = new Intent(getApplicationContext(), AddProduct.class);
-                    startActivity(intent);
-                }
-            }
-        });
-
-        //fab to add event
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-                Boolean status = sharedPref.getBoolean("mode", false);
-                if (!status) {
-                    CounterManager.eventAddClick();
-                    Intent intent = new Intent(getApplicationContext(), AddEvent.class);
-                    startActivity(intent);
-                }
-            }
-        });
+//        //fab to add product
+//        fab1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+//                Boolean status = sharedPref.getBoolean("mode", false);
+//                if (!status) {
+//                    CounterManager.StoreRoomFABclick();
+//                    Intent intent = new Intent(getApplicationContext(), AddProduct.class);
+//                    startActivity(intent);
+//                }
+//            }
+//        });
+//
+//        //fab to add event
+//        fab2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+//                Boolean status = sharedPref.getBoolean("mode", false);
+//                if (!status) {
+//                    CounterManager.eventAddClick();
+//                    Intent intent = new Intent(getApplicationContext(), AddEvent.class);
+//                    startActivity(intent);
+//                }
+//            }
+//        });
 
         //fab to add search pool
-        fab3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-                Boolean status = sharedPref.getBoolean("mode", false);
-                if (!status) {
-                    setActionBarTitle("Search Pool");
-                    CounterManager.RecentsOpen();
-                    Intent intent = new Intent(getApplicationContext(), CabPooling.class);
-                    startActivity(intent);
-                }
-            }
-        });
+//        fab3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+//                Boolean status = sharedPref.getBoolean("mode", false);
+//                if (!status) {
+//                    setActionBarTitle("Search Pool");
+//                    CounterManager.RecentsOpen();
+//                    Intent intent = new Intent(getApplicationContext(), CabPooling.class);
+//                    startActivity(intent);
+//                }
+//            }
+//        });
 
 
         toggle = new ActionBarDrawerToggle(
@@ -515,27 +515,27 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     case 0: {
                         setActionBarTitle("BITS Connect");
                         CounterManager.RecentsOpen();
-                        fab.setImageResource(R.drawable.ic_add_white_36dp);
+//                        fab.setImageResource(R.drawable.ic_add_white_36dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
                         setActionBarTitle("Infone");
                         CounterManager.InfoneOpen();
-                        fab.setImageResource(R.drawable.ic_edit_white_24dp);
+//                        fab.setImageResource(R.drawable.ic_edit_white_24dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         break;
                     }
                     case 3: {
                         setActionBarTitle("Events");
                         CounterManager.EventOpen();
-                        fab.setImageResource(R.drawable.ic_add_white_36dp);
+//                        fab.setImageResource(R.drawable.ic_add_white_36dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
                         break;
                     }
                     case 5: {
                         setActionBarTitle("Shops");
-                        fab.setImageResource(R.drawable.procent_badge_256);
+//                        fab.setImageResource(R.drawable.procent_badge_256);
                         CounterManager.ShopOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
 
@@ -544,14 +544,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     case 2: {
                         setActionBarTitle("StoreRoom");
                         CounterManager.StoreRoomOpen();
-                        fab.setImageResource(R.drawable.ic_add_shopping_cart_white_24dp);
+//                        fab.setImageResource(R.drawable.ic_add_shopping_cart_white_24dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
                         break;
                     }
                     case 4: {
                         setActionBarTitle("Cab Pool");
                         CounterManager.openCabPool();
-                        fab.setImageResource(R.drawable.ic_search_white_24dp);
+//                        fab.setImageResource(R.drawable.ic_search_white_24dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
                         break;
                     }

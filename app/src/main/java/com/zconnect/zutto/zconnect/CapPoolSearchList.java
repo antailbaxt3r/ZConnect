@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.text.SimpleDateFormat;
@@ -38,9 +35,7 @@ import java.util.Date;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import static android.icu.util.HebrewCalendar.AV;
-
-public class PoolList extends BaseActivity {
+public class CapPoolSearchList extends BaseActivity {
     RecyclerView poolrv;
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
     DatabaseReference pool;
@@ -68,28 +63,11 @@ public class PoolList extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_pool_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PoolList.this, AddCabPool.class);
-                try {
-                    intent.putExtra("source", String.valueOf(source));
-                    intent.putExtra("destination", String.valueOf(destination));
-                    intent.putExtra("date", String.valueOf(date));
-                    intent.putExtra("time_from", String.valueOf(time_from));
-                    intent.putExtra("time_to", String.valueOf(time_to));
-                }catch (Exception e){
-                    Log.e("TAG","Intent not successfull");
-                }
-                startActivity(intent);
-                finish();
-            }
-        });
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -111,11 +89,6 @@ public class PoolList extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        //getting present dates and defining format for input and output date
-        final Calendar c = Calendar.getInstance();
-        SimpleDateFormat input = new SimpleDateFormat("dd/M/yyyy");
-        SimpleDateFormat output = new SimpleDateFormat("yyyyMMdd");
-        Date = output.format(c.getTime());
 
         //getting values from intent
         try {
@@ -125,30 +98,54 @@ public class PoolList extends BaseActivity {
             time_to = getIntent().getStringExtra("time_to");
             time_from = getIntent().getStringExtra("time_from");
 
-        } catch (Exception e) {
+        } catch (Exception e) {}
 
-        }
-
+        // Fab for creating this
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            Intent intent = new Intent(CapPoolSearchList.this, AddCabPool.class);
             try {
-                Date abc=input.parse(date);
-                formatted_date=output.format(abc);
+                intent.putExtra("source", String.valueOf(source));
+                intent.putExtra("destination", String.valueOf(destination));
+                intent.putExtra("date", String.valueOf(date));
+                intent.putExtra("time_from", String.valueOf(time_from));
+                intent.putExtra("time_to", String.valueOf(time_to));
+            }catch (Exception e){
+                Log.e("TAG","Intent not successfull");
+            }
+            startActivity(intent);
+            finish();
+            }
+        });
 
-            }catch (Exception e){}
+        //getting present dates and defining format for input and output date
+        final Calendar c = Calendar.getInstance();
+        SimpleDateFormat input = new SimpleDateFormat("dd/M/yyyy");
+        SimpleDateFormat output = new SimpleDateFormat("yyyyMMdd");
+        Date = output.format(c.getTime());
+
+        try {
+            Date abc=input.parse(date);
+            formatted_date=output.format(abc);
+
+        }catch (Exception e){}
 
         //Setting old database or new database
         if(date==null){
+            reference=reference_default;
 
-        reference=reference_default;
-
-            }else{
-                if(Date.compareTo(formatted_date)>0){
+        }else{
+            if(Date.compareTo(formatted_date)>0){
                 reference=reference_Old;
-                }else{
+            }else{
                 reference=reference_default;
-           }
+            }
         }
 
-        pool = FirebaseDatabase.getInstance().getReference().child(reference);
+        pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(reference);
+
         query=pool.orderByChild("DT");
 
         mUser = FirebaseAuth.getInstance();
@@ -257,7 +254,7 @@ public class PoolList extends BaseActivity {
                     defaultmsg.setVisibility(View.VISIBLE);
                     poolrv.setVisibility(View.INVISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(PoolList.this);
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(CapPoolSearchList.this);
                     // 2. Chain together various setter methods to set the dialog characteristics
                     builder.setMessage("No CabPools found . \n Would you like to add one ?")
                             .setTitle("Alert");
@@ -267,7 +264,7 @@ public class PoolList extends BaseActivity {
                             if (isNetworkAvailable(getApplicationContext())) {
                                 if (name != null && number != null) {
 
-                                    Intent intent=new Intent(PoolList.this,AddCabPool.class);
+                                    Intent intent=new Intent(CapPoolSearchList.this,AddCabPool.class);
                                     try {
                                         intent.putExtra("source", String.valueOf(source));
                                         intent.putExtra("destination", String.valueOf(destination));

@@ -109,6 +109,7 @@ public class AddEvent extends BaseActivity {
 
     private IntentHandle intentHandle = new IntentHandle();
     private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,7 +155,7 @@ public class AddEvent extends BaseActivity {
         mEventDescription = (EditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
-        gmapLocationTaken=(CheckBox) findViewById(R.id.add_events_location_checkbox);
+        gmapLocationTaken = (CheckBox) findViewById(R.id.add_events_location_checkbox);
         mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts");
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/NotVerifiedPosts");
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -254,7 +255,7 @@ public class AddEvent extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    if (child.getValue()!=null && child.getValue().equals(emailId)) {
+                    if (child.getValue() != null && child.getValue().equals(emailId)) {
                         flag = true;
                     }
                 }
@@ -268,20 +269,19 @@ public class AddEvent extends BaseActivity {
 
         // to get venues from firebase depending on college location( venue names only)
         // which will then be given as auto correct options in the edit text for event venue
-        mDatabaseVenues= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/Venues/");
+        mDatabaseVenues = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/Venues/");
 
         mDatabaseVenues.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                int i=0;
+                int i = 0;
                 for (DataSnapshot child : snapshot.getChildren()) {
 
-                    if(child.getValue()!=null){
-                        venueOptions.add(i,child.getValue().toString());
+                    if (child.getValue() != null) {
+                        venueOptions.add(i, child.getValue().toString());
                         i++;
-                    }
-                    else {
+                    } else {
                         venueOptions.add("Auditorium");
                         venueOptions.add("Main lawns");
                         break;
@@ -297,7 +297,7 @@ public class AddEvent extends BaseActivity {
             @Override
             public void onCancelled(DatabaseError error) {
 
-                Log.e("AddEvent"," Venue database fetch Cancelled");
+                Log.e("AddEvent", " Venue database fetch Cancelled");
                 venueOptions.add("Auditorium");
                 venueOptions.add("Main lawns");
 
@@ -319,7 +319,6 @@ public class AddEvent extends BaseActivity {
         if (bundle != null) {
             EventID = bundle.getString("eventID");
         }
-
 
 
         int id = item.getItemId();
@@ -475,7 +474,7 @@ public class AddEvent extends BaseActivity {
                             });
 
                             //Sending Notifications
-                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                             notificationSender.execute();
 
 
@@ -555,7 +554,7 @@ public class AddEvent extends BaseActivity {
                                 }
                             });
                             //Sending Notifications
-                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                             notificationSender.execute();
 
                         }
@@ -621,7 +620,7 @@ public class AddEvent extends BaseActivity {
                             taskMap.put("EventTimeMillis", eventTimeMillis);
 
                             //Sending Notifications
-                            NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                            NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                             notificationSender.execute();
 
                             mEventDatabase.updateChildren(taskMap);
@@ -660,7 +659,7 @@ public class AddEvent extends BaseActivity {
 
                     //Sending Notifications
                     FirebaseMessaging.getInstance().subscribeToTopic(KEY_EVENT);
-                    NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false);
+                    NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                     notificationSender.execute();
 
 

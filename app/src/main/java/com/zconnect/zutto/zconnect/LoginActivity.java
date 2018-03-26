@@ -269,10 +269,13 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         try {
             usersDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityCode).child("Users");
             usersDbRef.keepSynced(true);
+
             DatabaseReference currentUserDbRef = usersDbRef.child(user.getUid());
             currentUserDbRef.child("Image").setValue(photoUrl);
             currentUserDbRef.child("Username").setValue(user.getDisplayName());
             currentUserDbRef.child("Email").setValue(user.getEmail());
+
+
             Intent i = new Intent(LoginActivity.this,HomeActivity.class);
             startActivity(i);
             finish(); /*Make Sure HomeActivity exists*/

@@ -77,6 +77,7 @@ public class CabListOfPeople extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_cab_list_of_people);
         setToolbar();
         setToolbarTitle("List of people");
@@ -105,7 +106,7 @@ public class CabListOfPeople extends BaseActivity {
             }
         });
 
-        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("Cab").child(key).child("views");
+        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference).child("Cab").child(key).child("views");
         updateViews();
 
         ref.addValueEventListener(new ValueEventListener() {
@@ -235,7 +236,7 @@ public class CabListOfPeople extends BaseActivity {
                                 cabListItemFormatVector.add(new CabListItemFormat(name, number));
                                 pool.setValue(cabListItemFormatVector);
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
-                                NotificationSender notification = new NotificationSender(key,number,null,null,null,null,"CabPool",false,true);
+                                NotificationSender notification = new NotificationSender(key,number,null,null,null,null,"CabPool",false,true,getApplicationContext());
                                 notification.execute();
 
                             } else {

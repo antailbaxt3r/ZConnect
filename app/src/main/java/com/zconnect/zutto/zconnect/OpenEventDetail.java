@@ -71,6 +71,7 @@ public class  OpenEventDetail extends BaseActivity {
 
     ProgressDialog progressDialog;
 
+    /*db elements needed for views calculation*/
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private ValueEventListener listener;
@@ -516,7 +517,7 @@ public class  OpenEventDetail extends BaseActivity {
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
                         //Sending Notifications
                         FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
-                        NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT_BOOST,false,true);
+                        NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT_BOOST,false,true,getApplicationContext());
                         notificationSender.execute();
 
                     }else {

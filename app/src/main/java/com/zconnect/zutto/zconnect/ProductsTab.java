@@ -220,7 +220,7 @@ public class ProductsTab extends Fragment {
                                             Typeface customfont = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Light.ttf");
                                             viewHolder.shortList.setTypeface(customfont);
 
-                                            NotificationSender notificationSender=new NotificationSender(model.getKey(),null,null,null,mAuth.getCurrentUser().getEmail(),model.getProductName(),KEY_PRODUCT,false,true);
+                                            NotificationSender notificationSender=new NotificationSender(model.getKey(),null,null,null,mAuth.getCurrentUser().getEmail(),model.getProductName(),KEY_PRODUCT,false,true,getContext());
                                             notificationSender.execute();
 
                                         }

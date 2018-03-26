@@ -8,6 +8,7 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name=".ZConnect"
@@ -222,7 +223,7 @@
             android:value="AIzaSyAdm88Gzu7Ut3McNr_Esnc5Psyppj30KoM" />
 
         <activity
-            android:name=".PoolList"
+            android:name=".CapPoolSearchList"
             android:label="@string/title_activity_pool_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -289,16 +290,29 @@
         <activity
             android:name=".CreateCommunity"
             android:label="@string/title_activity_create_community"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NewMessageActivity"
             android:label="@string/title_activity_new_message"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NotificationSettings"
             android:label="@string/title_activity_nitification_settings"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Infone2Activity" />
+        <activity
+            android:name=".InfoneContactListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity
+            android:name=".InfoneProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".InfoneAddContactActivity" />
+        <activity
+            android:name=".MessagesActivity"
+            android:label="@string/title_activity_messages"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".InfoneAddCatActivity"></activity>
     </application>
 
 </manifest>
