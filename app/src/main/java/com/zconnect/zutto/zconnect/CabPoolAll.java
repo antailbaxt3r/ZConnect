@@ -23,7 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,10 +36,10 @@ import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CabPoolMain#newInstance} factory method to
+ * Use the {@link CabPoolAll#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CabPoolMain extends Fragment {
+public class CabPoolAll extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -60,6 +59,7 @@ public class CabPoolMain extends Fragment {
     TextView error;
     String DT;
     View.OnClickListener onEmpty;
+    ValueEventListener allPools;
 
     private SharedPreferences communitySP;
     public String communityReference;
@@ -73,25 +73,12 @@ public class CabPoolMain extends Fragment {
     DatabaseReference databaseReference;
 
 
-    public CabPoolMain() {
+    public CabPoolAll() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CabPoolMain.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CabPoolMain newInstance(String param1, String param2) {
-        CabPoolMain fragment = new CabPoolMain();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+    public static CabPoolAll newInstance(String param1, String param2) {
+        CabPoolAll fragment = new CabPoolAll();
         return fragment;
     }
 
@@ -118,16 +105,14 @@ public class CabPoolMain extends Fragment {
 
         databaseReference = firebaseDatabase.getReference().child("communities").child(communityReference).child("Cab");
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        allPools= new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 vector_fetched.clear();
                 vector_final.clear();
-                Log.e("ABC", String.valueOf(dataSnapshot.getChildrenCount()));
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     vector_fetched.add(shot.getValue(CabItemFormat.class));
-
                 }
 
                 Calendar c = Calendar.getInstance();
@@ -136,61 +121,63 @@ public class CabPoolMain extends Fragment {
                 DecimalFormat decimalFormat = new DecimalFormat("00");
 
                 String date = output.format(c.getTime());
-                Log.e("ABC", date);
-                Log.e("RV", "SIZE:"+String.valueOf(vector_fetched.size()));
+//                Log.e("ABC", date);
+//                Log.e("RV", "SIZE:"+String.valueOf(vector_fetched.size()));
+
                 for (int i = 0; i < vector_fetched.size(); i++) {
                     Log.e("RV", "value of i:"+String.valueOf(i));
 
-                    fetchedDate = vector_fetched.get(i).getDate();
-                    Log.e("RV", "FETCHED DATE:"+fetchedDate);
+//                    try {
+//
+//                        fetchedDate = vector_fetched.get(i).getDate();
+//                        Log.e("RV", "FETCHED DATE:" + fetchedDate);
+//
+//                    }catch (Exception e){
+//
+//                    }
 
-
-
-                    //check if DT is there or not
-                    //if not, then will add DT to it.
-                    if (vector_fetched.get(i).getDT() != null) {
+//                    //check if DT is there or not
+//                    //if not, then will add DT to it.
+//                    if (vector_fetched.get(i).getDT() != null) {
 
                         DT = vector_fetched.get(i).getDT();
                         Log.e("RV", "value of DT:"+String.valueOf(DT));
 
-                    } else {
-
-                        //getting fetched date to required format
-                        try {
-
-                            fDate = input.parse(fetchedDate);
-
-                        } catch (ParseException e) {
-
-                            System.err.println("Could not parse date: " + fetchedDate);
-
-                        }
-
-
-                        String date1 = output.format(fDate);
-                       // Log.e("ABC", date1);
-
-
-                        double T1 = Integer.valueOf((vector_fetched.get(i).getTime()).substring(0, 2));
-                        double T2 = Integer.valueOf((vector_fetched.get(i).getTime()).substring(9, 11));
-                        double Av = (T1 + T2) / 2;
-                        String time;
-
-                        if (Av == ((int) Av)) {
-                            time = decimalFormat.format((int)Av + 00) + ":00";
-                        } else {
-                            time = (decimalFormat.format((int) Av + 00) + ":30");
-                        }
-
-                     //   Log.e("ABC", time);
-
-                        DT = date1 + " " + time;
-                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab").child(vector_fetched.get(i).getKey());
-                        newPost2.child("DT").setValue(DT);
-                        Log.e("ABC", DT);
-                        vector_fetched.get(i).setDT(DT);
-
-                    }
+//                    } else {
+//
+//                        //getting fetched date to required format
+//                        try {
+//
+//                            fDate = input.parse(fetchedDate);
+//
+//                        } catch (ParseException e) {
+//
+//                            System.err.println("Could not parse date: " + fetchedDate);
+//
+//                        }
+//
+//
+//                        String date1 = output.format(fDate);
+//
+//                        double T1 = Integer.valueOf((vector_fetched.get(i).getTime()).substring(0, 2));
+//                        double T2 = Integer.valueOf((vector_fetched.get(i).getTime()).substring(9, 11));
+//                        double Av = (T1 + T2) / 2;
+//                        String time;
+//
+//                        if (Av == ((int) Av)) {
+//                            time = decimalFormat.format((int)Av + 00) + ":00";
+//                        } else {
+//                            time = (decimalFormat.format((int) Av + 00) + ":30");
+//                        }
+//
+//
+//                        DT = date1 + " " + time;
+//                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab").child(vector_fetched.get(i).getKey());
+//                        newPost2.child("DT").setValue(DT);
+//                        Log.e("ABC", DT);
+//                        vector_fetched.get(i).setDT(DT);
+//
+//                    }
 
 
                     if (date.compareTo(DT) <= 0) {
@@ -200,7 +187,7 @@ public class CabPoolMain extends Fragment {
                     } else {
 
                         String key = vector_fetched.get(i).getKey();
-                        moveGameRoom(firebaseDatabase.getReference().child("communities").child(communityReference).child("Cab").child(key), firebaseDatabase.getReference().child("communities").child(communityReference).child("archive/Cab").child(key));
+                        ArchivePool(firebaseDatabase.getReference().child("communities").child(communityReference).child("Cab").child(key), firebaseDatabase.getReference().child("communities").child(communityReference).child("archive/Cab").child(key));
 
                     }
                 }
@@ -208,6 +195,7 @@ public class CabPoolMain extends Fragment {
                 vector_final.addAll(treeMap.values());
                 Log.e("ABC1", String.valueOf(vector_final.size()));
 
+                //
                 if (vector_final.size() == 0) {
                     recyclerView.setVisibility(View.GONE);
                     error.setVisibility(View.VISIBLE);
@@ -218,8 +206,6 @@ public class CabPoolMain extends Fragment {
                     error.setVisibility(View.GONE);
                     recyclerView.setAdapter(cabPoolRVAdapter);
                     cabPoolRVAdapter.notifyDataSetChanged();
-
-
                 }
             }
 
@@ -227,7 +213,7 @@ public class CabPoolMain extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
 
         onEmpty = new View.OnClickListener() {
             @Override
@@ -266,13 +252,11 @@ public class CabPoolMain extends Fragment {
                 }
             });
         }
-
-
         return view;
     }
 
 
-    private void moveGameRoom(final DatabaseReference fromPath, final DatabaseReference toPath) {
+    private void ArchivePool(final DatabaseReference fromPath, final DatabaseReference toPath) {
         fromPath.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -299,5 +283,16 @@ public class CabPoolMain extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
 
+        databaseReference.addValueEventListener(allPools);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        databaseReference.removeEventListener(allPools);
+    }
 }

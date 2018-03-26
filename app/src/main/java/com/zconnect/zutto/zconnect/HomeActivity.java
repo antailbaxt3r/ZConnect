@@ -181,7 +181,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         //getting all the tabs Instances
         recent = new Recents();
-        cab = new CabPoolMain();
+        cab = new CabPoolAll();
         infone = new InfoneActivity();
         store = new TabStoreRoom();
         shop = new Shop();

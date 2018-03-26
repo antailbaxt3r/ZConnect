@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.text.SimpleDateFormat;
@@ -38,9 +35,7 @@ import java.util.Date;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import static android.icu.util.HebrewCalendar.AV;
-
-public class PoolList extends BaseActivity {
+public class CapPoolSearchList extends BaseActivity {
     RecyclerView poolrv;
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
     DatabaseReference pool;
@@ -110,7 +105,7 @@ public class PoolList extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Intent intent = new Intent(PoolList.this, AddCabPool.class);
+            Intent intent = new Intent(CapPoolSearchList.this, AddCabPool.class);
             try {
                 intent.putExtra("source", String.valueOf(source));
                 intent.putExtra("destination", String.valueOf(destination));
@@ -259,7 +254,7 @@ public class PoolList extends BaseActivity {
                     defaultmsg.setVisibility(View.VISIBLE);
                     poolrv.setVisibility(View.INVISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(PoolList.this);
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(CapPoolSearchList.this);
                     // 2. Chain together various setter methods to set the dialog characteristics
                     builder.setMessage("No CabPools found . \n Would you like to add one ?")
                             .setTitle("Alert");
@@ -269,7 +264,7 @@ public class PoolList extends BaseActivity {
                             if (isNetworkAvailable(getApplicationContext())) {
                                 if (name != null && number != null) {
 
-                                    Intent intent=new Intent(PoolList.this,AddCabPool.class);
+                                    Intent intent=new Intent(CapPoolSearchList.this,AddCabPool.class);
                                     try {
                                         intent.putExtra("source", String.valueOf(source));
                                         intent.putExtra("destination", String.valueOf(destination));

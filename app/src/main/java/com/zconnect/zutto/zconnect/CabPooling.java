@@ -129,7 +129,7 @@ public class CabPooling extends AppCompatActivity {
                 Time_To=time_to.getSelectedItem();
             }
 
-            Intent intent = new Intent(CabPooling.this, PoolList.class);
+            Intent intent = new Intent(CabPooling.this, CapPoolSearchList.class);
 
             if (Source == null && Destination == null && Time_From == null && Time_To == null && calender.getText().equals("Click to choose")) {
                 //check if all fields are not null
