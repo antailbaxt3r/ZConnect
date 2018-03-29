@@ -321,33 +321,35 @@ public class TimelineEvents extends Fragment {
         }
 
         public void setEventStatus( String eventDate) {
+            if(eventDate != null)
+            {
+                eventStatus = (RelativeLayout) itemView.findViewById(R.id.event_status);
+                eventOver = (TextView) itemView.findViewById(R.id.event_over);
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                String currFormattedDate = simpleDateFormat.format(calendar.getTime());
 
-            eventStatus = (RelativeLayout) itemView.findViewById(R.id.event_status);
-            eventOver = (TextView) itemView.findViewById(R.id.event_over);
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            String currFormattedDate = simpleDateFormat.format(calendar.getTime());
+                String currEventDate[]=eventDate.split(" ");
 
-            String currEventDate[]=eventDate.split(" ");
+                String month = monthSwitcher(currEventDate[1]);
+                String date=currEventDate[2];
+                String year=currEventDate[5];
 
-            String month = monthSwitcher(currEventDate[1]);
-            String date=currEventDate[2];
-            String year=currEventDate[5];
+                String formattedDate[] = currFormattedDate.split("-");
 
-            String formattedDate[] = currFormattedDate.split("-");
+                String currDate = formattedDate[0];
+                String currMonth = formattedDate[1];
+                String currYear = formattedDate[2];
 
-            String currDate = formattedDate[0];
-            String currMonth = formattedDate[1];
-            String currYear = formattedDate[2];
-
-            if(Integer.parseInt(currYear)>Integer.parseInt(year)) {
-                eventStatus.setVisibility(View.VISIBLE);
-            }
-            else if(Integer.parseInt(currMonth)>Integer.parseInt(month)) {
-                eventStatus.setVisibility(View.VISIBLE);
-            }
-            else if(Integer.parseInt(currDate) > Integer.parseInt(date)) {
-                eventStatus.setVisibility(View.VISIBLE);
+                if(Integer.parseInt(currYear)>Integer.parseInt(year)) {
+                    eventStatus.setVisibility(View.VISIBLE);
+                }
+                else if(Integer.parseInt(currMonth)>Integer.parseInt(month)) {
+                    eventStatus.setVisibility(View.VISIBLE);
+                }
+                else if(Integer.parseInt(currDate) > Integer.parseInt(date)) {
+                    eventStatus.setVisibility(View.VISIBLE);
+                }
             }
         }
     }

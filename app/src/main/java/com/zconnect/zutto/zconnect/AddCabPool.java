@@ -50,9 +50,11 @@ public class AddCabPool extends BaseActivity {
     double T1, T2;
     DatabaseReference mFeaturesStats;
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+    DatabaseReference mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
     private DatabaseReference homeReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
     private FirebaseUser mUser;
+    private long postTimeMillis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,6 +260,8 @@ public class AddCabPool extends BaseActivity {
 
                                         //writing new added pool to database
                                         DatabaseReference newPost = databaseReference.push();
+                                        final DatabaseReference postedBy = newPost.child("PostedBy");
+                                        postTimeMillis = System.currentTimeMillis();
                                         String key = newPost.getKey();
                                         newPost.child("key").setValue(key);
                                         newPost.child("source").setValue(String.valueOf(source.getSelectedItem()));
@@ -268,6 +272,22 @@ public class AddCabPool extends BaseActivity {
                                         newPost.child("from").setValue(T1);
                                         newPost.child("to").setValue(T2);
                                         newPost.child("cabListItemFormats").setValue(cabListItemFormats);
+                                        newPost.child("PostTimeMillis").setValue(postTimeMillis);
+                                        postedBy.setValue(null);
+                                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                postedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                                                //needs to be changed after image thumbnail is put
+                                                postedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
 
                                         CounterManager.createPool(String.valueOf(destination.getSelectedItem()));
                                         FirebaseMessaging.getInstance().subscribeToTopic(key);
@@ -275,7 +295,7 @@ public class AddCabPool extends BaseActivity {
 
                                         //writing to database for recent items
                                         DatabaseReference newPost2 = homeReference.push();
-
+                                        final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
                                         newPost2.child("name").setValue("Cabpool to " + destination.getSelectedItem().toString());
                                         newPost2.child("desc").setValue("Hey! a friend is asking for a cabpool from " + source.getSelectedItem().toString() + " to " + destination.getSelectedItem().toString() + " on " + calender.getText().toString() + " between " + time + ". Do you want to join?");
                                         newPost2.child("imageurl").setValue("https://blog.grabon.in/wp-content/uploads/2016/09/Cab-Services.jpg");
@@ -284,6 +304,27 @@ public class AddCabPool extends BaseActivity {
                                         newPost2.child("Key").setValue(key);
                                         newPost2.child("desc2").setValue("");
                                         newPost2.child("DT").setValue(s_year + s_monthOfYear + s_dayOfMonth + " " + getTime());
+                                        newPost2.child("cabpoolSource").setValue(String.valueOf(source.getSelectedItem()));
+                                        newPost2.child("cabpoolDestination").setValue(String.valueOf(destination.getSelectedItem()));
+                                        newPost2.child("cabpoolDate").setValue(calender.getText().toString());
+                                        newPost2.child("cabpoolTime").setValue(time);
+                                        newPost2.child("cabpoolNumPeople").setValue(cabListItemFormats.size());
+                                        newPost2.child("PostTimeMillis").setValue(postTimeMillis);
+                                        newPost2PostedBy.setValue(null);
+                                        newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                newPost2PostedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                                                //needs to be changed after image thumbnail is put
+                                                newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
 
                                         // Adding stats
                                         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");

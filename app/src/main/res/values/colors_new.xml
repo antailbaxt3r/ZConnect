@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="link">#03A9F4</color>
+    <color name="defaultAvatar">#BDBDBD</color>
+
+    <color name="infone">#9C27B0</color>
+    <color name="events">#8BC34A</color>
+    <color name="storeroom">#F44336</color>
+    <color name="cabpool">#FFEB3B</color>
+    <color name="shops">#01579B</color>
+
+    <color name="primaryText">#000</color>
+    <color name="secondaryText">#BBB</color>
+    <color name="transparent">#00000000</color>
+
+</resources>

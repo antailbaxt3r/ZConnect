@@ -1,5 +1,9 @@
 package com.zconnect.zutto.zconnect.ItemFormats;
 
+import android.util.Log;
+
+import com.google.firebase.database.DatabaseReference;
+
 import java.io.Serializable;
 
 /**
@@ -21,11 +25,13 @@ public class Event implements Serializable {
             Boosters,
             UserId,
             Verified;
+
+    private PostedByDetails PostedBy;
     public Event() {
 
     }
 
-    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, Long eventTimeMillis, String formatDate, String key, String venue, String boosters, String userid, double boostcount,String verified) {
+    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, Long eventTimeMillis, String formatDate, String key, String venue, String boosters, String userid, double boostcount,String verified, PostedByDetails postedBy) {
         this.lon = lon;
         this.lat = lat;
         EventName = eventName;
@@ -40,6 +46,7 @@ public class Event implements Serializable {
         UserId = userid;
         BoostCount = boostcount;
         Verified = verified;
+        PostedBy = postedBy;
     }
 
     public String getVerified(){
@@ -75,6 +82,7 @@ public class Event implements Serializable {
     }
 
     public String getEventName() {
+        Log.d("QQQ Eventname", EventName);
         return EventName;
     }
 
@@ -114,4 +122,19 @@ public class Event implements Serializable {
     public String getUserID() {
         return UserId;
     }
+
+    public PostedByDetails getPostedBy() {
+        return PostedBy;
+    }
+
+    public void setPostedBy(PostedByDetails postedBy) {
+        PostedBy = postedBy;
+    }
+//
+//    public PostedByDetails getPostedBy() {
+//        Log.d("QQQ username", PostedBy.getUsername());
+//        return PostedBy; }
+//    public String getPostedByImageThumb() { return PostedBy.getImageThumb(); }
+
+
 }

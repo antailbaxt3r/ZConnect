@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,6 +40,7 @@ import com.zconnect.zutto.zconnect.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -141,7 +143,9 @@ public class TrendingEvents extends Fragment {
                     viewHolder.setEventVenue(model.getVenue());
                     viewHolder.setEditEvent(model.getUserID(), model.getKey());
                     viewHolder.setBoost(model);
-                } catch (Exception e) {
+                    viewHolder.setPostedByDetails(model.getPostedBy().getUsername(), model.getPostedBy().getImageThumb());
+                }
+                catch (Exception e) {
                     Log.d("Error Alert: ", e.getMessage());
                 }
 
@@ -223,7 +227,8 @@ public class TrendingEvents extends Fragment {
         }
         public void setEventImage(Context ctx, String image) {
             if (image != null) {
-                ImageView post_image = (ImageView) mView.findViewById(R.id.er_postImg);
+//                ImageView post_image = (ImageView) mView.findViewById(R.id.er_postImg);
+                SimpleDraweeView post_image = (SimpleDraweeView) mView.findViewById(R.id.er_postImg);
                 Picasso.with(ctx).load(image).into(post_image);
             }
         }
@@ -343,6 +348,20 @@ public class TrendingEvents extends Fragment {
 
             Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
             boostBtn.setTypeface(customfont);
+        }
+
+        private void setPostedByDetails(String username, String imageThumb) {
+            if(username!= null) {
+                TextView post_postedBy = (TextView) mView.findViewById(R.id.eventPostedBy);
+                SimpleDraweeView post_postedByAvatar = (SimpleDraweeView) mView.findViewById(R.id.eventPostedByAvatar);
+                post_postedBy.setText(username);
+                if(imageThumb != null)
+                {
+                    post_postedByAvatar.setImageURI(imageThumb);
+                }
+                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+                post_postedBy.setTypeface(customFont);
+            }
         }
 
     }

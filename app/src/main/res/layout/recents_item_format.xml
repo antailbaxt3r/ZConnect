@@ -2,17 +2,361 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    android:layout_marginEnd="5dp"
-    android:layout_marginStart="5dp"
-    android:layout_marginTop="4dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="5dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="5dp"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardElevation="0dp"
     android:background="@drawable/roundradius">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="0dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginStart="0dp">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/featureCircle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/feature_circle" />
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/avatarCircle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/avatar_circle"
+                android:layout_marginStart="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/postedBy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/link"
+                        android:textStyle="bold"
+                        android:text="Somebody"/>
+
+                    <TextView
+                        android:id="@+id/postConjunction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/secondaryText"
+                        android:text=" posted a "/>
+
+                    <TextView
+                        android:id="@+id/post"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/link"
+                        android:textStyle="bold"
+                        android:text="Post"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/postTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Unkown time ago"
+                        android:textColor="@color/secondaryText"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="20dp">
+            <LinearLayout
+                android:id="@+id/cabpoolRecentItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+                    <TextView
+                        android:id="@+id/cabpoolRecentItem_source"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Source"
+                        android:textColor="@color/primaryText"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" to "
+                        android:textColor="@color/primaryText"/>
+                    <TextView
+                        android:id="@+id/cabpoolRecentItem_destination"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Destination"
+                        android:textColor="@color/primaryText"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+                    <TextView
+                        android:id="@+id/cabpoolRecentItem_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date"
+                        android:textColor="@color/primaryText"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=", "
+                        android:textColor="@color/primaryText" />
+                    <TextView
+                        android:id="@+id/cabpoolRecentItem_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time"
+                        android:textColor="@color/primaryText" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/secondaryText"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"/>
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:paddingTop="5dp"-->
+                    <!--android:paddingBottom="5dp" >-->
+                    <!--<Button-->
+                        <!--android:id="@+id/cabpoolRecentItem_call"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="30dp"-->
+                        <!--android:layout_weight="0.33"-->
+                        <!--android:textColor="@color/primaryText"-->
+                        <!--android:background="@color/transparent"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:text="Call"/>-->
+                    <!--<Button-->
+                        <!--android:id="@+id/cabpoolRecentItem_chat"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="30dp"-->
+                        <!--android:layout_weight="0.33"-->
+                        <!--android:textColor="@color/primaryText"-->
+                        <!--android:background="@color/transparent"-->
+                        <!--android:text="Chat"-->
+                        <!--android:textAllCaps="false"/>-->
+                    <!--<Button-->
+                        <!--android:id="@+id/cabpoolRecentItem_join"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="30dp"-->
+                        <!--android:layout_weight="0.33"-->
+                        <!--android:text="Join"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/primaryText"-->
+                        <!--android:background="@color/transparent"/>-->
+                <!--</LinearLayout>-->
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/eventsRecentItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:layout_marginStart="0dp">
+                    <TextView
+                        android:id="@+id/eventsRecentItem_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Event name"
+                        android:textColor="@color/primaryText"/>
+                    <TextView
+                        android:id="@+id/eventsRecentItem_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Event Date"
+                        android:layout_marginStart="10dp"
+                        android:textColor="@color/primaryText"/>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/eventsRecentItem_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginStart="0dp"/>
+                <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Event Image"
+                    fresco:viewAspectRatio="1.33"
+                    android:id="@+id/eventsRecentItem_image"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/secondaryText"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"/>
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="0dp"-->
+                    <!--android:paddingTop="5dp"-->
+                    <!--android:paddingBottom="5dp" >-->
+                    <!--<Button-->
+                        <!--android:id="@+id/eventsRecentItem_boost"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="30dp"-->
+                        <!--android:layout_weight="0.33"-->
+                        <!--android:text="Boost"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:background="@color/transparent"-->
+                        <!--android:textColor="@color/primaryText"/>-->
+                    <!--<Button-->
+                        <!--android:id="@+id/eventsRecentItem_chat"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="30dp"-->
+                        <!--android:layout_weight="0.33"-->
+                        <!--android:text="Chat"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/primaryText"-->
+                        <!--android:background="@color/transparent"/>-->
+                    <!--<Button-->
+                        <!--android:id="@+id/eventsRecentItem_reminder"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="30dp"-->
+                        <!--android:layout_weight="0.33"-->
+                        <!--android:text="Reminder"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/primaryText"-->
+                        <!--android:background="@color/transparent"/>-->
+                <!--</LinearLayout>-->
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/storeroomRecentItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginStart="0dp">
+                    <TextView
+                        android:id="@+id/storeroomRecentItem_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Product name"
+                        android:textColor="@color/primaryText"/>
+                    <TextView
+                        android:id="@+id/storeroomRecentItem_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Price"
+                        android:layout_marginStart="10dp"
+                        android:textColor="@color/primaryText"/>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/storeroomRecentItem_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginStart="0dp"/>
+                <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Product Image"
+                    fresco:viewAspectRatio="1.33"
+                    android:id="@+id/storeroomRecentItem_image"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"/>
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="0dp"-->
+                    <!--android:paddingTop="5dp"-->
+                    <!--android:paddingBottom="5dp" >-->
+                    <!--<Button-->
+                        <!--android:id="@+id/storeroomRecentItem_call"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="30dp"-->
+                        <!--android:layout_weight="0.33"-->
+                        <!--android:text="Call"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:background="@color/transparent"-->
+                        <!--android:textColor="@color/primaryText"/>-->
+                    <!--<Button-->
+                        <!--android:id="@+id/storeroomRecentItem_chat"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="30dp"-->
+                        <!--android:layout_weight="0.33"-->
+                        <!--android:text="Chat"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/primaryText"-->
+                        <!--android:background="@color/transparent"/>-->
+                    <!--<Button-->
+                        <!--android:id="@+id/storeroomRecentItem_save"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="30dp"-->
+                        <!--android:layout_weight="0.33"-->
+                        <!--android:text="Save"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/primaryText"-->
+                        <!--android:background="@color/transparent"/>-->
+                <!--</LinearLayout>-->
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--old ui-->
         <TextView
             android:id="@+id/recentname"
             android:layout_width="match_parent"
@@ -22,12 +366,14 @@
             android:padding="6dp"
             android:textColor="@color/white"
             android:textSize="15sp"
-            tools:text="Name" />
+            tools:text="Name"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/recents_image"
