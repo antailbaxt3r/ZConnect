@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.fragments;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -269,13 +270,13 @@ public class TrendingEvents extends Fragment {
         }
 
 
-
         private void setBoost(final Event event) {
 
             final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(event.getKey());
 
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            final Button boostBtn = (Button) mView.findViewById(R.id.boostBtn);
+            final ImageButton boostBtn = (ImageButton) mView.findViewById(R.id.boostBtn);
+            final TextView eventNumLit = (TextView) mView.findViewById(R.id.eventsNumLit);
 
 
 
@@ -286,12 +287,18 @@ public class TrendingEvents extends Fragment {
                     eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
 
                     if(dataSnapshot.hasChild(user.getUid())){
-                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
+//                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                        eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x");
+                        boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.lit));
+//                        boostBtn.getBackground().setTint(mView.getContext().getResources().getColor(R.color.lit));
+//                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                         flag=true;
                     }else {
-                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
+//                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                        eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x");
+                        boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.primaryText));
+//                        boostBtn.getBackground().setTint(mView.getContext().getResources().getColor(R.color.primaryText));
+//                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
                         flag=false;
                     }
                 }
@@ -346,22 +353,22 @@ public class TrendingEvents extends Fragment {
                 });
             }
 
-            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-            boostBtn.setTypeface(customfont);
+//            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//            boostBtn.setTypeface(customfont);
         }
 
         private void setPostedByDetails(String username, String imageThumb) {
-            if(username!= null) {
-                TextView post_postedBy = (TextView) mView.findViewById(R.id.eventPostedBy);
-                SimpleDraweeView post_postedByAvatar = (SimpleDraweeView) mView.findViewById(R.id.eventPostedByAvatar);
-                post_postedBy.setText(username);
-                if(imageThumb != null)
-                {
-                    post_postedByAvatar.setImageURI(imageThumb);
-                }
-                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-                post_postedBy.setTypeface(customFont);
-            }
+//            if(username!= null) {
+//                TextView post_postedBy = (TextView) mView.findViewById(R.id.eventPostedBy);
+//                SimpleDraweeView post_postedByAvatar = (SimpleDraweeView) mView.findViewById(R.id.eventPostedByAvatar);
+//                post_postedBy.setText(username);
+//                if(imageThumb != null)
+//                {
+//                    post_postedByAvatar.setImageURI(imageThumb);
+//                }
+//                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+//                post_postedBy.setTypeface(customFont);
+//            }
         }
 
     }
