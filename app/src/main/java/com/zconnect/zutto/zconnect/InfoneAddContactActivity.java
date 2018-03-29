@@ -107,7 +107,6 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                     newContactRef.child("name").setValue(name);
                     newContactRef.child("phone").child("0").setValue(phoneNum1);
                     newContactRef.child("phone").child("1").setValue(phoneNum2);
-                    newContactRef.child("type").child("NotUser");
                     newContactRef.child("key").child(key);
 
                     //Inside Contacts
@@ -116,6 +115,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                     newContactNumRef.child("name").setValue(name);
                     newContactNumRef.child("phone").child("0").setValue(phoneNum1);
                     newContactNumRef.child("phone").child("1").setValue(phoneNum2);
+                    newContactRef.child("type").child("NotUser");
                     newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
                     newContactNumRef.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     uploadImage();
@@ -126,7 +126,8 @@ public class InfoneAddContactActivity extends AppCompatActivity {
 
                     recentsPost.child("infoneContactName").setValue(name);
                     recentsPostPostedBy.setValue(null);
-                    recentsPost.child("infoneContactCategory").setValue(catName);
+                    recentsPost.child("infoneContactCategoryName").setValue(catName);
+                    recentsPost.child("infoneContactCategory").setValue(catId);
                     recentsPost.child("id").setValue(key);
                     recentsPost.child("feature").setValue("Infone");
                     recentsPost.child("PostTimeMillis").setValue(postTimeMillis);

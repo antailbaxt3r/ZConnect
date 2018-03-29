@@ -84,7 +84,7 @@ import java.util.Vector;
             holder.postConjunction.setText(" added a ");
             holder.post.setText("Contact");
             holder.infoneContactName.setText(recentsItemFormats.get(position).getInfoneContactName());
-            holder.infoneContactCategory.setText(recentsItemFormats.get(position).getInfoneContactCategory());
+            holder.infoneContactCategory.setText(recentsItemFormats.get(position).getInfoneContactCategoryName());
 
         }
         else if(recentsItemFormats.get(position).getFeature().equals("Users"))
@@ -301,6 +301,11 @@ import java.util.Vector;
                         i=new Intent(context,ChatActivity.class);
                         mRef = FirebaseDatabase.getInstance().getReference().child("home/"+recentsItemFormats.get(getAdapterPosition()).getKey());
                         i.putExtra("ref",mRef.toString());
+                        context.startActivity(i);
+                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){
+                        i = new Intent(context,InfoneProfileActivity.class);
+                        i.putExtra("catId",recentsItemFormats.get(getAdapterPosition()).getInfoneContactCategory());
+                        i.putExtra("infoneUserId",recentsItemFormats.get(getAdapterPosition()).getId());
                         context.startActivity(i);
                     }
                 }
