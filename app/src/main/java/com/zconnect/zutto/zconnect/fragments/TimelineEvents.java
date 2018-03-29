@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,8 @@ import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -166,8 +169,8 @@ public class TimelineEvents extends Fragment {
         SharedPreferences sharedPref;
         Boolean status;
 
-        RelativeLayout eventStatus;
-        TextView eventOver;
+//        RelativeLayout eventStatus;
+//        TextView eventOver;
 
         public EventViewHolder(View itemView) {
             super(itemView);
@@ -210,17 +213,19 @@ public class TimelineEvents extends Fragment {
 
         public void setEventDate(String eventDate, Double BoostCount) {
             if (eventDate != null) {
-                TextView DateText = (TextView) mView.findViewById(R.id.date_text);
-                TextView DateMonth = (TextView) mView.findViewById(R.id.date_month);
-                TextView TimeNumber = (TextView) mView.findViewById(R.id.time_number);
-                TextView TimeType = (TextView) mView.findViewById(R.id.time_type);
+                TextView dateText = (TextView) mView.findViewById(R.id.evUpcmgDate);
+                TextView timeText = (TextView) mView.findViewById(R.id.evUpcmgTime);
+//                TextView DateText = (TextView) mView.findViewById(R.id.date_text);
+//                TextView DateMonth = (TextView) mView.findViewById(R.id.date_month);
+//                TextView TimeNumber = (TextView) mView.findViewById(R.id.time_number);
+//                TextView TimeType = (TextView) mView.findViewById(R.id.time_type);
                 TextView Boost = (TextView) mView.findViewById(R.id.boostcount);
 
 
-                Boost.setText(BoostCount.intValue()+ " people boosted this event");
+                Boost.setText(BoostCount.intValue()+ "x lit");
                 String arr[]=eventDate.split(" ");
 
-                String month = arr[1].trim().toUpperCase();
+                String month = arr[1].trim();
                 String date=arr[2];
                 String year=arr[5];
                 String times=arr[3];
@@ -244,15 +249,17 @@ public class TimelineEvents extends Fragment {
                     finalhour=Integer.parseInt(hour);
                 }
 
+                dateText.setText(date.toString() + " " + month);
+                timeText.setText(finalhour.toString() + " " + datatype);
+//                DateText.setText(date.toString());
+//                DateMonth.setText(month);
+//                TimeNumber.setText(finalhour.toString());
+//                TimeType.setText(datatype);
 
-                DateText.setText(date.toString());
-                DateMonth.setText(month);
-                TimeNumber.setText(finalhour.toString());
-                TimeType.setText(datatype);
-
-                DateText.setText(date.toString());
+//                DateText.setText(date.toString());
                 Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-                DateText.setTypeface(customFont);
+                dateText.setTypeface(customFont);
+                timeText.setTypeface(customFont);
             }
         }
 
@@ -275,7 +282,7 @@ public class TimelineEvents extends Fragment {
 //        }
         void setEventReminder(final String eventDescription, final String eventName, final String time) {
             if (eventDescription != null && eventName != null && time != null) {
-                RelativeLayout DateTime = (RelativeLayout) mView.findViewById(R.id.date);
+                LinearLayout DateTime = (LinearLayout) mView.findViewById(R.id.dateAndTime);
                 DateTime.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -323,8 +330,8 @@ public class TimelineEvents extends Fragment {
         public void setEventStatus( String eventDate) {
             if(eventDate != null)
             {
-                eventStatus = (RelativeLayout) itemView.findViewById(R.id.event_status);
-                eventOver = (TextView) itemView.findViewById(R.id.event_over);
+//                eventStatus = (RelativeLayout) itemView.findViewById(R.id.event_status);
+//                eventOver = (TextView) itemView.findViewById(R.id.event_over);
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 String currFormattedDate = simpleDateFormat.format(calendar.getTime());
@@ -342,13 +349,13 @@ public class TimelineEvents extends Fragment {
                 String currYear = formattedDate[2];
 
                 if(Integer.parseInt(currYear)>Integer.parseInt(year)) {
-                    eventStatus.setVisibility(View.VISIBLE);
+//                    eventStatus.setVisibility(View.VISIBLE);
                 }
                 else if(Integer.parseInt(currMonth)>Integer.parseInt(month)) {
-                    eventStatus.setVisibility(View.VISIBLE);
+//                    eventStatus.setVisibility(View.VISIBLE);
                 }
                 else if(Integer.parseInt(currDate) > Integer.parseInt(date)) {
-                    eventStatus.setVisibility(View.VISIBLE);
+//                    eventStatus.setVisibility(View.VISIBLE);
                 }
             }
         }
