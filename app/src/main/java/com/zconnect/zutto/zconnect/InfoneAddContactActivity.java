@@ -30,10 +30,11 @@ import java.io.IOException;
 
 public class InfoneAddContactActivity extends AppCompatActivity {
 
-    String catId;
+    String catId,catName;
     private SharedPreferences communitySP;
     public String communityReference;
     DatabaseReference databaseReferenceInfone;
+    DatabaseReference databaseRecents;
     DatabaseReference newContactRef;
     EditText nameEt;
     EditText phone1Et, phone2Et;
@@ -55,6 +56,8 @@ public class InfoneAddContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_infone_add_contact);
 
         catId = getIntent().getExtras().getString("catId");
+        catName = getIntent().getExtras().getString("catName");
+
 
         nameEt = (EditText) findViewById(R.id.name_et_infone_add);
         phone1Et = (EditText) findViewById(R.id.phone_et_infone_add);
@@ -65,9 +68,10 @@ public class InfoneAddContactActivity extends AppCompatActivity {
         communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities")
-                .child(communityReference).child("infone");
+        databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone");
         mStorageRef = FirebaseStorage.getInstance().getReference();
+
+        databaseRecents = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +104,14 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                     newContactNumRef.child("phone").child("0").setValue(phoneNum1);
                     newContactNumRef.child("phone").child("1").setValue(phoneNum2);
                     uploadImage();
+
+                    //for Recents
+                    DatabaseReference recentsPost = databaseRecents.push();
+
+                    recentsPost.child("infoneContactName").setValue(name);
+                    recentsPost.child("infoneContactCategory").setValue(catName);
+                    recentsPost.child("id").setValue(key);
+                    recentsPost.child("feature").setValue("Infone");
                 }
 
             }

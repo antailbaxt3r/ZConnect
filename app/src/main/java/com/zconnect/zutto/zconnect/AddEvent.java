@@ -400,7 +400,7 @@ public class AddEvent extends BaseActivity {
                             newPost.child("EventTimeMillis").setValue(eventTimeMillis);
 
 
-                            //For Everything
+                            //For Recents
                             DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
                             newPost2.child("name").setValue(eventNameValue);
                             newPost2.child("desc").setValue(eventDescriptionValue);
