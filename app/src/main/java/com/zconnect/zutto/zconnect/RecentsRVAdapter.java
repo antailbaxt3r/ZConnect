@@ -23,6 +23,7 @@ import com.facebook.common.time.Clock;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 
@@ -57,25 +58,29 @@ import java.util.Vector;
 
     @Override
     public void onBindViewHolder(RecentsRVAdapter.ViewHolder holder, int position) {
-        try{
+
         holder.simpleDraweeView.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
         holder.feature.setText(recentsItemFormats.get(position).getFeature());
         holder.desc.setText(recentsItemFormats.get(position).getDesc());
 //<<<<<<< HEAD
-
         //new ui
-        if(recentsItemFormats.get(position).getPostTimeMillis() > 0)
-        {
-            Log.d("EventName" , recentsItemFormats.get(position).getName());
-            TimeAgo ta = new TimeAgo(recentsItemFormats.get(position).getPostTimeMillis(), System.currentTimeMillis());
-            holder.postTime.setText(ta.calculateTimeAgo());
+        try {
+            if (recentsItemFormats.get(position).getPostTimeMillis() > 0) {
+                TimeAgo ta = new TimeAgo(recentsItemFormats.get(position).getPostTimeMillis(), System.currentTimeMillis());
+                holder.postTime.setText(ta.calculateTimeAgo());
+            }
+            if (recentsItemFormats.get(position).getPostedBy().getUsername() != null) {
+                holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
+            }
         }
-        if(recentsItemFormats.get(position).getPostedBy().getUsername() != null)
-        {
-            holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
+        catch (Exception e) {
+
         }
-        if(recentsItemFormats.get(position).getFeature().equals("Infone"))
+        if(recentsItemFormats.get(position).getFeature().equals("Users"))
         {
+            holder.storeroomRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.GONE);
+            holder.eventsRecentItem.setVisibility(View.GONE);
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
 //            layers[0].setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
@@ -98,11 +103,11 @@ import java.util.Vector;
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
             holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
-            holder.postConjunction.setText(" posted an ");
+            holder.postConjunction.setText(" created an ");
             holder.post.setText(recentsItemFormats.get(position).getFeature());
             holder.eventName.setText(recentsItemFormats.get(position).getName());
             holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());
-            holder.eventImage.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
+            Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.eventImage);
         }
         else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
         {
@@ -120,7 +125,8 @@ import java.util.Vector;
             holder.post.setText("Product");
             holder.productName.setText(recentsItemFormats.get(position).getName());
             holder.productDesc.setText(recentsItemFormats.get(position).getDesc());
-            holder.productImage.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
+            Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
+            holder.productPrice.setText(recentsItemFormats.get(position).getProductPrice());
             //set product price
         }
         else if (recentsItemFormats.get(position).getFeature().equals("CabPool"))
@@ -130,6 +136,10 @@ import java.util.Vector;
             holder.cabpoolRecentItem.setVisibility(View.VISIBLE);
             holder.postConjunction.setText(" started a ");
             holder.post.setText(recentsItemFormats.get(position).getFeature());
+            holder.cabpoolSource.setText(recentsItemFormats.get(position).getCabpoolSource());
+            holder.cabpoolDestination.setText(recentsItemFormats.get(position).getCabpoolDestination());
+            holder.cabpoolDate.setText(recentsItemFormats.get(position).getCabpoolDate());
+            holder.cabpoolTime.setText(recentsItemFormats.get(position).getCabpoolTime());
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
 //            layers[0].setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
@@ -160,10 +170,7 @@ import java.util.Vector;
             //Message is not anonymous
             holder.name.setText(recentsItemFormats.get(position).getName());
         }
-        }
-        catch (Exception e) {
 
-        }
 //>>>>>>> master
     }
 
@@ -181,7 +188,7 @@ import java.util.Vector;
 
         //new ui
         TextView postedBy, postConjunction, post, postTime,
-                cabpoolSource, cabpoolDestination,
+                cabpoolSource, cabpoolDestination, cabpoolDate, cabpoolTime,
                 eventName, eventDate, eventDesc,
                 productName, productPrice, productDesc;
         SimpleDraweeView featureCircle, avatarCircle,
@@ -209,6 +216,8 @@ import java.util.Vector;
             cabpoolRecentItem = (LinearLayout) itemView.findViewById(R.id.cabpoolRecentItem);
             cabpoolSource = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_source);
             cabpoolDestination = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_destination);
+            cabpoolDate = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_date);
+            cabpoolTime = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_time);
             eventsRecentItem = (LinearLayout) itemView.findViewById(R.id.eventsRecentItem);
             eventName = (TextView) itemView.findViewById(R.id.eventsRecentItem_name);
             eventDate = (TextView) itemView.findViewById(R.id.eventsRecentItem_date);

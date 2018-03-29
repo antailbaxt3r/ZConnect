@@ -21,6 +21,8 @@ public class RecentsItemFormat {
     //for cabpool
     String cabpoolSource;
     String cabpoolDestination;
+    String cabpoolDate;
+    String cabpoolTime;
         //for events
     String eventDate;
         //for storeroom
@@ -29,7 +31,7 @@ public class RecentsItemFormat {
     private PostedByDetails PostedBy;
     //
 
-    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT, String cabpoolSource, String cabpoolDestination, String eventDate, String productPrice, String Key, long PostTimeMillis, PostedByDetails PostedBy) {
+    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate, String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis, PostedByDetails PostedBy) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -44,6 +46,8 @@ public class RecentsItemFormat {
         this.PostedBy = PostedBy;
         this.cabpoolSource = cabpoolSource;
         this.cabpoolDestination = cabpoolDestination;
+        this.cabpoolDate = cabpoolDate;
+        this.cabpoolTime = cabpoolTime;
         this.eventDate = eventDate;
         this.productPrice = productPrice;
         //
@@ -120,6 +124,8 @@ public class RecentsItemFormat {
         //for cabpool
     public String getCabpoolSource() { return cabpoolSource; }
     public String getCabpoolDestination() { return cabpoolDestination; }
+    public String getCabpoolDate() { return cabpoolDate; }
+    public String getCabpoolTime() { return cabpoolTime; }
         //for events
     public String getEventDate() { return  eventDate; }
         //for storeroom

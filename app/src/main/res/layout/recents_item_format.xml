@@ -139,14 +139,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=" at "
-                        android:textColor="@color/primaryText"/>
+                        android:text=", "
+                        android:textColor="@color/primaryText" />
                     <TextView
                         android:id="@+id/cabpoolRecentItem_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Time"
-                        android:textColor="@color/primaryText"/>
+                        android:textColor="@color/primaryText" />
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -226,10 +226,11 @@
                     android:paddingBottom="5dp"
                     android:layout_marginStart="0dp"/>
                 <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/eventsRecentItem_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="Event Image"
                     fresco:viewAspectRatio="1.33"
+                    android:id="@+id/eventsRecentItem_image"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"/>
                 <View
@@ -280,7 +281,8 @@
                 android:id="@+id/storeroomRecentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -310,10 +312,11 @@
                     android:paddingBottom="5dp"
                     android:layout_marginStart="0dp"/>
                 <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/storeroomRecentItem_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="Product Image"
                     fresco:viewAspectRatio="1.33"
+                    android:id="@+id/storeroomRecentItem_image"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"/>
                 <!--<LinearLayout-->

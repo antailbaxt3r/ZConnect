@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -208,6 +211,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         final HomeBottomSheet bottomSheetFragment = new HomeBottomSheet();
         View bottomSheetView = getLayoutInflater().inflate(R.layout.content_home_bottomsheet, null);
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

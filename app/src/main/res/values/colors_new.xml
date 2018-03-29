@@ -9,8 +9,8 @@
     <color name="cabpool">#FFEB3B</color>
     <color name="shops">#01579B</color>
 
-    <color name="primaryText">#00695C</color>
-    <color name="secondaryText">#00BFA5</color>
+    <color name="primaryText">#000</color>
+    <color name="secondaryText">#BBB</color>
     <color name="transparent">#00000000</color>
 
 </resources>
