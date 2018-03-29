@@ -69,12 +69,14 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
     private DatabaseReference mUsername;
+    private DatabaseReference mPostedByDetails;
     private ProgressDialog mProgress;
     private CustomSpinner spinner1;
     private FirebaseAuth mAuth;
     private String sellerName;
     private TagsEditText productTags;
     private CheckBox negotiableCheckBox;
+    private Long postTimeMillis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +115,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mProductPhone = (EditText) findViewById(R.id.phoneNo);
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+        mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         spinner1 = (CustomSpinner) findViewById(R.id.categories);
         productTags =(TagsEditText) findViewById(R.id.skillsTags);
         negotiableCheckBox=(CheckBox) findViewById(R.id.priceNegotiable);
@@ -281,7 +284,9 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
 
                     DatabaseReference newPost = mDatabase.push();
+                    final DatabaseReference postedBy = newPost.child("PostedBy");
                     key = newPost.getKey();
+                    postTimeMillis = System.currentTimeMillis();
                     newPost.child("Category").setValue(String.valueOf(spinner1.getSelectedItem()));
                     newPost.child("Key").setValue(key);
                     newPost.child("ProductName").setValue(productNameValue);
@@ -293,12 +298,28 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     newPost.child("Price").setValue(productPriceValue);
                     newPost.child("skills").setValue(productTagString);
                     newPost.child("negotiable").setValue(negotiable);
+                    newPost.child("PostTimeMillis").setValue(postTimeMillis);
+                    postedBy.setValue(null);
+                    postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            postedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                            //needs to be changed after image thumbnail is put
+                            postedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
 
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
 
 
                     DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
+                    final DatabaseReference newPost2Postedby = newPost2.child("PostedBy");
                     newPost2.child("name").setValue(productNameValue);
                     newPost2.child("desc").setValue(productDescriptionValue);
                     newPost2.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
@@ -306,6 +327,24 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     newPost2.child("id").setValue(key);
                     newPost2.child("desc2").setValue(productPriceValue);
                     newPost2.child("Key").setValue(newPost2.getKey());
+                    newPost2.child("productPrice").setValue(productPriceValue);
+                    newPost2.child("PostTimeMillis").setValue(postTimeMillis);
+                    newPost2Postedby.setValue(null);
+                    newPost2Postedby.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            newPost2Postedby.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                            //needs to be changed after image thumbnail is put
+                            newPost2Postedby.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
 
                     // Adding stats
 
