@@ -20,7 +20,7 @@ public class Product {
         Phone_no = phone_no;
         PostedBy = postedBy;
         Category = category;
-        negotiable= negotiable;
+        this.negotiable= negotiable;
     }
 
     public String getNegotiable() {
