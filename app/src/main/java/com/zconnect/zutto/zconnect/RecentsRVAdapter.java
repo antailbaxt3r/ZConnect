@@ -59,9 +59,7 @@ import java.util.Vector;
     @Override
     public void onBindViewHolder(RecentsRVAdapter.ViewHolder holder, int position) {
 
-        holder.simpleDraweeView.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
-        holder.feature.setText(recentsItemFormats.get(position).getFeature());
-        holder.desc.setText(recentsItemFormats.get(position).getDesc());
+//        holder.desc.setText(recentsItemFormats.get(position).getDesc());
 //<<<<<<< HEAD
         //new ui
         try {
@@ -76,8 +74,22 @@ import java.util.Vector;
         catch (Exception e) {
 
         }
-        if(recentsItemFormats.get(position).getFeature().equals("Users"))
+        if(recentsItemFormats.get(position).getFeature().equals("Infone"))
         {
+            holder.infoneRecentItem.setVisibility(View.VISIBLE);
+            holder.storeroomRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.GONE);
+            holder.eventsRecentItem.setVisibility(View.GONE);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
+            holder.postConjunction.setText(" added a ");
+            holder.post.setText("Contact");
+            holder.infoneContactName.setText(recentsItemFormats.get(position).getInfoneContactName());
+            holder.infoneContactCategory.setText(recentsItemFormats.get(position).getInfoneContactCategory());
+
+        }
+        else if(recentsItemFormats.get(position).getFeature().equals("Users"))
+        {
+            holder.infoneRecentItem.setVisibility(View.GONE);
             holder.storeroomRecentItem.setVisibility(View.GONE);
             holder.cabpoolRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
@@ -93,6 +105,7 @@ import java.util.Vector;
         }
         else if (recentsItemFormats.get(position).getFeature().equals("Event"))
         {
+            holder.infoneRecentItem.setVisibility(View.GONE);
             holder.storeroomRecentItem.setVisibility(View.GONE);
             holder.cabpoolRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.VISIBLE);
@@ -111,6 +124,7 @@ import java.util.Vector;
         }
         else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
         {
+            holder.infoneRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
             holder.cabpoolRecentItem.setVisibility(View.GONE);
             holder.storeroomRecentItem.setVisibility(View.VISIBLE);
@@ -131,6 +145,7 @@ import java.util.Vector;
         }
         else if (recentsItemFormats.get(position).getFeature().equals("CabPool"))
         {
+            holder.infoneRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
             holder.storeroomRecentItem.setVisibility(View.GONE);
             holder.cabpoolRecentItem.setVisibility(View.VISIBLE);
@@ -151,6 +166,10 @@ import java.util.Vector;
         }
         else if (recentsItemFormats.get(position).getFeature().equals("Shop"))
         {
+            holder.infoneRecentItem.setVisibility(View.GONE);
+            holder.eventsRecentItem.setVisibility(View.GONE);
+            holder.storeroomRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.GONE);
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
 //            layers[0].setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
@@ -188,13 +207,14 @@ import java.util.Vector;
 
         //new ui
         TextView postedBy, postConjunction, post, postTime,
+                infoneContactName, infoneContactCategory,
                 cabpoolSource, cabpoolDestination, cabpoolDate, cabpoolTime,
                 eventName, eventDate, eventDesc,
                 productName, productPrice, productDesc;
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
                 productImage;
-        LinearLayout cabpoolRecentItem, eventsRecentItem, storeroomRecentItem;
+        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem;
         //
 
 
@@ -213,6 +233,9 @@ import java.util.Vector;
             postTime = (TextView) itemView.findViewById(R.id.postTime);
             featureCircle = (SimpleDraweeView) itemView.findViewById(R.id.featureCircle);
             avatarCircle = (SimpleDraweeView) itemView.findViewById(R.id.avatarCircle);
+            infoneRecentItem = (LinearLayout) itemView.findViewById(R.id.infoneRecentItem);
+            infoneContactName = (TextView) itemView.findViewById(R.id.infoneName);
+            infoneContactCategory = (TextView) itemView.findViewById(R.id.infoneCategory);
             cabpoolRecentItem = (LinearLayout) itemView.findViewById(R.id.cabpoolRecentItem);
             cabpoolSource = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_source);
             cabpoolDestination = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_destination);

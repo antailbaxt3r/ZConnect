@@ -200,30 +200,30 @@ public class TrendingEvents extends Fragment {
         }
 
         public void setEventDesc(String eventDesc) {
-            if (eventDesc != null) {
-                String shortEventDesc;
+//            if (eventDesc != null) {
+//                String shortEventDesc;
 
-                TextView post_desc = (TextView) mView.findViewById(R.id.er_description);
-                if (eventDesc.length() < 70) {
-                    shortEventDesc = eventDesc;
-                } else {
-                    shortEventDesc = eventDesc.substring(0, 70);
-                    shortEventDesc = shortEventDesc + " ... read more";
-                }
+//                TextView post_desc = (TextView) mView.findViewById(R.id.er_description);
+//                if (eventDesc.length() < 70) {
+//                    shortEventDesc = eventDesc;
+//                } else {
+//                    shortEventDesc = eventDesc.substring(0, 70);
+//                    shortEventDesc = shortEventDesc + " ... read more";
+//                }
 
-                post_desc.setText(shortEventDesc);
+//                post_desc.setText(shortEventDesc);
                 Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-                post_desc.setTypeface(customFont);
-            }
+//                post_desc.setTypeface(customFont);
+//            }
         }
 
         public void setEventVenue(String venue) {
-            if (venue != null) {
-                TextView post_venue = (TextView) mView.findViewById(R.id.er_venue);
-                post_venue.setText(venue);
-                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
-                post_venue.setTypeface(customFont);
-            }
+//            if (venue != null) {
+//                TextView post_venue = (TextView) mView.findViewById(R.id.er_venue);
+//                post_venue.setText(venue);
+//                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+//                post_venue.setTypeface(customFont);
+//            }
         }
         public void setEventImage(Context ctx, String image) {
             if (image != null) {
@@ -234,19 +234,19 @@ public class TrendingEvents extends Fragment {
         }
 
         public void setEventDate(String eventDate) {
-            if (eventDate != null) {
-                TextView post_date = (TextView) mView.findViewById(R.id.er_date);
-                String date[] = eventDate.split("\\s+");
-                StringBuilder finalDate = new StringBuilder();
-
-                for (int i = 0; i < 4; i++) {
-                    finalDate.append(" ").append(date[i]);
-                }
-
-                post_date.setText(finalDate.toString());
-                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-                post_date.setTypeface(customFont);
-            }
+//            if (eventDate != null) {
+//                TextView post_date = (TextView) mView.findViewById(R.id.er_date);
+//                String date[] = eventDate.split("\\s+");
+//                StringBuilder finalDate = new StringBuilder();
+//
+//                for (int i = 0; i < 4; i++) {
+//                    finalDate.append(" ").append(date[i]);
+//                }
+//
+//                post_date.setText(finalDate.toString());
+//                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+//                post_date.setTypeface(customFont);
+//            }
         }
 
         public void setEditEvent(String UserID, final String EventID) {

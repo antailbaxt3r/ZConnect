@@ -18,6 +18,8 @@ public class RecentsItemFormat {
 
     //new ui
     private long PostTimeMillis;
+    //for infone
+    String infoneContactName, infoneContactCategory;
     //for cabpool
     String cabpoolSource;
     String cabpoolDestination;
@@ -31,7 +33,7 @@ public class RecentsItemFormat {
     private PostedByDetails PostedBy;
     //
 
-    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate, String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis, PostedByDetails PostedBy) {
+    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate, String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis, PostedByDetails PostedBy, String infoneContactCategory, String infoneContactName) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -44,6 +46,8 @@ public class RecentsItemFormat {
         //new ui
         this.PostTimeMillis = PostTimeMillis;
         this.PostedBy = PostedBy;
+        this.infoneContactName = infoneContactName;
+        this.infoneContactCategory = infoneContactCategory;
         this.cabpoolSource = cabpoolSource;
         this.cabpoolDestination = cabpoolDestination;
         this.cabpoolDate = cabpoolDate;
@@ -121,6 +125,9 @@ public class RecentsItemFormat {
 
     //new ui
     public long getPostTimeMillis() { return PostTimeMillis; }
+        //for infone
+    public String getInfoneContactName() { return infoneContactName; }
+    public String getInfoneContactCategory() { return infoneContactCategory; }
         //for cabpool
     public String getCabpoolSource() { return cabpoolSource; }
     public String getCabpoolDestination() { return cabpoolDestination; }
