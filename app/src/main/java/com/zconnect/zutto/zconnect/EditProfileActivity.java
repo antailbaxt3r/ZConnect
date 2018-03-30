@@ -33,6 +33,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -74,6 +75,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private ArrayAdapter<String> infoneAdapter;
     private int infoneTypeIndex=-1;
     Boolean flag = false;
+    private Long postTimeMillis;
+    private String key;
 //
 //    private String userEmail;
 //    private String userName;
@@ -89,7 +92,9 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private Uri mImageUriSmall=null;
     private StorageReference mStorageRef;
     private FirebaseUser mUser;
-    private DatabaseReference mUserReference,databaseInfoneCategories;
+    private DatabaseReference mUserReference,databaseInfoneCategories,databaseHome,newContactNumRef,databaseReferenceInfone,newContactRef;
+    private Query communityInfo;
+    private String communityName;
     private UserItemFormat userDetails;
 
     @Override
@@ -148,10 +153,26 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid());
         mUserReference.keepSynced(true);
         databaseInfoneCategories =FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categoriesInfo");
+        databaseHome = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
+        databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone");
 
 
 
+        communityInfo = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").orderByChild("code").equalTo(communityReference);
 
+        communityInfo.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                //Toast.makeText(EditProfileActivity.this, dataSnapshot.child("").child("name").getValue().toString(), Toast.LENGTH_SHORT).show();
+                communityName="BITS Goa";
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         if (mUser == null) {
             startActivity(new Intent(EditProfileActivity.this, LoginActivity.class));
             finish();
@@ -345,6 +366,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             }
         }
 
+
         if (userName == null
                 || userEmail == null
                 || userMobile.length() == 0 || userInfoneType ==null) {
@@ -373,6 +395,32 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newPost.child("userUID").setValue(mUser.getUid().toString());
             newPost.child("infoneType").setValue(userInfoneType);
 
+            if(!newUser) {
+                databaseReferenceInfone.child("categories").child(userDetails.getInfoneType()).child(mUser.getUid()).removeValue();
+            }
+
+            //for infone
+            newContactNumRef = databaseReferenceInfone.child("numbers").child(mUser.getUid());
+            newContactRef = databaseReferenceInfone.child("categories").child(userInfoneType).child(mUser.getUid());
+
+            postTimeMillis = System.currentTimeMillis();
+
+            //Inside Categories
+            newContactRef.child("name").setValue(userName);
+            newContactRef.child("phone").child("0").setValue(userMobile);
+            newContactRef.child("phone").child("1").setValue(userWhatsapp);
+            newContactRef.child("key").child(mUser.getUid());
+
+            //Inside Contacts
+            newContactNumRef.child("category").setValue(userInfoneType);
+            newContactNumRef.child("key").child(mUser.getUid());
+            newContactNumRef.child("name").setValue(userName);
+            newContactNumRef.child("phone").child("0").setValue(userMobile);
+            newContactNumRef.child("phone").child("1").setValue(userWhatsapp);
+            newContactNumRef.child("type").child("User");
+            newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
+            newContactNumRef.child("UID").setValue(mUser.getUid());
+
             if (mImageUri != null) {
                 if( mImageUri != mUser.getPhotoUrl()) {
                     flag = false;
@@ -386,6 +434,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                                 return;
                             }
                             newPost.child("imageURL").setValue(downloadUri.toString());
+                            newContactNumRef.child("imageurl").setValue(downloadUri.toString());
+
                             if (flag){
                                 mProgress.dismiss();
                                 finish();
@@ -403,7 +453,18 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                                 Log.e(TAG, "onSuccess: error got empty downloadUri");
                                 return;
                             }
+
+                            if(newUser){
+                                DatabaseReference homePush = databaseHome.push();
+                                homePush.child("PostedBy").child("ImageThumb").setValue(downloadUriThumb.toString());
+                                homePush.child("PostedBy").child("UID").setValue(mUser.getUid());
+                                homePush.child("PostedBy").child("Username").setValue(userName);
+                                homePush.child("feature").setValue("Users");
+                                homePush.child("communityName").setValue(communityName);
+                            }
                             newPost.child("imageURLThumbnail").setValue(downloadUriThumb.toString());
+                            newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
+                            newContactNumRef.child("thumbnail").setValue(downloadUriThumb.toString());
                             if (flag){
                                 mProgress.dismiss();
                                 finish();
@@ -416,6 +477,9 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                     Toast.makeText(this, "Default", Toast.LENGTH_SHORT).show();
                     newPost.child("imageURLThumbnail").setValue(mUser.getPhotoUrl().toString());
                     newPost.child("imageURL").setValue(mUser.getPhotoUrl().toString());
+                    newContactNumRef.child("imageurl").setValue(mUser.getPhotoUrl().toString());
+                    newContactRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
+                    newContactNumRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
                     mProgress.dismiss();
                     finish();
                 }

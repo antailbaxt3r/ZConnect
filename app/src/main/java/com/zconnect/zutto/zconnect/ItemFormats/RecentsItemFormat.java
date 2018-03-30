@@ -29,11 +29,13 @@ public class RecentsItemFormat {
     String eventDate;
         //for storeroom
     String productPrice;
+        //for new users
+    String communityName;
 
     private PostedByDetails PostedBy;
     //
 
-    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id, String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate, String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis, PostedByDetails PostedBy, String infoneContactCategory, String infoneContactName, String infoneContactCategoryName) {
+    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id, String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate, String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis, PostedByDetails PostedBy, String infoneContactCategory, String infoneContactName, String infoneContactCategoryName, String communityName) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -55,8 +57,7 @@ public class RecentsItemFormat {
         this.cabpoolTime = cabpoolTime;
         this.eventDate = eventDate;
         this.productPrice = productPrice;
-
-        //
+        this.communityName = communityName;
     }
 
     public RecentsItemFormat() {
@@ -163,6 +164,14 @@ public class RecentsItemFormat {
 
     public void setPostedBy(PostedByDetails postedBy) {
         PostedBy = postedBy;
+    }
+
+    public String getCommunityName() {
+        return communityName;
+    }
+
+    public void setCommunityName(String communityName) {
+        this.communityName = communityName;
     }
 
 }
