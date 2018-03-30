@@ -40,6 +40,9 @@ import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.HashMap;
@@ -145,6 +148,7 @@ public class TrendingEvents extends Fragment {
                     viewHolder.setEditEvent(model.getUserID(), model.getKey());
                     viewHolder.setBoost(model);
                     viewHolder.setPostedByDetails(model.getPostedBy().getUsername(), model.getPostedBy().getImageThumb());
+                    viewHolder.setEventTimestamp(model.getPostTimeMillis());
                 }
                 catch (Exception e) {
                     Log.d("Error Alert: ", e.getMessage());
@@ -288,14 +292,14 @@ public class TrendingEvents extends Fragment {
 
                     if(dataSnapshot.hasChild(user.getUid())){
 //                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                        eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x");
+                        eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x lit");
                         boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.lit));
 //                        boostBtn.getBackground().setTint(mView.getContext().getResources().getColor(R.color.lit));
 //                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                         flag=true;
                     }else {
 //                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                        eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x");
+                        eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x lit");
                         boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.primaryText));
 //                        boostBtn.getBackground().setTint(mView.getContext().getResources().getColor(R.color.primaryText));
 //                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
@@ -353,8 +357,8 @@ public class TrendingEvents extends Fragment {
                 });
             }
 
-//            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-//            boostBtn.setTypeface(customfont);
+            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+            eventNumLit.setTypeface(customfont);
         }
 
         private void setPostedByDetails(String username, String imageThumb) {
@@ -369,6 +373,14 @@ public class TrendingEvents extends Fragment {
 //                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
 //                post_postedBy.setTypeface(customFont);
 //            }
+        }
+
+        private void setEventTimestamp(long postTimeMillis) {
+            if(postTimeMillis > 0) {
+                TextView timestamp = (TextView) mView.findViewById(R.id.evTrendTimestamp);
+                TimeAgo ta = new TimeAgo(postTimeMillis, System.currentTimeMillis());
+                timestamp.setText(ta.calculateTimeAgo());
+            }
         }
 
     }
