@@ -70,6 +70,9 @@ import java.util.Vector;
             if (recentsItemFormats.get(position).getPostedBy().getUsername() != null) {
                 holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
             }
+            if (recentsItemFormats.get(position).getPostedBy().getImageThumb() != null) {
+                holder.avatarCircle.setImageURI(recentsItemFormats.get(position).getPostedBy().getImageThumb());
+            }
         }
         catch (Exception e) {
 

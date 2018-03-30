@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -14,22 +15,36 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
+import com.zconnect.zutto.zconnect.LoginActivity;
+import com.zconnect.zutto.zconnect.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -141,11 +156,18 @@ public class TimelineEvents extends Fragment {
                     Log.d("Error Alert: ", e.getMessage());
                 }
                 try {
-                    viewHolder.setEventName(model.getEventName(),model.getVerified());
-                }catch (Exception e) {
+                    viewHolder.setEventName(model.getEventName(),model.getVerified(), model.getPostTimeMillis());
+                }
+                catch (Exception e) {
                    // Log.d("Error Alert: ", e.getMessage());
                     model.setVerified("false");
-                    viewHolder.setEventName(model.getEventName(),model.getVerified());
+                    viewHolder.setEventName(model.getEventName(),model.getVerified(), model.getPostTimeMillis());
+                }
+                try {
+                    viewHolder.setBoost(model);
+                }
+                catch (Exception e) {
+                    Log.d("Error Alert: ", e.getMessage());
                 }
                     viewHolder.setEventDate(model.getEventDate(),model.getBoostCount());
                     viewHolder.setEventReminder(model.getEventDescription(), model.getEventName(), model.getEventDate());
@@ -164,10 +186,10 @@ public class TimelineEvents extends Fragment {
 
         FirebaseAuth mAuth;
         SharedPreferences sharedPref;
-        Boolean status;
+        Boolean status, flag;
 
-        RelativeLayout eventStatus;
-        TextView eventOver;
+//        RelativeLayout eventStatus;
+//        TextView eventOver;
 
         public EventViewHolder(View itemView) {
             super(itemView);
@@ -196,7 +218,7 @@ public class TimelineEvents extends Fragment {
             });
         }
 
-        public void setEventName(String eventName, String verified) {
+        public void setEventName(String eventName, String verified, long postTimeMillis) {
             if (eventName != null) {
                 TextView post_name = (TextView) mView.findViewById(R.id.title);
                 if(verified.equals("true")){
@@ -206,21 +228,29 @@ public class TimelineEvents extends Fragment {
                 Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
                 post_name.setTypeface(customFont);
             }
+            if (postTimeMillis > 0)
+            {
+                TextView post_timestamp = (TextView) mView.findViewById(R.id.timestamp);
+                TimeAgo ta = new TimeAgo(postTimeMillis, System.currentTimeMillis());
+                post_timestamp.setText(ta.calculateTimeAgo());
+            }
         }
 
         public void setEventDate(String eventDate, Double BoostCount) {
             if (eventDate != null) {
-                TextView DateText = (TextView) mView.findViewById(R.id.date_text);
-                TextView DateMonth = (TextView) mView.findViewById(R.id.date_month);
-                TextView TimeNumber = (TextView) mView.findViewById(R.id.time_number);
-                TextView TimeType = (TextView) mView.findViewById(R.id.time_type);
+                TextView dateText = (TextView) mView.findViewById(R.id.evUpcmgDate);
+                TextView timeText = (TextView) mView.findViewById(R.id.evUpcmgTime);
+//                TextView DateText = (TextView) mView.findViewById(R.id.date_text);
+//                TextView DateMonth = (TextView) mView.findViewById(R.id.date_month);
+//                TextView TimeNumber = (TextView) mView.findViewById(R.id.time_number);
+//                TextView TimeType = (TextView) mView.findViewById(R.id.time_type);
                 TextView Boost = (TextView) mView.findViewById(R.id.boostcount);
 
 
-                Boost.setText(BoostCount.intValue()+ " people boosted this event");
+                Boost.setText(BoostCount.intValue()+ "x lit");
                 String arr[]=eventDate.split(" ");
 
-                String month = arr[1].trim().toUpperCase();
+                String month = arr[1].trim();
                 String date=arr[2];
                 String year=arr[5];
                 String times=arr[3];
@@ -244,15 +274,18 @@ public class TimelineEvents extends Fragment {
                     finalhour=Integer.parseInt(hour);
                 }
 
+                dateText.setText(date.toString() + " " + month);
+                timeText.setText(finalhour.toString() + " " + datatype);
+//                DateText.setText(date.toString());
+//                DateMonth.setText(month);
+//                TimeNumber.setText(finalhour.toString());
+//                TimeType.setText(datatype);
 
-                DateText.setText(date.toString());
-                DateMonth.setText(month);
-                TimeNumber.setText(finalhour.toString());
-                TimeType.setText(datatype);
-
-                DateText.setText(date.toString());
-                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-                DateText.setTypeface(customFont);
+//                DateText.setText(date.toString());
+//                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+                dateText.setTypeface(customFont);
+                timeText.setTypeface(customFont);
             }
         }
 
@@ -275,7 +308,7 @@ public class TimelineEvents extends Fragment {
 //        }
         void setEventReminder(final String eventDescription, final String eventName, final String time) {
             if (eventDescription != null && eventName != null && time != null) {
-                RelativeLayout DateTime = (RelativeLayout) mView.findViewById(R.id.date);
+                LinearLayout DateTime = (LinearLayout) mView.findViewById(R.id.dateAndTime);
                 DateTime.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -323,8 +356,8 @@ public class TimelineEvents extends Fragment {
         public void setEventStatus( String eventDate) {
             if(eventDate != null)
             {
-                eventStatus = (RelativeLayout) itemView.findViewById(R.id.event_status);
-                eventOver = (TextView) itemView.findViewById(R.id.event_over);
+//                eventStatus = (RelativeLayout) itemView.findViewById(R.id.event_status);
+//                eventOver = (TextView) itemView.findViewById(R.id.event_over);
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 String currFormattedDate = simpleDateFormat.format(calendar.getTime());
@@ -342,15 +375,103 @@ public class TimelineEvents extends Fragment {
                 String currYear = formattedDate[2];
 
                 if(Integer.parseInt(currYear)>Integer.parseInt(year)) {
-                    eventStatus.setVisibility(View.VISIBLE);
+//                    eventStatus.setVisibility(View.VISIBLE);
                 }
                 else if(Integer.parseInt(currMonth)>Integer.parseInt(month)) {
-                    eventStatus.setVisibility(View.VISIBLE);
+//                    eventStatus.setVisibility(View.VISIBLE);
                 }
                 else if(Integer.parseInt(currDate) > Integer.parseInt(date)) {
-                    eventStatus.setVisibility(View.VISIBLE);
+//                    eventStatus.setVisibility(View.VISIBLE);
                 }
             }
+        }
+
+        private void setBoost(final Event event) {
+
+            final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(event.getKey());
+
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final ImageButton boostBtn = (ImageButton) mView.findViewById(R.id.boostBtn);
+            final TextView eventNumLit = (TextView) mView.findViewById(R.id.boostcount);
+
+
+
+            eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
+
+                    if(dataSnapshot.hasChild(user.getUid())){
+//                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                        eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x lit");
+                        boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.lit));
+//                        boostBtn.getBackground().setTint(mView.getContext().getResources().getColor(R.color.lit));
+//                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
+                        flag=true;
+                    }else {
+//                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                        eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x lit");
+                        boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.primaryText));
+//                        boostBtn.getBackground().setTint(mView.getContext().getResources().getColor(R.color.primaryText));
+//                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
+                        flag=false;
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+
+            if (user != null) {
+                boostBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!flag){
+                            Map<String, Object> taskMap = new HashMap<String, Object>();
+                            taskMap.put(user.getUid(), user.getUid());
+                            CounterManager.eventBoost(event.getKey(), "Trending-Out");
+                            eventDatabase.child("BoostersUids").updateChildren(taskMap);
+
+                            //Sending Notifications
+                            FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
+                            NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,"EventBoosted",false,true,itemView.getContext());
+                            notificationSender.execute();
+
+                        }else {
+                            eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
+
+                        }
+                    }
+                });
+
+            } else {
+                boostBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(mView.getContext());
+                        dialog.setNegativeButton("Lite", null)
+                                .setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent loginIntent = new Intent(mView.getContext(), LoginActivity.class);
+                                        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        mView.getContext().startActivity(loginIntent);
+                                    }
+                                })
+                                .setTitle("Please login to boost.")
+                                .create().show();
+                    }
+                });
+            }
+
+//            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+            Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+            eventNumLit.setTypeface(customFont);
         }
     }
 }

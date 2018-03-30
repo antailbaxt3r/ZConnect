@@ -14,7 +14,7 @@ public class Event implements Serializable {
 
 
     private double lon = 0, lat = 0, BoostCount;
-    private long EventTimeMillis;
+    private long EventTimeMillis, PostTimeMillis;
     private String EventName,
             EventDescription,
             EventImage,
@@ -31,7 +31,7 @@ public class Event implements Serializable {
 
     }
 
-    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, Long eventTimeMillis, String formatDate, String key, String venue, String boosters, String userid, double boostcount,String verified, PostedByDetails postedBy) {
+    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, Long eventTimeMillis, String formatDate, String key, String venue, String boosters, String userid, double boostcount,String verified, PostedByDetails postedBy, long postTimeMillis) {
         this.lon = lon;
         this.lat = lat;
         EventName = eventName;
@@ -47,6 +47,7 @@ public class Event implements Serializable {
         BoostCount = boostcount;
         Verified = verified;
         PostedBy = postedBy;
+        PostTimeMillis = postTimeMillis;
     }
 
     public String getVerified(){
@@ -130,6 +131,8 @@ public class Event implements Serializable {
     public void setPostedBy(PostedByDetails postedBy) {
         PostedBy = postedBy;
     }
+
+    public long getPostTimeMillis() { return PostTimeMillis; }
 //
 //    public PostedByDetails getPostedBy() {
 //        Log.d("QQQ username", PostedBy.getUsername());

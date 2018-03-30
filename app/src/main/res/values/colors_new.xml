@@ -12,5 +12,7 @@
     <color name="primaryText">#000</color>
     <color name="secondaryText">#BBB</color>
     <color name="transparent">#00000000</color>
+    <color name="lit">#ffb000</color>
 
+    <color name="horizontalLine">#EEEFFF</color>
 </resources>
