@@ -96,6 +96,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private Query communityInfo;
     private String communityName;
     private UserItemFormat userDetails;
+    private DatabaseReference homePush;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -421,6 +422,16 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
             newContactNumRef.child("UID").setValue(mUser.getUid());
 
+            if(newUser){
+                homePush = databaseHome.push();
+                homePush.child("PostedBy").child("UID").setValue(mUser.getUid());
+                homePush.child("PostedBy").child("Username").setValue(userName);
+                homePush.child("feature").setValue("Users");
+                homePush.child("communityName").setValue(communityName);
+                homePush.child("PostTimeMillis").setValue(postTimeMillis);
+            }
+
+
             if (mImageUri != null) {
                 if( mImageUri != mUser.getPhotoUrl()) {
                     flag = false;
@@ -453,14 +464,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                                 Log.e(TAG, "onSuccess: error got empty downloadUri");
                                 return;
                             }
-
-                            if(newUser){
-                                DatabaseReference homePush = databaseHome.push();
+                            if (newUser) {
                                 homePush.child("PostedBy").child("ImageThumb").setValue(downloadUriThumb.toString());
-                                homePush.child("PostedBy").child("UID").setValue(mUser.getUid());
-                                homePush.child("PostedBy").child("Username").setValue(userName);
-                                homePush.child("feature").setValue("Users");
-                                homePush.child("communityName").setValue(communityName);
                             }
                             newPost.child("imageURLThumbnail").setValue(downloadUriThumb.toString());
                             newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
@@ -474,6 +479,9 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                         }
                     });
                 }else {
+                    if (newUser) {
+                        homePush.child("PostedBy").child("ImageThumb").setValue(mUser.getPhotoUrl().toString());
+                    }
                     Toast.makeText(this, "Default", Toast.LENGTH_SHORT).show();
                     newPost.child("imageURLThumbnail").setValue(mUser.getPhotoUrl().toString());
                     newPost.child("imageURL").setValue(mUser.getPhotoUrl().toString());

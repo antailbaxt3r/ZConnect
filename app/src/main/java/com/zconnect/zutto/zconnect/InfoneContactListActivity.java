@@ -124,7 +124,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
                     //Log.e("tt", "data"+phoneNumbs.toString());
 
-                    infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId,childSnapshot.child("type").getValue().toString());
+                    infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
                     contactsRVItems.add(infoneContactsRVItem);
                 }
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this,

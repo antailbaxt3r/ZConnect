@@ -13,15 +13,13 @@ public class InfoneContactsRVItem {
     private String imageThumb;
     private ArrayList<String> phoneNums;
     private String infoneUserId;
-    private String type;
 
-    public InfoneContactsRVItem(String name, String views, String imageThumb, ArrayList<String> phoneNums, String infoneUserId, String type) {
+    public InfoneContactsRVItem(String name, String views, String imageThumb, ArrayList<String> phoneNums, String infoneUserId) {
         this.name = name;
         this.views = views;
         this.imageThumb = imageThumb;
         this.phoneNums = phoneNums;
         this.infoneUserId = infoneUserId;
-        this.type = type;
     }
 
     public String getName() {
@@ -62,13 +60,5 @@ public class InfoneContactsRVItem {
 
     public void setInfoneUserId(String infoneUserId) {
         this.infoneUserId = infoneUserId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 }
