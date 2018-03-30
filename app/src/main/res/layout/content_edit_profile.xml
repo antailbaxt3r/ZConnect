@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:TagsEditText="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,154 +12,81 @@
     tools:context="com.zconnect.zutto.zconnect.EditProfileActivity"
     tools:showIn="@layout/activity_edit_profile">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/sdv_profile_pic_content_edit_prof"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/defaultprofile"
-        app:roundAsCircle="true" />
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/contact_edit_name_text_input_layout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sdv_profile_pic_content_edit_prof"
-        android:layout_marginTop="8dp"
-        android:clickable="false"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
-        android:weightSum="1">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/contact_edit_name_editText"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.92"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:textColor="@android:color/black" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_height="wrap_content">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/contact_edit_number_text_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/contact_edit_name_text_input_layout"
-        android:layout_marginTop="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp">
-        <EditText
-            android:id="@+id/edit_text_number_content_edit_prof"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="Number"
-            android:inputType="number"
-            android:maxLength="10"
-            android:textColor="@android:color/black" />
-    </android.support.design.widget.TextInputLayout>
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/user_image_view"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/defaultprofile"
+                app:roundAsCircle="true" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/contact_edit_email_text_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/contact_edit_number_text_input_layout"
-        android:layout_marginTop="0dp"
-        android:clickable="false"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/contact_edit_email_editText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="false"
-            android:cursorVisible="false"
-            android:editable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:text=""
-            android:textColor="@android:color/black" />
-    </android.support.design.widget.TextInputLayout>
+            <EditText
+                android:id="@+id/user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Name" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/skillsTagsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/contact_edit_email_text_input_layout"
-        android:layout_marginTop="0dp"
-        android:clickable="false"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp">
+            <EditText
+                android:id="@+id/mobile_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mobile Number"/>
 
-        <mabbas007.tagsedittext.TagsEditText
-            android:id="@+id/skillsTags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/contact_edit_email_text_input_layout"
-            android:layout_marginTop="8dp"
-            android:hint="Skills"
-            android:inputType="text"
-            android:text=""
-            android:textColor="@android:color/black"
-            TagsEditText:allowSpaceInTag="true"
-            TagsEditText:tagsBackground="@drawable/square"
-            TagsEditText:tagsCloseImageLeft="@drawable/dot"
-            TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
-            TagsEditText:tagsCloseImageRight="@drawable/tag_close"
-            TagsEditText:tagsTextColor="@color/black"
-            TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
-    </android.support.design.widget.TextInputLayout>
+            <EditText
+                android:id="@+id/whatsapp_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="WhatsApp Number"/>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/contact_edit_details_text_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/skillsTagsLayout"
-        android:layout_marginTop="0dp"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp">
+            <EditText
+                android:id="@+id/user_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"/>
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/contact_edit_details_editText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="Description"
-            android:text=""
-            android:textColor="@android:color/black" />
+            <mabbas007.tagsedittext.TagsEditText
+                    android:id="@+id/user_skill_tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/contact_edit_email_text_input_layout"
+                    android:layout_marginTop="8dp"
+                    android:hint="Skills"
+                    android:inputType="text"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    TagsEditText:allowSpaceInTag="true"
+                    TagsEditText:tagsBackground="@drawable/square"
+                    TagsEditText:tagsCloseImageLeft="@drawable/dot"
+                    TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
+                    TagsEditText:tagsCloseImageRight="@drawable/tag_close"
+                    TagsEditText:tagsTextColor="@color/black"
+                    TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
 
-    </android.support.design.widget.TextInputLayout>
+            <EditText
+                android:id="@+id/user_about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="About"/>
 
-    <com.zconnect.zutto.zconnect.CustomSpinner
-        android:id="@+id/spinner1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/contact_edit_details_text_input_layout"
-        android:layout_marginBottom="31dp"
-        android:layout_marginTop="8dp"
-        android:entries="@array/hostel"
-        android:fontFamily="sans-serif-light"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
-        android:prompt="@string/hostel_prompt" />
+            <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                android:id="@+id/user_infone_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Choose Infone Category"/>
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

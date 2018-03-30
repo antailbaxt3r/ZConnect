@@ -124,7 +124,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
                     //Log.e("tt", "data"+phoneNumbs.toString());
 
-                    infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
+                    infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId,childSnapshot.child("type").getValue().toString());
                     contactsRVItems.add(infoneContactsRVItem);
                 }
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this,
@@ -146,7 +146,6 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
         Intent addContactIntent = new Intent(this, InfoneAddContactActivity.class);
         addContactIntent.putExtra("catId", catId);
-        addContactIntent.putExtra("catName",catName);
         startActivity(addContactIntent);
 
     }

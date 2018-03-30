@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -20,9 +19,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,13 +37,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
+import com.zconnect.zutto.zconnect.ItemFormats.Infone2CategoryModel;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Vector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,43 +59,45 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private static final String DEFAULT_PHOTO_URL = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336";
     private final String TAG = getClass().getSimpleName();
     public ProgressDialog mProgress;
+
     @BindView(R.id.toolbar_app_bar_home)
     Toolbar toolbar;
-    @BindView(R.id.contact_edit_details_editText)
-    android.support.design.widget.TextInputEditText editTextDetails;
-    @BindView(R.id.contact_edit_email_editText)
-    android.support.design.widget.TextInputEditText editTextEmail;
-    @BindView(R.id.contact_edit_name_editText)
-    android.support.design.widget.TextInputEditText editTextName;
-    @BindView(R.id.edit_text_number_content_edit_prof)
-    EditText numberEt;
-    @BindView(R.id.sdv_profile_pic_content_edit_prof)
-    SimpleDraweeView profileImageSdv;
-    @BindView(R.id.skillsTags)
-    TagsEditText skillTags;
-    @BindView(R.id.spinner1)
-    CustomSpinner spinner;
-    private String userEmail;
-    private String userName;
-    private String desc;
-    private String imageUrl;
-    private String number;
-    private String hostel;
-    private String host;
-    private String category;
-    private String skills;
-    private Uri mImageUri;
-    private Uri mImageUriSmall;
+
+    private SimpleDraweeView userImageView;
+    private String userName,userEmail,userMobile,userWhatsapp,userAbout,userSkillTags,userInfoneType;
+    private EditText userNameText, userEmailText, userMobileNumberText, userWhatsappNumberText, userAboutText;
+    private TagsEditText userSkillTagsText;
+    private MaterialBetterSpinner userInfoneTypeSpinner;
+    private Boolean newUser = false;
+    private Vector<Infone2CategoryModel> infoneCategories = new Vector<Infone2CategoryModel>();
+    private Vector<String> infoneCategoriesName = new Vector<String>();
+    private ArrayAdapter<String> infoneAdapter;
+    private int infoneTypeIndex=-1;
+    Boolean flag = false;
+//
+//    private String userEmail;
+//    private String userName;
+//    private String desc;
+//    private String imageUrl;
+//    private String number;
+//    private String hostel;
+//    private String host;
+//    private String category;
+//    private String skills;
+
+    private Uri mImageUri=null;
+    private Uri mImageUriSmall=null;
     private StorageReference mStorageRef;
     private FirebaseUser mUser;
-    private DatabaseReference phoneBookDbRef;
-    private boolean newContact = true;
+    private DatabaseReference mUserReference,databaseInfoneCategories;
+    private UserItemFormat userDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         ButterKnife.bind(this);
+
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -105,12 +112,22 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
         mProgress = new ProgressDialog(this);
 
+        userNameText = (EditText) findViewById(R.id.user_name);
+        userEmailText = (EditText) findViewById(R.id.user_email);
+        userMobileNumberText = (EditText) findViewById(R.id.mobile_number);
+        userWhatsappNumberText = (EditText) findViewById(R.id.whatsapp_number);
+        userAboutText= (EditText) findViewById(R.id.user_about);
+        userImageView = (SimpleDraweeView) findViewById(R.id.user_image_view);
+        userInfoneTypeSpinner = (MaterialBetterSpinner) findViewById(R.id.user_infone_type);
+        userSkillTagsText = (TagsEditText) findViewById(R.id.user_skill_tags);
+
+
         Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
-        editTextName.setTypeface(ralewayRegular);
-        editTextDetails.setTypeface(ralewayRegular);
-        numberEt.setTypeface(ralewayRegular);
-        skillTags.setTypeface(ralewayRegular);
-        editTextEmail.setTypeface(ralewayRegular);
+        userNameText.setTypeface(ralewayRegular);
+        userAboutText.setTypeface(ralewayRegular);
+        userMobileNumberText.setTypeface(ralewayRegular);
+        userWhatsappNumberText.setTypeface(ralewayRegular);
+        userEmailText.setTypeface(ralewayRegular);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -124,96 +141,109 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid());
+        mUserReference.keepSynced(true);
+        databaseInfoneCategories =FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categoriesInfo");
+
+
+
+
         if (mUser == null) {
             startActivity(new Intent(EditProfileActivity.this, LoginActivity.class));
             finish();
         }
-        userEmail = mUser.getEmail();
-        userName = mUser.getDisplayName();
-        if (mUser.getPhotoUrl() != null) imageUrl = mUser.getPhotoUrl().toString();
-        else imageUrl = DEFAULT_PHOTO_URL;
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
-        phoneBookDbRef.addValueEventListener(new ValueEventListener() {
+
+        Bundle bundle = getIntent().getExtras();
+        newUser = bundle.getBoolean("newUser");
+
+        if (getSupportActionBar() != null) {
+            if (newUser) getSupportActionBar().setTitle("Add Contact");
+            else getSupportActionBar().setTitle("Edit Profile");
+        }
+
+        databaseInfoneCategories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot child :
-                        dataSnapshot.getChildren()) {
-                    if (userEmail.equals(child.child("email").getValue(String.class))) {
-                        newContact = false;
-                        PhonebookDisplayItem item = child.getValue(PhonebookDisplayItem.class);
-                        if (item == null) {
-                            Log.e(TAG, "onDataChange: could not convert data to class");
-                            continue;
-                        }
-                        if (item.getName() != null && "".equals(item.getName())) {
-                            userName = item.getName();
-                        }
-                        desc = item.getDesc();
-                        number = item.getNumber();
-                        if (item.getImageurl() != null
-                                && !DEFAULT_PHOTO_URL.equals(item.getImageurl())
-                                && !"".equals(item.getImageurl())) {
-                            imageUrl = item.getImageurl();
-                        }
-                        if (item.getHostel() != null
-                                && !"".equals(item.getHostel())) {
-                            hostel = item.getHostel();
-                        }
-                        if (item.getCategory() != null
-                                && !"".equals(item.getCategory()))
-                            category = item.getCategory();
-                        skills = item.getSkills();
-                        updateViews();
-                    }
+                for (DataSnapshot shot: dataSnapshot.getChildren()){
+                    infoneCategories.add(shot.getValue(Infone2CategoryModel.class));
+                    infoneCategoriesName.add(shot.child("name").getValue(String.class));
                 }
+                infoneAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: ", databaseError.toException());
+
             }
         });
 
-        updateViews();
+        infoneAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, infoneCategoriesName);
 
+        userInfoneTypeSpinner.setAdapter(infoneAdapter);
+        userImageView.setOnClickListener(this);
 
-        profileImageSdv.setOnClickListener(this);
+        userSkillTagsText.setTagsListener(this);
+        userSkillTagsText.setTagsWithSpacesEnabled(false);
 
-        skillTags.setTagsListener(this);
-        skillTags.setTagsWithSpacesEnabled(true);
-
-        skillTags.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line,/*TODO: load skills from firebase*/ getResources().getStringArray(R.array.skills)));
-        skillTags.setThreshold(1);
-
-        phoneBookDbRef.keepSynced(true);
-        category = "S";
-        host = "hostel";
-        spinner.setVisibility(View.VISIBLE);
+        userSkillTagsText.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line,getResources().getStringArray(R.array.skills)));
+        userSkillTagsText.setThreshold(1);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateViews();
+
+        if(newUser) {
+            userNameText.setText(mUser.getDisplayName());
+            userEmailText.setText(mUser.getEmail());
+            userEmailText.setFocusable(false);
+            if (mImageUri==null) {
+                if (mUser.getPhotoUrl() != null) {
+                    Picasso.with(this).load(mUser.getPhotoUrl()).into(userImageView);
+                    mImageUri = mUser.getPhotoUrl();
+                } else {
+                    Picasso.with(this).load(DEFAULT_PHOTO_URL).into(userImageView);
+                    mImageUri = Uri.parse(DEFAULT_PHOTO_URL);
+                }
+            }
+        }else {
+            mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    userDetails=dataSnapshot.getValue(UserItemFormat.class);
+                    updateViewDetails();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }
     }
 
-    private void updateViews() {
-        if (getSupportActionBar() != null) {
-            if (newContact) getSupportActionBar().setTitle("Add Contact");
-            else getSupportActionBar().setTitle("Edit Profile");
+    private void updateViewDetails() {
+        userEmailText.setText(userDetails.getEmail());
+        userNameText.setText(userDetails.getUsername());
+        userWhatsappNumberText.setText(userDetails.getWhatsAppNumber());
+        userMobileNumberText.setText(userDetails.getMobileNumber());
+        userAboutText.setText(userDetails.getAbout());
+        for(int i=0;i<infoneCategories.size();i++){
+            if(infoneCategories.get(i).getCatId().equals(userDetails.getInfoneType())){
+                userInfoneTypeSpinner.setText(infoneCategoriesName.get(i));
+                infoneTypeIndex=i;
+            }
         }
-        editTextName.setText(userName);
-        editTextEmail.setText(userEmail);
-        numberEt.setText(number);
-        if (imageUrl == null) imageUrl = DEFAULT_PHOTO_URL;
-        if (mImageUri != null) profileImageSdv.setImageURI(mImageUri);
-        else profileImageSdv.setImageURI(Uri.parse(imageUrl));
-
-        editTextDetails.setText(desc);
-        spinner.setSelection(getIndex(spinner, hostel));
-        //TODO: save skills as array of strings
+        if(mImageUri==null) {
+            Picasso.with(this).load(userDetails.getImageURL()).into(userImageView);
+        }
+        String skills = userDetails.getSkillTags();
         if (skills == null || skills.equalsIgnoreCase("[]")) {
             skills = "";
         }
@@ -222,37 +252,10 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             skillsArray[0] = skillsArray[0].substring(1);
             skillsArray[skillsArray.length - 1] = skillsArray[skillsArray.length - 1]
                     .substring(0, skillsArray[skillsArray.length - 1].length() - 1);
-            skillTags.setTags(skillsArray);
+            userSkillTagsText.setTags(skillsArray);
         } else {
-            skillTags.setText(skills);
+            userSkillTagsText.setText(skills);
         }
-        if (category != null) {
-            switch (category) {
-                case "S":
-                    spinner.setVisibility(View.VISIBLE);
-                    host = "hostel";
-                    break;
-                case "A":
-                    spinner.setVisibility(View.GONE);
-                    host = "none";
-                    break;
-                case "O":
-                    spinner.setVisibility(View.GONE);
-                    host = "none";
-                    break;
-            }
-        }
-    }
-
-    private int getIndex(CustomSpinner spinner, String s) {
-        int index = 0;
-        for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(s)) {
-                index = i;
-                break;
-            }
-        }
-        return index;
     }
 
     @Override
@@ -265,7 +268,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_done) {
             if (!isNetworkAvailable(getApplicationContext())) {
-                Snackbar snack = Snackbar.make(editTextDetails, "No Internet. Can't Add Contact.", Snackbar.LENGTH_LONG);
+                Snackbar snack = Snackbar.make(userAboutText, "No Internet. Can't Add Contact.", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
@@ -290,7 +293,6 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1, 1)
-                    .setBackgroundColor(R.color.white)
                     .setSnapRadius(2)
                     .start(this);
         }
@@ -315,7 +317,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                     String pathSmall = MediaStore.Images.Media.insertImage(EditProfileActivity.this.getContentResolver(), bitmap2Small, mImageUri.getLastPathSegment(), null);
                     mImageUri = Uri.parse(path);
                     mImageUriSmall = Uri.parse(pathSmall);
-                    profileImageSdv.setImageURI(mImageUri);
+                    userImageView.setImageURI(mImageUri);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -328,64 +330,98 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     public void attemptUpdate() throws IOException {
         mProgress.setMessage("Updating...");
         mProgress.show();
-        userName = editTextName.getText().toString();
-        userEmail = editTextEmail.getText().toString();
-        desc = editTextDetails.getText().toString();
-        number = numberEt.getText().toString();
-        skills = skillTags.getTags().toString();
+
+        userName = userNameText.getText().toString();
+        userEmail = userEmailText.getText().toString();
+        userAbout = userAboutText.getText().toString();
+        userWhatsapp = userWhatsappNumberText.getText().toString();
+        userMobile = userMobileNumberText.getText().toString();
+        userSkillTags = userSkillTagsText.getTags().toString();
+
+        for (int i=0;i<infoneCategories.size();i++){
+            Toast.makeText(this, infoneCategories.get(i).getName(), Toast.LENGTH_SHORT).show();
+            if(infoneCategoriesName.get(i).equals(userInfoneTypeSpinner.getText().toString())){
+                userInfoneType = infoneCategories.get(i).getCatId();
+            }
+        }
+
         if (userName == null
-                || number == null
-                || number.length() == 0) {
-            Snackbar snackbar = Snackbar.make(editTextDetails, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
+                || userEmail == null
+                || userMobile.length() == 0 || userInfoneType ==null) {
+            Snackbar snackbar = Snackbar.make(userAboutText, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
             snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
             snackbar.show();
             mProgress.dismiss();
         } else {
-            final DatabaseReference newPost = phoneBookDbRef.child(number);
-            newPost.child("name").setValue(userName);
-            newPost.child("desc").setValue(desc);
-            newPost.child("number").setValue(number);
-            newPost.child("category").setValue(category);
+            final DatabaseReference newPost = mUserReference;
+            newPost.child("username").setValue(userName);
             newPost.child("email").setValue(userEmail);
-            newPost.child("skills").setValue(skills);
-            newPost.child("Uid").setValue(mUser.getUid().toString());
-            if (host.equals("none")) {
-                newPost.child("hostel").setValue(hostel);
-            } else {
-                host = String.valueOf(spinner.getSelectedItem());
-                newPost.child("hostel").setValue(host);
+            newPost.child("mobileNumber").setValue(userMobile);
+            if (userWhatsapp.length()==0){
+                newPost.child("whatsAppNumber").setValue(" ");
+            }else {
+                newPost.child("whatsAppNumber").setValue(userWhatsapp);
             }
-            if (mImageUri != null && mImageUri != mUser.getPhotoUrl()) {
-                StorageReference filepath = mStorageRef.child("PhonebookImage").child(mImageUri.getLastPathSegment() + mUser.getUid());
-                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        if (downloadUri == null) {
-                            Log.e(TAG, "onSuccess: error got empty downloadUri");
-                            return;
+            if (userAbout == null){
+                newPost.child("about").setValue(" ");
+            }else {
+                newPost.child("about").setValue(userAbout);
+            }
+            newPost.child("skillTags").setValue(userSkillTags);
+            newPost.child("userUID").setValue(mUser.getUid().toString());
+            newPost.child("infoneType").setValue(userInfoneType);
+
+            if (mImageUri != null) {
+                if( mImageUri != mUser.getPhotoUrl()) {
+                    flag = false;
+                    StorageReference filepath = mStorageRef.child("Users").child(mImageUri.getLastPathSegment() + mUser.getUid());
+                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Uri downloadUri = taskSnapshot.getDownloadUrl();
+                            if (downloadUri == null) {
+                                Log.e(TAG, "onSuccess: error got empty downloadUri");
+                                return;
+                            }
+                            newPost.child("imageURL").setValue(downloadUri.toString());
+                            if (flag){
+                                mProgress.dismiss();
+                                finish();
+                            }else {
+                                flag=true;
+                            }
                         }
-                        newPost.child("imageurl").setValue(downloadUri.toString());
-                        finish();
-                    }
-                });
-                StorageReference filepathThumb = mStorageRef.child("PhonebookImageSmall").child(mImageUriSmall.getLastPathSegment() + mUser.getUid() + "Thumbnail");
-                filepathThumb.putFile(mImageUriSmall).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUriThumb = taskSnapshot.getDownloadUrl();
-                        if (downloadUriThumb == null) {
-                            Log.e(TAG, "onSuccess: error got empty downloadUri");
-                            return;
+                    });
+                    StorageReference filepathThumb = mStorageRef.child("PhonebookImageSmall").child(mImageUriSmall.getLastPathSegment() + mUser.getUid() + "Thumbnail");
+                    filepathThumb.putFile(mImageUriSmall).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Uri downloadUriThumb = taskSnapshot.getDownloadUrl();
+                            if (downloadUriThumb == null) {
+                                Log.e(TAG, "onSuccess: error got empty downloadUri");
+                                return;
+                            }
+                            newPost.child("imageURLThumbnail").setValue(downloadUriThumb.toString());
+                            if (flag){
+                                mProgress.dismiss();
+                                finish();
+                            }else {
+                                flag=true;
+                            }
                         }
-                        newPost.child("imageurlThumb").setValue(downloadUriThumb.toString());
-                        finish();
-                    }
-                });
-            } else {
-                newPost.child("imageurl").setValue(imageUrl);
+                    });
+                }else {
+                    Toast.makeText(this, "Default", Toast.LENGTH_SHORT).show();
+                    newPost.child("imageURLThumbnail").setValue(mUser.getPhotoUrl().toString());
+                    newPost.child("imageURL").setValue(mUser.getPhotoUrl().toString());
+                    mProgress.dismiss();
+                    finish();
+                }
+            }else{
+                Toast.makeText(this, "Not Exist", Toast.LENGTH_SHORT).show();
+                mProgress.dismiss();
                 finish();
             }
         }
@@ -403,7 +439,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.sdv_profile_pic_content_edit_prof: {
+            case R.id.user_image_view: {
                 if (ContextCompat.checkSelfPermission(EditProfileActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                         PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(

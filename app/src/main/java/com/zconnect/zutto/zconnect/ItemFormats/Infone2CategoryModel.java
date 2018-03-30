@@ -11,6 +11,10 @@ public class Infone2CategoryModel {
     String admin;
     String catId;
 
+    public Infone2CategoryModel(){
+
+    }
+
     public Infone2CategoryModel(String name, String imageurl, String admin,String catId) {
         this.name = name;
         this.imageurl = imageurl;

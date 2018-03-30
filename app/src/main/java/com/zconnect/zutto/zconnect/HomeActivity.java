@@ -6,9 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,7 +25,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -78,7 +74,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     TabLayout tabs;
     String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
     private boolean doubleBackToExitPressedOnce = false;
-    private ValueEventListener phoneBookValueEventListener;
+    private ValueEventListener editProfileValueEventListener;
     private ValueEventListener popupsListener;
     /**
      * Listenes to /ui node in firebase.
@@ -99,7 +95,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private String username;
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
-    private DatabaseReference phoneBookDbRef;
+    private DatabaseReference currentUserReference;
     private DatabaseReference mDatabasePopUps;
     private Boolean isFabOpen = false;
     private FloatingActionButton fab, fab1, fab2, fab3;
@@ -710,18 +706,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
         };
 
-        phoneBookValueEventListener = new ValueEventListener() {
+        editProfileValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean userAddedToInfone = false;
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    if (TextUtils.equals(child.child("email").getValue(String.class), userEmail)) {
-                        username = child.child("name").getValue(String.class);
-                        navHeaderUserNameTv.setText(username);
-                        userAddedToInfone = true;
-                    }
+                if(!dataSnapshot.hasChild("mobileNumber")){
+                    Intent i = new Intent(HomeActivity.this,EditProfileActivity.class);
+                    i.putExtra("newUser",true);
+                    startActivity(i);
                 }
-                if (!userAddedToInfone) promptToAddContact();
             }
 
             @Override
@@ -782,8 +774,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     // must be launched from onStart()
     // else remove the eventListener in corresponding call.
-    // i.e. if called from onCreate() make sure onDestroy() removes phoneBookValueEventListener
-    // from phoneBookDbRef
+    // i.e. if called from onCreate() make sure onDestroy() removes editProfileValueEventListener
+    // from currentUserReference
     @SuppressLint("ApplySharedPref")
     private void launchRelevantActivitiesIfNeeded() {
         //show tuts for first launch
@@ -800,9 +792,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     editor.putBoolean("isReturningUser", true);
                     editor.commit();
                 } else if(communityReference!=null) {
-                    phoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
-                    phoneBookDbRef.keepSynced(true);
-                    phoneBookDbRef.addListenerForSingleValueEvent(phoneBookValueEventListener);
+                    currentUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid());
+                    currentUserReference.keepSynced(true);
+                    currentUserReference.addListenerForSingleValueEvent(editProfileValueEventListener);
                 }
             }
         }
@@ -819,6 +811,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         switch (item.getItemId()) {
             case R.id.edit_profile: {
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                intent.putExtra("newUser",false);
                 startActivity(intent);
                 break;
             }
@@ -957,7 +950,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         if(communityReference!=null) {
             try {
                 mDatabasePopUps.removeEventListener(popupsListener);
-                phoneBookDbRef.removeEventListener(phoneBookValueEventListener);
+                currentUserReference.removeEventListener(editProfileValueEventListener);
             }catch (Exception e){}
             if (addContactDialog != null) addContactDialog.cancel();
         }
