@@ -146,7 +146,6 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
         Intent addContactIntent = new Intent(this, InfoneAddContactActivity.class);
         addContactIntent.putExtra("catId", catId);
-        addContactIntent.putExtra("catName",catName);
         startActivity(addContactIntent);
 
     }

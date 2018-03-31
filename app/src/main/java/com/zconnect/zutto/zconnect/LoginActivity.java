@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CommunitiesItemFormat;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import butterknife.BindView;
@@ -96,6 +99,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         bpgcEmailInfo.setTypeface(ralewayLight);
         mGoogleSignInBtn.setTypeface(ralewayMedium);
         mGuestLogInBtn.setTypeface(ralewayMedium);
+
     }
 
     private void launchGoogleSignInIntent() {
@@ -215,7 +219,9 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             SharedPreferences.Editor editInfo2 = sharedPref2.edit();
             editInfo2.putString("communityReference", communityCode);
             editInfo2.commit();
-            setupUserDataAndFinish(mUser);
+            Intent i = new Intent(LoginActivity.this,HomeActivity.class);
+            startActivity(i);
+            finish();
         }else {
             logout();
             mProgress.dismiss();
@@ -258,31 +264,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         mAuth.signOut();
         // Google sign out
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-    }
-
-    private void setupUserDataAndFinish(@NonNull final FirebaseUser user) {
-        Uri photoUri = user.getPhotoUrl();
-        String photoUrl;
-        String defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336";
-        if (photoUri != null) photoUrl = photoUri.toString();
-        else photoUrl = defaultPhotoUrl;
-        try {
-            usersDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityCode).child("Users");
-            usersDbRef.keepSynced(true);
-
-            DatabaseReference currentUserDbRef = usersDbRef.child(user.getUid());
-            currentUserDbRef.child("Image").setValue(photoUrl);
-            currentUserDbRef.child("Username").setValue(user.getDisplayName());
-            currentUserDbRef.child("Email").setValue(user.getEmail());
-
-
-            Intent i = new Intent(LoginActivity.this,HomeActivity.class);
-            startActivity(i);
-            finish(); /*Make Sure HomeActivity exists*/
-
-        }catch (Exception e){
-
-        }
     }
 
     @Override
