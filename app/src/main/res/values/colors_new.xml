@@ -3,6 +3,7 @@
     <color name="link">#03A9F4</color>
     <color name="defaultAvatar">#BDBDBD</color>
 
+    <color name="users">#795548</color>
     <color name="infone">#9C27B0</color>
     <color name="events">#8BC34A</color>
     <color name="storeroom">#F44336</color>
@@ -11,8 +12,9 @@
 
     <color name="primaryText">#000</color>
     <color name="secondaryText">#BBB</color>
+    <color name="secondaryText2">#AAA</color>
     <color name="transparent">#00000000</color>
     <color name="lit">#ffb000</color>
 
-    <color name="horizontalLine">#EEEFFF</color>
+    <color name="horizontalLine">#DDD</color>
 </resources>

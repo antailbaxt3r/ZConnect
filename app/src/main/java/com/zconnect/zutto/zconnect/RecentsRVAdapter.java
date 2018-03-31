@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,6 +85,7 @@ import java.util.Vector;
             holder.cabpoolRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
             holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_18dp));
             holder.postConjunction.setText(" added a ");
             holder.post.setText("Contact");
             holder.infoneContactName.setText(recentsItemFormats.get(position).getInfoneContactName());
@@ -96,15 +98,9 @@ import java.util.Vector;
             holder.storeroomRecentItem.setVisibility(View.GONE);
             holder.cabpoolRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
-//            Drawable[] layers = new Drawable[2];
-//            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
-//            layers[0].setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
-//            layers[1] = context.getResources().getDrawable(R.drawable.ic_people_white_24dp);
-//            LayerDrawable layerDrawable = new LayerDrawable(layers);
-//            holder.featureCircle.setBackground(layerDrawable);
-            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
-            holder.postConjunction.setText(" just joined your community. ");
-            holder.post.setText(recentsItemFormats.get(position).getFeature());
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.users), PorterDuff.Mode.SRC_ATOP);
+            holder.postConjunction.setText(" just joined your communitydf ygihofigiuhj. ");
+            holder.post.setVisibility(View.GONE);
         }
         else if (recentsItemFormats.get(position).getFeature().equals("Event"))
         {
@@ -119,6 +115,7 @@ import java.util.Vector;
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
             holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_18dp));
             holder.postConjunction.setText(" created an ");
             holder.post.setText(recentsItemFormats.get(position).getFeature());
             holder.eventName.setText(recentsItemFormats.get(position).getName());
@@ -138,6 +135,7 @@ import java.util.Vector;
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
             holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.storeroom), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_mall_white_18dp));
             holder.postConjunction.setText(" added a ");
             holder.post.setText("Product");
             holder.productName.setText(recentsItemFormats.get(position).getName());
@@ -165,6 +163,7 @@ import java.util.Vector;
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
             holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_taxi_white_18dp));
             //set text for source and destination...
         }
         else if (recentsItemFormats.get(position).getFeature().equals("Shop"))
@@ -180,6 +179,7 @@ import java.util.Vector;
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
             holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_18dp));
             holder.postConjunction.setText(" put an ");
             holder.post.setText("Offer");
         }
@@ -217,6 +217,7 @@ import java.util.Vector;
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
                 productImage;
+        ImageView featureIcon;
         LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem;
         //
 
@@ -235,6 +236,7 @@ import java.util.Vector;
             post = (TextView) itemView.findViewById(R.id.post);
             postTime = (TextView) itemView.findViewById(R.id.postTime);
             featureCircle = (SimpleDraweeView) itemView.findViewById(R.id.featureCircle);
+            featureIcon = (ImageView) itemView.findViewById(R.id.recents_featIcon);
             avatarCircle = (SimpleDraweeView) itemView.findViewById(R.id.avatarCircle);
             infoneRecentItem = (LinearLayout) itemView.findViewById(R.id.infoneRecentItem);
             infoneContactName = (TextView) itemView.findViewById(R.id.infoneName);

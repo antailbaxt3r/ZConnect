@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -139,8 +140,13 @@ public class ProductsTab extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 productVector.clear();;
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
-                    singleProduct = shot.getValue(Product.class);
-                    productVector.add(singleProduct);
+                    try{
+                        singleProduct = shot.getValue(Product.class);
+                        productVector.add(singleProduct);
+                    }
+                    catch (Exception e){
+                        Log.d("Error Alert", e.getMessage());
+                    }
                 }
                 Collections.reverse(productVector);
                 productAdapter.notifyDataSetChanged();

@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -89,6 +90,8 @@ public class AddCabPool extends BaseActivity {
         time_to = (CustomSpinner) findViewById(R.id.spinner_time_to);
 
         done = (Button) findViewById(R.id.done);
+//        Typeface customFont = Typeface.createFromAsset(AddCabPool.this.getAssets(), "fonts/Raleway-SemiBold.ttf");
+//        done.setTypeface(customFont);
         calender = (TextView) findViewById(R.id.calender);
 
 
