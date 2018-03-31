@@ -7,28 +7,28 @@ package com.zconnect.zutto.zconnect.ItemFormats;
 public class CabListItemFormat {
     String name;
     String phonenumber;
+    String ImageThumb;
+    String UID;
 
-    public CabListItemFormat(String name, String phonenumber) {
+    public CabListItemFormat(String name, String phonenumber, String imageThumb, String UID) {
         this.name = name;
         this.phonenumber = phonenumber;
+        ImageThumb = imageThumb;
+        this.UID = UID;
     }
 
     public CabListItemFormat() {
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public String getPhonenumber() {
-        return phonenumber;
-    }
+    public String getPhonenumber() { return phonenumber; }
 
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
-    }
+    public void setPhonenumber(String phonenumber) { this.phonenumber = phonenumber; }
+
+    public String getImageThumb() { return ImageThumb; }
+
+    public String getUID() { return UID; }
 }

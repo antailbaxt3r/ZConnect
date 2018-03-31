@@ -19,7 +19,7 @@
         android:textColor="@color/primaryText"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="10dp"
-        android:textSize="18dp"/>
+        android:textSize="16dp"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
@@ -42,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_weight=".3"
             android:layout_height="wrap_content"
-            android:text="From: "
+            android:text="Source: "
             android:layout_marginStart="5dp"
             android:textColor="@color/primaryText"/>
         <com.zconnect.zutto.zconnect.CustomSpinner
@@ -111,6 +111,7 @@
             android:layout_weight=".6"
             android:layout_height="wrap_content"
             android:text="Click to choose"
+            android:paddingLeft="8dp"
             android:textColor="@color/primaryText"/>
 
         <RelativeLayout
@@ -148,7 +149,7 @@
             android:layout_width="0dp"
             android:layout_weight=".3"
             android:layout_height="wrap_content"
-            android:text="From Time: "
+            android:text="Between: "
             android:textColor="@color/primaryText"
             android:layout_marginStart="23dp"/>
 
@@ -171,7 +172,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".3"
-            android:text="to"
+            android:text="And: "
             android:layout_marginStart="23dp"
             android:textColor="@color/primaryText"/>
 
@@ -189,7 +190,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="vertical"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="10dp">
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"
@@ -198,9 +199,9 @@
             android:id="@+id/done"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/link"
-            android:textSize="18dp"
-            android:background="@color/transparent"
+            android:textColor="@color/primaryText"
+            android:textSize="16dp"
+            android:background="@color/cabpool"
             android:text="Search"
             android:textAllCaps="false"/>
         <View

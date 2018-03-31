@@ -22,22 +22,29 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp">
-
-            <TextView
-                android:id="@+id/source_head"
-                android:layout_width="0dp"
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight=".3"
-                android:text="From: "
-                android:textColor="@color/primaryText"/>
+                android:src="@drawable/ic_my_location_white_18dp"
+                android:tint="@color/secondaryText2"/>
+            <!--<TextView-->
+                <!--android:id="@+id/source_head"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight=".3"-->
+                <!--android:text="From: "-->
+                <!--android:textColor="@color/primaryText"-->
+                <!--android:layout_marginStart="5dp"/>-->
 
             <TextView
                 android:id="@+id/source"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".7"
+                android:layout_weight="1"
                 android:text="bits"
-                android:textColor="@color/primaryText" />
+                android:textColor="@color/primaryText"
+                android:layout_marginStart="5dp"/>
+
 
         </LinearLayout>
 
@@ -46,14 +53,19 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp">
-
-            <TextView
-                android:id="@+id/destination_head"
-                android:layout_width="0dp"
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight=".3"
-                android:text="Destination: "
-                android:textColor="@color/primaryText"/>
+                android:src="@drawable/ic_location_on_white_18dp"
+                android:tint="@color/secondaryText2"/>
+            <!--<TextView-->
+                <!--android:id="@+id/destination_head"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight=".3"-->
+                <!--android:text="Destination: "-->
+                <!--android:textColor="@color/primaryText"-->
+                <!--android:layout_marginStart="5dp"/>-->
 
             <TextView
                 android:id="@+id/destination"
@@ -61,43 +73,45 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".7"
                 android:text="bits"
-                android:textColor="@color/primaryText"/>
+                android:textColor="@color/primaryText"
+                android:layout_marginStart="5dp"/>
 
         </LinearLayout>
 
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginTop="20dp">-->
+            <!--<TextView-->
+                <!--android:id="@+id/date_head"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight=".3"-->
+                <!--android:text="Date: "-->
+                <!--android:textColor="@color/primaryText"-->
+                <!--android:layout_marginStart="23dp"/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/date"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight=".7"-->
+                <!--android:text="Date"-->
+                <!--android:textColor="@color/black"/>-->
+        <!--</LinearLayout>-->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="20dp">
-            <TextView
-                android:id="@+id/date_head"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".3"
-                android:text="Date: "
-                android:textColor="@color/primaryText"/>
             <TextView
                 android:id="@+id/date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".7"
+                android:layout_weight=".5"
                 android:text="Date"
-                android:textColor="@color/black"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp">
-            <TextView
-                android:id="@+id/time_head"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".3"
-                android:text="Time Slot: "
-                android:textColor="@color/primaryText"/>
+                android:textColor="@color/black"
+                android:layout_marginStart="23dp"/>
             <TextView
                 android:id="@+id/time_range"
                 android:layout_width="0dp"
@@ -106,6 +120,27 @@
                 android:text="Time"
                 android:textColor="@color/primaryText"/>
         </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginTop="20dp">-->
+            <!--<TextView-->
+                <!--android:id="@+id/time_head"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight=".3"-->
+                <!--android:text="Time Slot: "-->
+                <!--android:textColor="@color/primaryText"-->
+                <!--android:layout_marginStart="23dp"/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/time_range"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight=".7"-->
+                <!--android:text="Time"-->
+                <!--android:textColor="@color/primaryText"/>-->
+        <!--</LinearLayout>-->
 
         <View
             android:layout_width="match_parent"
@@ -116,14 +151,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
             android:orientation="horizontal">
             <Button
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:background="@color/transparent"
+                android:background="@color/cabpool"
                 android:text="List of People"
                 android:textColor="@color/primaryText"
                 android:textSize="16dp"
@@ -133,7 +167,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:background="@color/transparent"
+                android:background="@color/cabpool"
                 android:text="Share"
                 android:textColor="@color/primaryText"
                 android:textSize="16dp"

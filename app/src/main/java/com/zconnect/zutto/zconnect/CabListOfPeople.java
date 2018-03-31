@@ -53,7 +53,7 @@ public class CabListOfPeople extends BaseActivity {
     DatabaseReference pool, chatRef;
     Button join;
     String key;
-    String name, number, email;
+    String name, number, email, imageThumb, uid;
     Vector<CabListItemFormat> cabListItemFormatVector = new Vector<>();
     CabPeopleRVAdapter adapter;
     CabItemFormat cabItemFormat;
@@ -233,7 +233,7 @@ public class CabListOfPeople extends BaseActivity {
 
                         } else {
                             if (name != null && number != null) {
-                                cabListItemFormatVector.add(new CabListItemFormat(name, number));
+                                cabListItemFormatVector.add(new CabListItemFormat(name, number, imageThumb, uid));
                                 pool.setValue(cabListItemFormatVector);
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
                                 NotificationSender notification = new NotificationSender(key,number,null,null,null,null,"CabPool",false,true,getApplicationContext());
