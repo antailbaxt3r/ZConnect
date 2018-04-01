@@ -30,11 +30,7 @@ import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 import java.util.List;
 import java.util.Vector;
 
-/**
- * Created by shubhamk on 20/3/17.
- */
-
-@TargetApi(21)public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.ViewHolder> {
+public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.ViewHolder> {
 
     Context context;
     Vector<RecentsItemFormat> recentsItemFormats;
@@ -307,7 +303,6 @@ import java.util.Vector;
                         context.startActivity(i);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){
                         i = new Intent(context,InfoneProfileActivity.class);
-                        i.putExtra("catId",recentsItemFormats.get(getAdapterPosition()).getInfoneContactCategory());
                         i.putExtra("infoneUserId",recentsItemFormats.get(getAdapterPosition()).getId());
                         context.startActivity(i);
                     }

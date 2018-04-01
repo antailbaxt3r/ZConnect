@@ -42,12 +42,14 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
     /*UI elements*/
     private EditText nameEt;
+    private String userType="No";
     //private TextView desc;
     EditText phone1Et;
     EditText phone2Et;
     Button saveEditBtn;
     SimpleDraweeView profileImage;
     Toolbar toolbar;
+    private Menu menu;
 
     /*image uploading elements*/
     private Uri mImageUri = null;
@@ -110,7 +112,6 @@ public class InfoneProfileActivity extends AppCompatActivity {
         saveEditBtn.setVisibility(View.GONE);
 
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
-        catId= getIntent().getExtras().getString("catId");
 
         Log.e(InfoneProfileActivity.class.getName(), "data :" + infoneUserId);
 
@@ -141,7 +142,12 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);
+                userType = dataSnapshot.child("type").getValue(String.class);
+                catId = dataSnapshot.child("catId").getValue(String.class);
 
+                if (userType.equals("User")) {
+                    menu.findItem(R.id.action_edit).setVisible(false);
+                }
                 //setting image if not default
                 if (imageUrl != null && !imageUrl.equalsIgnoreCase("default")) {
                     Uri imageUri = Uri.parse(imageUrl);
@@ -405,6 +411,8 @@ public class InfoneProfileActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu=menu;
+
         getMenuInflater().inflate(R.menu.menu_edit_infone_profile, menu);
         return true;
     }
@@ -413,9 +421,17 @@ public class InfoneProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_edit) {
-            editProfile();
-        }
+                editProfile();
+            }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
 }
