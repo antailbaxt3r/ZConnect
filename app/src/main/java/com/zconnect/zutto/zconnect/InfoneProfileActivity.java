@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -37,17 +39,24 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class InfoneProfileActivity extends AppCompatActivity {
 
     /*UI elements*/
     private EditText nameEt;
+    private String userType="No";
     //private TextView desc;
     EditText phone1Et;
     EditText phone2Et;
     Button saveEditBtn;
     SimpleDraweeView profileImage;
     Toolbar toolbar;
+    private Menu menu;
+    private Button validButton;
+    private TextView verifiedDateTextView;
+    private String verfiedDate;
+    private Long postTimeMillis;
 
     /*image uploading elements*/
     private Uri mImageUri = null;
@@ -75,6 +84,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
     private FirebaseUser user;
     private ValueEventListener listenerView;
     private DatabaseReference mDatabaseViews;
+    private Boolean flag;
 
     private final String TAG = getClass().getSimpleName();
     private String catId;
@@ -102,6 +112,8 @@ public class InfoneProfileActivity extends AppCompatActivity {
         phone1Et = (EditText) findViewById(R.id.et_phone1_infone_profile);
         phone2Et = (EditText) findViewById(R.id.et_phone2_infone_profile);
         saveEditBtn = (Button) findViewById(R.id.save_edit_infone_profile);
+        validButton = (Button) findViewById(R.id.valid_button);
+        verifiedDateTextView = (TextView) findViewById(R.id.verified_date);
 
         nameEt.setEnabled(false);
         phone1Et.setEnabled(false);
@@ -109,8 +121,10 @@ public class InfoneProfileActivity extends AppCompatActivity {
         profileImage.setEnabled(false);
         saveEditBtn.setVisibility(View.GONE);
 
+
+
+
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
-        catId= getIntent().getExtras().getString("catId");
 
         Log.e(InfoneProfileActivity.class.getName(), "data :" + infoneUserId);
 
@@ -133,20 +147,39 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
         listener = new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
+            public void onDataChange(final DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.child("name").getValue(String.class);
                 nameEt.setText(name);
                 toolbar.setTitle(name);
 
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);
+                catId = dataSnapshot.child("catId").getValue(String.class);
+                validButton.setText(dataSnapshot.child("validCount").getValue().toString());
 
+                userType = dataSnapshot.child("type").getValue(String.class);
+                verfiedDate = dataSnapshot.child("verifiedDate").getValue().toString();
+                verifiedDateTextView.setText(verfiedDate);
+
+                if (userType.equals("User")) {
+                    menu.findItem(R.id.action_edit).setVisible(false);
+                }
                 //setting image if not default
                 if (imageUrl != null && !imageUrl.equalsIgnoreCase("default")) {
                     Uri imageUri = Uri.parse(imageUrl);
                     profileImage.setImageURI(imageUri);
                 }
+
+                if (dataSnapshot.child("valid").hasChild(mAuth.getCurrentUser().getUid())){
+                    flag=true;
+                    validButton.setBackgroundColor(getResources().getColor(R.color.teal700));
+                }else {
+                    validButton.setBackgroundColor(getResources().getColor(R.color.teal100));
+                    flag=false;
+                }
+
+                databaseReferenceContact.child("validCount").setValue(dataSnapshot.child("valid").getChildrenCount());
+
 
                 phoneNums = new ArrayList<>();
                 DataSnapshot dataSnapshot1 = dataSnapshot.child("phone");
@@ -158,6 +191,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
                 phone1Et.setText(phoneNums.get(0));
                 phone2Et.setText(phoneNums.get(1));
+                verifiedDateTextView.setText(verfiedDate);
 
             }
 
@@ -166,7 +200,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
                 Log.e(TAG, "Database error :" + databaseError.toString());
             }
         };
-        databaseReferenceContact.addValueEventListener(listener);
+
 
         phone1Et.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,6 +240,19 @@ public class InfoneProfileActivity extends AppCompatActivity {
                 saveEdits();
             }
         });
+
+        validButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(flag){
+                    databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                }else {
+                    databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).setValue("true");
+                }
+                postTimeMillis = System.currentTimeMillis();
+                databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
+            }
+        });
     }
 
 
@@ -216,6 +263,8 @@ public class InfoneProfileActivity extends AppCompatActivity {
         phone2Et.setEnabled(true);
         profileImage.setEnabled(true);
         saveEditBtn.setVisibility(View.VISIBLE);
+        validButton.setVisibility(View.GONE);
+        verifiedDateTextView.setVisibility(View.GONE);
     }
 
     private void saveEdits() {
@@ -244,7 +293,11 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
         }
 
+        validButton.setVisibility(View.VISIBLE);
+        verifiedDateTextView.setVisibility(View.VISIBLE);
+
     }
+
 
     private void uploadImage() {
 
@@ -355,6 +408,12 @@ public class InfoneProfileActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        databaseReferenceContact.addValueEventListener(listener);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         databaseReferenceContact.removeEventListener(listener);
@@ -405,6 +464,8 @@ public class InfoneProfileActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu=menu;
+
         getMenuInflater().inflate(R.menu.menu_edit_infone_profile, menu);
         return true;
     }
@@ -413,9 +474,17 @@ public class InfoneProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_edit) {
-            editProfile();
-        }
+                editProfile();
+            }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
 }

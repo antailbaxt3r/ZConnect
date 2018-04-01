@@ -35,6 +35,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
         this.context = context;
         this.infoneContactsRVItems = infoneContactsRVItems;
         this.catId=catId;
+
     }
 
     @Override

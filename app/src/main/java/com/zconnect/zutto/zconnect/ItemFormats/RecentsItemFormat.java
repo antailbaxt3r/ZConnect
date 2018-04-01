@@ -19,7 +19,7 @@ public class RecentsItemFormat {
     //new ui
     private long PostTimeMillis;
     //for infone
-    String infoneContactName, infoneContactCategory,infoneContactCategoryName;
+    String infoneContactName,infoneContactCategoryName;
     //for cabpool
     String cabpoolSource;
     String cabpoolDestination;
@@ -35,7 +35,7 @@ public class RecentsItemFormat {
     private PostedByDetails PostedBy;
     //
 
-    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id, String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate, String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis, PostedByDetails PostedBy, String infoneContactCategory, String infoneContactName, String infoneContactCategoryName, String communityName) {
+    public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id, String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate, String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis, PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName, String communityName) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -49,7 +49,6 @@ public class RecentsItemFormat {
         this.PostTimeMillis = PostTimeMillis;
         this.PostedBy = PostedBy;
         this.infoneContactName = infoneContactName;
-        this.infoneContactCategory = infoneContactCategory;
         this.infoneContactCategoryName = infoneContactCategoryName;
         this.cabpoolSource = cabpoolSource;
         this.cabpoolDestination = cabpoolDestination;
@@ -130,7 +129,6 @@ public class RecentsItemFormat {
     public long getPostTimeMillis() { return PostTimeMillis; }
         //for infone
     public String getInfoneContactName() { return infoneContactName; }
-    public String getInfoneContactCategory() { return infoneContactCategory; }
 
     public String getInfoneContactCategoryName() {
         return infoneContactCategoryName;
