@@ -99,7 +99,8 @@ import java.util.Vector;
             holder.cabpoolRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
             holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.users), PorterDuff.Mode.SRC_ATOP);
-            holder.postConjunction.setText(" just joined your communitydf ygihofigiuhj. ");
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_home_white_18dp));
+            holder.postConjunction.setText(" just joined your community ");
             holder.post.setVisibility(View.GONE);
         }
         else if (recentsItemFormats.get(position).getFeature().equals("Event"))

@@ -29,6 +29,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -46,11 +47,11 @@ public class AddCabPool extends BaseActivity {
     Button done;
     CustomSpinner source, destination, time_from, time_to;
     TextView date, calender;
-    String email, name, number, goingTime, returnTime;
+    String email, name, number, goingTime, returnTime, imageThumb, userUID;
     String s_year, s_monthOfYear, s_dayOfMonth;
     double T1, T2;
     DatabaseReference mFeaturesStats;
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
     DatabaseReference mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
     private DatabaseReference homeReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
@@ -159,17 +160,19 @@ public class AddCabPool extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
 
-                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
-                    if (phonebookDisplayItem == null)
+                    UserItemFormat userDisplayItem = shot.getValue(UserItemFormat.class);
+                    if (userDisplayItem == null)
                         return;
-                    if (email != null) {
-                        if (phonebookDisplayItem.getEmail() != null) {
-                            if (phonebookDisplayItem.getEmail().equals(email)) {
-                                name = phonebookDisplayItem.getName();
-                                number = phonebookDisplayItem.getNumber();
+
+                        if (userDisplayItem.getEmail() != null) {
+                            if (userDisplayItem.getEmail().equals(email)) {
+                                name = userDisplayItem.getUsername();
+                                number = userDisplayItem.getMobileNumber();
+                                imageThumb = userDisplayItem.getImageURLThumbnail();
+                                userUID = userDisplayItem.getUserUID();
                             }
                         }
-                    }
+
                 }
 
             }
@@ -257,6 +260,8 @@ public class AddCabPool extends BaseActivity {
                                         CabListItemFormat cabListItemFormat = new CabListItemFormat();
                                         cabListItemFormat.setName(name);
                                         cabListItemFormat.setPhonenumber(number);
+                                        cabListItemFormat.setImageThumb(imageThumb);
+                                        cabListItemFormat.setUID(userUID);
                                         ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
                                         cabListItemFormats.add(cabListItemFormat);
 

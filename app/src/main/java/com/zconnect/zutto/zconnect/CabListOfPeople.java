@@ -30,6 +30,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import org.json.JSONObject;
 
@@ -53,7 +54,7 @@ public class CabListOfPeople extends BaseActivity {
     DatabaseReference pool, chatRef;
     Button join;
     String key;
-    String name, number, email, imageThumb, uid;
+    String name, number, email, imageThumb, userUID;
     Vector<CabListItemFormat> cabListItemFormatVector = new Vector<>();
     CabPeopleRVAdapter adapter;
     CabItemFormat cabItemFormat;
@@ -66,7 +67,7 @@ public class CabListOfPeople extends BaseActivity {
 
     String formatted_date, Date;
     private FirebaseAuth mAuth;
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
     private DatabaseReference databaseReference;
 
     private FirebaseUser user;
@@ -113,12 +114,12 @@ public class CabListOfPeople extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
+                    UserItemFormat userDisplayItem = shot.getValue(UserItemFormat.class);
                     if (email != null) {
-                        if (phonebookDisplayItem != null && phonebookDisplayItem.getEmail() != null) {
-                            if (phonebookDisplayItem.getEmail().equals(email)) {
-                                name = phonebookDisplayItem.getName();
-                                number = phonebookDisplayItem.getNumber();
+                        if (userDisplayItem != null && userDisplayItem.getEmail() != null) {
+                            if (userDisplayItem.getEmail().equals(email)) {
+                                name = userDisplayItem.getUsername();
+                                number = userDisplayItem.getMobileNumber();
                                 numberFlag = true;
                             }
                         }
@@ -233,7 +234,7 @@ public class CabListOfPeople extends BaseActivity {
 
                         } else {
                             if (name != null && number != null) {
-                                cabListItemFormatVector.add(new CabListItemFormat(name, number, imageThumb, uid));
+                                cabListItemFormatVector.add(new CabListItemFormat(name, number, imageThumb, userUID));
                                 pool.setValue(cabListItemFormatVector);
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
                                 NotificationSender notification = new NotificationSender(key,number,null,null,null,null,"CabPool",false,true,getApplicationContext());

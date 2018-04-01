@@ -24,14 +24,22 @@
         android:layout_alignParentTop="true"
         android:clipToPadding="false"
         android:scrollbars="vertical"/>
-
     <Button
         android:id="@+id/join"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
-        android:background="@drawable/curveradiusgoogle"
+        android:background="@color/cabpool"
         android:text="Join"
-        android:textColor="@color/white" />
+        android:textAllCaps="false"
+        android:textColor="@color/primaryText" />
+    <!--<Button-->
+        <!--android:id="@+id/join"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:background="@drawable/curveradiusgoogle"-->
+        <!--android:text="Join"-->
+        <!--android:textColor="@color/white" />-->
 </RelativeLayout>

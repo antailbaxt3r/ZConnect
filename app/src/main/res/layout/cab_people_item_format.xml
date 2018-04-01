@@ -6,21 +6,29 @@
     android:id="@+id/rv_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
-
+        <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cab_people_avatarCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/avatar_circle"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:roundAsCircle="true" />
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".7"
+            android:layout_weight=".8"
             android:orientation="vertical">
 
 
@@ -33,7 +41,7 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="5dp"
                 android:textColor="@android:color/black"
-                android:textSize="20sp"
+                android:text="Akhil Kamath"
                 android:textStyle="bold" />
 
             <TextView
@@ -44,16 +52,16 @@
                 android:layout_toRightOf="@+id/colon2"
                 android:paddingLeft="15dp"
                 android:paddingRight="5dp"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:text="7506005138"
+                android:textColor="@color/primaryText"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="55dp"
-            android:layout_weight=".3"
-            android:padding="12dp">
+            android:layout_weight=".2"
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/ib_call_contact_item"
@@ -66,16 +74,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp">
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:background="#A9A9A9" />
-    </LinearLayout>
-
 </LinearLayout>
