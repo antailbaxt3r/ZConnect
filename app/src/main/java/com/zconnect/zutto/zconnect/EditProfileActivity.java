@@ -419,6 +419,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newContactNumRef.child("phone").child("0").setValue(userMobile);
             newContactNumRef.child("phone").child("1").setValue(userWhatsapp);
             newContactNumRef.child("type").setValue("User");
+            newContactNumRef.child("validCount").setValue(0);
+            newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
             newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
             newContactNumRef.child("UID").setValue(mUser.getUid());
 

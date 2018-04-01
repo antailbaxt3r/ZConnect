@@ -14,6 +14,7 @@ public class InfoneContactsRVItem {
     private ArrayList<String> phoneNums;
     private String infoneUserId;
 
+
     public InfoneContactsRVItem(String name, String views, String imageThumb, ArrayList<String> phoneNums, String infoneUserId) {
         this.name = name;
         this.views = views;

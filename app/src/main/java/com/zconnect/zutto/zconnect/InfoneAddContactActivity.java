@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -64,6 +65,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
         catId = getIntent().getExtras().getString("catId");
         catName = getIntent().getExtras().getString("catName");
 
+        Toast.makeText(this, catName, Toast.LENGTH_SHORT).show();
 
         nameEt = (EditText) findViewById(R.id.name_et_infone_add);
         phone1Et = (EditText) findViewById(R.id.phone_et_infone_add);
@@ -116,6 +118,8 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                 newContactNumRef.child("phone").child("0").setValue(phoneNum1);
                 newContactNumRef.child("phone").child("1").setValue(phoneNum2);
                 newContactNumRef.child("type").setValue("NotUser");
+                newContactNumRef.child("validCount").setValue(0);
+                newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
                 newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
                 newContactNumRef.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 uploadImage();
