@@ -139,20 +139,6 @@
         android:prompt="@string/category_prompt"
         android:spinnerMode="dialog" />
 
-    <EditText
-        android:id="@+id/phoneNo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/border_filled_2"
-        android:hint="Phone No."
-        android:inputType="phone"
-        android:maxLength="10"
-        android:padding="10dp" />
-
 </LinearLayout>
 
 </ScrollView>
