@@ -121,7 +121,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
         profileImage.setEnabled(false);
         saveEditBtn.setVisibility(View.GONE);
 
-        postTimeMillis = System.currentTimeMillis();
+
 
 
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
@@ -156,10 +156,10 @@ public class InfoneProfileActivity extends AppCompatActivity {
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);
                 catId = dataSnapshot.child("catId").getValue(String.class);
                 validButton.setText(dataSnapshot.child("validCount").getValue().toString());
-                try {
-                    userType = dataSnapshot.child("type").getValue(String.class);
-                    verfiedDate = dataSnapshot.child("verifiedDate").getValue(String.class);
-                }catch (Exception e){}
+
+                userType = dataSnapshot.child("type").getValue(String.class);
+                verfiedDate = dataSnapshot.child("verifiedDate").getValue().toString();
+                verifiedDateTextView.setText(verfiedDate);
 
                 if (userType.equals("User")) {
                     menu.findItem(R.id.action_edit).setVisible(false);
@@ -249,6 +249,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
                 }else {
                     databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).setValue("true");
                 }
+                postTimeMillis = System.currentTimeMillis();
                 databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
             }
         });
