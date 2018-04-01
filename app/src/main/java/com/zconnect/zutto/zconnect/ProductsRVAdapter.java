@@ -40,7 +40,7 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
         holder.setImage(ctx,productVector.get(position).getImage());
         //holder.setPrice(productVector.get(position).getPrice(),productVector.get(position).getNegotiable());
         holder.setProductName(productVector.get(position).getProductName());
-        holder.setSellerNumber(productVector.get(position).getCategory(),productVector.get(position).getPhone_no(),ctx);
+//        holder.setSellerNumber(productVector.get(position).getCategory(),productVector.get(position).getPhone_no(),ctx);
         holder.defaultSwitch(productVector.get(position).getKey(),ctx,productVector.get(position).getCategory(),productVector.get(position).getProductName());
         holder.openProduct(productVector.get(position).getKey());
     }

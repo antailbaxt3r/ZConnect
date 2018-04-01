@@ -43,6 +43,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -65,7 +66,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private EditText mProductName;
     private EditText mProductDescription;
     private EditText mProductPrice;
-    private EditText mProductPhone;
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
     private DatabaseReference mUsername;
@@ -112,10 +112,9 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mProductName = (EditText) findViewById(R.id.name);
         mProductDescription = (EditText) findViewById(R.id.description);
         mProductPrice = (EditText) findViewById(R.id.price);
-        mProductPhone = (EditText) findViewById(R.id.phoneNo);
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
-        mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         spinner1 = (CustomSpinner) findViewById(R.id.categories);
         productTags =(TagsEditText) findViewById(R.id.skillsTags);
         negotiableCheckBox=(CheckBox) findViewById(R.id.priceNegotiable);
@@ -148,7 +147,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
         mProductName.setTypeface(ralewayRegular);
         mProductDescription.setTypeface(ralewayRegular);
-        mProductPhone.setTypeface(ralewayRegular);
         mProductPrice.setTypeface(ralewayRegular);
         productTags.setTypeface(ralewayRegular);
 
@@ -246,7 +244,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         final String productNameValue = mProductName.getText().toString().trim();
         final String productDescriptionValue = mProductDescription.getText().toString().trim();
         final String productPriceValue = mProductPrice.getText().toString().trim();
-        final String productPhoneNo = mProductPhone.getText().toString().trim();
         final String productTagString= productTags.getTags().toString().trim();
         final String negotiable;
 
@@ -276,14 +273,14 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         });
 
 
-        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue) || negotiable.equals("2")) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null && category != null && productTags!=null && !negotiable.equals("") && negotiableCheckBox!=null) {
+        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue) || negotiable.equals("2")) && mImageUri != null && category != null && productTags!=null && !negotiable.equals("") && negotiableCheckBox!=null) {
             StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
 
-                    DatabaseReference newPost = mDatabase.push();
+                    final DatabaseReference newPost = mDatabase.push();
                     final DatabaseReference postedBy = newPost.child("PostedBy");
                     key = newPost.getKey();
                     postTimeMillis = System.currentTimeMillis();
@@ -293,7 +290,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     newPost.child("ProductDescription").setValue(productDescriptionValue);
                     newPost.child("Image").setValue(downloadUri != null ? downloadUri.toString() : null);
                     newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
-                    newPost.child("Phone_no").setValue(productPhoneNo);
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
                     newPost.child("skills").setValue(productTagString);
@@ -304,9 +300,10 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            postedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
-                            //needs to be changed after image thumbnail is put
-                            postedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                            UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                            postedBy.child("Username").setValue(user.getUsername());
+                            postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                            newPost.child("Phone_no").setValue(user.getMobileNumber());
                         }
 
                         @Override
@@ -334,9 +331,9 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            newPost2Postedby.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
-                            //needs to be changed after image thumbnail is put
-                            newPost2Postedby.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                            UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                            newPost2Postedby.child("Username").setValue(user.getUsername());
+                            newPost2Postedby.child("ImageThumb").setValue(user.getImageURLThumbnail());
                         }
 
                         @Override

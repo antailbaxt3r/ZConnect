@@ -23,16 +23,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:layout_marginStart="0dp">
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/featureCircle"
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/feature_circle" />
+                android:layout_height="wrap_content">
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/featureCircle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/feature_circle" />
+                <ImageView
+                    android:id="@+id/recents_featIcon"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/ic_home_white_18dp"
+                    android:scaleType="centerCrop"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
 
             <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/avatarCircle"
@@ -47,7 +56,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp">
 
                 <LinearLayout
