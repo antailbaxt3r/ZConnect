@@ -64,5 +64,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="save"/>
+
+        <Button
+            android:id="@+id/valid_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Valid" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Last verified on" />
+
+        <TextView
+            android:id="@+id/verified_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Verified Date" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
