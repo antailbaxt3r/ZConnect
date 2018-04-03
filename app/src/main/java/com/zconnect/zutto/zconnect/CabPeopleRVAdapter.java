@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,6 +55,7 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
     public void onBindViewHolder(CabPeopleRVAdapter.ViewHolder holder, int position) {
         holder.name.setText(cabListItemFormats.get(position).getName());
         holder.number.setText(cabListItemFormats.get(position).getPhonenumber());
+        holder.avatarCircle.setImageURI(cabListItemFormats.get(position).getImageThumb());
     }
 
     @Override
@@ -66,6 +68,7 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
         ImageView call;
         View rv_item;
         Intent intent;
+        SimpleDraweeView avatarCircle;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -76,6 +79,8 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
             call = (ImageView) itemView.findViewById(R.id.ib_call_contact_item);
             name = (TextView) itemView.findViewById(R.id.cab_name);
             number = (TextView) itemView.findViewById(R.id.cab_number);
+            avatarCircle = (SimpleDraweeView) itemView.findViewById(R.id.cab_people_avatarCircle);
+
             rv_item=itemView.findViewById(R.id.rv_item);
             Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
             name.setTypeface(customFont);

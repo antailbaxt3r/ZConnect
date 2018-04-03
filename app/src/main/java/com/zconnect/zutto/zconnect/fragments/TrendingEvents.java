@@ -169,6 +169,9 @@ public class TrendingEvents extends Fragment {
         SharedPreferences sharedPref;
         Boolean status;
 
+        SharedPreferences communitySP;
+        String communityReference;
+
         public EventViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
@@ -177,6 +180,8 @@ public class TrendingEvents extends Fragment {
             if(!status) {
                 mAuth = FirebaseAuth.getInstance();
             }
+            communitySP = itemView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
+            communityReference = communitySP.getString("communityReference", null);
         }
 
         public void openEvent(final Event event) {
@@ -276,7 +281,7 @@ public class TrendingEvents extends Fragment {
 
         private void setBoost(final Event event) {
 
-            final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(event.getKey());
+            final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts").child(event.getKey());
 
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             final ImageButton boostBtn = (ImageButton) mView.findViewById(R.id.boostBtn);

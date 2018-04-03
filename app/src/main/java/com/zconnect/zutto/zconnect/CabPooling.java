@@ -242,7 +242,7 @@ public class CabPooling extends BaseActivity {
 
 
         Typeface customFont = Typeface.createFromAsset(CabPooling.this.getAssets(), "fonts/Raleway-Regular.ttf");
-        Typeface customFont2 = Typeface.createFromAsset(CabPooling.this.getAssets(), "fonts/Raleway-Light.ttf");
+        Typeface customFont2 = Typeface.createFromAsset(CabPooling.this.getAssets(), "fonts/Raleway-SemiBold.ttf");
 
         done.setTypeface(customFont2);
         calender.setTypeface(customFont2);
@@ -257,7 +257,7 @@ public class CabPooling extends BaseActivity {
         destination.setTypeface(customFont);
         date.setTypeface(customFont);
         timeslot.setTypeface(customFont);
-        search_for_rides.setTypeface(customFont);
+        search_for_rides.setTypeface(customFont2);
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

@@ -54,10 +54,10 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 
 
     private ImageView productImage;
-    private Button productShortList;
+    private ImageView productShortList;
     private TextView productPrice;
     private TextView productNegotiableText;
-    private Button productSellerContact;
+//    private Button productSellerContact;
 
     private String sellerName;
     public Boolean flag;
@@ -77,7 +77,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         sharedPref = itemView.getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         status = sharedPref.getBoolean("mode", false);
 
-        productShortList = (Button) itemView.findViewById(R.id.shortList);
+        productShortList = (ImageView) itemView.findViewById(R.id.shortList);
         if (status) {
             productShortList.setVisibility(View.GONE);
         }
@@ -114,22 +114,24 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 
                             if (dataSnapshot.child(key).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                 StoreRoom.child(key).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
-                                productShortList.setText("Shortlisted");
+//                                productShortList.setText("Shortlisted");
                                 flag = false;
                                 CounterManager.StoroomShortListDelete(category, key);
-                                productShortList.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.curvedradiusbutton2_sr));
-                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-                                productShortList.setTypeface(customfont);
+                                productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
+//                                productShortList.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.curvedradiusbutton2_sr));
+//                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//                                productShortList.setTypeface(customfont);
 
                             } else {
                                 CounterManager.StoroomShortList(category, key);
-                                productShortList.setText("Shortlist");
+//                                productShortList.setText("Shortlist");
                                 StoreRoom.child(key).child("UsersReserved")
                                         .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
-                                productShortList.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.curvedradiusbutton_sr));
                                 flag = false;
-                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-                                productShortList.setTypeface(customfont);
+                                productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
+//                                productShortList.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.curvedradiusbutton_sr));
+//                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//                                productShortList.setTypeface(customfont);
 
                                 NotificationSender notificationSender=new NotificationSender(key,null,null,null,mAuth.getCurrentUser().getEmail(),productName,KEY_PRODUCT,false,true,itemView.getContext());
                                 notificationSender.execute();
@@ -160,17 +162,18 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 
                 productShortList.setOnClickListener(null);
                 if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
-                    productShortList.setText("Shortlisted");
+                    productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
+//                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
+//                    productShortList.setText("Shortlisted");
                     CounterManager.StoroomShortList(category, key);
-                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-                    productShortList.setTypeface(customfont);
+//                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//                    productShortList.setTypeface(customfont);
                 } else {
-
-                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
-                    productShortList.setText("Shortlist");
-                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-                    productShortList.setTypeface(customfont);
+                    productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
+//                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
+//                    productShortList.setText("Shortlist");
+//                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//                    productShortList.setTypeface(customfont);
                     CounterManager.StoroomShortListDelete(category, key);
                 }
                 productShortList.setOnClickListener(mListener);
@@ -246,16 +249,16 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setSellerNumber(final String category, final String sellerNumber, final Context ctx) {
-        productSellerContact = (Button) mView.findViewById(R.id.sellerNumber);
-        Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-        productSellerContact.setTypeface(customfont);
-        productSellerContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CounterManager.StoroomCall(category);
-                ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            }
-        });
-    }
+//    public void setSellerNumber(final String category, final String sellerNumber, final Context ctx) {
+//        productSellerContact = (Button) mView.findViewById(R.id.sellerNumber);
+//        Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//        productSellerContact.setTypeface(customfont);
+//        productSellerContact.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                CounterManager.StoroomCall(category);
+//                ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+//            }
+//        });
+//    }
 }

@@ -126,7 +126,7 @@ public class IndividualCategory extends BaseActivity {
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(IndividualCategory.this, model.getProductName(), IndividualCategory.this, model.getImage());
                 viewHolder.setPrice(model.getPrice(),model.getNegotiable());
-                viewHolder.setSellerName(model.getPostedBy());
+                viewHolder.setSellerName(model.getPostedBy().getUsername());
                 viewHolder.setSellerNumber(model.getPhone_no(), category);
 
 

@@ -129,7 +129,7 @@ public class ReservedTab extends Fragment {
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(getActivity(), model.getProductName(), getContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice(),model.getNegotiable());
-                viewHolder.setSellerName(model.getPostedBy());
+                viewHolder.setSellerName(model.getPostedBy().getUsername());
                 viewHolder.setSellerNumber(model.getPhone_no(), getContext(), model.getCategory());
 //                }else {
 //               }
@@ -262,24 +262,10 @@ public class ReservedTab extends Fragment {
 
         }
 
-        public void setSellerName(String postedBy) {
-
-
-            Users.child(postedBy).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    sellerName = dataSnapshot.child("Username").getValue().toString();
-                    TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-                    post_seller_name.setText("Sold By: " + sellerName);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-
+        public void setSellerName(String username) {
+            sellerName = username;
+            TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
+            post_seller_name.setText("Sold By: " + sellerName);
         }
 
         public void setSellerNumber(final String sellerNumber, final Context ctx, final String category) {
