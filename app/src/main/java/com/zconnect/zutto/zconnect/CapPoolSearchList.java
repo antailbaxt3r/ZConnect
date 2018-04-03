@@ -45,8 +45,8 @@ public class CapPoolSearchList extends BaseActivity {
     TextView defaultmsg;
     String source,destination,date,formatted_date,time_to,time_from;
     String reference;
-    String reference_default="Cab";
-    String reference_Old="archive/Cab";
+    String reference_default="allCabs";
+    String reference_Old="archives";
     Vector<CabItemFormat> cabItemFormatVector = new Vector<>();
     CabPoolRVAdapter adapter;
     ValueEventListener newListener;
@@ -57,7 +57,7 @@ public class CapPoolSearchList extends BaseActivity {
 
     Context mcontext;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     private FirebaseAuth mUser;
 
     @Override
@@ -144,7 +144,7 @@ public class CapPoolSearchList extends BaseActivity {
             }
         }
 
-        pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(reference);
+        pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child(reference);
 
         query=pool.orderByChild("DT");
 
@@ -347,8 +347,8 @@ public class CapPoolSearchList extends BaseActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         query.removeEventListener(newListener);
     }
 

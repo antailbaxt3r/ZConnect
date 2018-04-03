@@ -60,7 +60,7 @@ public class CabListOfPeople extends BaseActivity {
     Boolean flag, numberFlag;
     //numberFlag person is registered on infone
     //flag person is in cabpool
-    String reference, reference_old = "archive/Cab", reference_default = "Cab";
+    String reference, reference_old = "archives", reference_default = "allCabs";
     Long default_frequency;
     Long current_frequency;
 
@@ -106,7 +106,7 @@ public class CabListOfPeople extends BaseActivity {
             }
         });
 
-        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference).child("Cab").child(key).child("views");
+        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference).child("features").child("cabPool").child("allCabs").child(key).child("views");
         updateViews();
 
         ref.addValueEventListener(new ValueEventListener() {
@@ -154,7 +154,7 @@ public class CabListOfPeople extends BaseActivity {
         }
     Log.d("msg",reference);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(reference);
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child(reference);
         pool = databaseReference.child(key).child("cabListItemFormats");
         mAuth = FirebaseAuth.getInstance();
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);

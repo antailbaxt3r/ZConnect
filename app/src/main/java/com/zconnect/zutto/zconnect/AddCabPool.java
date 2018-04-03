@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -50,11 +51,14 @@ public class AddCabPool extends BaseActivity {
     double T1, T2;
     DatabaseReference mFeaturesStats;
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
-    DatabaseReference mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
+    DatabaseReference mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     private DatabaseReference homeReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
+    private DatabaseReference databaseReferenceCabPool;
     private FirebaseUser mUser;
     private long postTimeMillis;
+    private ArrayList<String> locations= new ArrayList<String>();
+    private ArrayAdapter<String> locationsSpinnerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +87,31 @@ public class AddCabPool extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
+        databaseReferenceCabPool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations");
+
+        databaseReferenceCabPool.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot shot: dataSnapshot.getChildren()){
+                    try {
+                        locations.add(shot.child("locationName").getValue().toString());
+                    }catch (Exception e){
+
+                    }
+                }
+                setDefaults();
+                locationsSpinnerAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        locationsSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, locations); //selected item will look like a spinner set from XML
+        locationsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         source = (CustomSpinner) findViewById(R.id.spinner_source);
         destination = (CustomSpinner) findViewById(R.id.spinner_destination);
         time_from = (CustomSpinner) findViewById(R.id.spinner_time_from);
@@ -92,64 +121,10 @@ public class AddCabPool extends BaseActivity {
         calender = (TextView) findViewById(R.id.calender);
 
 
-        try {
+        source.setAdapter(locationsSpinnerAdapter);
+        destination.setAdapter(locationsSpinnerAdapter);
 
-            String source = getIntent().getStringExtra("source");
-            Log.e("TAG", source);
 
-            String[] location = getResources().getStringArray(R.array.location);
-            String[] time = getResources().getStringArray(R.array.time);
-            for (int i = 0; i < location.length; i++) {
-                if (location[i].equals(source)) {
-                    Log.e("TAG", location[i]);
-
-                    this.source.setSelection(i);
-                    Log.e("TAG", "hua");
-                    break;
-                }
-            }
-
-            String destination = getIntent().getStringExtra("destination");
-            for (int i = 0; i < location.length; i++) {
-                if (location[i].equals(destination)) {
-                    this.destination.setSelection(i);
-                    break;
-                }
-            }
-
-            String date = getIntent().getStringExtra("date");
-            if(!date.equals("null")){
-                SimpleDateFormat abc=new SimpleDateFormat("dd/M/yyyy");
-                Date a=abc.parse(date);
-                Log.e("msg",String.valueOf(a));
-                s_dayOfMonth= (new SimpleDateFormat("dd")).format(a);
-                s_monthOfYear= (new SimpleDateFormat("MM")).format(a);
-                s_year= (new SimpleDateFormat("yyyy")).format(a);
-                Log.e("msg",s_dayOfMonth);
-                Log.e("msg",s_monthOfYear);
-                Log.e("msg",s_year);
-                this.calender.setText(date);
-            }
-
-            String time_to = getIntent().getStringExtra("time_to");
-            for (int i = 0; i < time.length; i++) {
-                if (time[i].equals(time_to)) {
-                    this.time_to.setSelection(i);
-                    break;
-                }
-            }
-
-            String time_from = getIntent().getStringExtra("time_from");
-            for (int i = 0; i < time.length; i++) {
-                if (time[i].equals(time_from)) {
-                    this.time_from.setSelection(i);
-                    break;
-                }
-            }
-
-        } catch (Exception e) {
-
-        }
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -278,9 +253,9 @@ public class AddCabPool extends BaseActivity {
                                         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                                postedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                                                postedBy.child("Username").setValue(dataSnapshot.child("username").getValue().toString());
                                                 //needs to be changed after image thumbnail is put
-                                                postedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                                postedBy.child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
                                             }
 
                                             @Override
@@ -315,9 +290,9 @@ public class AddCabPool extends BaseActivity {
                                         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                                newPost2PostedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                                                newPost2PostedBy.child("Username").setValue(dataSnapshot.child("username").getValue().toString());
                                                 //needs to be changed after image thumbnail is put
-                                                newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                                newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
                                             }
 
                                             @Override
@@ -357,9 +332,11 @@ public class AddCabPool extends BaseActivity {
                                         snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                                         snack.show();
 
+
                                         NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,KEY_CABPOOL,true,false,getApplicationContext());
                                         notificationSender.execute();
 
+                                        finish();
 
                                     } else {
                                         Snackbar snack = Snackbar.make(done, "Add pool for a single day", Snackbar.LENGTH_LONG);
@@ -402,6 +379,65 @@ public class AddCabPool extends BaseActivity {
         });
 
 
+    }
+
+    public void setDefaults(){
+        try {
+
+            String source = getIntent().getStringExtra("source");
+            Log.e("TAG", source);
+
+            String[] time = getResources().getStringArray(R.array.time);
+
+            for (int i = 0; i < locations.size(); i++) {
+                if (locations.get(i).equals(source)) {
+                    this.source.setSelection(i);
+                    Log.e("TAG", "hua");
+                    break;
+                }
+            }
+
+            String destination = getIntent().getStringExtra("destination");
+            for (int i = 0; i < locations.size(); i++) {
+                if (locations.get(i).equals(destination)) {
+                    this.destination.setSelection(i);
+                    break;
+                }
+            }
+
+            String date = getIntent().getStringExtra("date");
+            if(!date.equals("null")){
+                SimpleDateFormat abc=new SimpleDateFormat("dd/M/yyyy");
+                Date a=abc.parse(date);
+                Log.e("msg",String.valueOf(a));
+                s_dayOfMonth= (new SimpleDateFormat("dd")).format(a);
+                s_monthOfYear= (new SimpleDateFormat("MM")).format(a);
+                s_year= (new SimpleDateFormat("yyyy")).format(a);
+                Log.e("msg",s_dayOfMonth);
+                Log.e("msg",s_monthOfYear);
+                Log.e("msg",s_year);
+                this.calender.setText(date);
+            }
+
+            String time_to = getIntent().getStringExtra("time_to");
+            for (int i = 0; i < time.length; i++) {
+                if (time[i].equals(time_to)) {
+                    this.time_to.setSelection(i);
+                    break;
+                }
+            }
+
+            String time_from = getIntent().getStringExtra("time_from");
+            for (int i = 0; i < time.length; i++) {
+                if (time[i].equals(time_from)) {
+                    this.time_from.setSelection(i);
+                    break;
+                }
+            }
+
+        } catch (Exception e) {
+
+        }
     }
 
     DecimalFormat decimalFormat = new DecimalFormat("00");

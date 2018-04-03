@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +10,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -85,9 +89,31 @@ public class CabPoolAll extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the Menu; this adds items to the action bar if it is present.
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+        if (!status){
+            inflater.inflate(R.menu.menu_cabpool_all, menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_storeroom) {
+            startActivity(new Intent(getContext(), CabPoolLocations.class));
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,7 +129,7 @@ public class CabPoolAll extends Fragment {
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        databaseReference = firebaseDatabase.getReference().child("communities").child(communityReference).child("Cab");
+        databaseReference = firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
 
         allPools= new ValueEventListener() {
             @Override

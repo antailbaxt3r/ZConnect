@@ -27,7 +27,7 @@ import java.util.Vector;
 
 public class MyRides extends BaseActivity {
     RecyclerView poolrv;
-    DatabaseReference pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
+    DatabaseReference pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     Query query = pool.orderByChild("time");
     TextView defaultmsg;
     Vector<CabItemFormat> cabItemFormatVector = new Vector<>();
