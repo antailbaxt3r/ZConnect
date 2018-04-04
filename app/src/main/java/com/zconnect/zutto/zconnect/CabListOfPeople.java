@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -18,17 +19,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
+import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
+import org.json.JSONObject;
+
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import static android.view.View.INVISIBLE;
@@ -41,24 +54,31 @@ public class CabListOfPeople extends BaseActivity {
     DatabaseReference pool, chatRef;
     Button join;
     String key;
-    String name, number, email;
+    String name, number, email, imageThumb, userUID;
     Vector<CabListItemFormat> cabListItemFormatVector = new Vector<>();
     CabPeopleRVAdapter adapter;
+    CabItemFormat cabItemFormat;
     Boolean flag, numberFlag;
     //numberFlag person is registered on infone
     //flag person is in cabpool
-    String reference, reference_old = "archive/Cab", reference_default = "Cab";
+    String reference, reference_old = "archives", reference_default = "allCabs";
     Long default_frequency;
     Long current_frequency;
 
     String formatted_date, Date;
     private FirebaseAuth mAuth;
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Phonebook");
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
     private DatabaseReference databaseReference;
+
+    private FirebaseUser user;
+    private ValueEventListener listener;
+    private DatabaseReference mDatabaseViews;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_cab_list_of_people);
         setToolbar();
         setToolbarTitle("List of people");
@@ -87,16 +107,19 @@ public class CabListOfPeople extends BaseActivity {
             }
         });
 
+        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference).child("features").child("cabPool").child("allCabs").child(key).child("views");
+        updateViews();
+
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
+                    UserItemFormat userDisplayItem = shot.getValue(UserItemFormat.class);
                     if (email != null) {
-                        if (phonebookDisplayItem != null && phonebookDisplayItem.getEmail() != null) {
-                            if (phonebookDisplayItem.getEmail().equals(email)) {
-                                name = phonebookDisplayItem.getName();
-                                number = phonebookDisplayItem.getNumber();
+                        if (userDisplayItem != null && userDisplayItem.getEmail() != null) {
+                            if (userDisplayItem.getEmail().equals(email)) {
+                                name = userDisplayItem.getUsername();
+                                number = userDisplayItem.getMobileNumber();
                                 numberFlag = true;
                             }
                         }
@@ -132,7 +155,7 @@ public class CabListOfPeople extends BaseActivity {
         }
     Log.d("msg",reference);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child(reference);
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child(reference);
         pool = databaseReference.child(key).child("cabListItemFormats");
         mAuth = FirebaseAuth.getInstance();
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
@@ -211,10 +234,10 @@ public class CabListOfPeople extends BaseActivity {
 
                         } else {
                             if (name != null && number != null) {
-                                cabListItemFormatVector.add(new CabListItemFormat(name, number));
+                                cabListItemFormatVector.add(new CabListItemFormat(name, number, imageThumb, userUID));
                                 pool.setValue(cabListItemFormatVector);
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
-                                NotificationSender notification = new NotificationSender(key,number,null,null,null,null,"CabPool",false,true);
+                                NotificationSender notification = new NotificationSender(key,number,null,null,null,null,"CabPool",false,true,getApplicationContext());
                                 notification.execute();
 
                             } else {
@@ -257,6 +280,55 @@ public class CabListOfPeople extends BaseActivity {
 
     }
 
+    private void updateViews() {
+
+        SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+        if (!status) {
+            mAuth = FirebaseAuth.getInstance();
+            user = mAuth.getCurrentUser();
+
+            listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    boolean userExists = false;
+                    for (DataSnapshot childSnapshot :
+                            dataSnapshot.getChildren()) {
+                        if (childSnapshot.getKey().equals(user.getUid()) && childSnapshot.exists() &&
+                                childSnapshot.getValue(Integer.class) != null) {
+                            userExists = true;
+                            int originalViews = childSnapshot.getValue(Integer.class);
+                            mDatabaseViews.child(user.getUid()).setValue(originalViews + 1);
+
+                            break;
+                        } else {
+                            userExists = false;
+                        }
+                    }
+                    if (!userExists) {
+                        mDatabaseViews.child(user.getUid()).setValue(1);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+
+            mDatabaseViews.addListenerForSingleValueEvent(listener);
+        }
+
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDatabaseViews.removeEventListener(listener);
+    }
 
 }
-

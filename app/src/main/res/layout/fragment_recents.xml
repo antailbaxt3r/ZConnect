@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     tools:context="com.zconnect.zutto.zconnect.Recents">
 
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/secondaryText"
+        android:layout_marginStart="20dp" />
 
     <ProgressBar
         android:id="@+id/recent_progress"
@@ -15,6 +20,7 @@
         android:id="@+id/recent_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:layout_marginStart="10dp"/>
 
 </FrameLayout>

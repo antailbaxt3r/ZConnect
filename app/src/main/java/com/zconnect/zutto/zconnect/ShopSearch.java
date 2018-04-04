@@ -26,12 +26,13 @@ import com.zconnect.zutto.zconnect.ItemFormats.ShopListItem;
 
 import java.util.Vector;
 
-public class ShopSearch extends AppCompatActivity {
+public class ShopSearch extends BaseActivity {
     private android.support.v7.widget.RecyclerView searchShopList;
     private ShopListRV searchAdapter;
     private Toolbar toolbar;
     private TextView errorMessage;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Shop").child("Shops");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+            .child("Shop").child("Shops");
 
     private Vector<ShopListItem> searchShop = new Vector<>();
 

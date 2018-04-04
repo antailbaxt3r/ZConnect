@@ -67,9 +67,15 @@ public class  OpenEventDetail extends BaseActivity {
     Toolbar mActionBarToolbar;
     DatabaseReference databaseReference;
     Button boostBtn;
-    Boolean flag= false;
+    Boolean flag = false;
 
     ProgressDialog progressDialog;
+
+    /*db elements needed for views calculation*/
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private ValueEventListener listener;
+    private DatabaseReference mDatabaseViews;
 
     Uri screenshotUri;
     String path;
@@ -78,15 +84,20 @@ public class  OpenEventDetail extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_event_detail);
-         id=getIntent().getStringExtra("id");
-        tag=getIntent().getStringExtra("Eventtag");
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
 
-        boostBtn = (Button)findViewById(R.id.boostBtn);
+        boostBtn = (Button) findViewById(R.id.boostBtn);
+        EventImage = (ImageView) findViewById(R.id.od_EventImage);
+        EventDescription = (TextView) findViewById(R.id.od_description);
+        EventDescription.setMovementMethod(LinkMovementMethod.getInstance());
+        EventDate = (TextView) findViewById(R.id.od_date);
 
-        progressDialog=new ProgressDialog(this);
+        EventVenue = (TextView) findViewById(R.id.od_venue);
+        venueDirections = (ImageButton) findViewById(R.id.od_directions);
+
+        progressDialog = new ProgressDialog(this);
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -108,26 +119,76 @@ public class  OpenEventDetail extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
+        Bundle extras = getIntent().getExtras();
+        id = (String) extras.get("id");
 
-//      Event = (TextView) findViewById(R.id.event);
-        EventImage = (ImageView) findViewById(R.id.od_EventImage);
-        EventDescription = (TextView) findViewById(R.id.od_description);
-        EventVenue = (TextView) findViewById(R.id.od_venue);
-        venueDirections = (ImageButton) findViewById(R.id.od_directions);
-//        if (event.getLon() == null) {
-//            venueDirections.setVisibility(View.GONE);
-//        }
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(id);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                event = dataSnapshot.getValue(Event.class);
 
+                boostCounter();
+                venueDirections.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            CounterManager.eventgetDirection(event.getKey());
+                            if (event.getLat() == 0 && event.getLon() == 0) {
+                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            } else {
+                                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                String eventDate[] = (event.getEventDate().split("\\s+"));
+                String date = "";
+                int i = 0;
+                while (i < 3) {
+                    date = date + " " + eventDate[i];
+                    i++;
+                }
 
-        EventDescription.setMovementMethod(LinkMovementMethod.getInstance());
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(event.getEventName(), 1);
 
+                try {
 
+                    EventDate.setText(date);
+                    EventDescription.setText(event.getEventDescription());
+                    EventVenue.setText(event.getVenue());
+                    getSupportActionBar().setTitle(event.getEventName());
+                    Picasso.with(getApplicationContext()).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
+                    EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
+                    mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(event.getKey()).child("views");
+                    updateViews();
 
-        EventDate = (TextView) findViewById(R.id.od_date);
+                } catch (Exception e) {
+                    Log.d("Error Alert: ", e.getMessage());
+                }
+            }
+//<<<<<<< Updated upstream
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         EventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 CounterManager.eventOpenPic(event.getKey());
                 ProgressDialog mProg = new ProgressDialog(OpenEventDetail.this);
                 mProg.setMessage("Loading....");
@@ -140,123 +201,59 @@ public class  OpenEventDetail extends BaseActivity {
                 mProg.dismiss();
                 startActivity(i, optionsCompat.toBundle());
             }
-        });            Bundle extras = getIntent().getExtras();
-        event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
-
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(event.getEventName(), 1);
-
-
-        venueDirections.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CounterManager.eventgetDirection(event.getKey());
-                try {
-                    if (event.getLat() == 0 && event.getLon() == 0) {
-                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
-                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                        mapIntent.setPackage("com.google.android.apps.maps");
-                        startActivity(mapIntent);
-                    } else {
-                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
-                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                        mapIntent.setPackage("com.google.android.apps.maps");
-                        startActivity(mapIntent);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
-                }
-            }
         });
-
-        String eventDate[] = (event.getEventDate().split("\\s+"));
-        String date = "";
-        int i = 0;
-        while (i < 3) {
-            date = date + " " + eventDate[i];
-            i++;
-        }
-
-        try {
-            EventDate.setText(date);
-            EventDescription.setText(event.getEventDescription());
-            EventVenue.setText(event.getVenue());
-            getSupportActionBar().setTitle(event.getEventName());
-            Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
-            EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-            boostCounter();
-            setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-        }catch (Exception e) {
-            Log.d("Error Alert: ", e.getMessage());
-        }
+        extras = getIntent().getExtras();
+        event = (com.zconnect.zutto.zconnect.ItemFormats.Event) extras.get("currentEvent");
+        if(event != null) {
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(event.getEventName(), 1);
 
 
-        if(tag!=null&&tag.equals("1")){
-        } else if (id != null) {
-            databaseReference= FirebaseDatabase.getInstance().getReference().child("Event").child("VerifiedPosts").child(id);
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            venueDirections.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    event = dataSnapshot.getValue(Event.class);
-
-                    boostCounter();
-                    venueDirections.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                CounterManager.eventgetDirection(event.getKey());
-                                if (event.getLat() == 0 && event.getLon() == 0) {
-                                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
-                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                    mapIntent.setPackage("com.google.android.apps.maps");
-                                    startActivity(mapIntent);
-                                } else {
-                                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
-                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                    mapIntent.setPackage("com.google.android.apps.maps");
-                                    startActivity(mapIntent);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                    String eventDate[] = (event.getEventDate().split("\\s+"));
-                    String date = "";
-                    int i = 0;
-                    while (i < 3) {
-                        date = date + " " + eventDate[i];
-                        i++;
-                    }
-
+                public void onClick(View v) {
+                    CounterManager.eventgetDirection(event.getKey());
                     try {
-
-                        EventDate.setText(date);
-                        EventDescription.setText(event.getEventDescription());
-                        EventVenue.setText(event.getVenue());
-                        getSupportActionBar().setTitle(event.getEventName());
-                        Picasso.with(getApplicationContext()).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
-                        EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                        setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-                        //  Log.v("Tag",event.getEventDate());
-
-                    }catch (Exception e)
-                    {
-                        Log.d("Error Alert: ", e.getMessage());
+                        if (event.getLat() == 0 && event.getLon() == 0) {
+                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(event.getVenue()));
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            startActivity(mapIntent);
+                        } else {
+                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + event.getLat() + "," + event.getLon());
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            startActivity(mapIntent);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), "Venue directions not available", Toast.LENGTH_LONG).show();
                     }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
                 }
             });
 
-        }
+            String eventDate[] = (event.getEventDate().split("\\s+"));
+            String date = "";
+            int i = 0;
+            while (i < 3) {
+                date = date + " " + eventDate[i];
+                i++;
+            }
 
+            try {
+                EventDate.setText(date);
+                EventDescription.setText(event.getEventDescription());
+                EventVenue.setText(event.getVenue());
+                getSupportActionBar().setTitle(event.getEventName());
+                Picasso.with(this).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
+                EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+                boostCounter();
+                setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
+            }catch (Exception e) {
+                Log.d("Error Alert: ", e.getMessage());
+            }
+        }
         //changing fonts
         Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
         Typeface customFont2 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
@@ -267,17 +264,15 @@ public class  OpenEventDetail extends BaseActivity {
         SharedPreferences sharedPref = getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
-        if(!status)
-        {
+        if (!status) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-
-            if (user != null && event!=null) {
+            if (user != null && event != null) {
                 String boost = event.getBoosters();
                 if (boost != null) {
-                if (boost.contains(user.getUid())) {
-                    boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                }
+                    if (boost.contains(user.getUid())) {
+                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                    }
                 }
             }
         }
@@ -295,12 +290,12 @@ public class  OpenEventDetail extends BaseActivity {
         if (id == R.id.share) {
 
             CounterManager.eventShare(event.getKey());
-            shareEvent(event.getEventImage(),this.getApplicationContext());
+            shareEvent(event.getEventImage(), this.getApplicationContext());
 
-        }else if (id == R.id.menu_chat_room){
+        } else if (id == R.id.menu_chat_room) {
             //chat room clicked;
-            Intent intent = new Intent(OpenEventDetail.this,ChatActivity.class);
-            intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("Event").child(event.getKey()).toString());
+            Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child(event.getKey()).toString());
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -308,63 +303,106 @@ public class  OpenEventDetail extends BaseActivity {
 
     private void shareEvent(final String image, final Context context) {
 
-            try {
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
-                //shareIntent.setPackage("com.whatsapp");
-                //Add text and then Image URI
-                Thread thread = new Thread(new Runnable() {
+        try {
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+            //shareIntent.setPackage("com.whatsapp");
+            //Add text and then Image URI
+            Thread thread = new Thread(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        try {
-                            //Your code goes here
-                            Uri imageUri = Uri.parse(image);
-                            Intent shareIntent = new Intent();
-                            shareIntent.setAction(Intent.ACTION_SEND);
+                @Override
+                public void run() {
+                    try {
+                        //Your code goes here
+                        Uri imageUri = Uri.parse(image);
+                        Intent shareIntent = new Intent();
+                        shareIntent.setAction(Intent.ACTION_SEND);
 
-                            Bitmap bm = BitmapFactory.decodeStream(new URL(image)
-                                    .openConnection()
-                                    .getInputStream());
+                        Bitmap bm = BitmapFactory.decodeStream(new URL(image)
+                                .openConnection()
+                                .getInputStream());
 
 
-                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
-                                    R.drawable.background_icon_z), bm, context);
-                            String temp = "*Event:* " + event.getEventName()
-                                    + "\n*Venue:* " + event.getVenue()
-                                    + "\n*Date:* " + event.getEventDate()
-                                    + "\n" + event.getEventDescription()
-                                    + "\n\n" + "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
+                        bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
+                                R.drawable.background_icon_z), bm, context);
+                        String temp = "*Event:* " + event.getEventName()
+                                + "\n*Venue:* " + event.getVenue()
+                                + "\n*Date:* " + event.getEventDate()
+                                + "\n" + event.getEventDescription()
+                                + "\n\n" + "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
 
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
-                            shareIntent.setType("text/plain");
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
+                        shareIntent.setType("text/plain");
 
-                            path = MediaStore.Images.Media.insertImage(
-                                    context.getContentResolver(),
-                                    bm,"", null);
-                            screenshotUri = Uri.parse(path);
+                        path = MediaStore.Images.Media.insertImage(
+                                context.getContentResolver(),
+                                bm, "", null);
+                        screenshotUri = Uri.parse(path);
 
-                            shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                            shareIntent.setType("image/png");
-                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                        shareIntent.setType("image/png");
+                        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                            progressDialog.dismiss();
-                            startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
-                            //context.startActivity(shareIntent);
+                        progressDialog.dismiss();
+                        startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
+                        //context.startActivity(shareIntent);
 
-                        } catch (Exception e) {
-                            progressDialog.dismiss();
-                            e.printStackTrace();
+                    } catch (Exception e) {
+                        progressDialog.dismiss();
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            thread.start();
+
+        } catch (android.content.ActivityNotFoundException ex) {
+            progressDialog.dismiss();
+            //ToastHelper.MakeShortText("Whatsapp have not been installed.");
+        }
+
+    }
+
+    //this function will update the views of people who have visited this activity
+    private void updateViews() {
+
+        SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+        if (!status) {
+            mAuth = FirebaseAuth.getInstance();
+            user = mAuth.getCurrentUser();
+
+            listener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    boolean userExists = false;
+                    for (DataSnapshot childSnapshot :
+                            dataSnapshot.getChildren()) {
+                        if (childSnapshot.getKey().equals(user.getUid()) && childSnapshot.exists() &&
+                                childSnapshot.getValue(Integer.class) != null) {
+                            userExists = true;
+                            int originalViews = childSnapshot.getValue(Integer.class);
+                            mDatabaseViews.child(user.getUid()).setValue(originalViews + 1);
+                            break;
+                        } else {
+                            userExists = false;
                         }
                     }
-                });
+                    if (!userExists) {
+                        mDatabaseViews.child(user.getUid()).setValue(1);
+                    }
+                }
 
-                thread.start();
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            } catch (android.content.ActivityNotFoundException ex) {
-                progressDialog.dismiss();
-                //ToastHelper.MakeShortText("Whatsapp have not been installed.");
-            }
+                }
+            };
+
+            mDatabaseViews.addListenerForSingleValueEvent(listener);
+        }
 
     }
 
@@ -392,7 +430,6 @@ public class  OpenEventDetail extends BaseActivity {
 
         return mergedBitmap;
     }
-
 
 
     public void setEventReminder(final String eventDescription, final String eventName, final String time) {
@@ -438,7 +475,7 @@ public class  OpenEventDetail extends BaseActivity {
 
     private void boostCounter() {
 
-        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(event.getKey());
+        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts").child(event.getKey());
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {
@@ -446,18 +483,17 @@ public class  OpenEventDetail extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
-                if (user!= null)
-                {
-                    if(dataSnapshot.hasChild(user.getUid())){
+                if (user != null) {
+                    if (dataSnapshot.hasChild(user.getUid())) {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
                         boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                        flag=true;
-                    }else {
+                        flag = true;
+                    } else {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
                         boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
-                        flag=false;
+                        flag = false;
                     }
-                }else{
+                } else {
                     boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
                 }
             }
@@ -469,12 +505,11 @@ public class  OpenEventDetail extends BaseActivity {
         });
 
 
-
         if (user != null) {
             boostBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!flag){
+                    if (!flag) {
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
                         CounterManager.eventBoost(event.getKey(), "Details");
@@ -482,7 +517,7 @@ public class  OpenEventDetail extends BaseActivity {
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
                         //Sending Notifications
                         FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
-                        NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT_BOOST,false,true);
+                        NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT_BOOST,false,true,getApplicationContext());
                         notificationSender.execute();
 
                     }else {
@@ -541,5 +576,10 @@ public class  OpenEventDetail extends BaseActivity {
         finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDatabaseViews.removeEventListener(listener);
+    }
 
     }

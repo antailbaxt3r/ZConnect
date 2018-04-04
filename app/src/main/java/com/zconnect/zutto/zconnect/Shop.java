@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
@@ -38,7 +39,11 @@ public class Shop extends Fragment {
     DatabaseReference mUserStats, mFeaturesStats;
     FirebaseUser user;
     String TotalOffers;
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Shop").child("Category");
+
+    private SharedPreferences communitySP;
+    public String communityReference;
+
+    private DatabaseReference databaseReference;
     private Vector<ShopCategoryItemCategory> shopCategoryItemCategories = new Vector<>();
     private RecyclerView recycleView;
     private ProgressBar progressBar;
@@ -48,6 +53,13 @@ public class Shop extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+                .child("Shop").child("Category");
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -86,14 +98,16 @@ public class Shop extends Fragment {
 
 
 
-        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
         if (!status) {
             user = mAuth.getCurrentUser();
 
-            mUserStats = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid()).child("Stats");
-            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+                    .child("Users").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+                    .child("Stats");
 
             mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

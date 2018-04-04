@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ import com.zconnect.zutto.zconnect.ItemFormats.Product;
 
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class ReservedTab extends Fragment {
 
     String reserveString;
@@ -48,6 +51,10 @@ public class ReservedTab extends Fragment {
     private NotificationCompat.Builder mBuilder;
     private TextView errorMessage;
     private TextView noitems;
+
+    private SharedPreferences communitySP;
+    public String communityReference;
+
 
     public ReservedTab() {
         // Required empty public constructor
@@ -69,8 +76,13 @@ public class ReservedTab extends Fragment {
         mProductList.setLayoutManager(productLinearLayout);
 
 
-        mReservedProducts = FirebaseDatabase.getInstance().getReference().child("Users");
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
+
+
+        mReservedProducts = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -117,7 +129,7 @@ public class ReservedTab extends Fragment {
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(getActivity(), model.getProductName(), getContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice(),model.getNegotiable());
-                viewHolder.setSellerName(model.getPostedBy());
+                viewHolder.setSellerName(model.getPostedBy().getUsername());
                 viewHolder.setSellerNumber(model.getPhone_no(), getContext(), model.getCategory());
 //                }else {
 //               }
@@ -125,7 +137,7 @@ public class ReservedTab extends Fragment {
                     @Override
                     public void onClick(View view) {
                         CounterManager.StoroomShortListDelete(model.getCategory(), model.getKey());
-                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("storeroom/" + product_key + "/UsersReserved");
+                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom/" + product_key + "/UsersReserved");
 
                         mAuth = FirebaseAuth.getInstance();
                         FirebaseUser user = mAuth.getCurrentUser();
@@ -152,7 +164,10 @@ public class ReservedTab extends Fragment {
         private Button deleteButton;
         private FirebaseAuth mAuth;
         private String sellerName;
-        private DatabaseReference Users = FirebaseDatabase.getInstance().getReference().child("Users");
+        private SharedPreferences communitySP;
+        public String communityReference;
+
+        private DatabaseReference Users;
         private ImageView post_image;
         private TextView negotiableText;
 
@@ -162,6 +177,12 @@ public class ReservedTab extends Fragment {
             mView = itemView;
             //to delete reserved items
 //            noitems.setVisibility(View.VISIBLE);
+
+            communitySP = mView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
+            communityReference = communitySP.getString("communityReference", null);
+
+            Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
+
             post_image = (ImageView) mView.findViewById(R.id.postImg);
             deleteButton = (Button) mView.findViewById(R.id.delete);
             Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
@@ -241,24 +262,10 @@ public class ReservedTab extends Fragment {
 
         }
 
-        public void setSellerName(String postedBy) {
-
-
-            Users.child(postedBy).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    sellerName = dataSnapshot.child("Username").getValue().toString();
-                    TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-                    post_seller_name.setText("Sold By: " + sellerName);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-
+        public void setSellerName(String username) {
+            sellerName = username;
+            TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
+            post_seller_name.setText("Sold By: " + sellerName);
         }
 
         public void setSellerNumber(final String sellerNumber, final Context ctx, final String category) {

@@ -61,7 +61,7 @@ public class Offers extends BaseActivity {
 
         offersRecycler = (RecyclerView) findViewById(R.id.offersRecycler);
         defaultmsg = (TextView) findViewById(R.id.shop_errorMessage1);
-        offersDatabase = FirebaseDatabase.getInstance().getReference().child("Shop").child("Offers");
+        offersDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Shop").child("Offers");
 
         adapter = new ShopOfferRV(this, shopOfferItemFormats);
         offersRecycler.setHasFixedSize(true);

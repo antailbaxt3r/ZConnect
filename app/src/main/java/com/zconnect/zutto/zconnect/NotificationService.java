@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -38,13 +39,19 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
 
+        SharedPreferences communitySP;
+        String communityReference;
+
+        communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
         final Map data = remoteMessage.getData();
        if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
             if (type.equals(KEY_EVENT_BOOST)) {
                 final String key = data.get("Key").toString();
                 // use this to notify users who have boosted if event details have been changed
-                FirebaseDatabase.getInstance().getReference("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -90,7 +97,7 @@ public class NotificationService extends FirebaseMessagingService {
 
             } else if (type.equals(KEY_CABPOOL_JOIN)) {
                 final String key = data.get("Key").toString();
-                FirebaseDatabase.getInstance().getReference("Cab").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         CabItemFormat format = dataSnapshot.getValue(CabItemFormat.class);
@@ -133,7 +140,7 @@ public class NotificationService extends FirebaseMessagingService {
 
             } else if (type.equals(KEY_PRODUCT)) {
                 final String personEmail = data.get("PersonEmail").toString();
-                FirebaseDatabase.getInstance().getReference("Phonebook").orderByChild("email").equalTo(personEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook").orderByChild("email").equalTo(personEmail).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String personName = data.get("Person").toString();
@@ -242,7 +249,7 @@ public class NotificationService extends FirebaseMessagingService {
             } else if (type.equals(KEY_EVENT)) {
                final String key = data.get("Key").toString();
                // use this to notify users who have boosted if event details have been changed
-               FirebaseDatabase.getInstance().getReference("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+               FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                    @Override
                    public void onDataChange(DataSnapshot dataSnapshot) {

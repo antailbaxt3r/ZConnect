@@ -172,23 +172,24 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             });
             Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
             Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+            Typeface customFont3 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
             source.setTypeface(customFont2);
             destination.setTypeface(customFont2);
 //            details.setTypeface(customFont2);
             time.setTypeface(customFont2);
             date.setTypeface(customFont2);
-            list_people.setTypeface(customFont2);
-            share.setTypeface(customFont2);
+            list_people.setTypeface(customFont3);
+            share.setTypeface(customFont3);
 
-            TextView source_head = (TextView)itemView.findViewById(R.id.source_head);
-            TextView destination_head = (TextView)itemView.findViewById(R.id.destination_head);
-            TextView date_head = (TextView)itemView.findViewById(R.id.date_head);
-            TextView time_head = (TextView)itemView.findViewById(R.id.time_head);
+//            TextView source_head = (TextView)itemView.findViewById(R.id.source_head);
+//            TextView destination_head = (TextView)itemView.findViewById(R.id.destination_head);
+//            TextView date_head = (TextView)itemView.findViewById(R.id.date_head);
+//            TextView time_head = (TextView)itemView.findViewById(R.id.time_head);
 
-            source_head.setTypeface(customFont);
-            destination_head.setTypeface(customFont);
-            date_head.setTypeface(customFont);
-            time_head.setTypeface(customFont);
+//            source_head.setTypeface(customFont);
+//            destination_head.setTypeface(customFont);
+//            date_head.setTypeface(customFont);
+//            time_head.setTypeface(customFont);
 
         }
     }

@@ -24,6 +24,18 @@
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
+        <RatingBar
+            android:id="@+id/rating_bar_shop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"/>
+        <Button
+            android:id="@+id/rating_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rate it"/>
+
 
     <TextView
         android:id="@+id/galleryText"

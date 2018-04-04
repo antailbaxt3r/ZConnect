@@ -17,8 +17,8 @@ import android.widget.ImageView;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends BaseActivity {
-    Drawable pageData[]=new Drawable[4];	        //Stores the text to swipe.
+public class TutorialActivity extends BaseActivity {
+    Drawable pageData[]=new Drawable[5];	        //Stores the text to swipe.
     LayoutInflater inflater;	//Used to create individual pages
     ViewPager vp;	            //Reference to class to swipe views
     TabLayout tabLayout;
@@ -36,6 +36,7 @@ public class FullscreenActivity extends BaseActivity {
         pageData[1] = ContextCompat.getDrawable(this, R.drawable.shops_tut);
         pageData[2] = ContextCompat.getDrawable(this, R.drawable.events_tut);
         pageData[3] = ContextCompat.getDrawable(this, R.drawable.storeroom_tut);
+        pageData[4] = ContextCompat.getDrawable(this, R.drawable.cabpool_tut);
 
         tabLayout = (TabLayout) findViewById(R.id.tabDots);
 

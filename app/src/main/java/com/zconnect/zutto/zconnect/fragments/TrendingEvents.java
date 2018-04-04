@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.fragments;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,9 +40,15 @@ import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 
+import org.w3c.dom.Text;
+
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class TrendingEvents extends Fragment {
 
@@ -102,8 +110,13 @@ public class TrendingEvents extends Fragment {
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
 
+        SharedPreferences communitySP;
+        String communityReference;
 
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts");
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts");
         queryRef = mDatabase.orderByChild("BoostCount");
 
         mDatabase.keepSynced(true);
@@ -134,7 +147,10 @@ public class TrendingEvents extends Fragment {
                     viewHolder.setEventVenue(model.getVenue());
                     viewHolder.setEditEvent(model.getUserID(), model.getKey());
                     viewHolder.setBoost(model);
-                } catch (Exception e) {
+                    viewHolder.setPostedByDetails(model.getPostedBy().getUsername(), model.getPostedBy().getImageThumb());
+                    viewHolder.setEventTimestamp(model.getPostTimeMillis());
+                }
+                catch (Exception e) {
                     Log.d("Error Alert: ", e.getMessage());
                 }
 
@@ -153,6 +169,9 @@ public class TrendingEvents extends Fragment {
         SharedPreferences sharedPref;
         Boolean status;
 
+        SharedPreferences communitySP;
+        String communityReference;
+
         public EventViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
@@ -161,6 +180,8 @@ public class TrendingEvents extends Fragment {
             if(!status) {
                 mAuth = FirebaseAuth.getInstance();
             }
+            communitySP = itemView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
+            communityReference = communitySP.getString("communityReference", null);
         }
 
         public void openEvent(final Event event) {
@@ -173,8 +194,7 @@ public class TrendingEvents extends Fragment {
                 public void onClick(View view) {
                     CounterManager.eventOpenCounter(key, "Trending");
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
-                    i.putExtra("currentEvent", event);
-                    i.putExtra("Eventtag", "1");
+                    i.putExtra("id", event.getKey());
                     mView.getContext().startActivity(i);
                 }
             });
@@ -190,52 +210,53 @@ public class TrendingEvents extends Fragment {
         }
 
         public void setEventDesc(String eventDesc) {
-            if (eventDesc != null) {
-                String shortEventDesc;
+//            if (eventDesc != null) {
+//                String shortEventDesc;
 
-                TextView post_desc = (TextView) mView.findViewById(R.id.er_description);
-                if (eventDesc.length() < 70) {
-                    shortEventDesc = eventDesc;
-                } else {
-                    shortEventDesc = eventDesc.substring(0, 70);
-                    shortEventDesc = shortEventDesc + " ... read more";
-                }
+//                TextView post_desc = (TextView) mView.findViewById(R.id.er_description);
+//                if (eventDesc.length() < 70) {
+//                    shortEventDesc = eventDesc;
+//                } else {
+//                    shortEventDesc = eventDesc.substring(0, 70);
+//                    shortEventDesc = shortEventDesc + " ... read more";
+//                }
 
-                post_desc.setText(shortEventDesc);
+//                post_desc.setText(shortEventDesc);
                 Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-                post_desc.setTypeface(customFont);
-            }
+//                post_desc.setTypeface(customFont);
+//            }
         }
 
         public void setEventVenue(String venue) {
-            if (venue != null) {
-                TextView post_venue = (TextView) mView.findViewById(R.id.er_venue);
-                post_venue.setText(venue);
-                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
-                post_venue.setTypeface(customFont);
-            }
+//            if (venue != null) {
+//                TextView post_venue = (TextView) mView.findViewById(R.id.er_venue);
+//                post_venue.setText(venue);
+//                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+//                post_venue.setTypeface(customFont);
+//            }
         }
         public void setEventImage(Context ctx, String image) {
             if (image != null) {
-                ImageView post_image = (ImageView) mView.findViewById(R.id.er_postImg);
+//                ImageView post_image = (ImageView) mView.findViewById(R.id.er_postImg);
+                SimpleDraweeView post_image = (SimpleDraweeView) mView.findViewById(R.id.er_postImg);
                 Picasso.with(ctx).load(image).into(post_image);
             }
         }
 
         public void setEventDate(String eventDate) {
-            if (eventDate != null) {
-                TextView post_date = (TextView) mView.findViewById(R.id.er_date);
-                String date[] = eventDate.split("\\s+");
-                StringBuilder finalDate = new StringBuilder();
-
-                for (int i = 0; i < 4; i++) {
-                    finalDate.append(" ").append(date[i]);
-                }
-
-                post_date.setText(finalDate.toString());
-                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-                post_date.setTypeface(customFont);
-            }
+//            if (eventDate != null) {
+//                TextView post_date = (TextView) mView.findViewById(R.id.er_date);
+//                String date[] = eventDate.split("\\s+");
+//                StringBuilder finalDate = new StringBuilder();
+//
+//                for (int i = 0; i < 4; i++) {
+//                    finalDate.append(" ").append(date[i]);
+//                }
+//
+//                post_date.setText(finalDate.toString());
+//                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+//                post_date.setTypeface(customFont);
+//            }
         }
 
         public void setEditEvent(String UserID, final String EventID) {
@@ -258,13 +279,13 @@ public class TrendingEvents extends Fragment {
         }
 
 
-
         private void setBoost(final Event event) {
 
-            final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(event.getKey());
+            final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts").child(event.getKey());
 
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            final Button boostBtn = (Button) mView.findViewById(R.id.boostBtn);
+            final ImageButton boostBtn = (ImageButton) mView.findViewById(R.id.boostBtn);
+            final TextView eventNumLit = (TextView) mView.findViewById(R.id.eventsNumLit);
 
 
 
@@ -275,12 +296,18 @@ public class TrendingEvents extends Fragment {
                     eventDatabase.child("BoostCount").setValue(dataSnapshot.getChildrenCount());
 
                     if(dataSnapshot.hasChild(user.getUid())){
-                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
+//                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                        eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x lit");
+                        boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.lit));
+//                        boostBtn.getBackground().setTint(mView.getContext().getResources().getColor(R.color.lit));
+//                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                         flag=true;
                     }else {
-                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
+//                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                        eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x lit");
+                        boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.primaryText));
+//                        boostBtn.getBackground().setTint(mView.getContext().getResources().getColor(R.color.primaryText));
+//                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
                         flag=false;
                     }
                 }
@@ -305,7 +332,7 @@ public class TrendingEvents extends Fragment {
 
                             //Sending Notifications
                             FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
-                            NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,"EventBoosted",false,true);
+                            NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,event.getEventName(),String.valueOf(System.currentTimeMillis()),null,null,"EventBoosted",false,true,itemView.getContext());
                             notificationSender.execute();
 
                         }else {
@@ -336,7 +363,29 @@ public class TrendingEvents extends Fragment {
             }
 
             Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-            boostBtn.setTypeface(customfont);
+            eventNumLit.setTypeface(customfont);
+        }
+
+        private void setPostedByDetails(String username, String imageThumb) {
+//            if(username!= null) {
+//                TextView post_postedBy = (TextView) mView.findViewById(R.id.eventPostedBy);
+//                SimpleDraweeView post_postedByAvatar = (SimpleDraweeView) mView.findViewById(R.id.eventPostedByAvatar);
+//                post_postedBy.setText(username);
+//                if(imageThumb != null)
+//                {
+//                    post_postedByAvatar.setImageURI(imageThumb);
+//                }
+//                Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+//                post_postedBy.setTypeface(customFont);
+//            }
+        }
+
+        private void setEventTimestamp(long postTimeMillis) {
+            if(postTimeMillis > 0) {
+                TextView timestamp = (TextView) mView.findViewById(R.id.evTrendTimestamp);
+                TimeAgo ta = new TimeAgo(postTimeMillis, System.currentTimeMillis());
+                timestamp.setText(ta.calculateTimeAgo());
+            }
         }
 
     }

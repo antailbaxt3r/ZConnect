@@ -43,6 +43,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -65,16 +66,17 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private EditText mProductName;
     private EditText mProductDescription;
     private EditText mProductPrice;
-    private EditText mProductPhone;
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
     private DatabaseReference mUsername;
+    private DatabaseReference mPostedByDetails;
     private ProgressDialog mProgress;
     private CustomSpinner spinner1;
     private FirebaseAuth mAuth;
     private String sellerName;
     private TagsEditText productTags;
     private CheckBox negotiableCheckBox;
+    private Long postTimeMillis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,9 +112,9 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mProductName = (EditText) findViewById(R.id.name);
         mProductDescription = (EditText) findViewById(R.id.description);
         mProductPrice = (EditText) findViewById(R.id.price);
-        mProductPhone = (EditText) findViewById(R.id.phoneNo);
         mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+        mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         spinner1 = (CustomSpinner) findViewById(R.id.categories);
         productTags =(TagsEditText) findViewById(R.id.skillsTags);
         negotiableCheckBox=(CheckBox) findViewById(R.id.priceNegotiable);
@@ -145,7 +147,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
         mProductName.setTypeface(ralewayRegular);
         mProductDescription.setTypeface(ralewayRegular);
-        mProductPhone.setTypeface(ralewayRegular);
         mProductPrice.setTypeface(ralewayRegular);
         productTags.setTypeface(ralewayRegular);
 
@@ -185,7 +186,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 
                 try {
                     mImageUri = result.getUri();
-                    mAddImage.setImageURI(mImageUri);
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
                     Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
 
@@ -244,7 +244,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         final String productNameValue = mProductName.getText().toString().trim();
         final String productDescriptionValue = mProductDescription.getText().toString().trim();
         final String productPriceValue = mProductPrice.getText().toString().trim();
-        final String productPhoneNo = mProductPhone.getText().toString().trim();
         final String productTagString= productTags.getTags().toString().trim();
         final String negotiable;
 
@@ -259,8 +258,8 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
         final String userId = user.getUid();
-        mUsername = FirebaseDatabase.getInstance().getReference().child("Users");
-        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
+        mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
+        mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
         final String category = spinner1.getSelectedItem().toString();
         mUsername.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -274,32 +273,50 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         });
 
 
-        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue) || negotiable.equals("2")) && !TextUtils.isEmpty(productPhoneNo) && mImageUri != null && category != null && productTags!=null && !negotiable.equals("") && negotiableCheckBox!=null) {
+        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue) || negotiable.equals("2")) && mImageUri != null && category != null && productTags!=null && !negotiable.equals("") && negotiableCheckBox!=null) {
             StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
 
-                    DatabaseReference newPost = mDatabase.push();
+                    final DatabaseReference newPost = mDatabase.push();
+                    final DatabaseReference postedBy = newPost.child("PostedBy");
                     key = newPost.getKey();
+                    postTimeMillis = System.currentTimeMillis();
                     newPost.child("Category").setValue(String.valueOf(spinner1.getSelectedItem()));
                     newPost.child("Key").setValue(key);
                     newPost.child("ProductName").setValue(productNameValue);
                     newPost.child("ProductDescription").setValue(productDescriptionValue);
                     newPost.child("Image").setValue(downloadUri != null ? downloadUri.toString() : null);
                     newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
-                    newPost.child("Phone_no").setValue(productPhoneNo);
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
                     newPost.child("skills").setValue(productTagString);
                     newPost.child("negotiable").setValue(negotiable);
+                    newPost.child("PostTimeMillis").setValue(postTimeMillis);
+                    postedBy.setValue(null);
+                    postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                            postedBy.child("Username").setValue(user.getUsername());
+                            postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                            newPost.child("Phone_no").setValue(user.getMobileNumber());
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
 
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
 
 
-                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("home").push();
+                    DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
+                    final DatabaseReference newPost2Postedby = newPost2.child("PostedBy");
                     newPost2.child("name").setValue(productNameValue);
                     newPost2.child("desc").setValue(productDescriptionValue);
                     newPost2.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
@@ -307,6 +324,24 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     newPost2.child("id").setValue(key);
                     newPost2.child("desc2").setValue(productPriceValue);
                     newPost2.child("Key").setValue(newPost2.getKey());
+                    newPost2.child("productPrice").setValue(productPriceValue);
+                    newPost2.child("PostTimeMillis").setValue(postTimeMillis);
+                    newPost2Postedby.setValue(null);
+                    newPost2Postedby.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                            newPost2Postedby.child("Username").setValue(user.getUsername());
+                            newPost2Postedby.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
 
                     // Adding stats
 
@@ -336,7 +371,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                 }
             });
 
-            NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,null,KEY_STOREROOM,true,false);
+            NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,null,KEY_STOREROOM,true,false,getApplicationContext());
             notificationSender.execute();
 
         } else {

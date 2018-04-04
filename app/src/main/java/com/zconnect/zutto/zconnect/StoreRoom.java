@@ -57,7 +57,7 @@ public class StoreRoom extends BaseActivity {
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(false);
         mProductList.setLayoutManager(linearLayoutManager);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
         queryCategory = mDatabase.orderByChild("Category").equalTo(category);
         mDatabase.keepSynced(true);
     }
@@ -153,10 +153,12 @@ public class StoreRoom extends BaseActivity {
         String[] keyList;
         String ReservedUid;
         ImageView post_image;
+        private SharedPreferences communitySP;
+        public String communityReference;
         //        private Switch mReserve;
 //        private TextView ReserveStatus;
         private Button shortList;
-        private DatabaseReference StoreRoom = FirebaseDatabase.getInstance().getReference().child("storeroom");
+        private DatabaseReference StoreRoom;
         private FirebaseAuth mAuth;
 
         public ProductViewHolder(View itemView) {
@@ -165,6 +167,12 @@ public class StoreRoom extends BaseActivity {
             mView = itemView;
 //            mReserve = (Switch) mView.findViewById(R.id.switch1);
 //            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
+
+            communitySP = mView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
+            communityReference = communitySP.getString("communityReference", null);
+
+            StoreRoom = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+
             shortList = (Button) mView.findViewById(R.id.shortList);
             post_image = (ImageView) mView.findViewById(R.id.postImg);
             StoreRoom.keepSynced(true);

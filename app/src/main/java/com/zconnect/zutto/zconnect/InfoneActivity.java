@@ -38,6 +38,8 @@ import java.util.Vector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class InfoneActivity extends Fragment implements View.OnClickListener {
 
     /**
@@ -65,6 +67,14 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
      * Email of user.
      */
     private String userEmail;
+
+    private SharedPreferences communitySP;
+    public String communityReference;
+
+    /**
+     * Sets visibility of add contact fab according to whether user is registered in infone.
+     */
+
     private ValueEventListener phoneBookListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -99,10 +109,16 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
         Fresco.initialize(getContext());
         View v = inflater.inflate(R.layout.activity_infone, container, false);
         ButterKnife.bind(this, v);
+
         tabDbRef = FirebaseDatabase.getInstance().getReference().child("Phonebook").child("Tabs");
+
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+      
         mAuth = FirebaseAuth.getInstance();
-        SharedPreferences guestModePref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        SharedPreferences guestModePref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         guestMode = guestModePref.getBoolean("mode", false);
+
 
 //        if (!guestMode) {
 //            mUser = mAuth.getCurrentUser();
@@ -133,6 +149,35 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
 //            });
 //        }
 
+        if (!guestMode) {
+            mUser = mAuth.getCurrentUser();
+
+            mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(mUser.getUid()).child("Stats");
+            mFeaturesStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
+            mPhoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+
+            mFeaturesStatsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    try {
+                        TotalNumbers = dataSnapshot.child("TotalNumbers").getValue(Integer.class);
+                    } catch (Exception e) {
+                        TotalNumbers = 0;
+                    }
+
+                    Map<String, Object> taskMap = new HashMap<>();
+                    taskMap.put("TotalNumbers", TotalNumbers);
+                    mUserStatsDbRef.updateChildren(taskMap);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e(TAG, "onCancelled: ", databaseError.toException());
+                }
+            });
+        }
+      
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         setupViewPager(viewPager);
@@ -223,8 +268,7 @@ public class InfoneActivity extends Fragment implements View.OnClickListener {
                 CounterManager.infoneOpenTab("Students");
             else if (position == 2)
                 CounterManager.infoneOpenTab("others");
-            else if (position ==3)
-            {
+            else if (position == 3) {
                 CounterManager.infoneOpenTab("AnonymousMessages");
             }
         } else {

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.zconnect.zutto.zconnect.AddEvent;
 import com.zconnect.zutto.zconnect.AddProduct;
+import com.zconnect.zutto.zconnect.CabPooling;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.NewMessageActivity;
@@ -40,6 +41,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         LinearLayout bottomSheetAddEvent = (LinearLayout) bottomSheetView.findViewById(R.id.addEvent_bottomSheet);
         LinearLayout bottomSheetAddProduct = (LinearLayout) bottomSheetView.findViewById(R.id.addProduct_bottomSheet);
         LinearLayout bottomSheetAddMessage = (LinearLayout) bottomSheetView.findViewById(R.id.addMessage_bottomSheet);
+        LinearLayout bottomSheetSearchPool = (LinearLayout) bottomSheetView.findViewById(R.id.searchPool_bottomSheet);
 
 
         View.OnClickListener addEventListener = new View.OnClickListener() {
@@ -70,9 +72,20 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             }
         };
 
+        View.OnClickListener searchPoolListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CounterManager.eventAddClick();
+                Intent intent;
+                intent = new Intent(getContext(), CabPooling.class);
+                startActivity(intent);
+            }
+        };
+
         bottomSheetAddEvent.setOnClickListener(addEventListener);
         bottomSheetAddProduct.setOnClickListener(addProductListener);
         bottomSheetAddMessage.setOnClickListener(addMessageListener);
+        bottomSheetSearchPool.setOnClickListener(searchPoolListener);
 
         return bottomSheetView;
     }

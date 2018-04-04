@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -22,6 +23,12 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import org.joda.time.LocalDate;
+
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -30,10 +37,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ProgressDialog progress;
     private networkStatereceiver receiver;
 
-    @Override
-    public void setContentView(int layoutResID) {
-        super.setContentView(layoutResID);
-    }
+
+    public static String communityReference;
+
+    public static DatabaseReference ref;
+    private static LocalDate dateTime = new LocalDate();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +60,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         receiver = new networkStatereceiver();
         registerReceiver(receiver, filter);
-
+        SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
     }
 
     public void setColour(int colour) {
@@ -76,6 +86,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                     });
         }
     }
+
 
     @Override
     protected void onResume() {

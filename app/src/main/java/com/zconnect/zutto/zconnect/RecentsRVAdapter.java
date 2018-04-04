@@ -1,28 +1,35 @@
 package com.zconnect.zutto.zconnect;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.common.time.Clock;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 
 import java.util.List;
 import java.util.Vector;
-
-/**
- * Created by shubhamk on 20/3/17.
- */
 
 public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.ViewHolder> {
 
@@ -48,10 +55,133 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
 
     @Override
     public void onBindViewHolder(RecentsRVAdapter.ViewHolder holder, int position) {
-        try{
-        holder.simpleDraweeView.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
-        holder.feature.setText(recentsItemFormats.get(position).getFeature());
-        holder.desc.setText(recentsItemFormats.get(position).getDesc());
+
+//        holder.desc.setText(recentsItemFormats.get(position).getDesc());
+//<<<<<<< HEAD
+        //new ui
+        try {
+            if (recentsItemFormats.get(position).getPostTimeMillis() > 0) {
+                TimeAgo ta = new TimeAgo(recentsItemFormats.get(position).getPostTimeMillis(), System.currentTimeMillis());
+                holder.postTime.setText(ta.calculateTimeAgo());
+            }
+            if (recentsItemFormats.get(position).getPostedBy().getUsername() != null) {
+                holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
+            }
+            if (recentsItemFormats.get(position).getPostedBy().getImageThumb() != null) {
+                holder.avatarCircle.setImageURI(recentsItemFormats.get(position).getPostedBy().getImageThumb());
+            }
+        }
+        catch (Exception e) {
+
+        }
+        if(recentsItemFormats.get(position).getFeature().equals("Infone"))
+        {
+            holder.infoneRecentItem.setVisibility(View.VISIBLE);
+            holder.storeroomRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.GONE);
+            holder.eventsRecentItem.setVisibility(View.GONE);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_18dp));
+            holder.postConjunction.setText(" added a ");
+            holder.post.setText("Contact");
+            holder.infoneContactName.setText(recentsItemFormats.get(position).getInfoneContactName());
+            holder.infoneContactCategory.setText(recentsItemFormats.get(position).getInfoneContactCategoryName());
+
+        }
+        else if(recentsItemFormats.get(position).getFeature().equals("Users"))
+        {
+            holder.infoneRecentItem.setVisibility(View.GONE);
+            holder.storeroomRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.GONE);
+            holder.eventsRecentItem.setVisibility(View.GONE);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.users), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_home_white_18dp));
+            holder.postConjunction.setText(" just joined your community ");
+            holder.post.setVisibility(View.GONE);
+        }
+        else if (recentsItemFormats.get(position).getFeature().equals("Event"))
+        {
+            holder.infoneRecentItem.setVisibility(View.GONE);
+            holder.storeroomRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.GONE);
+            holder.eventsRecentItem.setVisibility(View.VISIBLE);
+//            Drawable[] layers = new Drawable[2];
+//            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
+//            layers[0].setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
+//            layers[1] = context.getResources().getDrawable(R.drawable.ic_event_white_18dp);
+//            LayerDrawable layerDrawable = new LayerDrawable(layers);
+//            holder.featureCircle.setBackground(layerDrawable);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_18dp));
+            holder.postConjunction.setText(" created an ");
+            holder.post.setText(recentsItemFormats.get(position).getFeature());
+            holder.eventName.setText(recentsItemFormats.get(position).getName());
+            holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());
+            Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.eventImage);
+        }
+        else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
+        {
+            holder.infoneRecentItem.setVisibility(View.GONE);
+            holder.eventsRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.GONE);
+            holder.storeroomRecentItem.setVisibility(View.VISIBLE);
+//            Drawable[] layers = new Drawable[2];
+//            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
+//            layers[0].setColorFilter(context.getResources().getColor(R.color.storeroom), PorterDuff.Mode.SRC_ATOP);
+//            layers[1] = context.getResources().getDrawable(R.drawable.ic_local_mall_white_24dp);
+//            LayerDrawable layerDrawable = new LayerDrawable(layers);
+//            holder.featureCircle.setBackground(layerDrawable);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.storeroom), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_mall_white_18dp));
+            holder.postConjunction.setText(" added a ");
+            holder.post.setText("Product");
+            holder.productName.setText(recentsItemFormats.get(position).getName());
+            holder.productDesc.setText(recentsItemFormats.get(position).getDesc());
+            Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
+            holder.productPrice.setText(recentsItemFormats.get(position).getProductPrice());
+            //set product price
+        }
+        else if (recentsItemFormats.get(position).getFeature().equals("CabPool"))
+        {
+            holder.infoneRecentItem.setVisibility(View.GONE);
+            holder.eventsRecentItem.setVisibility(View.GONE);
+            holder.storeroomRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.VISIBLE);
+            holder.postConjunction.setText(" started a ");
+            holder.post.setText(recentsItemFormats.get(position).getFeature());
+            holder.cabpoolSource.setText(recentsItemFormats.get(position).getCabpoolSource());
+            holder.cabpoolDestination.setText(recentsItemFormats.get(position).getCabpoolDestination());
+            holder.cabpoolDate.setText(recentsItemFormats.get(position).getCabpoolDate());
+            holder.cabpoolTime.setText(recentsItemFormats.get(position).getCabpoolTime());
+//            Drawable[] layers = new Drawable[2];
+//            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
+//            layers[0].setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
+//            layers[1] = context.getResources().getDrawable(R.drawable.ic_local_taxi_white_18dp);
+//            LayerDrawable layerDrawable = new LayerDrawable(layers);
+//            holder.featureCircle.setBackground(layerDrawable);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_taxi_white_18dp));
+            //set text for source and destination...
+        }
+        else if (recentsItemFormats.get(position).getFeature().equals("Shop"))
+        {
+            holder.infoneRecentItem.setVisibility(View.GONE);
+            holder.eventsRecentItem.setVisibility(View.GONE);
+            holder.storeroomRecentItem.setVisibility(View.GONE);
+            holder.cabpoolRecentItem.setVisibility(View.GONE);
+//            Drawable[] layers = new Drawable[2];
+//            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
+//            layers[0].setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
+//            layers[1] = context.getResources().getDrawable(R.drawable.ic_store_white_18dp);
+//            LayerDrawable layerDrawable = new LayerDrawable(layers);
+//            holder.featureCircle.setBackground(layerDrawable);
+            holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
+            holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_18dp));
+            holder.postConjunction.setText(" put an ");
+            holder.post.setText("Offer");
+        }
+        //
+//=======
         if(recentsItemFormats.get(position).getFeature().equals("Message")&&recentsItemFormats.get(position).getDesc2().equals("y")) {
             //Message is anonymous
             holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
@@ -59,10 +189,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             //Message is not anonymous
             holder.name.setText(recentsItemFormats.get(position).getName());
         }
-        }
-        catch (Exception e) {
 
-        }
+//>>>>>>> master
     }
 
     @Override
@@ -77,6 +205,18 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
         Intent i;
         String nam;
 
+        //new ui
+        TextView postedBy, postConjunction, post, postTime,
+                infoneContactName, infoneContactCategory,
+                cabpoolSource, cabpoolDestination, cabpoolDate, cabpoolTime,
+                eventName, eventDate, eventDesc,
+                productName, productPrice, productDesc;
+        SimpleDraweeView featureCircle, avatarCircle,
+                eventImage,
+                productImage;
+        ImageView featureIcon;
+        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem;
+        //
 
 
 
@@ -86,6 +226,35 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             name = (TextView) itemView.findViewById(R.id.recentname);
             feature = (TextView) itemView.findViewById(R.id.featurename);
             desc = (TextView) itemView.findViewById(R.id.recentdesc);
+
+            //new ui
+            postedBy = (TextView) itemView.findViewById(R.id.postedBy);
+            postConjunction = (TextView) itemView.findViewById(R.id.postConjunction);
+            post = (TextView) itemView.findViewById(R.id.post);
+            postTime = (TextView) itemView.findViewById(R.id.postTime);
+            featureCircle = (SimpleDraweeView) itemView.findViewById(R.id.featureCircle);
+            featureIcon = (ImageView) itemView.findViewById(R.id.recents_featIcon);
+            avatarCircle = (SimpleDraweeView) itemView.findViewById(R.id.avatarCircle);
+            infoneRecentItem = (LinearLayout) itemView.findViewById(R.id.infoneRecentItem);
+            infoneContactName = (TextView) itemView.findViewById(R.id.infoneName);
+            infoneContactCategory = (TextView) itemView.findViewById(R.id.infoneCategory);
+            cabpoolRecentItem = (LinearLayout) itemView.findViewById(R.id.cabpoolRecentItem);
+            cabpoolSource = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_source);
+            cabpoolDestination = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_destination);
+            cabpoolDate = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_date);
+            cabpoolTime = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_time);
+            eventsRecentItem = (LinearLayout) itemView.findViewById(R.id.eventsRecentItem);
+            eventName = (TextView) itemView.findViewById(R.id.eventsRecentItem_name);
+            eventDate = (TextView) itemView.findViewById(R.id.eventsRecentItem_date);
+            eventDesc = (TextView) itemView.findViewById(R.id.eventsRecentItem_description);
+            eventImage = (SimpleDraweeView) itemView.findViewById(R.id.eventsRecentItem_image);
+            storeroomRecentItem = (LinearLayout) itemView.findViewById(R.id.storeroomRecentItem);
+            productName = (TextView) itemView.findViewById(R.id.storeroomRecentItem_name);
+            productPrice = (TextView) itemView.findViewById(R.id.storeroomRecentItem_price);
+            productDesc = (TextView) itemView.findViewById(R.id.storeroomRecentItem_description);
+            productImage = (SimpleDraweeView) itemView.findViewById(R.id.storeroomRecentItem_image);
+            //
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -134,6 +303,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         i=new Intent(context,ChatActivity.class);
                         mRef = FirebaseDatabase.getInstance().getReference().child("home/"+recentsItemFormats.get(getAdapterPosition()).getKey());
                         i.putExtra("ref",mRef.toString());
+                        context.startActivity(i);
+                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){
+                        i = new Intent(context,InfoneProfileActivity.class);
+                        i.putExtra("infoneUserId",recentsItemFormats.get(getAdapterPosition()).getId());
                         context.startActivity(i);
                     }
                 }
