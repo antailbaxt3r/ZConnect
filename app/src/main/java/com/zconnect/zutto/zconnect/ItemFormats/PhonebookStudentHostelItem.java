@@ -6,11 +6,14 @@ package com.zconnect.zutto.zconnect.ItemFormats;
 
 public class PhonebookStudentHostelItem {
     String hostel;
-String cat;
+    String cat;
 
     public PhonebookStudentHostelItem(String hostel, String cat) {
         this.hostel = hostel;
         this.cat = cat;
+    }
+
+    public PhonebookStudentHostelItem() {
     }
 
     public String getCat() {
@@ -20,9 +23,6 @@ String cat;
 
     public void setCat(String cat) {
         this.cat = cat;
-    }
-
-    public PhonebookStudentHostelItem() {
     }
 
     public String getHostel() {
