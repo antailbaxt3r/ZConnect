@@ -124,7 +124,7 @@ public class MessageTabFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
+/*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -141,7 +141,7 @@ public class MessageTabFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
+*/
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

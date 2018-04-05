@@ -28,7 +28,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Calendar;
 
 import mabbas007.tagsedittext.TagsEditText;
 
@@ -213,7 +216,7 @@ public class PhonebookDetails extends BaseActivity {
             flagforNull=true;
         }
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
+        /*sendButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -224,6 +227,30 @@ public class PhonebookDetails extends BaseActivity {
                     UsersReference.child("Message").setValue(textMessageString);
                     UsersReference.child("MessageId").setValue(UsersReference.getKey());
                     UsersReference.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
+                    textMessage.setText(null);
+                    Toast.makeText(PhonebookDetails.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });*/
+        //DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages");
+        //UsersReference.removeValue();
+        sendButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String textMessageString;
+                Calendar calendar;
+                calendar = Calendar.getInstance();
+                textMessageString = textMessage.getText().toString();
+                if (textMessageString!=null && !flagforNull){
+                    DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference();
+                    String s = UsersReference.child("communities").child(communityReference).child("features").child("messages").child("chats").push().getKey();
+                    UsersReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(s).child("message").setValue("\""+textMessageString+"\"");
+                    UsersReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(s).child("sender").setValue(mAuth.getCurrentUser().getUid());
+                    //UsersReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(s).child("senderName").setValue(mAuth.getCurrentUser().getDisplayName());
+                    UsersReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(s).child("timeStamp").setValue(calendar.getTimeInMillis());
+                    UsersReference.child("communities").child(communityReference).child("features").child("messages").child("users").child(mAuth.getCurrentUser().getUid()).child(Uid).push().setValue(s);
+                    UsersReference.child("communities").child(communityReference).child("features").child("messages").child("users").child(Uid).child(mAuth.getCurrentUser().getUid()).push().setValue(s);
                     textMessage.setText(null);
                     Toast.makeText(PhonebookDetails.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
                 }

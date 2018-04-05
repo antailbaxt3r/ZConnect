@@ -1,11 +1,14 @@
 package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zconnect.zutto.zconnect.ChatActivity2;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatTabRVItem;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.holders.ChatTabRVViewHolder;
@@ -35,14 +38,60 @@ public class ChatTabRVAdapter extends RecyclerView.Adapter<ChatTabRVViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ChatTabRVViewHolder holder, int position) {
+    public void onBindViewHolder(ChatTabRVViewHolder holder, final int position) {
 
-        holder.nametv.setText(chatTabRVItems.get(position).getName());
+        holder.nametv.setText(chatTabRVItems.get(position).getName().substring(28,chatTabRVItems.get(position).getName().length()));
 
+        //Log.e("adsfda",chatTabRVItems.get(position).getName());
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //ChatItemFormats cif=new ChatItemFormats();
+                /*
+                SharedPreferences communitySP;
+                final String communityReference;
+                communitySP = context.getSharedPreferences("communityName", MODE_PRIVATE);
+                communityReference = communitySP.getString("communityReference", null);
+                final DatabaseReference databaseReference;
+                databaseReference= FirebaseDatabase.getInstance().getReference();
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String recpuid="blah";
+                        String tempkey;
+                        for (DataSnapshot childsnapShot :
+                                dataSnapshot.child("communities").child(communityReference).child("users").getChildren())
+                        {
+                            tempkey=dataSnapshot.getKey();
+                            if((dataSnapshot.child(tempkey).child("Username").getValue().toString()).equals(chatTabRVItems.get(position).getName()))
+                            {
+                                recpuid = tempkey;
+                            }
+                        }
+                        Toast.makeText(context,recpuid, Toast.LENGTH_SHORT).show();
+                        /*Intent i = new Intent(context, ChatActivity2.class);
+                        i.putExtra("s",recpuid);
+                        context.startActivity(i);*/
+                        /*for (DataSnapshot childsnapShot :
+                                dataSnapshot.child("communities").child(communityReference).child("features").child("messages").child("users").child(myuid).getChildren())
+                        {
+                            dr=databaseReference.child("communities").child(communityReference).child("features").child("messages").child("users").child(myuid).child(recpuid);
+                            Intent i = new Intent(context, ChatActivity2.class);
+                            i.putExtra("dataref",dr);
+                            //i.putExtra("dataref",dr);
+                            context.startActivity(i);
 
+                        }*//*
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });*/
+                Intent i = new Intent(context, ChatActivity2.class);
+                i.putExtra("s",chatTabRVItems.get(position).getName());
+                context.startActivity(i);
             }
         });
 
@@ -50,6 +99,7 @@ public class ChatTabRVAdapter extends RecyclerView.Adapter<ChatTabRVViewHolder> 
 
     @Override
     public int getItemCount() {
-        return 0;
+        return chatTabRVItems.size();
     }
+
 }

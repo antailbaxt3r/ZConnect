@@ -7,21 +7,27 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatTabRVItem;
+import com.zconnect.zutto.zconnect.PhonebookDetails;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.adapters.ChatTabRVAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -52,7 +58,7 @@ public class ChatTabFragment extends Fragment {
     ChatTabRVAdapter chatTabRVAdapter;
     ArrayList<ChatTabRVItem> chatTabRVItems;
     ChatTabRVItem chatTabRVItem;
-
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public ChatTabFragment() {
         // Required empty public constructor
     }
@@ -86,36 +92,35 @@ public class ChatTabFragment extends Fragment {
         communitySP = getContext().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
-                .child(communityReference).child(ZConnectDetails.MESSAGES_DB);
+        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
 
-        listener = new ValueEventListener() {
+        databaseReferenceMessages.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 chatTabRVItems = new ArrayList<>();
+                String name,key;
                 for (DataSnapshot childsnapShot :
-                        dataSnapshot.getChildren()) {
-                    String name = dataSnapshot.child("name").getValue(String.class);
-                    chatTabRVItem = new ChatTabRVItem(name);
+                        dataSnapshot.child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid()).getChildren()) {
+                    key = childsnapShot.getKey();
+                    name = dataSnapshot.child("communities").child(communityReference).child("Users").child(key).child("Username").getValue().toString();
+                    //Log.e("counter",key+name);
+                    chatTabRVItem = new ChatTabRVItem(key+name);
                     chatTabRVItems.add(chatTabRVItem);
 
                 }
 
                 chatTabRVAdapter = new ChatTabRVAdapter(getContext(), chatTabRVItems);
                 recyclerView.setAdapter(chatTabRVAdapter);
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        };
-        databaseReferenceMessages.addValueEventListener(listener);
+        });
 
         return rootView;
     }
@@ -126,7 +131,7 @@ public class ChatTabFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
+/*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -144,7 +149,7 @@ public class ChatTabFragment extends Fragment {
         mListener = null;
         databaseReferenceMessages.removeEventListener(listener);
     }
-
+*/
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
