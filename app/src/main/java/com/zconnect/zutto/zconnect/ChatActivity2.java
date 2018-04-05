@@ -146,7 +146,7 @@ public class ChatActivity2 extends BaseActivity{
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int incount=0;
+                int incount=0,last=0,now=1,change=0,success=0;
                 messages.clear();
                 for (DataSnapshot childsnapshot:dataSnapshot.child("users").child(myuid).child(recpuid).getChildren()){
                     String k=childsnapshot.getValue().toString();
@@ -159,15 +159,40 @@ public class ChatActivity2 extends BaseActivity{
                         if(incount==0)
                         {
                             setToolbarTitle(recpname);
+                            ++incount;
+                            success=0;
+                        }
+                        else {
+                            last = now;
+                            now = 0;
+                            if (last != now) {
+                                ++change;
+                            }
                         }
                     }
                     else
                     {
                         cif.setUuid(recpuid);
-                        cif.setName(recpname);
+                        cif.setName("Anonymous");
                         if(incount==0)
                         {
                             ++incount;
+                        }
+                        if(success==1)
+                        {
+                            setToolbarTitle(recpname);
+                            cif.setName(recpname);
+                        }
+                        else {
+                            last = now;
+                            now = 1;
+                            if (last != now) {
+                                ++change;
+                            }
+                            if (change >= 2) {
+                                setToolbarTitle(recpname);
+                                cif.setName(recpname);
+                            }
                         }
                     }
                     messages.add(cif);
