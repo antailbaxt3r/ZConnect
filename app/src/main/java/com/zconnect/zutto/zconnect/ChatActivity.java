@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -70,7 +71,7 @@ public class ChatActivity extends BaseActivity {
             public void onClick(View v) {
 
                 EditText typer = ((EditText)findViewById(R.id.typer));
-                String text = typer.getText().toString();
+                final String text = typer.getText().toString();
                 if(TextUtils.isEmpty(text)){
                     showToast("Message is empty.");
                     return;
@@ -82,9 +83,14 @@ public class ChatActivity extends BaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                        Log.d("USER IIII", userItem.getUsername());
+                        Log.d("USER IIII", userItem.getUserUID());
+                        Log.d("USER IIII", userItem.getImageURLThumbnail());
                         message.setUuid(userItem.getUserUID());
                         message.setName(userItem.getUsername());
                         message.setImageThumb(userItem.getImageURLThumbnail());
+                        message.setMessage("\""+text+"\"");
+                        databaseReference.push().setValue(message);
                     }
 
                     @Override
@@ -92,9 +98,7 @@ public class ChatActivity extends BaseActivity {
 
                     }
                 });
-                message.setMessage("\""+text+"\"");
 
-                databaseReference.push().setValue(message);
                 typer.setText(null);
                // chatView.scrollToPosition(chatView.getChildCount());
 
