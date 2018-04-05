@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -200,54 +201,54 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         Picasso.with(ctx).load(image).into(productImage);
     }
 
-//    public void setPrice(String Price,String negotiable) {
-//        productPrice = (TextView) mView.findViewById(R.id.price);
-//        productNegotiableText = (TextView) mView.findViewById(R.id.negotiable);
-//        String priceString="";
-//        if(negotiable!=null) {
-//            if (negotiable.equals("1")) {
-//                priceString = "₹" + Price + "/-";
-//                productNegotiableText.setVisibility(View.VISIBLE);
-//            } else if (negotiable.equals("2")){
-//                priceString = "Price Negotiable";
-//                productPrice.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
-//            }
-//            else
-//                priceString = "₹" + Price + "/-";
-//
-//            productPrice.setText(priceString);
-//        }
-//        else
-//        {
-//            productPrice.setText("₹" + Price + "/-");
-//        }
-//
-//        Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
-//        productPrice.setTypeface(ralewayMedium);
-//    }
-
-    public void setSellerName(String postedBy) {
-        Users.child(postedBy).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-
-                if (dataSnapshot.child("Username").getValue()!=null) {
-                    sellerName = dataSnapshot.child("Username").getValue().toString();
-                    post_seller_name.setText("Sold By: " + sellerName);
-                }else {
-                    post_seller_name.setText("");
-                }
-                Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-                post_seller_name.setTypeface(ralewayMedium);
+    public void setPrice(String Price,String negotiable) {
+        productPrice = (TextView) mView.findViewById(R.id.price);
+        productNegotiableText = (TextView) mView.findViewById(R.id.negotiable);
+        String priceString="";
+        if(negotiable!=null) {
+            if (negotiable.equals("1")) {
+                priceString = "₹" + Price + "/-";
+                productNegotiableText.setVisibility(View.VISIBLE);
+            } else if (negotiable.equals("2")){
+                priceString = "Price Negotiable";
+                productPrice.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
             }
+            else
+                priceString = "₹" + Price + "/-";
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+            productPrice.setText(priceString);
+        }
+        else
+        {
+            productPrice.setText("₹" + Price + "/-");
+        }
+        Log.d("PRODUCT PRICE 2", Price);
+        Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+        productPrice.setTypeface(ralewayMedium);
     }
+
+//    public void setSellerName(String postedBy) {
+//        Users.child(postedBy).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
+//
+//                if (dataSnapshot.child("Username").getValue()!=null) {
+//                    sellerName = dataSnapshot.child("Username").getValue().toString();
+//                    post_seller_name.setText("Sold By: " + sellerName);
+//                }else {
+//                    post_seller_name.setText("");
+//                }
+//                Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+//                post_seller_name.setTypeface(ralewayMedium);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 //    public void setSellerNumber(final String category, final String sellerNumber, final Context ctx) {
 //        productSellerContact = (Button) mView.findViewById(R.id.sellerNumber);

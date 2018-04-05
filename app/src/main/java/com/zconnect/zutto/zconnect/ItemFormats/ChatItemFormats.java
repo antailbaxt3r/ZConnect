@@ -7,13 +7,14 @@ package com.zconnect.zutto.zconnect.ItemFormats;
 public class ChatItemFormats {
 
     private long timeDate;
-    private String uuid,name,message;
+    private String uuid,name,message, imageThumb;
 
-    public ChatItemFormats(long timeDate, String uuid, String name, String message) {
+    public ChatItemFormats(long timeDate, String uuid, String name, String message, String imageThumb) {
         this.timeDate = timeDate;
         this.uuid = uuid;
         this.name = name;
         this.message = message;
+        this.imageThumb = imageThumb;
     }
 
     public ChatItemFormats() {
@@ -49,5 +50,13 @@ public class ChatItemFormats {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getImageThumb() {
+        return imageThumb;
+    }
+
+    public void setImageThumb(String imageThumb) {
+        this.imageThumb = imageThumb;
     }
 }

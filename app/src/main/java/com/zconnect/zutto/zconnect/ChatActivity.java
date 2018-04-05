@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,17 +29,23 @@ public class ChatActivity extends BaseActivity {
     private DatabaseReference databaseReference ;
     private Calendar calendar;
     private ArrayList<ChatItemFormats> messages  = new ArrayList<>();
-    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    private DatabaseReference mUserReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        SharedPreferences communitySP;
+        String communityReference;
+        communitySP = ChatActivity.this.getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+        mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if(getIntent()!=null && !TextUtils.isEmpty(getIntent().getStringExtra("ref"))) {
             ref = getIntent().getStringExtra("ref");
         }
 
-        if(user==null) {
+        if(FirebaseAuth.getInstance().getCurrentUser().getUid()==null) {
             showToast("You have to be logged in to chat");
             finish();
         }
@@ -68,10 +76,22 @@ public class ChatActivity extends BaseActivity {
                     return;
                 }
 
-                ChatItemFormats message = new ChatItemFormats();
+                final ChatItemFormats message = new ChatItemFormats();
                 message.setTimeDate(calendar.getTimeInMillis());
-                message.setUuid(user.getUid());
-                message.setName(user.getDisplayName());
+                mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                        message.setUuid(userItem.getUserUID());
+                        message.setName(userItem.getUsername());
+                        message.setImageThumb(userItem.getImageURLThumbnail());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 message.setMessage("\""+text+"\"");
 
                 databaseReference.push().setValue(message);

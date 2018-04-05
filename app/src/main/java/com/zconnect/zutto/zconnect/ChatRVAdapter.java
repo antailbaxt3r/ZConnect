@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
 
 import java.text.SimpleDateFormat;
@@ -36,6 +37,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<ChatRVAdapter.ViewHolder
         String time = SimpleDateFormat.getDateTimeInstance().format(message.getTimeDate());
         holder.time.setText(time);
         holder.name.setText(message.getName());
+        holder.userAvatar.setImageURI(message.getImageThumb());
 
         String messageText = message.getMessage();
         messageText = messageText.substring(1,messageText.length()-1);
@@ -50,19 +52,20 @@ public class ChatRVAdapter extends RecyclerView.Adapter<ChatRVAdapter.ViewHolder
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView message, name, time;
+        SimpleDraweeView userAvatar;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            userAvatar = (SimpleDraweeView) itemView.findViewById(R.id.chat_format_user_avatar);
+            name = (TextView) itemView.findViewById(R.id.chat_format_name);
+            message = (TextView) itemView.findViewById(R.id.chat_format_message);
+            time = (TextView) itemView.findViewById(R.id.chat_format_timestamp);
 
-            name = (TextView) itemView.findViewById(R.id.name);
-            message = (TextView) itemView.findViewById(R.id.message);
-            time = (TextView) itemView.findViewById(R.id.time);
-
-            Typeface quicksandLight = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-            Typeface quicksandMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
-            Typeface quicksandBold = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-ExtraLight.ttf");
+            Typeface quicksandRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Quicksand-Regular.ttf");
+            Typeface quicksandBold = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Quicksand-Bold.ttf");
+            Typeface quicksandLight = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Quicksand-Light.ttf");
             name.setTypeface(quicksandBold);
-            message.setTypeface(quicksandMedium);
+            message.setTypeface(quicksandRegular);
             time.setTypeface(quicksandLight);
         }
     }
