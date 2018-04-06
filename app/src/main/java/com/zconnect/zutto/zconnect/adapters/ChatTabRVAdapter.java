@@ -2,12 +2,18 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.ChatActivity2;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatTabRVItem;
 import com.zconnect.zutto.zconnect.R;
@@ -41,7 +47,22 @@ public class ChatTabRVAdapter extends RecyclerView.Adapter<ChatTabRVViewHolder> 
     public void onBindViewHolder(ChatTabRVViewHolder holder, final int position) {
 
         holder.nametv.setText(chatTabRVItems.get(position).getName().substring(28,chatTabRVItems.get(position).getName().length()));
-
+        holder.del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String recid=chatTabRVItems.get(position).getName().substring(0,28);
+                DatabaseReference databaseReference;
+                SharedPreferences communitySP;
+                String communityReference;
+                communitySP = context.getSharedPreferences("communityName", Context.MODE_PRIVATE);
+                communityReference = communitySP.getString("communityReference", null);
+                databaseReference= FirebaseDatabase.getInstance().getReference();
+                FirebaseUser mauth = FirebaseAuth.getInstance().getCurrentUser();
+                String myuid=mauth.getUid();
+                databaseReference.child("communities").child(communityReference).child("features").child("messages").child("users").child(myuid).child(recid).removeValue();
+            }
+        });
+        notifyDataSetChanged();
         //Log.e("adsfda",chatTabRVItems.get(position).getName());
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

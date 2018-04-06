@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -36,7 +37,7 @@ public class ChatActivity2 extends BaseActivity{
     String myuid=mauth.getUid();
     SharedPreferences communitySP;
     String communityReference;
-    private DatabaseReference databaseReference ;
+    private DatabaseReference databaseReference,databaseReference2 ;
     String recpuid,recpname;
 
     @Override
@@ -48,6 +49,7 @@ public class ChatActivity2 extends BaseActivity{
         communitySP = ChatActivity2.this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
         databaseReference= FirebaseDatabase.getInstance().getReference();
+        databaseReference2= FirebaseDatabase.getInstance().getReference();
         recpuid=dene.substring(0,28);
         recpname=dene.substring(28,dene.length());
         //showToast(recpname);
@@ -79,12 +81,15 @@ public class ChatActivity2 extends BaseActivity{
                 message.setName(mauth.getDisplayName());
                 message.setMessage("\""+text+"\"");*/
 
-                String key=databaseReference.child("communities").child(communityReference).child("features").child("messages").child("chats").push().getKey();
-                databaseReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(key).child("message").setValue("\""+text+"\"");
-                databaseReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(key).child("sender").setValue(mauth.getUid());
-                databaseReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(key).child("message").setValue(calendar.getTimeInMillis());
+                String key=databaseReference2.child("communities").child(communityReference).child("features").child("messages").child("chats").push().getKey();
+                databaseReference2.child("communities").child(communityReference).child("features").child("messages").child("chats").child(key).child("message").setValue("\""+text+"\"");
+                databaseReference2.child("communities").child(communityReference).child("features").child("messages").child("chats").child(key).child("sender").setValue(mauth.getUid());
+                databaseReference2.child("communities").child(communityReference).child("features").child("messages").child("chats").child(key).child("timeStamp").setValue(calendar.getTimeInMillis());
+                databaseReference2.child("communities").child(communityReference).child("features").child("messages").child("users").child(myuid).child(recpuid).push().setValue(key);
                 typer.setText(null);
-                chatView.scrollToPosition(chatView.getChildCount());
+                loadMessages();
+                //chatView.scrollToPosition(chatView.getChildCount());
+
             }
 
         });
@@ -141,17 +146,21 @@ public class ChatActivity2 extends BaseActivity{
     }
 
     private void loadMessages() {
-        final ChatItemFormats cif=new ChatItemFormats();
+
         databaseReference=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int incount=0,last=0,now=1,change=0,success=0;
+
                 messages.clear();
                 for (DataSnapshot childsnapshot:dataSnapshot.child("users").child(myuid).child(recpuid).getChildren()){
                     String k=childsnapshot.getValue().toString();
+                    ChatItemFormats cif=new ChatItemFormats();
+                    //Log.e("yo",k);
                     cif.setMessage(dataSnapshot.child("chats").child(k).child("message").getValue().toString());
                     cif.setTimeDate((long)dataSnapshot.child("chats").child(k).child("timeStamp").getValue());
+
                     if(dataSnapshot.child("chats").child(k).child("sender").getValue().toString().equals(myuid))
                     {
                         cif.setName(mauth.getDisplayName());
@@ -160,7 +169,7 @@ public class ChatActivity2 extends BaseActivity{
                         {
                             setToolbarTitle(recpname);
                             ++incount;
-                            success=0;
+                            success=1;
                         }
                         else {
                             last = now;

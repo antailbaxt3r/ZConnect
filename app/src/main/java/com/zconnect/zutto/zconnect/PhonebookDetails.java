@@ -232,8 +232,8 @@ public class PhonebookDetails extends BaseActivity {
                 }
             }
         });*/
-        //DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages");
-        //UsersReference.removeValue();
+        //DatabaseReference UsersReference2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages").child("communities");
+        //UsersReference2.removeValue();
         sendButton.setOnClickListener(new View.OnClickListener() {
 
             @Override

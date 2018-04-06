@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatTabRVItem;
+import com.zconnect.zutto.zconnect.ItemFormats.MessageTabRVItem;
 import com.zconnect.zutto.zconnect.PhonebookDetails;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
@@ -102,13 +103,70 @@ public class ChatTabFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 chatTabRVItems = new ArrayList<>();
                 String name,key;
+                int incount=0,last=0,now=1,change=0,success=0;
                 for (DataSnapshot childsnapShot :
                         dataSnapshot.child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid()).getChildren()) {
                     key = childsnapShot.getKey();
                     name = dataSnapshot.child("communities").child(communityReference).child("Users").child(key).child("Username").getValue().toString();
                     //Log.e("counter",key+name);
-                    chatTabRVItem = new ChatTabRVItem(key+name);
-                    chatTabRVItems.add(chatTabRVItem);
+                    String namecheck = name;
+                    for (DataSnapshot childsnapShot2 :
+                            dataSnapshot.child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid()).child(key).getChildren())
+                    {
+                        String k=childsnapShot2.getValue().toString();
+                        if(dataSnapshot.child("communities").child(communityReference).child("features").child("messages").child("chats").child(k).child("sender").getValue().toString().equals(user.getUid()))
+                        {
+                            //cif.setName(user.getDisplayName());
+                            //cif.setUuid(myuid);
+                            //Log.e("chatif",k);
+                            if(incount==0)
+                            {
+                                //setToolbarTitle(recpname);
+                                ++incount;
+                                success=1;
+                            }
+                            else {
+                                last = now;
+                                now = 0;
+                                if (last != now) {
+                                    ++change;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //cif.setUuid(recpuid);
+                            //cif.setName("Anonymous");
+                            //Log.e("chatelse",k);
+                            namecheck="Anonymous";
+                            if(incount==0)
+                            {
+                                ++incount;
+                            }
+                            if(success==1)
+                            {
+                                namecheck=dataSnapshot.child("communities").child(communityReference).child("Users").child(key).child("Username").getValue().toString();
+                                //setToolbarTitle(recpname);
+                                //cif.setName(recpname);
+                            }
+                            else {
+                                last = now;
+                                now = 1;
+                                if (last != now) {
+                                    ++change;
+                                }
+                                if (change >= 2) {
+                                    namecheck=dataSnapshot.child("communities").child(communityReference).child("Users").child(key).child("Username").getValue().toString();
+                                    //setToolbarTitle(recpname);
+                                    //cif.setName(recpname);
+                                }
+                            }
+                        }
+                    }
+                    if(namecheck.equals(name)) {
+                        chatTabRVItem = new ChatTabRVItem(key + name);
+                        chatTabRVItems.add(chatTabRVItem);
+                    }
 
                 }
 

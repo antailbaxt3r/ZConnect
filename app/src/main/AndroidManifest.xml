@@ -279,7 +279,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChatActivity2"
-            android:screenOrientation="portrait"
+            android:screenOrientation="sensor"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".OpenProductDetails"
