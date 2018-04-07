@@ -86,6 +86,7 @@ public class ChatActivity2 extends BaseActivity{
                 databaseReference2.child("communities").child(communityReference).child("features").child("messages").child("chats").child(key).child("sender").setValue(mauth.getUid());
                 databaseReference2.child("communities").child(communityReference).child("features").child("messages").child("chats").child(key).child("timeStamp").setValue(calendar.getTimeInMillis());
                 databaseReference2.child("communities").child(communityReference).child("features").child("messages").child("users").child(myuid).child(recpuid).push().setValue(key);
+                databaseReference2.child("communities").child(communityReference).child("features").child("messages").child("users").child(recpuid).child(myuid).push().setValue(key);
                 typer.setText(null);
                 loadMessages();
                 //chatView.scrollToPosition(chatView.getChildCount());

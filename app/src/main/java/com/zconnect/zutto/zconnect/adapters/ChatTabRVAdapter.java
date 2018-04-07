@@ -62,7 +62,7 @@ public class ChatTabRVAdapter extends RecyclerView.Adapter<ChatTabRVViewHolder> 
                 databaseReference.child("communities").child(communityReference).child("features").child("messages").child("users").child(myuid).child(recid).removeValue();
             }
         });
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
         //Log.e("adsfda",chatTabRVItems.get(position).getName());
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
