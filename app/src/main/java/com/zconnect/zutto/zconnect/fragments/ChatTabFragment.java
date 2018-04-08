@@ -93,7 +93,7 @@ public class ChatTabFragment extends Fragment {
         communitySP = getContext().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference();
+        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
@@ -105,16 +105,16 @@ public class ChatTabFragment extends Fragment {
                 String name,key;
                 int incount=0,last=0,now=1,change=0,success=0;
                 for (DataSnapshot childsnapShot :
-                        dataSnapshot.child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid()).getChildren()) {
+                        dataSnapshot.child("features").child("messages").child("users").child(user.getUid()).getChildren()) {
                     key = childsnapShot.getKey();
-                    name = dataSnapshot.child("communities").child(communityReference).child("Users").child(key).child("Username").getValue().toString();
+                    name = dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
                     //Log.e("counter",key+name);
                     String namecheck = name;
                     for (DataSnapshot childsnapShot2 :
-                            dataSnapshot.child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid()).child(key).getChildren())
+                            dataSnapshot.child("features").child("messages").child("users").child(user.getUid()).child(key).getChildren())
                     {
                         String k=childsnapShot2.getValue().toString();
-                        if(dataSnapshot.child("communities").child(communityReference).child("features").child("messages").child("chats").child(k).child("sender").getValue().toString().equals(user.getUid()))
+                        if(dataSnapshot.child("features").child("messages").child("chats").child(k).child("sender").getValue().toString().equals(user.getUid()))
                         {
                             //cif.setName(user.getDisplayName());
                             //cif.setUuid(myuid);
@@ -145,7 +145,7 @@ public class ChatTabFragment extends Fragment {
                             }
                             if(success==1)
                             {
-                                namecheck=dataSnapshot.child("communities").child(communityReference).child("Users").child(key).child("Username").getValue().toString();
+                                namecheck=dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
                                 //setToolbarTitle(recpname);
                                 //cif.setName(recpname);
                             }
@@ -156,7 +156,7 @@ public class ChatTabFragment extends Fragment {
                                     ++change;
                                 }
                                 if (change >= 2) {
-                                    namecheck=dataSnapshot.child("communities").child(communityReference).child("Users").child(key).child("Username").getValue().toString();
+                                    namecheck=dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
                                     //setToolbarTitle(recpname);
                                     //cif.setName(recpname);
                                 }

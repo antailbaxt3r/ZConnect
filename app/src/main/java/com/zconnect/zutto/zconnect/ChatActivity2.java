@@ -5,11 +5,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ToolbarWidgetWrapper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,6 +38,7 @@ public class ChatActivity2 extends BaseActivity{
     private FirebaseUser mauth = FirebaseAuth.getInstance().getCurrentUser();
     String myuid=mauth.getUid();
     SharedPreferences communitySP;
+    android.support.v7.widget.Toolbar toolbar;
     String communityReference;
     private DatabaseReference databaseReference,databaseReference2 ;
     String recpuid,recpname;
@@ -53,8 +56,11 @@ public class ChatActivity2 extends BaseActivity{
         recpuid=dene.substring(0,28);
         recpname=dene.substring(28,dene.length());
         //showToast(recpname);
-        setToolbar();
-        setToolbarTitle("Anonymous");
+        //setToolbar();
+        //setToolbarTitle("Anonymous");
+        toolbar=(android.support.v7.widget.Toolbar)findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Anonymous");
         showBackButton();
         setSupportActionBar(getToolbar());
         calendar = Calendar.getInstance();
@@ -153,7 +159,7 @@ public class ChatActivity2 extends BaseActivity{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int incount=0,last=0,now=1,change=0,success=0;
-
+                toolbar=(android.support.v7.widget.Toolbar)findViewById(R.id.toolbar_app_bar_home);
                 messages.clear();
                 for (DataSnapshot childsnapshot:dataSnapshot.child("users").child(myuid).child(recpuid).getChildren()){
                     String k=childsnapshot.getValue().toString();
@@ -168,7 +174,8 @@ public class ChatActivity2 extends BaseActivity{
                         cif.setUuid(myuid);
                         if(incount==0)
                         {
-                            setToolbarTitle(recpname);
+                            setSupportActionBar(toolbar);
+                            getSupportActionBar().setTitle(recpname);
                             ++incount;
                             success=1;
                         }
@@ -190,7 +197,8 @@ public class ChatActivity2 extends BaseActivity{
                         }
                         if(success==1)
                         {
-                            setToolbarTitle(recpname);
+                            setSupportActionBar(toolbar);
+                            getSupportActionBar().setTitle(recpname);
                             cif.setName(recpname);
                         }
                         else {
@@ -200,7 +208,8 @@ public class ChatActivity2 extends BaseActivity{
                                 ++change;
                             }
                             if (change >= 2) {
-                                setToolbarTitle(recpname);
+                                setSupportActionBar(toolbar);
+                                getSupportActionBar().setTitle(recpname);;
                                 cif.setName(recpname);
                             }
                         }
