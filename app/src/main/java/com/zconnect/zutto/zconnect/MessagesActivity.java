@@ -97,6 +97,7 @@ public class MessagesActivity extends BaseActivity {
                 switch (position) {
                     case 0:
                         MessageTabFragment messageTabFragment = new MessageTabFragment();
+
                         return messageTabFragment;
                     case 1:
                         ChatTabFragment chatTabFragment = new ChatTabFragment();

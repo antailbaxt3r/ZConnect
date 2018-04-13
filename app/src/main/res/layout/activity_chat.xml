@@ -42,7 +42,7 @@
             <EditText
                 android:id="@+id/typer"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="Type here.."
                 android:padding="8dp"
@@ -53,9 +53,8 @@
             <Button
                 android:id="@+id/sendBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="match_parent"
                 android:background="@color/colorPrimaryDark"
-                android:padding="8dp"
                 android:text="Send"
                 android:textColor="@color/white" />
         </LinearLayout>

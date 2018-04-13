@@ -7,21 +7,28 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatTabRVItem;
+import com.zconnect.zutto.zconnect.ItemFormats.MessageTabRVItem;
+import com.zconnect.zutto.zconnect.PhonebookDetails;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.adapters.ChatTabRVAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -52,7 +59,7 @@ public class ChatTabFragment extends Fragment {
     ChatTabRVAdapter chatTabRVAdapter;
     ArrayList<ChatTabRVItem> chatTabRVItems;
     ChatTabRVItem chatTabRVItem;
-
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public ChatTabFragment() {
         // Required empty public constructor
     }
@@ -86,36 +93,92 @@ public class ChatTabFragment extends Fragment {
         communitySP = getContext().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
-                .child(communityReference).child(ZConnectDetails.MESSAGES_DB);
+        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
 
-        listener = new ValueEventListener() {
+        databaseReferenceMessages.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 chatTabRVItems = new ArrayList<>();
+                String name,key;
+                int incount=0,last=0,now=1,change=0,success=0;
                 for (DataSnapshot childsnapShot :
-                        dataSnapshot.getChildren()) {
-                    String name = dataSnapshot.child("name").getValue(String.class);
-                    chatTabRVItem = new ChatTabRVItem(name);
-                    chatTabRVItems.add(chatTabRVItem);
+                        dataSnapshot.child("features").child("messages").child("users").child(user.getUid()).getChildren()) {
+                    key = childsnapShot.getKey();
+                    name = dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
+                    //Log.e("counter",key+name);
+                    String namecheck = name;
+                    for (DataSnapshot childsnapShot2 :
+                            dataSnapshot.child("features").child("messages").child("users").child(user.getUid()).child(key).getChildren())
+                    {
+                        String k=childsnapShot2.getValue().toString();
+                        if(dataSnapshot.child("features").child("messages").child("chats").child(k).child("sender").getValue().toString().equals(user.getUid()))
+                        {
+                            //cif.setName(user.getDisplayName());
+                            //cif.setUuid(myuid);
+                            //Log.e("chatif",k);
+                            if(incount==0)
+                            {
+                                //setToolbarTitle(recpname);
+                                ++incount;
+                                success=1;
+                            }
+                            else {
+                                last = now;
+                                now = 0;
+                                if (last != now) {
+                                    ++change;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //cif.setUuid(recpuid);
+                            //cif.setName("Anonymous");
+                            //Log.e("chatelse",k);
+                            namecheck="Anonymous";
+                            if(incount==0)
+                            {
+                                ++incount;
+                            }
+                            if(success==1)
+                            {
+                                namecheck=dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
+                                //setToolbarTitle(recpname);
+                                //cif.setName(recpname);
+                            }
+                            else {
+                                last = now;
+                                now = 1;
+                                if (last != now) {
+                                    ++change;
+                                }
+                                if (change >= 2) {
+                                    namecheck=dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
+                                    //setToolbarTitle(recpname);
+                                    //cif.setName(recpname);
+                                }
+                            }
+                        }
+                    }
+                    if(namecheck.equals(name)) {
+                        chatTabRVItem = new ChatTabRVItem(key + name);
+                        chatTabRVItems.add(chatTabRVItem);
+                    }
 
                 }
 
                 chatTabRVAdapter = new ChatTabRVAdapter(getContext(), chatTabRVItems);
                 recyclerView.setAdapter(chatTabRVAdapter);
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        };
-        databaseReferenceMessages.addValueEventListener(listener);
+        });
 
         return rootView;
     }
@@ -126,7 +189,7 @@ public class ChatTabFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
+/*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -144,7 +207,7 @@ public class ChatTabFragment extends Fragment {
         mListener = null;
         databaseReferenceMessages.removeEventListener(listener);
     }
-
+*/
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
