@@ -130,26 +130,14 @@ public class AddCabPool extends BaseActivity {
 
 
 
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                    UserItemFormat userDisplayItem = shot.getValue(UserItemFormat.class);
-                    if (userDisplayItem == null)
-                        return;
-
-                        if (userDisplayItem.getEmail() != null) {
-                            if (userDisplayItem.getEmail().equals(email)) {
-                                name = userDisplayItem.getUsername();
-                                number = userDisplayItem.getMobileNumber();
-                                imageThumb = userDisplayItem.getImageURLThumbnail();
-                                userUID = userDisplayItem.getUserUID();
-                            }
-                        }
-
-                }
-
+                UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                name = user.getUsername();
+                number =user.getMobileNumber();
+                imageThumb = user.getImageURLThumbnail();
+                userUID = user.getUserUID();
             }
 
             @Override
@@ -157,7 +145,9 @@ public class AddCabPool extends BaseActivity {
 
             }
         });
+
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+
         if (mUser == null)
             finish();
         final Calendar c = Calendar.getInstance();
@@ -197,6 +187,7 @@ public class AddCabPool extends BaseActivity {
                 datePickerDialog.show();
             }
         });
+
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,19 +217,16 @@ public class AddCabPool extends BaseActivity {
 
 
                                 } else {
-
                                     if (T1 - T2 < 0) {
-
-
                                         String time = getTimeOld();
 
                                         CabListItemFormat cabListItemFormat = new CabListItemFormat();
                                         cabListItemFormat.setName(name);
                                         cabListItemFormat.setPhonenumber(number);
                                         cabListItemFormat.setImageThumb(imageThumb);
-                                        cabListItemFormat.setUID(userUID);
-                                        ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
-                                        cabListItemFormats.add(cabListItemFormat);
+                                        cabListItemFormat.setUserUID(userUID);
+//                                        ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
+//                                        cabListItemFormats.add(cabListItemFormat);
 
 
                                         //writing new added pool to database
@@ -254,7 +242,7 @@ public class AddCabPool extends BaseActivity {
                                         newPost.child("DT").setValue(s_year + s_monthOfYear + s_dayOfMonth + " " + getTime());
                                         newPost.child("from").setValue(T1);
                                         newPost.child("to").setValue(T2);
-                                        newPost.child("cabListItemFormats").setValue(cabListItemFormats);
+                                        newPost.child("cabListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(cabListItemFormat);
                                         newPost.child("PostTimeMillis").setValue(postTimeMillis);
                                         postedBy.setValue(null);
                                         postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -291,7 +279,7 @@ public class AddCabPool extends BaseActivity {
                                         newPost2.child("cabpoolDestination").setValue(String.valueOf(destination.getSelectedItem()));
                                         newPost2.child("cabpoolDate").setValue(calender.getText().toString());
                                         newPost2.child("cabpoolTime").setValue(time);
-                                        newPost2.child("cabpoolNumPeople").setValue(cabListItemFormats.size());
+                                        newPost2.child("cabpoolNumPeople").setValue(1);
                                         newPost2.child("PostTimeMillis").setValue(postTimeMillis);
                                         newPost2PostedBy.setValue(null);
                                         newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());

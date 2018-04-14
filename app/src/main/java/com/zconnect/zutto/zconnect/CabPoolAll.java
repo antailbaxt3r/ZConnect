@@ -138,7 +138,9 @@ public class CabPoolAll extends Fragment {
                 vector_final.clear();
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    vector_fetched.add(shot.getValue(CabItemFormat.class));
+                    try {
+                        vector_fetched.add(shot.getValue(CabItemFormat.class));
+                    }catch (Exception e){}
                 }
 
                 Calendar c = Calendar.getInstance();
@@ -152,7 +154,6 @@ public class CabPoolAll extends Fragment {
 
                 for (int i = 0; i < vector_fetched.size(); i++) {
                     Log.e("RV", "value of i:"+String.valueOf(i));
-
 //                    try {
 //
 //                        fetchedDate = vector_fetched.get(i).getDate();
@@ -165,10 +166,8 @@ public class CabPoolAll extends Fragment {
 //                    //check if DT is there or not
 //                    //if not, then will add DT to it.
 //                    if (vector_fetched.get(i).getDT() != null) {
-
                         DT = vector_fetched.get(i).getDT();
                         Log.e("RV", "value of DT:"+String.valueOf(DT));
-
 //                    } else {
 //
 //                        //getting fetched date to required format
@@ -204,23 +203,16 @@ public class CabPoolAll extends Fragment {
 //                        vector_fetched.get(i).setDT(DT);
 //
 //                    }
-
-
                     if (date.compareTo(DT) <= 0) {
-
                         treeMap.put(DT, vector_fetched.get(i));
-
                     } else {
-
                         String key = vector_fetched.get(i).getKey();
                         ArchivePool(firebaseDatabase.getReference().child("communities").child(communityReference).child("Cab").child(key), firebaseDatabase.getReference().child("communities").child(communityReference).child("archive/Cab").child(key));
-
                     }
                 }
 
                 vector_final.addAll(treeMap.values());
                 Log.e("ABC1", String.valueOf(vector_final.size()));
-
                 //
                 if (vector_final.size() == 0) {
                     recyclerView.setVisibility(View.GONE);

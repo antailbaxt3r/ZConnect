@@ -3,68 +3,81 @@
 
     <group android:id="@+id/groupMain">
         <item
+            android:title="Edit Profile"
             android:id="@+id/edit_profile"
             android:icon="@drawable/ic_person_brown"
-            android:title="Edit Profile" />
+            android:name="Edit Profile" />
     </group>
 
 
     <group android:id="@+id/group">
         <item
+            android:title="My Messages"
             android:id="@+id/messages"
             android:icon="@drawable/ic_local_phone_blue"
-            android:title="My messages" />
+            android:name="My messages" />
         <item
+            android:title="My Offers"
             android:id="@+id/Shop"
             android:icon="@drawable/ic_store_green"
-            android:title="My Offers" />
+            android:name="My Offers" />
         <item
+            android:title="My Products"
             android:id="@+id/MyProducts"
             android:icon="@drawable/storeroom"
-            android:title="My Products" />
+            android:name="My Products" />
         <item
+            android:title="My Timeline"
             android:id="@+id/Timeline"
             android:icon="@drawable/ic_event_pink"
-            android:title="My Timeline" />
+            android:name="My Timeline" />
         <item
+            android:title="My Rides"
             android:id="@+id/MyRides"
             android:icon="@drawable/ic_local_taxi_orange"
-            android:title="My Rides" />
+            android:name="My Rides" />
         <item
+            android:title="Campus Map"
             android:id="@+id/mapActivity"
             android:icon="@drawable/ic_place_red"
-            android:title="Campus Map" />
+            android:name="Campus Map" />
         <item
+            android:title="Notifications"
             android:id="@+id/Noti_Settings"
             android:icon="@drawable/ic_notifications_black_24dp"
-            android:title="Notifications"/>
+            android:name="Notifications"/>
     </group>
     <group
         android:id="@+id/group1"
         android:checkableBehavior="none">
         <item
+            android:title="Advertisements"
             android:id="@+id/ad"
             android:icon="@drawable/ic_live_tv_black_24dp"
-            android:title="Advertisement" />
+            android:name="Advertisement" />
         <item
+            android:title="About Us"
             android:id="@+id/about"
             android:icon="@drawable/aboutus"
-            android:title="About Us" />
+            android:name="About Us" />
         <item
+            android:title="Share"
             android:id="@+id/share"
             android:icon="@drawable/ic_menu_share"
-            android:title="Share" />
+            android:name="Share" />
     </group>
     <group
         android:id="@+id/group2"
         android:checkableBehavior="none">
         <item
+            android:title="Sign Out"
             android:id="@+id/signOut"
             android:icon="@drawable/ic_power_settings_new_black_24dp"
-            android:title="Sign Out" />
+            android:name="Sign Out" />
         <item
+            android:title="Report Bug"
             android:id="@+id/bugReport"
             android:icon="@drawable/ic_bug_report_black_24dp"
-            android:title="Report Bug / Feedback" />
+            android:name="Report Bug / Feedback" />
     </group>
 </menu>

@@ -2,9 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:title="Chat Room"
         android:id="@+id/menu_chat_room"
         android:icon="@drawable/ic_chat_black_24dp"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:title="Char Room" />
+        android:name="Chat Room" />
 </menu>

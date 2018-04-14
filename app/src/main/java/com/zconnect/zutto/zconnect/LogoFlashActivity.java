@@ -165,15 +165,15 @@ public class LogoFlashActivity extends BaseActivity {
 //////                    public void onDataChange(DataSnapshot dataSnapshot2) {
 //////                        for (DataSnapshot User: dataSnapshot.getChildren()) {
 //////                            for (DataSnapshot Phone: dataSnapshot2.getChildren()){
-//////                                if (User.child("Email").getValue().equals(Phone.child("email").getValue()) && User.child("Email").getValue().equals("f2015418@goa.bits-pilani.ac.in")){
+//////                                if (User.child("Email").getValue().equals(Phone.child("uid").getValue()) && User.child("Email").getValue().equals("f2015418@goa.bits-pilani.ac.in")){
 ////////                                    DatabaseReference addUID = mPhone.child(Phone.getKey().toString());
 ////////                                    Map<String, Object> taskMap = new HashMap<>();
 ////////                                    taskMap.put("Uid", User.getKey().toString());
 ////////                                    addUID.updateChildren(taskMap);
-//////                                   // Toast.makeText(LogoFlashActivity.this, Phone.child("email").getValue().toString(), Toast.LENGTH_SHORT).show();
+//////                                   // Toast.makeText(LogoFlashActivity.this, Phone.child("uid").getValue().toString(), Toast.LENGTH_SHORT).show();
 //////
 //////                                }
-//////                                Log.i("Uid",Phone.child("email").getValue().toString());
+//////                                Log.i("Uid",Phone.child("uid").getValue().toString());
 //////                            }
 //////                        }
 //////                    }

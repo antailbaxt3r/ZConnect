@@ -43,7 +43,7 @@ public class PhonebookCategorySearch extends BaseActivity {
         errorMessage = (TextView) findViewById(R.id.errorMessage);
 
         Intent intent = getIntent();
-        hostel = intent.getStringExtra("hostel");
+        hostel = intent.getStringExtra("catName");
 cat=intent.getStringExtra("cat");
         searchContactList = (android.support.v7.widget.RecyclerView) findViewById(R.id.rv_search_activity);
         databaseReference.keepSynced(true);
@@ -96,12 +96,12 @@ cat=intent.getStringExtra("cat");
                         //need to add a try catch block before release
 
                         // storage of EventFormat by individual de-serialization
-                        if (hostel != null && hostel.equals(childShot.child("hostel").getValue(String.class))&&cat!=null&&cat.equals(childShot.child("category").getValue(String.class))) {
+                        if (hostel != null && hostel.equals(childShot.child("catName").getValue(String.class))&&cat!=null&&cat.equals(childShot.child("category").getValue(String.class))) {
                             PhonebookDisplayItem foo = new PhonebookDisplayItem();
 
                             foo.setCategory(childShot.child("category").getValue(String.class));
                             foo.setDesc(childShot.child("desc").getValue(String.class));
-                            foo.setEmail(childShot.child("email").getValue(String.class));
+                            foo.setEmail(childShot.child("uid").getValue(String.class));
                             foo.setImageurl(childShot.child("imageurl").getValue(String.class));
                             foo.setName(childShot.child("name").getValue(String.class));
                             foo.setNumber(childShot.getKey());

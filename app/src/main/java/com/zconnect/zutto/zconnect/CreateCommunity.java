@@ -196,7 +196,7 @@ public class CreateCommunity extends AppCompatActivity {
                     Toast.makeText(CreateCommunity.this, "inside", Toast.LENGTH_SHORT).show();
                     newPost.child("name").setValue(communityNameString);
                     newPost.child("key").setValue(key);
-                    newPost.child("email").setValue(communityEmailString);
+                    newPost.child("uid").setValue(communityEmailString);
                     newPost.child("image").setValue(downloadUri.toString());
 
                     mProgress.dismiss();

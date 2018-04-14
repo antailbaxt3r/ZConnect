@@ -5,7 +5,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -14,7 +16,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,18 +32,83 @@ public class ChatActivity extends BaseActivity {
     private Calendar calendar;
     private ArrayList<ChatItemFormats> messages  = new ArrayList<>();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private String type=null;
+    private Button joinButton;
+    private LinearLayout joinLayout,chatLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         if(getIntent()!=null && !TextUtils.isEmpty(getIntent().getStringExtra("ref"))) {
-            ref = getIntent().getStringExtra("ref");
+            if (!TextUtils.isEmpty(getIntent().getStringExtra("ref"))){
+                ref = getIntent().getStringExtra("ref");
+            }
+            if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))){
+                type = getIntent().getStringExtra("type");
+            }
         }
+        joinButton = (Button) findViewById(R.id.join);
+        joinLayout = (LinearLayout) findViewById(R.id.joinLayout);
+        chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
+
+        joinLayout.setVisibility(View.GONE);
+        chatLayout.setVisibility(View.VISIBLE);
+
+        databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref);
 
         if(user==null) {
             showToast("You have to be logged in to chat");
             finish();
+        }
+
+        if(type!=null){
+            if(type.equals("cabPool")){
+                databaseReference.child("cabListItemFormats").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(!dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            joinLayout.setVisibility(View.VISIBLE);
+                            chatLayout.setVisibility(View.GONE);
+
+                            joinButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    final CabListItemFormat userDetails = new CabListItemFormat();
+                                    DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    user.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                                            userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
+                                            userDetails.setName(userItemFormat.getUsername());
+                                            userDetails.setPhonenumber(userItemFormat.getMobileNumber());
+                                            userDetails.setUserUID(userItemFormat.getUserUID());
+                                            databaseReference.child("cabListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                }
+                            });
+                        }else {
+                            joinButton.setVisibility(View.GONE);
+                            joinLayout.setVisibility(View.GONE);
+                            chatLayout.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }else if (type.equals("forums")){
+
+            }
         }
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
@@ -55,7 +124,7 @@ public class ChatActivity extends BaseActivity {
         chatView.setLayoutManager(linearLayoutManager);
         chatView.setAdapter(adapter);
 
-        databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref).child("Chat");
+
 
         findViewById(R.id.sendBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +143,7 @@ public class ChatActivity extends BaseActivity {
                 message.setName(user.getDisplayName());
                 message.setMessage("\""+text+"\"");
 
-                databaseReference.push().setValue(message);
+                databaseReference.child("Chat").push().setValue(message);
                 typer.setText(null);
                // chatView.scrollToPosition(chatView.getChildCount());
 
@@ -85,7 +154,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void loadMessages() {
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Chat").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

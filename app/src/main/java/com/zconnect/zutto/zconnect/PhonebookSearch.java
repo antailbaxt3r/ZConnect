@@ -92,7 +92,7 @@ public class PhonebookSearch extends BaseActivity {
                         PhonebookDisplayItem item = new PhonebookDisplayItem();
                         item.setCategory(child.child("category").getValue(String.class));
                         item.setDesc(child.child("desc").getValue(String.class));
-                        item.setEmail(child.child("email").getValue(String.class));
+                        item.setEmail(child.child("uid").getValue(String.class));
                         item.setImageurl(child.child("imageurl").getValue(String.class));
                         item.setName(child.child("name").getValue(String.class));
                         item.setNumber(child.getKey());

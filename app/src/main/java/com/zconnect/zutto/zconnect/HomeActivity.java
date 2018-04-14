@@ -85,7 +85,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
      */
     private TextView navHeaderUserNameTv;
     /**
-     * The email displayed in nav header.
+     * The uid displayed in nav header.
      */
     private TextView navHeaderEmailTv;
     private SimpleDraweeView navHeaderBackground;
@@ -110,7 +110,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences defaultPrefs;
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
-    private Fragment recent, cab, infone, store, shop, events;
+    private Fragment recent, cab, forums, store, shop, events;
     private DatabaseReference mDatabaseStats;
     private DatabaseReference mDatabaseUserStats;
     int UsersTotalNumbers = 0, TotalNumbers = 0;
@@ -181,7 +181,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         //getting all the tabs Instances
         recent = new Recents();
         cab = new CabPoolAll();
-        infone = new InfoneActivity();
+        forums = new ForumsActivity();
         store = new TabStoreRoom();
         shop = new Shop();
         events = new TabbedEvents();
@@ -523,7 +523,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         setActionBarTitle("Infone");
                         CounterManager.InfoneOpen();
 //                        fab.setImageResource(R.drawable.ic_edit_white_24dp);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
                         break;
                     }
                     case 3: {
@@ -878,7 +878,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 "mailto", "zconnectinc@gmail.com", null));
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Bug Report");
                         // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
-                        startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                        startActivity(Intent.createChooser(emailIntent, "Send uid..."));
                     }
                 });
                 builder.setNegativeButton("Feedback", new DialogInterface.OnClickListener() {
@@ -887,7 +887,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 "mailto", "zconnectinc@gmail.com", null));
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
                         // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
-                        startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                        startActivity(Intent.createChooser(emailIntent, "Send uid..."));
                     }
                 });
                 android.app.AlertDialog dialog = builder.create();

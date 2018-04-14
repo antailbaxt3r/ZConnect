@@ -28,6 +28,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,7 +38,7 @@ import java.util.Vector;
 
 public class CapPoolSearchList extends BaseActivity {
     RecyclerView poolrv;
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
     DatabaseReference pool;
     Query query;
     Intent intent;
@@ -149,26 +150,13 @@ public class CapPoolSearchList extends BaseActivity {
         query=pool.orderByChild("DT");
 
         mUser = FirebaseAuth.getInstance();
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.child(mUser.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
-                    if (phonebookDisplayItem == null)
-                        return;
-                    if (email != null) {
-                        if (phonebookDisplayItem.getEmail() != null) {
-                            if (phonebookDisplayItem.getEmail().equals(email)) {
-                                name = phonebookDisplayItem.getName();
-                                number = phonebookDisplayItem.getNumber();
-
-                            }
-                        }
-                    }
-
-                }
-
+                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                name = userItemFormat.getUsername();
+                email = userItemFormat.getEmail();
+                number = userItemFormat.getMobileNumber();
             }
 
             @Override
@@ -183,7 +171,7 @@ public class CapPoolSearchList extends BaseActivity {
         progressBar = (ProgressBar) findViewById(R.id.content_pool_progress);
         defaultmsg.setVisibility(View.INVISIBLE);
         query.keepSynced(true);
-         mcontext=this;
+        mcontext=this;
 
 
 

@@ -2,9 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:title="My Products"
         android:id="@+id/action_storeroom"
         android:orderInCategory="100"
-        android:title="My Products"
+        android:name="My Products"
 
         app:showAsAction="collapseActionView|ifRoom" />
 </menu>

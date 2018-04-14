@@ -83,7 +83,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 //    private String desc;
 //    private String imageUrl;
 //    private String number;
-//    private String hostel;
+//    private String catName;
 //    private String host;
 //    private String category;
 //    private String skills;
@@ -380,7 +380,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         } else {
             final DatabaseReference newPost = mUserReference;
             newPost.child("username").setValue(userName);
-            newPost.child("email").setValue(userEmail);
+            newPost.child("uid").setValue(userEmail);
             newPost.child("mobileNumber").setValue(userMobile);
             if (userWhatsapp.length()==0){
                 newPost.child("whatsAppNumber").setValue(" ");

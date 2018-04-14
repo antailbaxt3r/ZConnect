@@ -101,7 +101,7 @@ public class PhonebookDetails extends BaseActivity {
         desc = getIntent().getStringExtra("desc");
         number = getIntent().getStringExtra("contactDescTv");
         imagelink = getIntent().getStringExtra("image");
-        email = getIntent().getStringExtra("email");
+        email = getIntent().getStringExtra("uid");
         skills=getIntent().getStringExtra("skills");
         category=getIntent().getStringExtra("category");
         Uid=getIntent().getStringExtra("Uid");
@@ -331,7 +331,7 @@ public class PhonebookDetails extends BaseActivity {
                     "mailto", "zconnectinc@gmail.com", null));
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Problem with the content displayed");
             // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
-            startActivity(Intent.createChooser(emailIntent, "Send email..."));
+            startActivity(Intent.createChooser(emailIntent, "Send uid..."));
 
             return true;
         }else if (id==R.id.menu_share_conatct) {

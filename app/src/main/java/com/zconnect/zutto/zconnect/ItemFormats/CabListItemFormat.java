@@ -32,7 +32,12 @@ public class CabListItemFormat {
 
     public String getImageThumb() { return imageThumb; }
 
-    public void setUID(String uid) { this.userUID = userUID; }
+    public String getUserUID() {
+        return userUID;
+    }
 
-    public String getUID() { return userUID; }
+    public void setUserUID(String userUID) {
+        this.userUID = userUID;
+    }
+
 }
