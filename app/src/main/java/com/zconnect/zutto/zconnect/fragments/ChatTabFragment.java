@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,16 +22,25 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatTabRVItem;
 import com.zconnect.zutto.zconnect.ItemFormats.MessageTabRVItem;
+import com.zconnect.zutto.zconnect.PhonebookDetails;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.adapters.ChatTabRVAdapter;
-import com.zconnect.zutto.zconnect.adapters.MessageTabRVAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class MessageTabFragment extends Fragment {
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link ChatTabFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link ChatTabFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ChatTabFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -40,24 +50,22 @@ public class MessageTabFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private OnFragmentInteractionListener mListener;
     DatabaseReference databaseReferenceMessages;
     ValueEventListener listener;
     private SharedPreferences communitySP;
     public String communityReference;
     RecyclerView recyclerView;
+    ChatTabRVAdapter chatTabRVAdapter;
+    ArrayList<MessageTabRVItem> chatTabRVItems = new ArrayList<>();
+    ChatTabRVItem chatTabRVItem;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    ArrayList<MessageTabRVItem> messageTabRVItems =new ArrayList<MessageTabRVItem>();;
-    MessageTabRVAdapter messageTabRVAdapter;
-    MessageTabRVItem messageTabRVItem;
-
-    private OnFragmentInteractionListener mListener;
-
-    public MessageTabFragment() {
-        // Required empty public constructo// r
+    public ChatTabFragment() {
+        // Required empty public constructor
     }
 
-    public static MessageTabFragment newInstance(String param1, String param2) {
-        MessageTabFragment fragment = new MessageTabFragment();
+    public static ChatTabFragment newInstance(String param1, String param2) {
+        ChatTabFragment fragment = new ChatTabFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -77,38 +85,41 @@ public class MessageTabFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_message_tab, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_chat_tab, container, false);
 
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_messages);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_chat_messages);
 
         communitySP = getContext().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
-        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid()).child("messages");
+
+        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
 
-        databaseReferenceMessages.addValueEventListener(new ValueEventListener() {
+        databaseReferenceMessages.child("chats").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                messageTabRVItems.clear();
 
-                for (DataSnapshot childsnapShot : dataSnapshot.getChildren()){
-                        messageTabRVItems.add(childsnapShot.getValue(MessageTabRVItem.class));
+                    chatTabRVItems.clear();
+                for (DataSnapshot childsnapShot : dataSnapshot.getChildren()) {
+                    try{
+                        chatTabRVItems.add(childsnapShot.getValue(MessageTabRVItem.class));
+                    }catch (Exception e){
+
+                    }
                 }
-
-                messageTabRVAdapter.notifyDataSetChanged();
+                chatTabRVAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
 
-        messageTabRVAdapter = new MessageTabRVAdapter(getContext(), messageTabRVItems);
-        recyclerView.setAdapter(messageTabRVAdapter);
+        chatTabRVAdapter = new ChatTabRVAdapter(getContext(), chatTabRVItems);
+        recyclerView.setAdapter(chatTabRVAdapter);
+
         return rootView;
     }
 
@@ -134,6 +145,7 @@ public class MessageTabFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        databaseReferenceMessages.removeEventListener(listener);
     }
 */
     /**
