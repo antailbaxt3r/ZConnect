@@ -57,7 +57,7 @@ public class ChatTabFragment extends Fragment {
     public String communityReference;
     RecyclerView recyclerView;
     ChatTabRVAdapter chatTabRVAdapter;
-    ArrayList<ChatTabRVItem> chatTabRVItems;
+    ArrayList<MessageTabRVItem> chatTabRVItems = new ArrayList<>();
     ChatTabRVItem chatTabRVItem;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public ChatTabFragment() {
@@ -85,7 +85,6 @@ public class ChatTabFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_chat_tab, container, false);
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_chat_messages);
@@ -93,92 +92,33 @@ public class ChatTabFragment extends Fragment {
         communitySP = getContext().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference);
+        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
 
-        databaseReferenceMessages.addValueEventListener(new ValueEventListener() {
+        databaseReferenceMessages.child("chats").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                chatTabRVItems = new ArrayList<>();
-                String name,key;
-                int incount=0,last=0,now=1,change=0,success=0;
-                for (DataSnapshot childsnapShot :
-                        dataSnapshot.child("features").child("messages").child("users").child(user.getUid()).getChildren()) {
-                    key = childsnapShot.getKey();
-                    name = dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
-                    //Log.e("counter",key+name);
-                    String namecheck = name;
-                    for (DataSnapshot childsnapShot2 :
-                            dataSnapshot.child("features").child("messages").child("users").child(user.getUid()).child(key).getChildren())
-                    {
-                        String k=childsnapShot2.getValue().toString();
-                        if(dataSnapshot.child("features").child("messages").child("chats").child(k).child("sender").getValue().toString().equals(user.getUid()))
-                        {
-                            //cif.setName(user.getDisplayName());
-                            //cif.setUuid(myuid);
-                            //Log.e("chatif",k);
-                            if(incount==0)
-                            {
-                                //setToolbarTitle(recpname);
-                                ++incount;
-                                success=1;
-                            }
-                            else {
-                                last = now;
-                                now = 0;
-                                if (last != now) {
-                                    ++change;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //cif.setUuid(recpuid);
-                            //cif.setName("Anonymous");
-                            //Log.e("chatelse",k);
-                            namecheck="Anonymous";
-                            if(incount==0)
-                            {
-                                ++incount;
-                            }
-                            if(success==1)
-                            {
-                                namecheck=dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
-                                //setToolbarTitle(recpname);
-                                //cif.setName(recpname);
-                            }
-                            else {
-                                last = now;
-                                now = 1;
-                                if (last != now) {
-                                    ++change;
-                                }
-                                if (change >= 2) {
-                                    namecheck=dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
-                                    //setToolbarTitle(recpname);
-                                    //cif.setName(recpname);
-                                }
-                            }
-                        }
-                    }
-                    if(namecheck.equals(name)) {
-                        chatTabRVItem = new ChatTabRVItem(key + name);
-                        chatTabRVItems.add(chatTabRVItem);
-                    }
 
+                    chatTabRVItems.clear();
+                for (DataSnapshot childsnapShot : dataSnapshot.getChildren()) {
+                    try{
+                        chatTabRVItems.add(childsnapShot.getValue(MessageTabRVItem.class));
+                    }catch (Exception e){
+
+                    }
                 }
-
-                chatTabRVAdapter = new ChatTabRVAdapter(getContext(), chatTabRVItems);
-                recyclerView.setAdapter(chatTabRVAdapter);
+                chatTabRVAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
+        chatTabRVAdapter = new ChatTabRVAdapter(getContext(), chatTabRVItems);
+        recyclerView.setAdapter(chatTabRVAdapter);
 
         return rootView;
     }

@@ -238,22 +238,34 @@ public class PhonebookDetails extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                String textMessageString;
-                Calendar calendar;
-                calendar = Calendar.getInstance();
-                textMessageString = textMessage.getText().toString();
-                if (textMessageString!=null && !flagforNull){
-                    DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference();
-                    String s = UsersReference.child("communities").child(communityReference).child("features").child("messages").child("chats").push().getKey();
-                    UsersReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(s).child("message").setValue("\""+textMessageString+"\"");
-                    UsersReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(s).child("sender").setValue(mAuth.getCurrentUser().getUid());
-                    //UsersReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(s).child("senderName").setValue(mAuth.getCurrentUser().getDisplayName());
-                    UsersReference.child("communities").child(communityReference).child("features").child("messages").child("chats").child(s).child("timeStamp").setValue(calendar.getTimeInMillis());
-                    UsersReference.child("communities").child(communityReference).child("features").child("messages").child("users").child(mAuth.getCurrentUser().getUid()).child(Uid).push().setValue(s);
-                    UsersReference.child("communities").child(communityReference).child("features").child("messages").child("users").child(Uid).child(mAuth.getCurrentUser().getUid()).push().setValue(s);
-                    textMessage.setText(null);
-                    Toast.makeText(PhonebookDetails.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
-                }
+            String textMessageString;
+            Calendar calendar;
+            calendar = Calendar.getInstance();
+            textMessageString = textMessage.getText().toString();
+            if (textMessageString!=null && !flagforNull){
+                DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages");
+                String s = UsersReference.child("chats").push().getKey();
+
+                DatabaseReference chatReference = UsersReference.child("chats").child(s).push();
+                chatReference.child("message").setValue("\""+textMessageString+"\"");
+                chatReference.child("sender").setValue(mAuth.getCurrentUser().getUid());
+                chatReference.child("senderName").setValue("Anonymous");
+                chatReference.child("timeStamp").setValue(calendar.getTimeInMillis());
+
+                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("name").setValue(name);
+                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("message").setValue(textMessageString);
+                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("type").setValue("sent");
+                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("chatID").setValue(s);
+
+                UsersReference.child("users").child(Uid).child("messages").child(s).child("message").setValue(textMessageString);
+                UsersReference.child("users").child(Uid).child("messages").child(s).child("sender").setValue(mAuth.getCurrentUser().getUid());
+                UsersReference.child("users").child(Uid).child("messages").child(s).child("type").setValue("recieved");
+                UsersReference.child("users").child(Uid).child("messages").child(s).child("chatUID").setValue(s);
+                UsersReference.child("users").child(Uid).child("messages").child(s).child("timeStamp").setValue(calendar.getTimeInMillis());
+
+                textMessage.setText(null);
+                Toast.makeText(PhonebookDetails.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
+            }
             }
         });
 

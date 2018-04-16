@@ -30,14 +30,6 @@ import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MessageTabFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MessageTabFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MessageTabFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -54,14 +46,14 @@ public class MessageTabFragment extends Fragment {
     public String communityReference;
     RecyclerView recyclerView;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    ArrayList<MessageTabRVItem> messageTabRVItems;
+    ArrayList<MessageTabRVItem> messageTabRVItems =new ArrayList<MessageTabRVItem>();;
     MessageTabRVAdapter messageTabRVAdapter;
     MessageTabRVItem messageTabRVItem;
 
     private OnFragmentInteractionListener mListener;
 
     public MessageTabFragment() {
-        // Required empty public constructor
+        // Required empty public constructo// r
     }
 
     public static MessageTabFragment newInstance(String param1, String param2) {
@@ -92,7 +84,7 @@ public class MessageTabFragment extends Fragment {
 
         communitySP = getContext().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
-        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference);
+        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid()).child("messages");
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
@@ -100,77 +92,13 @@ public class MessageTabFragment extends Fragment {
         databaseReferenceMessages.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String name,key,namecheck;
-                int incount=0,last=0,now=1,change=0,success=0;
-                messageTabRVItems=new ArrayList<>();
-                for (DataSnapshot childsnapShot :
-                        dataSnapshot.child("features").child("messages").child("users").child(user.getUid()).getChildren()) {
-                    key = childsnapShot.getKey();
-                    name = dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
-                    //Log.e("counter",key+name);
-                    namecheck = name;
-                    //Log.e("in messagetabfragment","yo");
-                    for (DataSnapshot childsnapShot2 :
-                            dataSnapshot.child("features").child("messages").child("users").child(user.getUid()).child(key).getChildren())
-                    {
-                        String k=childsnapShot2.getValue().toString();
-                        if(dataSnapshot.child("features").child("messages").child("chats").child(k).child("sender").getValue().toString().equals(user.getUid()))
-                        {
-                            //Log.e("messageif",k);
-                            //cif.setName(user.getDisplayName());
-                            //cif.setUuid(myuid);
-                            if(incount==0)
-                            {
-                                //setToolbarTitle(recpname);
-                                ++incount;
-                                success=1;
-                            }
-                            else {
-                                last = now;
-                                now = 0;
-                                if (last != now) {
-                                    ++change;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //Log.e("messageelse",k);
-                            //cif.setUuid(recpuid);
-                            //cif.setName("Anonymous");
-                            namecheck="Anonymous";
-                            if(incount==0)
-                            {
-                                ++incount;
-                            }
-                            if(success==1)
-                            {
-                                namecheck=dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
-                                //setToolbarTitle(recpname);
-                                //cif.setName(recpname);
-                            }
-                            else {
-                                last = now;
-                                now = 1;
-                                if (last != now) {
-                                    ++change;
-                                }
-                                if (change >= 2) {
-                                    namecheck=dataSnapshot.child("Users").child(key).child("Username").getValue().toString();
-                                    //setToolbarTitle(recpname);
-                                    //cif.setName(recpname);
-                                }
-                            }
-                        }
-                    }
-                    if(!namecheck.equals(name)) {
-                        messageTabRVItem = new MessageTabRVItem(key + name);
-                        messageTabRVItems.add(messageTabRVItem);
-                    }
+                messageTabRVItems.clear();
 
+                for (DataSnapshot childsnapShot : dataSnapshot.getChildren()){
+                        messageTabRVItems.add(childsnapShot.getValue(MessageTabRVItem.class));
                 }
-                messageTabRVAdapter = new MessageTabRVAdapter(getContext(), messageTabRVItems);
-                recyclerView.setAdapter(messageTabRVAdapter);
+
+                messageTabRVAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -178,6 +106,9 @@ public class MessageTabFragment extends Fragment {
 
             }
         });
+
+        messageTabRVAdapter = new MessageTabRVAdapter(getContext(), messageTabRVItems);
+        recyclerView.setAdapter(messageTabRVAdapter);
         return rootView;
     }
 
