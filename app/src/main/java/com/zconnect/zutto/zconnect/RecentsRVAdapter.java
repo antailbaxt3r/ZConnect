@@ -54,7 +54,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(RecentsRVAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecentsRVAdapter.ViewHolder holder, final int position) {
 
 //        holder.desc.setText(recentsItemFormats.get(position).getDesc());
 //<<<<<<< HEAD
@@ -66,6 +66,15 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             }
             if (recentsItemFormats.get(position).getPostedBy().getUsername() != null) {
                 holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
+                holder.postedBy.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                              Intent i = new Intent(context,OpenUserDetail.class);
+                              i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
+                              context.startActivity(i);
+
+                    }
+                });
             }
             if (recentsItemFormats.get(position).getPostedBy().getImageThumb() != null) {
                 holder.avatarCircle.setImageURI(recentsItemFormats.get(position).getPostedBy().getImageThumb());

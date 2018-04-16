@@ -70,7 +70,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".PhonebookDetails"
+            android:name=".OpenUserDetail"
             android:exported="true"
             android:label="Details"
             android:screenOrientation="portrait"

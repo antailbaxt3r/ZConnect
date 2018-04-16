@@ -101,7 +101,7 @@ public class PhonebookSearch extends BaseActivity {
 
                         String name = child.child("name").getValue(String.class);
                         String number = child.getKey();
-                        //    Log.v("number",number);
+                        //    Log.v("mobileNumber",mobileNumber);
                         String details = child.child("desc").getValue(String.class);
                         String skills = child.child("skills").getValue(String.class);
                         String uid = child.child("Uid").getValue(String.class);
@@ -114,7 +114,7 @@ public class PhonebookSearch extends BaseActivity {
                         if (title.toLowerCase().contains(query.toLowerCase())) {
                             searchContact.add(temp);
                             Log.v("name", temp.getName());
-                            // Log.v("number",temp.getNumber());
+                            // Log.v("mobileNumber",temp.getNumber());
 //                            Log.v("uid",temp.getUid());
                             // Log.v("",temp.getName());
                         } else {

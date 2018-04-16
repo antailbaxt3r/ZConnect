@@ -28,19 +28,21 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.util.Calendar;
 
 import mabbas007.tagsedittext.TagsEditText;
 
-public class PhonebookDetails extends BaseActivity {
-    String name, number, email, desc, imagelink ,skills ,category, Uid;
+public class OpenUserDetail extends BaseActivity {
+    String name, mobileNumber,whatsAppNumber, email, desc, imagelink ,skills ,category, Uid;
     private android.support.design.widget.TextInputEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
+
+    TextView whatsAppNumberText;
     //private android.support.design.widget.TextInputEditText editTextSkills;
     private TagsEditText editTextSkills;
     private SimpleDraweeView image;
@@ -52,6 +54,7 @@ public class PhonebookDetails extends BaseActivity {
     private TextView like_text,love_text;
     private boolean love_status = false,like_status=false;
     private FirebaseAuth mAuth;
+    private UserItemFormat userProfile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +67,7 @@ public class PhonebookDetails extends BaseActivity {
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_details_number_editText);
         //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
+        whatsAppNumberText = (TextView) findViewById(R.id.whatsapp_number);
 
         btn_like = (ImageButton) findViewById(R.id.btn_like);
         btn_love = (ImageButton) findViewById(R.id.btn_love);
@@ -99,20 +103,37 @@ public class PhonebookDetails extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
-        name = getIntent().getStringExtra("name");
-        desc = getIntent().getStringExtra("desc");
-        number = getIntent().getStringExtra("contactDescTv");
-        imagelink = getIntent().getStringExtra("image");
-        email = getIntent().getStringExtra("uid");
-        skills=getIntent().getStringExtra("skills");
-        category=getIntent().getStringExtra("category");
+//
+//        name = getIntent().getStringExtra("name");
+//        desc = getIntent().getStringExtra("desc");
+//        mobileNumber = getIntent().getStringExtra("contactDescTv");
+//        imagelink = getIntent().getStringExtra("image");
+//        email = getIntent().getStringExtra("uid");
+//        skills=getIntent().getStringExtra("skills");
+//        category=getIntent().getStringExtra("category");
         Uid=getIntent().getStringExtra("Uid");
 
 
         //Like and Love data reader
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Users").child(Uid);
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid);
         final String myUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //Value fill listener
+
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                try {
+                    userProfile = dataSnapshot.getValue(UserItemFormat.class);
+                    setUserDetails();
+                }catch (Exception e){}
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         final DatabaseReference db_like = db.child("Likes");
         final DatabaseReference db_love = db.child("Loves");
@@ -200,7 +221,7 @@ public class PhonebookDetails extends BaseActivity {
             Log.e("msg", name);
 
             Log.e("msg", desc);
-            Log.e("msg", number);
+            Log.e("msg", mobileNumber);
             Log.e("msg", imagelink);
             Log.e("msg", email);
             Log.e("msg", skills);
@@ -228,7 +249,7 @@ public class PhonebookDetails extends BaseActivity {
                     UsersReference.child("MessageId").setValue(UsersReference.getKey());
                     UsersReference.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
                     textMessage.setText(null);
-                    Toast.makeText(PhonebookDetails.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OpenUserDetail.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
                 }
             }
         });*/
@@ -264,15 +285,39 @@ public class PhonebookDetails extends BaseActivity {
                 UsersReference.child("users").child(Uid).child("messages").child(s).child("timeStamp").setValue(calendar.getTimeInMillis());
 
                 textMessage.setText(null);
-                Toast.makeText(PhonebookDetails.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OpenUserDetail.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
             }
             }
         });
 
-        if (category.contains("S")) {
-            editTextSkills.setVisibility(View.VISIBLE);
-            editTextSkills.setEnabled(false);
-        }
+        //changing fonts
+        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        editTextName.setTypeface(ralewayRegular);
+        editTextDetails.setTypeface(ralewayRegular);
+        editTextNumber.setTypeface(ralewayRegular);
+        editTextSkills.setTypeface(ralewayRegular);
+        editTextEmail.setTypeface(ralewayRegular);
+
+    }
+
+    public void setUserDetails(){
+        //        name = getIntent().getStringExtra("name");
+//        desc = getIntent().getStringExtra("desc");
+//        mobileNumber = getIntent().getStringExtra("contactDescTv");
+//        imagelink = getIntent().getStringExtra("image");
+//        email = getIntent().getStringExtra("uid");
+//        skills=getIntent().getStringExtra("skills");
+//        category=getIntent().getStringExtra("category");
+
+        name = userProfile.getUsername();
+        desc = userProfile.getAbout();
+        mobileNumber = userProfile.getMobileNumber();
+        whatsAppNumber = userProfile.getWhatsAppNumber();
+        imagelink = userProfile.getImageURL();
+        email = userProfile.getEmail();
+        skills = userProfile.getSkillTags();
+
+
         if(skills==null)
             skills="";
 
@@ -286,19 +331,19 @@ public class PhonebookDetails extends BaseActivity {
         if (desc != null) {
             editTextDetails.setText(desc);
         }
-        if (number != null) {
-            editTextNumber.setText(number);
+        if (mobileNumber != null) {
+            editTextNumber.setText(mobileNumber);
             editTextNumber.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number)));
+                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mobileNumber)));
                 }
             });
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    CounterManager.InfoneCallAfterProfile(number);
-                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number)));
+                    CounterManager.InfoneCallAfterProfile(mobileNumber);
+                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mobileNumber)));
                 }
             });
         }
@@ -318,7 +363,7 @@ public class PhonebookDetails extends BaseActivity {
             mail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    CounterManager.email(number);
+                    CounterManager.email(mobileNumber);
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
                     startActivity(Intent.createChooser(emailIntent, "Send Email ..."));
                 }
@@ -342,16 +387,6 @@ public class PhonebookDetails extends BaseActivity {
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
-
-
-        //changing fonts
-        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
-        editTextName.setTypeface(ralewayRegular);
-        editTextDetails.setTypeface(ralewayRegular);
-        editTextNumber.setTypeface(ralewayRegular);
-        editTextSkills.setTypeface(ralewayRegular);
-        editTextEmail.setTypeface(ralewayRegular);
-
     }
 
     @Override
@@ -365,7 +400,7 @@ public class PhonebookDetails extends BaseActivity {
         int id = item.getItemId();
         if (id == R.id.action_report) {
 
-            CounterManager.report(number);
+            CounterManager.report(mobileNumber);
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                     "mailto", "zconnectinc@gmail.com", null));
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Problem with the content displayed");
@@ -379,7 +414,7 @@ public class PhonebookDetails extends BaseActivity {
             String format2 = "%1$-40s\n";
             send =
                     String.format(format1,"Name :",name)+
-                    String.format(format1,"Number :",number)+
+                    String.format(format1,"Number :", mobileNumber)+
                     "\n               \t\t\t  Zconnect";
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/*");

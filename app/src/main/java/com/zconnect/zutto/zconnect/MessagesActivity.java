@@ -144,7 +144,7 @@ public class MessagesActivity extends BaseActivity {
      *//*
     public static class PlaceholderFragment extends Fragment {
         *//**
-     * The fragment argument representing the section number for this
+     * The fragment argument representing the section mobileNumber for this
      * fragment.
      *//*
         private static final String ARG_SECTION_NUMBER = "section_number";
@@ -154,7 +154,7 @@ public class MessagesActivity extends BaseActivity {
 
         *//**
      * Returns a new instance of this fragment for the given section
-     * number.
+     * mobileNumber.
      *//*
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();

@@ -81,5 +81,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Verified Date" />
+
+        <Button
+            android:id="@+id/viewProfileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Profile"
+            android:visibility="gone"/>
+
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

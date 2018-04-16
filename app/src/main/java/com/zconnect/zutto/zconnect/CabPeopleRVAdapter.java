@@ -25,7 +25,6 @@ import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import java.util.Vector;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.zconnect.zutto.zconnect.PostEmails.email;
 
 /**
  * Created by shubhamk on 27/7/17.
@@ -97,7 +96,7 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
             rv_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                       intent=new Intent(context, PhonebookDetails.class);
+                       intent=new Intent(context, OpenUserDetail.class);
                     String  name = cabListItemFormats.get(getAdapterPosition()).getName();
                     String number = cabListItemFormats.get(getAdapterPosition()).getPhonenumber();
 

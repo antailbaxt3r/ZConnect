@@ -1,17 +1,14 @@
 package com.zconnect.zutto.zconnect.fragments;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,13 +19,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatTabRVItem;
 import com.zconnect.zutto.zconnect.ItemFormats.MessageTabRVItem;
-import com.zconnect.zutto.zconnect.PhonebookDetails;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.adapters.ChatTabRVAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
 
