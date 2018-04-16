@@ -43,6 +43,11 @@ public class ChatRVAdapter extends RecyclerView.Adapter<ChatRVAdapter.ViewHolder
         ChatItemFormats message = chatFormats.get(position);
         if(message.getUuid()!=null)
         {
+
+            if(position > 0 && chatFormats.get(position - 1).getUuid().equals(message.getUuid()))
+            {
+                holder.name.setVisibility(View.GONE);
+            }
             if(message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
             {
                 holder.rightDummy.setVisibility(View.GONE);
@@ -52,18 +57,15 @@ public class ChatRVAdapter extends RecyclerView.Adapter<ChatRVAdapter.ViewHolder
                 holder.userAvatar.setVisibility(View.GONE);
                 holder.name.setVisibility(View.GONE);
             }
-            if(position > 0 && chatFormats.get(position - 1).getUuid().equals(message.getUuid()))
+            else
             {
-                holder.name.setVisibility(View.GONE);
-//                holder.chatItem.setPadding(10, 5, 10, 0);
+                holder.rightDummy.setVisibility(View.VISIBLE);
+                holder.leftDummy.setVisibility(View.GONE);
+                holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
+                holder.chatContainer.setGravity(Gravity.START);
+                holder.userAvatar.setVisibility(View.VISIBLE);
+                holder.name.setVisibility(View.VISIBLE);
             }
-//            else
-//            {
-//                holder.rightDummy.setVisibility(View.VISIBLE);
-//                holder.leftDummy.setVisibility(View.GONE);
-//                holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
-//                holder.chatContainer.setGravity(Gravity.START);
-//            }
             String time = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(message.getTimeDate());
             holder.time.setText(time);
             holder.name.setText(message.getName());
