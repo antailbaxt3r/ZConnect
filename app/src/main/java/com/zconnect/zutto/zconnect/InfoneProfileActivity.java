@@ -123,9 +123,6 @@ public class InfoneProfileActivity extends AppCompatActivity {
         profileImage.setEnabled(false);
         saveEditBtn.setVisibility(View.GONE);
 
-
-
-
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
 
         Log.e(InfoneProfileActivity.class.getName(), "data :" + infoneUserId);
