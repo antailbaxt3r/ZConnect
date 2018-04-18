@@ -101,7 +101,7 @@ public class IndividualCategory extends BaseActivity {
         mProductList.setLayoutManager(linearLayoutManager);
         mAuth = FirebaseAuth.getInstance();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
         queryCategory = mDatabase.orderByChild("Category").equalTo(category);
         mDatabase.keepSynced(true);
 
@@ -255,7 +255,7 @@ public class IndividualCategory extends BaseActivity {
             communitySP = mView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
             communityReference = communitySP.getString("communityReference", null);
 
-            StoreRoom = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+            StoreRoom = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
             Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
 
             if (status) {

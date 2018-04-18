@@ -113,7 +113,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mProductDescription = (EditText) findViewById(R.id.description);
         mProductPrice = (EditText) findViewById(R.id.price);
         mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         spinner1 = (CustomSpinner) findViewById(R.id.categories);
         productTags =(TagsEditText) findViewById(R.id.skillsTags);
