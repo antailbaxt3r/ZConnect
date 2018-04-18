@@ -75,5 +75,7 @@ public class Product {
         Image = image;
     }
 
+    public void setPostedBy(PostedByDetails postedBy) { PostedBy = postedBy; }
+
     public PostedByDetails getPostedBy() { return PostedBy;}
 }

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.CommunitiesItemFormat;
 
@@ -45,10 +46,9 @@ public class CommunitiesAroundAdapter extends RecyclerView.Adapter<CommunitiesAr
     public void onBindViewHolder(communitiesViewHolder holder, int position) {
 
         holder.communityName.setText(allCommunities.get(position).getName());
-        holder.communitySize.setText("32");
-        Picasso.with(context).load(allCommunities.get(position).getImage()).into(holder.communityImage);
-
-//        holder.communityImage.setImageURI(Uri.parse(allCommunities.get(position).getImage()));
+        holder.communitySize.setText("32 people");
+//        Picasso.with(context).load(allCommunities.get(position).getImage()).into(holder.communityImage);
+        holder.communityImage.setImageURI(Uri.parse(allCommunities.get(position).getImage()));
 
     }
 
@@ -60,14 +60,14 @@ public class CommunitiesAroundAdapter extends RecyclerView.Adapter<CommunitiesAr
     class communitiesViewHolder extends RecyclerView.ViewHolder {
 
         TextView communityName,communitySize;
-        ImageView communityImage;
+        SimpleDraweeView communityImage;
         Button communityGuestLogin;
 
         public communitiesViewHolder(View itemView){
             super(itemView);
             communityName = (TextView) itemView.findViewById(R.id.community_name);
             communitySize = (TextView) itemView.findViewById(R.id.community_size);
-            communityImage = (ImageView) itemView.findViewById(R.id.community_image);
+            communityImage = (SimpleDraweeView) itemView.findViewById(R.id.community_image);
             communityGuestLogin=(Button) itemView.findViewById(R.id.guest_login_button);
         }
     }

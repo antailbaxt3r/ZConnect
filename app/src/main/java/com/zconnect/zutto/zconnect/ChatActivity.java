@@ -1,9 +1,11 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,10 +38,17 @@ public class ChatActivity extends BaseActivity {
     private Button joinButton;
     private LinearLayout joinLayout,chatLayout;
 
+    private DatabaseReference mUserReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        SharedPreferences communitySP;
+        final String communityReference;
+        communitySP = ChatActivity.this.getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+        mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if(getIntent()!=null && !TextUtils.isEmpty(getIntent().getStringExtra("ref"))) {
             if (!TextUtils.isEmpty(getIntent().getStringExtra("ref"))){
                 ref = getIntent().getStringExtra("ref");
@@ -49,15 +58,15 @@ public class ChatActivity extends BaseActivity {
             }
         }
         joinButton = (Button) findViewById(R.id.join);
-        joinLayout = (LinearLayout) findViewById(R.id.joinLayout);
-        chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
+//        joinLayout = (LinearLayout) findViewById(R.id.joinLayout);
+//        chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
 
-        joinLayout.setVisibility(View.GONE);
-        chatLayout.setVisibility(View.VISIBLE);
+//        joinLayout.setVisibility(View.GONE);
+//        chatLayout.setVisibility(View.VISIBLE);
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref);
 
-        if(user==null) {
+        if(FirebaseAuth.getInstance().getCurrentUser().getUid()==null) {
             showToast("You have to be logged in to chat");
             finish();
         }
@@ -131,19 +140,34 @@ public class ChatActivity extends BaseActivity {
             public void onClick(View v) {
 
                 EditText typer = ((EditText)findViewById(R.id.typer));
-                String text = typer.getText().toString();
+                final String text = typer.getText().toString();
                 if(TextUtils.isEmpty(text)){
                     showToast("Message is empty.");
                     return;
                 }
 
-                ChatItemFormats message = new ChatItemFormats();
+                final ChatItemFormats message = new ChatItemFormats();
                 message.setTimeDate(calendar.getTimeInMillis());
-                message.setUuid(user.getUid());
-                message.setName(user.getDisplayName());
-                message.setMessage("\""+text+"\"");
+                mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                        Log.d("USER IIII", userItem.getUsername());
+                        Log.d("USER IIII", userItem.getUserUID());
+                        Log.d("USER IIII", userItem.getImageURLThumbnail());
+                        message.setUuid(userItem.getUserUID());
+                        message.setName(userItem.getUsername());
+                        message.setImageThumb(userItem.getImageURLThumbnail());
+                        message.setMessage("\""+text+"\"");
+                        databaseReference.push().setValue(message);
+                    }
 
-                databaseReference.child("Chat").push().setValue(message);
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 typer.setText(null);
                // chatView.scrollToPosition(chatView.getChildCount());
 

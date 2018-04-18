@@ -48,6 +48,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -77,8 +78,8 @@ public class AddEvent extends BaseActivity {
     DatabaseReference mFeaturesStats;
     private Uri mImageUri = null;
     private ImageView mAddImage;
-    private EditText mEventName;
-    private EditText mEventDescription;
+    private MaterialEditText mEventName;
+    private MaterialEditText mEventDescription;
     private AutoCompleteTextView mVenue;
     private ImageView mDirections;
     private StorageReference mStorage;
@@ -151,8 +152,8 @@ public class AddEvent extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
         mAddImage = (ImageView) findViewById(R.id.imageButton);
-        mEventName = (EditText) findViewById(R.id.name);
-        mEventDescription = (EditText) findViewById(R.id.description);
+        mEventName = (MaterialEditText) findViewById(R.id.name);
+        mEventDescription = (MaterialEditText) findViewById(R.id.description);
         mStorage = FirebaseStorage.getInstance().getReference();
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         gmapLocationTaken = (CheckBox) findViewById(R.id.add_events_location_checkbox);

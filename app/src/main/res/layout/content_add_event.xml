@@ -7,7 +7,10 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.zconnect.zutto.zconnect.AddEvent"
-    tools:showIn="@layout/activity_add_event">
+    tools:showIn="@layout/activity_add_event"
+    android:paddingTop="5dp"
+    android:paddingEnd="5dp"
+    android:paddingStart="5dp">
 
     <RelativeLayout
         android:id="@+id/content_add_event"
@@ -18,23 +21,17 @@
             android:id="@+id/imageButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/border_filled_2"
+            android:background="@drawable/dashed_border"
             android:minHeight="150dp"
-            android:padding="2dp"
             android:scaleType="center"
             tools:src="@drawable/addimage"
-            android:contentDescription="Event image"
-            android:elevation="5dp"/>
+            android:contentDescription="Event image" />
 
-        <EditText
+        <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/imageButton"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
-            android:layout_marginTop="7dp"
             android:background="@drawable/border_filled_2"
             android:ems="10"
             android:hint="Event name"
@@ -42,14 +39,11 @@
             android:padding="10dp"
             android:elevation="5dp"/>
 
-        <EditText
+        <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
-            android:layout_marginTop="7dp"
             android:background="@drawable/border_filled_2"
             android:ems="10"
             android:hint="Event description"
@@ -63,10 +57,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/description"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
-            android:layout_marginTop="7dp"
-            android:background="@drawable/border_filled_2"
             android:orientation="horizontal"
             android:padding="10dp"
             android:elevation="5dp">
@@ -97,11 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/dateAndTime"
-            android:layout_marginBottom="7dp"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
             android:layout_marginTop="7dp"
-            android:background="@drawable/border_filled_2"
             android:orientation="vertical"
             android:elevation="5dp">
 

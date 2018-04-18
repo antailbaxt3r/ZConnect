@@ -225,6 +225,7 @@ public class TimelineEvents extends Fragment {
                 if(verified.equals("true")){
                     eventName = eventName + " ☑";
                 }
+                Log.d("EVENT", eventName + " + " + verified + " + " + postTimeMillis);
                 post_name.setText(eventName);
                 Typeface customFont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
                 post_name.setTypeface(customFont);
