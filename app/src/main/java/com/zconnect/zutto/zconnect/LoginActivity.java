@@ -90,6 +90,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 .build();
 
         mGuestLogInBtn.setOnClickListener(this);
+        mGuestLogInBtn.setVisibility(View.GONE);
         mGoogleSignInBtn.setOnClickListener(this);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

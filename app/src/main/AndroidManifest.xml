@@ -311,11 +311,7 @@
             android:name=".InfoneProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".InfoneAddContactActivity" />
-        <activity
-            android:name=".MessagesActivity"
-            android:label="@string/title_activity_messages"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".InfoneAddCatActivity" />
         <activity
             android:name=".CabPoolLocations"

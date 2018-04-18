@@ -183,7 +183,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         cab = new CabPoolAll();
         forums = new ForumsActivity();
         store = new TabStoreRoom();
-        shop = new Shop();
+
+        // Messages replaced for shops
+        shop = new MessagesActivity();
         events = new TabbedEvents();
 
         //Setting launching tab
@@ -485,12 +487,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         vEvents.setAlpha((float) 0.7);
         eventT.setCustomView(vEvents);
 
-
+        // Temporary messages
         View vShop = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab shopT = tabs.newTab();
 
         tabTitle[5] = (TextView) vShop.findViewById(R.id.tabTitle);
-        tabTitle[5].setText("Shops");
+        tabTitle[5].setText("Messages");
 
         tabImage[5] = (ImageView) vShop.findViewById(R.id.tabImage);
         tabImage[5].setImageResource(R.drawable.ic_store_white_24dp);
@@ -534,7 +536,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 5: {
-                        setActionBarTitle("Shops");
+                        setActionBarTitle("Messages");
 //                        fab.setImageResource(R.drawable.procent_badge_256);
                         CounterManager.ShopOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
