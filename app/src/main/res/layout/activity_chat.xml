@@ -34,30 +34,53 @@
 
         </android.support.v7.widget.RecyclerView>
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/chatLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/typer"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:hint="Type here.."
-                android:padding="8dp"
-                android:textColorHint="@color/white"
-                android:background="@color/colorAccent"
-                android:textColor="@color/white" />
+                <EditText
+                    android:id="@+id/typer"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:hint="Type here.."
+                    android:padding="8dp"
+                    android:textColorHint="@color/white"
+                    android:background="@color/colorAccent"
+                    android:textColor="@color/white" />
 
-            <Button
-                android:id="@+id/sendBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:background="@color/colorPrimaryDark"
-                android:padding="8dp"
-                android:text="Send"
-                android:textColor="@color/white" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/sendBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:padding="8dp"
+                    android:text="Send"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/joinLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/join"
+                    android:text="Join"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:textSize="18dp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/curveradiusgoogle"
+                    android:layout_margin="5dp"/>
+            </LinearLayout>
+
+        </FrameLayout>
+
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

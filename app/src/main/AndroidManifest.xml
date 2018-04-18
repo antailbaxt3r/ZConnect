@@ -278,6 +278,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ChatActivity2"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".OpenProductDetails"
             android:label="Product Details"
             android:parentActivityName=".HomeActivity"
@@ -302,8 +306,7 @@
         <activity android:name=".Infone2Activity" />
         <activity
             android:name=".InfoneContactListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".InfoneProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -311,8 +314,13 @@
         <activity
             android:name=".MessagesActivity"
             android:label="@string/title_activity_messages"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".InfoneAddCatActivity"></activity>
+        <activity android:name=".InfoneAddCatActivity" />
+        <activity
+            android:name=".CabPoolLocations"
+            android:label="@string/title_activity_cab_pool_locations"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

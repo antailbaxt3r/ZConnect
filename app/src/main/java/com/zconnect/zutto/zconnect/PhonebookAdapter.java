@@ -102,7 +102,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
                     intent.putExtra("name", phonebookDisplayItem.getName());
                     intent.putExtra("contactDescTv", phonebookDisplayItem.getNumber());
                     intent.putExtra("image", phonebookDisplayItem.getImageurl());
-                    intent.putExtra("email", phonebookDisplayItem.getEmail());
+                    intent.putExtra("uid", phonebookDisplayItem.getEmail());
                     intent.putExtra("skills", phonebookDisplayItem.getSkills());
                     intent.putExtra("category", phonebookDisplayItem.getCategory());
                     intent.putExtra("Uid",phonebookDisplayItem.getUid());

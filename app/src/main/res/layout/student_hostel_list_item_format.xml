@@ -13,11 +13,11 @@
     app:cardCornerRadius="5dp">
 
     <TextView
-        android:id="@+id/student_hostel_text"
+        android:id="@+id/cat_name"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:gravity="center"
-        android:text="Hostel"
+        android:text="Cat Name"
         android:textColor="@color/black_overlay"
         android:textSize="28sp" />
 </LinearLayout>

@@ -18,14 +18,23 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 
-public class CabPooling extends AppCompatActivity {
+public class CabPooling extends BaseActivity {
 
     Button done;
     ImageButton clear;
@@ -33,6 +42,10 @@ public class CabPooling extends AppCompatActivity {
     TextView calender;
     int year, month, day;
     Object Source,Destination,Time_From,Time_To;
+    ArrayList<String> locations= new ArrayList<String>();
+    ArrayAdapter<String> locationsSpinnerAdapter;
+
+    private DatabaseReference databaseReferenceCabPool;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -64,6 +77,29 @@ public class CabPooling extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
+        databaseReferenceCabPool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations");
+
+        databaseReferenceCabPool.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot shot: dataSnapshot.getChildren()){
+                    try {
+                        locations.add(shot.child("locationName").getValue().toString());
+                    }catch (Exception e){
+
+                    }
+                }
+                locationsSpinnerAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        locationsSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, locations); //selected item will look like a spinner set from XML
+        locationsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         source = (CustomSpinner) findViewById(R.id.spinner_source);
         destination = (CustomSpinner) findViewById(R.id.spinner_destination);
@@ -71,6 +107,9 @@ public class CabPooling extends AppCompatActivity {
         time_from = (CustomSpinner) findViewById(R.id.spinner_time_from);
         done = (Button) findViewById(R.id.done);
         clear=(ImageButton) findViewById(R.id.clear);
+
+        source.setAdapter(locationsSpinnerAdapter);
+        destination.setAdapter(locationsSpinnerAdapter);
 
         calender = (TextView) findViewById(R.id.calender);
         calender.setOnClickListener(new View.OnClickListener() {

@@ -90,6 +90,7 @@ public class ProductsTab extends Fragment {
         mProductList.setLayoutManager(productGridLayout);
 
         mAuth = FirebaseAuth.getInstance();
+
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 

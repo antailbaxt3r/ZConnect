@@ -63,7 +63,7 @@ public class Shortlisted extends BaseActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String email = dataSnapshot.child("Email").getValue(String.class);
                             FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
-                                    .child("Phonebook").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    .child("Phonebook").orderByChild("uid").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.getChildrenCount() != 0) {

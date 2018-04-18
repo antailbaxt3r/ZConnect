@@ -1,23 +1,35 @@
 package com.zconnect.zutto.zconnect.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ItemFormats.ChatTabRVItem;
+import com.zconnect.zutto.zconnect.ItemFormats.MessageTabRVItem;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.ZConnectDetails;
+import com.zconnect.zutto.zconnect.adapters.ChatTabRVAdapter;
+import com.zconnect.zutto.zconnect.adapters.MessageTabRVAdapter;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MessageTabFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MessageTabFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
+
 public class MessageTabFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,21 +40,22 @@ public class MessageTabFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    DatabaseReference databaseReferenceMessages;
+    ValueEventListener listener;
+    private SharedPreferences communitySP;
+    public String communityReference;
+    RecyclerView recyclerView;
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    ArrayList<MessageTabRVItem> messageTabRVItems =new ArrayList<MessageTabRVItem>();;
+    MessageTabRVAdapter messageTabRVAdapter;
+    MessageTabRVItem messageTabRVItem;
+
     private OnFragmentInteractionListener mListener;
 
     public MessageTabFragment() {
-        // Required empty public constructor
+        // Required empty public constructo// r
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MessageTabFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MessageTabFragment newInstance(String param1, String param2) {
         MessageTabFragment fragment = new MessageTabFragment();
         Bundle args = new Bundle();
@@ -67,9 +80,35 @@ public class MessageTabFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_message_tab, container, false);
 
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_messages);
 
+        communitySP = getContext().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
+        databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid()).child("messages");
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false));
 
+        databaseReferenceMessages.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                messageTabRVItems.clear();
+
+                for (DataSnapshot childsnapShot : dataSnapshot.getChildren()){
+                        messageTabRVItems.add(childsnapShot.getValue(MessageTabRVItem.class));
+                }
+
+                messageTabRVAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        messageTabRVAdapter = new MessageTabRVAdapter(getContext(), messageTabRVItems);
+        recyclerView.setAdapter(messageTabRVAdapter);
         return rootView;
     }
 
@@ -79,7 +118,7 @@ public class MessageTabFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
+/*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -96,7 +135,7 @@ public class MessageTabFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
+*/
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

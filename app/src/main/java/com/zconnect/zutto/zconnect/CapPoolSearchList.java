@@ -28,6 +28,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,7 +38,7 @@ import java.util.Vector;
 
 public class CapPoolSearchList extends BaseActivity {
     RecyclerView poolrv;
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
     DatabaseReference pool;
     Query query;
     Intent intent;
@@ -45,8 +46,8 @@ public class CapPoolSearchList extends BaseActivity {
     TextView defaultmsg;
     String source,destination,date,formatted_date,time_to,time_from;
     String reference;
-    String reference_default="Cab";
-    String reference_Old="archive/Cab";
+    String reference_default="allCabs";
+    String reference_Old="archives";
     Vector<CabItemFormat> cabItemFormatVector = new Vector<>();
     CabPoolRVAdapter adapter;
     ValueEventListener newListener;
@@ -57,7 +58,7 @@ public class CapPoolSearchList extends BaseActivity {
 
     Context mcontext;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     private FirebaseAuth mUser;
 
     @Override
@@ -144,31 +145,18 @@ public class CapPoolSearchList extends BaseActivity {
             }
         }
 
-        pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(reference);
+        pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child(reference);
 
         query=pool.orderByChild("DT");
 
         mUser = FirebaseAuth.getInstance();
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.child(mUser.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
-                    if (phonebookDisplayItem == null)
-                        return;
-                    if (email != null) {
-                        if (phonebookDisplayItem.getEmail() != null) {
-                            if (phonebookDisplayItem.getEmail().equals(email)) {
-                                name = phonebookDisplayItem.getName();
-                                number = phonebookDisplayItem.getNumber();
-
-                            }
-                        }
-                    }
-
-                }
-
+                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                name = userItemFormat.getUsername();
+                email = userItemFormat.getEmail();
+                number = userItemFormat.getMobileNumber();
             }
 
             @Override
@@ -183,7 +171,7 @@ public class CapPoolSearchList extends BaseActivity {
         progressBar = (ProgressBar) findViewById(R.id.content_pool_progress);
         defaultmsg.setVisibility(View.INVISIBLE);
         query.keepSynced(true);
-         mcontext=this;
+        mcontext=this;
 
 
 
@@ -347,8 +335,8 @@ public class CapPoolSearchList extends BaseActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         query.removeEventListener(newListener);
     }
 

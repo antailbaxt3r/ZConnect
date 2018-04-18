@@ -41,6 +41,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
@@ -63,9 +64,9 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private ImageButton mAddImage;
     private Button mPostBtn;
     String key;
-    private EditText mProductName;
-    private EditText mProductDescription;
-    private EditText mProductPrice;
+    private MaterialEditText mProductName;
+    private MaterialEditText mProductDescription;
+    private MaterialEditText mProductPrice;
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
     private DatabaseReference mUsername;
@@ -74,7 +75,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private CustomSpinner spinner1;
     private FirebaseAuth mAuth;
     private String sellerName;
-    private TagsEditText productTags;
     private CheckBox negotiableCheckBox;
     private Long postTimeMillis;
 
@@ -109,14 +109,13 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         }
 
         mAddImage = (ImageButton) findViewById(R.id.imageButton);
-        mProductName = (EditText) findViewById(R.id.name);
-        mProductDescription = (EditText) findViewById(R.id.description);
-        mProductPrice = (EditText) findViewById(R.id.price);
+        mProductName = (MaterialEditText) findViewById(R.id.name);
+        mProductDescription = (MaterialEditText) findViewById(R.id.description);
+        mProductPrice = (MaterialEditText) findViewById(R.id.price);
         mStorage = FirebaseStorage.getInstance().getReference();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         spinner1 = (CustomSpinner) findViewById(R.id.categories);
-        productTags =(TagsEditText) findViewById(R.id.skillsTags);
         negotiableCheckBox=(CheckBox) findViewById(R.id.priceNegotiable);
         spinner1.setSelection(6);
         mAuth = FirebaseAuth.getInstance();
@@ -148,16 +147,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mProductName.setTypeface(ralewayRegular);
         mProductDescription.setTypeface(ralewayRegular);
         mProductPrice.setTypeface(ralewayRegular);
-        productTags.setTypeface(ralewayRegular);
-
-
-        productTags.setTagsListener(this);
-        productTags.setTagsWithSpacesEnabled(true);
-
-        productTags.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_dropdown_item_1line,
-                getResources().getStringArray(R.array.productTags)));
-        productTags.setThreshold(1);
 
 
     }
@@ -244,7 +233,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         final String productNameValue = mProductName.getText().toString().trim();
         final String productDescriptionValue = mProductDescription.getText().toString().trim();
         final String productPriceValue = mProductPrice.getText().toString().trim();
-        final String productTagString= productTags.getTags().toString().trim();
         final String negotiable;
 
         if(productPriceValue.equals("") && negotiableCheckBox.isChecked())
@@ -273,7 +261,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         });
 
 
-        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue) || negotiable.equals("2")) && mImageUri != null && category != null && productTags!=null && !negotiable.equals("") && negotiableCheckBox!=null) {
+        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue) || negotiable.equals("2")) && mImageUri != null && category != null && !negotiable.equals("") && negotiableCheckBox!=null) {
             StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -292,7 +280,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
                     newPost.child("SellerUsername").setValue(sellerName);
                     newPost.child("Price").setValue(productPriceValue);
-                    newPost.child("skills").setValue(productTagString);
                     newPost.child("negotiable").setValue(negotiable);
                     newPost.child("PostTimeMillis").setValue(postTimeMillis);
                     postedBy.setValue(null);

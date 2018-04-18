@@ -112,7 +112,7 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
                                     intent.putExtra("desc",phonebookDisplayItem.getDesc());
                                     intent.putExtra("contactDescTv",phonebookDisplayItem.getNumber());
                                     intent.putExtra("image",phonebookDisplayItem.getImageurl());
-                                    intent.putExtra("email",phonebookDisplayItem.getEmail());
+                                    intent.putExtra("uid",phonebookDisplayItem.getEmail());
                                     intent.putExtra("skills",phonebookDisplayItem.getSkills());
                                     intent.putExtra("category",phonebookDisplayItem.getCategory());
                                     intent.putExtra("Uid",phonebookDisplayItem.getUid());

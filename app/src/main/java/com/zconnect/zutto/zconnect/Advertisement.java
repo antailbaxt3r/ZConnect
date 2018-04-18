@@ -228,7 +228,7 @@ public class Advertisement extends BaseActivity {
                             "mailto", "zconnectinc@gmail.com", null));
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Post Advertisements on ZConnect");
                     // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
-                    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                    startActivity(Intent.createChooser(emailIntent, "Send uid..."));
                 }
             });
             AlertDialog dialog = builder.create();

@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.zconnect.zutto.zconnect.Infone2Activity">
     <item
+        android:title="Open Infone"
         android:id="@+id/action_open_menu_phonebook"
         android:icon="@android:drawable/ic_menu_call"
         android:orderInCategory="2"
-        android:title="Open Infone"
+        android:name="Open Infone"
         app:showAsAction="ifRoom" />
 </menu>

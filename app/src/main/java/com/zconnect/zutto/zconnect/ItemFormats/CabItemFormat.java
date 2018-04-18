@@ -1,6 +1,9 @@
 package com.zconnect.zutto.zconnect.ItemFormats;
 
+import android.os.Build;
+
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Created by shubhamk on 26/7/17.
@@ -16,10 +19,9 @@ public class CabItemFormat {
     private String DT;
     private int from;
     private int to;
-    ArrayList<CabListItemFormat> cabListItemFormats;
 
 
-    public CabItemFormat(String source, String destination, String date, String details, String time, String key,String DT,int from,int to, ArrayList<CabListItemFormat> cabListItemFormats) {
+    public CabItemFormat(String source, String destination, String date, String details, String time, String key,String DT,int from,int to) {
         this.source = source;
         this.destination = destination;
         this.date = date;
@@ -29,7 +31,6 @@ public class CabItemFormat {
         this.DT=DT;
         this.from=from;
         this.to=to;
-        this.cabListItemFormats = cabListItemFormats;
     }
 
     public CabItemFormat() {
@@ -102,12 +103,12 @@ public class CabItemFormat {
     public void setKey(String key) {
         this.key = key;
     }
-
-    public ArrayList<CabListItemFormat> getCabListItemFormats() {
-        return cabListItemFormats;
-    }
-
-    public void setCabListItemFormats(ArrayList<CabListItemFormat> cabListItemFormats) {
-        this.cabListItemFormats = cabListItemFormats;
-    }
+//
+//    public Vector<CabListItemFormat> getCabListItemFormats() {
+//        return cabListItemFormats;
+//    }
+//
+//    public void setCabListItemFormats(Vector<CabListItemFormat> cabListItemFormats) {
+//        this.cabListItemFormats = cabListItemFormats;
+//    }
 }

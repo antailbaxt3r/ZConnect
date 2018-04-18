@@ -7,11 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -66,14 +68,12 @@ public class ReservedTab extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_reserved_tab, container, false);
+        GridLayoutManager productGridLayout = new GridLayoutManager(getContext(), 2);
         noitems = (TextView) view.findViewById(R.id.noitems);
 
         mProductList = (RecyclerView) view.findViewById(R.id.reservedProductList);
         mProductList.setHasFixedSize(true);
-        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
-        productLinearLayout.setReverseLayout(true);
-        productLinearLayout.setStackFromEnd(true);
-        mProductList.setLayoutManager(productLinearLayout);
+        mProductList.setLayoutManager(productGridLayout);
 
 
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
@@ -126,11 +126,11 @@ public class ReservedTab extends Fragment {
 
 //               if(reserveList.contains(model.getKey())) {
                 viewHolder.setProductName(model.getProductName());
-                viewHolder.setProductDesc(model.getProductDescription());
+//                viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(getActivity(), model.getProductName(), getContext(), model.getImage());
                 viewHolder.setProductPrice(model.getPrice(),model.getNegotiable());
-                viewHolder.setSellerName(model.getPostedBy().getUsername());
-                viewHolder.setSellerNumber(model.getPhone_no(), getContext(), model.getCategory());
+//                viewHolder.setSellerName(model.getPostedBy().getUsername());
+//                viewHolder.setSellerNumber(model.getPhone_no(), getContext(), model.getCategory());
 //                }else {
 //               }
                 viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +161,7 @@ public class ReservedTab extends Fragment {
         private DatabaseReference ReserveReference;
         private Switch mReserve;
         private TextView ReserveStatus;
-        private Button deleteButton;
+        private ImageView deleteButton;
         private FirebaseAuth mAuth;
         private String sellerName;
         private SharedPreferences communitySP;
@@ -184,9 +184,7 @@ public class ReservedTab extends Fragment {
             Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
 
             post_image = (ImageView) mView.findViewById(R.id.postImg);
-            deleteButton = (Button) mView.findViewById(R.id.delete);
-            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-            deleteButton.setTypeface(customfont);
+            deleteButton = (ImageView) mView.findViewById(R.id.delete);
         }
 
         public void setProductName(String productName) {
@@ -198,14 +196,14 @@ public class ReservedTab extends Fragment {
 
         }
 
-        public void setProductDesc(String productDesc) {
-
-            TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
-            post_desc.setText(productDesc);
-            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-            post_desc.setTypeface(customfont);
-
-        }
+//        public void setProductDesc(String productDesc) {
+//
+//            TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
+//            post_desc.setText(productDesc);
+//            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+//            post_desc.setTypeface(customfont);
+//
+//        }
 
         public void animate(final Activity activity, final String name, String url) {
             final Intent i = new Intent(mView.getContext(), viewImage.class);
@@ -262,25 +260,25 @@ public class ReservedTab extends Fragment {
 
         }
 
-        public void setSellerName(String username) {
-            sellerName = username;
-            TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-            post_seller_name.setText("Sold By: " + sellerName);
-        }
+//        public void setSellerName(String username) {
+//            sellerName = username;
+//            TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
+//            post_seller_name.setText("Sold By: " + sellerName);
+//        }
 
-        public void setSellerNumber(final String sellerNumber, final Context ctx, final String category) {
-            Button post_seller_number = (Button) mView.findViewById(R.id.sellerNumber);
-            post_seller_number.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    CounterManager.StoroomCall(category);
-                    ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                }
-            });
-            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-            post_seller_number.setTypeface(customfont);
-
-        }
+//        public void setSellerNumber(final String sellerNumber, final Context ctx, final String category) {
+//            Button post_seller_number = (Button) mView.findViewById(R.id.sellerNumber);
+//            post_seller_number.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    CounterManager.StoroomCall(category);
+//                    ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+//                }
+//            });
+//            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//            post_seller_number.setTypeface(customfont);
+//
+//        }
 
     }
 }

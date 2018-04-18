@@ -21,13 +21,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
 public class MyRides extends BaseActivity {
     RecyclerView poolrv;
-    DatabaseReference pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab");
+    DatabaseReference pool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     Query query = pool.orderByChild("time");
     TextView defaultmsg;
     Vector<CabItemFormat> cabItemFormatVector = new Vector<>();
@@ -35,7 +36,7 @@ public class MyRides extends BaseActivity {
     CabPoolRVAdapter adapter;
     ValueEventListener newListener;
     String name, number, email;
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
     private FirebaseAuth mAuth;
 
     @Override
@@ -67,27 +68,13 @@ public class MyRides extends BaseActivity {
         poolrv = (RecyclerView) findViewById(R.id.ridesrv);
         defaultmsg = (TextView) findViewById(R.id.rides_errorMessage1);
         mAuth = FirebaseAuth.getInstance();
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    PhonebookDisplayItem phonebookDisplayItem = shot.getValue(PhonebookDisplayItem.class);
-                    if (phonebookDisplayItem == null || phonebookDisplayItem.getEmail() == null || phonebookDisplayItem.getNumber() == null) {
-                        shot.getRef().removeValue();
-                        continue;
-                    }
-                    if (email != null) {
-                        if (phonebookDisplayItem.getEmail() != null) {
-                            if (phonebookDisplayItem.getEmail().equals(email)) {
-                                name = phonebookDisplayItem.getName();
-                                number = phonebookDisplayItem.getNumber();
-                            }
-                        }
-                    }
-
-
-                }
-
+                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                name = userItemFormat.getUsername();
+                email = userItemFormat.getEmail();
+                number = userItemFormat.getMobileNumber();
             }
 
             @Override
@@ -111,26 +98,21 @@ public class MyRides extends BaseActivity {
                 cabItemFormatVector.clear();
                 cabItemFormats.clear();
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
-
-                    cabItemFormatVector.add(cabItemFormat);
-                }
-                int i;
-                for (i = 0; i < cabItemFormatVector.size(); i++) {
-                    CabItemFormat cabItemFormat = cabItemFormatVector.get(i);
-                    ArrayList<CabListItemFormat> cabListItemFormats = cabItemFormat.getCabListItemFormats();
-                    if(cabListItemFormats==null)
-                        cabListItemFormats = new ArrayList<>();
-                    int j;
-                    for (j = 0; j < cabListItemFormats.size(); j++) {
-                        if (name != null && number != null) {
-                            if (cabListItemFormats.get(j) != null) {
-                                if (name.equals(cabListItemFormats.get(j).getName()) && number.equals(cabListItemFormats.get(j).getPhonenumber())) {
-                                    cabItemFormats.add(cabItemFormat);
-                                }
+                    final CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
+                    pool.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                cabItemFormats.add(cabItemFormat);
                             }
                         }
-                    }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
                 if (cabItemFormats.isEmpty()) {
                     defaultmsg.setVisibility(View.VISIBLE);
@@ -149,8 +131,6 @@ public class MyRides extends BaseActivity {
 
             }
         };
-
-
     }
 
     @Override

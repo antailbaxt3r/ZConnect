@@ -126,8 +126,8 @@ public class IndividualCategory extends BaseActivity {
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(IndividualCategory.this, model.getProductName(), IndividualCategory.this, model.getImage());
                 viewHolder.setPrice(model.getPrice(),model.getNegotiable());
-                viewHolder.setSellerName(model.getPostedBy().getUsername());
-                viewHolder.setSellerNumber(model.getPhone_no(), category);
+//                viewHolder.setSellerName(model.getPostedBy().getUsername());
+//                viewHolder.setSellerNumber(model.getPhone_no(), category);
 
 
                 SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
@@ -387,41 +387,41 @@ public class IndividualCategory extends BaseActivity {
         }
 
 
-        public void setSellerName(String postedBy) {
+//        public void setSellerName(String postedBy) {
+//
+//
+//            Users.child(postedBy).addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    String sellerName = dataSnapshot.child("Username").getValue().toString();
+//                    TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
+//                    post_seller_name.setText("Sold By: " + sellerName);
+//                    Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+//                    post_seller_name.setTypeface(ralewayMedium);
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
+//
+//
+//        }
 
-
-            Users.child(postedBy).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    String sellerName = dataSnapshot.child("Username").getValue().toString();
-                    TextView post_seller_name = (TextView) mView.findViewById(R.id.sellerName);
-                    post_seller_name.setText("Sold By: " + sellerName);
-                    Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-                    post_seller_name.setTypeface(ralewayMedium);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-
-        }
-
-        public void setSellerNumber(final String sellerNumber, final String category) {
-            Button post_seller_number = (Button) mView.findViewById(R.id.sellerNumber);
-            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-            post_seller_number.setTypeface(customfont);
-            post_seller_number.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    CounterManager.StoroomCall(category);
-                    mView.getContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                }
-            });
-
-        }
+//        public void setSellerNumber(final String sellerNumber, final String category) {
+//            Button post_seller_number = (Button) mView.findViewById(R.id.sellerNumber);
+//            Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//            post_seller_number.setTypeface(customfont);
+//            post_seller_number.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    CounterManager.StoroomCall(category);
+//                    mView.getContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+//                }
+//            });
+//
+//        }
 
 
     }

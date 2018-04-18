@@ -53,7 +53,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".7"
-            android:entries="@array/location"
             android:prompt="@string/source_prompt" />
     </LinearLayout>
     <!--<ImageView-->
@@ -89,7 +88,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".7"
-            android:entries="@array/location"
             android:prompt="@string/destination_prompt" />
     </LinearLayout>
 
@@ -121,6 +119,7 @@
             android:textColor="@color/primaryText"/>
 
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -222,7 +222,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         {
             productPrice.setText("₹" + Price + "/-");
         }
-        Log.d("PRODUCT PRICE 2", Price);
+        Log.d("PRODUCT PRICE 2", "+" + Price);
         Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
         productPrice.setTypeface(ralewayMedium);
     }

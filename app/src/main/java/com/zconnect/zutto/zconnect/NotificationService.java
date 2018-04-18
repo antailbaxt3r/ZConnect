@@ -140,7 +140,7 @@ public class NotificationService extends FirebaseMessagingService {
 
             } else if (type.equals(KEY_PRODUCT)) {
                 final String personEmail = data.get("PersonEmail").toString();
-                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook").orderByChild("email").equalTo(personEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook").orderByChild("uid").equalTo(personEmail).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String personName = data.get("Person").toString();
