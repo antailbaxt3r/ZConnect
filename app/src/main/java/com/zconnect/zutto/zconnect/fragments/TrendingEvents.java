@@ -116,7 +116,7 @@ public class TrendingEvents extends Fragment {
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts");
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents");
         queryRef = mDatabase.orderByChild("BoostCount");
 
         mDatabase.keepSynced(true);
@@ -281,7 +281,7 @@ public class TrendingEvents extends Fragment {
 
         private void setBoost(final Event event) {
 
-            final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts").child(event.getKey());
+            final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey());
 
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             final ImageButton boostBtn = (ImageButton) mView.findViewById(R.id.boostBtn);

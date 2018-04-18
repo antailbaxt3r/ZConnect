@@ -78,7 +78,7 @@ public class Recents extends Fragment {
         homeDbRef.keepSynced(true);
         queryRef = homeDbRef.limitToLast(15);
         queryRef.keepSynced(true);
-        mStoreroomDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+        mStoreroomDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
         mStoreroomDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

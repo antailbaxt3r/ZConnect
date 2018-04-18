@@ -302,7 +302,6 @@ public class CabListOfPeople extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDatabaseViews.removeEventListener(listener);
     }
 
 }

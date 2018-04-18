@@ -96,7 +96,7 @@ public class OpenProductDetails extends BaseActivity {
         productShortlist.setTypeface(customfont);
         productCall = (Button) findViewById(R.id.product_call);
 
-        mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+        mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
         Intent intent = getIntent();
         productKey = intent.getStringExtra("key");
 
@@ -106,42 +106,42 @@ public class OpenProductDetails extends BaseActivity {
         SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
-        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom").child(productKey).child("views");
+       // mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).child("views");
 
-        if (!status) {
-            mAuth = FirebaseAuth.getInstance();
-            user = mAuth.getCurrentUser();
-
-            listener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    boolean userExists = false;
-                    for (DataSnapshot childSnapshot :
-                            dataSnapshot.getChildren()) {
-                        if (childSnapshot.getKey().equals(user.getUid()) && childSnapshot.exists() && childSnapshot.getValue(Integer.class) != null) {
-                            userExists = true;
-                            int originalViews = childSnapshot.getValue(Integer.class);
-                            mDatabaseViews.child(user.getUid()).setValue(originalViews + 1);
-
-                            break;
-                        } else {
-                            userExists = false;
-                        }
-                    }
-                    if (!userExists) {
-                        mDatabaseViews.child(user.getUid()).setValue(1);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-
-            mDatabaseViews.addListenerForSingleValueEvent(listener);
-        }
+//        if (!status) {
+//            mAuth = FirebaseAuth.getInstance();
+//            user = mAuth.getCurrentUser();
+//
+//            listener = new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                    boolean userExists = false;
+//                    for (DataSnapshot childSnapshot :
+//                            dataSnapshot.getChildren()) {
+//                        if (childSnapshot.getKey().equals(user.getUid()) && childSnapshot.exists() && childSnapshot.getValue(Integer.class) != null) {
+//                            userExists = true;
+//                            int originalViews = childSnapshot.getValue(Integer.class);
+//                            mDatabaseViews.child(user.getUid()).setValue(originalViews + 1);
+//
+//                            break;
+//                        } else {
+//                            userExists = false;
+//                        }
+//                    }
+//                    if (!userExists) {
+//                        mDatabaseViews.child(user.getUid()).setValue(1);
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            };
+//
+//            mDatabaseViews.addListenerForSingleValueEvent(listener);
+//        }
         mDatabaseProduct.child(productKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -189,7 +189,7 @@ public class OpenProductDetails extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDatabaseViews.removeEventListener(listener);
+//        mDatabaseViews.removeEventListener(listener);
     }
 
     //Menu Overwrite
@@ -206,7 +206,7 @@ public class OpenProductDetails extends BaseActivity {
             case R.id.menu_chat_room:
                 //char room clicked
                 Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom").child(productKey).toString());
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
                 startActivity(intent);
                 break;
             default:

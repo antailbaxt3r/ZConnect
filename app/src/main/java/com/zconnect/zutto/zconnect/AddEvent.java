@@ -156,8 +156,8 @@ public class AddEvent extends BaseActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         gmapLocationTaken = (CheckBox) findViewById(R.id.add_events_location_checkbox);
-        mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts");
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/NotVerifiedPosts");
+        mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents");
+        //mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/NotVerifiedPosts");
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         gmapLocationTaken.setVisibility(View.INVISIBLE);
@@ -598,7 +598,7 @@ public class AddEvent extends BaseActivity {
                             if (downloadUri == null)
                                 downloadUri = Uri.parse("");
 
-                            DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts").child(EventID);
+                            DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(EventID);
                             Map<String, Object> taskMap = new HashMap<String, Object>();
 
                             taskMap.put("EventName", eventNameValue);
@@ -638,7 +638,7 @@ public class AddEvent extends BaseActivity {
             } else {
                 if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null) {
 
-                    DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts").child(EventID);
+                    DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(EventID);
                     Map<String, Object> taskMap = new HashMap<String, Object>();
                     taskMap.put("EventName", eventNameValue);
                     taskMap.put("EventDescription", eventDescriptionValue);

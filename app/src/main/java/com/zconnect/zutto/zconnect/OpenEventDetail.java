@@ -122,7 +122,7 @@ public class  OpenEventDetail extends BaseActivity {
         Bundle extras = getIntent().getExtras();
         id = (String) extras.get("id");
 
-        databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(id);
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(id);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -171,7 +171,7 @@ public class  OpenEventDetail extends BaseActivity {
                     Picasso.with(getApplicationContext()).load(event.getEventImage()).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(EventImage);
                     EventImage.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     setEventReminder(event.getEventDescription(), event.getEventName(), event.getFormatDate());
-                    mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(event.getKey()).child("views");
+                    mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).child("views");
                     updateViews();
 
                 } catch (Exception e) {
@@ -295,7 +295,7 @@ public class  OpenEventDetail extends BaseActivity {
         } else if (id == R.id.menu_chat_room) {
             //chat room clicked;
             Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
-            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child(event.getKey()).toString());
+            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -475,7 +475,7 @@ public class  OpenEventDetail extends BaseActivity {
 
     private void boostCounter() {
 
-        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts").child(event.getKey());
+        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey());
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {

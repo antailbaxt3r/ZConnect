@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 
 
 public class TimelineEvents extends Fragment {
@@ -123,7 +124,7 @@ public class TimelineEvents extends Fragment {
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/VerifiedPosts");
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents");
         queryRef = mDatabase.orderByChild("FormatDate");
 
         mDatabase.keepSynced(true);
@@ -220,7 +221,7 @@ public class TimelineEvents extends Fragment {
 
         public void setEventName(String eventName, String verified, long postTimeMillis) {
             if (eventName != null) {
-                TextView post_name = (TextView) mView.findViewById(R.id.title);
+                TextView post_name = (TextView) mView.findViewById(R.id.name);
                 if(verified.equals("true")){
                     eventName = eventName + " ☑";
                 }
@@ -388,7 +389,7 @@ public class TimelineEvents extends Fragment {
 
         private void setBoost(final Event event) {
 
-            final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("Event/VerifiedPosts").child(event.getKey());
+            final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey());
 
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             final ImageButton boostBtn = (ImageButton) mView.findViewById(R.id.boostBtn);

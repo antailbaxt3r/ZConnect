@@ -51,7 +51,7 @@ public class NotificationService extends FirebaseMessagingService {
             if (type.equals(KEY_EVENT_BOOST)) {
                 final String key = data.get("Key").toString();
                 // use this to notify users who have boosted if event details have been changed
-                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -97,7 +97,7 @@ public class NotificationService extends FirebaseMessagingService {
 
             } else if (type.equals(KEY_CABPOOL_JOIN)) {
                 final String key = data.get("Key").toString();
-                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         CabItemFormat format = dataSnapshot.getValue(CabItemFormat.class);
@@ -249,7 +249,7 @@ public class NotificationService extends FirebaseMessagingService {
             } else if (type.equals(KEY_EVENT)) {
                final String key = data.get("Key").toString();
                // use this to notify users who have boosted if event details have been changed
-               FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event").child("VerifiedPosts").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+               FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                    @Override
                    public void onDataChange(DataSnapshot dataSnapshot) {

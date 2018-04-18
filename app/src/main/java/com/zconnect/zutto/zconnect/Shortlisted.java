@@ -46,7 +46,7 @@ public class Shortlisted extends BaseActivity {
         rv.setAdapter(adapter);
 
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
-                .child("storeroom").child(key).child("UsersReserved");
+                .child("features").child("storeroom").child("products").child(key).child("UsersReserved");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
