@@ -11,11 +11,18 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
-public class NewMessageActivity extends AppCompatActivity {
+import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+
+public class NewMessageActivity extends BaseActivity {
 
     Button submit;
     CheckBox anonymousCheck;
@@ -24,6 +31,9 @@ public class NewMessageActivity extends AppCompatActivity {
     Event event;
     Boolean a;
     String anonymous;
+    DatabaseReference mPostedByDetails;
+
+
 
     /*public void onCheckboxClicked (View view) {
         a = ((CheckBox) view).isChecked();
@@ -39,8 +49,11 @@ public class NewMessageActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
         final DatabaseReference home;
-        home= FirebaseDatabase.getInstance().getReference().child("home");
+        home= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
 
         submit = (Button) findViewById(R.id.button_newmessage_submit);
         anonymousCheck = (CheckBox) findViewById(R.id.checkbox_newmessage_anonymous);
@@ -55,7 +68,7 @@ public class NewMessageActivity extends AppCompatActivity {
                 else
                     anonymous = "n";
 
-                DatabaseReference newMessage = home.push();
+                final DatabaseReference newMessage = home.push();
                 String key = newMessage.getKey();
                 newMessage.child("Key").setValue(key);
                 newMessage.child("desc").setValue(messageText);
@@ -64,6 +77,24 @@ public class NewMessageActivity extends AppCompatActivity {
                 newMessage.child("name").setValue("Message");
                 newMessage.child("imageurl").setValue("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png");
                 newMessage.child("id").setValue(key);
+                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                        if (anonymousCheck.isChecked()){
+                            newMessage.child("PostedBy").child("Username").setValue("Anonymous");
+                        }else {
+                            newMessage.child("PostedBy").child("Username").setValue(user.getUsername());
+                        }
+                        newMessage.child("PostedBy").child("UID").setValue(user.getUserUID());
+                        newMessage.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         };
 

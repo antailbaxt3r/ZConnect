@@ -92,7 +92,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, PhonebookDetails.class);
+                    Intent intent = new Intent(context, OpenUserDetail.class);
                     PhonebookDisplayItem phonebookDisplayItem;
                     phonebookDisplayItem = phonebookItem.get(getAdapterPosition()).getPhonebookDisplayItem();
 
@@ -107,8 +107,8 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
                     intent.putExtra("category", phonebookDisplayItem.getCategory());
                     intent.putExtra("Uid",phonebookDisplayItem.getUid());
                     context.startActivity(intent);
-                    if (context instanceof PhonebookDetails) {
-                        ((PhonebookDetails) context).finish();
+                    if (context instanceof OpenUserDetail) {
+                        ((OpenUserDetail) context).finish();
                     }
                 }
             });

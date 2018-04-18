@@ -85,6 +85,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
     private ValueEventListener listenerView;
     private DatabaseReference mDatabaseViews;
     private Boolean flag;
+    private Button viewProfileButton;
 
     private final String TAG = getClass().getSimpleName();
     private String catId;
@@ -114,15 +115,13 @@ public class InfoneProfileActivity extends AppCompatActivity {
         saveEditBtn = (Button) findViewById(R.id.save_edit_infone_profile);
         validButton = (Button) findViewById(R.id.valid_button);
         verifiedDateTextView = (TextView) findViewById(R.id.verified_date);
+        viewProfileButton = (Button) findViewById(R.id.viewProfileButton);
 
         nameEt.setEnabled(false);
         phone1Et.setEnabled(false);
         phone2Et.setEnabled(false);
         profileImage.setEnabled(false);
         saveEditBtn.setVisibility(View.GONE);
-
-
-
 
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
 
@@ -163,6 +162,15 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
                 if (userType.equals("User")) {
                     menu.findItem(R.id.action_edit).setVisible(false);
+                    viewProfileButton.setVisibility(View.VISIBLE);
+                    viewProfileButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(InfoneProfileActivity.this,OpenUserDetail.class);
+                            i.putExtra("Uid",dataSnapshot.child("UID").getValue().toString());
+                            startActivity(i);
+                        }
+                    });
                 }
                 //setting image if not default
                 if (imageUrl != null && !imageUrl.equalsIgnoreCase("default")) {
@@ -343,7 +351,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
         String strName = number;
 
 
-        // to make a call at number
+        // to make a call at mobileNumber
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + strName));
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {

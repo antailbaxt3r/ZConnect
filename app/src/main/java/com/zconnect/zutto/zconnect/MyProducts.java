@@ -66,7 +66,7 @@ public class MyProducts extends BaseActivity {
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(new LinearLayoutManager(MyProducts.this));
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -103,7 +103,7 @@ public class MyProducts extends BaseActivity {
                     @Override
                     public void onClick(View view) {
                         CounterManager.StoreRoomMyProductDelete();
-                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom/" + product_key);
+                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(product_key);
                         viewHolder.ReserveReference.getRef().removeValue();
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(product_key);
                     }

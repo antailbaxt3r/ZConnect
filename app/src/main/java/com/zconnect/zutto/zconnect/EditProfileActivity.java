@@ -82,7 +82,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 //    private String userName;
 //    private String desc;
 //    private String imageUrl;
-//    private String number;
+//    private String mobileNumber;
 //    private String catName;
 //    private String host;
 //    private String category;

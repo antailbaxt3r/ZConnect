@@ -82,7 +82,7 @@ public class ReservedTab extends Fragment {
 
 
         mReservedProducts = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -137,7 +137,7 @@ public class ReservedTab extends Fragment {
                     @Override
                     public void onClick(View view) {
                         CounterManager.StoroomShortListDelete(model.getCategory(), model.getKey());
-                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom/" + product_key + "/UsersReserved");
+                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(product_key + "/UsersReserved");
 
                         mAuth = FirebaseAuth.getInstance();
                         FirebaseUser user = mAuth.getCurrentUser();

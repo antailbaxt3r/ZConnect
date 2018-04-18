@@ -99,8 +99,8 @@ public class CabListOfPeople extends BaseActivity {
             }
         });
 
-        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference).child("features").child("cabPool").child("allCabs").child(key).child("views");
-        updateViews();
+//        mDatabaseViews = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference).child("features").child("cabPool").child("allCabs").child(key).child("views");
+//        updateViews();
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -254,48 +254,48 @@ public class CabListOfPeople extends BaseActivity {
         });
     }
 
-    private void updateViews() {
-
-        SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
-        Boolean status = sharedPref.getBoolean("mode", false);
-
-        if (!status) {
-            mAuth = FirebaseAuth.getInstance();
-            user = mAuth.getCurrentUser();
-
-            listener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    boolean userExists = false;
-                    for (DataSnapshot childSnapshot :
-                            dataSnapshot.getChildren()) {
-                        if (childSnapshot.getKey().equals(user.getUid()) && childSnapshot.exists() &&
-                                childSnapshot.getValue(Integer.class) != null) {
-                            userExists = true;
-                            int originalViews = childSnapshot.getValue(Integer.class);
-                            mDatabaseViews.child(user.getUid()).setValue(originalViews + 1);
-
-                            break;
-                        } else {
-                            userExists = false;
-                        }
-                    }
-                    if (!userExists) {
-                        mDatabaseViews.child(user.getUid()).setValue(1);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-
-            mDatabaseViews.addListenerForSingleValueEvent(listener);
-        }
-
-    }
+//    private void updateViews() {
+//
+//        SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
+//        Boolean status = sharedPref.getBoolean("mode", false);
+//
+//        if (!status) {
+//            mAuth = FirebaseAuth.getInstance();
+//            user = mAuth.getCurrentUser();
+//
+//            listener = new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                    boolean userExists = false;
+//                    for (DataSnapshot childSnapshot :
+//                            dataSnapshot.getChildren()) {
+//                        if (childSnapshot.getKey().equals(user.getUid()) && childSnapshot.exists() &&
+//                                childSnapshot.getValue(Integer.class) != null) {
+//                            userExists = true;
+//                            int originalViews = childSnapshot.getValue(Integer.class);
+//                            mDatabaseViews.child(user.getUid()).setValue(originalViews + 1);
+//
+//                            break;
+//                        } else {
+//                            userExists = false;
+//                        }
+//                    }
+//                    if (!userExists) {
+//                        mDatabaseViews.child(user.getUid()).setValue(1);
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            };
+//
+//            mDatabaseViews.addListenerForSingleValueEvent(listener);
+//        }
+//
+//    }
 
 
 
