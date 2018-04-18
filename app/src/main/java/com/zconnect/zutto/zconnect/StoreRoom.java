@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -243,8 +244,9 @@ public class StoreRoom extends BaseActivity {
         }
 
         public void setProductPrice(String productPrice) {
-            TextView post_name = (TextView) mView.findViewById(R.id.price);
-            post_name.setText(productPrice);
+            TextView post_price = (TextView) mView.findViewById(R.id.price);
+            Log.d("PRODUCT PRICE 1", productPrice);
+            post_price.setText(productPrice);
         }
 
         public void animate(final Activity activity, final String name, String url) {

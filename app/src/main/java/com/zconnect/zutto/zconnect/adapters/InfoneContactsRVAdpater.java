@@ -53,7 +53,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
         holder.viewstv.setText(infoneContactsRVItems.get(position).getViews());
         if (infoneContactsRVItems.get(position).getImageThumb() != null) {
             Uri imageuri = Uri.parse(infoneContactsRVItems.get(position).getImageThumb());
-            holder.simpleDraweeView.setImageURI(imageuri);
+            holder.userAvatar.setImageURI(imageuri);
         }
         final ArrayList<String> phoneNums = infoneContactsRVItems.get(position).getPhoneNums();
 

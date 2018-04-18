@@ -3,20 +3,23 @@
     android:id="@+id/ll_cat_infone"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="10dp">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
         android:id="@+id/image_infone_cat"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@mipmap/ic_launcher"
-        android:layout_weight="15"/>
+        android:background="@drawable/avatar_circle"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:roundAsCircle="true"/>
 
     <TextView
         android:id="@+id/tv_name_infone"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_weight="75"/>
+        android:layout_marginStart="10dp"
+        android:textColor="@color/primaryText"
+        android:text="Category Name"/>
 
 </LinearLayout>
