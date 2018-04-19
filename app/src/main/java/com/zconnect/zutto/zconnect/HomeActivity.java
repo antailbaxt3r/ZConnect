@@ -436,10 +436,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         TabLayout.Tab infoneT = tabs.newTab();
 
         tabTitle[1] = (TextView) vInfone.findViewById(R.id.tabTitle);
-        tabTitle[1].setText("Infone");
+        tabTitle[1].setText("Forums");
 
         tabImage[1] = (ImageView) vInfone.findViewById(R.id.tabImage);
-        tabImage[1].setImageResource(R.drawable.ic_people_white_24dp);
+        tabImage[1].setImageResource(R.drawable.ic_forum_white_24dp);
 
         tabNotificationCircle[1] = (ImageView) vInfone.findViewById(R.id.notification_circle);
         vInfone.setAlpha((float) 0.7);
@@ -495,7 +495,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[5].setText("Messages");
 
         tabImage[5] = (ImageView) vShop.findViewById(R.id.tabImage);
-        tabImage[5].setImageResource(R.drawable.ic_store_white_24dp);
+        tabImage[5].setImageResource(R.drawable.ic_message_white_24dp);
 
         tabNotificationCircle[5] = (ImageView) vShop.findViewById(R.id.notification_circle);
         vShop.setAlpha((float) 0.7);
@@ -522,7 +522,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 1: {
-                        setActionBarTitle("Infone");
+                        setActionBarTitle("Forums");
                         CounterManager.InfoneOpen();
 //                        fab.setImageResource(R.drawable.ic_edit_white_24dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
