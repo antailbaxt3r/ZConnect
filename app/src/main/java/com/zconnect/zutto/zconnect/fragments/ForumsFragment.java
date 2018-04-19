@@ -58,8 +58,8 @@ public class ForumsFragment extends Fragment {
                 }
 
                 addCategoryButton.setName("+");
-                addCategoryButton.setUID("add");
-                addCategoryButton.setTab("this");
+                addCategoryButton.setCatUID("add");
+                addCategoryButton.setTabUID("this");
                 forumCategories.add(addCategoryButton);
                 Collections.reverse(forumCategories);
                 adapter.notifyDataSetChanged();

@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
 
 import java.util.Vector;
@@ -56,7 +57,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
     public void onBindViewHolder(ForumCategoriesRVAdapter.ViewHolder holder, int position) {
         holder.catName.setText(forumCategoriesItemFormats.get(position).getName());
         if (position!=0) {
-            holder.openChat(forumCategoriesItemFormats.get(position).getUID());
+            holder.openChat(forumCategoriesItemFormats.get(position).getCatUID());
         }else {
             holder.createCategory(tabUID);
         }
@@ -109,7 +110,18 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
                     builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            addCategory(input.getText().toString(),uid);
+                            DatabaseReference tabName= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabs").child(uid);
+                            tabName.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    addCategory(input.getText().toString(),uid,dataSnapshot.toString());
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
 
                         }
                     });
@@ -127,9 +139,11 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
             });
         }
 
-        public void addCategory(String catName,String uid){
+        public void addCategory(String catName,String uid,String tabName){
+
             DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
             DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid);
+            final DatabaseReference databaseReferenceHome = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
 
             final DatabaseReference newPush=databaseReferenceCategories.push();
             DatabaseReference mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -142,14 +156,29 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
             newPush.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
 
             databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
-            databaseReferenceTabsCategories.child(newPush.getKey()).child("UID").setValue(uid);
+            databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+            databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(uid);
+
+
+            //Home
+
+            databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
+            databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
+            databaseReferenceHome.child(newPush.getKey()).child("id").setValue(uid);
+            databaseReferenceHome.child(newPush.getKey()).child("desc").setValue(tabName);
+            databaseReferenceHome.child(newPush.getKey()).child("Key").setValue(newPush.getKey());
+            databaseReferenceHome.child(newPush.getKey()).child("PostTimeMillis").setValue(postTimeMillis);
+
+            databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     newPush.child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
-                    //needs to be changed after image thumbnail is put
                     newPush.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
+
+                    databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
+                    databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
                 }
 
                 @Override

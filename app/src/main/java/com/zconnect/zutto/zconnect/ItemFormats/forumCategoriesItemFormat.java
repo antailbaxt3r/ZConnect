@@ -8,13 +8,14 @@ import android.provider.Contacts;
 
 public class forumCategoriesItemFormat {
     private String name;
-    private String UID;
-    private String tab;
+    private String tabUID;
+    private String catUID;
 
-    public forumCategoriesItemFormat(String name, String UID, String tab) {
+
+    public forumCategoriesItemFormat(String name, String catUID, String tabUID) {
         this.name = name;
-        this.UID = UID;
-        this.tab = tab;
+        this.tabUID = tabUID;
+        this.catUID = catUID;
     }
 
     public forumCategoriesItemFormat() {
@@ -28,20 +29,20 @@ public class forumCategoriesItemFormat {
         this.name = name;
     }
 
-    public String getUID() {
-        return UID;
+    public String getTabUID() {
+        return tabUID;
     }
 
-    public void setUID(String UID) {
-        this.UID = UID;
+    public void setTabUID(String tabUID) {
+        this.tabUID = tabUID;
     }
 
-    public String getTab() {
-        return tab;
+    public String getCatUID() {
+        return catUID;
     }
 
-    public void setTab(String tab) {
-        this.tab = tab;
+    public void setCatUID(String catUID) {
+        this.catUID = catUID;
     }
 
 }

@@ -31,6 +31,8 @@ import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 import java.util.List;
 import java.util.Vector;
 
+import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+
 public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.ViewHolder> {
 
     Context context;
@@ -188,14 +190,18 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             holder.postConjunction.setText(" put an ");
             holder.post.setText("Offer");
         }else if(recentsItemFormats.get(position).getFeature().equals("Message")) {
-            //Message is anonymous
-            holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
-        } else {
-            //Message is not anonymous
-            holder.name.setText(recentsItemFormats.get(position).getName());
+
+            if(recentsItemFormats.get(position).getDesc2().equals("y")) {
+                holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
+            } else {
+                //Message is not anonymous
+                holder.name.setText(recentsItemFormats.get(position).getName());
+            }
+        }else if(recentsItemFormats.get(position).getFeature().equals("Forums")){
+            holder.postConjunction.setText(" created a ");
+            holder.post.setText(recentsItemFormats.get(position).getFeature());
         }
 
-//>>>>>>> master
     }
 
     @Override
@@ -306,13 +312,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         context.startActivity(i);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Message")) {
                         i=new Intent(context,ChatActivity.class);
-                        mRef = FirebaseDatabase.getInstance().getReference().child("home/"+recentsItemFormats.get(getAdapterPosition()).getKey());
+                        mRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/"+recentsItemFormats.get(getAdapterPosition()).getKey());
                         i.putExtra("ref",mRef.toString());
                         context.startActivity(i);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){
                         i = new Intent(context,InfoneProfileActivity.class);
                         i.putExtra("infoneUserId",recentsItemFormats.get(getAdapterPosition()).getId());
                         context.startActivity(i);
+                    } else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Forums")){
+                        Intent intent = new Intent(context, ChatActivity.class);
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(recentsItemFormats.get(getAdapterPosition()).getKey()).toString());
+                        context.startActivity(intent);
                     }
                 }
             });

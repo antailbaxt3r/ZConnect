@@ -58,11 +58,11 @@ public class ChatActivity extends BaseActivity {
             }
         }
         joinButton = (Button) findViewById(R.id.join);
-//        joinLayout = (LinearLayout) findViewById(R.id.joinLayout);
-//        chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
+        joinLayout = (LinearLayout) findViewById(R.id.joinLayout);
+        chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
 
-//        joinLayout.setVisibility(View.GONE);
-//        chatLayout.setVisibility(View.VISIBLE);
+        joinLayout.setVisibility(View.GONE);
+        chatLayout.setVisibility(View.VISIBLE);
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref);
 
@@ -159,7 +159,7 @@ public class ChatActivity extends BaseActivity {
                         message.setName(userItem.getUsername());
                         message.setImageThumb(userItem.getImageURLThumbnail());
                         message.setMessage("\""+text+"\"");
-                        databaseReference.push().setValue(message);
+                        databaseReference.child("Chat").push().setValue(message);
                     }
 
                     @Override
