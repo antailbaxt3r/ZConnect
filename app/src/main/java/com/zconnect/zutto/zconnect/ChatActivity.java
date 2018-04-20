@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
@@ -139,7 +140,7 @@ public class ChatActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                EditText typer = ((EditText)findViewById(R.id.typer));
+                MaterialEditText typer = ((MaterialEditText)findViewById(R.id.typer));
                 final String text = typer.getText().toString();
                 if(TextUtils.isEmpty(text)){
                     showToast("Message is empty.");
