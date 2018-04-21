@@ -167,7 +167,6 @@ public class ChatActivity extends BaseActivity {
                         message.setImageThumb(userItem.getImageURLThumbnail());
                         message.setMessage("\""+text+"\"");
                         databaseReference.child("Chat").push().setValue(message);
-                        Toast.makeText(ChatActivity.this, refToCatInTabCategories, Toast.LENGTH_SHORT).show();
                         FirebaseDatabase.getInstance().getReferenceFromUrl(refToCatInTabCategories).child("lastMessage").setValue(message);
                     }
 

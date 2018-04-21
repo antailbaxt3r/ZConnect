@@ -21,41 +21,94 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/user_image_view"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/defaultprofile"
-                app:roundAsCircle="true" />
-
-
-            <EditText
-                android:id="@+id/user_name"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name" />
+                android:orientation="vertical"
+                android:background="@color/colorPrimary"
+                android:paddingTop="10dp"
+                android:paddingBottom="30dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
 
-            <EditText
-                android:id="@+id/mobile_number"
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name"
+                    android:gravity="center"
+                    TagsEditText:met_textColor="@color/white"
+                    TagsEditText:met_textColorHint="@color/secondaryText"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/secondaryText"
+                    android:textSize="20sp"/>
+
+                <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/user_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/profile_avatar_circle"
+                    android:layout_gravity="center"
+                    fresco:actualImageScaleType="centerCrop"
+                    fresco:roundAsCircle="true"
+                    fresco:roundingBorderPadding="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Mobile Number"/>
-
-            <EditText
-                android:id="@+id/whatsapp_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="WhatsApp Number"/>
-
-            <EditText
-                android:id="@+id/user_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Email"/>
-
-            <mabbas007.tagsedittext.TagsEditText
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="10dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
+                    android:text="Mobile Number"
+                    android:textStyle="bold"
+                    android:paddingBottom="5dp"/>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/mobile_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Mobile Number"
+                    android:textColor="@color/primaryText"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
+                    android:text="Whatsapp Number"
+                    android:textStyle="bold"
+                    android:paddingBottom="5dp"/>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/whatsapp_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="WhatsApp Number"
+                    android:textColor="@color/primaryText"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
+                    android:text="Email"
+                    android:textStyle="bold"
+                    android:paddingBottom="5dp"/>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/user_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:textColor="@color/primaryText"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
+                    android:text="Skills"
+                    android:textStyle="bold"
+                    android:paddingBottom="5dp"/>
+                <mabbas007.tagsedittext.TagsEditText
                     android:id="@+id/user_skill_tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -72,20 +125,34 @@
                     TagsEditText:tagsCloseImageRight="@drawable/tag_close"
                     TagsEditText:tagsTextColor="@color/black"
                     TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
-
-            <EditText
-                android:id="@+id/user_about"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="About"/>
-
-            <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                android:id="@+id/user_infone_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:text="Choose Infone Category"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
+                    android:text="About"
+                    android:textStyle="bold"
+                    android:paddingBottom="5dp"/>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/user_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="About"
+                    android:textColor="@color/primaryText"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
+                    android:text="Infone category"
+                    android:textStyle="bold"
+                    android:paddingBottom="5dp"/>
+                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                    android:id="@+id/user_infone_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Choose Infone Category"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

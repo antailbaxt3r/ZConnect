@@ -38,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -66,7 +67,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
     private SimpleDraweeView userImageView;
     private String userName,userEmail,userMobile,userWhatsapp,userAbout,userSkillTags,userInfoneType;
-    private EditText userNameText, userEmailText, userMobileNumberText, userWhatsappNumberText, userAboutText;
+    private MaterialEditText userNameText, userEmailText, userMobileNumberText, userWhatsappNumberText, userAboutText;
     private TagsEditText userSkillTagsText;
     private MaterialBetterSpinner userInfoneTypeSpinner;
     private Boolean newUser = false;
@@ -118,18 +119,19 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
         mProgress = new ProgressDialog(this);
 
-        userNameText = (EditText) findViewById(R.id.user_name);
-        userEmailText = (EditText) findViewById(R.id.user_email);
-        userMobileNumberText = (EditText) findViewById(R.id.mobile_number);
-        userWhatsappNumberText = (EditText) findViewById(R.id.whatsapp_number);
-        userAboutText= (EditText) findViewById(R.id.user_about);
+        userNameText = (MaterialEditText) findViewById(R.id.user_name);
+        userEmailText = (MaterialEditText) findViewById(R.id.user_email);
+        userMobileNumberText = (MaterialEditText) findViewById(R.id.mobile_number);
+        userWhatsappNumberText = (MaterialEditText) findViewById(R.id.whatsapp_number);
+        userAboutText= (MaterialEditText) findViewById(R.id.user_about);
         userImageView = (SimpleDraweeView) findViewById(R.id.user_image_view);
         userInfoneTypeSpinner = (MaterialBetterSpinner) findViewById(R.id.user_infone_type);
         userSkillTagsText = (TagsEditText) findViewById(R.id.user_skill_tags);
 
 
-        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
-        userNameText.setTypeface(ralewayRegular);
+        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
+        Typeface ralewaySemiBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-SemiBold.ttf");
+        userNameText.setTypeface(ralewaySemiBold);
         userAboutText.setTypeface(ralewayRegular);
         userMobileNumberText.setTypeface(ralewayRegular);
         userWhatsappNumberText.setTypeface(ralewayRegular);
@@ -226,11 +228,13 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             userEmailText.setFocusable(false);
             if (mImageUri==null) {
                 if (mUser.getPhotoUrl() != null) {
-                    Picasso.with(this).load(mUser.getPhotoUrl()).into(userImageView);
-                    mImageUri = mUser.getPhotoUrl();
+                    userImageView.setImageURI(mUser.getPhotoUrl());
+//                    Picasso.with(this).load(mUser.getPhotoUrl()).into(userImageView);
+//                    mImageUri = mUser.getPhotoUrl();
                 } else {
-                    Picasso.with(this).load(DEFAULT_PHOTO_URL).into(userImageView);
-                    mImageUri = Uri.parse(DEFAULT_PHOTO_URL);
+                    userImageView.setImageURI(DEFAULT_PHOTO_URL);
+//                    Picasso.with(this).load(DEFAULT_PHOTO_URL).into(userImageView);
+//                    mImageUri = Uri.parse(DEFAULT_PHOTO_URL);
                 }
             }
         }else {
@@ -263,7 +267,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             }
         }
         if(mImageUri==null) {
-            Picasso.with(this).load(userDetails.getImageURL()).into(userImageView);
+            userImageView.setImageURI(userDetails.getImageURL());
+//            Picasso.with(this).load(userDetails.getImageURL()).into(userImageView);
         }
         String skills = userDetails.getSkillTags();
         if (skills == null || skills.equalsIgnoreCase("[]")) {
