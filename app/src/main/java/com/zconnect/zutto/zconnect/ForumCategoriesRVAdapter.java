@@ -5,13 +5,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +26,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Vector;
 
 import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
@@ -55,12 +61,23 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
 
     @Override
     public void onBindViewHolder(ForumCategoriesRVAdapter.ViewHolder holder, int position) {
-        holder.catName.setText(forumCategoriesItemFormats.get(position).getName());
-        if (position!=0) {
-            holder.openChat(forumCategoriesItemFormats.get(position).getCatUID());
-        }else {
-            holder.createCategory(tabUID);
-        }
+            holder.catName.setText(forumCategoriesItemFormats.get(position).getName());
+            try {
+                holder.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
+                holder.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName() + " :");
+                holder.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
+            }
+            catch (Exception e) {
+                Log.d("Error alert ", e.getMessage());
+            }
+            if (position!=0) {
+                holder.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID());
+            }else {
+                holder.createCategory(tabUID);
+                holder.lastMessageMessage.setVisibility(View.GONE);
+                holder.lastMessageUsername.setVisibility(View.GONE);
+                holder.lastMessageTime.setVisibility(View.GONE);
+            }
     }
 
     @Override
@@ -70,26 +87,34 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView catName;
+        TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
         View mView;
+        LinearLayout forumRowItem;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             catName = (TextView) itemView.findViewById(R.id.cat_name);
+            lastMessageMessage = (TextView) itemView.findViewById(R.id.forums_cat_last_message);
+            lastMessageUsername = (TextView) itemView.findViewById(R.id.forums_cat_last_message_username);
+            lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
 
             //changing fonts
             Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+            Typeface ralewayRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
             catName.setTypeface(ralewayMedium);
+            lastMessageMessage.setTypeface(ralewayRegular);
+            lastMessageUsername.setTypeface(ralewayRegular);
+            lastMessageTime.setTypeface(ralewayRegular);
         }
 
-        void openChat(final String uid){
+        void openChat(final String uid, final String tabId){
             mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                    intent.putExtra("ref_to_cat_in_tabCategories", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tabId).child(uid).toString());
                     context.startActivity(intent);
                 }
             });

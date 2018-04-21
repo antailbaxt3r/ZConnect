@@ -9,7 +9,10 @@
     <color name="storeroom">#F44336</color>
     <color name="cabpool">#FFEB3B</color>
     <color name="shops">#01579B</color>
-
+    <!--cyan 500-->
+    <color name="messages">#00BCD4</color>
+    <!--orange 400-->
+    <color name="forums">#FFA726</color>
     <color name="primaryText">#000</color>
     <color name="secondaryText">#BBB</color>
     <color name="secondaryText2">#AAA</color>
