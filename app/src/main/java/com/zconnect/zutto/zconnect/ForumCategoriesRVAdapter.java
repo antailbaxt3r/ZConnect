@@ -69,6 +69,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
             }
             catch (Exception e) {
                 Log.d("Error alert ", e.getMessage());
+                holder.lastMessageMessage.setVisibility(View.GONE);
+                holder.lastMessageUsername.setVisibility(View.GONE);
+                holder.lastMessageTime.setVisibility(View.GONE);
             }
             if (position!=0) {
                 holder.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID());
