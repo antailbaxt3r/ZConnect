@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,9 +27,11 @@ import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+
 public class ChatActivity extends BaseActivity {
 
-    private String ref  = "Misc";
+    private String ref  = "Misc", refToCatInTabCategories = "";
     private RecyclerView chatView;
     private RecyclerView.Adapter adapter;
     private DatabaseReference databaseReference ;
@@ -56,6 +59,9 @@ public class ChatActivity extends BaseActivity {
             }
             if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))){
                 type = getIntent().getStringExtra("type");
+            }
+            if(!TextUtils.isEmpty(getIntent().getStringExtra("ref_to_cat_in_tabCategories"))){
+                refToCatInTabCategories = getIntent().getStringExtra("ref_to_cat_in_tabCategories");
             }
         }
         joinButton = (Button) findViewById(R.id.join);
@@ -161,6 +167,8 @@ public class ChatActivity extends BaseActivity {
                         message.setImageThumb(userItem.getImageURLThumbnail());
                         message.setMessage("\""+text+"\"");
                         databaseReference.child("Chat").push().setValue(message);
+                        Toast.makeText(ChatActivity.this, refToCatInTabCategories, Toast.LENGTH_SHORT).show();
+                        FirebaseDatabase.getInstance().getReferenceFromUrl(refToCatInTabCategories).child("lastMessage").setValue(message);
                     }
 
                     @Override
