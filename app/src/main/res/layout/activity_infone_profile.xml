@@ -122,7 +122,8 @@
             android:background="@color/infone"
             android:textAllCaps="false"
             android:textSize="16sp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
