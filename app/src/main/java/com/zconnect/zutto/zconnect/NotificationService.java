@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -31,6 +32,9 @@ import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL_JOIN;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT_BOOST;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_FORUMS;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_LIKE;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_LOVE;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_PRODUCT;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_STOREROOM;
 
@@ -46,7 +50,7 @@ public class NotificationService extends FirebaseMessagingService {
         communityReference = communitySP.getString("communityReference", null);
 
         final Map data = remoteMessage.getData();
-       if (data.containsKey("Type")) {
+        if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
             if (type.equals(KEY_EVENT_BOOST)) {
                 final String key = data.get("Key").toString();
@@ -119,7 +123,7 @@ public class NotificationService extends FirebaseMessagingService {
                             mBuilder.addAction(R.drawable.ic_phone_black_24dp, "Call", pendingIntent);
                         }
 
-                        Intent intent = new Intent(NotificationService.this, CabListOfPeople.class);
+                        Intent intent = new Intent(NotificationService.this, CabPoolListOfPeople.class);
                         intent.putExtra("key", (String) data.get("Key"));
 
                         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -295,24 +299,90 @@ public class NotificationService extends FirebaseMessagingService {
 
            }else if(type.equals(KEY_STOREROOM)){
 
-                        NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
-                        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-                        String name=FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                        style.bigText("Hey! "+name+" lot of products have been added since, you last visited. Check what your friend's are selling!")
-                                .setBigContentTitle("New Products");
-                        mBuilder.setSmallIcon(R.mipmap.ic_shopping_basket_black_36dp)
-                                .setStyle(style)
-                                .setContentTitle("StoreRoom")
-                                .setContentText("New Products are added in the Storeroom");
+                NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
+                NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+                String name=FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                style.bigText("Hey! "+name+" lot of products have been added since, you last visited. Check what your friend's are selling!")
+                        .setBigContentTitle("New Products");
+                mBuilder.setSmallIcon(R.mipmap.ic_shopping_basket_black_36dp)
+                        .setStyle(style)
+                        .setContentTitle("StoreRoom")
+                        .setContentText("New Products are added in the Storeroom");
 
-                        Intent intent = new Intent(NotificationService.this, HomeActivity.class);
-                        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        mBuilder.setContentIntent(intent1);
+                Intent intent = new Intent(NotificationService.this, HomeActivity.class);
+                PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setContentIntent(intent1);
 
-                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                        mNotificationManager.notify(1, mBuilder.build());
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(1, mBuilder.build());
 
-                    }
+            }else if(type.equals(KEY_LIKE)){
+                NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
+                NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+
+                style.bigText("Hey! Somebody liked you")
+                        .setBigContentTitle("Like ALert");
+
+                mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
+                        .setStyle(style)
+                        .setColor(ContextCompat.getColor(NotificationService.this, R.color.blue500))
+                        .setContentTitle("Like Alert")
+                        .setContentText("Hey! Somebody liked you, in your community");
+
+                Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);
+                intent.putExtra("Uid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setContentIntent(intent1);
+
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(1, mBuilder.build());
+
+            }else if(type.equals(KEY_LOVE)){
+                NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
+                NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+
+                style.bigText("Hey! Somebody loves you")
+                        .setBigContentTitle("Love Alert");
+
+                mBuilder.setSmallIcon(R.drawable.ic_favorite_white_24dp)
+                        .setStyle(style)
+                        .setColor(ContextCompat.getColor(NotificationService.this, R.color.red500))
+                        .setContentTitle("Love Alert")
+                        .setContentText("Hey! Somebody loves you, in your community");
+
+                Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);
+                intent.putExtra("Uid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setContentIntent(intent1);
+
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(1, mBuilder.build());
+            }else if(type.equals(KEY_FORUMS)){
+
+                final String temp = data.get("Temp").toString();
+                final String key = data.get("Key").toString();
+                if(!temp.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                    NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
+                    NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+
+                    style.bigText("Your subscribed forum is active")
+                            .setBigContentTitle("Forums Alert");
+
+                    mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
+                            .setStyle(style)
+                            .setContentTitle("Forums Alert")
+                            .setContentText("Your subscribed forum is active");
+
+                    Intent intent = new Intent(NotificationService.this, ChatActivity.class);
+                    intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                    intent.putExtra("key",key);
+                    PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(intent1);
+
+                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager.notify(1, mBuilder.build());
+                }
+            }
         }
     }
 

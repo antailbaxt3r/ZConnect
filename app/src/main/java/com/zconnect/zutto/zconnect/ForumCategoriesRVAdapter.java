@@ -90,6 +90,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
 
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                    intent.putExtra("type","forums");
+                    intent.putExtra("key",uid);
                     context.startActivity(intent);
                 }
             });
@@ -114,7 +116,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
                             tabName.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    addCategory(input.getText().toString(),uid,dataSnapshot.toString());
+                                    addCategory(input.getText().toString(),uid,dataSnapshot.getValue().toString());
                                 }
 
                                 @Override

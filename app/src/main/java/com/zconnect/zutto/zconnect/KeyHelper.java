@@ -13,9 +13,13 @@ public class KeyHelper {
     public static final String KEY_EVENT="AddEvent";
     public static final String KEY_EVENT_BOOST="EventBoosted";
 
-     public static final String KEY_STOREROOM="StoreRoom";
-     public static final String KEY_PRODUCT="Product";
+    public static final String KEY_STOREROOM="StoreRoom";
+    public static final String KEY_PRODUCT="Product";
 
-     public static final String KEY_OFFERS="Offers";
+    public static final String KEY_OFFERS="Offers";
 
+    public static final String KEY_LIKE="Like";
+    public static final String KEY_LOVE="Love";
+
+    public static final String KEY_FORUMS="Forums";
 }

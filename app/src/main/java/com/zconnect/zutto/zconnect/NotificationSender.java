@@ -34,7 +34,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class NotificationSender extends AsyncTask<Void,Void,Void> {
     private RemoteMessage.Builder creator;
     private String key;
-    private String type;
+    private String type,temp;
     private boolean checkFrequency;
     private long current_frequency;
     private long normal_frequency;
@@ -44,13 +44,14 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
     String communityReference;
 
 
-    public NotificationSender(String key,String number,String event,String timeInMilli,String PersonEmail,
+    public NotificationSender(String key,String temp,String number,String event,String timeInMilli,String PersonEmail,
                               String Product,String type,boolean checkFrequency,boolean sendToKey,Context ctx){
         String pName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         if(sendToKey)
             creator = new RemoteMessage.Builder(key);
         else
             creator = new RemoteMessage.Builder(type);
+
         creator.addData("Type", type);
         creator.addData("Person", pName);//pName == null ? name : pName);
         creator.addData("Contact", number);
@@ -59,6 +60,8 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
         creator.addData("Event", event);
         creator.addData("TimeInMilli",timeInMilli);
         creator.addData("Product",Product);
+        creator.addData("Temp",temp);
+
         this.key=key;
         this.type=type;
         this.sendToKey=sendToKey;

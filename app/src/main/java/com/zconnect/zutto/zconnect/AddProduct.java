@@ -358,7 +358,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                 }
             });
 
-            NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,null,KEY_STOREROOM,true,false,getApplicationContext());
+            NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,null,null,KEY_STOREROOM,true,false,getApplicationContext());
             notificationSender.execute();
 
         } else {
