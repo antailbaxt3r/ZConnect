@@ -167,7 +167,13 @@ public class ChatActivity extends BaseActivity {
                         message.setImageThumb(userItem.getImageURLThumbnail());
                         message.setMessage("\""+text+"\"");
                         databaseReference.child("Chat").push().setValue(message);
-                        FirebaseDatabase.getInstance().getReferenceFromUrl(refToCatInTabCategories).child("lastMessage").setValue(message);
+                        try {
+                            FirebaseDatabase.getInstance().getReferenceFromUrl(refToCatInTabCategories).child("lastMessage").setValue(message);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.d("Error Alert ", e.getMessage());
+                        }
                     }
 
                     @Override
