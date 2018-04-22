@@ -6,13 +6,17 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.R;
 
@@ -26,7 +30,7 @@ import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 
 public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
     public View mView;
-    public Button del;
+    public ImageButton del;
     public TextView message;
     public LinearLayout linearLayout;
     DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages");
@@ -35,7 +39,7 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
         mView = itemView;
         message = (TextView) itemView.findViewById(R.id.name_tv_message);
         linearLayout = (LinearLayout) itemView.findViewById(R.id.ll_message);
-        del=(Button)itemView.findViewById(R.id.delete_btn_message);
+        del=(ImageButton)itemView.findViewById(R.id.delete_btn_message);
 
     }
 
