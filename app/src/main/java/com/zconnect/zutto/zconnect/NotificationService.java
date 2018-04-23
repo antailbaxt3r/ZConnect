@@ -54,49 +54,69 @@ public class NotificationService extends FirebaseMessagingService {
             final String type = data.get("Type").toString();
             if (type.equals(KEY_EVENT_BOOST)) {
                 final String key = data.get("Key").toString();
-                // use this to notify users who have boosted if event details have been changed
-                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Event format = dataSnapshot.getValue(Event.class);
-                        Log.d("Entered ", format.getKey());
-                        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationService.this);
+                final String name = data.get("PersonEmail").toString();
+                final String event = data.get("Event").toString();
+                NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
+                NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
 
-                        String event = data.get("Event").toString();
-                        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-                        style.bigText("Congrats! You just subscribed to an event - " + event)
-                                .setBigContentTitle("Event Subscription");
-                        mBuilder.setSmallIcon(R.mipmap.ic_alarm_black_24dp)
-                                .setStyle(style)
-                                .setContentTitle("NB Event Subscription")
-                                .setContentText("NB Congrats! You just subscribed to an event - " + event);
+                style.bigText("Your subscribed forum is active")
+                        .setBigContentTitle("Forums Alert");
 
-//                        Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
-//                        intent.putExtra("currentEvent", format);
-//                        intent.putExtra("Eventtag","1");
+                mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
+                        .setStyle(style)
+                        .setContentTitle("Event Boosted")
+                        .setContentText( name + " boosted your event "+ event);
 
-//                        PendingIntent pIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-//                        mBuilder.setContentIntent(pIntent);
+                Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
+                intent.putExtra("id",key);
+                PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setContentIntent(intent1);
 
-                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-                        Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
-                        notificationIntent.addCategory("android.intent.category.DEFAULT");
-                        notificationIntent.putExtra("Eventtag", "1");
-                        notificationIntent.putExtra("currentEvent", format);
-                        notificationIntent.putExtra("EventName", event);
-
-                        PendingIntent broadcast = PendingIntent.getBroadcast(NotificationService.this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, (Long.parseLong(format.getEventTimeMillis().toString()) - Long.parseLong(data.get("TimeInMilli").toString()) - (5 * 60 * 1000)), broadcast);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(1, mBuilder.build());
+//                // use this to notify users who have boosted if event details have been changed
+//                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        Event format = dataSnapshot.getValue(Event.class);
+//                        Log.d("Entered ", format.getKey());
+//                        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationService.this);
+//
+//                        String event = data.get("Event").toString();
+//                        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+//                        style.bigText("Congrats! You just subscribed to an event - " + event)
+//                                .setBigContentTitle("Event Subscription");
+//                        mBuilder.setSmallIcon(R.mipmap.ic_alarm_black_24dp)
+//                                .setStyle(style)
+//                                .setContentTitle("NB Event Subscription")
+//                                .setContentText("NB Congrats! You just subscribed to an event - " + event);
+//
+////                        Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
+////                        intent.putExtra("currentEvent", format);
+////                        intent.putExtra("Eventtag","1");
+//
+////                        PendingIntent pIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+////                        mBuilder.setContentIntent(pIntent);
+//
+//                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//
+//                        Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
+//                        notificationIntent.addCategory("android.intent.category.DEFAULT");
+//                        notificationIntent.putExtra("Eventtag", "1");
+//                        notificationIntent.putExtra("currentEvent", format);
+//                        notificationIntent.putExtra("EventName", event);
+//
+//                        PendingIntent broadcast = PendingIntent.getBroadcast(NotificationService.this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, (Long.parseLong(format.getEventTimeMillis().toString()) - Long.parseLong(data.get("TimeInMilli").toString()) - (5 * 60 * 1000)), broadcast);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
 
 
             } else if (type.equals(KEY_CABPOOL_JOIN)) {
