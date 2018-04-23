@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.util.Calendar;
@@ -38,7 +39,7 @@ import mabbas007.tagsedittext.TagsEditText;
 
 public class OpenUserDetail extends BaseActivity {
     String name, mobileNumber,whatsAppNumber, email, desc, imagelink ,skills ,category, Uid;
-    private android.support.design.widget.TextInputEditText editTextName;
+    private MaterialEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
@@ -64,7 +65,7 @@ public class OpenUserDetail extends BaseActivity {
         image = (SimpleDraweeView) findViewById(R.id.contact_details_display_image);
         editTextDetails = (TextInputEditText) findViewById(R.id.contact_details_editText_1);
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_details_email_editText);
-        editTextName = (TextInputEditText) findViewById(R.id.contact_details_name_editText);
+        editTextName = (MaterialEditText) findViewById(R.id.contact_details_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_details_number_editText);
         //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
@@ -296,8 +297,9 @@ public class OpenUserDetail extends BaseActivity {
         });
 
         //changing fonts
-        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
-        editTextName.setTypeface(ralewayRegular);
+        Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
+        Typeface ralewaySemiBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-SemiBold.ttf");
+        editTextName.setTypeface(ralewaySemiBold);
         editTextDetails.setTypeface(ralewayRegular);
         editTextNumber.setTypeface(ralewayRegular);
         editTextSkills.setTypeface(ralewayRegular);
@@ -351,6 +353,9 @@ public class OpenUserDetail extends BaseActivity {
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mobileNumber)));
                 }
             });
+        }
+        if(whatsAppNumber != null) {
+            whatsAppNumberText.setText(whatsAppNumber);
         }
         if (imagelink != null) {
             if (imagelink.equals("https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336")) {

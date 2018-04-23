@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,15 +24,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
+import com.rengwuxian.materialedittext.MaterialEditText;
+import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+
 public class ChatActivity extends BaseActivity {
 
-    private String ref  = "Misc";
+    private String ref  = "Misc", refToCatInTabCategories = "";
     private RecyclerView chatView;
     private RecyclerView.Adapter adapter;
     private DatabaseReference databaseReference ;
@@ -63,6 +68,9 @@ public class ChatActivity extends BaseActivity {
             }
             if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))){
                 type = getIntent().getStringExtra("type");
+            }
+            if(!TextUtils.isEmpty(getIntent().getStringExtra("ref_to_cat_in_tabCategories"))){
+                refToCatInTabCategories = getIntent().getStringExtra("ref_to_cat_in_tabCategories");
             }
         }
         joinButton = (Button) findViewById(R.id.join);
@@ -194,7 +202,7 @@ public class ChatActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                EditText typer = ((EditText)findViewById(R.id.typer));
+                MaterialEditText typer = ((MaterialEditText)findViewById(R.id.typer));
                 final String text = typer.getText().toString();
                 if(TextUtils.isEmpty(text)){
                     showToast("Message is empty.");
@@ -216,6 +224,7 @@ public class ChatActivity extends BaseActivity {
                             NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,null,KeyHelper.KEY_FORUMS,false,true,ChatActivity.this);
                             notificationSender.execute();
                         }
+                        FirebaseDatabase.getInstance().getReferenceFromUrl(refToCatInTabCategories).child("lastMessage").setValue(message);
                     }
 
                     @Override

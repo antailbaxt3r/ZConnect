@@ -77,6 +77,7 @@ public class NewMessageActivity extends BaseActivity {
                 newMessage.child("name").setValue("Message");
                 newMessage.child("imageurl").setValue("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png");
                 newMessage.child("id").setValue(key);
+                newMessage.child("PostTimeMillis").setValue(System.currentTimeMillis());
                 mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

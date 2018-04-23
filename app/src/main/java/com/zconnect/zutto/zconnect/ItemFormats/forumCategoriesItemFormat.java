@@ -10,15 +10,18 @@ public class forumCategoriesItemFormat {
     private String name;
     private String tabUID;
     private String catUID;
+    private ChatItemFormats lastMessage;
 
 
-    public forumCategoriesItemFormat(String name, String catUID, String tabUID) {
+    public forumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage) {
         this.name = name;
         this.tabUID = tabUID;
         this.catUID = catUID;
+        this.lastMessage = lastMessage;
     }
 
     public forumCategoriesItemFormat() {
+
     }
 
     public String getName() {
@@ -45,6 +48,7 @@ public class forumCategoriesItemFormat {
         this.catUID = catUID;
     }
 
+    public ChatItemFormats getLastMessage() {
+        return lastMessage;
+    }
 }
-
-

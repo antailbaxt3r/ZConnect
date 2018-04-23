@@ -105,12 +105,44 @@
             android:layout_marginStart="30dp"
             android:layout_marginEnd="20dp">
             <LinearLayout
-                android:id="@+id/infoneRecentItem"
+                android:id="@+id/forumsRecentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp">
+                <TextView
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:id="@+id/forumsRecentItem_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Name of forum"
+                    android:textColor="@color/primaryText"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/messagesRecentItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/messagesRecentItem_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Message goes here"
+                    android:textColor="@color/primaryText"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/infoneRecentItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">

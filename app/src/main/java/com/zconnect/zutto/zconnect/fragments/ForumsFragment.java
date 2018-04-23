@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,7 +58,7 @@ public class ForumsFragment extends Fragment {
                     forumCategories.add(shot.getValue(forumCategoriesItemFormat.class));
                 }
 
-                addCategoryButton.setName("+");
+                addCategoryButton.setName("+ create a forum");
                 addCategoryButton.setCatUID("add");
                 addCategoryButton.setTabUID("this");
                 forumCategories.add(addCategoryButton);
@@ -72,7 +73,7 @@ public class ForumsFragment extends Fragment {
         });
 
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_infone_fragment);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab);
         recyclerView.setAdapter(adapter);
         return view;
