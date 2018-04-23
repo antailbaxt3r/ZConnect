@@ -361,6 +361,7 @@ public class NotificationService extends FirebaseMessagingService {
 
                 final String temp = data.get("Temp").toString();
                 final String key = data.get("Key").toString();
+                final String userName = data.get("Product").toString();
                 if(!temp.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                     NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
                     NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
@@ -371,7 +372,7 @@ public class NotificationService extends FirebaseMessagingService {
                     mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
                             .setStyle(style)
                             .setContentTitle("Forums Alert")
-                            .setContentText("Your subscribed forum is active");
+                            .setContentText(userName + "Your subscribed forum is active");
 
                     Intent intent = new Intent(NotificationService.this, ChatActivity.class);
                     intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());

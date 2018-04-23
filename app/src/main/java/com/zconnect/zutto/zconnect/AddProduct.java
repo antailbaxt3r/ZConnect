@@ -279,6 +279,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     newPost.child("Image").setValue(downloadUri != null ? downloadUri.toString() : null);
                     newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
                     newPost.child("SellerUsername").setValue(sellerName);
+                    newPost.child("userID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     newPost.child("Price").setValue(productPriceValue);
                     newPost.child("negotiable").setValue(negotiable);
                     newPost.child("PostTimeMillis").setValue(postTimeMillis);
@@ -313,6 +314,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     newPost2.child("Key").setValue(newPost2.getKey());
                     newPost2.child("productPrice").setValue(productPriceValue);
                     newPost2.child("PostTimeMillis").setValue(postTimeMillis);
+
                     newPost2Postedby.setValue(null);
                     newPost2Postedby.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {

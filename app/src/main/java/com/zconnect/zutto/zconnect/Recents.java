@@ -76,7 +76,7 @@ public class Recents extends Fragment {
         homeDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
         //Keep databaseReference in sync even without needing to call valueEventListener
         homeDbRef.keepSynced(true);
-        queryRef = homeDbRef.limitToLast(15);
+        queryRef = homeDbRef;
         queryRef.keepSynced(true);
         mStoreroomDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
         mStoreroomDatabase.addListenerForSingleValueEvent(new ValueEventListener() {

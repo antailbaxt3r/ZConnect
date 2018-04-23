@@ -55,6 +55,7 @@ public class TrendingEvents extends Fragment {
     private Query queryRef;
     private RecyclerView mEventList;
 
+
     public TrendingEvents() {
         // Required empty public constructor
     }
@@ -129,7 +130,7 @@ public class TrendingEvents extends Fragment {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<Event, EventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, TrendingEvents.EventViewHolder>(
+        final FirebaseRecyclerAdapter<Event, EventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, TrendingEvents.EventViewHolder>(
                 Event.class,
                 R.layout.events_row,
                 EventViewHolder.class,
@@ -149,11 +150,11 @@ public class TrendingEvents extends Fragment {
                     viewHolder.setBoost(model);
                     viewHolder.setPostedByDetails(model.getPostedBy().getUsername(), model.getPostedBy().getImageThumb());
                     viewHolder.setEventTimestamp(model.getPostTimeMillis());
+                    viewHolder.checkDelete(model.getPostTimeMillis(),model.getKey());
                 }
                 catch (Exception e) {
                     Log.d("Error Alert: ", e.getMessage());
                 }
-
             }
         };
         mEventList.setAdapter(firebaseRecyclerAdapter);
@@ -164,7 +165,7 @@ public class TrendingEvents extends Fragment {
         View mView;
         String key;
         Boolean flag= false;
-
+        Boolean flag2 = false;
         FirebaseAuth mAuth;
         SharedPreferences sharedPref;
         Boolean status;
@@ -182,6 +183,29 @@ public class TrendingEvents extends Fragment {
             }
             communitySP = itemView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
             communityReference = communitySP.getString("communityReference", null);
+        }
+
+        public void checkDelete(Long date,String eventID){
+            final DatabaseReference eventReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventID);
+            final DatabaseReference archivedReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("archivedEvents").child(eventID);
+            Long currentDate = System.currentTimeMillis() + 86400000;
+            if (currentDate>date){
+                eventReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(!flag2) {
+                            archivedReference.setValue(dataSnapshot.getValue());
+                            flag2 = true;
+                            eventReference.removeValue();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
         }
 
         public void openEvent(final Event event) {

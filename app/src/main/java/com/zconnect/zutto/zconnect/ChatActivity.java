@@ -25,7 +25,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
@@ -36,7 +35,7 @@ import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 
 public class ChatActivity extends BaseActivity {
 
-    private String ref  = "Misc", refToCatInTabCategories = "";
+    private String ref  = "Misc";
     private RecyclerView chatView;
     private RecyclerView.Adapter adapter;
     private DatabaseReference databaseReference ;
@@ -56,7 +55,7 @@ public class ChatActivity extends BaseActivity {
         setContentView(R.layout.activity_chat);
         setToolbar();
         showBackButton();
-        setSupportActionBar(getToolbar());
+
         SharedPreferences communitySP;
         final String communityReference;
         communitySP = ChatActivity.this.getSharedPreferences("communityName", MODE_PRIVATE);
@@ -68,9 +67,6 @@ public class ChatActivity extends BaseActivity {
             }
             if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))){
                 type = getIntent().getStringExtra("type");
-            }
-            if(!TextUtils.isEmpty(getIntent().getStringExtra("ref_to_cat_in_tabCategories"))){
-                refToCatInTabCategories = getIntent().getStringExtra("ref_to_cat_in_tabCategories");
             }
         }
         joinButton = (Button) findViewById(R.id.join);
@@ -90,12 +86,12 @@ public class ChatActivity extends BaseActivity {
         if(type!=null){
             if(type.equals("cabPool")){
                 menu.findItem(R.id.action_list_people).setVisible(false);
-                databaseReference.child("usersListItemFormats").addValueEventListener(new ValueEventListener() {
+                databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
-                        if(!dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        if(!dataSnapshot.child("usersListItemFormats").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             joinButton.setVisibility(View.VISIBLE);
                             joinLayout.setVisibility(View.VISIBLE);
                             chatLayout.setVisibility(View.GONE);
@@ -196,7 +192,7 @@ public class ChatActivity extends BaseActivity {
         chatView.setLayoutManager(linearLayoutManager);
         chatView.setAdapter(adapter);
 
-
+        setSupportActionBar(getToolbar());
 
         findViewById(R.id.sendBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,10 +217,21 @@ public class ChatActivity extends BaseActivity {
                         message.setMessage("\""+text+"\"");
                         databaseReference.child("Chat").push().setValue(message);
                         if (type.equals("forums")){
-                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,null,KeyHelper.KEY_FORUMS,false,true,ChatActivity.this);
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_FORUMS,false,true,ChatActivity.this);
                             notificationSender.execute();
                         }
-                        FirebaseDatabase.getInstance().getReferenceFromUrl(refToCatInTabCategories).child("lastMessage").setValue(message);
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(dataSnapshot.child("tab").getValue().toString()).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
                     }
 
                     @Override

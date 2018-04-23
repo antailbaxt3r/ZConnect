@@ -7,5 +7,5 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="Map" parent="android:Theme.Holo.NoActionBar.TranslucentDecor"></style>
+    <style name="Map" parent="Theme.AppCompat.NoActionBar"></style>
 </resources>

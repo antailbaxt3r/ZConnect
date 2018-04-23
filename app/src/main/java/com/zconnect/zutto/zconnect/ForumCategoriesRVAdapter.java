@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
 
 import java.text.SimpleDateFormat;
@@ -119,7 +120,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
                     intent.putExtra("type","forums");
                     intent.putExtra("key",uid);
-                    intent.putExtra("ref_to_cat_in_tabCategories", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tabId).child(uid).toString());
+
                     context.startActivity(intent);
                 }
             });
@@ -183,7 +184,25 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
             newPush.child("PostTimeMillis").setValue(postTimeMillis);
             newPush.child("UID").setValue(newPush.getKey());
             newPush.child("tab").setValue(uid);
-            newPush.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
+            final UsersListItemFormat userDetails = new UsersListItemFormat();
+            DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            user.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot2) {
+                    UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
+                    userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
+                    userDetails.setName(userItemFormat.getUsername());
+                    userDetails.setPhonenumber(userItemFormat.getMobileNumber());
+                    userDetails.setUserUID(userItemFormat.getUserUID());
+                    newPush.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
             databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
             databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
