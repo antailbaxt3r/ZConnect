@@ -5,7 +5,7 @@
     <item
         android:title="Open Infone"
         android:id="@+id/action_open_menu_phonebook"
-        android:icon="@android:drawable/ic_menu_call"
+        android:icon="@drawable/ic_phone_white_24dp"
         android:orderInCategory="2"
         android:name="Open Infone"
         app:showAsAction="ifRoom" />

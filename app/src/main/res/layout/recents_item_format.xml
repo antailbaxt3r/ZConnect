@@ -107,17 +107,22 @@
                 android:id="@+id/forumsRecentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:paddingTop="5dp"
-                android:paddingBottom="5dp">
+                android:paddingBottom="5dp"
+                android:visibility="gone">
                 <TextView
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
                     android:id="@+id/forumsRecentItem_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="Name of forum"
+                    android:text="Name"
                     android:textColor="@color/primaryText"/>
+                <TextView
+                    android:id="@+id/forumsRecentItem_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="in category"
+                    android:textColor="@color/primaryText"
+                    android:layout_marginStart="5dp"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/messagesRecentItem"

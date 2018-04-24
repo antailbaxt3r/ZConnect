@@ -76,7 +76,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
             }
             if (position!=0) {
                 holder.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID());
+                holder.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
             }else {
+                holder.catName.setTextColor(context.getResources().getColor(R.color.secondaryText));
                 holder.createCategory(tabUID);
                 holder.lastMessageMessage.setVisibility(View.GONE);
                 holder.lastMessageUsername.setVisibility(View.GONE);
