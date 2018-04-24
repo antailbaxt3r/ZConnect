@@ -38,6 +38,7 @@ import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -166,7 +167,8 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
                 userType = dataSnapshot.child("type").getValue(String.class);
                 verfiedDate = dataSnapshot.child("verifiedDate").getValue().toString();
-                verifiedDateTextView.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.LONG, Locale.US).format(verfiedDate));
+                TimeAgo ta = new TimeAgo(Long.parseLong(verfiedDate), System.currentTimeMillis());
+                verifiedDateTextView.setText(ta.calculateTimeAgo());
 
                 if (userType.equals("User")) {
                     menu.findItem(R.id.action_edit).setVisible(false);
@@ -209,7 +211,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
                 phone1Et.setText(phoneNums.get(0));
                 phone2Et.setText(phoneNums.get(1));
-                verifiedDateTextView.setText(verfiedDate);
+                verifiedDateTextView.setText(ta.calculateTimeAgo());
 
             }
 
