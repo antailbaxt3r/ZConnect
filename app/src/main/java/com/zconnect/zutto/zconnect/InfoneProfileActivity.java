@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -33,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -44,11 +46,11 @@ import java.util.Collections;
 public class InfoneProfileActivity extends AppCompatActivity {
 
     /*UI elements*/
-    private EditText nameEt;
+    private MaterialEditText nameEt;
     private String userType="No";
     //private TextView desc;
-    EditText phone1Et;
-    EditText phone2Et;
+    MaterialEditText phone1Et;
+    MaterialEditText phone2Et;
     Button saveEditBtn;
     SimpleDraweeView profileImage;
     Toolbar toolbar;
@@ -108,10 +110,10 @@ public class InfoneProfileActivity extends AppCompatActivity {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        nameEt = (EditText) findViewById(R.id.et_name_infone_profile);
+        nameEt = (MaterialEditText) findViewById(R.id.et_name_infone_profile);
         profileImage = (SimpleDraweeView) findViewById(R.id.image_profile_infone);
-        phone1Et = (EditText) findViewById(R.id.et_phone1_infone_profile);
-        phone2Et = (EditText) findViewById(R.id.et_phone2_infone_profile);
+        phone1Et = (MaterialEditText) findViewById(R.id.et_phone1_infone_profile);
+        phone2Et = (MaterialEditText) findViewById(R.id.et_phone2_infone_profile);
         saveEditBtn = (Button) findViewById(R.id.save_edit_infone_profile);
         validButton = (Button) findViewById(R.id.valid_button);
         verifiedDateTextView = (TextView) findViewById(R.id.verified_date);
@@ -154,7 +156,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);
                 catId = dataSnapshot.child("catId").getValue(String.class);
-                validButton.setText(dataSnapshot.child("validCount").getValue().toString());
+                validButton.setText(dataSnapshot.child("validCount").getValue().toString() + " validations");
 
                 userType = dataSnapshot.child("type").getValue(String.class);
                 verfiedDate = dataSnapshot.child("verifiedDate").getValue().toString();
@@ -180,9 +182,11 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
                 if (dataSnapshot.child("valid").hasChild(mAuth.getCurrentUser().getUid())){
                     flag=true;
-                    validButton.setBackgroundColor(getResources().getColor(R.color.teal700));
+                    validButton.setBackground(getResources().getDrawable(R.drawable.roundradius));
+                    validButton.setTextColor(getResources().getColor(R.color.primaryText));
                 }else {
-                    validButton.setBackgroundColor(getResources().getColor(R.color.teal100));
+                    validButton.setBackgroundColor(getResources().getColor(R.color.infone));
+                    validButton.setTextColor(getResources().getColor(R.color.white));
                     flag=false;
                 }
 

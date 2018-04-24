@@ -72,18 +72,18 @@
             <LinearLayout
                 android:id="@+id/joinLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:layout_height="wrap_content">
                 <Button
                     android:id="@+id/join"
                     android:text="Join"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
-                    android:textSize="18dp"
-                    android:textColor="@color/white"
-                    android:background="@drawable/curveradiusgoogle"
-                    android:layout_margin="5dp"/>
+                    android:padding="10dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/primaryText"
+                    android:background="@color/teal50"
+                    android:layout_margin="5dp"
+                    android:textAllCaps="false"/>
             </LinearLayout>
 
         </FrameLayout>
