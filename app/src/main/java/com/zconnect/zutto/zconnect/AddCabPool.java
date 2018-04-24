@@ -261,7 +261,7 @@ public class AddCabPool extends BaseActivity {
                                         FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid()).child("Topics").push().setValue(key);
 
                                         //writing to database for recent items
-                                        DatabaseReference newPost2 = homeReference.push();
+                                        DatabaseReference newPost2 = homeReference.child(key);
                                         final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
                                         newPost2.child("name").setValue("Cabpool to " + destination.getSelectedItem().toString());
                                         newPost2.child("desc").setValue("Hey! a friend is asking for a cabpool from " + source.getSelectedItem().toString() + " to " + destination.getSelectedItem().toString() + " on " + calender.getText().toString() + " between " + time + ". Do you want to join?");

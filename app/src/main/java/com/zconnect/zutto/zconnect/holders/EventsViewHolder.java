@@ -98,9 +98,10 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void checkDelete(Long date,String eventID){
+    public void checkDelete(Long date, final String eventID){
         final DatabaseReference eventReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventID);
         final DatabaseReference archivedReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("archivedEvents").child(eventID);
+
         Long currentDate = System.currentTimeMillis() + 86400000;
         if (currentDate>date){
             eventReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -110,6 +111,7 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
                         archivedReference.setValue(dataSnapshot.getValue());
                         flag2 = true;
                         eventReference.removeValue();
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(eventID).removeValue();
                     }
                 }
 

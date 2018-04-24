@@ -121,6 +121,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     int UsersTotalCabpools = 0, TotalCabpools = 0;
     private ValueEventListener UserStats;
     private ValueEventListener TotalStats;
+    private String navHeaderBackGroundImageUrl =null;
 
     String flag;
 
@@ -178,8 +179,16 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 if (dataSnapshot.hasChild("name")) {
                     setToolbarTitle(dataSnapshot.child("name").getValue().toString() + " Connect");
 
+
                 }else {
                     setToolbarTitle("Community Connect");
+                }
+
+                navHeaderBackGroundImageUrl = dataSnapshot.child("image").getValue(String.class);
+                if (navHeaderBackGroundImageUrl != null
+                        && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)
+                        && navHeaderBackground != null) {
+                    navHeaderBackground.setImageURI(navHeaderBackGroundImageUrl);
                 }
             }
 
@@ -201,8 +210,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
-
 
         //getting all the tabs Instances
         recent = new Recents();
@@ -243,107 +250,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
                 int i=tabs.getSelectedTabPosition();
-//                if(i==0){//Recents
-//                if (!status) {
-                    bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-                    //animateFAB();
-//                }else {
-//                    alertBox();
-//                    }
-//                }
-//                if (i == 1) {//Infone
-//                    if (!status) {
-//                        Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-//                        startActivity(intent);
-//
-//                    } else {
-//                        alertBox();
-//                    }
-//                }
-//                if (i == 2) {//Storeroom
-//                    if (!status) {
-//                        CounterManager.StoreRoomFABclick();
-//                        Intent intent = new Intent(getApplicationContext(), AddProduct.class);
-//                        startActivity(intent);
-//                    } else {
-//                        alertBox();
-//                    }
-//                }
-//                if (i == 3) {//Events
-//                    if (!status) {
-//                        CounterManager.eventAddClick();
-//                        Intent intent = new Intent(getApplicationContext(), AddEvent.class);
-//                        startActivity(intent);
-//                    } else {
-//                        alertBox();
-//                    }
-//                }
-//                if (i == 4) {//CabPool
-//                    if (!status) {
-//                        setActionBarTitle("Search Pool");
-//                        CounterManager.RecentsOpen();
-//                        Intent intent = new Intent(HomeActivity.this, CabPooling.class);
-//                        startActivity(intent);
-//                    } else {
-//                        alertBox();
-//                    }
-//                }
-//                if (i == 5) {//Shops
-//                    if (!status) {
-//                        CounterManager.shopOffers();
-//                        Intent intent = new Intent(HomeActivity.this, Offers.class);
-//                        startActivity(intent);
-//                    } else {
-//                        alertBox();
-//                    }
-//                }
-
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
             }
-
         });
-
-//        //fab to add product
-//        fab1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-//                Boolean status = sharedPref.getBoolean("mode", false);
-//                if (!status) {
-//                    CounterManager.StoreRoomFABclick();
-//                    Intent intent = new Intent(getApplicationContext(), AddProduct.class);
-//                    startActivity(intent);
-//                }
-//            }
-//        });
-//
-//        //fab to add event
-//        fab2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-//                Boolean status = sharedPref.getBoolean("mode", false);
-//                if (!status) {
-//                    CounterManager.eventAddClick();
-//                    Intent intent = new Intent(getApplicationContext(), AddEvent.class);
-//                    startActivity(intent);
-//                }
-//            }
-//        });
-
-        //fab to add search pool
-//        fab3.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-//                Boolean status = sharedPref.getBoolean("mode", false);
-//                if (!status) {
-//                    setActionBarTitle("Search Pool");
-//                    CounterManager.RecentsOpen();
-//                    Intent intent = new Intent(getApplicationContext(), CabPooling.class);
-//                    startActivity(intent);
-//                }
-//            }
-//        });
 
 
         toggle = new ActionBarDrawerToggle(
@@ -767,42 +676,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
         };
 
-        uiDbListener = new ValueEventListener() {
-            /**
-             * Updates nav header background and nav header text colors according to firebase.
-             */
-            @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                final DataSnapshot navDrawerNode = dataSnapshot.child("navDrawer");
-                final String textColorString = navDrawerNode.child("headerTextColor").getValue(String.class);
-                final String navHeaderBackGroundImageUrl;
-                try {
-                    if (textColorString != null && textColorString.length() > 1) {
-                        @ColorInt final int textColor = Color.parseColor(textColorString);
-                        if (navHeaderUserNameTv != null)
-                            navHeaderUserNameTv.setTextColor(textColor);
-                        if (navHeaderEmailTv != null) navHeaderEmailTv.setTextColor(textColor);
-                    }
-                    navHeaderBackGroundImageUrl = navDrawerNode.child("headerBackground").getValue(String.class);
-                    if (navHeaderBackGroundImageUrl != null
-                            && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)
-                            && navHeaderBackground != null) {
-                        navHeaderBackground.setImageURI(navHeaderBackGroundImageUrl);
-                    }
-                } catch (final DatabaseException e) {
-                    // caused when data in db is of other type than accessed
-                    Log.e(TAG, "onDataChange: ", e.fillInStackTrace());
-                } catch (final IllegalArgumentException e) {
-                    // caused when Color.parseColor is provided incorrect string
-                    Log.e(TAG, "onDataChange: illegal color in /ui/navHeader/headerTextColor", e.fillInStackTrace());
-                }
-            }
-
-            @Override
-            public void onCancelled(final DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled:", databaseError.toException());
-            }
-        };
     }
 
     private void updateViews() {
@@ -860,26 +733,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(intent);
                 break;
             }
-            case R.id.messages: {
-                Intent messagesIntent = new Intent(HomeActivity.this,MessagesActivity.class);
-                startActivity(messagesIntent);
-                /* messages activity has 2 tabs and each one has a rv with its adapter and viewholder
-                   in the packages(holders and adapters) namely MessageTabRVAdapter,ChatTabRVAdapter
-                   along with the item class ChatTabRVItem,MessageTabRVItem(item format package).
-                */
+            case R.id.infone: {
+                Intent infoneIntent = new Intent(HomeActivity.this,Infone2Activity.class);
+                startActivity(infoneIntent);
                 tabs.getTabAt(1).select();
                 break;
             }
-            case R.id.Shop: {
-                tabs.getTabAt(5).select();
-                break;
-            }
+
             case R.id.MyProducts: {
+                Intent MyProductsIntent = new Intent(HomeActivity.this,MyProducts.class);
+                startActivity(MyProductsIntent);
                 tabs.getTabAt(2).select();
-                break;
-            }
-            case R.id.Timeline: {
-                tabs.getTabAt(3).select();
                 break;
             }
             case R.id.MyRides: {
@@ -990,9 +854,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         super.onResume();
         mUser = mAuth.getCurrentUser();
         updateViews();
-        if(communityReference!=null) {
-            uiDbRef.addValueEventListener(uiDbListener);
-        }
     }
 
     @Override
@@ -1016,9 +877,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         // onPause is always called before onStop,
         // which in turn is always called before onDestroy
 
-        if(communityReference!=null) {
-            uiDbRef.removeEventListener(uiDbListener);
-        }
 
         super.onPause();
     }

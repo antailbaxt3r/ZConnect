@@ -367,7 +367,7 @@ public class AddEvent extends BaseActivity {
                             newPost.child("PostTimeMillis").setValue(postTimeMillis);
 
                             //For Recents
-                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
+                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
                             final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
                             newPost2PostedBy.setValue(null);
                             newPost2.child("name").setValue(eventNameValue);
@@ -472,7 +472,7 @@ public class AddEvent extends BaseActivity {
                             CounterManager.addEventUnVerified(key, eventNameValue);
 
                             //For Everything
-                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
+                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
                             final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
                             newPost2PostedBy.setValue(null);
                             newPost2.child("name").setValue(eventNameValue);

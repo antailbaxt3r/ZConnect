@@ -31,14 +31,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
     Context context;
     Vector<RecentsItemFormat> recentsItemFormats;
     private HomeActivity mHomeActivity;
-    List<String> storeroomProductList;
     DatabaseReference mRef;
 
-    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity,List<String> storeroomProductList) {
+    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity) {
         this.context = context;
         this.recentsItemFormats = recentsItemFormats;
         mHomeActivity = HomeActivity;
-        this.storeroomProductList = storeroomProductList;
     }
 
     @Override
@@ -313,13 +311,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         //mHome.finish();
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                           try{
-                              if (storeroomProductList.contains(recentsItemFormats.get(getAdapterPosition()).getId())) {
-                                  i = new Intent(context, OpenProductDetails.class);
-                                  i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getId());
-                                  context.startActivity(i);
-                              }else {
-                                  Toast.makeText(view.getContext(), "Product Already Sold", Toast.LENGTH_SHORT).show();
-                              }
+                              i = new Intent(context, OpenProductDetails.class);
+                              i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getId());
+                              context.startActivity(i);
+
                           } catch(Exception e) {
                               Log.d("Error Alert: ", e.getMessage());
                             }

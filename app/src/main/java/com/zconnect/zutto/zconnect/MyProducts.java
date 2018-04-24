@@ -139,6 +139,7 @@ public class MyProducts extends BaseActivity {
                                 FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("archiveProducts").child(product_key).setValue(dataSnapshot.getValue());
                                 flag= true;
                                 ReserveReference.removeValue();
+                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(product_key).removeValue();
                             }
 
                         }

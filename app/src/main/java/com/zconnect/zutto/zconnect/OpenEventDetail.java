@@ -466,7 +466,7 @@ public class  OpenEventDetail extends BaseActivity {
 
     private void boostCounter() {
 
-        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey());
+        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(id);
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {
