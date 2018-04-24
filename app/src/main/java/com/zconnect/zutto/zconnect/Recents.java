@@ -40,7 +40,6 @@ public class Recents extends Fragment {
     private RecentsRVAdapter adapter;
     @BindView(R.id.recent_rv)
     RecyclerView recyclerView;
-    private Query mStoreroomDatabase;
     List<String> storeroomProductList = new ArrayList<String>();
     private SharedPreferences communitySP;
     public String communityReference;
@@ -78,21 +77,7 @@ public class Recents extends Fragment {
         homeDbRef.keepSynced(true);
         queryRef = homeDbRef;
         queryRef.keepSynced(true);
-        mStoreroomDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
-        mStoreroomDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    storeroomProductList.add(shot.getKey());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         queryResponseListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -120,7 +105,7 @@ public class Recents extends Fragment {
         productLinearLayout.setStackFromEnd(true);
         recyclerView.setLayoutManager(productLinearLayout);
         //Setup layout manager. VERY IMP ALWAYS
-        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(),storeroomProductList);
+        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity());
         recyclerView.setAdapter(adapter);
         return view;
     }
