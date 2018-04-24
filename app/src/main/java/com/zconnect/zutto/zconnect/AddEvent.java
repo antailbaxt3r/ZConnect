@@ -671,6 +671,7 @@ public class AddEvent extends BaseActivity {
                     e.printStackTrace();
                 }
             }
+
         }
 
         if (requestCode == 124 && resultCode == RESULT_OK) {

@@ -97,7 +97,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference currentUserReference;
     private DatabaseReference mDatabasePopUps;
-    private Boolean isFabOpen = false;
+    private DatabaseReference communityInfoRef;
+    private Boolean isFabOpen;
     private FloatingActionButton fab, fab1, fab2, fab3;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
 
@@ -130,6 +131,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     BottomSheetBehavior sheetBehavior;
     LinearLayout layoutBottomSheet;
 
+    public HomeActivity() {
+        isFabOpen = false;
+    }
+
 
     @SuppressLint("ApplySharedPref")
     @Override
@@ -152,6 +157,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         navHeaderBackground = (SimpleDraweeView) navHeader.findViewById(R.id.iv_nav_header_background);
         //necessary for icons to retain their color
         navigationView.setItemIconTintList(null);
+        communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -166,6 +172,24 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         initListeners();
         setSupportActionBar(toolbar);
 
+        communityInfoRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("name")) {
+                    setToolbarTitle(dataSnapshot.child("name").getValue().toString() + " Connect");
+
+                }else {
+                    setToolbarTitle("Community Connect");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -177,6 +201,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
+
 
         //getting all the tabs Instances
         recent = new Recents();
@@ -515,8 +541,25 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 tab.getCustomView().setAlpha((float) 1);
                 switch (pos) {
                     case 0: {
-                        setActionBarTitle("BITS Connect");
-                        CounterManager.RecentsOpen();
+                        communityInfoRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                if (dataSnapshot.hasChild("name")){
+                                    setActionBarTitle(dataSnapshot.child("name").getValue().toString() + " Connect");
+                                }else {
+                                    setActionBarTitle("Community Connect");
+                                }
+
+                                CounterManager.RecentsOpen();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
 //                        fab.setImageResource(R.drawable.ic_add_white_36dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
