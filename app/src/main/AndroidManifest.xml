@@ -30,18 +30,20 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
-     See README(https://goo.gl/l4GJaQ) for more. -->
+        <!--
+     Set custom default icon. This is used when no icon is set for incoming notification messages.
+     See README(https://goo.gl/l4GJaQ) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/logo" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
-
 
         <!-- On start activity in full screen mode -->
         <activity
@@ -248,7 +250,7 @@
                 android:value="com.zconnect.zutto.zconnect.HomeActivity" />
         </activity>
         <activity
-            android:name=".CabListOfPeople"
+            android:name=".CabPoolListOfPeople"
             android:label="@string/title_activity_cab_list_of_people"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -320,11 +322,14 @@
             android:name=".InfoneProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".InfoneAddContactActivity" />
-
         <activity android:name=".InfoneAddCatActivity" />
         <activity
             android:name=".CabPoolLocations"
             android:label="@string/title_activity_cab_pool_locations"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ForumsPeopleList"
+            android:label="@string/title_activity_forums_people_list"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

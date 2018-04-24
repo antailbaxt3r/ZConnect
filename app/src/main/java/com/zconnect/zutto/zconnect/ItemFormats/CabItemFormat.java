@@ -104,11 +104,11 @@ public class CabItemFormat {
         this.key = key;
     }
 //
-//    public Vector<CabListItemFormat> getCabListItemFormats() {
+//    public Vector<UsersListItemFormat> getCabListItemFormats() {
 //        return cabListItemFormats;
 //    }
 //
-//    public void setCabListItemFormats(Vector<CabListItemFormat> cabListItemFormats) {
+//    public void setCabListItemFormats(Vector<UsersListItemFormat> cabListItemFormats) {
 //        this.cabListItemFormats = cabListItemFormats;
 //    }
 }

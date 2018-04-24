@@ -134,7 +134,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 //                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
 //                                productShortList.setTypeface(customfont);
 
-                                NotificationSender notificationSender=new NotificationSender(key,null,null,null,mAuth.getCurrentUser().getEmail(),productName,KEY_PRODUCT,false,true,itemView.getContext());
+                                NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,mAuth.getCurrentUser().getEmail(),productName,KEY_PRODUCT,false,true,itemView.getContext());
                                 notificationSender.execute();
                             }
                         }

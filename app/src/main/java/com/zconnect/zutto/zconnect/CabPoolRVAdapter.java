@@ -128,14 +128,14 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                 @Override
                 public void onClick(View v) {
                 if(i==0) {
-                    Intent intent = new Intent(context, CabListOfPeople.class);
+                    Intent intent = new Intent(context, CabPoolListOfPeople.class);
                     intent.putExtra("key", array.get(getAdapterPosition()).getKey());
                     intent.putExtra("date", (array.get(getAdapterPosition()).getDT()).substring(0,8));
                     context.startActivity(intent);
                 }
 
                 if(i==1) {
-                        Intent intent = new Intent(context, CabListOfPeople.class);
+                        Intent intent = new Intent(context, CabPoolListOfPeople.class);
                         intent.putExtra("key", cabItemFormat.get(getAdapterPosition()).getKey());
                         intent.putExtra("date", (cabItemFormat.get(getAdapterPosition()).getDT()).substring(0,8));
                         context.startActivity(intent);

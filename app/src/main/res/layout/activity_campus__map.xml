@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
+    android:theme="@style/Theme.AppCompat"
     tools:context="com.zconnect.zutto.zconnect.Campus_Map">
 
 

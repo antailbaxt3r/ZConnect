@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.zconnect.zutto.zconnect.CabPoolListOfPeople"
-    tools:showIn="@layout/activity_cab_list_of_people">
+    tools:context="com.zconnect.zutto.zconnect.ForumsPeopleList"
+    tools:showIn="@layout/activity_forums_people_list">
 
     <ProgressBar
-        android:id="@+id/content_cabpeople_progress"
+        android:id="@+id/content_forums_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/content_cabpeople_rv"
+        android:id="@+id/content_forum_prople_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-
         android:layout_alignParentTop="true"
         android:clipToPadding="false"
         android:scrollbars="vertical"/>
@@ -33,13 +31,5 @@
         android:text="Join"
         android:textAllCaps="false"
         android:textColor="@color/primaryText" />
-    <!--<Button-->
-        <!--android:id="@+id/join"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_margin="10dp"-->
-        <!--android:background="@drawable/curveradiusgoogle"-->
-        <!--android:text="Join"-->
-        <!--android:textColor="@color/white" />-->
+
 </RelativeLayout>

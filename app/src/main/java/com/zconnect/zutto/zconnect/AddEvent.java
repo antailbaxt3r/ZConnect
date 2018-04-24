@@ -52,6 +52,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import org.w3c.dom.Text;
 
@@ -159,7 +160,7 @@ public class AddEvent extends BaseActivity {
         gmapLocationTaken = (CheckBox) findViewById(R.id.add_events_location_checkbox);
         mDatabaseVerified = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents");
         //mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/NotVerifiedPosts");
-        mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         gmapLocationTaken.setVisibility(View.INVISIBLE);
 
@@ -245,66 +246,7 @@ public class AddEvent extends BaseActivity {
 
     @Override
     protected void onStart() {
-
         super.onStart();
-
-        DatabaseReference mPrivileges;
-        mPrivileges = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/Privileges/");
-
-        final String emailId = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        mPrivileges.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    if (child.getValue() != null && child.getValue().equals(emailId)) {
-                        flag = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
-
-        // to get venues from firebase depending on college location( venue names only)
-        // which will then be given as auto correct options in the edit text for event venue
-        mDatabaseVenues = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Event/Venues/");
-
-        mDatabaseVenues.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-
-                int i = 0;
-                for (DataSnapshot child : snapshot.getChildren()) {
-
-                    if (child.getValue() != null) {
-                        venueOptions.add(i, child.getValue().toString());
-                        i++;
-                    } else {
-                        venueOptions.add("Auditorium");
-                        venueOptions.add("Main lawns");
-                        break;
-                    }
-                }
-
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(AddEvent.this,
-                        android.R.layout.select_dialog_item, venueOptions);
-                mVenue.setAdapter(arrayAdapter);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-                Log.e("AddEvent", " Venue database fetch Cancelled");
-                venueOptions.add("Auditorium");
-                venueOptions.add("Main lawns");
-
-            }
-        });
-
     }
 
     @Override
@@ -386,9 +328,9 @@ public class AddEvent extends BaseActivity {
                             mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    postedByDetails.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
-                                    //needs to be changed after image thumbnail is put
-                                    postedByDetails.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                    UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                                    mPostedByDetails.child("Username").setValue(user.getUsername());
+                                    mPostedByDetails.child("ImageThumb").setValue(user.getImageURLThumbnail());
                                 }
 
                                 @Override
@@ -425,7 +367,7 @@ public class AddEvent extends BaseActivity {
                             newPost.child("PostTimeMillis").setValue(postTimeMillis);
 
                             //For Recents
-                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
+                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
                             final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
                             newPost2PostedBy.setValue(null);
                             newPost2.child("name").setValue(eventNameValue);
@@ -475,7 +417,9 @@ public class AddEvent extends BaseActivity {
                             });
 
                             //Sending Notifications
-                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
+                            //Sending Notifications
+                            FirebaseMessaging.getInstance().subscribeToTopic(key);
+                            NotificationSender notificationSender=new NotificationSender(key,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                             notificationSender.execute();
 
 
@@ -488,10 +432,9 @@ public class AddEvent extends BaseActivity {
                             mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                    postedByDetails.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
-                                    //needs to be changed after image thumbnail is put
-                                    postedByDetails.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                    UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                                    postedByDetails.child("Username").setValue(user.getUsername());
+                                    postedByDetails.child("ImageThumb").setValue(user.getImageURLThumbnail());
                                 }
 
                                 @Override
@@ -529,7 +472,7 @@ public class AddEvent extends BaseActivity {
                             CounterManager.addEventUnVerified(key, eventNameValue);
 
                             //For Everything
-                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").push();
+                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
                             final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
                             newPost2PostedBy.setValue(null);
                             newPost2.child("name").setValue(eventNameValue);
@@ -544,9 +487,9 @@ public class AddEvent extends BaseActivity {
                             mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    newPost2PostedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
-                                    //needs to be changed after image thumbnail is put
-                                    newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                    UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                                    newPost2PostedBy.child("Username").setValue(user.getUsername());
+                                    newPost2PostedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
                                 }
 
                                 @Override
@@ -555,7 +498,7 @@ public class AddEvent extends BaseActivity {
                                 }
                             });
                             //Sending Notifications
-                            NotificationSender notificationSender=new NotificationSender(key,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
+                            NotificationSender notificationSender=new NotificationSender(key,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                             notificationSender.execute();
 
                         }
@@ -621,7 +564,7 @@ public class AddEvent extends BaseActivity {
                             taskMap.put("EventTimeMillis", eventTimeMillis);
 
                             //Sending Notifications
-                            NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
+                            NotificationSender notificationSender=new NotificationSender(EventID,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                             notificationSender.execute();
 
                             mEventDatabase.updateChildren(taskMap);
@@ -658,10 +601,7 @@ public class AddEvent extends BaseActivity {
                     taskMap.put("EventTimeMillis", eventTimeMillis);
 
 
-                    //Sending Notifications
-                    FirebaseMessaging.getInstance().subscribeToTopic(KEY_EVENT);
-                    NotificationSender notificationSender=new NotificationSender(EventID,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
-                    notificationSender.execute();
+
 
 
                     mEventDatabase.updateChildren(taskMap);
@@ -731,6 +671,7 @@ public class AddEvent extends BaseActivity {
                     e.printStackTrace();
                 }
             }
+
         }
 
         if (requestCode == 124 && resultCode == RESULT_OK) {

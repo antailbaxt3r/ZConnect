@@ -1,11 +1,14 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,8 +22,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
@@ -31,7 +35,7 @@ import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 
 public class ChatActivity extends BaseActivity {
 
-    private String ref  = "Misc", refToCatInTabCategories = "";
+    private String ref  = "Misc";
     private RecyclerView chatView;
     private RecyclerView.Adapter adapter;
     private DatabaseReference databaseReference ;
@@ -41,6 +45,7 @@ public class ChatActivity extends BaseActivity {
     private String type=null;
     private Button joinButton;
     private LinearLayout joinLayout,chatLayout;
+    private Menu menu;
 
     private DatabaseReference mUserReference;
 
@@ -48,6 +53,9 @@ public class ChatActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        setToolbar();
+        showBackButton();
+
         SharedPreferences communitySP;
         final String communityReference;
         communitySP = ChatActivity.this.getSharedPreferences("communityName", MODE_PRIVATE);
@@ -59,9 +67,6 @@ public class ChatActivity extends BaseActivity {
             }
             if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))){
                 type = getIntent().getStringExtra("type");
-            }
-            if(!TextUtils.isEmpty(getIntent().getStringExtra("ref_to_cat_in_tabCategories"))){
-                refToCatInTabCategories = getIntent().getStringExtra("ref_to_cat_in_tabCategories");
             }
         }
         joinButton = (Button) findViewById(R.id.join);
@@ -80,17 +85,22 @@ public class ChatActivity extends BaseActivity {
 
         if(type!=null){
             if(type.equals("cabPool")){
-                databaseReference.child("cabListItemFormats").addValueEventListener(new ValueEventListener() {
+                menu.findItem(R.id.action_list_people).setVisible(false);
+                databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(!dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+
+                        FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
+                        if(!dataSnapshot.child("usersListItemFormats").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            joinButton.setVisibility(View.VISIBLE);
                             joinLayout.setVisibility(View.VISIBLE);
                             chatLayout.setVisibility(View.GONE);
 
                             joinButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    final CabListItemFormat userDetails = new CabListItemFormat();
+
+                                    final UsersListItemFormat userDetails = new UsersListItemFormat();
                                     DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     user.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -100,7 +110,7 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setName(userItemFormat.getUsername());
                                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                             userDetails.setUserUID(userItemFormat.getUserUID());
-                                            databaseReference.child("cabListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                            databaseReference.child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
                                         }
 
                                         @Override
@@ -123,16 +133,58 @@ public class ChatActivity extends BaseActivity {
                     }
                 });
             }else if (type.equals("forums")){
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        setToolbarTitle(dataSnapshot.child("name").getValue().toString());
+                        FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
+                        if (!dataSnapshot.child("users").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                            joinButton.setVisibility(View.VISIBLE);
+                            joinLayout.setVisibility(View.VISIBLE);
+                            chatLayout.setVisibility(View.GONE);
 
+                            joinButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    final UsersListItemFormat userDetails = new UsersListItemFormat();
+                                    DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                                    user.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot2) {
+                                            UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
+                                            userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
+                                            userDetails.setName(userItemFormat.getUsername());
+                                            userDetails.setPhonenumber(userItemFormat.getMobileNumber());
+                                            userDetails.setUserUID(userItemFormat.getUserUID());
+                                            databaseReference.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            });
+                        }else {
+                            joinButton.setVisibility(View.GONE);
+                            joinLayout.setVisibility(View.GONE);
+                            chatLayout.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         }
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
-        adapter = new ChatRVAdapter(messages);
-        setToolbar();
-        setToolbarTitle("Chat");
-        showBackButton();
-        setSupportActionBar(getToolbar());
+        adapter = new ChatRVAdapter(messages,this);
+
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(false);
@@ -140,7 +192,7 @@ public class ChatActivity extends BaseActivity {
         chatView.setLayoutManager(linearLayoutManager);
         chatView.setAdapter(adapter);
 
-
+        setSupportActionBar(getToolbar());
 
         findViewById(R.id.sendBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,21 +211,27 @@ public class ChatActivity extends BaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
-                        Log.d("USER IIII", userItem.getUsername());
-                        Log.d("USER IIII", userItem.getUserUID());
-                        Log.d("USER IIII", userItem.getImageURLThumbnail());
                         message.setUuid(userItem.getUserUID());
                         message.setName(userItem.getUsername());
                         message.setImageThumb(userItem.getImageURLThumbnail());
                         message.setMessage("\""+text+"\"");
                         databaseReference.child("Chat").push().setValue(message);
-                        try {
-                            FirebaseDatabase.getInstance().getReferenceFromUrl(refToCatInTabCategories).child("lastMessage").setValue(message);
+                        if (type.equals("forums")){
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_FORUMS,false,true,ChatActivity.this);
+                            notificationSender.execute();
                         }
-                        catch (Exception e)
-                        {
-                            Log.d("Error Alert ", e.getMessage());
-                        }
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(dataSnapshot.child("tab").getValue().toString()).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
                     }
 
                     @Override
@@ -184,10 +242,8 @@ public class ChatActivity extends BaseActivity {
 
                 typer.setText(null);
                // chatView.scrollToPosition(chatView.getChildCount());
-
             }
         });
-
         loadMessages();
     }
 
@@ -210,4 +266,37 @@ public class ChatActivity extends BaseActivity {
             }
         });
     }
+
+    public void launchPeopleList(){
+        Intent i = new Intent(this,ForumsPeopleList.class);
+        i.putExtra("key",getIntent().getStringExtra("key"));
+        startActivity(i);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu=menu;
+
+        getMenuInflater().inflate(R.menu.menu_chat_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_list_people) {
+            launchPeopleList();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
 }

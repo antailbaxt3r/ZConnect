@@ -207,6 +207,7 @@ public class CabPoolAll extends Fragment {
                         treeMap.put(DT, vector_fetched.get(i));
                     } else {
                         String key = vector_fetched.get(i).getKey();
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key).removeValue();
                         ArchivePool(firebaseDatabase.getReference().child("communities").child(communityReference).child("Cab").child(key), firebaseDatabase.getReference().child("communities").child(communityReference).child("archive/Cab").child(key));
                     }
                 }

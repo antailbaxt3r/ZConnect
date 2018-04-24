@@ -128,7 +128,7 @@
     <string name="title_activity_cab_pooling">Cab Pooling</string>
     <string name="title_activity_pool_list">Pools Available</string>
 
-    <string name="title_activity_campus__map">BITS-GOA</string>
+    <string name="title_activity_campus__map">Campus Map</string>
     <string name="title_activity_cab_list_of_people">Cab Pooled By</string>
     <string name="title_activity_add_cab_pool">Add Cab Pool</string>
     <string name="title_activity_my_rides">My Rides</string>
@@ -157,6 +157,7 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="tab_text_3">Tab 3</string>
     <string name="title_activity_cab_pool_locations">CabPoolLocations</string>
+    <string name="title_activity_forums_people_list">ForumsPeopleList</string>
 
     <!--test one-->
     <!--<string name="native_ad_unit_id">ca-app-pub-3940256099942544/2177258514</string>-->

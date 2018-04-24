@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -436,6 +437,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 homePush.child("feature").setValue("Users");
                 homePush.child("communityName").setValue(communityName);
                 homePush.child("PostTimeMillis").setValue(postTimeMillis);
+                FirebaseMessaging.getInstance().subscribeToTopic(mUser.getUid());
             }
 
 

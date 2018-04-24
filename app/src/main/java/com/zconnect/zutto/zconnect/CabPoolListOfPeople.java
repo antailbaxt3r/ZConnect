@@ -5,18 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
+import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.text.SimpleDateFormat;
@@ -38,7 +34,7 @@ import java.util.Vector;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-public class CabListOfPeople extends BaseActivity {
+public class CabPoolListOfPeople extends BaseActivity {
 
     RecyclerView recyclerView;
     ProgressBar progressBar;
@@ -46,8 +42,8 @@ public class CabListOfPeople extends BaseActivity {
     Button join;
     String key;
     String name, number, uid, imageThumb, userUID;
-    Vector<CabListItemFormat> cabListItemFormatVector = new Vector<>();
-    CabPeopleRVAdapter adapter;
+    Vector<UsersListItemFormat> usersListItemFormatVector = new Vector<>();
+    UsersListRVAdapter adapter;
     CabItemFormat cabItemFormat;
     Boolean flag, numberFlag;
     //numberFlag person is registered on infone
@@ -58,7 +54,7 @@ public class CabListOfPeople extends BaseActivity {
 
     String formatted_date, Date;
     private FirebaseAuth mAuth;
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
     private DatabaseReference databaseReference;
 
     private FirebaseUser user;
@@ -90,12 +86,12 @@ public class CabListOfPeople extends BaseActivity {
         findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CabListOfPeople.this, ChatActivity.class);
+                Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
                 intent.putExtra("type","cabPool");
+                intent.putExtra("key",key);
                 intent.putExtra("ref", databaseReference.child(key).toString());
                 startActivity(intent);
                 Log.e("msg", databaseReference.child(key).toString());
-
             }
         });
 
@@ -105,20 +101,13 @@ public class CabListOfPeople extends BaseActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    UserItemFormat userDisplayItem = shot.getValue(UserItemFormat.class);
-                    if (uid != null) {
-                        if (userDisplayItem != null && userDisplayItem.getEmail() != null) {
-                            if (userDisplayItem.getEmail().equals(uid)) {
-                                name = userDisplayItem.getUsername();
-                                number = userDisplayItem.getMobileNumber();
-                                numberFlag = true;
-                            }
-                        }
-                    }
-                }
 
+                    UserItemFormat userDisplayItem = dataSnapshot.getValue(UserItemFormat.class);
+                    name = userDisplayItem.getUsername();
+                    number = userDisplayItem.getMobileNumber();
+                    numberFlag = true;
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -148,7 +137,7 @@ public class CabListOfPeople extends BaseActivity {
         Log.d("msg", reference);
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child(reference);
-        pool = databaseReference.child(key).child("cabListItemFormats");
+        pool = databaseReference.child(key).child("usersListItemFormats");
         mAuth = FirebaseAuth.getInstance();
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_cabpeople_progress);
@@ -164,16 +153,15 @@ public class CabListOfPeople extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 flag = false;
-                cabListItemFormatVector.clear();
+                usersListItemFormatVector.clear();
 
-                dataSnapshot.getChildrenCount();
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    CabListItemFormat cabListItemFormat;
-                    cabListItemFormat = shot.getValue(CabListItemFormat.class);
-                    if (cabListItemFormat.getUserUID().equals(uid)) {
+                    UsersListItemFormat usersListItemFormat;
+                    usersListItemFormat = shot.getValue(UsersListItemFormat.class);
+                    if (usersListItemFormat.getUserUID().equals(uid)) {
                         flag = true;
                     }
-                    cabListItemFormatVector.add(cabListItemFormat);
+                    usersListItemFormatVector.add(usersListItemFormat);
                 }
 
                 if (flag) {
@@ -194,7 +182,7 @@ public class CabListOfPeople extends BaseActivity {
         });
 
 
-        adapter = new CabPeopleRVAdapter(this, cabListItemFormatVector);
+        adapter = new UsersListRVAdapter(this, usersListItemFormatVector);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(adapter);
@@ -209,12 +197,12 @@ public class CabListOfPeople extends BaseActivity {
             public void onClick(View v) {
                 if (!status) {
                     if (flag) {
-                        databaseReference.child(key).child("cabListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                        databaseReference.child(key).child("usersListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
                         Toast.makeText(getApplicationContext(), "Removed", Toast.LENGTH_SHORT).show();
 
                     } else {
-                        final CabListItemFormat userDetails = new CabListItemFormat();
+                        final UsersListItemFormat userDetails = new UsersListItemFormat();
                         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         user.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -224,7 +212,7 @@ public class CabListOfPeople extends BaseActivity {
                                 userDetails.setName(userItemFormat.getUsername());
                                 userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                 userDetails.setUserUID(userItemFormat.getUserUID());
-                                databaseReference.child(key).child("cabListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                databaseReference.child(key).child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
                             }
 
                             @Override
@@ -236,12 +224,12 @@ public class CabListOfPeople extends BaseActivity {
 
                 } else {
 
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(CabListOfPeople.this);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(CabPoolListOfPeople.this);
                     dialog.setNegativeButton("Lite", null)
                             .setPositiveButton("Login", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent loginIntent = new Intent(CabListOfPeople.this, LoginActivity.class);
+                                    Intent loginIntent = new Intent(CabPoolListOfPeople.this, LoginActivity.class);
                                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(loginIntent);
                                     finish();
