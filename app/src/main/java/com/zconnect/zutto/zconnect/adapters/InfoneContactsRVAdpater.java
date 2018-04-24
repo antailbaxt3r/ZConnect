@@ -56,6 +56,8 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
             holder.userAvatar.setImageURI(imageuri);
         }
         final ArrayList<String> phoneNums = infoneContactsRVItems.get(position).getPhoneNums();
+        phoneNums.get(0).replaceAll(phoneNums.get(0), phoneNums.get(0) + " (Mobile)");
+        phoneNums.get(1).replaceAll(phoneNums.get(1), phoneNums.get(0) + " (Whatsapp)");
 
         holder.callImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override

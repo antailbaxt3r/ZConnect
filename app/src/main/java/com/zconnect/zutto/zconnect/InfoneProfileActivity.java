@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,8 +41,10 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 public class InfoneProfileActivity extends AppCompatActivity {
 
@@ -56,9 +59,10 @@ public class InfoneProfileActivity extends AppCompatActivity {
     Toolbar toolbar;
     private Menu menu;
     private Button validButton;
-    private TextView verifiedDateTextView;
+    private TextView verifiedDateTextView, validLabel;
     private String verfiedDate;
     private Long postTimeMillis;
+    ImageButton phone1EtCallbtn;
 
     /*image uploading elements*/
     private Uri mImageUri = null;
@@ -113,8 +117,10 @@ public class InfoneProfileActivity extends AppCompatActivity {
         nameEt = (MaterialEditText) findViewById(R.id.et_name_infone_profile);
         profileImage = (SimpleDraweeView) findViewById(R.id.image_profile_infone);
         phone1Et = (MaterialEditText) findViewById(R.id.et_phone1_infone_profile);
+        phone1EtCallbtn = (ImageButton) findViewById(R.id.infone_profile_callbtn);
         phone2Et = (MaterialEditText) findViewById(R.id.et_phone2_infone_profile);
         saveEditBtn = (Button) findViewById(R.id.save_edit_infone_profile);
+        validLabel = (TextView) findViewById(R.id.valid_label);
         validButton = (Button) findViewById(R.id.valid_button);
         verifiedDateTextView = (TextView) findViewById(R.id.verified_date);
         viewProfileButton = (Button) findViewById(R.id.viewProfileButton);
@@ -160,7 +166,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
 
                 userType = dataSnapshot.child("type").getValue(String.class);
                 verfiedDate = dataSnapshot.child("verifiedDate").getValue().toString();
-                verifiedDateTextView.setText(verfiedDate);
+                verifiedDateTextView.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.LONG, Locale.US).format(verfiedDate));
 
                 if (userType.equals("User")) {
                     menu.findItem(R.id.action_edit).setVisible(false);
@@ -221,6 +227,28 @@ public class InfoneProfileActivity extends AppCompatActivity {
                     makeCall(phone1Et.getText().toString());
             }
         });
+        phone1EtCallbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + phone1Et.getText().toString()));
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider cal
+                    // ling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+
+                Toast.makeText(getApplicationContext(), "call being made to " + phone1Et.getText().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
         phone2Et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -276,6 +304,8 @@ public class InfoneProfileActivity extends AppCompatActivity {
         profileImage.setEnabled(true);
         saveEditBtn.setVisibility(View.VISIBLE);
         validButton.setVisibility(View.GONE);
+        validLabel.setVisibility(View.GONE);
+
         verifiedDateTextView.setVisibility(View.GONE);
     }
 
@@ -306,6 +336,7 @@ public class InfoneProfileActivity extends AppCompatActivity {
         }
 
         validButton.setVisibility(View.VISIBLE);
+        validLabel.setVisibility(View.VISIBLE);
         verifiedDateTextView.setVisibility(View.VISIBLE);
 
     }

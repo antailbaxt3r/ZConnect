@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -26,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.DrawableUtilities;
 import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 
 import java.util.List;
@@ -68,6 +70,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             }
             if (recentsItemFormats.get(position).getPostedBy().getUsername() != null) {
                 holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
+                if(!(recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y")))
                 holder.postedBy.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -209,11 +212,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
 
             holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.messages), PorterDuff.Mode.SRC_ATOP);
             holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_18dp));
-            holder.postConjunction.setText(" sent a ");
+            holder.postConjunction.setText(" posted a ");
             holder.post.setText(recentsItemFormats.get(position).getFeature());
             holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
             if(recentsItemFormats.get(position).getDesc2().equals("y")) {
                 holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
+                holder.avatarCircle.setImageResource(R.drawable.question_mark_icon);
+//                holder.avatarCircle.setBackground(context.getResources().getDrawable(R.drawable.question_mark_icon));
             } else {
                 //Message is not anonymous
                 holder.name.setText(recentsItemFormats.get(position).getName());
@@ -231,6 +236,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             holder.postConjunction.setText(" created a ");
             holder.post.setText(recentsItemFormats.get(position).getFeature());
             holder.forumsName.setText(recentsItemFormats.get(position).getName());
+            holder.forumCategory.setText(recentsItemFormats.get(position).getDesc());
         }
 
     }
@@ -254,7 +260,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                 eventName, eventDate, eventDesc,
                 productName, productPrice, productDesc,
                 messagesMessage,
-                forumsName;
+                forumsName, forumCategory;
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
                 productImage;
@@ -301,6 +307,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             messagesMessage = (TextView) itemView.findViewById(R.id.messagesRecentItem_message);
             forumsRecentItem = (LinearLayout) itemView.findViewById(R.id.forumsRecentItem);
             forumsName = (TextView) itemView.findViewById(R.id.forumsRecentItem_name);
+            forumCategory = (TextView) itemView.findViewById(R.id.forumsRecentItem_category);
             //
 
             itemView.setOnClickListener(new View.OnClickListener() {
