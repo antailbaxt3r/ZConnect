@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.ItemFormats;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 
@@ -24,7 +25,6 @@ public class Event implements Serializable {
             Venue,
             UserID,
             Verified;
-
     private PostedByDetails PostedBy;
     public Event() {
 
@@ -56,7 +56,11 @@ public class Event implements Serializable {
         return BoostCount;
     }
 
-    public String getEventDate() {
+    public void setEventDate(String eventDate) {
+        EventDate = eventDate;
+    }
+    public String getEventDate()
+    {
         return EventDate;
     }
 
@@ -73,7 +77,6 @@ public class Event implements Serializable {
     }
 
     public String getEventName() {
-        Log.d("QQQ Eventname", EventName);
         return EventName;
     }
 

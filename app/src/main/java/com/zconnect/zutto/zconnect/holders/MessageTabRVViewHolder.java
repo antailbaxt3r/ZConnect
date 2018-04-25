@@ -30,7 +30,6 @@ import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 
 public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
     public View mView;
-    public ImageButton del;
     public TextView message;
     public LinearLayout linearLayout;
     DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages");
@@ -39,7 +38,6 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
         mView = itemView;
         message = (TextView) itemView.findViewById(R.id.name_tv_message);
         linearLayout = (LinearLayout) itemView.findViewById(R.id.ll_message);
-        del=(ImageButton)itemView.findViewById(R.id.delete_btn_message);
 
     }
 
