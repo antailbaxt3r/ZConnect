@@ -8,7 +8,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,25 +19,24 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.Infone2CategoryModel;
-import com.zconnect.zutto.zconnect.adapters.Infone2RVAdapter;
+import com.zconnect.zutto.zconnect.adapters.InfoneRVAdapter;
 
 import java.util.ArrayList;
 
-public class Infone2Activity extends AppCompatActivity {
+public class InfoneActivity extends BaseActivity {
 
     RecyclerView recyclerViewCat;
     FloatingActionButton fabCatAdd;
     ArrayList<Infone2CategoryModel> categoriesList = new ArrayList();
     DatabaseReference databaseReferenceCat;
     ValueEventListener listener;
-    Infone2RVAdapter infone2RVAdapter;
+    InfoneRVAdapter infoneRVAdapter;
     private static final int REQUEST_PHONE_CALL = 1;
     private SharedPreferences communitySP;
     public String communityReference;
@@ -78,14 +76,14 @@ public class Infone2Activity extends AppCompatActivity {
 
                 }
 
-                infone2RVAdapter = new Infone2RVAdapter(categoriesList, Infone2Activity.this);
-                recyclerViewCat.setAdapter(infone2RVAdapter);
+                infoneRVAdapter = new InfoneRVAdapter(categoriesList, InfoneActivity.this);
+                recyclerViewCat.setAdapter(infoneRVAdapter);
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e(Infone2Activity.class.getName(), "database error" + databaseError.toString());
+                Log.e(InfoneActivity.class.getName(), "database error" + databaseError.toString());
             }
         };
         databaseReferenceCat.addValueEventListener(listener);
@@ -96,16 +94,16 @@ public class Infone2Activity extends AppCompatActivity {
 
                 Log.e("tt", "data fab");
 
-                SharedPreferences sharedPref = Infone2Activity.this.getSharedPreferences("guestMode", MODE_PRIVATE);
+                SharedPreferences sharedPref = InfoneActivity.this.getSharedPreferences("guestMode", MODE_PRIVATE);
                 Boolean status = sharedPref.getBoolean("mode", false);
 
                 if (!status) {
-                    Intent addCatIntent = new Intent(Infone2Activity.this,InfoneAddCatActivity.class);
+                    Intent addCatIntent = new Intent(InfoneActivity.this,InfoneAddCatActivity.class);
                     //addCatIntent("categoryId",);
                     startActivity(addCatIntent);
                     //addDialog();
                 } else {
-                    Toast.makeText(Infone2Activity.this, "Log in to use this function", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(InfoneActivity.this, "Log in to use this function", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -139,9 +137,9 @@ public class Infone2Activity extends AppCompatActivity {
                         final String newCat = newCategoryET.getText().toString();
 
                         if (!newCat.isEmpty()) {
-                            Toast.makeText(Infone2Activity.this, "Add a contact in your new category",
+                            Toast.makeText(InfoneActivity.this, "Add a contact in your new category",
                                     Toast.LENGTH_SHORT).show();
-                            Intent addContactIntent = new Intent(Infone2Activity.this,
+                            Intent addContactIntent = new Intent(InfoneActivity.this,
                                     InfoneAddContactActivity.class);
                             addContactIntent.putExtra("categoryName", newCat);
                             startActivity(addContactIntent);
@@ -161,8 +159,8 @@ public class Infone2Activity extends AppCompatActivity {
 
     private void askCallPermissions() {
 
-        if (ContextCompat.checkSelfPermission(Infone2Activity.this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Infone2Activity.this, new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
+        if (ContextCompat.checkSelfPermission(InfoneActivity.this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(InfoneActivity.this, new String[]{android.Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
         } else {
 
         }

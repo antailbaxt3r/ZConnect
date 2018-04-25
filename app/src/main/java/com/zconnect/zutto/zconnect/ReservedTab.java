@@ -97,11 +97,7 @@ public class ReservedTab extends Fragment {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren()) {
-                    noitems.setVisibility(View.GONE);
-                } else {
-                    noitems.setVisibility(View.VISIBLE);
-                }
+
             }
 
             @Override
@@ -114,17 +110,25 @@ public class ReservedTab extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 productVector.clear();;
+                Boolean flag = false;
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     try{
                         if(shot.child("UserReserved").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             singleProduct = shot.getValue(Product.class);
                             productVector.add(singleProduct);
+                            flag=true;
                         }
                     }
                     catch (Exception e){
                         Log.d("Error Alert", e.getMessage());
                     }
                 }
+                if (flag){
+                    noitems.setVisibility(View.GONE);
+                } else {
+                    noitems.setVisibility(View.VISIBLE);
+                }
+
                 Collections.reverse(productVector);
                 productAdapter.notifyDataSetChanged();
             }
@@ -143,6 +147,7 @@ public class ReservedTab extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        mDatabase.addValueEventListener(mListener);
 
 //        FirebaseRecyclerAdapter<Product, ProductViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, ProductViewHolder>(
 //                Product.class,
@@ -183,6 +188,11 @@ public class ReservedTab extends Fragment {
 //        mProductList.setAdapter(firebaseRecyclerAdapter);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mDatabase.removeEventListener(mListener);
+    }
 //    public static class ProductViewHolder extends RecyclerView.ViewHolder {
 //
 //

@@ -85,17 +85,17 @@ public class ChatActivity extends BaseActivity {
 
         if (type.equals("forums"))
         {
-
+            setActionBarTitle(getIntent().getStringExtra("name"));
         }else if (type.equals("cabPool")){
-
+            setActionBarTitle("Discussion");
         }else if (type.equals("events")){
-
+            setActionBarTitle("Discussion");
         }else if (type.equals("messages")){
-
+            setActionBarTitle("Comments");
         }else if (type.equals("storeroom")){
-
+            setActionBarTitle("Chat with seller");
         }else if (type.equals("post")){
-
+            setActionBarTitle("Comments");
         }
 
         if(type!=null){

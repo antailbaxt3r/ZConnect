@@ -19,12 +19,12 @@ import java.util.ArrayList;
  * Created by tanmay on 24/3/18.
  */
 
-public class Infone2RVAdapter extends RecyclerView.Adapter<Infone2RVViewHolder> {
+public class InfoneRVAdapter extends RecyclerView.Adapter<Infone2RVViewHolder> {
 
     private ArrayList<Infone2CategoryModel> categoriesList;
     private Context context;
 
-    public Infone2RVAdapter(ArrayList<Infone2CategoryModel> categoriesList, Context context) {
+    public InfoneRVAdapter(ArrayList<Infone2CategoryModel> categoriesList, Context context) {
         this.categoriesList = categoriesList;
         this.context = context;
     }
