@@ -83,6 +83,21 @@ public class ChatActivity extends BaseActivity {
             finish();
         }
 
+        if (type.equals("forums"))
+        {
+
+        }else if (type.equals("cabPool")){
+
+        }else if (type.equals("events")){
+
+        }else if (type.equals("messages")){
+
+        }else if (type.equals("storeroom")){
+
+        }else if (type.equals("post")){
+
+        }
+
         if(type!=null){
             if(type.equals("cabPool")){
                 menu.findItem(R.id.action_list_people).setVisible(false);
@@ -158,6 +173,8 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             databaseReference.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,FirebaseAuth.getInstance().getCurrentUser().getUid(),KeyHelper.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
+                                            notificationSender.execute();
                                         }
 
                                         @Override

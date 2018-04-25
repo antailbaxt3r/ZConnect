@@ -286,6 +286,7 @@ public class  OpenEventDetail extends BaseActivity {
         } else if (id == R.id.menu_chat_room) {
             //chat room clicked;
             Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+            intent.putExtra("type","events");
             intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
             startActivity(intent);
         }

@@ -158,7 +158,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         navHeaderBackground = (SimpleDraweeView) navHeader.findViewById(R.id.iv_nav_header_background);
         //necessary for icons to retain their color
         navigationView.setItemIconTintList(null);
-        communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -173,31 +172,34 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         initListeners();
         setSupportActionBar(toolbar);
 
-        communityInfoRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild("name")) {
-                    setToolbarTitle(dataSnapshot.child("name").getValue().toString() + " Connect");
+        if(communityReference!=null) {
+            communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
+
+            communityInfoRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.hasChild("name")) {
+                        setToolbarTitle(dataSnapshot.child("name").getValue().toString() + " Connect");
 
 
-                }else {
-                    setToolbarTitle("Community Connect");
+                    } else {
+                        setToolbarTitle("Community Connect");
+                    }
+
+                    navHeaderBackGroundImageUrl = dataSnapshot.child("image").getValue(String.class);
+                    if (navHeaderBackGroundImageUrl != null
+                            && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)
+                            && navHeaderBackground != null) {
+                        navHeaderBackground.setImageURI(navHeaderBackGroundImageUrl);
+                    }
                 }
 
-                navHeaderBackGroundImageUrl = dataSnapshot.child("image").getValue(String.class);
-                if (navHeaderBackGroundImageUrl != null
-                        && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)
-                        && navHeaderBackground != null) {
-                    navHeaderBackground.setImageURI(navHeaderBackGroundImageUrl);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+            });
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

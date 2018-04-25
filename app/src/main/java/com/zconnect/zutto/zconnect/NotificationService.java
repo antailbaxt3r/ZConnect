@@ -33,6 +33,7 @@ import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL_JOIN;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT_BOOST;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_FORUMS;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_FORUMS_JOIN;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_LIKE;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_LOVE;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_PRODUCT;
@@ -403,6 +404,8 @@ public class NotificationService extends FirebaseMessagingService {
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     mNotificationManager.notify(1, mBuilder.build());
                 }
+            }else if(type.equals(KEY_FORUMS_JOIN)){
+
             }
         }
     }

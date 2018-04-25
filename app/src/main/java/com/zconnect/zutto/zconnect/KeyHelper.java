@@ -22,4 +22,5 @@ public class KeyHelper {
     public static final String KEY_LOVE="Love";
 
     public static final String KEY_FORUMS="Forums";
+    public static final String KEY_FORUMS_JOIN="ForumsJoin";
 }

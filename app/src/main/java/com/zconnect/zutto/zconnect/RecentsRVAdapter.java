@@ -346,6 +346,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         context.startActivity(i);
                     } else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Forums")){
                         Intent intent = new Intent(context, ChatActivity.class);
+                        intent.putExtra("type","forums");
                         intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(recentsItemFormats.get(getAdapterPosition()).getKey()).toString());
                         context.startActivity(intent);
                     }
