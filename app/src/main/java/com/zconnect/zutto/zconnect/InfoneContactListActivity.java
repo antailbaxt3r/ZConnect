@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -189,7 +190,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_edit_infone_profile, menu);
+        getMenuInflater().inflate(R.menu.menu_infone_contact_list, menu);
         return true;
     }
 

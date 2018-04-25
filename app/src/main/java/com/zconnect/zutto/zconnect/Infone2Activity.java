@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -47,7 +48,7 @@ public class Infone2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infone2);
-
+        setTitle("Infone");
         recyclerViewCat = (RecyclerView) findViewById(R.id.rv_cat_infone);
 
         fabCatAdd = (FloatingActionButton) findViewById(R.id.fab_cat_infone);
