@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
 
-public class InfoneProfileActivity extends AppCompatActivity {
+public class InfoneProfileActivity extends BaseActivity {
 
     /*UI elements*/
     private MaterialEditText nameEt;

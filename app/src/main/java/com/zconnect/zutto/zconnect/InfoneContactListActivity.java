@@ -56,7 +56,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infone_contact_list);
-
+        setTitle("");
         toolbar=(Toolbar) findViewById(R.id.toolbar_app_bar_infone);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -80,8 +80,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
         Log.e(TAG,"data: "+catId+" "+ catName);
 
         toolbar.setTitle(catName);
-
-
+        setTitle(catName);
         communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
