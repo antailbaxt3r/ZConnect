@@ -70,15 +70,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             }
             if (recentsItemFormats.get(position).getPostedBy().getUsername() != null) {
                 holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
-                if(!(recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y"))) {
-                    holder.postedBy.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(context,OpenUserDetail.class);
-                            i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
-                            context.startActivity(i);
-                        }
-                    });
+                holder.postedBy.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(context,OpenUserDetail.class);
+                        i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
+                        context.startActivity(i);
+                    }
+                });
+                if(recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y")) {
+                    holder.postedBy.setOnClickListener(null);
                 }
             }
             if (recentsItemFormats.get(position).getPostedBy().getImageThumb() != null) {

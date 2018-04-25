@@ -85,6 +85,7 @@ public class ChatActivity extends BaseActivity {
 
         if(type!=null){
             if(type.equals("cabPool")){
+                joinButton.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.cabpool));
                 menu.findItem(R.id.action_list_people).setVisible(false);
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -133,6 +134,7 @@ public class ChatActivity extends BaseActivity {
                     }
                 });
             }else if (type.equals("forums")){
+                joinButton.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.forums));
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
