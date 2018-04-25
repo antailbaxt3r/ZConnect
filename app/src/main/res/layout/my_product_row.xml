@@ -68,7 +68,7 @@
                 android:paddingTop="10dp">
 
                 <Button
-                    android:id="@+id/delete"
+                    android:id="@+id/archive"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/curveradiusgoogle"

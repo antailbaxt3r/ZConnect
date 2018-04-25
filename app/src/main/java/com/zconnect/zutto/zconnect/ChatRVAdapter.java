@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,10 +24,11 @@ import java.util.Locale;
 public class ChatRVAdapter extends RecyclerView.Adapter<ChatRVAdapter.ViewHolder> {
 
     ArrayList<ChatItemFormats> chatFormats;
+    Context ctx;
 
-
-    public ChatRVAdapter(ArrayList<ChatItemFormats> chatFormats) {
+    public ChatRVAdapter(ArrayList<ChatItemFormats> chatFormats, Context ctx) {
         this.chatFormats = chatFormats;
+        this.ctx = ctx;
     }
 
     @Override
@@ -37,10 +39,10 @@ public class ChatRVAdapter extends RecyclerView.Adapter<ChatRVAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ChatRVAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ChatRVAdapter.ViewHolder holder, final int position) {
 
 
-        ChatItemFormats message = chatFormats.get(position);
+        final ChatItemFormats message = chatFormats.get(position);
         if(message.getUuid()!=null)
         {
 
@@ -65,6 +67,14 @@ public class ChatRVAdapter extends RecyclerView.Adapter<ChatRVAdapter.ViewHolder
                 holder.chatContainer.setGravity(Gravity.START);
                 holder.userAvatar.setVisibility(View.VISIBLE);
                 holder.name.setVisibility(View.VISIBLE);
+                holder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(ctx,OpenUserDetail.class);
+                        i.putExtra("Uid",message.getUuid());
+                        ctx.startActivity(i);
+                    }
+                });
             }
             String time = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(message.getTimeDate());
             holder.time.setText(time);

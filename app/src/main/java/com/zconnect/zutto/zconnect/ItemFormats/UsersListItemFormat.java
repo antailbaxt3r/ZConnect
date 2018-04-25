@@ -4,20 +4,20 @@ package com.zconnect.zutto.zconnect.ItemFormats;
  * Created by shubhamk on 27/7/17.
  */
 
-public class CabListItemFormat {
+public class UsersListItemFormat {
     String name;
     String phonenumber;
     String imageThumb;
     String userUID;
 
-    public CabListItemFormat(String name, String phonenumber, String imageThumb, String userUID) {
+    public UsersListItemFormat(String name, String phonenumber, String imageThumb, String userUID) {
         this.name = name;
         this.phonenumber = phonenumber;
         this.imageThumb = this.imageThumb;
         this.userUID = userUID;
     }
 
-    public CabListItemFormat() {
+    public UsersListItemFormat() {
     }
 
     public String getName() { return name; }

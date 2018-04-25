@@ -19,9 +19,12 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
@@ -34,6 +37,7 @@ public class MyProducts extends BaseActivity {
     private RecyclerView mProductList;
     //    private List<String> reserveList;
     private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,7 @@ public class MyProducts extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
-        query = mDatabase.orderByChild("PostedBy").equalTo(userId);
+        query = mDatabase.orderByChild("userID").equalTo(userId);
 
     }
 
@@ -90,25 +94,12 @@ public class MyProducts extends BaseActivity {
             protected void populateViewHolder(final MyProducts.ProductViewHolder viewHolder, Product model, int position) {
 
                 final String product_key = getRef(position).getKey();
-
-//               if(reserveList.contains(model.getKey())) {
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setPrice(model.getPrice(),model.getNegotiable());
                 viewHolder.setIntent(model.getKey());
                 viewHolder.setImage(getApplicationContext(), model.getImage());
-//                }else {
-//               }
-                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        CounterManager.StoreRoomMyProductDelete();
-                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(product_key);
-                        viewHolder.ReserveReference.getRef().removeValue();
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(product_key);
-                    }
-                });
-
+                viewHolder.setArchiveButton(product_key);
             }
         };
         mProductList.setAdapter(firebaseRecyclerAdapter);
@@ -117,10 +108,11 @@ public class MyProducts extends BaseActivity {
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
+        Boolean flag = false;
         private DatabaseReference ReserveReference;
         //        private Switch mReserve;
 //        private TextView ReserveStatus;
-        private Button deleteButton;
+        private Button archiveButton;
 //        private FirebaseAuth mAuth;
 //        String [] keyList;
 //        String ReservedUid;
@@ -129,7 +121,36 @@ public class MyProducts extends BaseActivity {
             super(itemView);
             mView = itemView;
             //to delete reserved items
-            deleteButton = (Button) mView.findViewById(R.id.delete);
+            archiveButton = (Button) mView.findViewById(R.id.archive);
+        }
+
+        public void setArchiveButton(final String product_key){
+            CounterManager.StoreRoomMyProductDelete();
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(product_key);
+            ReserveReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(product_key);
+
+            archiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ReserveReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(!flag) {
+                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("archiveProducts").child(product_key).setValue(dataSnapshot.getValue());
+                                flag= true;
+                                ReserveReference.removeValue();
+                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(product_key).removeValue();
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
         }
 
         public void setProductName(String productName) {

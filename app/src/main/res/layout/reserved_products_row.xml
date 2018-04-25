@@ -58,7 +58,7 @@
             <!--android:textSize="20sp"-->
             <!--android:textStyle="italic" />-->
             <ImageView
-                android:id="@+id/delete"
+                android:id="@+id/archive"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.15"

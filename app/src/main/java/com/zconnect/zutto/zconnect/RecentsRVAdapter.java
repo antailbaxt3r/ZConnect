@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.common.time.Clock;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -40,14 +39,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
     Context context;
     Vector<RecentsItemFormat> recentsItemFormats;
     private HomeActivity mHomeActivity;
-    List<String> storeroomProductList;
     DatabaseReference mRef;
 
-    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity,List<String> storeroomProductList) {
+    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity) {
         this.context = context;
         this.recentsItemFormats = recentsItemFormats;
         mHomeActivity = HomeActivity;
-        this.storeroomProductList = storeroomProductList;
     }
 
     @Override
@@ -70,15 +67,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             }
             if (recentsItemFormats.get(position).getPostedBy().getUsername() != null) {
                 holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
-                if(!(recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y")))
-                holder.postedBy.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                              Intent i = new Intent(context,OpenUserDetail.class);
-                              i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
-                              context.startActivity(i);
-                    }
-                });
+                if(!(recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y"))) {
+                    holder.postedBy.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(context,OpenUserDetail.class);
+                            i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
+                            context.startActivity(i);
+                        }
+                    });
+                }
             }
             if (recentsItemFormats.get(position).getPostedBy().getImageThumb() != null) {
                 holder.avatarCircle.setImageURI(recentsItemFormats.get(position).getPostedBy().getImageThumb());
@@ -131,6 +129,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             holder.postConjunction.setText(" created an ");
             holder.post.setText(recentsItemFormats.get(position).getFeature());
             holder.eventName.setText(recentsItemFormats.get(position).getName());
+            holder.eventDate.setText(recentsItemFormats.get(position).getDesc2());
             holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());
             Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.eventImage);
         }
@@ -327,13 +326,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         //mHome.finish();
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                           try{
-                              if (storeroomProductList.contains(recentsItemFormats.get(getAdapterPosition()).getId())) {
-                                  i = new Intent(context, OpenProductDetails.class);
-                                  i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getId());
-                                  context.startActivity(i);
-                              }else {
-                                  Toast.makeText(view.getContext(), "Product Already Sold", Toast.LENGTH_SHORT).show();
-                              }
+                              i = new Intent(context, OpenProductDetails.class);
+                              i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getId());
+                              context.startActivity(i);
+
                           } catch(Exception e) {
                               Log.d("Error Alert: ", e.getMessage());
                             }
@@ -349,7 +345,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                             Log.d("Error Alert: ", e.getMessage());
                         }
                     }else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("CabPool")){
-                        i=new Intent(context,CabListOfPeople.class);
+                        i=new Intent(context,CabPoolListOfPeople.class);
                         Log.e("check","executed");
                         i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getId());
                         i.putExtra("date",recentsItemFormats.get(getAdapterPosition()).getDT());

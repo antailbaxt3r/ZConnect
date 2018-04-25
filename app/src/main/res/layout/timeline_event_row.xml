@@ -41,13 +41,13 @@
             android:layout_marginStart="10dp"
             android:layout_weight="0.7">
             <TextView
-                android:id="@+id/name"
+                android:id="@+id/er_event"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/primaryText"
                 android:text="Title"/>
             <TextView
-                android:id="@+id/timestamp"
+                android:id="@+id/evTrendTimestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Unknown time ago"
@@ -69,7 +69,7 @@
                 android:background="@color/transparent"
                 android:tint="@color/primaryText"/>
             <TextView
-                android:id="@+id/boostcount"
+                android:id="@+id/eventsNumLit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="lit"

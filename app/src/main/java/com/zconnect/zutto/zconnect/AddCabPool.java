@@ -3,13 +3,11 @@ package com.zconnect.zutto.zconnect;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -27,9 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.text.DecimalFormat;
@@ -220,13 +216,13 @@ public class AddCabPool extends BaseActivity {
                                     if (T1 - T2 < 0) {
                                         String time = getTimeOld();
 
-                                        CabListItemFormat cabListItemFormat = new CabListItemFormat();
-                                        cabListItemFormat.setName(name);
-                                        cabListItemFormat.setPhonenumber(number);
-                                        cabListItemFormat.setImageThumb(imageThumb);
-                                        cabListItemFormat.setUserUID(userUID);
-//                                        ArrayList<CabListItemFormat> cabListItemFormats = new ArrayList<CabListItemFormat>();
-//                                        cabListItemFormats.add(cabListItemFormat);
+                                        UsersListItemFormat usersListItemFormat = new UsersListItemFormat();
+                                        usersListItemFormat.setName(name);
+                                        usersListItemFormat.setPhonenumber(number);
+                                        usersListItemFormat.setImageThumb(imageThumb);
+                                        usersListItemFormat.setUserUID(userUID);
+//                                        ArrayList<UsersListItemFormat> usersListItemFormats = new ArrayList<UsersListItemFormat>();
+//                                        usersListItemFormats.add(usersListItemFormat);
 
 
                                         //writing new added pool to database
@@ -242,7 +238,7 @@ public class AddCabPool extends BaseActivity {
                                         newPost.child("DT").setValue(s_year + s_monthOfYear + s_dayOfMonth + " " + getTime());
                                         newPost.child("from").setValue(T1);
                                         newPost.child("to").setValue(T2);
-                                        newPost.child("cabListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(cabListItemFormat);
+                                        newPost.child("usersListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(usersListItemFormat);
                                         newPost.child("PostTimeMillis").setValue(postTimeMillis);
                                         postedBy.setValue(null);
                                         postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -265,7 +261,7 @@ public class AddCabPool extends BaseActivity {
                                         FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid()).child("Topics").push().setValue(key);
 
                                         //writing to database for recent items
-                                        DatabaseReference newPost2 = homeReference.push();
+                                        DatabaseReference newPost2 = homeReference.child(key);
                                         final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
                                         newPost2.child("name").setValue("Cabpool to " + destination.getSelectedItem().toString());
                                         newPost2.child("desc").setValue("Hey! a friend is asking for a cabpool from " + source.getSelectedItem().toString() + " to " + destination.getSelectedItem().toString() + " on " + calender.getText().toString() + " between " + time + ". Do you want to join?");
@@ -328,7 +324,7 @@ public class AddCabPool extends BaseActivity {
                                         snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                                         snack.show();
 
-                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,KEY_CABPOOL,true,false,getApplicationContext());
+                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,null,KEY_CABPOOL,true,false,getApplicationContext());
                                         notificationSender.execute();
 
                                         finish();

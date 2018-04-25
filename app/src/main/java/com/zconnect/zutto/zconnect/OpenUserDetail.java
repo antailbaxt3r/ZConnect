@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Path;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -201,6 +202,8 @@ public class OpenUserDetail extends BaseActivity {
                 }else {
                     db_like.child(myUID).setValue(true);
                     like_status = true;
+                    NotificationSender notificationSender=new NotificationSender(userProfile.getUserUID(),null,null,null,null,mAuth.getCurrentUser().getEmail(),null,KeyHelper.KEY_LIKE,false,true,OpenUserDetail.this);
+                    notificationSender.execute();
                 }
             }
         });
@@ -214,6 +217,8 @@ public class OpenUserDetail extends BaseActivity {
                 } else{
                     db_love.child(myUID).setValue(true);
                     love_status = true;
+                    NotificationSender notificationSender=new NotificationSender(userProfile.getUserUID(),null,null,null,null,mAuth.getCurrentUser().getEmail(),null,KeyHelper.KEY_LOVE,false,true, OpenUserDetail.this);
+                    notificationSender.execute();
                 }
             }
         });

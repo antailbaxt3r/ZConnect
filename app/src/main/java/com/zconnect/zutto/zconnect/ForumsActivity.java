@@ -69,7 +69,7 @@ public class ForumsActivity extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -147,21 +147,21 @@ public class ForumsActivity extends Fragment{
         return v;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_phonebook, menu);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_search_menu_phonebook) {
-            Intent phoneBookSearchIntent = new Intent(getContext(), PhonebookSearch.class);
-            startActivity(phoneBookSearchIntent);
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.menu_phonebook, menu);
+//    }
+//
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == R.id.action_search_menu_phonebook) {
+//            Intent phoneBookSearchIntent = new Intent(getContext(), PhonebookSearch.class);
+//            startActivity(phoneBookSearchIntent);
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     public void setupViewPager(ViewPager viewPager) {
 

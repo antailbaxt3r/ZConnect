@@ -19,7 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.CabListItemFormat;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 
 import java.util.Vector;
@@ -30,36 +31,36 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by shubhamk on 27/7/17.
  */
 
-public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.ViewHolder> {
+public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.ViewHolder> {
     Context context;
-    Vector<CabListItemFormat> cabListItemFormats;
+    Vector<UsersListItemFormat> usersListItemFormats;
 
 
     private SharedPreferences communitySP;
     public String communityReference;
 
-    public CabPeopleRVAdapter(Context context, Vector<CabListItemFormat> cabListItemFormats) {
+    public UsersListRVAdapter(Context context, Vector<UsersListItemFormat> usersListItemFormats) {
         this.context = context;
-        this.cabListItemFormats = cabListItemFormats;
+        this.usersListItemFormats = usersListItemFormats;
     }
 
     @Override
-    public CabPeopleRVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public UsersListRVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View contactView = inflater.inflate(R.layout.cab_people_item_format, parent, false);
-        return new CabPeopleRVAdapter.ViewHolder(contactView);
+        return new UsersListRVAdapter.ViewHolder(contactView);
     }
 
     @Override
-    public void onBindViewHolder(CabPeopleRVAdapter.ViewHolder holder, int position) {
-        holder.name.setText(cabListItemFormats.get(position).getName());
-        holder.number.setText(cabListItemFormats.get(position).getPhonenumber());
-        holder.avatarCircle.setImageURI(cabListItemFormats.get(position).getImageThumb());
+    public void onBindViewHolder(UsersListRVAdapter.ViewHolder holder, int position) {
+        holder.name.setText(usersListItemFormats.get(position).getName());
+        holder.number.setText(usersListItemFormats.get(position).getPhonenumber());
+        holder.avatarCircle.setImageURI(usersListItemFormats.get(position).getImageThumb());
     }
 
     @Override
     public int getItemCount() {
-        return cabListItemFormats.size();
+        return usersListItemFormats.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -96,34 +97,10 @@ public class CabPeopleRVAdapter extends RecyclerView.Adapter<CabPeopleRVAdapter.
             rv_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                       intent=new Intent(context, OpenUserDetail.class);
-                    String  name = cabListItemFormats.get(getAdapterPosition()).getName();
-                    String number = cabListItemFormats.get(getAdapterPosition()).getPhonenumber();
-
-                    DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook").child(number);
-                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                PhonebookDisplayItem phonebookDisplayItem = dataSnapshot.getValue(PhonebookDisplayItem.class);
-                            Log.e("ABC",phonebookDisplayItem.getName());
-                                   intent.putExtra("name",phonebookDisplayItem.getName());
-                                    intent.putExtra("desc",phonebookDisplayItem.getDesc());
-                                    intent.putExtra("contactDescTv",phonebookDisplayItem.getNumber());
-                                    intent.putExtra("image",phonebookDisplayItem.getImageurl());
-                                    intent.putExtra("uid",phonebookDisplayItem.getEmail());
-                                    intent.putExtra("skills",phonebookDisplayItem.getSkills());
-                                    intent.putExtra("category",phonebookDisplayItem.getCategory());
-                                    intent.putExtra("Uid",phonebookDisplayItem.getUid());
-                                    context.startActivity(intent);
-
-                                }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
+                String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
+                intent=new Intent(context, OpenUserDetail.class);
+                intent.putExtra("Uid",userUID);
+                context.startActivity(intent);
 
                 }
             });

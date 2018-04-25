@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.ItemFormats;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 
@@ -22,32 +23,29 @@ public class Event implements Serializable {
             FormatDate,
             Key,
             Venue,
-            Boosters,
-            UserId,
+            UserID,
             Verified;
-
     private PostedByDetails PostedBy;
     public Event() {
 
     }
 
-    public Event(double lon, double lat, String eventName, String eventDescription, String eventImage, String eventDate, Long eventTimeMillis, String formatDate, String key, String venue, String boosters, String userid, double boostcount,String verified, PostedByDetails postedBy, long postTimeMillis) {
+    public Event(double lon, double lat, String EventName, String EventDescription, String EventImage, String EventDate, Long EventTimeMillis, String FormatDate, String Key, String Venue, String UserID, double BoostCount,String Verified, PostedByDetails PostedBy, long PostTimeMillis) {
         this.lon = lon;
         this.lat = lat;
-        EventName = eventName;
-        EventDescription = eventDescription;
-        EventImage = eventImage;
-        EventDate = eventDate;
-        EventTimeMillis = eventTimeMillis;
-        FormatDate = formatDate;
-        Key = key;
-        Venue = venue;
-        Boosters = boosters;
-        UserId = userid;
-        BoostCount = boostcount;
-        Verified = verified;
-        PostedBy = postedBy;
-        PostTimeMillis = postTimeMillis;
+        this.EventName = EventName;
+        this.EventDescription = EventDescription;
+        this.EventImage = EventImage;
+        this.EventDate = EventDate;
+        this.EventTimeMillis = EventTimeMillis;
+        this.FormatDate = FormatDate;
+        this.Key = Key;
+        this.Venue = Venue;
+        this.UserID = UserID;
+        this.BoostCount = BoostCount;
+        this.Verified = Verified;
+        this.PostedBy = PostedBy;
+        this.PostTimeMillis = PostTimeMillis;
     }
 
     public String getVerified(){
@@ -58,15 +56,11 @@ public class Event implements Serializable {
         return BoostCount;
     }
 
-    public String getBoosters() {
-        return Boosters;
+    public void setEventDate(String eventDate) {
+        EventDate = eventDate;
     }
-
-    public void setBoosters(String boosters) {
-        Boosters = boosters;
-    }
-
-    public String getEventDate() {
+    public String getEventDate()
+    {
         return EventDate;
     }
 
@@ -83,7 +77,6 @@ public class Event implements Serializable {
     }
 
     public String getEventName() {
-        Log.d("QQQ Eventname", EventName);
         return EventName;
     }
 
@@ -121,7 +114,7 @@ public class Event implements Serializable {
     }
 
     public String getUserID() {
-        return UserId;
+        return UserID;
     }
 
     public PostedByDetails getPostedBy() {

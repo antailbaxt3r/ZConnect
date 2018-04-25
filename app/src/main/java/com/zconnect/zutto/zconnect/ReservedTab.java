@@ -7,20 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -181,10 +177,10 @@ public class ReservedTab extends Fragment {
             communitySP = mView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
             communityReference = communitySP.getString("communityReference", null);
 
-            Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
+            Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
 
             post_image = (ImageView) mView.findViewById(R.id.postImg);
-            deleteButton = (ImageView) mView.findViewById(R.id.delete);
+            deleteButton = (ImageView) mView.findViewById(R.id.archive);
         }
 
         public void setProductName(String productName) {
