@@ -160,7 +160,7 @@ public class OpenProductDetails extends BaseActivity {
                 });
 
                 try{
-                    productSellerName.setText("by " + dataSnapshot.child("SellerUsername").getValue().toString());
+                    productSellerName.setText("by " + dataSnapshot.child("PostedBy").child("Username").getValue().toString());
                 } catch (Exception e){
 
                 }

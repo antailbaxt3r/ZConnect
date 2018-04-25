@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
@@ -26,7 +27,7 @@ public class NewMessageActivity extends BaseActivity {
 
     Button submit;
     CheckBox anonymousCheck;
-    EditText messageInput;
+    MaterialEditText messageInput;
     View.OnClickListener submitlistener;
     Event event;
     Boolean a;
@@ -57,7 +58,7 @@ public class NewMessageActivity extends BaseActivity {
 
         submit = (Button) findViewById(R.id.button_newmessage_submit);
         anonymousCheck = (CheckBox) findViewById(R.id.checkbox_newmessage_anonymous);
-        messageInput = (EditText) findViewById(R.id.edittext_newmessage_input);
+        messageInput = (MaterialEditText) findViewById(R.id.edittext_newmessage_input);
 
         submitlistener = new View.OnClickListener() {
             @Override

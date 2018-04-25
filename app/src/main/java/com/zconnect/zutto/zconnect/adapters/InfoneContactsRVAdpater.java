@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,8 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
             holder.userAvatar.setImageURI(imageuri);
         }
         final ArrayList<String> phoneNums = infoneContactsRVItems.get(position).getPhoneNums();
-
+        phoneNums.set(0, phoneNums.get(0).toString() + " (Mobile)");
+        phoneNums.set(1, phoneNums.get(1).toString() + " (Whatsapp)");
         holder.callImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

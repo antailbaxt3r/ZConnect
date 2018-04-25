@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -37,7 +38,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
     private SharedPreferences communitySP;
     public String communityReference;
 
-    EditText nameEt;
+    MaterialEditText nameEt;
     Button saveButton;
     SimpleDraweeView addImage;
 
@@ -65,7 +66,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infone_add_cat);
 
-        nameEt = (EditText) findViewById(R.id.et_name_cat_add_infone);
+        nameEt = (MaterialEditText) findViewById(R.id.et_name_cat_add_infone);
         addImage = (SimpleDraweeView) findViewById(R.id.image_add_cat_infone);
         saveButton = (Button) findViewById(R.id.save_image_add_cat_infone);
 

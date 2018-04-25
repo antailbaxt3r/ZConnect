@@ -8,54 +8,54 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.zconnect.zutto.zconnect.NewMessageActivity"
-    tools:showIn="@layout/activity_new_message">
-
+    tools:showIn="@layout/activity_new_message"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Write new message!"
+        android:text="Write your status"
         android:layout_gravity="center_horizontal"
         android:textAlignment="center"
-        android:textSize="25sp"
-        android:paddingTop="25dp"
-        android:paddingBottom="25dp"/>
-
-    <EditText
+        android:textSize="18sp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/primaryText"/>
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edittext_newmessage_input"
         android:hint="Please enter your message here!"
-        android:paddingBottom="100dp"
-        android:layout_gravity="center_horizontal" />
-
+        app:met_textColor="@color/primaryText"
+        app:met_textColorHint="@color/secondaryText"
+        android:layout_marginTop="10dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="25dp">
-
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp">
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/checkbox_newmessage_anonymous"
             android:layout_gravity="center_horizontal"
             android:checked="false"
-            android:layout_weight="10"/>
-
+            android:layout_weight="5"
+            android:textColor="@color/primaryText"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Anonymous?"
-            android:layout_weight="90"/>
-
+            android:layout_weight="95"
+            android:textColor="@color/primaryText"/>
     </LinearLayout>
-
-
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button_newmessage_submit"
-        android:text="Submit!"
-        android:layout_gravity="center_horizontal"/>
-
+        android:text="Submit"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/messages"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="false"/>
 </LinearLayout>
