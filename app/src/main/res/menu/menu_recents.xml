@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.zconnect.zutto.zconnect.Infone2Activity">
+    tools:context="com.zconnect.zutto.zconnect.InfoneActivity">
     <item
         android:title="Open Infone"
         android:id="@+id/action_open_menu_phonebook"

@@ -97,6 +97,7 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
         //UsersReference.child("users").child(senderUID).child("messages").child(chatID).removeValue();
 
         Intent i = new Intent(mView.getContext(), ChatActivity.class);
+        i.putExtra("type","messages");
         i.putExtra("ref",UsersReference.child("chats").child(chatID).toString());
         mView.getContext().startActivity(i);
     }

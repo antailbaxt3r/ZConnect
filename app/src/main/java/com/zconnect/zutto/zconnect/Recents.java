@@ -139,7 +139,7 @@ public class Recents extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_open_menu_phonebook) {
 
-            Intent infoneIntent = new Intent(getContext(), Infone2Activity.class);
+            Intent infoneIntent = new Intent(getContext(), InfoneActivity.class);
             startActivity(infoneIntent);
         }
         return super.onOptionsItemSelected(item);

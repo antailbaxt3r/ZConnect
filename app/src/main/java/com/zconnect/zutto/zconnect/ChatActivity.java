@@ -84,6 +84,21 @@ public class ChatActivity extends BaseActivity {
             finish();
         }
 
+        if (type.equals("forums"))
+        {
+            setActionBarTitle(getIntent().getStringExtra("name"));
+        }else if (type.equals("cabPool")){
+            setActionBarTitle("Discussion");
+        }else if (type.equals("events")){
+            setActionBarTitle("Discussion");
+        }else if (type.equals("messages")){
+            setActionBarTitle("Comments");
+        }else if (type.equals("storeroom")){
+            setActionBarTitle("Chat with seller");
+        }else if (type.equals("post")){
+            setActionBarTitle("Comments");
+        }
+
         if(type!=null){
             if(type.equals("cabPool")){
                 joinButton.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.cabpool));
@@ -161,6 +176,8 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             databaseReference.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,FirebaseAuth.getInstance().getCurrentUser().getUid(),KeyHelper.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
+                                            notificationSender.execute();
                                         }
 
                                         @Override

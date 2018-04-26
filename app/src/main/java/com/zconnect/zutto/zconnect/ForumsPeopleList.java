@@ -88,11 +88,14 @@ public class ForumsPeopleList extends BaseActivity {
                 flag = false;
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     UsersListItemFormat usersListItemFormat;
-                    usersListItemFormat = shot.getValue(UsersListItemFormat.class);
-                    if (usersListItemFormat.getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                        flag = true;
-                    }
-                    usersListItemFormatVector.add(usersListItemFormat);
+                    try {
+                        usersListItemFormat = shot.getValue(UsersListItemFormat.class);
+                        if (usersListItemFormat.getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            flag = true;
+                        }
+                        usersListItemFormatVector.add(usersListItemFormat);
+                    }catch (Exception e){}
+
                 }
 
                 progressBar.setVisibility(INVISIBLE);

@@ -31,6 +31,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -206,6 +208,7 @@ public class OpenProductDetails extends BaseActivity {
             case R.id.menu_chat_room:
                 //char room clicked
                 Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+                intent.putExtra("type","storeroom");
                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
                 startActivity(intent);
                 break;
@@ -247,7 +250,24 @@ public class OpenProductDetails extends BaseActivity {
                             } else {
                                 CounterManager.StoroomShortList(category, dataSnapshot.getKey());
                                 productShortlist.setText("Shortlist");
-                                userReservedReference.child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+                                final UsersListItemFormat userDetails = new UsersListItemFormat();
+                                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                user.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                                        userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
+                                        userDetails.setName(userItemFormat.getUsername());
+                                        userDetails.setPhonenumber(userItemFormat.getMobileNumber());
+                                        userDetails.setUserUID(userItemFormat.getUserUID());
+                                        userReservedReference.child(userItemFormat.getUserUID()).setValue(userDetails);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
                                 productShortlist.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
                                 flag = false;
                                 Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
@@ -335,7 +355,7 @@ public class OpenProductDetails extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
-        DatabaseReference storeroomReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+        DatabaseReference storeroomReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
 
         storeroomReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -75,7 +75,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
                 holder.lastMessageTime.setVisibility(View.GONE);
             }
             if (position!=0) {
-                holder.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID());
+                holder.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
                 holder.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
             }else {
                 holder.catName.setTextColor(context.getResources().getColor(R.color.secondaryText));
@@ -114,13 +114,14 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
             lastMessageTime.setTypeface(ralewayRegular);
         }
 
-        void openChat(final String uid, final String tabId){
+        void openChat(final String uid, final String tabId, final String  name){
             mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
                     intent.putExtra("type","forums");
+                    intent.putExtra("name", name);
                     intent.putExtra("key",uid);
 
                     context.startActivity(intent);
@@ -147,7 +148,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
                             tabName.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    addCategory(input.getText().toString(),uid,dataSnapshot.getValue().toString());
+                                    addCategory(input.getText().toString(),uid,dataSnapshot.child("name").getValue().toString());
                                 }
 
                                 @Override

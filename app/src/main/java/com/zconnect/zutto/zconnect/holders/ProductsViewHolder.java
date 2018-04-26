@@ -27,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.ItemFormats.Product;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.R;
@@ -72,8 +74,8 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         communitySP = itemView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
-        StoreRoom = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("storeroom");
+        Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+        StoreRoom = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
 
         sharedPref = itemView.getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         status = sharedPref.getBoolean("mode", false);
@@ -126,8 +128,24 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                             } else {
                                 CounterManager.StoroomShortList(category, key);
 //                                productShortList.setText("Shortlist");
-                                StoreRoom.child(key).child("UsersReserved")
-                                        .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
+                                final UsersListItemFormat userDetails = new UsersListItemFormat();
+                                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                user.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                                        userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
+                                        userDetails.setName(userItemFormat.getUsername());
+                                        userDetails.setPhonenumber(userItemFormat.getMobileNumber());
+                                        userDetails.setUserUID(userItemFormat.getUserUID());
+                                        StoreRoom.child(key).child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
                                 flag = false;
                                 productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
 //                                productShortList.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.curvedradiusbutton_sr));

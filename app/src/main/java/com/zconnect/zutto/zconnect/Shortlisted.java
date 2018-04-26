@@ -17,12 +17,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class Shortlisted extends BaseActivity {
 
-    private ArrayList<String> names = new ArrayList<>(),nos = new ArrayList<>(),images = new ArrayList<>();
+    private Vector<UsersListItemFormat> usersListItemFormatVector = new Vector<UsersListItemFormat>();
+    private ArrayList<String> names = new ArrayList<>(), nos = new ArrayList<>(), images = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +36,12 @@ public class Shortlisted extends BaseActivity {
         setToolbarTitle("People who shortlisted");
         showBackButton();
 
+        showProgressDialog();
+
         final String key = getIntent().getStringExtra("Key");
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
-        final adapter adapter = new adapter();
+        final UsersListRVAdapter adapter = new UsersListRVAdapter(this, usersListItemFormatVector);
 
         LinearLayoutManager productLinearLayout = new LinearLayoutManager(this);
         productLinearLayout.setReverseLayout(true);
@@ -50,52 +55,66 @@ public class Shortlisted extends BaseActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                showProgressDialog();
-                nos.clear();
-                names.clear();
-                images.clear();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren())
-                {
-                    String user = snapshot.getKey();
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
-                            .child("Users").child(user).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            String email = dataSnapshot.child("Email").getValue(String.class);
-                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
-                                    .child("Phonebook").orderByChild("uid").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.getChildrenCount() != 0) {
-                                        PhonebookDisplayItem item = new PhonebookDisplayItem();
-                                        for (DataSnapshot snapshot : dataSnapshot.getChildren())
-                                            item = snapshot.getValue(PhonebookDisplayItem.class);
 
-                                        if (item == null)
-                                            return;
-                                        try {
-                                            names.add(item.getName());
-                                            nos.add(item.getNumber());
-                                            images.add(item.getImageurl());
-                                        } catch (Exception e) {}
-                                        adapter.notifyDataSetChanged();
+                usersListItemFormatVector.clear();
+                UsersListItemFormat user;
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    try {
+                        user = shot.getValue(UsersListItemFormat.class);
+                        usersListItemFormatVector.add(user);
+                    } catch (Exception e) {
+                    }
 
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
                 }
+                adapter.notifyDataSetChanged();
+
+
+//
+//                nos.clear();
+//                names.clear();
+//                images.clear();
+//                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+//                {
+//                    String user = snapshot.getKey();
+//                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+//                            .child("Users").child(user).addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            String email = dataSnapshot.child("Email").getValue(String.class);
+//                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference)
+//                                    .child("Phonebook").orderByChild("uid").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                    if (dataSnapshot.getChildrenCount() != 0) {
+//                                        PhonebookDisplayItem item = new PhonebookDisplayItem();
+//                                        for (DataSnapshot snapshot : dataSnapshot.getChildren())
+//                                            item = snapshot.getValue(PhonebookDisplayItem.class);
+//
+//                                        if (item == null)
+//                                            return;
+//                                        try {
+//                                            names.add(item.getName());
+//                                            nos.add(item.getNumber());
+//                                            images.add(item.getImageurl());
+//                                        } catch (Exception e) {}
+//                                        adapter.notifyDataSetChanged();
+//
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError) {
+//
+//                                }
+//                            });
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//                }
                 hideProgressDialog();
 
             }
@@ -106,44 +125,45 @@ public class Shortlisted extends BaseActivity {
             }
         });
 
-    }
-    class vh extends RecyclerView.ViewHolder {
-
-        public vh(View itemView) {
-            super(itemView);
-        }
-
-        private void setData(final int pos) {
-            final SimpleDraweeView image = (SimpleDraweeView) itemView.findViewById(R.id.sdv_avatar_contact_item);
-            image.setImageURI(images.get(pos));
-            ((TextView) itemView.findViewById(R.id.tv_name_contact_item)).setText(names.get(pos));
-            itemView.findViewById(R.id.ib_call_contact_item).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + nos.get(pos))));
-                }
-            });
-
-        }
-
-    }
-    class adapter extends RecyclerView.Adapter<vh> {
-
-        @Override
-        public vh onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            View person = inflater.inflate(R.layout.view_contect_item, parent, false);
-            return new vh(person);
-        }
-
-        @Override
-        public void onBindViewHolder(vh holder, int position) {
-            holder.setData(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return names.size();
-        }
+//    }
+//    class vh extends RecyclerView.ViewHolder {
+//
+//        public vh(View itemView) {
+//            super(itemView);
+//        }
+//
+//        private void setData(final int pos) {
+//            final SimpleDraweeView image = (SimpleDraweeView) itemView.findViewById(R.id.sdv_avatar_contact_item);
+//            image.setImageURI(images.get(pos));
+//            ((TextView) itemView.findViewById(R.id.tv_name_contact_item)).setText(names.get(pos));
+//            itemView.findViewById(R.id.ib_call_contact_item).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + nos.get(pos))));
+//                }
+//            });
+//
+//        }
+//
+//    }
+//    class adapter extends RecyclerView.Adapter<vh> {
+//
+//        @Override
+//        public vh onCreateViewHolder(ViewGroup parent, int viewType) {
+//            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+//            View person = inflater.inflate(R.layout.view_contect_item, parent, false);
+//            return new vh(person);
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(vh holder, int position) {
+//            holder.setData(position);
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return names.size();
+//        }
+//    }
     }
 }

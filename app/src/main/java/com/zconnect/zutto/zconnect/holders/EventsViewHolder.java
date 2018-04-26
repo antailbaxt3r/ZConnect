@@ -103,7 +103,7 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
         final DatabaseReference eventReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventID);
         final DatabaseReference archivedReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("archivedEvents").child(eventID);
 
-        Long currentDate = System.currentTimeMillis() + 86400000;
+        Long currentDate = System.currentTimeMillis() - 86400000;
         if (currentDate>date){
             eventReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

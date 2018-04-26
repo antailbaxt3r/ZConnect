@@ -364,8 +364,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         context.startActivity(i);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Message")) {
                         i=new Intent(context,ChatActivity.class);
+
                         mRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/"+recentsItemFormats.get(getAdapterPosition()).getKey());
                         i.putExtra("ref",mRef.toString());
+                        i.putExtra("type","post");
                         context.startActivity(i);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){
                         i = new Intent(context,InfoneProfileActivity.class);
@@ -373,6 +375,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                         context.startActivity(i);
                     } else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Forums")){
                         Intent intent = new Intent(context, ChatActivity.class);
+                        intent.putExtra("type","forums");
+                        intent.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getKey());
+                        intent.putExtra("name",recentsItemFormats.get(getAdapterPosition()).getName());
                         intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(recentsItemFormats.get(getAdapterPosition()).getKey()).toString());
                         context.startActivity(intent);
                     }
