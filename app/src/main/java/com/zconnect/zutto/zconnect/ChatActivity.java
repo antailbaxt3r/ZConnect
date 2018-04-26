@@ -104,7 +104,7 @@ public class ChatActivity extends BaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
+
 
                         if(!dataSnapshot.child("usersListItemFormats").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             joinButton.setVisibility(View.VISIBLE);
@@ -126,6 +126,10 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             databaseReference.child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_CABPOOL_JOIN,false,true,ChatActivity.this);
+                                            notificationSender.execute();
+                                            FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
+
                                         }
 
                                         @Override

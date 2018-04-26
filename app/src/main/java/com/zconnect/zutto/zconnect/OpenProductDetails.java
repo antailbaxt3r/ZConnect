@@ -261,7 +261,7 @@ public class OpenProductDetails extends BaseActivity {
                                         userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                         userDetails.setUserUID(userItemFormat.getUserUID());
                                         userReservedReference.child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
-                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.getKey(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,false,getApplicationContext());
+                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.child("PostedBy").child("UID").getValue().toString(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,true,getApplicationContext());
                                         notificationSender.execute();
                                     }
 

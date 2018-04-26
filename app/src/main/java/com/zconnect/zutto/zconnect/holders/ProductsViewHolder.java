@@ -112,7 +112,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                 flag = true;
                 StoreRoom.addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(final DataSnapshot dataSnapshot) {
                         if (flag) {
 
                             if (dataSnapshot.child(key).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
@@ -132,13 +132,18 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                 DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 user.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                                    public void onDataChange(DataSnapshot dataSnapshot2) {
+                                        UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
                                         userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
                                         userDetails.setName(userItemFormat.getUsername());
                                         userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                         userDetails.setUserUID(userItemFormat.getUserUID());
                                         StoreRoom.child(key).child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                        try {
+                                            NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,mAuth.getCurrentUser().getEmail(),productName,KEY_PRODUCT,false,true,itemView.getContext());
+                                            notificationSender.execute();
+                                        }catch (Exception e){}
+
                                     }
 
                                     @Override
@@ -152,8 +157,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 //                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
 //                                productShortList.setTypeface(customfont);
 
-                                NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,mAuth.getCurrentUser().getEmail(),productName,KEY_PRODUCT,false,true,itemView.getContext());
-                                notificationSender.execute();
+
                             }
                         }
                     }

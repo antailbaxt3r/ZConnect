@@ -96,8 +96,9 @@ public class NotificationService extends FirebaseMessagingService {
             } else if (type.equals(KEY_CABPOOL_JOIN)) {
                 final String key = data.get("Key").toString();
                 NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-                style.bigText(data.get("Person").toString() + " joined your cab pool")
+                style.bigText(data.get("Product").toString() + " joined your cab pool")
                         .setBigContentTitle("Cab pool | ZConnect");
+
                 android.support.v4.app.NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(NotificationService.this)
                                 .setSmallIcon(R.drawable.ic_directions_car_black_24dp)
@@ -105,7 +106,7 @@ public class NotificationService extends FirebaseMessagingService {
                                 .setSound(defaultSoundUri)
                                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.cabpool))
                                 .setContentTitle("Cab pool | ZConnect")
-                                .setContentText(data.get("Person").toString() + " joined your cab pool");
+                                .setContentText(data.get("Product").toString() + " joined your cab pool");
 
                 Intent intent = new Intent(NotificationService.this, CabPoolListOfPeople.class);
                 intent.putExtra("key", (String) data.get("Key"));
@@ -117,10 +118,9 @@ public class NotificationService extends FirebaseMessagingService {
                 // Gets an instance of the NotificationMa
 
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.notify(key.compareTo(data.get("Person").toString()), mBuilder.build());
+                mNotificationManager.notify(key.compareTo(data.get("Product").toString()), mBuilder.build());
 
             } else if (type.equals(KEY_PRODUCT)) {
-                Toast.makeText(this, "Notification", Toast.LENGTH_SHORT).show();
                 final String personEmail = data.get("PersonEmail").toString();
                 FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").orderByChild("userUID").equalTo(personEmail).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -281,7 +281,7 @@ public class NotificationService extends FirebaseMessagingService {
                });
 
 
-           }else if(type.equals(KEY_STOREROOM)){
+            }else if(type.equals(KEY_STOREROOM)){
 
                 NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
                 NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
@@ -301,7 +301,7 @@ public class NotificationService extends FirebaseMessagingService {
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(1, mBuilder.build());
 
-            }else if(type.equals(KEY_LIKE)){
+            } else if(type.equals(KEY_LIKE)){
                 NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
                 NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
 
@@ -323,7 +323,7 @@ public class NotificationService extends FirebaseMessagingService {
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(1, mBuilder.build());
 
-            }else if(type.equals(KEY_LOVE)){
+                }else if(type.equals(KEY_LOVE)){
                 NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
                 NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
 
@@ -403,7 +403,7 @@ public class NotificationService extends FirebaseMessagingService {
 
                 //final String title = data.get("Temp").toString();
                 final String imageUrl = data.get("Key").toString();
-               // final String text = data.get("Product").toString();
+                // final String text = data.get("Product").toString();
 
 
                 URL url = null;

@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ItemFormats.CommunitiesItemFormat;
 
 import java.util.HashMap;
@@ -220,6 +221,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             SharedPreferences.Editor editInfo2 = sharedPref2.edit();
             editInfo2.putString("communityReference", communityCode);
             editInfo2.commit();
+            FirebaseMessaging.getInstance().subscribeToTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
             Intent i = new Intent(LoginActivity.this,HomeActivity.class);
             startActivity(i);
             finish();
