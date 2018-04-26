@@ -48,6 +48,8 @@ import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
 import java.io.File;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -150,13 +152,6 @@ public class  OpenEventDetail extends BaseActivity {
                         }
                     }
                 });
-                String eventDate[] = (event.getEventDate().split("\\s+"));
-                String date = "";
-                int i = 0;
-                while (i < 3) {
-                    date = date + " " + eventDate[i];
-                    i++;
-                }
 
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 mNotificationManager.cancel(event.getEventName(), 1);
@@ -166,7 +161,8 @@ public class  OpenEventDetail extends BaseActivity {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
                         boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
                     }
-                    EventDate.setText(date);
+                    Date date = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(event.getEventDate());
+                    EventDate.setText(new SimpleDateFormat("EEE, MMM dd yyyy HH:mm").format(date));
                     EventDescription.setText(event.getEventDescription());
                     EventVenue.setText(event.getVenue());
                     getSupportActionBar().setTitle(event.getEventName());

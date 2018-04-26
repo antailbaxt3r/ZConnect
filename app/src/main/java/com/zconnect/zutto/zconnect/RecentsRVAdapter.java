@@ -29,6 +29,9 @@ import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.Utilities.DrawableUtilities;
 import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Vector;
 
@@ -67,15 +70,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             }
             if (recentsItemFormats.get(position).getPostedBy().getUsername() != null) {
                 holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
-                if(!(recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y"))) {
-                    holder.postedBy.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(context,OpenUserDetail.class);
-                            i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
-                            context.startActivity(i);
-                        }
-                    });
+                holder.postedBy.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(context,OpenUserDetail.class);
+                        i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
+                        context.startActivity(i);
+                    }
+                });
+                if(recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y")) {
+                    holder.postedBy.setOnClickListener(null);
                 }
             }
             if (recentsItemFormats.get(position).getPostedBy().getImageThumb() != null) {
@@ -129,7 +133,15 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             holder.postConjunction.setText(" created an ");
             holder.post.setText(recentsItemFormats.get(position).getFeature());
             holder.eventName.setText(recentsItemFormats.get(position).getName());
-            holder.eventDate.setText(recentsItemFormats.get(position).getDesc2());
+            try {
+                Date date = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(recentsItemFormats.get(position).getDesc2());
+                holder.eventDate.setText(new SimpleDateFormat("EEE, dd MMM yyyy").format(date));
+            }
+            catch (ParseException pe) {
+                Log.d("Error Alert ", pe.getMessage());
+                Toast.makeText(context, pe.getMessage(), Toast.LENGTH_LONG).show();
+                holder.eventDate.setText(recentsItemFormats.get(position).getDesc2());
+            }
             holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());
             Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.eventImage);
         }

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -32,7 +33,7 @@ public class TrendingEvents extends Fragment {
     private EventsAdapter eventsAdapter;
     private Vector<Event> eventsVector = new Vector<Event>();
     private ValueEventListener mListener;
-
+    private ProgressBar progressBar;
 
     public TrendingEvents() {
         // Required empty public constructor
@@ -97,6 +98,14 @@ public class TrendingEvents extends Fragment {
         mDatabase.keepSynced(true);
         queryRef.keepSynced(true);
 
+
+        progressBar = (ProgressBar) view.findViewById(R.id.fragment_trending_events_progress_circle);
+        mEventList = (RecyclerView) view.findViewById(R.id.eventList);
+        progressBar.setVisibility(View.VISIBLE);
+        mEventList.setVisibility(View.GONE);
+        mEventList.setHasFixedSize(true);
+        mEventList.setLayoutManager(mlinearmanager);
+
         mListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,18 +119,17 @@ public class TrendingEvents extends Fragment {
                         eventsVector.add(singleEvent);
                     }catch (Exception e){}
                 }
+                progressBar.setVisibility(View.GONE);
+                mEventList.setVisibility(View.VISIBLE);
                 eventsAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                progressBar.setVisibility(View.GONE);
+                mEventList.setVisibility(View.VISIBLE);
             }
         };
-
-        mEventList = (RecyclerView) view.findViewById(R.id.eventList);
-        mEventList.setHasFixedSize(true);
-        mEventList.setLayoutManager(mlinearmanager);
 
         eventsAdapter = new EventsAdapter(getContext(),eventsVector,"trending");
         mEventList.setAdapter(eventsAdapter);

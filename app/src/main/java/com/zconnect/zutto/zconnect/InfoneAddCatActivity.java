@@ -104,7 +104,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
 
         if (mImageUri == null && toAdd) {
 
-            addImage.setActualImageResource(R.mipmap.ic_launcher);
+//            addImage.setActualImageResource(R.mipmap.ic_launcher);
 
         }
 
