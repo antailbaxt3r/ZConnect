@@ -17,272 +17,290 @@
     tools:showIn="@layout/activity_open_user_detail"
     android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/phonebook_details_progress_circle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/colorPrimary"
-            android:paddingTop="10dp"
-            android:paddingBottom="30dp">
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/contact_details_name_editText"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:editable="false"
-                android:ems="10"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:hint="Name"
-                android:inputType="textPersonName"
-                android:text=""
-                TagsEditText:met_textColor="@color/white"
-                TagsEditText:met_textColorHint="@color/secondaryText"
-                android:textColor="@android:color/white"
-                android:textColorHint="@color/secondaryText"
-                android:textSize="20sp"/>
-            <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/contact_details_display_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/profile_avatar_circle"
-                fresco:actualImageScaleType="centerCrop"
-                fresco:roundAsCircle="true"
-                fresco:roundingBorderPadding="5dp"/>
+            android:backgroundTintMode="src_atop"
+            android:backgroundTint="@color/secondaryText2"
+            android:layout_gravity="center"/>
+        <LinearLayout
+            android:id="@+id/phonebook_details_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
             <LinearLayout
-                android:id="@+id/ll_love_like"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp">
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/colorPrimary"
+                android:paddingTop="10dp"
+                android:paddingBottom="30dp">
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/contact_details_name_editText"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <ImageButton
-                        android:id="@+id/btn_like"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/transparent"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:src="@drawable/like" />
-
-                    <TextView
-                        android:id="@+id/like_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="15dp"
-                        android:layout_weight="1.8"
-                        android:gravity="center_vertical"
-                        android:minWidth="32dp"
-                        android:text="0 Likes"
-                        android:textColor="@color/white"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <LinearLayout
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:editable="false"
+                    android:ems="10"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="Name"
+                    android:inputType="textPersonName"
+                    android:text=""
+                    TagsEditText:met_textColor="@color/white"
+                    TagsEditText:met_textColorHint="@color/secondaryText"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/secondaryText"
+                    android:textSize="20sp"/>
+                <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/contact_details_display_image"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <ImageButton
-                        android:id="@+id/btn_love"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/profile_avatar_circle"
+                    fresco:actualImageScaleType="centerCrop"
+                    fresco:roundAsCircle="true"
+                    fresco:roundingBorderPadding="5dp"/>
+                <LinearLayout
+                    android:id="@+id/ll_love_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp">
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="15dp"
-                        android:layout_weight="1"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/heart" />
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:id="@+id/btn_like"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:src="@drawable/like" />
 
-                    <TextView
-                        android:id="@+id/love_text"
+                        <TextView
+                            android:id="@+id/like_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="15dp"
+                            android:layout_weight="1.8"
+                            android:gravity="center_vertical"
+                            android:minWidth="32dp"
+                            android:text="0 Likes"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="15dp"
-                        android:layout_weight="1.8"
-                        android:gravity="center_vertical"
-                        android:minWidth="32dp"
-                        android:text="0 Loves"
-                        android:textColor="@color/white"
-                        android:textSize="18sp" />
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:id="@+id/btn_love"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="15dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/heart" />
+
+                        <TextView
+                            android:id="@+id/love_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="15dp"
+                            android:layout_weight="1.8"
+                            android:gravity="center_vertical"
+                            android:minWidth="32dp"
+                            android:text="0 Loves"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <requestFocus />
-            <!--number-->
-            <ImageView
-                android:id="@+id/ib_call_contact_item"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignEnd="@+id/contact_details_number_text_input_layout"
-                android:layout_marginEnd="17dp"
-                android:layout_marginTop="25dp"
-                android:src="@drawable/ic_phone_black_24dp" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <requestFocus />
+                <!--number-->
+                <ImageView
+                    android:id="@+id/ib_call_contact_item"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignEnd="@+id/contact_details_number_text_input_layout"
+                    android:layout_marginEnd="17dp"
+                    android:layout_marginTop="25dp"
+                    android:src="@drawable/ic_phone_black_24dp" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/contact_details_number_text_input_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:clickable="false"
-                android:paddingEnd="16dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingStart="16dp">
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/contact_details_number_editText"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/contact_details_number_text_input_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:clickable="false"
-                    android:cursorVisible="false"
-                    android:editable="false"
-                    android:ems="10"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="Number"
-                    android:inputType="number"
-                    android:maxLength="12"
-                    android:textColor="@android:color/black" />
-            </android.support.design.widget.TextInputLayout>
+                    android:paddingEnd="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingStart="16dp">
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/contact_details_number_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:editable="false"
+                        android:ems="10"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="Number"
+                        android:inputType="number"
+                        android:maxLength="12"
+                        android:textColor="@android:color/black" />
+                </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/contact_details_whatsapp_number_text_input_layout"
-                android:layout_below="@id/contact_details_number_text_input_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:clickable="false"
-                android:paddingEnd="16dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingStart="16dp">
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/whatsapp_number"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/contact_details_whatsapp_number_text_input_layout"
+                    android:layout_below="@id/contact_details_number_text_input_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:clickable="false"
-                    android:cursorVisible="false"
-                    android:editable="false"
-                    android:ems="10"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="Whatsapp Number"
-                    android:inputType="number"
-                    android:textColor="@android:color/black"
-                    android:text=""/>
-            </android.support.design.widget.TextInputLayout>
-            <!--email-->
-            <ImageView
-                android:id="@+id/mailbutton"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignBottom="@+id/contact_details_email_text_input_layout"
-                android:layout_alignEnd="@+id/contact_details_email_text_input_layout"
-                android:layout_below="@+id/contact_details_whatsapp_number_text_input_layout"
-                android:layout_marginEnd="17dp"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/ic_email_black_24dp" />
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/contact_details_email_text_input_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/contact_details_whatsapp_number_text_input_layout"
-                android:layout_marginTop="8dp"
-                android:clickable="false"
-                android:paddingEnd="16dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingStart="16dp">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/contact_details_email_editText"
+                    android:paddingEnd="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingStart="16dp">
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/whatsapp_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:editable="false"
+                        android:ems="10"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="Whatsapp Number"
+                        android:inputType="number"
+                        android:textColor="@android:color/black"
+                        android:text=""/>
+                </android.support.design.widget.TextInputLayout>
+                <!--email-->
+                <ImageView
+                    android:id="@+id/mailbutton"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignBottom="@+id/contact_details_email_text_input_layout"
+                    android:layout_alignEnd="@+id/contact_details_email_text_input_layout"
+                    android:layout_below="@+id/contact_details_whatsapp_number_text_input_layout"
+                    android:layout_marginEnd="17dp"
+                    android:layout_marginTop="20dp"
+                    android:src="@drawable/ic_email_black_24dp" />
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/contact_details_email_text_input_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/contact_details_whatsapp_number_text_input_layout"
+                    android:layout_marginTop="8dp"
                     android:clickable="false"
-                    android:cursorVisible="false"
-                    android:editable="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="Email"
-                    android:inputType="textEmailAddress"
-                    android:text=""
-                    android:textColor="@android:color/black" />
-            </android.support.design.widget.TextInputLayout>
+                    android:paddingEnd="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingStart="16dp">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/contact_details_email_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="Email"
+                        android:inputType="textEmailAddress"
+                        android:text=""
+                        android:textColor="@android:color/black" />
+                </android.support.design.widget.TextInputLayout>
 
 
-            <!--about-->
+                <!--about-->
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/contact_details_desc_text_input_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/contact_details_email_text_input_layout"
-                android:layout_marginTop="8dp"
-                android:clickable="false"
-                android:paddingEnd="16dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingStart="16dp">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/contact_details_editText_1"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/contact_details_desc_text_input_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/contact_details_email_text_input_layout"
+                    android:layout_marginTop="8dp"
                     android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="Description"
-                    android:text=""
-                    android:textColor="@android:color/black" />
-            </android.support.design.widget.TextInputLayout>
+                    android:paddingEnd="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingStart="16dp">
 
-            <!--skills-->
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/contact_details_skills_text_input_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/contact_details_desc_text_input_layout"
-                android:layout_marginTop="8dp"
-                android:clickable="false"
-                android:paddingEnd="16dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingStart="16dp">
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/contact_details_editText_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="Description"
+                        android:text=""
+                        android:textColor="@android:color/black" />
+                </android.support.design.widget.TextInputLayout>
 
-                <mabbas007.tagsedittext.TagsEditText
-                    android:id="@+id/contact_details_editText_skills"
+                <!--skills-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/contact_details_skills_text_input_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/contact_details_desc_text_input_layout"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginStart="0dp"
                     android:layout_marginTop="8dp"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="Skills"
-                    android:inputType="text"
-                    android:text=""
-                    android:textColor="@android:color/black"
-                    android:visibility="gone"
-                    TagsEditText:allowSpaceInTag="true"
-                    TagsEditText:tagsBackground="@drawable/square"
-                    TagsEditText:tagsCloseImageLeft="@drawable/dot"
-                    TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
-                    TagsEditText:tagsTextColor="@color/black"
-                    TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
+                    android:clickable="false"
+                    android:paddingEnd="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingStart="16dp">
 
-            </android.support.design.widget.TextInputLayout>
-        </RelativeLayout>
+                    <mabbas007.tagsedittext.TagsEditText
+                        android:id="@+id/contact_details_editText_skills"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/contact_details_desc_text_input_layout"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="8dp"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="Skills"
+                        android:inputType="text"
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:visibility="gone"
+                        TagsEditText:allowSpaceInTag="true"
+                        TagsEditText:tagsBackground="@drawable/square"
+                        TagsEditText:tagsCloseImageLeft="@drawable/dot"
+                        TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
+                        TagsEditText:tagsTextColor="@color/black"
+                        TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
+
+                </android.support.design.widget.TextInputLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </FrameLayout>
+
         <!--name -->
 </LinearLayout>
 </ScrollView>

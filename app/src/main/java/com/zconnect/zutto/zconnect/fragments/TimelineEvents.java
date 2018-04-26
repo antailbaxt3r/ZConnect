@@ -132,7 +132,6 @@ public class TimelineEvents extends Fragment {
 
                     try {
                         singleEvent = shot.getValue(Event.class);
-                        Toast.makeText(getContext(), singleEvent.getUserID().toString(), Toast.LENGTH_SHORT).show();
                         eventsVector.add(singleEvent);
                     }catch (Exception e){}
                 }

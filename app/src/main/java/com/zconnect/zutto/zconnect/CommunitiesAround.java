@@ -62,9 +62,7 @@ public class CommunitiesAround extends BaseActivity {
                 communitiesList.clear();
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     communitiesList.add(shot.getValue(CommunitiesItemFormat.class));
-                    Toast.makeText(CommunitiesAround.this, communitiesList.toString(), Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(CommunitiesAround.this, "yo", Toast.LENGTH_SHORT).show();
                 adapter.notifyDataSetChanged();
             }
 

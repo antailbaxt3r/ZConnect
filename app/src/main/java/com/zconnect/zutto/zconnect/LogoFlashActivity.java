@@ -145,7 +145,6 @@ public class LogoFlashActivity extends BaseActivity {
 //
 //                                }
 //                            }
-//                        Toast.makeText( LogoFlashActivity.this,"Contains UID"+ String.valueOf(s)+"  "+"Total" + String.valueOf(t)+"  Faculty"+  String.valueOf(a) , Toast.LENGTH_SHORT).show();
 //                    }
 //
 //                    @Override
@@ -170,7 +169,6 @@ public class LogoFlashActivity extends BaseActivity {
 ////////                                    Map<String, Object> taskMap = new HashMap<>();
 ////////                                    taskMap.put("Uid", User.getKey().toString());
 ////////                                    addUID.updateChildren(taskMap);
-//////                                   // Toast.makeText(LogoFlashActivity.this, Phone.child("uid").getValue().toString(), Toast.LENGTH_SHORT).show();
 //////
 //////                                }
 //////                                Log.i("Uid",Phone.child("uid").getValue().toString());

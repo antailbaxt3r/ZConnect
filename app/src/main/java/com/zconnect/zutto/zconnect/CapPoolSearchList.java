@@ -291,8 +291,6 @@ public class CapPoolSearchList extends BaseActivity {
 
                 } else {
                     progressBar.setVisibility(View.INVISIBLE);
-
-                    //   Toast.makeText(getApplicationContext(), String.valueOf(cabItemFormats.size()), Toast.LENGTH_SHORT).show();
                     poolrv.setHasFixedSize(true);
                     poolrv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
                    if(hasTime_from) {
