@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -272,6 +273,9 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
         if (image != null) {
             SimpleDraweeView post_image = (SimpleDraweeView) mView.findViewById(R.id.er_postImg);
             Picasso.with(ctx).load(image).into(post_image);
+            ProgressBar progressBar = (ProgressBar) mView.findViewById(R.id.trending_event_image_progress_circle);
+            progressBar.setVisibility(View.GONE);
+            post_image.setVisibility(View.VISIBLE);
         }
     }
 

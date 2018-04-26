@@ -57,8 +57,6 @@ public class ForumsFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab);
-        recyclerView.setAdapter(adapter);
 
         tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(currenttab);
 
@@ -87,6 +85,9 @@ public class ForumsFragment extends Fragment {
                 Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         });
+
+        adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab);
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
