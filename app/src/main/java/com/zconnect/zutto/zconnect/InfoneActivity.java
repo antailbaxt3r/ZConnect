@@ -46,12 +46,28 @@ public class InfoneActivity extends BaseActivity {
     private SharedPreferences communitySP;
     public String communityReference;
     ProgressBar progressBar;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infone2);
+        toolbar=(Toolbar) findViewById(R.id.toolbar_app_bar_infone);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        toolbarSetup();
         setTitle("Infone");
+        toolbar.setTitle("Infone");
         progressBar = (ProgressBar) findViewById(R.id.infone2_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         recyclerViewCat = (RecyclerView) findViewById(R.id.rv_cat_infone);
@@ -124,6 +140,20 @@ public class InfoneActivity extends BaseActivity {
 
         askCallPermissions();
 
+    }
+
+    private void toolbarSetup() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
     }
 
     private void addDialog() {
