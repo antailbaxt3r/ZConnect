@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +24,7 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.adapters.ChatTabRVAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -53,6 +55,7 @@ public class ChatTabFragment extends Fragment {
     ChatTabRVAdapter chatTabRVAdapter;
     ArrayList<MessageTabRVItem> chatTabRVItems = new ArrayList<>();
     ChatTabRVItem chatTabRVItem;
+    RelativeLayout noChats;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public ChatTabFragment() {
         // Required empty public constructor
@@ -83,6 +86,7 @@ public class ChatTabFragment extends Fragment {
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_chat_messages);
 
+        noChats = (RelativeLayout) rootView.findViewById(R.id.no_chats);
         communitySP = getContext().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
@@ -102,6 +106,11 @@ public class ChatTabFragment extends Fragment {
                     }catch (Exception e){
 
                     }
+
+                    Collections.reverse(chatTabRVItems);
+                }
+                if(chatTabRVItems.size()>0){
+                    noChats.setVisibility(View.GONE);
                 }
                 chatTabRVAdapter.notifyDataSetChanged();
             }

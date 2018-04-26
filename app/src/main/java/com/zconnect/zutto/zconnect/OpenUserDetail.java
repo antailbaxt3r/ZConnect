@@ -3,7 +3,6 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Path;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -31,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
@@ -63,7 +63,7 @@ public class OpenUserDetail extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_phonebook_details);
+        setContentView(R.layout.activity_open_user_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         content = (LinearLayout) findViewById(R.id.phonebook_details_content);
         progressBar = (ProgressBar) findViewById(R.id.phonebook_details_progress_circle);
@@ -126,7 +126,7 @@ public class OpenUserDetail extends BaseActivity {
         //Like and Love data reader
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid);
         final String myUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("User1").child(myUID);
+        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(myUID);
         //Value fill listener
 
         db.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -212,11 +212,11 @@ public class OpenUserDetail extends BaseActivity {
                 }else {
                     db_like.child(myUID).setValue(true);
                     like_status = true;
-                    currentUser.child("Likes").addListenerForSingleValueEvent(new ValueEventListener() {
+                    currentUser.child("Likes").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(Uid)){
-                                Toast.makeText(OpenUserDetail.this, "Congrats, now you both like each other, we recommend you to start a conversation", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(OpenUserDetail.this, "Congrats, now you both like each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -240,13 +240,11 @@ public class OpenUserDetail extends BaseActivity {
                 } else{
                     db_love.child(myUID).setValue(true);
                     love_status = true;
-                    currentUser.child("Loves").addListenerForSingleValueEvent(new ValueEventListener() {
+                    currentUser.child("Loves").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(Uid)){
-//                                Toast.makeText(OpenUserDetail.this, "Wow, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_SHORT).show();
-                                Toast toast = Toast.makeText(getApplicationContext(), "Wow, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_LONG);
-                                toast.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.red500));
+                                Toast.makeText(OpenUserDetail.this, "WOW, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -281,23 +279,8 @@ public class OpenUserDetail extends BaseActivity {
             flagforNull=true;
         }
 
-        /*sendButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                String textMessageString;
-                textMessageString = textMessage.getText().toString();
-                if (textMessageString!=null && !flagforNull){
-                    DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(Uid).child("Messages").push();
-                    UsersReference.child("Message").setValue(textMessageString);
-                    UsersReference.child("MessageId").setValue(UsersReference.getKey());
-                    UsersReference.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
-                    textMessage.setText(null);
-                }
-            }
-        });*/
-        //DatabaseReference UsersReference2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages");
-        //UsersReference2.removeValue();
+
         sendButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -326,6 +309,9 @@ public class OpenUserDetail extends BaseActivity {
                 UsersReference.child("users").child(Uid).child("messages").child(s).child("type").setValue("recieved");
                 UsersReference.child("users").child(Uid).child("messages").child(s).child("chatUID").setValue(s);
                 UsersReference.child("users").child(Uid).child("messages").child(s).child("timeStamp").setValue(calendar.getTimeInMillis());
+
+                FirebaseMessaging.getInstance().subscribeToTopic(s);
+
 
                 textMessage.setText(null);
                 Toast.makeText(OpenUserDetail.this, "Encrypted message sent", Toast.LENGTH_SHORT).show();

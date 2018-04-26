@@ -142,12 +142,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
+
+
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         guestPrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
         guestPrefs.registerOnSharedPreferenceChangeListener(this);
         guestMode = guestPrefs.getBoolean("mode", false);
         mAuth = FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(this);
+        if(!mAuth.getCurrentUser().equals(null))
+        {
+            FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid());
+        }
 
         View navHeader = navigationView.getHeaderView(0);
         //These initializations **can't** be done by glide
@@ -317,7 +323,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             fab3.setClickable(true);
             isFabOpen = true;
             Log.d("Raj", "open");
-
         }
     }
 
@@ -882,6 +887,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void logoutAndSendToLogin() {
+
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid());
         mAuth.signOut();
         SharedPreferences preferences = getSharedPreferences("communityName", 0);
         preferences.edit().remove("communityReference").commit();

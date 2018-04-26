@@ -23,4 +23,16 @@ public class KeyHelper {
 
     public static final String KEY_FORUMS="Forums";
     public static final String KEY_FORUMS_JOIN="ForumsJoin";
+
+    public static final String KEY_IMAGE_NOTIF="ImageNotif";
+
+    public static final String KEY_PRODUCT_CHAT="ProductChat";
+
+    public static final String KEY_POST_CHAT="PostChat";
+
+    public static final String KEY_MESSAGES_CHAT="MessagesChat";
+    public static final String KEY_MESSAGES_CHAT_DELETE="MessagesChatDelete";
+
+    public static final String KEY_EVENTS_CHAT="EventsChat";
+    public static final String KEY_CAB_POOL_CHAT="CabPoolChat";
 }

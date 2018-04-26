@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_OFFERS;
@@ -65,7 +66,7 @@ public class NotificationSettings extends BaseActivity {
         switch_offers=(Switch) findViewById(R.id.switch_offers);
 
         String Uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("Users").child(Uid).child("NotificationChannels");
+        final DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid).child("NotificationChannels");
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

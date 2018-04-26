@@ -164,6 +164,7 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
                 data.put("to", "/topics/" + key);
             else
                 data.put("to","/topics/"+type);
+
             data.put("data", creator.build().getData());
 
             JSONObject object = new JSONObject(data);

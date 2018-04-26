@@ -209,6 +209,7 @@ public class OpenProductDetails extends BaseActivity {
                 //char room clicked
                 Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
                 intent.putExtra("type","storeroom");
+                intent.putExtra("key",productKey);
                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
                 startActivity(intent);
                 break;
@@ -232,35 +233,37 @@ public class OpenProductDetails extends BaseActivity {
             public void onClick(View v) {
                 flag = true;
                 final String category = productCategory;
-                final DatabaseReference userReservedReference = mDatabaseProduct.child(productKey).child("UsersReserved");
+                final DatabaseReference userReservedReference = mDatabaseProduct.child(productKey);
                 userReservedReference.addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(final DataSnapshot dataSnapshot) {
                         if (flag) {
 
-                            if (dataSnapshot.hasChild(mAuth.getCurrentUser().getUid())) {
-                                userReservedReference.child(mAuth.getCurrentUser().getUid()).removeValue();
-                                productShortlist.setText("Shortlisted");
+                            if (dataSnapshot.child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
+                                userReservedReference.child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
+                                productShortlist.setText("Shortlist");
                                 flag = false;
                                 CounterManager.StoroomShortListDelete(category, dataSnapshot.getKey());
-                                productShortlist.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                                productShortlist.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
                                 Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
                                 productShortlist.setTypeface(customfont);
 
                             } else {
                                 CounterManager.StoroomShortList(category, dataSnapshot.getKey());
-                                productShortlist.setText("Shortlist");
+                                productShortlist.setText("Shortlisted");
                                 final UsersListItemFormat userDetails = new UsersListItemFormat();
                                 DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 user.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                                    public void onDataChange(DataSnapshot dataSnapshot2) {
+                                        UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
                                         userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
                                         userDetails.setName(userItemFormat.getUsername());
                                         userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                         userDetails.setUserUID(userItemFormat.getUserUID());
-                                        userReservedReference.child(userItemFormat.getUserUID()).setValue(userDetails);
+                                        userReservedReference.child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.child("PostedBy").child("UID").getValue().toString(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,true,getApplicationContext());
+                                        notificationSender.execute();
                                     }
 
                                     @Override
@@ -268,13 +271,10 @@ public class OpenProductDetails extends BaseActivity {
 
                                     }
                                 });
-                                productShortlist.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+                                productShortlist.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
                                 flag = false;
                                 Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
                                 productShortlist.setTypeface(customfont);
-                                NotificationSender notificationSender=new NotificationSender(dataSnapshot.getKey(),null,null,null,null,null,productName.getText().toString(),KEY_PRODUCT,false,false,getApplicationContext());
-                                notificationSender.execute();
-
                             }
                         }
                     }

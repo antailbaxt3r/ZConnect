@@ -92,19 +92,6 @@ public class ReservedTab extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
-        query = mDatabase.orderByChild("UsersReserved/" + userId).equalTo(userId);
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         mListener = new ValueEventListener() {
             @Override
@@ -113,7 +100,7 @@ public class ReservedTab extends Fragment {
                 Boolean flag = false;
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     try{
-                        if(shot.child("UserReserved").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        if(shot.child("UsersReserved").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             singleProduct = shot.getValue(Product.class);
                             productVector.add(singleProduct);
                             flag=true;

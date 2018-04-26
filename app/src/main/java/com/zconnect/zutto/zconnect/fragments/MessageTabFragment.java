@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +28,7 @@ import com.zconnect.zutto.zconnect.adapters.ChatTabRVAdapter;
 import com.zconnect.zutto.zconnect.adapters.MessageTabRVAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -49,6 +51,7 @@ public class MessageTabFragment extends Fragment {
     ArrayList<MessageTabRVItem> messageTabRVItems =new ArrayList<MessageTabRVItem>();;
     MessageTabRVAdapter messageTabRVAdapter;
     MessageTabRVItem messageTabRVItem;
+    RelativeLayout noMessages;
 
     private OnFragmentInteractionListener mListener;
 
@@ -81,7 +84,7 @@ public class MessageTabFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_message_tab, container, false);
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_messages);
-
+        noMessages = (RelativeLayout) rootView.findViewById(R.id.no_messages);
         communitySP = getContext().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
         databaseReferenceMessages = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages").child("users").child(user.getUid()).child("messages");
@@ -95,9 +98,16 @@ public class MessageTabFragment extends Fragment {
                 messageTabRVItems.clear();
 
                 for (DataSnapshot childsnapShot : dataSnapshot.getChildren()){
+                    try {
                         messageTabRVItems.add(childsnapShot.getValue(MessageTabRVItem.class));
-                }
+                    }catch (Exception e){
 
+                    }
+                    Collections.reverse(messageTabRVItems);
+                }
+                if (messageTabRVItems.size()>0){
+                    noMessages.setVisibility(View.GONE);
+                }
                 messageTabRVAdapter.notifyDataSetChanged();
             }
 

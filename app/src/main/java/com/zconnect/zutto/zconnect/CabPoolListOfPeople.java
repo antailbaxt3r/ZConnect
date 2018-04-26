@@ -213,6 +213,10 @@ public class CabPoolListOfPeople extends BaseActivity {
                                 userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                 userDetails.setUserUID(userItemFormat.getUserUID());
                                 databaseReference.child(key).child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_CABPOOL_JOIN,false,true,CabPoolListOfPeople.this);
+                                notificationSender.execute();
+                                FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
+
                             }
 
                             @Override
