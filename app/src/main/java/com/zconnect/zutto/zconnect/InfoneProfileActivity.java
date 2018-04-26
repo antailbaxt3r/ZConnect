@@ -20,6 +20,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -96,6 +98,8 @@ public class InfoneProfileActivity extends BaseActivity {
 
     private final String TAG = getClass().getSimpleName();
     private String catId;
+    LinearLayout linearLayout;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +118,11 @@ public class InfoneProfileActivity extends BaseActivity {
             if (getSupportActionBar() != null)
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        progressBar = (ProgressBar) findViewById(R.id.infone_profile_progress_circle);
+        linearLayout = (LinearLayout) findViewById(R.id.infone_profile_linear_layout);
+        progressBar.setVisibility(View.VISIBLE);
+        linearLayout.setVisibility(View.GONE);
 
         nameEt = (MaterialEditText) findViewById(R.id.et_name_infone_profile);
         profileImage = (SimpleDraweeView) findViewById(R.id.image_profile_infone);
@@ -213,11 +222,16 @@ public class InfoneProfileActivity extends BaseActivity {
                 phone2Et.setText(phoneNums.get(1));
                 verifiedDateTextView.setText(ta.calculateTimeAgo());
 
+                progressBar.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.VISIBLE);
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(TAG, "Database error :" + databaseError.toString());
+                progressBar.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.VISIBLE);
             }
         };
 

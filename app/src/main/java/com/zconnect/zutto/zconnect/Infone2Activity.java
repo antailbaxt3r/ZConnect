@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -43,14 +44,17 @@ public class Infone2Activity extends AppCompatActivity {
     private static final int REQUEST_PHONE_CALL = 1;
     private SharedPreferences communitySP;
     public String communityReference;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infone2);
         setTitle("Infone");
+        progressBar = (ProgressBar) findViewById(R.id.infone2_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
         recyclerViewCat = (RecyclerView) findViewById(R.id.rv_cat_infone);
-
+        recyclerViewCat.setVisibility(View.GONE);
         fabCatAdd = (FloatingActionButton) findViewById(R.id.fab_cat_infone);
 
 
@@ -76,6 +80,8 @@ public class Infone2Activity extends AppCompatActivity {
                     String catId = childSnapShot.getKey();
                     Infone2CategoryModel infone2CategoryModel = new Infone2CategoryModel(name, imageurl, admin, catId);
                     categoriesList.add(infone2CategoryModel);
+                    progressBar.setVisibility(View.GONE);
+                    recyclerViewCat.setVisibility(View.VISIBLE);
 
                 }
 
@@ -87,6 +93,8 @@ public class Infone2Activity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(Infone2Activity.class.getName(), "database error" + databaseError.toString());
+                progressBar.setVisibility(View.GONE);
+                recyclerViewCat.setVisibility(View.VISIBLE);
             }
         };
         databaseReferenceCat.addValueEventListener(listener);

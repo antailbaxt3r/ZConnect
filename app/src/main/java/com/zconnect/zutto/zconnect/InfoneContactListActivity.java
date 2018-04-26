@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,12 +52,12 @@ public class InfoneContactListActivity extends AppCompatActivity {
     private final String TAG = getClass().getSimpleName();
     private String catName, catImageurl;
     private String catAdmin;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infone_contact_list);
-        setTitle("");
         toolbar=(Toolbar) findViewById(R.id.toolbar_app_bar_infone);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -86,8 +87,10 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
         databaseReferenceList = FirebaseDatabase.getInstance().getReference().child("communities")
                 .child(communityReference).child("infone").child("categories").child(catId);
-
+        progressBar = (ProgressBar) findViewById(R.id.infone_contact_list_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
         recyclerViewContacts = (RecyclerView) findViewById(R.id.rv_infone_contacts);
+        recyclerViewContacts.setVisibility(View.GONE);
         fabAddContact = (FloatingActionButton) findViewById(R.id.fab_contacts_infone);
 
         recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this,
@@ -130,11 +133,15 @@ public class InfoneContactListActivity extends AppCompatActivity {
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this,
                         contactsRVItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
+                progressBar.setVisibility(View.GONE);
+                recyclerViewContacts.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(InfoneContactListActivity.class.getName(), "database error" + databaseError.toString());
+                progressBar.setVisibility(View.GONE);
+                recyclerViewContacts.setVisibility(View.VISIBLE);
             }
         };
         databaseReferenceList.addValueEventListener(listener);

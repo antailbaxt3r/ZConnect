@@ -21,135 +21,153 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp">
-
-        <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/image_profile_infone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/profile_avatar_circle"
-            fresco:actualImageScaleType="centerCrop"
-            fresco:roundAsCircle="true"/>
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/et_name_infone_profile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:gravity="center_horizontal"
-            android:text="name"
-            android:textSize="18sp"
-            app:met_textColor="@color/primaryText"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mobile Number"
-            android:textColor="@color/primaryText"
-            android:textStyle="bold"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/et_phone1_infone_profile"
-                android:layout_width="0dp"
-                android:layout_weight="0.8"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:text="phone1"
-                app:met_textColor="@color/primaryText"/>
-            <ImageButton
-                android:id="@+id/infone_profile_callbtn"
-                android:layout_width="0dp"
-                android:layout_weight="0.2"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_phone"
-                android:background="@color/transparent"
-                android:layout_gravity="center_vertical"/>
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Whatsapp Number"
-            android:textColor="@color/primaryText"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"/>
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/et_phone2_infone_profile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:text="phone2"
-            app:met_textColor="@color/primaryText"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/save_edit_infone_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/infone"
-            android:text="Save"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:layout_marginTop="10dp"/>
-        <TextView
-            android:id="@+id/valid_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Is this number valid?"
-            android:textColor="@color/primaryText"
-            android:textStyle="bold"/>
-        <Button
-            android:id="@+id/valid_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/roundradius"
-            android:layout_marginTop="10dp"
-            android:text="Validate"
-            android:textSize="16sp"
-            android:textAllCaps="false"
-            android:textColor="@color/white" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
-            <TextView
+            <ProgressBar
+                android:id="@+id/infone_profile_progress_circle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Last verified " />
+                android:layout_gravity="center"
+                android:backgroundTint="@color/secondaryText2"
+                android:backgroundTintMode="src_atop"
+                android:visibility="gone"/>
+            <LinearLayout
+                android:id="@+id/infone_profile_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
+                <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/image_profile_infone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/profile_avatar_circle"
+                    fresco:actualImageScaleType="centerCrop"
+                    fresco:roundAsCircle="true"/>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/et_name_infone_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:gravity="center_horizontal"
+                    android:text="name"
+                    android:textSize="18sp"
+                    app:met_textColor="@color/primaryText"
+                    android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/verified_date"
-                android:layout_marginStart="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Verified Date" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mobile Number"
+                    android:textColor="@color/primaryText"
+                    android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/et_phone1_infone_profile"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.8"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="phone1"
+                        app:met_textColor="@color/primaryText"/>
+                    <ImageButton
+                        android:id="@+id/infone_profile_callbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.2"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_phone"
+                        android:background="@color/transparent"
+                        android:layout_gravity="center_vertical"/>
+                </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Whatsapp Number"
+                    android:textColor="@color/primaryText"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/et_phone2_infone_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="phone2"
+                    app:met_textColor="@color/primaryText"/>
+
+                <Button
+                    android:id="@+id/save_edit_infone_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/infone"
+                    android:text="Save"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="10dp"/>
+                <TextView
+                    android:id="@+id/valid_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Is this number valid?"
+                    android:textColor="@color/primaryText"
+                    android:textStyle="bold"/>
+                <Button
+                    android:id="@+id/valid_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/roundradius"
+                    android:layout_marginTop="10dp"
+                    android:text="Validate"
+                    android:textSize="16sp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Last verified " />
+
+                    <TextView
+                        android:id="@+id/verified_date"
+                        android:layout_marginStart="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Verified Date" />
+
+                </LinearLayout>
+                <Button
+                    android:id="@+id/viewProfileButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View Profile"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textColor="@color/white"
+                    android:background="@color/infone"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
-        <Button
-            android:id="@+id/viewProfileButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="View Profile"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:textColor="@color/white"
-            android:background="@color/infone"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:layout_marginTop="10dp"
-            android:visibility="gone"/>
-
-    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
