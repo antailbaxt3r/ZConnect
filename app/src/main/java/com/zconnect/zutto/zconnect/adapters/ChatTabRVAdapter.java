@@ -51,6 +51,7 @@ public class ChatTabRVAdapter extends RecyclerView.Adapter<ChatTabRVViewHolder> 
 
             Intent i = new Intent(context, ChatActivity.class);
             i.putExtra("type","messages");
+            i.putExtra("key",chatTabRVItems.get(position).getChatUID());
             i.putExtra("ref",UsersReference.child("chats").child(chatTabRVItems.get(position).getChatUID()).toString());
             context.startActivity(i);
             }

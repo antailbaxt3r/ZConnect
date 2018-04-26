@@ -102,7 +102,7 @@ public class ChatActivity extends BaseActivity {
         if(type!=null){
             if(type.equals("cabPool")){
                 joinButton.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.cabpool));
-                menu.findItem(R.id.action_list_people).setVisible(false);
+
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -225,7 +225,7 @@ public class ChatActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                MaterialEditText typer = ((MaterialEditText)findViewById(R.id.typer));
+                final MaterialEditText typer = ((MaterialEditText)findViewById(R.id.typer));
                 final String text = typer.getText().toString();
                 if(TextUtils.isEmpty(text)){
                     showToast("Message is empty.");
@@ -246,18 +246,35 @@ public class ChatActivity extends BaseActivity {
                         if (type.equals("forums")){
                             NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_FORUMS,false,true,ChatActivity.this);
                             notificationSender.execute();
+
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(dataSnapshot.child("tab").getValue().toString()).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }else if(type.equals("storeroom")){
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_PRODUCT_CHAT,false,true,ChatActivity.this);
+                            notificationSender.execute();
+                        }else if(type.equals("post")){
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_POST_CHAT,false,true,ChatActivity.this);
+                            notificationSender.execute();
+                        }else if(type.equals("messages")){
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
+                            notificationSender.execute();
+                        }else if(type.equals("events")){
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_EVENTS_CHAT,false,true,ChatActivity.this);
+                            notificationSender.execute();
+                        }else if(type.equals("cabPool")){
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_CAB_POOL_CHAT,false,true,ChatActivity.this);
+                            notificationSender.execute();
                         }
-                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(dataSnapshot.child("tab").getValue().toString()).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
 
                     }
 
@@ -326,7 +343,7 @@ public class ChatActivity extends BaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if(getIntent().getStringExtra("type").equals("cabPool")) {
+        if(!getIntent().getStringExtra("type").equals("forums")) {
             menu.findItem(R.id.action_list_people).setVisible(false);
         }
         return super.onPrepareOptionsMenu(menu);

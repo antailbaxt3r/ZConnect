@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
@@ -33,15 +34,6 @@ public class NewMessageActivity extends BaseActivity {
     Boolean a;
     String anonymous;
     DatabaseReference mPostedByDetails;
-
-
-
-    /*public void onCheckboxClicked (View view) {
-        a = ((CheckBox) view).isChecked();
-        if(a)
-        else
-            anonymous = "n";
-    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +62,7 @@ public class NewMessageActivity extends BaseActivity {
                     anonymous = "n";
 
                 final DatabaseReference newMessage = home.push();
-                String key = newMessage.getKey();
+                final String key = newMessage.getKey();
                 newMessage.child("Key").setValue(key);
                 newMessage.child("desc").setValue(messageText);
                 newMessage.child("desc2").setValue(anonymous);
@@ -90,6 +82,7 @@ public class NewMessageActivity extends BaseActivity {
                         }
                         newMessage.child("PostedBy").child("UID").setValue(user.getUserUID());
                         newMessage.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
+                        FirebaseMessaging.getInstance().subscribeToTopic(key);
                     }
 
                     @Override

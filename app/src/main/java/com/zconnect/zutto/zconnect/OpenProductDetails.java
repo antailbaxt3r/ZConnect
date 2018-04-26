@@ -209,6 +209,7 @@ public class OpenProductDetails extends BaseActivity {
                 //char room clicked
                 Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
                 intent.putExtra("type","storeroom");
+                intent.putExtra("key",intent.getStringExtra("key"));
                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
                 startActivity(intent);
                 break;

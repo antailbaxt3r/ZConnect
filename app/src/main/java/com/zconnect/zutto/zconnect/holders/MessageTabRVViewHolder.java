@@ -17,7 +17,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.KeyHelper;
+import com.zconnect.zutto.zconnect.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 
 import java.util.Calendar;
@@ -94,10 +97,15 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
         UsersReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("chats").child(chatID).child("timeStamp").setValue(calendar.getTimeInMillis());
 
         UsersReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("messages").child(chatID).removeValue();
+
+        FirebaseMessaging.getInstance().subscribeToTopic(chatID);
+
         //UsersReference.child("users").child(senderUID).child("messages").child(chatID).removeValue();
 
         Intent i = new Intent(mView.getContext(), ChatActivity.class);
         i.putExtra("type","messages");
+        i.putExtra("key",chatID);
+        i.putExtra("userKey",senderUID);
         i.putExtra("ref",UsersReference.child("chats").child(chatID).toString());
         mView.getContext().startActivity(i);
     }
@@ -107,5 +115,9 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
         UsersReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("chats").child(chatID).removeValue();
         UsersReference.child("users").child(senderUID).child("messages").child(chatID).removeValue();
         UsersReference.child("chats").child(chatID).removeValue();
+
+        NotificationSender notificationSender=new NotificationSender(senderUID,FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), KeyHelper.KEY_MESSAGES_CHAT_DELETE,false,true,mView.getContext());
+        notificationSender.execute();
+
     }
 }

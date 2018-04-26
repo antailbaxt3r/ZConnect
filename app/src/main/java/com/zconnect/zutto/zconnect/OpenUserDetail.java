@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
@@ -315,6 +316,9 @@ public class OpenUserDetail extends BaseActivity {
                 UsersReference.child("users").child(Uid).child("messages").child(s).child("type").setValue("recieved");
                 UsersReference.child("users").child(Uid).child("messages").child(s).child("chatUID").setValue(s);
                 UsersReference.child("users").child(Uid).child("messages").child(s).child("timeStamp").setValue(calendar.getTimeInMillis());
+
+                FirebaseMessaging.getInstance().subscribeToTopic(s);
+
 
                 textMessage.setText(null);
                 Toast.makeText(OpenUserDetail.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
