@@ -150,8 +150,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         guestMode = guestPrefs.getBoolean("mode", false);
         mAuth = FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(this);
-
-        FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid());
+        if(!mAuth.getCurrentUser().equals(null))
+        {
+            FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid());
+        }
 
         View navHeader = navigationView.getHeaderView(0);
         //These initializations **can't** be done by glide
@@ -321,7 +323,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             fab3.setClickable(true);
             isFabOpen = true;
             Log.d("Raj", "open");
-
         }
     }
 

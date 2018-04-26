@@ -65,7 +65,7 @@ public class  OpenEventDetail extends BaseActivity {
     TextView EventDate;
     Event event;
     String tag;
-    String id;
+    String eventId;
     Toolbar mActionBarToolbar;
     DatabaseReference databaseReference;
     Button boostBtn;
@@ -121,9 +121,9 @@ public class  OpenEventDetail extends BaseActivity {
         }
 
         Bundle extras = getIntent().getExtras();
-        id = (String) extras.get("id");
+        eventId = (String) extras.get("id");
 
-        databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(id);
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -283,7 +283,7 @@ public class  OpenEventDetail extends BaseActivity {
             //chat room clicked;
             Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
             intent.putExtra("type","events");
-            intent.putExtra("key",intent.getStringExtra("id"));
+            intent.putExtra("key",eventId);
             intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
             startActivity(intent);
         }
@@ -464,7 +464,7 @@ public class  OpenEventDetail extends BaseActivity {
 
     private void boostCounter() {
 
-        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(id);
+        final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId);
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {

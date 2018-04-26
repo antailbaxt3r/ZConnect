@@ -120,7 +120,7 @@ public class OpenUserDetail extends BaseActivity {
         //Like and Love data reader
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid);
         final String myUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("User1").child(myUID);
+        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(myUID);
         //Value fill listener
 
         db.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -203,11 +203,11 @@ public class OpenUserDetail extends BaseActivity {
                 }else {
                     db_like.child(myUID).setValue(true);
                     like_status = true;
-                    currentUser.child("Likes").addListenerForSingleValueEvent(new ValueEventListener() {
+                    currentUser.child("Likes").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(Uid)){
-                                Toast.makeText(OpenUserDetail.this, "Congrats, now you both like each other, we recommend you to start a conversation", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(OpenUserDetail.this, "Congrats, now you both like each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -231,11 +231,11 @@ public class OpenUserDetail extends BaseActivity {
                 } else{
                     db_love.child(myUID).setValue(true);
                     love_status = true;
-                    currentUser.child("Loves").addListenerForSingleValueEvent(new ValueEventListener() {
+                    currentUser.child("Loves").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(Uid)){
-                                Toast.makeText(OpenUserDetail.this, "Wow, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(OpenUserDetail.this, "WOW, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -270,24 +270,8 @@ public class OpenUserDetail extends BaseActivity {
             flagforNull=true;
         }
 
-        /*sendButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                String textMessageString;
-                textMessageString = textMessage.getText().toString();
-                if (textMessageString!=null && !flagforNull){
-                    DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(Uid).child("Messages").push();
-                    UsersReference.child("Message").setValue(textMessageString);
-                    UsersReference.child("MessageId").setValue(UsersReference.getKey());
-                    UsersReference.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
-                    textMessage.setText(null);
-                    Toast.makeText(OpenUserDetail.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });*/
-        //DatabaseReference UsersReference2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages");
-        //UsersReference2.removeValue();
+
         sendButton.setOnClickListener(new View.OnClickListener() {
 
             @Override

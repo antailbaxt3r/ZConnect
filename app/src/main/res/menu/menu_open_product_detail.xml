@@ -4,7 +4,7 @@
     <item
         android:title="Chat Room"
         android:id="@+id/menu_chat_room"
-        android:icon="@drawable/ic_chat_black_24dp"
+        android:icon="@drawable/ic_chat_white_24dp"
         android:orderInCategory="100"
         app:showAsAction="always"
         android:name="Chat Room" />

@@ -367,6 +367,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
 
                         mRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/"+recentsItemFormats.get(getAdapterPosition()).getKey());
                         i.putExtra("ref",mRef.toString());
+                        i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getKey());
                         i.putExtra("type","post");
                         context.startActivity(i);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){

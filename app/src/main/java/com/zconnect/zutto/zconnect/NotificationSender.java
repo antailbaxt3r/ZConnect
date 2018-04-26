@@ -89,7 +89,7 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
 
     private void CompareFrequency(){
 
-        DatabaseReference DB_NORMAL = FirebaseDatabase.getInstance().getReference().child("Notifications").child("frequency").child(type);
+        DatabaseReference DB_NORMAL = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("frequency").child(type);
         DB_NORMAL.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -105,7 +105,7 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
         });
 
 
-        final DatabaseReference DB_CURRENT = FirebaseDatabase.getInstance().getReference().child("Notifications").child("current").child(type);
+        final DatabaseReference DB_CURRENT = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("current").child(type);
         DB_CURRENT.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

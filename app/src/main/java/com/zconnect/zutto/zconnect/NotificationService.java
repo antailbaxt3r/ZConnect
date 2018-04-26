@@ -99,19 +99,19 @@ public class NotificationService extends FirebaseMessagingService {
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(1, mBuilder.build());
 
-            } else if (type.equals(KEY_CABPOOL_JOIN)) {
+            } else if (type.equals(KEY_CABPOOL_JOIN)) {//Notification to all the members of cab pool if a new member joins in
                 final String key = data.get("Key").toString();
                 NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
                 style.bigText(data.get("Product").toString() + " joined your cab pool")
-                        .setBigContentTitle("Cab pool | ZConnect");
+                        .setBigContentTitle("Cab Pool | ZConnect");
 
                 android.support.v4.app.NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(NotificationService.this)
-                                .setSmallIcon(R.drawable.ic_directions_car_black_24dp)
+                                .setSmallIcon(R.drawable.ic_directions_car_white_24dp)
                                 .setStyle(style)
                                 .setSound(defaultSoundUri)
                                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.cabpool))
-                                .setContentTitle("Cab pool | ZConnect")
+                                .setContentTitle("Cab Pool | ZConnect")
                                 .setContentText(data.get("Product").toString() + " joined your cab pool");
 
                 Intent intent = new Intent(NotificationService.this, CabPoolListOfPeople.class);
@@ -156,7 +156,6 @@ public class NotificationService extends FirebaseMessagingService {
                                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.storeroom))
                                 .setStyle(style)
                                 .setSound(defaultSoundUri)
-
                                 .setContentTitle("Product Shortlisted | ZConnect")
                                 .setContentText(personName + " shortlisted your product " + product);
 
@@ -182,6 +181,7 @@ public class NotificationService extends FirebaseMessagingService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     ((ActivityManager) getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
                 }
+
             } else if (type.equals("url")) {
 
                 String url = data.get("url").toString();
@@ -219,7 +219,7 @@ public class NotificationService extends FirebaseMessagingService {
                                 .setBigContentTitle("Cab Pool | ZConnect");
                         android.support.v4.app.NotificationCompat.Builder mBuilder =
                                 new NotificationCompat.Builder(NotificationService.this)
-                                        .setSmallIcon(R.drawable.ic_directions_car_black_24dp)
+                                        .setSmallIcon(R.drawable.ic_directions_car_white_24dp)
                                         .setStyle(style)
                                         .setSound(defaultSoundUri)
                                         .setColor(ContextCompat.getColor(NotificationService.this, R.color.cabpool))
@@ -239,7 +239,6 @@ public class NotificationService extends FirebaseMessagingService {
 
             } else if (type.equals(KEY_EVENT)) {
                final String key = data.get("Key").toString();
-               // use this to notify users who have boosted if event details have been changed
                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                    @Override
@@ -253,12 +252,16 @@ public class NotificationService extends FirebaseMessagingService {
                        style.bigText(event+" is going to happen near you.")
                                .setBigContentTitle(format.getEventDescription());
 
-                       mBuilder.setSmallIcon(R.mipmap.ic_alarm_black_24dp)
+                       mBuilder.setSmallIcon(R.drawable.ic_event_white_24dp)
                                .setSound(defaultSoundUri)
                                .setColor(ContextCompat.getColor(NotificationService.this, R.color.events))
                                .setStyle(style)
                                .setContentTitle("New Event | ZConnect")
                                .setContentText(event+" is going to happen near you.");
+
+                       Intent intent = new Intent(NotificationService.this, HomeActivity.class);
+                       PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                       mBuilder.setContentIntent(intent1);
 
 //                        Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
 //                        intent.putExtra("currentEvent", format);
@@ -267,18 +270,7 @@ public class NotificationService extends FirebaseMessagingService {
 //                        PendingIntent pIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 //                        mBuilder.setContentIntent(pIntent);
 
-                       AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-                       Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
-                       notificationIntent.addCategory("android.intent.category.DEFAULT");
-                       notificationIntent.putExtra("Eventtag", "1");
-                       notificationIntent.putExtra("currentEvent", format);
-                       notificationIntent.putExtra("EventName", event);
-
-                       PendingIntent broadcast = PendingIntent.getBroadcast(NotificationService.this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                       alarmManager.setExact(AlarmManager.RTC_WAKEUP, (Long.parseLong(format.getEventTimeMillis().toString()) - Long.parseLong(data.get("TimeInMilli").toString()) - (5 * 60 * 1000)), broadcast);
-                   }
+                       }
 
                    @Override
                    public void onCancelled(DatabaseError databaseError) {
@@ -294,8 +286,10 @@ public class NotificationService extends FirebaseMessagingService {
                 String name=FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                 style.bigText("Hey! "+name+", products have been added. Check what your friend's are selling!")
                         .setBigContentTitle("StoreRoom | ZConnect");
+
                 mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_24dp)
                         .setSound(defaultSoundUri)
+                        .setColor(ContextCompat.getColor(NotificationService.this, R.color.storeroom))
                         .setStyle(style)
                         .setContentTitle("StoreRoom | ZConnect")
                         .setContentText("Hey! "+name+", products have been added. Check what your friend's are selling!");
@@ -329,7 +323,7 @@ public class NotificationService extends FirebaseMessagingService {
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(1, mBuilder.build());
 
-                }else if(type.equals(KEY_LOVE)){
+            }else if(type.equals(KEY_LOVE)){
                 NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
                 NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
 
@@ -363,14 +357,16 @@ public class NotificationService extends FirebaseMessagingService {
                     style.bigText(userName + " posted in " + temp)
                             .setBigContentTitle("Forums | ZConnect");
 
-                    mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
+                    mBuilder.setSmallIcon(R.drawable.ic_chat_white_24dp)
                             .setStyle(style)
                             .setSound(defaultSoundUri)
+                            .setColor(ContextCompat.getColor(NotificationService.this, R.color.forums))
                             .setContentTitle("Forums | ZConnect")
                             .setContentText(userName + " posted in " + temp);
 
                     Intent intent = new Intent(NotificationService.this, ChatActivity.class);
                     intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                    intent.putExtra("type","forums");
                     intent.putExtra("key",key);
                     PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.setContentIntent(intent1);
@@ -387,11 +383,13 @@ public class NotificationService extends FirebaseMessagingService {
                 NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
                 NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
 
-                style.bigText("Your subscribed forum is active").setBigContentTitle("Forums Alert");
+                style.bigText(userName + " joined " + temp).setBigContentTitle("Forums Join | ZConnect");
 
-                mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
+                mBuilder.setSmallIcon(R.drawable.ic_chat_white_24dp)
                         .setStyle(style)
-                        .setContentTitle("Forums | ZConnect")
+                        .setSound(defaultSoundUri)
+                        .setColor(ContextCompat.getColor(NotificationService.this, R.color.forums))
+                        .setContentTitle("Forums Join | ZConnect")
                         .setContentText(userName + " joined " + temp);
 
                 Intent intent = new Intent(NotificationService.this, ChatActivity.class);
@@ -444,12 +442,14 @@ public class NotificationService extends FirebaseMessagingService {
                 final String key = data.get("Key").toString();
                 final String userName = data.get("Product").toString();
 
-                style.bigText("Storeroom | ZConnect").setBigContentTitle(userName + "is discussing in the product posted by you");
+                style.bigText("Storeroom Chat | ZConnect").setBigContentTitle(userName + " is discussing in the product posted by you");
 
-                mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
+                mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_24dp)
                         .setStyle(style)
-                        .setContentTitle("Storeroom | ZConnect")
-                        .setContentText(userName + "is discussing in the product posted by you");
+                        .setSound(defaultSoundUri)
+                        .setColor(ContextCompat.getColor(NotificationService.this, R.color.storeroom))
+                        .setContentTitle("Storeroom Chat | ZConnect")
+                        .setContentText(userName + " is discussing in the product posted by you");
 
                 Intent intent = new Intent(NotificationService.this, ChatActivity.class);
                 intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(key).toString());
@@ -469,12 +469,14 @@ public class NotificationService extends FirebaseMessagingService {
                 final String key = data.get("Key").toString();
                 final String userName = data.get("Product").toString();
 
-                style.bigText("Post | ZConnect").setBigContentTitle(userName + "is discussing in the post, posted by you");
+                style.bigText("Post | ZConnect").setBigContentTitle(userName + " is discussing in the post, posted by you");
 
-                mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
+                mBuilder.setSmallIcon(R.drawable.ic_message_white_24dp)
                         .setStyle(style)
+                        .setSound(defaultSoundUri)
+                        .setColor(ContextCompat.getColor(NotificationService.this, R.color.messages))
                         .setContentTitle("Post | ZConnect")
-                        .setContentText(userName + "is discussing in the post, posted by you");
+                        .setContentText(userName + " is discussing in the post, posted by you");
 
                 Intent intent = new Intent(NotificationService.this, ChatActivity.class);
                 intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key).toString());
@@ -493,16 +495,17 @@ public class NotificationService extends FirebaseMessagingService {
                 final String key = data.get("Key").toString();
                 final String userName = data.get("Product").toString();
 
-                style.bigText("Anonymous Messages | ZConnect").setBigContentTitle(userName + "messaged you");
+                style.bigText("Anonymous Messages | ZConnect").setBigContentTitle(userName + " messaged you");
 
                 mBuilder.setSmallIcon(R.drawable.ic_message_white_18dp)
                         .setStyle(style)
+                        .setSound(defaultSoundUri)
                         .setColor(ContextCompat.getColor(NotificationService.this, R.color.messages))
                         .setContentTitle("Anonymous Messages | ZConnect")
                         .setContentText(userName + " messaged you");
 
                 Intent intent = new Intent(NotificationService.this, ChatActivity.class);
-                intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("chats").child(key).toString());
+                intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages").child("chats").child(key).toString());
                 intent.putExtra("key",key);
                 intent.putExtra("type","messages");
                 PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -518,14 +521,14 @@ public class NotificationService extends FirebaseMessagingService {
                 final String key = data.get("Key").toString();
                 final String userName = data.get("Product").toString();
 
-                style.bigText("Anonymous Messages | ZConnect").setBigContentTitle(userName + "deleted your message, talk to other people");
+                style.bigText("Anonymous Messages | ZConnect").setBigContentTitle(userName + " deleted your message, talk to other people");
 
-                mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
+                mBuilder.setSmallIcon(R.drawable.ic_message_white_24dp)
                         .setStyle(style)
                         .setSound(defaultSoundUri)
                         .setColor(ContextCompat.getColor(NotificationService.this, R.color.messages))
                         .setContentTitle("Anonymous Messages | ZConnect")
-                        .setContentText(userName + "deleted your message, talk to other people");
+                        .setContentText(userName + " deleted your message, talk to other people");
 
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(2, mBuilder.build());
@@ -537,21 +540,21 @@ public class NotificationService extends FirebaseMessagingService {
                 final String key = data.get("Key").toString();
                 final String userName = data.get("Product").toString();
 
-                style.bigText("Events | ZConnect").setBigContentTitle(userName + "posted in your event");
+                style.bigText("Events | ZConnect").setBigContentTitle(userName + " posted in your event");
 
                 Intent intent = new Intent(NotificationService.this, ChatActivity.class);
-                intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("chats").child(key).toString());
+                intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(key).toString());
                 intent.putExtra("key",key);
                 intent.putExtra("type","events");
                 PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 mBuilder.setContentIntent(intent1);
 
-                mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
+                mBuilder.setSmallIcon(R.drawable.ic_event_white_24dp)
                         .setStyle(style)
                         .setSound(defaultSoundUri)
-                        .setColor(ContextCompat.getColor(NotificationService.this, R.color.messages))
+                        .setColor(ContextCompat.getColor(NotificationService.this, R.color.events))
                         .setContentTitle("Events | ZConnect")
-                        .setContentText(userName + "posted in your event");
+                        .setContentText(userName + " posted in your event");
 
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(2, mBuilder.build());
@@ -562,17 +565,17 @@ public class NotificationService extends FirebaseMessagingService {
                 final String key = data.get("Key").toString();
                 final String userName = data.get("Product").toString();
 
-                style.bigText("Events | ZConnect").setBigContentTitle(userName + "posted in your event");
+                style.bigText("Cab Pool Chat | ZConnect").setBigContentTitle(userName + " posted in your cab pool");
 
-                mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
+                mBuilder.setSmallIcon(R.drawable.ic_directions_car_white_24dp)
                         .setStyle(style)
                         .setSound(defaultSoundUri)
                         .setColor(ContextCompat.getColor(NotificationService.this, R.color.messages))
-                        .setContentTitle("Events | ZConnect")
-                        .setContentText(userName + "posted in your event");
+                        .setContentTitle("Cab Pool Chat | ZConnect")
+                        .setContentText(userName + " posted in your cab pool");
 
                 Intent intent = new Intent(NotificationService.this, ChatActivity.class);
-                intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("chats").child(key).toString());
+                intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs").child(key).toString());
                 intent.putExtra("key",key);
                 intent.putExtra("type","cabPool");
                 PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
