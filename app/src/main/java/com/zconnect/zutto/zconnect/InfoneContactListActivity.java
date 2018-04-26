@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -142,6 +143,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
                 Log.e(InfoneContactListActivity.class.getName(), "database error" + databaseError.toString());
                 progressBar.setVisibility(View.GONE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
         databaseReferenceList.addValueEventListener(listener);

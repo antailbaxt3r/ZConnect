@@ -232,6 +232,7 @@ public class InfoneProfileActivity extends BaseActivity {
                 Log.e(TAG, "Database error :" + databaseError.toString());
                 progressBar.setVisibility(View.GONE);
                 linearLayout.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
 

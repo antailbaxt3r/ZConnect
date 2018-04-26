@@ -95,6 +95,7 @@ public class Infone2Activity extends AppCompatActivity {
                 Log.e(Infone2Activity.class.getName(), "database error" + databaseError.toString());
                 progressBar.setVisibility(View.GONE);
                 recyclerViewCat.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
         databaseReferenceCat.addValueEventListener(listener);

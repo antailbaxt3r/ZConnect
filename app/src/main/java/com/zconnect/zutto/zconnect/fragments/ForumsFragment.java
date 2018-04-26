@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +37,7 @@ public class ForumsFragment extends Fragment {
     DatabaseReference tabsCategories;
     Vector<forumCategoriesItemFormat> forumCategories = new Vector<forumCategoriesItemFormat>();
     forumCategoriesItemFormat addCategoryButton = new forumCategoriesItemFormat();
+    ProgressBar progressBar;
 
     public ForumsFragment() {
         // Required empty public constructor
@@ -48,6 +51,15 @@ public class ForumsFragment extends Fragment {
         Bundle bundle = getArguments();
         currenttab = bundle.getString("UID");
         Log.v("TASDF", String.valueOf(currenttab));
+
+        progressBar = (ProgressBar) view.findViewById(R.id.fragment_infone_progress_circle);
+        recyclerView = (RecyclerView) view.findViewById(R.id.rv_infone_fragment);
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab);
+        recyclerView.setAdapter(adapter);
+
         tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(currenttab);
 
         tabsCategories.addValueEventListener(new ValueEventListener() {
@@ -63,19 +75,19 @@ public class ForumsFragment extends Fragment {
                 addCategoryButton.setTabUID("this");
                 forumCategories.add(addCategoryButton);
                 Collections.reverse(forumCategories);
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         });
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.rv_infone_fragment);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab);
-        recyclerView.setAdapter(adapter);
         return view;
     }
 }
