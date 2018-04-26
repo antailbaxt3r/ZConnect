@@ -3,7 +3,6 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Path;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -61,7 +60,7 @@ public class OpenUserDetail extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_phonebook_details);
+        setContentView(R.layout.activity_open_user_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         image = (SimpleDraweeView) findViewById(R.id.contact_details_display_image);
         editTextDetails = (TextInputEditText) findViewById(R.id.contact_details_editText_1);
