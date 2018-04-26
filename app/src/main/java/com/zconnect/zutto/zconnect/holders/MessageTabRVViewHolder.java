@@ -84,9 +84,6 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
     public void startChat(String chatID,String message,String senderUID) {
         Calendar calendar;
         calendar = Calendar.getInstance();
-
-        Toast.makeText(mView.getContext(), "Start Chat", Toast.LENGTH_SHORT).show();
-
         UsersReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("chats").child(chatID).child("message").setValue(message);
         UsersReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("chats").child(chatID).child("type").setValue("recieved");
         UsersReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("chats").child(chatID).child("chatUID").setValue(chatID);
@@ -103,7 +100,6 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void deleteMessage(String senderUID,String chatID){
-        Toast.makeText(mView.getContext(), "delete Message", Toast.LENGTH_SHORT).show();
         UsersReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("chats").child(chatID).removeValue();
         UsersReference.child("users").child(senderUID).child("messages").child(chatID).removeValue();
         UsersReference.child("chats").child(chatID).removeValue();

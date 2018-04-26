@@ -116,7 +116,6 @@ public class MyRides extends BaseActivity {
 
                 } else {
                     poolrv.setAdapter(adapter);
-                    //   Toast.makeText(getApplicationContext(), String.valueOf(cabItemFormats.size()), Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
                 }
 

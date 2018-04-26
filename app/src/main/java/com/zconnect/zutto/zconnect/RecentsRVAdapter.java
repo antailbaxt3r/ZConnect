@@ -139,7 +139,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             }
             catch (ParseException pe) {
                 Log.d("Error Alert ", pe.getMessage());
-                Toast.makeText(context, pe.getMessage(), Toast.LENGTH_LONG).show();
                 holder.eventDate.setText(recentsItemFormats.get(position).getDesc2());
             }
             holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());

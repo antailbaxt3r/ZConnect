@@ -25,7 +25,6 @@ public class PostEmails extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     i++;
-                    //Toast.makeText(getApplicationContext(),snapshot.child("uid").getValue().toString(),Toast.LENGTH_SHORT).show();
                     if (snapshot.child("category").getValue().toString().equals("S")) {
                         String emailtemp = snapshot.child("uid").getValue().toString();
                         if (emailtemp != null)
@@ -33,7 +32,6 @@ public class PostEmails extends BaseActivity {
                     }
                 }
                 if (i == dataSnapshot.getChildrenCount()) {
-                    //Toast.makeText(getApplicationContext(),PostEmails.uid,Toast.LENGTH_LONG).show();
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                             "mailto", "zconnectinc@gmail.com", null));
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Emails");

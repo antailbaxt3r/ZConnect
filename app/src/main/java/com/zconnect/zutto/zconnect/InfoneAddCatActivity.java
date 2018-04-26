@@ -6,13 +6,16 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaRouter;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -64,8 +67,8 @@ public class InfoneAddCatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Add Infone Category");
         setContentView(R.layout.activity_infone_add_cat);
-
         nameEt = (MaterialEditText) findViewById(R.id.et_name_cat_add_infone);
         addImage = (SimpleDraweeView) findViewById(R.id.image_add_cat_infone);
         saveButton = (Button) findViewById(R.id.save_image_add_cat_infone);
@@ -168,7 +171,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
             uploadImage();
 
         } else {
-            Toast.makeText(InfoneAddCatActivity.this, "Details in complete",
+            Toast.makeText(InfoneAddCatActivity.this, "Details incomplete",
                     Toast.LENGTH_SHORT).show();
         }
     }

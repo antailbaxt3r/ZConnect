@@ -208,9 +208,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         {
             if(CommunitiesEmails.get(i).getEmail().equals(communityName))
             {
-                Toast.makeText(this, communityName, Toast.LENGTH_SHORT).show();
                 communityCode = CommunitiesEmails.get(i).getCode();
-                Toast.makeText(this, communityCode, Toast.LENGTH_SHORT).show();
             }
         }
 

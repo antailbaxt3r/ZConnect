@@ -167,9 +167,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         communityInfo.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                //Toast.makeText(EditProfileActivity.this, dataSnapshot.child("").child("name").getValue().toString(), Toast.LENGTH_SHORT).show();
-                communityName="BITS Goa";
+                try {
+                    communityName=dataSnapshot.child("name").getValue().toString();
+                }
+                catch (Exception e) {
+                    Log.d("Errorr Alert! ", e.getMessage());
+                }
             }
 
             @Override
@@ -367,7 +370,6 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         userSkillTags = userSkillTagsText.getTags().toString();
 
         for (int i=0;i<infoneCategories.size();i++){
-            Toast.makeText(this, infoneCategories.get(i).getName(), Toast.LENGTH_SHORT).show();
             if(infoneCategoriesName.get(i).equals(userInfoneTypeSpinner.getText().toString())){
                 userInfoneType = infoneCategories.get(i).getCatId();
             }
@@ -491,7 +493,6 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                     if (newUser) {
                         homePush.child("PostedBy").child("ImageThumb").setValue(mUser.getPhotoUrl().toString());
                     }
-                    Toast.makeText(this, "Default", Toast.LENGTH_SHORT).show();
                     newPost.child("imageURLThumbnail").setValue(mUser.getPhotoUrl().toString());
                     newPost.child("imageURL").setValue(mUser.getPhotoUrl().toString());
                     newContactNumRef.child("imageurl").setValue(mUser.getPhotoUrl().toString());

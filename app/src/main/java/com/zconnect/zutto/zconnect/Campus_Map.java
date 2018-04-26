@@ -234,8 +234,6 @@ public class Campus_Map extends BaseActivity implements OnMapReadyCallback {
 
             @Override
             public void onCancelled(DatabaseError error) {
-
-                Log.e("Campus_Map", " Maps center etc database fetch Cancelled");
                 Toast.makeText(Campus_Map.this, "Need Internet Connection for Maps", Toast.LENGTH_SHORT).show();
 
             }
