@@ -23,4 +23,6 @@ public class KeyHelper {
 
     public static final String KEY_FORUMS="Forums";
     public static final String KEY_FORUMS_JOIN="ForumsJoin";
+
+    public static final String KEY_IMAGE_NOTIF="ImageNotif";
 }

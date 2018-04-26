@@ -100,12 +100,12 @@ public class ChatActivity extends BaseActivity {
 
         if(type!=null){
             if(type.equals("cabPool")){
-                menu.findItem(R.id.action_list_people).setVisible(false);
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
+
                         if(!dataSnapshot.child("usersListItemFormats").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             joinButton.setVisibility(View.VISIBLE);
                             joinLayout.setVisibility(View.VISIBLE);
@@ -150,7 +150,7 @@ public class ChatActivity extends BaseActivity {
             }else if (type.equals("forums")){
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(final DataSnapshot dataSnapshot) {
                         setToolbarTitle(dataSnapshot.child("name").getValue().toString());
                         FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
                         if (!dataSnapshot.child("users").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
@@ -173,7 +173,8 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             databaseReference.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
-                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,FirebaseAuth.getInstance().getCurrentUser().getUid(),KeyHelper.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
+
+                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),null,null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
                                             notificationSender.execute();
                                         }
 
@@ -312,7 +313,9 @@ public class ChatActivity extends BaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-
+        if(getIntent().getStringExtra("type").equals("cabPool")) {
+            menu.findItem(R.id.action_list_people).setVisible(false);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
