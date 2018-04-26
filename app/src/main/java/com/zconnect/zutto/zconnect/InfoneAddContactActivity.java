@@ -156,7 +156,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
 
         if (mImageUri == null) {
 
-            addImage.setActualImageResource(R.mipmap.ic_launcher);
+//            addImage.setActualImageResource(R.mipmap.ic_launcher);
 
         }
 

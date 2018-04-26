@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,7 +47,7 @@ public class ChatActivity extends BaseActivity {
     private Button joinButton;
     private LinearLayout joinLayout,chatLayout;
     private Menu menu;
-
+    private ProgressBar progressBar;
     private DatabaseReference mUserReference;
 
     @Override
@@ -100,6 +101,7 @@ public class ChatActivity extends BaseActivity {
 
         if(type!=null){
             if(type.equals("cabPool")){
+                joinButton.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.cabpool));
                 menu.findItem(R.id.action_list_people).setVisible(false);
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -148,6 +150,7 @@ public class ChatActivity extends BaseActivity {
                     }
                 });
             }else if (type.equals("forums")){
+                joinButton.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.forums));
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -201,7 +204,9 @@ public class ChatActivity extends BaseActivity {
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
         adapter = new ChatRVAdapter(messages,this);
-
+        progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
+        chatView.setVisibility(View.GONE);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(false);
@@ -275,11 +280,15 @@ public class ChatActivity extends BaseActivity {
                 }
                 adapter.notifyDataSetChanged();
                 chatView.scrollToPosition(messages.size()-1);
+                progressBar.setVisibility(View.GONE);
+                chatView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 showSnack("Unable to load messages");
+                progressBar.setVisibility(View.GONE);
+                chatView.setVisibility(View.VISIBLE);
             }
         });
     }

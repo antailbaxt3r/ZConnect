@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +33,7 @@ public class CabPoolLocations extends BaseActivity {
     private Vector<CabPoolLocationFormat> locationsVector = new Vector<CabPoolLocationFormat>();
     private ValueEventListener mListener;
     private CabPoolLocationRVAdapter cabPoolLocationRVAdapter;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -40,6 +43,9 @@ public class CabPoolLocations extends BaseActivity {
 
         locationRecyclerView = (RecyclerView) findViewById(R.id.location_recycler_view);
         locationLinearLayout = new LinearLayoutManager(getApplicationContext());
+        progressBar = (ProgressBar) findViewById(R.id.cab_pool_locations_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
+        locationRecyclerView.setVisibility(View.INVISIBLE);
 
 
         locationRecyclerView.setLayoutManager(locationLinearLayout);
@@ -97,11 +103,15 @@ public class CabPoolLocations extends BaseActivity {
 
                 }
                 cabPoolLocationRVAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+                locationRecyclerView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                progressBar.setVisibility(View.GONE);
+                locationRecyclerView.setVisibility(View.VISIBLE);
+                Toast.makeText(CabPoolLocations.this, "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
 

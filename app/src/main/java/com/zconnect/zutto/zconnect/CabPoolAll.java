@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +65,7 @@ public class CabPoolAll extends Fragment {
     String DT;
     View.OnClickListener onEmpty;
     ValueEventListener allPools;
+    ProgressBar progressBar;
 
     private SharedPreferences communitySP;
     public String communityReference;
@@ -121,11 +123,13 @@ public class CabPoolAll extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.pool_main_rv);
+        progressBar = (ProgressBar) view.findViewById(R.id.fragment_cab_pool_main_progress_circle);
         error = (TextView) view.findViewById(R.id.message);
         cabPoolRVAdapter = new CabPoolRVAdapter(getActivity(), vector_final);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         recyclerView.setAdapter(cabPoolRVAdapter);
-
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.INVISIBLE);
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
@@ -226,11 +230,14 @@ public class CabPoolAll extends Fragment {
                     recyclerView.setAdapter(cabPoolRVAdapter);
                     cabPoolRVAdapter.notifyDataSetChanged();
                 }
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
             }
         };
 

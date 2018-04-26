@@ -108,8 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:visibility="gone">
+                android:paddingBottom="5dp">
                 <TextView
                     android:id="@+id/forumsRecentItem_name"
                     android:layout_width="wrap_content"
@@ -117,10 +116,16 @@
                     android:text="Name"
                     android:textColor="@color/primaryText"/>
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="in"
+                    android:textColor="@color/primaryText"
+                    android:layout_marginStart="5dp"/>
+                <TextView
                     android:id="@+id/forumsRecentItem_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="in category"
+                    android:text="category"
                     android:textColor="@color/primaryText"
                     android:layout_marginStart="5dp"/>
             </LinearLayout>
@@ -273,7 +278,8 @@
                 android:id="@+id/eventsRecentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

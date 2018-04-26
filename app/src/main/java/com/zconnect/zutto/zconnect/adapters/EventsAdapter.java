@@ -5,7 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.holders.EventsViewHolder;
@@ -36,6 +38,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsViewHolder> {
             view = layoutInflater.inflate(R.layout.timeline_event_row, parent, false);
         }else if (type.equals("trending")){
             view = layoutInflater.inflate(R.layout.trending_events_row, parent, false);
+            ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.trending_event_image_progress_circle);
+            SimpleDraweeView image = (SimpleDraweeView) view.findViewById(R.id.er_postImg);
+            progressBar.setVisibility(View.VISIBLE);
+            image.setVisibility(View.INVISIBLE);
 
         }
         return new EventsViewHolder(view);

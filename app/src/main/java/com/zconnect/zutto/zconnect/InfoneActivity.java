@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -40,14 +42,17 @@ public class InfoneActivity extends BaseActivity {
     private static final int REQUEST_PHONE_CALL = 1;
     private SharedPreferences communitySP;
     public String communityReference;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infone2);
-
+        setTitle("Infone");
+        progressBar = (ProgressBar) findViewById(R.id.infone2_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
         recyclerViewCat = (RecyclerView) findViewById(R.id.rv_cat_infone);
-
+        recyclerViewCat.setVisibility(View.GONE);
         fabCatAdd = (FloatingActionButton) findViewById(R.id.fab_cat_infone);
 
 
@@ -73,6 +78,8 @@ public class InfoneActivity extends BaseActivity {
                     String catId = childSnapShot.getKey();
                     Infone2CategoryModel infone2CategoryModel = new Infone2CategoryModel(name, imageurl, admin, catId);
                     categoriesList.add(infone2CategoryModel);
+                    progressBar.setVisibility(View.GONE);
+                    recyclerViewCat.setVisibility(View.VISIBLE);
 
                 }
 
@@ -84,6 +91,9 @@ public class InfoneActivity extends BaseActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(InfoneActivity.class.getName(), "database error" + databaseError.toString());
+                progressBar.setVisibility(View.GONE);
+                recyclerViewCat.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
         databaseReferenceCat.addValueEventListener(listener);
