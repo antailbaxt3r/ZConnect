@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,11 +58,17 @@ public class OpenUserDetail extends BaseActivity {
     private boolean love_status = false,like_status=false;
     private FirebaseAuth mAuth;
     private UserItemFormat userProfile;
+    private LinearLayout content;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phonebook_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        content = (LinearLayout) findViewById(R.id.phonebook_details_content);
+        progressBar = (ProgressBar) findViewById(R.id.phonebook_details_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
+        content.setVisibility(View.INVISIBLE);
         image = (SimpleDraweeView) findViewById(R.id.contact_details_display_image);
         editTextDetails = (TextInputEditText) findViewById(R.id.contact_details_editText_1);
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_details_email_editText);
@@ -128,12 +135,15 @@ public class OpenUserDetail extends BaseActivity {
                 try {
                     userProfile = dataSnapshot.getValue(UserItemFormat.class);
                     setUserDetails();
+                    progressBar.setVisibility(View.GONE);
+                    content.setVisibility(View.VISIBLE);
                 }catch (Exception e){}
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                    progressBar.setVisibility(View.GONE);
+                    content.setVisibility(View.VISIBLE);
             }
         });
 
@@ -234,7 +244,9 @@ public class OpenUserDetail extends BaseActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(Uid)){
-                                Toast.makeText(OpenUserDetail.this, "Wow, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(OpenUserDetail.this, "Wow, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_SHORT).show();
+                                Toast toast = Toast.makeText(getApplicationContext(), "Wow, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_LONG);
+                                toast.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.red500));
                             }
                         }
 
@@ -281,7 +293,6 @@ public class OpenUserDetail extends BaseActivity {
                     UsersReference.child("MessageId").setValue(UsersReference.getKey());
                     UsersReference.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
                     textMessage.setText(null);
-                    Toast.makeText(OpenUserDetail.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
                 }
             }
         });*/
@@ -317,7 +328,7 @@ public class OpenUserDetail extends BaseActivity {
                 UsersReference.child("users").child(Uid).child("messages").child(s).child("timeStamp").setValue(calendar.getTimeInMillis());
 
                 textMessage.setText(null);
-                Toast.makeText(OpenUserDetail.this, "Encrypted secret message sent", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OpenUserDetail.this, "Encrypted message sent", Toast.LENGTH_SHORT).show();
             }
             }
         });

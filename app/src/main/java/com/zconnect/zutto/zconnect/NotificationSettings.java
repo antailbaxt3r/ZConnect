@@ -23,7 +23,7 @@ import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_OFFERS;
 import static com.zconnect.zutto.zconnect.KeyHelper.KEY_STOREROOM;
 
-public class NotificationSettings extends AppCompatActivity {
+public class NotificationSettings extends BaseActivity {
     Switch switch_events;
     Switch switch_cabPool;
     Switch switch_storeroom;
@@ -34,7 +34,7 @@ public class NotificationSettings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_settings);
-
+        setTitle("Notification Settings");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         if (toolbar != null) {

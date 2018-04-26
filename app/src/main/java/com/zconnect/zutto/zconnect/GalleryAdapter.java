@@ -43,7 +43,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     public void onBindViewHolder(GalleryAdapter.ViewHolder holder, int position) {
         if(galleryItem.get(position).getImageurl()!=null){
       holder.image.setImageURI(Uri.parse(galleryItem.get(position).getImageurl()));
-         //   Toast.makeText(context,galleryItem.get(position).getImage(),Toast.LENGTH_SHORT).show();
         }}
 
     @Override

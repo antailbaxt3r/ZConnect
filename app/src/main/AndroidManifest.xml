@@ -314,15 +314,18 @@
             android:name=".NotificationSettings"
             android:label="@string/title_activity_nitification_settings"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".InfoneActivity" />
+        <activity android:name=".InfoneActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".InfoneContactListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".InfoneProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".InfoneAddContactActivity" />
-        <activity android:name=".InfoneAddCatActivity" />
+        <activity android:name=".InfoneAddContactActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".InfoneAddCatActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".CabPoolLocations"
             android:label="@string/title_activity_cab_pool_locations"

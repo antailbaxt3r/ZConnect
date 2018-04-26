@@ -170,8 +170,6 @@ public class AddEvent extends BaseActivity {
             EventID = bundle.getString("eventID");
         }
 
-        Toast.makeText(this, EventID, Toast.LENGTH_SHORT).show();
-
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (LinearLayout) findViewById(R.id.dateAndTime);
         mVenue = (AutoCompleteTextView) findViewById(R.id.VenueText);

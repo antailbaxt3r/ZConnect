@@ -5,13 +5,16 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -27,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -41,8 +45,8 @@ public class InfoneAddContactActivity extends AppCompatActivity {
     DatabaseReference databaseReferenceInfone;
     DatabaseReference databaseRecents;
     DatabaseReference newContactRef;
-    EditText nameEt;
-    EditText phone1Et, phone2Et;
+    MaterialEditText nameEt;
+    MaterialEditText phone1Et, phone2Et;
     Button saveButton;
     SimpleDraweeView addImage;
     String key;
@@ -59,17 +63,14 @@ public class InfoneAddContactActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setTitle("Add Contact");
         setContentView(R.layout.activity_infone_add_contact);
 
         catId = getIntent().getExtras().getString("catId");
         catName = getIntent().getExtras().getString("catName");
-
-        Toast.makeText(this, catName, Toast.LENGTH_SHORT).show();
-
-        nameEt = (EditText) findViewById(R.id.name_et_infone_add);
-        phone1Et = (EditText) findViewById(R.id.phone_et_infone_add);
-        phone2Et = (EditText) findViewById(R.id.phone2_et_infone_add);
+        nameEt = (MaterialEditText) findViewById(R.id.name_et_infone_add);
+        phone1Et = (MaterialEditText) findViewById(R.id.phone_et_infone_add);
+        phone2Et = (MaterialEditText) findViewById(R.id.phone2_et_infone_add);
         saveButton = (Button) findViewById(R.id.btn_save_infone_add);
         addImage = (SimpleDraweeView) findViewById(R.id.image_add_infone_add);
 

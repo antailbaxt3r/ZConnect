@@ -182,8 +182,6 @@ public class CreateCommunity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
 
         if(!TextUtils.isEmpty(communityEmailString)&&!TextUtils.isEmpty(communityImageString)&&!TextUtils.isEmpty(communityNameString)){
-            Toast.makeText(this, mImageUri.toString(), Toast.LENGTH_SHORT).show();
-
             StorageReference filepath = mStorage.child("CommunityImages").child((mImageUri.getLastPathSegment()));
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -192,8 +190,6 @@ public class CreateCommunity extends AppCompatActivity {
 
                     DatabaseReference newPost = mDatabase.push();
                     String key = newPost.getKey();
-
-                    Toast.makeText(CreateCommunity.this, "inside", Toast.LENGTH_SHORT).show();
                     newPost.child("name").setValue(communityNameString);
                     newPost.child("key").setValue(key);
                     newPost.child("uid").setValue(communityEmailString);
