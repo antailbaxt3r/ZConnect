@@ -35,8 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:backgroundTintMode="src_atop"
-                android:backgroundTint="@color/secondaryText2"
-                android:visibility="gone"/>
+                android:backgroundTint="@color/secondaryText2"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_infone_contacts"

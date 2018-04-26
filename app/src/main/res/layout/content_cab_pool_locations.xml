@@ -8,10 +8,19 @@
     tools:context="com.zconnect.zutto.zconnect.CabPoolLocations"
     tools:showIn="@layout/activity_cab_pool_locations">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/location_recycler_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/cab_pool_locations_progress_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/location_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -108,7 +108,7 @@ public class ForumsPeopleList extends BaseActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                progressBar.setVisibility(INVISIBLE);
             }
         };
         onClickListener = new View.OnClickListener() {
