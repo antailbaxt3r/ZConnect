@@ -140,9 +140,7 @@ public class InfoneActivity extends BaseActivity {
 
                 if (!status) {
                     Intent addCatIntent = new Intent(InfoneActivity.this,InfoneAddCatActivity.class);
-                    //addCatIntent("categoryId",);
                     startActivity(addCatIntent);
-                    //addDialog();
                 } else {
                     Toast.makeText(InfoneActivity.this, "Log in to use this function", Toast.LENGTH_SHORT).show();
                 }
@@ -154,43 +152,43 @@ public class InfoneActivity extends BaseActivity {
 
     }
 
-    private void addDialog() {
-
-        Log.e("tt", "data fab");
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("Add new infone Category");
-        //alertDialog.setMessage("Category name");
-
-        final EditText newCategoryET = new EditText(this);
-        newCategoryET.setInputType(InputType.TYPE_CLASS_TEXT);
-        newCategoryET.setHint("Category name");
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        newCategoryET.setLayoutParams(lp);
-        alertDialog.setView(newCategoryET);
-        alertDialog.setIcon(R.drawable.ic_add_white_36dp);
-
-        alertDialog.setPositiveButton("YES",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        final String newCat = newCategoryET.getText().toString();
-
-                        if (!newCat.isEmpty()) {
-                            Toast.makeText(InfoneActivity.this, "Add a contact in your new category",
-                                    Toast.LENGTH_SHORT).show();
-                            Intent addContactIntent = new Intent(InfoneActivity.this,
-                                    InfoneAddContactActivity.class);
-                            addContactIntent.putExtra("categoryName", newCat);
-                            startActivity(addContactIntent);
-                        }
-                    }
-                });
-
-        alertDialog.show();
-
-    }
+//    private void addDialog() {
+//
+//        Log.e("tt", "data fab");
+//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+//        alertDialog.setTitle("Add new infone Category");
+//        //alertDialog.setMessage("Category name");
+//
+//        final EditText newCategoryET = new EditText(this);
+//        newCategoryET.setInputType(InputType.TYPE_CLASS_TEXT);
+//        newCategoryET.setHint("Category name");
+//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.MATCH_PARENT);
+//        newCategoryET.setLayoutParams(lp);
+//        alertDialog.setView(newCategoryET);
+//        alertDialog.setIcon(R.drawable.ic_add_white_36dp);
+//
+//        alertDialog.setPositiveButton("YES",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                        final String newCat = newCategoryET.getText().toString();
+//
+//                        if (!newCat.isEmpty()) {
+//                            Toast.makeText(InfoneActivity.this, "Add a contact in your new category",
+//                                    Toast.LENGTH_SHORT).show();
+//                            Intent addContactIntent = new Intent(InfoneActivity.this,
+//                                    InfoneAddContactActivity.class);
+//                            addContactIntent.putExtra("categoryName", newCat);
+//                            startActivity(addContactIntent);
+//                        }
+//                    }
+//                });
+//
+//        alertDialog.show();
+//
+//    }
 
     @Override
     protected void onDestroy() {

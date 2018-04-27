@@ -97,6 +97,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 //    private String category;
 //    private String skills;
 
+    Boolean flag2;
     private Uri mImageUri=null;
     private Uri mImageUriSmall=null;
     private StorageReference mStorageRef;
@@ -168,25 +169,6 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone");
 
 
-
-        communityInfo = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").orderByChild("code").equalTo(communityReference);
-
-        communityInfo.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    communityName=dataSnapshot.child("name").getValue().toString();
-                }
-                catch (Exception e) {
-                    Log.d("Errorr Alert! ", e.getMessage());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         if (mUser == null) {
             startActivity(new Intent(EditProfileActivity.this, LoginActivity.class));
             finish();
@@ -233,6 +215,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     protected void onResume() {
         super.onResume();
 
+        flag =false;
         if(newUser) {
             userNameText.setText(mUser.getDisplayName());
             userEmailText.setText(mUser.getEmail());
@@ -240,12 +223,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             if (mImageUri==null) {
                 if (mUser.getPhotoUrl() != null) {
                     userImageView.setImageURI(mUser.getPhotoUrl());
-//                    Picasso.with(this).load(mUser.getPhotoUrl()).into(userImageView);
-//                    mImageUri = mUser.getPhotoUrl();
                 } else {
                     userImageView.setImageURI(DEFAULT_PHOTO_URL);
-//                    Picasso.with(this).load(DEFAULT_PHOTO_URL).into(userImageView);
-//                    mImageUri = Uri.parse(DEFAULT_PHOTO_URL);
                 }
             }
         }else {
@@ -261,7 +240,6 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
                 }
             });
-
         }
     }
 
@@ -271,6 +249,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         userWhatsappNumberText.setText(userDetails.getWhatsAppNumber());
         userMobileNumberText.setText(userDetails.getMobileNumber());
         userAboutText.setText(userDetails.getAbout());
+
         for(int i=0;i<infoneCategories.size();i++){
             if(infoneCategories.get(i).getCatId().equals(userDetails.getInfoneType())){
                 userInfoneTypeSpinner.setText(infoneCategoriesName.get(i));
@@ -279,7 +258,6 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         }
         if(mImageUri==null) {
             userImageView.setImageURI(userDetails.getImageURL());
-//            Picasso.with(this).load(userDetails.getImageURL()).into(userImageView);
         }
         String skills = userDetails.getSkillTags();
         if (skills == null || skills.equalsIgnoreCase("[]")) {
@@ -385,7 +363,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
         if (userName == null
                 || userEmail == null
-                || userMobile.length() == 0 || userInfoneType ==null) {
+                || userMobile.length() == 0 || userInfoneType ==null || ((mUser.getPhotoUrl() == null)&&(mImageUri.equals(null)))) {
             Snackbar snackbar = Snackbar.make(userAboutText, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
@@ -465,65 +443,60 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
 
             if (mImageUri != null) {
-                if( mImageUri != mUser.getPhotoUrl()) {
-                    flag = false;
-                    StorageReference filepath = mStorageRef.child("Users").child(mImageUri.getLastPathSegment() + mUser.getUid());
-                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Uri downloadUri = taskSnapshot.getDownloadUrl();
-                            if (downloadUri == null) {
-                                Log.e(TAG, "onSuccess: error got empty downloadUri");
-                                return;
-                            }
-                            newPost.child("imageURL").setValue(downloadUri.toString());
-                            newContactNumRef.child("imageurl").setValue(downloadUri.toString());
+                flag = false;
+                StorageReference filepath = mStorageRef.child("Users").child(mImageUri.getLastPathSegment() + mUser.getUid());
+                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUri = taskSnapshot.getDownloadUrl();
+                        if (downloadUri == null) {
+                            Log.e(TAG, "onSuccess: error got empty downloadUri");
+                            return;
+                        }
+                        newPost.child("imageURL").setValue(downloadUri.toString());
+                        newContactNumRef.child("imageurl").setValue(downloadUri.toString());
 
-                            if (flag){
-                                mProgress.dismiss();
-                                finish();
-                            }else {
-                                flag=true;
-                            }
+                        if (flag){
+                            mProgress.dismiss();
+                            finish();
+                        }else {
+                            flag=true;
                         }
-                    });
-                    StorageReference filepathThumb = mStorageRef.child("PhonebookImageSmall").child(mImageUriSmall.getLastPathSegment() + mUser.getUid() + "Thumbnail");
-                    filepathThumb.putFile(mImageUriSmall).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Uri downloadUriThumb = taskSnapshot.getDownloadUrl();
-                            if (downloadUriThumb == null) {
-                                Log.e(TAG, "onSuccess: error got empty downloadUri");
-                                return;
-                            }
-                            if (newUser) {
-                                homePush.child("PostedBy").child("ImageThumb").setValue(downloadUriThumb.toString());
-                            }
-                            newPost.child("imageURLThumbnail").setValue(downloadUriThumb.toString());
-                            newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
-                            newContactNumRef.child("thumbnail").setValue(downloadUriThumb.toString());
-                            if (flag){
-                                mProgress.dismiss();
-                                finish();
-                            }else {
-                                flag=true;
-                            }
-                        }
-                    });
-                }else {
-                    if (newUser) {
-                        homePush.child("PostedBy").child("ImageThumb").setValue(mUser.getPhotoUrl().toString());
                     }
-                    newPost.child("imageURLThumbnail").setValue(mUser.getPhotoUrl().toString());
-                    newPost.child("imageURL").setValue(mUser.getPhotoUrl().toString());
-                    newContactNumRef.child("imageurl").setValue(mUser.getPhotoUrl().toString());
-                    newContactRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
-                    newContactNumRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
-                    mProgress.dismiss();
-                    finish();
-                }
+                });
+                StorageReference filepathThumb = mStorageRef.child("PhonebookImageSmall").child(mImageUriSmall.getLastPathSegment() + mUser.getUid() + "Thumbnail");
+                filepathThumb.putFile(mImageUriSmall).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUriThumb = taskSnapshot.getDownloadUrl();
+                        if (downloadUriThumb == null) {
+                            Log.e(TAG, "onSuccess: error got empty downloadUri");
+                            return;
+                        }
+                        if (newUser) {
+                            homePush.child("PostedBy").child("ImageThumb").setValue(downloadUriThumb.toString());
+                        }
+                        newPost.child("imageURLThumbnail").setValue(downloadUriThumb.toString());
+                        newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
+                        newContactNumRef.child("thumbnail").setValue(downloadUriThumb.toString());
+                        if (flag){
+                            mProgress.dismiss();
+                            finish();
+                        }else {
+                            flag=true;
+                        }
+                    }
+                });
+
             }else{
-                Toast.makeText(this, "Not Exist", Toast.LENGTH_SHORT).show();
+                if (newUser) {
+                    homePush.child("PostedBy").child("ImageThumb").setValue(mUser.getPhotoUrl().toString());
+                }
+                newPost.child("imageURLThumbnail").setValue(mUser.getPhotoUrl().toString());
+                newPost.child("imageURL").setValue(mUser.getPhotoUrl().toString());
+                newContactNumRef.child("imageurl").setValue(mUser.getPhotoUrl().toString());
+                newContactRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
+                newContactNumRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
                 mProgress.dismiss();
                 finish();
             }

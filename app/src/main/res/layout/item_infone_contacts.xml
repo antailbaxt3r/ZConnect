@@ -32,7 +32,8 @@
             android:id="@+id/tv_views_infone_contacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/primaryText"/>
+            android:textColor="@color/primaryText"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <ImageButton

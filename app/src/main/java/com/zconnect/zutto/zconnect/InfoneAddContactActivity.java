@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -40,7 +41,7 @@ import java.io.IOException;
 
 public class InfoneAddContactActivity extends AppCompatActivity {
 
-    String catId,catName;
+    String catId,catName,catImageURL;
     private SharedPreferences communitySP;
     public String communityReference;
     DatabaseReference databaseReferenceInfone;
@@ -53,6 +54,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
     String key;
     private Long postTimeMillis;
     private final String TAG = getClass().getSimpleName();
+    private Boolean flag1,flag2;
 
     private Uri mImageUri = null;
     private static final int GALLERY_REQUEST = 7;
@@ -60,6 +62,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private DatabaseReference newContactNumRef;
     private DatabaseReference mPostedByDetails;
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +70,12 @@ public class InfoneAddContactActivity extends AppCompatActivity {
         setTitle("Add Contact");
         setContentView(R.layout.activity_infone_add_contact);
 
+        mProgress = new ProgressDialog(this);
+
         catId = getIntent().getExtras().getString("catId");
         catName = getIntent().getExtras().getString("catName");
+        catImageURL = getIntent().getExtras().getString("catImageURL");
+
         nameEt = (MaterialEditText) findViewById(R.id.name_et_infone_add);
         phone1Et = (MaterialEditText) findViewById(R.id.phone_et_infone_add);
         phone2Et = (MaterialEditText) findViewById(R.id.phone2_et_infone_add);
@@ -87,6 +94,8 @@ public class InfoneAddContactActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            mProgress.setMessage("Saving Contact");
+            mProgress.show();
 
             String name = nameEt.getText().toString();
             String phoneNum1 = phone1Et.getText().toString();
@@ -99,7 +108,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
 
             Log.e(TAG, "data cat name:" + catId);
 
-            if (!name.isEmpty() && !phoneNum1.isEmpty()&& !mImageUri.equals(null)) {
+            if (!name.isEmpty() && !phoneNum1.isEmpty()) {
                 postTimeMillis = System.currentTimeMillis();
                 key = databaseReferenceInfone.child("numbers").push().getKey();
                 newContactNumRef = databaseReferenceInfone.child("numbers").child(key);
@@ -160,12 +169,6 @@ public class InfoneAddContactActivity extends AppCompatActivity {
             }
         });
 
-        if (mImageUri == null) {
-
-//            addImage.setActualImageResource(R.mipmap.ic_launcher);
-
-        }
-
         addImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,6 +190,10 @@ public class InfoneAddContactActivity extends AppCompatActivity {
 
     private void uploadImage() {
 
+        flag1=false;
+        flag2=false;
+
+
         if (mImageUri != null) {
             StorageReference filepath = mStorageRef.child("InfoneImage").child(mImageUri.getLastPathSegment() + key);
             filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -199,7 +206,8 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                     }
                     //newContactRef.child("imageurl").setValue(downloadUri.toString());
                     newContactNumRef.child("imageurl").setValue(downloadUri.toString());
-                    finish();
+                    flag1 = true;
+                    customFinish();
                 }
             });
             StorageReference filepathThumb = mStorageRef.child("InfoneImageSmall").child(mImageUriSmall.getLastPathSegment() + key + "Thumbnail");
@@ -213,13 +221,22 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                     }
                     newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
                     newContactNumRef.child("thumbnail").setValue(downloadUriThumb.toString());
-                    finish();
+                    flag2=true;
+                    customFinish();
                 }
             });
         } else {
-            newContactNumRef.child("imageurl").setValue("default");
-            newContactRef.child("thumbnail").setValue("default");
-            newContactNumRef.child("thumbnail").setValue("default");
+            newContactNumRef.child("imageurl").setValue(catImageURL);
+            newContactRef.child("thumbnail").setValue(catImageURL);
+            newContactNumRef.child("thumbnail").setValue(catImageURL);
+            mProgress.dismiss();
+            finish();
+        }
+    }
+
+    public void customFinish(){
+        if(flag1&&flag2){
+            mProgress.dismiss();
             finish();
         }
     }

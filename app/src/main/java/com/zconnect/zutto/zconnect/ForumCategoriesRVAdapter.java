@@ -227,6 +227,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
             mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
                     newPush.child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
                     newPush.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
 

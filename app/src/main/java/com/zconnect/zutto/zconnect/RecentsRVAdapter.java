@@ -91,6 +91,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
         }
         if(recentsItemFormats.get(position).getFeature().equals("Infone"))
         {
+            holder.post.setVisibility(View.VISIBLE);
             holder.infoneRecentItem.setVisibility(View.VISIBLE);
             holder.storeroomRecentItem.setVisibility(View.GONE);
             holder.cabpoolRecentItem.setVisibility(View.GONE);
@@ -122,6 +123,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
         }
         else if (recentsItemFormats.get(position).getFeature().equals("Event"))
         {
+            holder.post.setVisibility(View.VISIBLE);
             holder.infoneRecentItem.setVisibility(View.GONE);
             holder.storeroomRecentItem.setVisibility(View.GONE);
             holder.cabpoolRecentItem.setVisibility(View.GONE);
@@ -146,6 +148,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
         }
         else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
         {
+            holder.post.setVisibility(View.VISIBLE);
             holder.infoneRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
             holder.cabpoolRecentItem.setVisibility(View.GONE);
@@ -171,6 +174,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
         }
         else if (recentsItemFormats.get(position).getFeature().equals("CabPool"))
         {
+            holder.post.setVisibility(View.VISIBLE);
             holder.infoneRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
             holder.storeroomRecentItem.setVisibility(View.GONE);
@@ -196,6 +200,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
         }
         else if (recentsItemFormats.get(position).getFeature().equals("Shop"))
         {
+            holder.post.setVisibility(View.VISIBLE);
             holder.infoneRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
             holder.storeroomRecentItem.setVisibility(View.GONE);
@@ -213,6 +218,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
             holder.postConjunction.setText(" put an ");
             holder.post.setText("Offer");
         }else if(recentsItemFormats.get(position).getFeature().equals("Message")) {
+            holder.post.setVisibility(View.VISIBLE);
             holder.infoneRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
             holder.storeroomRecentItem.setVisibility(View.GONE);
@@ -234,6 +240,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecentsRVAdapter.View
                 holder.name.setText(recentsItemFormats.get(position).getName());
             }
         }else if(recentsItemFormats.get(position).getFeature().equals("Forums")){
+            holder.post.setVisibility(View.VISIBLE);
             holder.infoneRecentItem.setVisibility(View.GONE);
             holder.eventsRecentItem.setVisibility(View.GONE);
             holder.storeroomRecentItem.setVisibility(View.GONE);

@@ -9,5 +9,6 @@
         android:icon="@drawable/ic_edit_white_24dp"
         android:orderInCategory="1"
         android:name="Add Contact"
+        android:visible="false"
         app:showAsAction="collapseActionView|ifRoom" />
 </menu>

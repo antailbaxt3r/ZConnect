@@ -52,6 +52,8 @@ public class InfoneAddCatActivity extends AppCompatActivity {
     String catId;
     String catName;
     boolean toAdd;
+
+    Boolean flag1,flag2;
     private final String TAG = getClass().getSimpleName();
 
     /*uploading elements*/
@@ -76,40 +78,32 @@ public class InfoneAddCatActivity extends AppCompatActivity {
         communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities")
-                .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW);
+        databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child(ZConnectDetails.INFONE_DB_NEW);
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        try{
-            if (getIntent().getExtras().getString("catId") != null) {
-                catId = getIntent().getExtras().getString("catId");
-                catName = getIntent().getExtras().getString("catName");
-                catImageurl=getIntent().getExtras().getString("catImageurl");
-
-                Log.e(TAG,"Exception : "+catName+" "+catId+" "+catImageurl);
-
-                Uri imageUri= Uri.parse(catImageurl);
-                addImage.setImageURI(imageUri);
-
-                nameEt.setText(catName);
-
-                toAdd = false;
-            } else {
-                catId = "";
-            }
-        }
-        catch (Exception e){
-            Log.e(TAG,"Exception : "+e.toString());
-            toAdd=true;
-            //finish();
-        }
-
-
-        if (mImageUri == null && toAdd) {
-
-//            addImage.setActualImageResource(R.mipmap.ic_launcher);
-
-        }
+//        try{
+//            if (getIntent().getExtras().getString("catId") != null) {
+//                catId = getIntent().getExtras().getString("catId");
+//                catName = getIntent().getExtras().getString("catName");
+//                catImageurl=getIntent().getExtras().getString("catImageurl");
+//
+//                Log.e(TAG,"Exception : "+catName+" "+catId+" "+catImageurl);
+//
+//                Uri imageUri= Uri.parse(catImageurl);
+//                addImage.setImageURI(imageUri);
+//
+//                nameEt.setText(catName);
+//
+//                toAdd = false;
+//            } else {
+//                catId = "";
+//            }
+//        }
+//        catch (Exception e){
+//            Log.e(TAG,"Exception : "+e.toString());
+//            toAdd=true;
+//            //finish();
+//        }
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,43 +135,15 @@ public class InfoneAddCatActivity extends AppCompatActivity {
     private void saveChanges() {
 
         String name = nameEt.getText().toString();
-        //String im = phone1Et.getText().toString();
 
-        //Log.e(TAG, "data cat name:" + categoryName);
-        SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
-        Boolean status = sharedPref.getBoolean("mode", false);
+        catId = databaseReferenceInfone.child("categoriesInfo").push().getKey();
+        newCategoryRef = databaseReferenceInfone.child("categoriesInfo").child(catId);
+        newCategoryRef.child("name").setValue(name);
+        newCategoryRef.child("admin").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        newCategoryRef.child("catId").setValue(catId);
 
-        if (toAdd && !name.isEmpty() && !status && !mImageUri.equals(null)) {
-
-            catId = databaseReferenceInfone.child("categoriesInfo").push().getKey();
-            newCategoryRef = databaseReferenceInfone.child("categoriesInfo").child(catId);
-            newCategoryRef.child("name").setValue(name);
-            newCategoryRef.child("admin").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-            uploadImage();
-
-            Toast.makeText(InfoneAddCatActivity.this, "Add a contact in your new category",
-                    Toast.LENGTH_SHORT).show();
-            Intent addContactIntent = new Intent(InfoneAddCatActivity.this,
-                    InfoneAddContactActivity.class);
-            addContactIntent.putExtra("catId", catId);
-            startActivity(addContactIntent);
-
-        } else if (!toAdd && !status) {
-
-            newCategoryRef = databaseReferenceInfone.child("categoriesInfo").child(catId);
-            newCategoryRef.child("name").setValue(name);
-
-
-            uploadImage();
-
-        } else {
-            Toast.makeText(InfoneAddCatActivity.this, "Details incomplete",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void uploadImage() {
+        flag1=false;
+        flag2=false;
 
         if (mImageUri != null) {
             StorageReference filepath = mStorageRef.child("InfoneImage").child(mImageUri.getLastPathSegment() + catId);
@@ -190,7 +156,8 @@ public class InfoneAddCatActivity extends AppCompatActivity {
                         return;
                     }
                     newCategoryRef.child("imageurl").setValue(downloadUri.toString());
-                    finish();
+                    flag1=true;
+                    addContact();
                 }
             });
             StorageReference filepathThumb = mStorageRef.child("InfoneImageSmall").child(mImageUriSmall.getLastPathSegment() + catId + "Thumbnail");
@@ -203,15 +170,29 @@ public class InfoneAddCatActivity extends AppCompatActivity {
                         return;
                     }
                     newCategoryRef.child("thumbnail").setValue(downloadUriThumb.toString());
-                    finish();
+                    flag2=true;
+                    addContact();
                 }
             });
         } else {
-            newCategoryRef.child("imageurl").setValue("default");
-            newCategoryRef.child("thumbnail").setValue("default");
+            newCategoryRef.removeValue();
+            Toast.makeText(this, "Fill all details including image", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void addContact(){
+        if(flag1&&flag2){
+            Toast.makeText(InfoneAddCatActivity.this, "Add a contact in your new category",
+                    Toast.LENGTH_SHORT).show();
+            final Intent addContactIntent = new Intent(InfoneAddCatActivity.this,
+                    InfoneAddContactActivity.class);
+            addContactIntent.putExtra("catId", catId);
+            startActivity(addContactIntent);
             finish();
         }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
