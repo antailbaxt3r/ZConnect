@@ -100,7 +100,7 @@ public class MyRides extends BaseActivity {
                         cabItemFormats.add(cabItemFormat);
                     }
                 }
-                       
+
                 if (cabItemFormats.isEmpty()) {
                     defaultmsg.setVisibility(View.VISIBLE);
                     poolrv.setVisibility(View.INVISIBLE);

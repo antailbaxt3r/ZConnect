@@ -143,7 +143,10 @@ public class CabPoolAll extends Fragment {
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     try {
-                        vector_fetched.add(shot.getValue(CabItemFormat.class));
+                        CabItemFormat cabItemFormatShot= shot.getValue(CabItemFormat.class);
+                        if(!cabItemFormatShot.getDestination().equals(null)&& !cabItemFormatShot.getSource().equals(null)) {
+                            vector_fetched.add(shot.getValue(CabItemFormat.class));
+                        }
                     }catch (Exception e){}
                 }
 
@@ -212,7 +215,7 @@ public class CabPoolAll extends Fragment {
                     } else {
                         String key = vector_fetched.get(i).getKey();
                         FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key).removeValue();
-                        ArchivePool(firebaseDatabase.getReference().child("communities").child(communityReference).child("Cab").child(key), firebaseDatabase.getReference().child("communities").child(communityReference).child("archive/Cab").child(key));
+                        ArchivePool(firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs").child(key), firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("archives").child(key).child(key));
                     }
                 }
 
