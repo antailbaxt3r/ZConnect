@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.holders.Infone2RVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.ItemFormats.Infone2CategoryModel;
@@ -58,6 +59,7 @@ public class InfoneRVAdapter extends RecyclerView.Adapter<Infone2RVViewHolder> {
                 intentInfoneList.putExtra("catImageurl",categoriesList.get(position).getImageurl());
                 intentInfoneList.putExtra("catAdmin",categoriesList.get(position).getAdmin());
                 context.startActivity(intentInfoneList);
+                CounterManager.infoneOpenCategory(categoriesList.get(position).getCatId());
 
             }
         });

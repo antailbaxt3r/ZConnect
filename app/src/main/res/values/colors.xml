@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#26A69A</color>
-    <color name="colorPrimaryDark">#00695C</color>
-    <color name="colorAccent">#f44336</color>
-
+    <!--<color name="colorPrimary">#26A69A</color>-->
+    <color name="colorPrimary">#0288D1</color>
+    <color name="colorPrimaryDark">#01579B</color>
+    <color name="colorAccent">#B0BEC5</color>
+    <!--<color name="colorPrimaryDark">#00695C</color>-->
+    <!--<color name="colorAccent">#f44336</color>-->
+    <!--<color name="colorAccent">#B0BEC5</color>-->
     <color name="EventsBar">#E6EE9C</color>
     <color name="ProductBar">#FFAB91</color>
     <color name="InfoneBar">#81D4FA</color>
-
     <color name="blackOlive">#39393F</color>
     <color name="orange">#FEC500</color>
     <color name="bg_tag_default">#4DB6AC</color>

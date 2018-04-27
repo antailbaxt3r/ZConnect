@@ -84,7 +84,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.View
                 public void onClick(View v) {
                     PhonebookDisplayItem phonebookDisplayItem;
                     phonebookDisplayItem = phonebookItem.get(getAdapterPosition()).getPhonebookDisplayItem();
-                    CounterManager.InfoneCallDirect(phonebookDisplayItem.getNumber());
+//                    CounterManager.InfoneCallDirect(phonebookDisplayItem.getNumber());
                     context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phonebookDisplayItem.getNumber())));
                 }
             });

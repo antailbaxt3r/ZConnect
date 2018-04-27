@@ -46,6 +46,7 @@ public class InfoneActivity extends BaseActivity {
     private SharedPreferences communitySP;
     public String communityReference;
     ProgressBar progressBar;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

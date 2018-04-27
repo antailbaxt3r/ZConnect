@@ -48,7 +48,7 @@ public class PhonebookSearch extends BaseActivity {
         setContentView(R.layout.activity_phonebook_search);
         ButterKnife.bind(this);
         guestMode = getSharedPreferences("guestMode", MODE_PRIVATE).getBoolean("mode", false);
-        CounterManager.InfoneSearchClick();
+//        CounterManager.InfoneSearchClick();
         Intent callerIntent = getIntent();
 
         phonebookDbRef.keepSynced(true);

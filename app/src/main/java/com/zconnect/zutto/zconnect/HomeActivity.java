@@ -480,7 +480,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                     case 1: {
                         setActionBarTitle("Forums");
-                        CounterManager.InfoneOpen();
+                        CounterManager.forumsOpen();
+//                        CounterManager.InfoneOpen();
 //                        fab.setImageResource(R.drawable.ic_edit_white_24dp);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
                         break;
@@ -493,9 +494,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 5: {
-                        setActionBarTitle("Messages");
+                        setActionBarTitle("Anonymous Messages");
+                        CounterManager.anonymousMessageOpen();
 //                        fab.setImageResource(R.drawable.procent_badge_256);
-                        CounterManager.ShopOpen();
+//                        CounterManager.ShopOpen();
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
 
                         break;
