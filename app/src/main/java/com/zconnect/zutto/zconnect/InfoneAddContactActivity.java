@@ -81,7 +81,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         databaseRecents = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
-        mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +98,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
 
             Log.e(TAG, "data cat name:" + catId);
 
-            if (!name.isEmpty() && !phoneNum1.isEmpty()) {
+            if (!name.isEmpty() && !phoneNum1.isEmpty()&& !mImageUri.equals(null)) {
                 postTimeMillis = System.currentTimeMillis();
                 key = databaseReferenceInfone.child("numbers").push().getKey();
                 newContactNumRef = databaseReferenceInfone.child("numbers").child(key);
@@ -151,8 +151,11 @@ public class InfoneAddContactActivity extends AppCompatActivity {
 
                     }
                 });
+                CounterManager.infoneAddContact(catId);
+            }else {
+                Toast.makeText(InfoneAddContactActivity.this, "All fields not set, including image.", Toast.LENGTH_SHORT).show();
             }
-            CounterManager.infoneAddContact(catId);
+
             }
         });
 

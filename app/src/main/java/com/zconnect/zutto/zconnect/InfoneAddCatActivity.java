@@ -147,7 +147,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
         SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
-        if (toAdd && !name.isEmpty() && !status) {
+        if (toAdd && !name.isEmpty() && !status && !mImageUri.equals(null)) {
 
             catId = databaseReferenceInfone.child("categoriesInfo").push().getKey();
             newCategoryRef = databaseReferenceInfone.child("categoriesInfo").child(catId);

@@ -510,13 +510,13 @@ public class NotificationService extends FirebaseMessagingService {
 
                     if (!temp.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                        style.bigText("Anonymous Messages | ZConnect").setBigContentTitle(userName + " messaged you");
+                        style.bigText("Messages | ZConnect").setBigContentTitle(userName + " messaged you");
 
                         mBuilder.setSmallIcon(R.drawable.ic_message_white_18dp)
                                 .setStyle(style)
                                 .setSound(defaultSoundUri)
                                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.messages))
-                                .setContentTitle("Anonymous Messages | ZConnect")
+                                .setContentTitle("Messages | ZConnect")
                                 .setContentText(userName + " messaged you");
 
                         Intent intent = new Intent(NotificationService.this, ChatActivity.class);

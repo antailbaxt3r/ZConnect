@@ -112,24 +112,30 @@ public class InfoneContactListActivity extends AppCompatActivity {
                 for (DataSnapshot childSnapshot :
                         dataSnapshot.getChildren()) {
 
-                    String name = childSnapshot.child("name").getValue(String.class);
-                    String imageThumb = childSnapshot.child("thumbnail").getValue(String.class);
-                    String infoneUserId = childSnapshot.getKey();
+                    try {
+                        String name = childSnapshot.child("name").getValue(String.class);
+                        String imageThumb = childSnapshot.child("thumbnail").getValue(String.class);
+                        String infoneUserId = childSnapshot.getKey();
 
-                    Log.e("tt", "data " + name);
-                    Log.e("tt", "data " + imageThumb);
+                        Log.e("tt", "data " + name);
+                        Log.e("tt", "data " + imageThumb);
 
-                    phoneNumbs = new ArrayList<>();
-                    for (DataSnapshot grandChildShot :
-                            childSnapshot.child("phone").getChildren()) {
-                        phoneNumbs.add(grandChildShot.getValue(String.class));
-                        Log.e("tt", "data " + phoneNumbs.toString());
-                    }
+                        phoneNumbs = new ArrayList<>();
+                        for (DataSnapshot grandChildShot :
+                                childSnapshot.child("phone").getChildren()) {
+                            try {
+                                phoneNumbs.add(grandChildShot.getValue(String.class));
+                            } catch (Exception e) {
+                            }
 
-                    //Log.e("tt", "data"+phoneNumbs.toString());
+                            Log.e("tt", "data " + phoneNumbs.toString());
+                        }
 
-                    infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
-                    contactsRVItems.add(infoneContactsRVItem);
+                        //Log.e("tt", "data"+phoneNumbs.toString());
+
+                        infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
+                        contactsRVItems.add(infoneContactsRVItem);
+                    }catch (Exception e){}
                 }
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this,
                         contactsRVItems, catId);
