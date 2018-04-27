@@ -173,7 +173,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
             });
         }
 
-        public void addCategory(String catName,String uid,String tabName){
+        public void addCategory(String catName, String uid, final String tabName){
 
             DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
             DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid);
@@ -199,6 +199,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
                     userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                     userDetails.setUserUID(userItemFormat.getUserUID());
                     newPush.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
+                    CounterManager.forumsAddCategory(tabName);
                 }
 
                 @Override

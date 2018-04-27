@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.zconnect.zutto.zconnect.CounterManager;
+import com.zconnect.zutto.zconnect.ItemFormats.Infone2CategoryModel;
 import com.zconnect.zutto.zconnect.holders.InfoneContactsRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
 import com.zconnect.zutto.zconnect.ItemFormats.InfoneContactsRVItem;
@@ -76,6 +78,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                 profileIntent.putExtra("infoneUserId", infoneContactsRVItems.get(position).getInfoneUserId());
                 profileIntent.putExtra("catId", catId);
                 context.startActivity(profileIntent);
+                CounterManager.infoneOpenContact(catId, infoneContactsRVItems.get(position).getName());
             }
         });
 

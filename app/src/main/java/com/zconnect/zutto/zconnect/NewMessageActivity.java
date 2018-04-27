@@ -45,7 +45,7 @@ public class NewMessageActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        setActionBarTitle("Create status");
+        setActionBarTitle("Post a status");
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -108,6 +108,7 @@ public class NewMessageActivity extends BaseActivity {
                         newMessage.child("PostedBy").child("UID").setValue(user.getUserUID());
                         newMessage.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
                         FirebaseMessaging.getInstance().subscribeToTopic(key);
+                        CounterManager.publicStatusAdd(anonymousCheck.isChecked());
                     }
 
                     @Override

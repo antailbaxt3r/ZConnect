@@ -174,8 +174,8 @@ public class ForumsActivity extends Fragment{
         }
 
         viewPager.setAdapter(adapter);
-
-        increaseCount(guestMode, viewPager.getCurrentItem());
+        CounterManager.forumsOpenTab(infoneTabItemFormats.get(viewPager.getCurrentItem()).getName());
+//        increaseCount(guestMode, viewPager.getCurrentItem());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -183,7 +183,8 @@ public class ForumsActivity extends Fragment{
 
             @Override
             public void onPageSelected(int position) {
-                increaseCount(guestMode, position);
+                CounterManager.forumsOpenTab(infoneTabItemFormats.get(position).getName());
+//                increaseCount(guestMode, position);
             }
 
             @Override
@@ -192,24 +193,24 @@ public class ForumsActivity extends Fragment{
         });
     }
 
-    public void increaseCount(boolean status, int position) {
-        if (!status) {
-            if (position == 0)
-                CounterManager.infoneOpenTab("Admin");
-            else if (position == 1)
-                CounterManager.infoneOpenTab("Students");
-            else if (position == 2)
-                CounterManager.infoneOpenTab("others");
-            else if (position == 3) {
-                CounterManager.infoneOpenTab("AnonymousMessages");
-            }
-        } else {
-            if (position == 0)
-                CounterManager.infoneOpenTab("Admin");
-            else if (position == 1)
-                CounterManager.infoneOpenTab("others");
-        }
-    }
+//    public void increaseCount(boolean status, int position) {
+//        if (!status) {
+//            if (position == 0)
+//                CounterManager.infoneOpenTab("Admin");
+//            else if (position == 1)
+//                CounterManager.infoneOpenTab("Students");
+//            else if (position == 2)
+//                CounterManager.infoneOpenTab("others");
+//            else if (position == 3) {
+//                CounterManager.infoneOpenTab("AnonymousMessages");
+//            }
+//        } else {
+//            if (position == 0)
+//                CounterManager.infoneOpenTab("Admin");
+//            else if (position == 1)
+//                CounterManager.infoneOpenTab("others");
+//        }
+//    }
 
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {

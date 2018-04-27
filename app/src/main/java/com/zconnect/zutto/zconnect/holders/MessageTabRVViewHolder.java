@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.KeyHelper;
 import com.zconnect.zutto.zconnect.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
@@ -58,6 +59,7 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 startChat(chatID,message,senderUID);
+                                CounterManager.anonymousMessageAccept();
                             }
                         });
 
@@ -67,6 +69,7 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 deleteMessage(senderUID,chatID);
+                                CounterManager.anonymousMessageDelete();
                             }
                         });
 

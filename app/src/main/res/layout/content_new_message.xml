@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edittext_newmessage_input"
-        android:hint="Please enter your message here!"
+        android:hint="Please enter your text here!"
         app:met_textColor="@color/primaryText"
         app:met_textColorHint="@color/secondaryText"
         android:layout_marginTop="10dp"/>
