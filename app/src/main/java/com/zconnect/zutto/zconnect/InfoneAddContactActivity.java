@@ -33,6 +33,7 @@ import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -139,11 +140,11 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                 mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        recentsPostPostedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
-                        newContactNumRef.child("PostedBy").child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
-                        //needs to be changed after image thumbnail is put
-                        recentsPostPostedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
-                        newContactNumRef.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                        UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                        recentsPostPostedBy.child("Username").setValue(user.getUsername());
+                        newContactNumRef.child("PostedBy").child("Username").setValue(user.getUsername());
+                        recentsPostPostedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                        newContactNumRef.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
                     }
 
                     @Override
