@@ -3,4 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.zconnect.zutto.zconnect.AddContactActivity">
+    <item
+        android:title="Add Contact"
+        android:id="@+id/action_done"
+        android:icon="@drawable/ic_done_white_24dp"
+        android:orderInCategory="1"
+        android:name="Add Contact"
+        app:showAsAction="collapseActionView|ifRoom" />
 </menu>

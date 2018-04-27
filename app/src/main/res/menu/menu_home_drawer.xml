@@ -19,7 +19,7 @@
         <item
             android:title="My Products"
             android:id="@+id/MyProducts"
-            android:icon="@drawable/ic_local_mall_white_24dp"
+            android:icon="@drawable/ic_local_mall_black_24dp"
             android:name="My Products" />
         <item
             android:title="My Rides"

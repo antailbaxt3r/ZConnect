@@ -140,7 +140,9 @@ public class ProductsTab extends Fragment {
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     try{
                         singleProduct = shot.getValue(Product.class);
-                        productVector.add(singleProduct);
+                        if(!singleProduct.getKey().equals(null)&& !singleProduct.getProductName().equals(null)) {
+                            productVector.add(singleProduct);
+                        }
                     }
                     catch (Exception e){
                         Log.d("Error Alert", e.getMessage());

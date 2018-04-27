@@ -127,12 +127,14 @@ public class TimelineEvents extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 eventsVector.clear();
-                Event singleEvent;
-                for (DataSnapshot shot: dataSnapshot.getChildren()) {
 
+                for (DataSnapshot shot: dataSnapshot.getChildren()) {
+                    Event singleEvent;
                     try {
                         singleEvent = shot.getValue(Event.class);
-                        eventsVector.add(singleEvent);
+                        if(!singleEvent.getKey().equals(null) && !singleEvent.getEventName().equals(null)) {
+                            eventsVector.add(singleEvent);
+                        }
                     }catch (Exception e){}
                 }
                 eventsAdapter.notifyDataSetChanged();

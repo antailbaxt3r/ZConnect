@@ -150,10 +150,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         guestMode = guestPrefs.getBoolean("mode", false);
         mAuth = FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(this);
-        if(!mAuth.getCurrentUser().equals(null))
-        {
+
+        try {
             FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid());
-        }
+        }catch (Exception e){}
 
         View navHeader = navigationView.getHeaderView(0);
         //These initializations **can't** be done by glide
@@ -339,11 +339,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         } else {
             tabNotificationCircle[1].setVisibility(View.GONE);
         }
-        if (TotalOffers > UsersTotalOffers) {
-            tabNotificationCircle[5].setVisibility(View.VISIBLE);
-        } else {
-            tabNotificationCircle[5].setVisibility(View.GONE);
-        }
+//        if (TotalOffers > UsersTotalOffers) {
+//            tabNotificationCircle[5].setVisibility(View.VISIBLE);
+//        } else {
+//            tabNotificationCircle[5].setVisibility(View.GONE);
+//        }
         if (TotalProducts > UsersTotalProducts) {
             tabNotificationCircle[2].setVisibility(View.VISIBLE);
         } else {
@@ -541,8 +541,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
                 if (dataSnapshot.child("TotalEvents").getValue() != null)
                     TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-                if (dataSnapshot.child("TotalOffers").getValue() != null)
-                    TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
+//                if (dataSnapshot.child("TotalOffers").getValue() != null)
+//                    TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
                 if (dataSnapshot.child("TotalProducts").getValue() != null)
                     TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
                 if (dataSnapshot.child("TotalCabpools").getValue() != null)
@@ -565,9 +565,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 if (dataSnapshot.child("TotalEvents").getValue() != null) {
                     UsersTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
                 }
-                if (dataSnapshot.child("TotalOffers").getValue() != null) {
-                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
-                }
+//                if (dataSnapshot.child("TotalOffers").getValue() != null) {
+//                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
+//                }
                 if (dataSnapshot.child("TotalProducts").getValue() != null) {
                     UsersTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
                 }
@@ -844,7 +844,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             mDatabasePopUps.keepSynced(true);
 
             if(mAuth.getCurrentUser()!=null) {
-                mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(mAuth.getCurrentUser().getUid()).child("Stats");
+                mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid()).child("Stats");
                 mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
                 mDatabaseStats.addValueEventListener(TotalStats);
                 mDatabaseUserStats.addValueEventListener(UserStats);
@@ -976,8 +976,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         username = null;
         userEmail = null;
         if (mUser != null) {
-            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Users").child(mUser.getUid()).child("Stats");
-            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Stats");
+            mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid()).child("Stats");
+            mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
         }
         if (mUser != null) {
             username = mUser.getDisplayName();

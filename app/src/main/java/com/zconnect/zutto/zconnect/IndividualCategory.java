@@ -20,6 +20,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -123,7 +124,7 @@ public class IndividualCategory extends BaseActivity {
             protected void populateViewHolder(final ProductViewHolder viewHolder, final Product model, int position) {
 
                 viewHolder.setProductName(model.getProductName());
-                viewHolder.setProductDesc(model.getProductDescription());
+                //viewHolder.setProductDesc(model.getProductDescription());
                 viewHolder.setImage(IndividualCategory.this, model.getProductName(), IndividualCategory.this, model.getImage());
                 viewHolder.setPrice(model.getPrice(),model.getNegotiable());
 //                viewHolder.setSellerName(model.getPostedBy().getUsername());
@@ -180,20 +181,15 @@ public class IndividualCategory extends BaseActivity {
 
                                         if (dataSnapshot.child(model.getKey()).child("UsersReserved").hasChild(mAuth.getCurrentUser().getUid())) {
                                             mDatabase.child(model.getKey()).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
-                                            viewHolder.shortList.setText("Shortlisted");
+                                            viewHolder.shortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
                                             flag = false;
-                                            viewHolder.shortList.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                                            Typeface customfont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
-                                            viewHolder.shortList.setTypeface(customfont);
+
                                         } else {
                                             CounterManager.StoroomShortList(category, model.getKey());
-                                            viewHolder.shortList.setText("Shortlist");
                                             mDatabase.child(model.getKey()).child("UsersReserved")
                                                     .child(mAuth.getCurrentUser().getUid()).setValue(mAuth.getCurrentUser().getUid());
-                                            viewHolder.shortList.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+                                            viewHolder.shortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
                                             flag = false;
-                                            Typeface customfont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
-                                            viewHolder.shortList.setTypeface(customfont);
 
                                             NotificationSender notificationSender=new NotificationSender(model.getKey(),null,null,null,null,null,model.getProductName(),KEY_PRODUCT,false,true,getApplicationContext());
                                             notificationSender.execute();
@@ -237,7 +233,7 @@ public class IndividualCategory extends BaseActivity {
         private DatabaseReference StoreRoom;
         private DatabaseReference Users;
         private FirebaseAuth mAuth;
-        private Button shortList;
+        private ImageView shortList;
         private ImageView post_image;
         private TextView negotiableText;
 
@@ -250,13 +246,13 @@ public class IndividualCategory extends BaseActivity {
             post_image = (ImageView) mView.findViewById(R.id.postImg);
 //            mReserve = (Switch) mView.findViewById(R.id.switch1);
 //            ReserveStatus = (TextView) mView.findViewById(R.id.switch1);
-            shortList = (Button) mView.findViewById(R.id.shortList);
+            shortList = (ImageView) mView.findViewById(R.id.shortList);
 
             communitySP = mView.getContext().getSharedPreferences("communityName", MODE_PRIVATE);
             communityReference = communitySP.getString("communityReference", null);
 
             StoreRoom = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
-            Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
+            Users = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
 
             if (status) {
                 shortList.setVisibility(View.GONE);
@@ -283,22 +279,9 @@ public class IndividualCategory extends BaseActivity {
 //                    mReserve.setOnCheckedChangeListener(null);
                     shortList.setOnClickListener(null);
                     if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-
-                        shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
-                        shortList.setText("Shortlisted");
-                        Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-                        shortList.setTypeface(customfont);
-//                        Reserve.setChecked(true);
-//                        mReserve.setText("Shortlisted");
-                        shortList.setText("Shortlisted");
+                        shortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
                     } else {
-                        shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
-                        shortList.setText("Shortlist");
-                        Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-                        shortList.setTypeface(customfont);
-//                        mReserve.setChecked(false);
-//                        mReserve.setText("Shortlist");
-
+                        shortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
                     }
                     shortList.setOnClickListener(mListener);
 //                    mReserve.setOnCheckedChangeListener(mListener);
@@ -324,14 +307,14 @@ public class IndividualCategory extends BaseActivity {
 
         }
 
-        public void setProductDesc(String productDesc) {
-
-            TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
-            post_desc.setText(productDesc);
-            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-            post_desc.setTypeface(ralewayMedium);
-
-        }
+//        public void setProductDesc(String productDesc) {
+//
+//            TextView post_desc = (TextView) mView.findViewById(R.id.productDescription);
+//            post_desc.setText(productDesc);
+//            Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+//            post_desc.setTypeface(ralewayMedium);
+//
+//        }
 
 
         public void animate(final Activity activity, final String name, String url) {

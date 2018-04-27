@@ -112,7 +112,7 @@ public class ForumsActivity extends Fragment{
         if (!guestMode) {
             mUser = mAuth.getCurrentUser();
 
-            mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(mUser.getUid()).child("Stats");
+            mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid()).child("Stats");
             mFeaturesStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
             mPhoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
 

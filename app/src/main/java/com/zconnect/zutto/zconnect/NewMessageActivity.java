@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +36,7 @@ public class NewMessageActivity extends BaseActivity {
     Boolean a;
     String anonymous;
     DatabaseReference mPostedByDetails;
-
+    ProgressDialog mProgress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +44,7 @@ public class NewMessageActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mProgress = new ProgressDialog(this);
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
@@ -55,6 +58,10 @@ public class NewMessageActivity extends BaseActivity {
         submitlistener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                mProgress.setMessage("Posting Product..");
+                mProgress.show();
+
                 String messageText = messageInput.getText().toString();
                 if(anonymousCheck.isChecked())
                     anonymous = "y";
@@ -83,6 +90,8 @@ public class NewMessageActivity extends BaseActivity {
                         newMessage.child("PostedBy").child("UID").setValue(user.getUserUID());
                         newMessage.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
                         FirebaseMessaging.getInstance().subscribeToTopic(key);
+                        mProgress.dismiss();
+                        finish();
                     }
 
                     @Override

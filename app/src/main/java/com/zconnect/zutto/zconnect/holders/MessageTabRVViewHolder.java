@@ -108,8 +108,8 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void deleteMessage(String senderUID,String chatID){
-        UsersReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("chats").child(chatID).removeValue();
-        UsersReference.child("users").child(senderUID).child("messages").child(chatID).removeValue();
+        UsersReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("messages").child(chatID).removeValue();
+        UsersReference.child("users").child(senderUID).child("chats").child(chatID).removeValue();
         UsersReference.child("chats").child(chatID).removeValue();
 
         NotificationSender notificationSender=new NotificationSender(senderUID,FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), KeyHelper.KEY_MESSAGES_CHAT_DELETE,false,true,mView.getContext());

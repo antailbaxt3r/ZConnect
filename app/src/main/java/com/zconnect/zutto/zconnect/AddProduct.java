@@ -246,7 +246,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
         final String userId = user.getUid();
-        mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users");
+        mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
         final String category = spinner1.getSelectedItem().toString();
         mUsername.addListenerForSingleValueEvent(new ValueEventListener() {

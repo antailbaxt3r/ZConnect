@@ -95,21 +95,12 @@ public class MyRides extends BaseActivity {
                 cabItemFormats.clear();
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     final CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
-                    pool.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-                                cabItemFormats.add(cabItemFormat);
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
+                    if(shot.child("usersListItemFormats").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        cabItemFormats.add(cabItemFormat);
+                    }
                 }
+                       
                 if (cabItemFormats.isEmpty()) {
                     defaultmsg.setVisibility(View.VISIBLE);
                     poolrv.setVisibility(View.INVISIBLE);

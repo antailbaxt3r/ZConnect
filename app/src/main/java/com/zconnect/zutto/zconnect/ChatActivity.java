@@ -259,19 +259,19 @@ public class ChatActivity extends BaseActivity {
                                 }
                             });
                         }else if(type.equals("storeroom")){
-                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_PRODUCT_CHAT,false,true,ChatActivity.this);
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_PRODUCT_CHAT,false,true,ChatActivity.this);
                             notificationSender.execute();
                         }else if(type.equals("post")){
-                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_POST_CHAT,false,true,ChatActivity.this);
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_POST_CHAT,false,true,ChatActivity.this);
                             notificationSender.execute();
                         }else if(type.equals("messages")){
-                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
                             notificationSender.execute();
                         }else if(type.equals("events")){
-                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_EVENTS_CHAT,false,true,ChatActivity.this);
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_EVENTS_CHAT,false,true,ChatActivity.this);
                             notificationSender.execute();
                         }else if(type.equals("cabPool")){
-                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_CAB_POOL_CHAT,false,true,ChatActivity.this);
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_CAB_POOL_CHAT,false,true,ChatActivity.this);
                             notificationSender.execute();
                         }
 

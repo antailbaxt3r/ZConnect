@@ -110,7 +110,7 @@ public class TabbedEvents extends Fragment {
             mAuth = FirebaseAuth.getInstance();
             user = mAuth.getCurrentUser();
 
-            mUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users").child(user.getUid()).child("Stats");
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(user.getUid()).child("Stats");
             mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
             mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

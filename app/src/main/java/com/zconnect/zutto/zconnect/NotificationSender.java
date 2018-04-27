@@ -46,30 +46,34 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
 
     public NotificationSender(String key,String temp,String number,String event,String timeInMilli,String PersonEmail,
                               String Product,String type,boolean checkFrequency,boolean sendToKey,Context ctx){
-        String pName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        if(sendToKey)
-            creator = new RemoteMessage.Builder(key);
-        else
-            creator = new RemoteMessage.Builder(type);
+        try {
+            String pName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+            if (sendToKey)
+                creator = new RemoteMessage.Builder(key);
+            else
+                creator = new RemoteMessage.Builder(type);
 
-        creator.addData("Type", type);
-        creator.addData("Person", pName);//pName == null ? name : pName);
-        creator.addData("Contact", number);
-        creator.addData("Key", key);
-        creator.addData("PersonEmail", PersonEmail);
-        creator.addData("Event", event);
-        creator.addData("TimeInMilli",timeInMilli);
-        creator.addData("Product",Product);
-        creator.addData("Temp",temp);
+            creator.addData("Type", type);
+            creator.addData("Person", pName);//pName == null ? name : pName);
+            creator.addData("Contact", number);
+            creator.addData("Key", key);
+            creator.addData("PersonEmail", PersonEmail);
+            creator.addData("Event", event);
+            creator.addData("TimeInMilli", timeInMilli);
+            creator.addData("Product", Product);
+            creator.addData("Temp", temp);
 
-        this.key=key;
-        this.type=type;
-        this.sendToKey=sendToKey;
-        this.checkFrequency=checkFrequency;
+            this.key = key;
+            this.type = type;
+            this.sendToKey = sendToKey;
+            this.checkFrequency = checkFrequency;
 
-        communitySP = ctx.getSharedPreferences("communityName", MODE_PRIVATE);
-        communityReference = communitySP.getString("communityReference", null);
+            communitySP = ctx.getSharedPreferences("communityName", MODE_PRIVATE);
+            communityReference = communitySP.getString("communityReference", null);
 
+        }catch (Exception e){
+
+        }
     }
 
     @Override

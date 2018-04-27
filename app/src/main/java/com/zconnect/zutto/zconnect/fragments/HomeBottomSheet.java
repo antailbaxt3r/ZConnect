@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,8 +27,8 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
     LinearLayout layoutBottomSheet;
     Button test;
 
-    public HomeBottomSheet () {
-        //Required empty public constructor
+    public HomeBottomSheet(){
+
     }
 
     @Override
@@ -36,8 +37,8 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View bottomSheetView = inflater.inflate(R.layout.content_home_bottomsheet, null);
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View bottomSheetView = inflater.inflate(R.layout.content_home_bottomsheet, null);
         LinearLayout bottomSheetAddEvent = (LinearLayout) bottomSheetView.findViewById(R.id.addEvent_bottomSheet);
         LinearLayout bottomSheetAddProduct = (LinearLayout) bottomSheetView.findViewById(R.id.addProduct_bottomSheet);
         LinearLayout bottomSheetAddMessage = (LinearLayout) bottomSheetView.findViewById(R.id.addMessage_bottomSheet);
@@ -51,6 +52,11 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 Intent intent;
                 intent = new Intent(getContext(), AddEvent.class);
                 startActivity(intent);
+                try {
+                    HomeBottomSheet.this.finalize();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
             }
         };
         View.OnClickListener addProductListener = new View.OnClickListener() {
@@ -60,6 +66,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 Intent intent;
                 intent = new Intent(getContext(), AddProduct.class);
                 startActivity(intent);
+
             }
         };
         View.OnClickListener addMessageListener = new View.OnClickListener() {

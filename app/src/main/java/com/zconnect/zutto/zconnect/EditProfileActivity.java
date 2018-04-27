@@ -50,11 +50,18 @@ import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mabbas007.tagsedittext.TagsEditText;
+
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_OFFERS;
+import static com.zconnect.zutto.zconnect.KeyHelper.KEY_STOREROOM;
 
 public class EditProfileActivity extends BaseActivity implements TagsEditText.TagsEditListener, View.OnClickListener {
 
@@ -388,7 +395,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         } else {
             final DatabaseReference newPost = mUserReference;
             newPost.child("username").setValue(userName);
-            newPost.child("uid").setValue(userEmail);
+            newPost.child("email").setValue(userEmail);
             newPost.child("mobileNumber").setValue(userMobile);
             if (userWhatsapp.length()==0){
                 newPost.child("whatsAppNumber").setValue(" ");
@@ -439,6 +446,20 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 homePush.child("feature").setValue("Users");
                 homePush.child("communityName").setValue(communityName);
                 homePush.child("PostTimeMillis").setValue(postTimeMillis);
+
+                Map<String, Object> taskMap = new HashMap<>();
+                taskMap.put("AddCabPool", true);
+                taskMap.put("AddEvent", true);
+                taskMap.put("EventBoosted", true);
+                taskMap.put("StoreRoom", true);
+                taskMap.put("Offers", true);
+                newPost.child("NotificationChannels").setValue(taskMap);
+
+                FirebaseMessaging.getInstance().subscribeToTopic(KEY_STOREROOM);
+                FirebaseMessaging.getInstance().subscribeToTopic(KEY_EVENT);
+                FirebaseMessaging.getInstance().subscribeToTopic(KEY_OFFERS);
+                FirebaseMessaging.getInstance().subscribeToTopic(KEY_CABPOOL);
+
                 FirebaseMessaging.getInstance().subscribeToTopic(mUser.getUid());
             }
 

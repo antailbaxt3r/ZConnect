@@ -6,6 +6,6 @@
         android:id="@+id/action_storeroom"
         android:orderInCategory="1"
         android:name="Add Location"
-        android:icon="@drawable/ic_add_location_black_24dp"
+        android:icon="@drawable/ic_add_location_white_24dp"
         app:showAsAction="collapseActionView|ifRoom"/>
 </menu>

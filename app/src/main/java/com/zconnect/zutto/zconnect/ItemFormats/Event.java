@@ -26,11 +26,12 @@ public class Event implements Serializable {
             UserID,
             Verified;
     private PostedByDetails PostedBy;
+    
     public Event() {
 
     }
 
-    public Event(double lon, double lat, String EventName, String EventDescription, String EventImage, String EventDate, Long EventTimeMillis, String FormatDate, String Key, String Venue, String UserID, double BoostCount,String Verified, PostedByDetails PostedBy, long PostTimeMillis) {
+    public Event(double lon, double lat, String EventName, String EventDescription, String EventImage, String EventDate, Long EventTimeMillis, String FormatDate, String Key, String Venue, String UserID, double BoostCount, String Verified, PostedByDetails PostedBy, long PostTimeMillis) {
         this.lon = lon;
         this.lat = lat;
         this.EventName = EventName;
@@ -48,32 +49,44 @@ public class Event implements Serializable {
         this.PostTimeMillis = PostTimeMillis;
     }
 
-    public String getVerified(){
-        return Verified;
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
     }
 
     public double getBoostCount() {
         return BoostCount;
     }
 
-    public void setEventDate(String eventDate) {
-        EventDate = eventDate;
-    }
-    public String getEventDate()
-    {
-        return EventDate;
+    public void setBoostCount(double boostCount) {
+        BoostCount = boostCount;
     }
 
-    public Long getEventTimeMillis() {
+    public long getEventTimeMillis() {
         return EventTimeMillis;
     }
 
-    public String getFormatDate() {
-        return FormatDate;
+    public void setEventTimeMillis(long eventTimeMillis) {
+        EventTimeMillis = eventTimeMillis;
     }
 
-    public String getKey() {
-        return Key;
+    public long getPostTimeMillis() {
+        return PostTimeMillis;
+    }
+
+    public void setPostTimeMillis(long postTimeMillis) {
+        PostTimeMillis = postTimeMillis;
     }
 
     public String getEventName() {
@@ -92,29 +105,60 @@ public class Event implements Serializable {
         EventDescription = eventDescription;
     }
 
-    public void setVerified(String verified) {
-        this.Verified = verified;
-    }
-
     public String getEventImage() {
         return EventImage;
     }
 
+    public void setEventImage(String eventImage) {
+        EventImage = eventImage;
+    }
+
+    public String getEventDate() {
+        return EventDate;
+    }
+
+    public void setEventDate(String eventDate) {
+        EventDate = eventDate;
+    }
+
+    public String getFormatDate() {
+        return FormatDate;
+    }
+
+    public void setFormatDate(String formatDate) {
+        FormatDate = formatDate;
+    }
+
+    public String getKey() {
+        return Key;
+    }
+
+    public void setKey(String key) {
+        Key = key;
+    }
+
     public String getVenue() {
-        return Venue.length() == 0 ? "Venue : N/A" : Venue;
+        return Venue;
     }
 
-
-    public double getLon() {
-        return lon;
-    }
-
-    public double getLat() {
-        return lat;
+    public void setVenue(String venue) {
+        Venue = venue;
     }
 
     public String getUserID() {
         return UserID;
+    }
+
+    public void setUserID(String userID) {
+        UserID = userID;
+    }
+
+    public String getVerified() {
+        return Verified;
+    }
+
+    public void setVerified(String verified) {
+        Verified = verified;
     }
 
     public PostedByDetails getPostedBy() {
@@ -125,12 +169,7 @@ public class Event implements Serializable {
         PostedBy = postedBy;
     }
 
-    public long getPostTimeMillis() { return PostTimeMillis; }
-//
-//    public PostedByDetails getPostedBy() {
-//        Log.d("QQQ username", PostedBy.getUsername());
-//        return PostedBy; }
-//    public String getPostedByImageThumb() { return PostedBy.getImageThumb(); }
+
 
 
 }
