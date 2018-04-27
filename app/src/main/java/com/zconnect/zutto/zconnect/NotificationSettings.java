@@ -36,7 +36,7 @@ public class NotificationSettings extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_settings);
         setTitle("Notification Settings");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
