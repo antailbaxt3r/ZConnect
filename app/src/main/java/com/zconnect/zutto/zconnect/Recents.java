@@ -141,6 +141,7 @@ public class Recents extends Fragment {
 
             Intent infoneIntent = new Intent(getContext(), InfoneActivity.class);
             startActivity(infoneIntent);
+            CounterManager.infoneOpen();
         }
         return super.onOptionsItemSelected(item);
     }

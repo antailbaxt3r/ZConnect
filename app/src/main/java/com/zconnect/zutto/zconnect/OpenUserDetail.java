@@ -315,6 +315,7 @@ public class OpenUserDetail extends BaseActivity {
 
                 textMessage.setText(null);
                 Toast.makeText(OpenUserDetail.this, "Encrypted message sent", Toast.LENGTH_SHORT).show();
+                CounterManager.anonymousMessageSend();
             }
             }
         });
@@ -372,7 +373,7 @@ public class OpenUserDetail extends BaseActivity {
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    CounterManager.InfoneCallAfterProfile(mobileNumber);
+//                    CounterManager.InfoneCallAfterProfile(mobileNumber);
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mobileNumber)));
                 }
             });

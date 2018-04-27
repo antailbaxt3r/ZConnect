@@ -152,6 +152,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                     }
                 });
             }
+            CounterManager.infoneAddContact(catId);
             }
         });
 

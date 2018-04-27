@@ -115,6 +115,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveChanges();
+                CounterManager.infoneAddCategory();
             }
         });
 

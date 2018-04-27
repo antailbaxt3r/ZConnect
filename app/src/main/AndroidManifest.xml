@@ -314,7 +314,8 @@
             android:name=".NotificationSettings"
             android:label="@string/title_activity_nitification_settings"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".InfoneActivity"
+        <activity
+            android:name=".InfoneActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".InfoneContactListActivity"

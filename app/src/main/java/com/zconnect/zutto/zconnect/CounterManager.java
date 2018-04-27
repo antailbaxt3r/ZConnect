@@ -16,6 +16,277 @@ public class CounterManager extends BaseActivity{
 
     private final static DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(dateTime.toString());
 
+    public static void infoneOpen() {
+        ref.keepSynced(true);
+        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child("Open").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child("Open").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void infoneAddCategory() {
+        ref.keepSynced(true);
+        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child("CategoryAdded").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child("CategoryAdded").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void infoneOpenCategory(final String categoryID) {
+        ref.keepSynced(true);
+        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child(categoryID).child("Open").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child(categoryID).child("Open").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void infoneAddContact(final String categoryID) {
+        ref.keepSynced(true);
+        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child(categoryID).child("ContactAdded").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child(categoryID).child("ContactAdded").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void infoneOpenContact(final String categoryID, final String contact) {
+        ref.keepSynced(true);
+        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child(categoryID).child(contact).child("Open").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child(categoryID).child(contact).child("Open").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void forumsOpen() {
+        ref.keepSynced(true);
+        ref.child("Forums").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child("Open").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child("Open").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void forumsOpenTab(final String tab) {
+        ref.keepSynced(true);
+        ref.child("Forums").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child(tab).child("Open").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child(tab).child("Open").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void forumsAddCategory(final String tab) {
+        ref.keepSynced(true);
+        ref.child("Forums").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child(tab).child("CategoryAdded").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child(tab).child("CategoryAdded").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void anonymousMessageOpen() {
+        ref.keepSynced(true);
+        ref.child("AnonymousMessage").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child("Open").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child("Open").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void anonymousMessageSend() {
+        ref.keepSynced(true);
+        ref.child("AnonymousMessage").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child("Send").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child("Send").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void anonymousMessageAccept() {
+        ref.keepSynced(true);
+        ref.child("AnonymousMessage").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child("Accept").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child("Accept").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void anonymousMessageDelete() {
+        ref.keepSynced(true);
+        ref.child("AnonymousMessage").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long count = dataSnapshot.child("Delete").getValue(Long.class);
+                if(count == null) {
+                    count = (long) 0;
+                }
+                count = count + 1;
+                dataSnapshot.child("Delete").getRef().setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void publicStatusAdd(final boolean anonymous) {
+        ref.keepSynced(true);
+        ref.child("PublicStatus").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(anonymous)
+                {
+                    Long count = dataSnapshot.child("Anonymous").getValue(Long.class);
+                    if(count == null) {
+                        count = (long) 0;
+                    }
+                    count = count + 1;
+                    dataSnapshot.child("Anonymous").getRef().setValue(count);
+                }
+                else {
+                    Long count = dataSnapshot.child("Known").getValue(Long.class);
+                    if(count == null) {
+                        count = (long) 0;
+                    }
+                    count = count + 1;
+                    dataSnapshot.child("Known").getRef().setValue(count);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public static void eventOpenTab(final String tab) {
         ref.keepSynced(true);
 
@@ -496,30 +767,30 @@ public class CounterManager extends BaseActivity{
     }
 
 
-    public static void infoneOpenTab(final String tab) {
-        ref.keepSynced(true);
-
-        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                {
-                    Long count = dataSnapshot.child(tab).child("Open").getValue(Long.class);
-                    if (count == null)
-                        count = (long) 0;
-                    count = count + 1;
-                    dataSnapshot.child(tab).child("Open").getRef().setValue(count);
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    public static void infoneOpenTab(final String tab) {
+//        ref.keepSynced(true);
+//
+//        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                {
+//                    Long count = dataSnapshot.child(tab).child("Open").getValue(Long.class);
+//                    if (count == null)
+//                        count = (long) 0;
+//                    count = count + 1;
+//                    dataSnapshot.child(tab).child("Open").getRef().setValue(count);
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     public static void RecentsOpen() {
         ref.keepSynced(true);
@@ -546,143 +817,143 @@ public class CounterManager extends BaseActivity{
         });
     }
 
-    public static void infoneOpenCategory(final String tab, final String category) {
-        ref.keepSynced(true);
+//    public static void infoneOpenCategory(final String tab, final String category) {
+//        ref.keepSynced(true);
+//
+//        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                {
+//                    Long count = dataSnapshot.child(tab).child(category).child("Open").getValue(Long.class);
+//                    if (count == null)
+//                        count = (long) 0;
+//                    count = count + 1;
+//                    dataSnapshot.child(tab).child(category).child("Open").getRef().setValue(count);
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
-        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                {
-                    Long count = dataSnapshot.child(tab).child(category).child("Open").getValue(Long.class);
-                    if (count == null)
-                        count = (long) 0;
-                    count = count + 1;
-                    dataSnapshot.child(tab).child(category).child("Open").getRef().setValue(count);
-                }
+//    public static void infoneOpenContact(final String no) {
+//        ref.keepSynced(true);
+//
+//        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                {
+//                    Long count = dataSnapshot.child(no).child("Open").getValue(Long.class);
+//                    if (count == null)
+//                        count = (long) 0;
+//                    count = count + 1;
+//                    dataSnapshot.child(no).child("Open").getRef().setValue(count);
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public static void infoneOpenContact(final String no) {
-        ref.keepSynced(true);
-
-        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                {
-                    Long count = dataSnapshot.child(no).child("Open").getValue(Long.class);
-                    if (count == null)
-                        count = (long) 0;
-                    count = count + 1;
-                    dataSnapshot.child(no).child("Open").getRef().setValue(count);
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
-    public static void InfoneSearchClick() {
-        ref.keepSynced(true);
-
-        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                {
-                    Long count = dataSnapshot.child("SearchClick").getValue(Long.class);
-                    if (count == null)
-                        count = (long) 0;
-                    count = count + 1;
-                    dataSnapshot.child("SearchClick").getRef().setValue(count);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public static void InfoneContactAdded() {
-        ref.keepSynced(true);
-
-        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                {
-                    Long count = dataSnapshot.child("ContactAdd").getValue(Long.class);
-                    if (count == null)
-                        count = (long) 0;
-                    count = count + 1;
-                    dataSnapshot.child("ContactAdd").getRef().setValue(count);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public static void InfoneCallAfterProfile(final String to) {
-        ref.keepSynced(true);
-
-        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                {
-                    Long count = dataSnapshot.child("CallProfile").child(to).getValue(Long.class);
-                    if (count == null)
-                        count = (long) 0;
-                    count = count + 1;
-                    dataSnapshot.child("CallProfile").child(to).getRef().setValue(count);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public static void InfoneCallDirect(final String to) {
-        ref.keepSynced(true);
-
-        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                {
-                    Long count = dataSnapshot.child("CallDirect").child(to).getValue(Long.class);
-                    if (count == null)
-                        count = (long) 0;
-                    count = count + 1;
-                    dataSnapshot.child("CallDirect").child(to).getRef().setValue(count);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    public static void InfoneSearchClick() {
+//        ref.keepSynced(true);
+//
+//        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                {
+//                    Long count = dataSnapshot.child("SearchClick").getValue(Long.class);
+//                    if (count == null)
+//                        count = (long) 0;
+//                    count = count + 1;
+//                    dataSnapshot.child("SearchClick").getRef().setValue(count);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+//
+//    public static void InfoneContactAdded() {
+//        ref.keepSynced(true);
+//
+//        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                {
+//                    Long count = dataSnapshot.child("ContactAdd").getValue(Long.class);
+//                    if (count == null)
+//                        count = (long) 0;
+//                    count = count + 1;
+//                    dataSnapshot.child("ContactAdd").getRef().setValue(count);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+//
+//    public static void InfoneCallAfterProfile(final String to) {
+//        ref.keepSynced(true);
+//
+//        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                {
+//                    Long count = dataSnapshot.child("CallProfile").child(to).getValue(Long.class);
+//                    if (count == null)
+//                        count = (long) 0;
+//                    count = count + 1;
+//                    dataSnapshot.child("CallProfile").child(to).getRef().setValue(count);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+//
+//    public static void InfoneCallDirect(final String to) {
+//        ref.keepSynced(true);
+//
+//        ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                {
+//                    Long count = dataSnapshot.child("CallDirect").child(to).getValue(Long.class);
+//                    if (count == null)
+//                        count = (long) 0;
+//                    count = count + 1;
+//                    dataSnapshot.child("CallDirect").child(to).getRef().setValue(count);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     public static void email(final String to) {
         ref.keepSynced(true);
