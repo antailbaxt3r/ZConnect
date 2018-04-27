@@ -348,14 +348,16 @@ public class NotificationService extends FirebaseMessagingService {
 
                 } else if (type.equals(KEY_FORUMS)) {
 
+
                     final String temp = data.get("Temp").toString();
                     final String key = data.get("Key").toString();
+                    final String forumName = data.get("Event").toString();
                     final String userName = data.get("Product").toString();
                     if (!temp.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
                         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
 
-                        style.bigText(userName + " posted in " + temp)
+                        style.bigText(userName + " posted in " + forumName)
                                 .setBigContentTitle("Forums | ZConnect");
 
                         mBuilder.setSmallIcon(R.drawable.ic_chat_white_24dp)
@@ -363,11 +365,12 @@ public class NotificationService extends FirebaseMessagingService {
                                 .setSound(defaultSoundUri)
                                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.forums))
                                 .setContentTitle("Forums | ZConnect")
-                                .setContentText(userName + " posted in " + temp);
+                                .setContentText(userName + " posted in " + forumName);
 
                         Intent intent = new Intent(NotificationService.this, ChatActivity.class);
                         intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
                         intent.putExtra("type", "forums");
+                        intent.putExtra("name",forumName);
                         intent.putExtra("key", key);
                         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                         mBuilder.setContentIntent(intent1);
@@ -380,27 +383,32 @@ public class NotificationService extends FirebaseMessagingService {
                     final String temp = data.get("Temp").toString();
                     final String key = data.get("Key").toString();
                     final String userName = data.get("Product").toString();
+                    final String userUID = data.get("").toString();
 
-                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-                    NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+                    if (!userUID.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+                        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
 
-                    style.bigText(userName + " joined " + temp).setBigContentTitle("Forums Join | ZConnect");
+                        style.bigText(userName + " joined " + temp).setBigContentTitle("Forums Join | ZConnect");
 
-                    mBuilder.setSmallIcon(R.drawable.ic_chat_white_24dp)
-                            .setStyle(style)
-                            .setSound(defaultSoundUri)
-                            .setColor(ContextCompat.getColor(NotificationService.this, R.color.forums))
-                            .setContentTitle("Forums Join | ZConnect")
-                            .setContentText(userName + " joined " + temp);
+                        mBuilder.setSmallIcon(R.drawable.ic_chat_white_24dp)
+                                .setStyle(style)
+                                .setSound(defaultSoundUri)
+                                .setColor(ContextCompat.getColor(NotificationService.this, R.color.forums))
+                                .setContentTitle("Forums Join | ZConnect")
+                                .setContentText(userName + " joined " + temp);
 
-                    Intent intent = new Intent(NotificationService.this, ChatActivity.class);
-                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                    intent.putExtra("key", key);
-                    PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    mBuilder.setContentIntent(intent1);
+                        Intent intent = new Intent(NotificationService.this, ChatActivity.class);
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                        intent.putExtra("type", "forums");
+                        intent.putExtra("name", temp);
+                        intent.putExtra("key", key);
+                        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mBuilder.setContentIntent(intent1);
 
-                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.notify(2, mBuilder.build());
+                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        mNotificationManager.notify(2, mBuilder.build());
+                    }
 
                 } else if (type.equals(KEY_IMAGE_NOTIF)) {
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);

@@ -181,7 +181,7 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             databaseReference.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),null,null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
+                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
                                             notificationSender.execute();
                                         }
 
@@ -244,7 +244,7 @@ public class ChatActivity extends BaseActivity {
                         message.setMessage("\""+text+"\"");
                         databaseReference.child("Chat").push().setValue(message);
                         if (type.equals("forums")){
-                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_FORUMS,false,true,ChatActivity.this);
+                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,getIntent().getStringExtra("name"),null,null,userItem.getUsername(),KeyHelper.KEY_FORUMS,false,true,ChatActivity.this);
                             notificationSender.execute();
 
                             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
