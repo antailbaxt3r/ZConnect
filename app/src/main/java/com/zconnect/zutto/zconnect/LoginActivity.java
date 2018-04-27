@@ -203,7 +203,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
     public void setCommunity(String communityName){
 
-        Toast.makeText(this, "Set Community", Toast.LENGTH_SHORT).show();
         communityCode = null;
         for (int i=0;i<CommunitiesEmails.size();i++)
         {
