@@ -18,8 +18,9 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark">
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout_app_bar_home"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="32dp"
+            app:tabMode="scrollable"
             android:background="@color/colorPrimary" />
     </android.support.design.widget.AppBarLayout>
 
