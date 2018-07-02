@@ -11,23 +11,47 @@
     tools:showIn="@layout/activity_new_message"
     android:paddingStart="15dp"
     android:paddingEnd="15dp">
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Write your status"
-        android:layout_gravity="center_horizontal"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/primaryText"/>
+        android:layout_marginTop="15dp">
+        <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/avatarCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/avatar_circle"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:roundAsCircle="true" />
+        <TextView
+            android:id="@+id/postedBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/link"
+            android:textStyle="bold"
+            android:text="Somebody"
+            android:layout_marginStart="10dp"/>
+    </LinearLayout>
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edittext_newmessage_input"
-        android:hint="Please enter your text here!"
+        android:hint="What do you want to say?"
+        android:textSize="25dp"
         app:met_textColor="@color/primaryText"
         app:met_textColorHint="@color/secondaryText"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp" />
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:layout_gravity="center"
+            android:id="@+id/add_image_new_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_add_a_photo_black_24"         android:background="@color/transparent"
+            android:tint="@color/secondaryText"/>
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,7 +77,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button_newmessage_submit"
-        android:text="Submit"
+        android:text="Share"
         android:layout_gravity="center_horizontal"
         android:background="@color/messages"
         android:layout_marginTop="10dp"

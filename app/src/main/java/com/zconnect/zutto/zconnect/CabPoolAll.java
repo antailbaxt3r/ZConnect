@@ -76,7 +76,7 @@ public class CabPoolAll extends Fragment {
     String fetchedDate;
     Date fDate;
     FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference, databaseReferenceCopy, databaseReferencePaste;
 
 
     public CabPoolAll() {
@@ -134,6 +134,23 @@ public class CabPoolAll extends Fragment {
         communityReference = communitySP.getString("communityReference", null);
 
         databaseReference = firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
+//        databaseReferenceCopy = firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("archives");
+//        databaseReferencePaste = firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
+
+//        databaseReferenceCopy.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for(DataSnapshot shot : dataSnapshot.getChildren())
+//                {
+//                    copyPaste(databaseReferenceCopy.getRef().child(shot.getKey().toString()).child(shot.getKey().toString()), databaseReferencePaste.getRef().child(shot.getKey().toString()));
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
         allPools= new ValueEventListener() {
             @Override
@@ -282,6 +299,30 @@ public class CabPoolAll extends Fragment {
             });
         }
         return view;
+    }
+
+    private void copyPaste(final DatabaseReference copyRef, final DatabaseReference pasteRef) {
+        copyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                pasteRef.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if(databaseError != null) {
+                            System.out.println("Copy failed");
+                        }
+                        else {
+                            System.out.println("Success");
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
