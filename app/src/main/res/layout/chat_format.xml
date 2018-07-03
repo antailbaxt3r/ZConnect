@@ -58,6 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/primaryText"
+                    android:textIsSelectable="true"
                     android:id="@+id/chat_format_message"
                     android:text="Lorem ipsum dolor set."/>
                 <TextView

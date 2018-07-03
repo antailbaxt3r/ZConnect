@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -84,6 +85,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<ChatRVAdapter.ViewHolder
             String messageText = message.getMessage();
             messageText = messageText.substring(1,messageText.length()-1);
             holder.message.setText(messageText);
+            Linkify.addLinks(holder.message, Linkify.ALL);
         }
     }
 
