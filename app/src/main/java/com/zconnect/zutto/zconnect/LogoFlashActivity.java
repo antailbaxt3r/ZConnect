@@ -43,6 +43,7 @@ public class LogoFlashActivity extends BaseActivity {
     private DatabaseReference mDatabase;
     private View bgColor;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +114,9 @@ public class LogoFlashActivity extends BaseActivity {
 
             }
         }, 2000);
+
+
+
     }
 
 

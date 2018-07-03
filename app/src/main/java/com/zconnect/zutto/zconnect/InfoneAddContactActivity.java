@@ -95,6 +95,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             mProgress.setMessage("Saving Contact");
+            mProgress.setCancelable(false);
             mProgress.show();
 
             String name = nameEt.getText().toString();

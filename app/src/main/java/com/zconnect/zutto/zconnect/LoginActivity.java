@@ -203,12 +203,15 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
     public void setCommunity(String communityName){
 
+
         communityCode = null;
         for (int i=0;i<CommunitiesEmails.size();i++)
         {
             if(CommunitiesEmails.get(i).getEmail().equals(communityName))
             {
                 communityCode = CommunitiesEmails.get(i).getCode();
+
+                Toast.makeText(this, communityCode + " Setting community code " + CommunitiesEmails.get(i).getEmail() , Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -217,6 +220,8 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             SharedPreferences sharedPref2 = getSharedPreferences("communityName", MODE_PRIVATE);
             SharedPreferences.Editor editInfo2 = sharedPref2.edit();
             editInfo2.putString("communityReference", communityCode);
+
+            Toast.makeText(this, communityCode +" community code shared preferance ", Toast.LENGTH_SHORT).show();
             editInfo2.commit();
             FirebaseMessaging.getInstance().subscribeToTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
             Intent i = new Intent(LoginActivity.this,HomeActivity.class);
