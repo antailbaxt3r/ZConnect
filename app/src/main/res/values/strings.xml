@@ -158,6 +158,9 @@
     <string name="tab_text_3">Tab 3</string>
     <string name="title_activity_cab_pool_locations">CabPoolLocations</string>
     <string name="title_activity_forums_people_list">ForumsPeopleList</string>
+    <string name="search_title">Search people</string>
+    <string name="infone_search">Infone Search</string>
+    <string name="search_infone_hint">Search People</string>
 
     <!--test one-->
     <!--<string name="native_ad_unit_id">ca-app-pub-3940256099942544/2177258514</string>-->

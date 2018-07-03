@@ -19,11 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,11 +37,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
-import com.zconnect.zutto.zconnect.ItemFormats.Infone2CategoryModel;
+import com.zconnect.zutto.zconnect.ItemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 
 import java.io.ByteArrayOutputStream;
@@ -79,7 +75,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private TagsEditText userSkillTagsText;
     private MaterialBetterSpinner userInfoneTypeSpinner;
     private Boolean newUser = false;
-    private Vector<Infone2CategoryModel> infoneCategories = new Vector<Infone2CategoryModel>();
+    private Vector<InfoneCategoryModel> infoneCategories = new Vector<InfoneCategoryModel>();
     private Vector<String> infoneCategoriesName = new Vector<String>();
     private ArrayAdapter<String> infoneAdapter;
     private int infoneTypeIndex=-1;
@@ -186,7 +182,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
-                    infoneCategories.add(shot.getValue(Infone2CategoryModel.class));
+                    infoneCategories.add(shot.getValue(InfoneCategoryModel.class));
                     infoneCategoriesName.add(shot.child("name").getValue(String.class));
                 }
                 infoneAdapter.notifyDataSetChanged();

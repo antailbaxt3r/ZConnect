@@ -149,6 +149,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
         newCategoryRef.child("name").setValue(name);
         newCategoryRef.child("admin").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
         newCategoryRef.child("catId").setValue(catId);
+        newCategoryRef.child("totalContacts").setValue(0);
 
         flag1=false;
         flag2=false;
