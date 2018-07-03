@@ -30,9 +30,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.Infone2CategoryModel;
+import com.zconnect.zutto.zconnect.ItemFormats.InfoneContactsRVItem;
 import com.zconnect.zutto.zconnect.adapters.InfoneRVAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class InfoneActivity extends BaseActivity {
 
@@ -113,6 +116,13 @@ public class InfoneActivity extends BaseActivity {
                     recyclerViewCat.setVisibility(View.VISIBLE);
 
                 }
+
+                Collections.sort(categoriesList, new Comparator<Infone2CategoryModel>() {
+                    @Override
+                    public int compare(Infone2CategoryModel cat1, Infone2CategoryModel cat2) {
+                        return cat1.getName().trim().compareToIgnoreCase(cat2.getName().trim());
+                    }
+                });
 
                 infoneRVAdapter = new InfoneRVAdapter(categoriesList, InfoneActivity.this);
                 recyclerViewCat.setAdapter(infoneRVAdapter);

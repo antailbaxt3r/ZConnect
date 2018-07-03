@@ -33,6 +33,10 @@ import com.zconnect.zutto.zconnect.adapters.InfoneContactsRVAdpater;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.BindView;
 
@@ -121,6 +125,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
                         Log.e("tt", "data " + imageThumb);
 
                         phoneNumbs = new ArrayList<>();
+
                         for (DataSnapshot grandChildShot :
                                 childSnapshot.child("phone").getChildren()) {
                             try {
@@ -137,6 +142,14 @@ public class InfoneContactListActivity extends AppCompatActivity {
                         contactsRVItems.add(infoneContactsRVItem);
                     }catch (Exception e){}
                 }
+
+                Collections.sort(contactsRVItems, new Comparator<InfoneContactsRVItem>() {
+                    @Override
+                    public int compare(InfoneContactsRVItem contact1, InfoneContactsRVItem contact2) {
+                        return contact1.getName().trim().compareToIgnoreCase(contact2.getName().trim());
+                    }
+                });
+
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this,
                         contactsRVItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
