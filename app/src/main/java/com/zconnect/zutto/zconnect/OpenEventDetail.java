@@ -153,9 +153,6 @@ public class  OpenEventDetail extends BaseActivity {
                     }
                 });
 
-                NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                mNotificationManager.cancel(event.getEventName(), 1);
-
                 try {
                     if(dataSnapshot.child("BoostersUids").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
@@ -504,14 +501,10 @@ public class  OpenEventDetail extends BaseActivity {
                         CounterManager.eventBoost(event.getKey(), "Details");
 //                        Log.d("SUBSCRIBED TO TOPIC", event.getKey().toString());
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
-                        //Sending Notifications
-                        FirebaseMessaging.getInstance().subscribeToTopic(event.getKey().toString());
                         NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,null,event.getEventName(),null,user.getDisplayName(),null,KEY_EVENT_BOOST,false,true,getApplicationContext());
                         notificationSender.execute();
 
                     }else {
-
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(event.getKey().toString());
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
 
                     }
