@@ -8,13 +8,25 @@ public class ChatItemFormats {
 
     private long timeDate;
     private String uuid,name,message, imageThumb;
+    private String messageType;
+    private String photoURL;
 
-    public ChatItemFormats(long timeDate, String uuid, String name, String message, String imageThumb) {
+    public ChatItemFormats(long timeDate, String uuid, String name, String message, String imageThumb, String messageType) {
         this.timeDate = timeDate;
         this.uuid = uuid;
         this.name = name;
         this.message = message;
         this.imageThumb = imageThumb;
+        this.messageType =messageType;
+    }
+
+    public ChatItemFormats(String photoURL, long timeDate, String uuid, String name, String imageThumb, String messageType) {
+        this.timeDate = timeDate;
+        this.uuid = uuid;
+        this.name = name;
+        this.photoURL = photoURL;
+        this.imageThumb = imageThumb;
+        this.messageType =messageType;
     }
 
     public ChatItemFormats() {
@@ -58,5 +70,21 @@ public class ChatItemFormats {
 
     public void setImageThumb(String imageThumb) {
         this.imageThumb = imageThumb;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    public String getPhotoURL() {
+        return photoURL;
+    }
+
+    public void setPhotoURL(String photoURL) {
+        this.photoURL = photoURL;
     }
 }
