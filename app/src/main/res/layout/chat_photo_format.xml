@@ -43,8 +43,15 @@
                     android:layout_marginStart="5dp"/>
             </LinearLayout>
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+
+            </LinearLayout>
+            <LinearLayout
                 android:id="@+id/chat_format_message_bubble"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/message_box"
@@ -54,12 +61,17 @@
                 android:paddingEnd="15dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/chat_photo"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/primaryText"
-                    android:id="@+id/chat_format_message"
-                    android:text="Lorem ipsum dolor set."/>
+                    android:contentDescription="Product Image"
+                    fresco:viewAspectRatio="1.33"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

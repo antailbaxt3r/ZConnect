@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -87,6 +90,8 @@ public class Recents extends Fragment {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     recentsItemFormats.add(shot.getValue(RecentsItemFormat.class));
                 }
+
+                Collections.reverse(recentsItemFormats);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(INVISIBLE);
             }
@@ -101,8 +106,8 @@ public class Recents extends Fragment {
         // change with data
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
-        productLinearLayout.setReverseLayout(true);
-        productLinearLayout.setStackFromEnd(true);
+//        productLinearLayout.setReverseLayout(true);
+//        productLinearLayout.setStackFromEnd(true);
         recyclerView.setLayoutManager(productLinearLayout);
         //Setup layout manager. VERY IMP ALWAYS
         adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity());
@@ -120,6 +125,8 @@ public class Recents extends Fragment {
     public void onResume() {
         super.onResume();
         queryRef.addValueEventListener(queryResponseListener);
+
+
     }
 
     @Override

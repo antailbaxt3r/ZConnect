@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -64,6 +66,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     private String catImageurl;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -71,6 +74,10 @@ public class InfoneAddCatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle("Add Infone Category");
         setContentView(R.layout.activity_infone_add_cat);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+
         nameEt = (MaterialEditText) findViewById(R.id.et_name_cat_add_infone);
         addImage = (SimpleDraweeView) findViewById(R.id.image_add_cat_infone);
         saveButton = (Button) findViewById(R.id.save_image_add_cat_infone);
@@ -108,6 +115,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.setMessage("Creating category");
                 saveChanges();
                 CounterManager.infoneAddCategory();
             }
@@ -133,7 +141,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
     }
 
     private void saveChanges() {
-
+        progressDialog.show();
         String name = nameEt.getText().toString();
 
         catId = databaseReferenceInfone.child("categoriesInfo").push().getKey();
@@ -141,6 +149,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
         newCategoryRef.child("name").setValue(name);
         newCategoryRef.child("admin").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
         newCategoryRef.child("catId").setValue(catId);
+        newCategoryRef.child("totalContacts").setValue(0);
 
         flag1=false;
         flag2=false;
@@ -189,6 +198,7 @@ public class InfoneAddCatActivity extends AppCompatActivity {
                     InfoneAddContactActivity.class);
             addContactIntent.putExtra("catId", catId);
             startActivity(addContactIntent);
+            progressDialog.dismiss();
             finish();
         }
     }

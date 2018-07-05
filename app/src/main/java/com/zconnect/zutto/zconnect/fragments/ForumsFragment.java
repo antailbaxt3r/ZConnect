@@ -17,7 +17,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.InfoneCategories;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.ForumCategoriesRVAdapter;
 import com.zconnect.zutto.zconnect.R;
@@ -32,7 +31,6 @@ import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 public class ForumsFragment extends Fragment {
     RecyclerView recyclerView;
     String currenttab;
-    private ArrayList<InfoneCategories> infoneCategories = new ArrayList<>();
     private ForumCategoriesRVAdapter adapter;
     DatabaseReference tabsCategories;
     Vector<forumCategoriesItemFormat> forumCategories = new Vector<forumCategoriesItemFormat>();

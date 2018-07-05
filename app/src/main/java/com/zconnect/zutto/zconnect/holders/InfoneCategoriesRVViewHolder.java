@@ -12,17 +12,19 @@ import com.zconnect.zutto.zconnect.R;
  * Created by tanmay on 24/3/18.
  */
 
-public class Infone2RVViewHolder extends RecyclerView.ViewHolder {
+public class InfoneCategoriesRVViewHolder extends RecyclerView.ViewHolder {
 
     public TextView nametv;
     public SimpleDraweeView catImage;
     public LinearLayout linearLayout;
+    public TextView totalContactstv;
 
-    public Infone2RVViewHolder(View itemView) {
+    public InfoneCategoriesRVViewHolder(View itemView) {
         super(itemView);
 
         nametv = (TextView) itemView.findViewById(R.id.tv_name_infone);
         catImage = (SimpleDraweeView) itemView.findViewById(R.id.image_infone_cat);
         linearLayout = (LinearLayout) itemView.findViewById(R.id.ll_cat_infone);
+        totalContactstv = (TextView) itemView.findViewById(R.id.tv_total_contacts_infone);
     }
 }

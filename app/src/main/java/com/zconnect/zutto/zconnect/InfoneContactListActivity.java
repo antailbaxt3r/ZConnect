@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.SearchManager;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -8,13 +10,16 @@ import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -33,6 +38,10 @@ import com.zconnect.zutto.zconnect.adapters.InfoneContactsRVAdpater;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.BindView;
 
@@ -54,6 +63,8 @@ public class InfoneContactListActivity extends AppCompatActivity {
     private String catName, catImageurl;
     private String catAdmin;
     ProgressBar progressBar;
+
+    int totalContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +115,14 @@ public class InfoneContactListActivity extends AppCompatActivity {
             }
         });
 
+        setAdapter("lite",false);
+
+        Log.e(TAG, "data :" + catId);
+    }
+
+    private  void setAdapter(final String queryString, final Boolean search) {
+
+
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -113,6 +132,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
                         dataSnapshot.getChildren()) {
 
                     try {
+
                         String name = childSnapshot.child("name").getValue(String.class);
                         String imageThumb = childSnapshot.child("thumbnail").getValue(String.class);
                         String infoneUserId = childSnapshot.getKey();
@@ -121,6 +141,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
                         Log.e("tt", "data " + imageThumb);
 
                         phoneNumbs = new ArrayList<>();
+
                         for (DataSnapshot grandChildShot :
                                 childSnapshot.child("phone").getChildren()) {
                             try {
@@ -131,12 +152,37 @@ public class InfoneContactListActivity extends AppCompatActivity {
                             Log.e("tt", "data " + phoneNumbs.toString());
                         }
 
-                        //Log.e("tt", "data"+phoneNumbs.toString());
 
-                        infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
-                        contactsRVItems.add(infoneContactsRVItem);
+                        if (search){
+                            if(name.toLowerCase().trim().contains(queryString.toLowerCase())){
+                                infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
+                                contactsRVItems.add(infoneContactsRVItem);
+                                if(contactsRVItems.size()>7){
+                                    break;
+                                }
+                            }
+
+
+                        }else {
+                            infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
+                            contactsRVItems.add(infoneContactsRVItem);
+                        }
+
+
+                        totalContacts = contactsRVItems.size();
                     }catch (Exception e){}
                 }
+
+                if(!search || queryString.trim().equals("")){
+                    Collections.sort(contactsRVItems, new Comparator<InfoneContactsRVItem>() {
+                        @Override
+                        public int compare(InfoneContactsRVItem contact1, InfoneContactsRVItem contact2) {
+                            return contact1.getName().trim().compareToIgnoreCase(contact2.getName().trim());
+                        }
+                    });
+                }
+
+
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this,
                         contactsRVItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
@@ -152,9 +198,8 @@ public class InfoneContactListActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
-        databaseReferenceList.addValueEventListener(listener);
+        databaseReferenceList.addListenerForSingleValueEvent(listener);
 
-        Log.e(TAG, "data :" + catId);
     }
 
     private void addContact() {
@@ -163,6 +208,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
         addContactIntent.putExtra("catId", catId);
         addContactIntent.putExtra("catImageURL",catImageurl);
         addContactIntent.putExtra("catName", catName);
+        addContactIntent.putExtra("totalContacts",totalContacts);
         startActivity(addContactIntent);
 
     }
@@ -206,8 +252,50 @@ public class InfoneContactListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_infone_contact_list, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                setAdapter(query,true);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                setAdapter(newText,true);
+                return false;
+            }
+        });
+
+
+        MenuItem menuItem = menu.findItem(R.id.search);
+        MenuItemCompat.setOnActionExpandListener(menuItem,new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                //Toast.makeText(InfoneContactListActivity.this, "Expanded", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                setAdapter("lite",false);
+                //Toast.makeText(InfoneContactListActivity.this, "Collapsed", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
         return true;
+
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -219,6 +307,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
 }

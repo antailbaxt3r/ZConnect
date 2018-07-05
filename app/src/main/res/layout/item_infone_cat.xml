@@ -14,13 +14,35 @@
         fresco:actualImageScaleType="centerCrop"
         fresco:roundAsCircle="true"/>
 
-    <TextView
-        android:id="@+id/tv_name_infone"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:textColor="@color/primaryText"
-        android:text="Category Name"
-        android:textSize="18sp"/>
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
+            <TextView
+                android:id="@+id/tv_name_infone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:textColor="@color/primaryText"
+                android:text="Category Name"
+                android:textSize="18sp"/>
+            <TextView
+                android:id="@+id/tv_total_contacts_infone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10sp"
+                android:text="Total Contacts"
+                android:textColor="@color/grey700"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
 
 </LinearLayout>

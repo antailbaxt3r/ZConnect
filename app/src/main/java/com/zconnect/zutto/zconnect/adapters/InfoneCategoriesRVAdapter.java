@@ -9,9 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.holders.Infone2RVViewHolder;
+import com.zconnect.zutto.zconnect.holders.InfoneCategoriesRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
-import com.zconnect.zutto.zconnect.ItemFormats.Infone2CategoryModel;
+import com.zconnect.zutto.zconnect.ItemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.R;
 
 import java.util.ArrayList;
@@ -20,26 +20,26 @@ import java.util.ArrayList;
  * Created by tanmay on 24/3/18.
  */
 
-public class InfoneRVAdapter extends RecyclerView.Adapter<Infone2RVViewHolder> {
+public class InfoneCategoriesRVAdapter extends RecyclerView.Adapter<InfoneCategoriesRVViewHolder> {
 
-    private ArrayList<Infone2CategoryModel> categoriesList;
+    private ArrayList<InfoneCategoryModel> categoriesList;
     private Context context;
 
-    public InfoneRVAdapter(ArrayList<Infone2CategoryModel> categoriesList, Context context) {
+    public InfoneCategoriesRVAdapter(ArrayList<InfoneCategoryModel> categoriesList, Context context) {
         this.categoriesList = categoriesList;
         this.context = context;
     }
 
     @Override
-    public Infone2RVViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public InfoneCategoriesRVViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.item_infone_cat, parent, false);
 
-        return new Infone2RVViewHolder(view);
+        return new InfoneCategoriesRVViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(Infone2RVViewHolder holder, final int position) {
+    public void onBindViewHolder(InfoneCategoriesRVViewHolder holder, final int position) {
 
         holder.nametv.setText(categoriesList.get(position).getName());
 
@@ -47,6 +47,12 @@ public class InfoneRVAdapter extends RecyclerView.Adapter<Infone2RVViewHolder> {
                 !categoriesList.get(position).getImageurl().equalsIgnoreCase("default")) {
             Uri imageUri = Uri.parse(categoriesList.get(position).getImageurl());
             holder.catImage.setImageURI(imageUri);
+        }
+
+        try{
+            holder.totalContactstv.setText(categoriesList.get(position).getTotalContacts() + " members");
+        }catch (Exception e){
+
         }
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {

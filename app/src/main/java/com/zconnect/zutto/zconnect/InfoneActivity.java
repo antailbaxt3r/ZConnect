@@ -1,26 +1,26 @@
 package com.zconnect.zutto.zconnect;
 
-import android.content.DialogInterface;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
 import android.widget.Toast;
 
 
@@ -29,19 +29,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.Infone2CategoryModel;
-import com.zconnect.zutto.zconnect.adapters.InfoneRVAdapter;
+import com.zconnect.zutto.zconnect.ItemFormats.InfoneCategoryModel;
+import com.zconnect.zutto.zconnect.adapters.InfoneCategoriesRVAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class InfoneActivity extends BaseActivity {
 
     RecyclerView recyclerViewCat;
     FloatingActionButton fabCatAdd;
-    ArrayList<Infone2CategoryModel> categoriesList = new ArrayList();
+    ArrayList<InfoneCategoryModel> categoriesList = new ArrayList();
     DatabaseReference databaseReferenceCat;
     ValueEventListener listener;
-    InfoneRVAdapter infoneRVAdapter;
+    InfoneCategoriesRVAdapter infoneCategoriesRVAdapter;
     private static final int REQUEST_PHONE_CALL = 1;
     private SharedPreferences communitySP;
     public String communityReference;
@@ -78,6 +80,7 @@ public class InfoneActivity extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
+
         setActionBarTitle("Infone");
 
         progressBar = (ProgressBar) findViewById(R.id.infone2_progress_circle);
@@ -103,19 +106,31 @@ public class InfoneActivity extends BaseActivity {
                 categoriesList = new ArrayList<>();
                 for (DataSnapshot childSnapShot :
                         dataSnapshot.getChildren()) {
-                    String name = childSnapShot.child("name").getValue(String.class);
-                    String imageurl = childSnapShot.child("imageurl").getValue(String.class);
-                    String admin = childSnapShot.child("admin").getValue(String.class);
-                    String catId = childSnapShot.getKey();
-                    Infone2CategoryModel infone2CategoryModel = new Infone2CategoryModel(name, imageurl, admin, catId);
-                    categoriesList.add(infone2CategoryModel);
+                    try {
+                        String name = childSnapShot.child("name").getValue(String.class);
+                        String imageurl = childSnapShot.child("imageurl").getValue(String.class);
+                        String admin = childSnapShot.child("admin").getValue(String.class);
+                        String catId = childSnapShot.getKey();
+                        int totalContacts = childSnapShot.child("totalContacts").getValue(Integer.class);
+                        String thumbImageurl = childSnapShot.child("thumbnail").getValue(String.class);
+                        InfoneCategoryModel infoneCategoryModel = new InfoneCategoryModel(name, imageurl, admin, catId,thumbImageurl,totalContacts);
+                        categoriesList.add(infoneCategoryModel);
+                    }catch (Exception e){}
+
                     progressBar.setVisibility(View.GONE);
                     recyclerViewCat.setVisibility(View.VISIBLE);
 
                 }
 
-                infoneRVAdapter = new InfoneRVAdapter(categoriesList, InfoneActivity.this);
-                recyclerViewCat.setAdapter(infoneRVAdapter);
+                Collections.sort(categoriesList, new Comparator<InfoneCategoryModel>() {
+                    @Override
+                    public int compare(InfoneCategoryModel cat1, InfoneCategoryModel cat2) {
+                        return cat1.getName().trim().compareToIgnoreCase(cat2.getName().trim());
+                    }
+                });
+
+                infoneCategoriesRVAdapter = new InfoneCategoriesRVAdapter(categoriesList, InfoneActivity.this);
+                recyclerViewCat.setAdapter(infoneCategoriesRVAdapter);
 
             }
 
@@ -152,7 +167,45 @@ public class InfoneActivity extends BaseActivity {
 
     }
 
-//    private void addDialog() {
+    //    private void addDialog() {
+//
+//        Log.e("tt", "data fab");
+//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+//        alertDialog.setTitle("Add new infone Category");
+//        //alertDialog.setMessage("Category name");
+//
+//        final EditText newCategoryET = new EditText(this);
+//        newCategoryET.setInputType(InputType.TYPE_CLASS_TEXT);
+//        newCategoryET.setHint("Category name");
+//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.MATCH_PARENT);
+//        newCategoryET.setLayoutParams(lp);
+//        alertDialog.setView(newCategoryET);
+//        alertDialog.setIcon(R.drawable.ic_add_white_36dp);
+//
+//        alertDialog.setPositiveButton("YES",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                        final String newCat = newCategoryET.getText().toString();
+//
+//                        if (!newCat.isEmpty()) {
+//                            Toast.makeText(InfoneActivity.this, "Add a contact in your new category",
+//                                    Toast.LENGTH_SHORT).show();
+//                            Intent addContactIntent = new Intent(InfoneActivity.this,
+//                                    InfoneAddContactActivity.class);
+//                            addContactIntent.putExtra("categoryName", newCat);
+//                            startActivity(addContactIntent);
+//                        }
+//                    }
+//                });
+//
+//        alertDialog.show();
+//
+//    }
+
+    //    private void addDialog() {
 //
 //        Log.e("tt", "data fab");
 //        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);

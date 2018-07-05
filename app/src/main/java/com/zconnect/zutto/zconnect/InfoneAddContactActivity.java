@@ -42,6 +42,7 @@ import java.io.IOException;
 public class InfoneAddContactActivity extends AppCompatActivity {
 
     String catId,catName,catImageURL;
+    int totalContacts;
     private SharedPreferences communitySP;
     public String communityReference;
     DatabaseReference databaseReferenceInfone;
@@ -62,6 +63,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private DatabaseReference newContactNumRef;
     private DatabaseReference mPostedByDetails;
+    private DatabaseReference categoryInfo;
     private ProgressDialog mProgress;
 
     @Override
@@ -75,6 +77,9 @@ public class InfoneAddContactActivity extends AppCompatActivity {
         catId = getIntent().getExtras().getString("catId");
         catName = getIntent().getExtras().getString("catName");
         catImageURL = getIntent().getExtras().getString("catImageURL");
+        totalContacts = getIntent().getIntExtra("totalContacts",0);
+
+
 
         nameEt = (MaterialEditText) findViewById(R.id.name_et_infone_add);
         phone1Et = (MaterialEditText) findViewById(R.id.phone_et_infone_add);
@@ -95,6 +100,7 @@ public class InfoneAddContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             mProgress.setMessage("Saving Contact");
+            mProgress.setCancelable(false);
             mProgress.show();
 
             String name = nameEt.getText().toString();
@@ -113,8 +119,12 @@ public class InfoneAddContactActivity extends AppCompatActivity {
                 key = databaseReferenceInfone.child("numbers").push().getKey();
                 newContactNumRef = databaseReferenceInfone.child("numbers").child(key);
                 newContactRef = databaseReferenceInfone.child("categories").child(catId).child(key);
+                categoryInfo = databaseReferenceInfone.child("categoriesInfo").child(catId);
 
                 Log.e(TAG, "data phone:" + key + " " + phoneNum1);
+
+                //Inside Categories Info
+                categoryInfo.child("totalContacts").setValue(totalContacts + 1);
 
                 //Inside Categories
                 newContactRef.child("name").setValue(name);
