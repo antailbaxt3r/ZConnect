@@ -4,7 +4,23 @@
     android:layout_height="match_parent"
     tools:context="com.zconnect.zutto.zconnect.fragments.TimelineEvents">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/noevents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="No Events Available"
+            android:textSize="20dp" />
+    </RelativeLayout>
+
     <View
+        android:id="@+id/line_view"
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@color/secondaryText"

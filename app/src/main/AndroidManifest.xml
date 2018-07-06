@@ -349,6 +349,10 @@
             android:label="@string/title_activity_forums_people_list"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity
+            android:name=".Shortlist"
+            android:label="@string/title_storeroom_shortlist"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

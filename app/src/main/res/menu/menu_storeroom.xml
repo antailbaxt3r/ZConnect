@@ -6,6 +6,12 @@
         android:id="@+id/action_storeroom"
         android:orderInCategory="100"
         android:name="My Products"
-
-        app:showAsAction="collapseActionView|ifRoom" />
+        app:showAsAction="never" />
+    <item
+        android:title="Shortlist"
+        android:id="@+id/action_storeroom_shortlist"
+        android:orderInCategory="20"
+        android:name="Shortlist"
+        android:icon="@drawable/ic_bookmark_border_white_24dp"
+        app:showAsAction="never" />
 </menu>

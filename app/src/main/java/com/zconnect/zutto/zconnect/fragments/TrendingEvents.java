@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +35,7 @@ public class TrendingEvents extends Fragment {
     private Vector<Event> eventsVector = new Vector<Event>();
     private ValueEventListener mListener;
     private ProgressBar progressBar;
+    private TextView noevents;
 
     public TrendingEvents() {
         // Required empty public constructor
@@ -98,6 +100,8 @@ public class TrendingEvents extends Fragment {
         mDatabase.keepSynced(true);
         queryRef.keepSynced(true);
 
+        noevents = (TextView) view.findViewById(R.id.noevents);
+
 
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_trending_events_progress_circle);
         mEventList = (RecyclerView) view.findViewById(R.id.eventList);
@@ -110,19 +114,26 @@ public class TrendingEvents extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 eventsVector.clear();
-
+                Boolean flag = false;
                 for (DataSnapshot shot: dataSnapshot.getChildren()) {
                     Event singleEvent;
                     try {
                         singleEvent = shot.getValue(Event.class);
                         if(!singleEvent.getKey().equals(null) && !singleEvent.getEventName().equals(null)) {
                             eventsVector.add(singleEvent);
+                            flag=true;
                         }
                     }catch (Exception e){}
                 }
                 progressBar.setVisibility(View.GONE);
                 mEventList.setVisibility(View.VISIBLE);
                 eventsAdapter.notifyDataSetChanged();
+                if (flag){
+                    noevents.setVisibility(View.GONE);
+                } else {
+                    noevents.setVisibility(View.VISIBLE);
+                }
+
             }
 
             @Override

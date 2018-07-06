@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,6 +45,7 @@ public class CabPooling extends BaseActivity {
     Object Source,Destination,Time_From,Time_To;
     ArrayList<String> locations= new ArrayList<String>();
     ArrayAdapter<String> locationsSpinnerAdapter;
+    private ProgressDialog progressDialog;
 
     private DatabaseReference databaseReferenceCabPool;
 
@@ -78,6 +80,10 @@ public class CabPooling extends BaseActivity {
         }
         setActionBarTitle("Search Pools");
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading details..");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         databaseReferenceCabPool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations");
 
         databaseReferenceCabPool.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -91,6 +97,9 @@ public class CabPooling extends BaseActivity {
                     }
                 }
                 locationsSpinnerAdapter.notifyDataSetChanged();
+                if(progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
             }
 
             @Override

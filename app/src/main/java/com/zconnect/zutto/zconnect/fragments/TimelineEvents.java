@@ -58,6 +58,8 @@ public class TimelineEvents extends Fragment {
     private EventsAdapter eventsAdapter;
     private Vector<Event> eventsVector = new Vector<Event>();
     private ValueEventListener mListener;
+    private View lineView;
+    private TextView noevents;
 
     public TimelineEvents() {
         // Required empty public constructor
@@ -123,21 +125,32 @@ public class TimelineEvents extends Fragment {
         mDatabase.keepSynced(true);
         queryRef.keepSynced(true);
 
+        noevents = (TextView) view.findViewById(R.id.noevents);
+        lineView = (View) view.findViewById(R.id.line_view);
+
         mListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 eventsVector.clear();
-
+                Boolean flag = false;
                 for (DataSnapshot shot: dataSnapshot.getChildren()) {
                     Event singleEvent;
                     try {
                         singleEvent = shot.getValue(Event.class);
                         if(!singleEvent.getKey().equals(null) && !singleEvent.getEventName().equals(null)) {
                             eventsVector.add(singleEvent);
+                            flag=true;
                         }
                     }catch (Exception e){}
                 }
                 eventsAdapter.notifyDataSetChanged();
+                if (flag){
+                    noevents.setVisibility(View.GONE);
+                    lineView.setVisibility(View.VISIBLE);
+                } else {
+                    noevents.setVisibility(View.VISIBLE);
+                    lineView.setVisibility(View.GONE);
+                }
             }
 
             @Override

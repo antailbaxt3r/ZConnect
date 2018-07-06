@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -57,6 +59,7 @@ public class AddCabPool extends BaseActivity {
     private long postTimeMillis;
     private ArrayList<String> locations= new ArrayList<String>();
     private ArrayAdapter<String> locationsSpinnerAdapter;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,11 @@ public class AddCabPool extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading details..");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         databaseReferenceCabPool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations");
 
         databaseReferenceCabPool.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -426,8 +434,12 @@ public class AddCabPool extends BaseActivity {
                 }
             }
 
+            progressDialog.dismiss();
         } catch (Exception e) {
 
+            progressDialog.dismiss();
+            finish();
+            Toast.makeText(this, "Network Problem", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -186,9 +186,13 @@ public class CapPoolSearchList extends BaseActivity {
                 treeMap_string.clear();
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
+                    try {
 
-                    cabItemFormatVector.add(cabItemFormat);
+                        CabItemFormat cabItemFormat = shot.getValue(CabItemFormat.class);
+                        if(!cabItemFormat.getDestination().equals(null)&& !cabItemFormat.getSource().equals(null)) {
+                            cabItemFormatVector.add(cabItemFormat);
+                        }
+                    }catch (Exception e){}
                 }
 
                 Double Av_asked;
@@ -205,7 +209,7 @@ public class CapPoolSearchList extends BaseActivity {
                 }
 
                 for(int i=0;i<cabItemFormatVector.size();i++) {
-                  //  Log.e("ABC",String.valueOf(cabItemFormatVector.get(i).getSource()));
+                  //  Locg.e("ABC",String.valueOf(cabItemFormatVector.get(i).getSource()));
 
                     if (hasSource) {
                         if (equalSource(i, source)) {

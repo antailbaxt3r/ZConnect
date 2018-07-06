@@ -7,17 +7,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -40,7 +44,7 @@ import java.util.Vector;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class ReservedTab extends Fragment {
+public class Shortlist extends BaseActivity {
 
     String reserveString;
     Query query;
@@ -53,6 +57,7 @@ public class ReservedTab extends Fragment {
     private TextView errorMessage;
     private TextView noitems;
 
+    Toolbar mActionBarToolbar;
     private SharedPreferences communitySP;
     public String communityReference;
 
@@ -61,29 +66,54 @@ public class ReservedTab extends Fragment {
     private ValueEventListener mListener;
     private Product singleProduct;
 
-    public ReservedTab() {
+    public Shortlist() {
         // Required empty public constructor
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_reserved_tab, container, false);
-        GridLayoutManager productGridLayout = new GridLayoutManager(getContext(), 2);
-        noitems = (TextView) view.findViewById(R.id.noitems);
+    public void onCreate(Bundle savedInstanceState) {
 
-        mProductList = (RecyclerView) view.findViewById(R.id.reservedProductList);
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.fragment_reserved_tab);
+
+        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(mActionBarToolbar);
+
+        if (mActionBarToolbar != null) {
+            mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+
+
+
+        GridLayoutManager productGridLayout = new GridLayoutManager(this, 2);
+        noitems = (TextView) findViewById(R.id.noitems);
+
+        mProductList = (RecyclerView) findViewById(R.id.reservedProductList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
-        productAdapter = new ProductsRVAdapter(productVector,getContext());
+        productAdapter = new ProductsRVAdapter(productVector,this);
         mProductList.setAdapter(productAdapter);
 
-
-        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
-
 
 
         mReservedProducts = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
@@ -126,9 +156,6 @@ public class ReservedTab extends Fragment {
             }
         };
 
-
-
-        return view;
     }
 
     @Override
@@ -309,4 +336,12 @@ public class ReservedTab extends Fragment {
 ////        }
 //
 //    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//        Intent eventsIntent=new Intent(OpenEventDetail.this,TrendingEvents.class);
+//        startActivity(eventsIntent);
+        finish();
+    }
 }

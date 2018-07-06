@@ -49,7 +49,7 @@ public class TabStoreRoom extends Fragment {
                 if (pos == 0)
                     CounterManager.StoreroomOpenTab("ProductsTab");
                 else if (pos == 1)
-                    CounterManager.StoreroomOpenTab("ReservedTab");
+                    CounterManager.StoreroomOpenTab("Shortlist");
                 else
                     CounterManager.StoreroomOpenTab("CategoriesTab");
             }
@@ -95,6 +95,8 @@ public class TabStoreRoom extends Fragment {
 
         if (id == R.id.action_storeroom) {
             startActivity(new Intent(getContext(), MyProducts.class));
+        } else if (id == R.id.action_storeroom_shortlist){
+            startActivity(new Intent(getContext(), Shortlist.class));
         }
         //noinspection SimplifiableIfStatement
 
@@ -119,10 +121,10 @@ public class TabStoreRoom extends Fragment {
                 case 0:
                     ProductsTab productsTab = new ProductsTab();
                     return productsTab;
+//                case 1:
+//                    Shortlist reservedTab = new Shortlist();
+//                    return reservedTab;
                 case 1:
-                    ReservedTab reservedTab = new ReservedTab();
-                    return reservedTab;
-                case 2:
                     CategoriesTab categoriesTab = new CategoriesTab();
                     return categoriesTab;
                 default:
@@ -152,7 +154,7 @@ public class TabStoreRoom extends Fragment {
             SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
             Boolean status = sharedPref.getBoolean("mode", false);
             if(!status){
-                return 3;
+                return 2;
             }else {
                 return 2;
             }
@@ -166,9 +168,9 @@ public class TabStoreRoom extends Fragment {
                 switch (position) {
                     case 0:
                         return "Products";
+//                    case 1:
+//                        return "Shortlist";
                     case 1:
-                        return "Shortlist";
-                    case 2:
                         return "Categories";
                 }
             }else {

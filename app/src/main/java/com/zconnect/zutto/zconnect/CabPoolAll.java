@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,8 +27,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.instacart.library.truetime.TrueTime;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 
+import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,26 +41,17 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+
 import static android.content.Context.MODE_PRIVATE;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CabPoolAll#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CabPoolAll extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     FirebaseAuth mAuth;
     FirebaseUser user;
     DatabaseReference mUserStats, mFeaturesStats;
     String TotalEvents;
 
-    // TODO: Rename and change types of parameters
     RecyclerView recyclerView;
     CabPoolRVAdapter cabPoolRVAdapter;
     TreeMap<String, CabItemFormat> treeMap = new TreeMap<>();
@@ -92,6 +88,31 @@ public class CabPoolAll extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        try {
+
+            int SDK_INT = android.os.Build.VERSION.SDK_INT;
+            if (SDK_INT > 8)
+            {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                        .permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+                //your codes here
+                TrueTime.build().initialize();
+
+                Date dateTime = TrueTime.now();
+                java.sql.Timestamp timeStampDate = new Timestamp(dateTime.getTime());
+                Toast.makeText(getContext(), "This " + timeStampDate.toString(), Toast.LENGTH_SHORT).show();
+
+            }
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
