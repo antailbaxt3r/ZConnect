@@ -21,8 +21,7 @@
 
             android:id="@+id/toolbar_app_bar_home"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" />
+            android:layout_height="wrap_content" />
         </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
@@ -67,7 +66,7 @@
                     android:layout_marginEnd="5dp"
                     android:layout_weight=".1"
                     android:layout_height="wrap_content" />
-                <com.rengwuxian.materialedittext.MaterialEditText
+                <EditText
                     android:id="@+id/typer"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_open_event_detail"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:theme="@style/AppTheme.NoActionBar"
     tools:context="com.zconnect.zutto.zconnect.OpenEventDetail">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="0dp"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
 
@@ -18,15 +18,12 @@
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="0dp"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_app_bar_home"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlways">
+                android:layout_height="wrap_content">
                 <!--app:popupTheme="@style/AppTheme.PopupOverlay">-->
 
             </android.support.v7.widget.Toolbar>
@@ -34,27 +31,24 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:weightSum="1">
+            android:layout_height="0dp"
+            android:layout_weight="1">
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight=".9">
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/od_EventImage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:viewAspectRatio="1.33"
                         android:adjustViewBounds="true"
-                        android:background="@drawable/input_outline"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/defaultevent" />
+                        android:background="@color/grey500" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -110,41 +104,81 @@
                         android:linksClickable="true"
                         android:autoLink="web" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="bottom"
+                        android:layout_margin="10dp"
+                        android:weightSum="1">
+                        <Button
+                            android:id="@+id/boostBtn"
+                            android:layout_width="0dp"
+                            android:layout_weight=".5"
+                            android:layout_height="match_parent"
+                            android:text="Boost"
+                            android:background="@drawable/curvedradiusbutton_sr"
+                            android:layout_marginRight="5dp"
+                            android:textColor="@color/white"/>
+                        <Button
+                            android:id="@+id/setReminder"
+                            android:layout_width="0dp"
+                            android:layout_weight=".5"
+                            android:layout_height="match_parent"
+                            android:text="Set Reminder"
+                            android:background="@drawable/curveradiusgoogle"
+                            android:layout_marginLeft="5dp"
+                            android:textColor="@color/white"/>
+                    </LinearLayout>
+
                 </LinearLayout>
-
-
             </ScrollView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chatLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/message_box"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_margin="5dp">
+            <ImageButton
+                android:id="@+id/chat_photo_button"
+                android:src="@drawable/ic_image_black_24dp"
+                android:layout_width="0dp"
+                android:tint="@color/colorPrimary"
+                android:background="@color/transparent"
+                android:layout_marginEnd="5dp"
                 android:layout_weight=".1"
-                android:layout_gravity="bottom"
-                android:layout_margin="10dp"
-                android:weightSum="1">
-                <Button
-                    android:id="@+id/boostBtn"
-                    android:layout_width="0dp"
-                    android:layout_weight=".5"
-                    android:layout_height="match_parent"
-                    android:text="Boost"
-                    android:background="@drawable/curvedradiusbutton_sr"
-                    android:layout_marginRight="5dp"
-                    android:textColor="@color/white"/>
-                <Button
-                    android:id="@+id/setReminder"
-                    android:layout_width="0dp"
-                    android:layout_weight=".5"
-                    android:layout_height="match_parent"
-                    android:text="Set Reminder"
-                    android:background="@drawable/curveradiusgoogle"
-                    android:layout_marginLeft="5dp"
-                    android:textColor="@color/white"/>
-            </LinearLayout>
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/typer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:hint="Ask Organiser.."
+                android:duplicateParentState="true"
+                android:textColorHint="@color/secondaryText"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+            <ImageButton
+                android:id="@+id/sendBtn"
+                android:layout_width="0dp"
+                android:layout_weight="0.1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_menu_send"
+                android:tint="@color/colorPrimary"
+                android:background="@color/transparent"
+                android:layout_marginStart="5dp"/>
         </LinearLayout>
 
     </LinearLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>
-

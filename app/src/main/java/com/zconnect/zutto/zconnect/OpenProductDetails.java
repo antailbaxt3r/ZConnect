@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -18,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
@@ -55,10 +56,15 @@ public class OpenProductDetails extends BaseActivity {
     private FirebaseUser user;
     private ValueEventListener listener;
 
+    private LinearLayout chatLayout;
+    private EditText chatEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_product_details);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
@@ -97,6 +103,36 @@ public class OpenProductDetails extends BaseActivity {
         Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
         productShortlist.setTypeface(customfont);
         productCall = (Button) findViewById(R.id.product_call);
+
+        chatLayout= (LinearLayout) findViewById(R.id.chatLayout);
+        chatEditText = (EditText) findViewById(R.id.typer);
+        chatEditText.setShowSoftInputOnFocus(false);
+
+        chatLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //char room clicked
+                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+                intent.putExtra("type","storeroom");
+                intent.putExtra("key",productKey);
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            }
+        });
+
+        chatEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //char room clicked
+                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+                intent.putExtra("type","storeroom");
+                intent.putExtra("key",productKey);
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            }
+        });
 
         mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
         Intent intent = getIntent();

@@ -67,11 +67,9 @@ public class CabPoolAll extends Fragment {
     public String communityReference;
 
 
-
-
     String fetchedDate;
     Date fDate;
-    FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference, databaseReferenceCopy, databaseReferencePaste;
 
 
@@ -92,8 +90,7 @@ public class CabPoolAll extends Fragment {
         try {
 
             int SDK_INT = android.os.Build.VERSION.SDK_INT;
-            if (SDK_INT > 8)
-            {
+            if (SDK_INT > 8) {
                 StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                         .permitAll().build();
                 StrictMode.setThreadPolicy(policy);
@@ -105,7 +102,6 @@ public class CabPoolAll extends Fragment {
                 Toast.makeText(getContext(), "This " + timeStampDate.toString(), Toast.LENGTH_SHORT).show();
 
             }
-
 
 
         } catch (IOException e) {
@@ -120,7 +116,7 @@ public class CabPoolAll extends Fragment {
         // Inflate the Menu; this adds items to the action bar if it is present.
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
-        if (!status){
+        if (!status) {
             inflater.inflate(R.menu.menu_cabpool_all, menu);
         }
     }
@@ -137,6 +133,7 @@ public class CabPoolAll extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -173,7 +170,7 @@ public class CabPoolAll extends Fragment {
 //            }
 //        });
 
-        allPools= new ValueEventListener() {
+        allPools = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 vector_fetched.clear();
@@ -181,11 +178,12 @@ public class CabPoolAll extends Fragment {
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     try {
-                        CabItemFormat cabItemFormatShot= shot.getValue(CabItemFormat.class);
-                        if(!cabItemFormatShot.getDestination().equals(null)&& !cabItemFormatShot.getSource().equals(null)) {
+                        CabItemFormat cabItemFormatShot = shot.getValue(CabItemFormat.class);
+                        if (!cabItemFormatShot.getDestination().equals(null) && !cabItemFormatShot.getSource().equals(null)) {
                             vector_fetched.add(shot.getValue(CabItemFormat.class));
                         }
-                    }catch (Exception e){}
+                    } catch (Exception e) {
+                    }
                 }
 
                 Calendar c = Calendar.getInstance();
@@ -198,7 +196,7 @@ public class CabPoolAll extends Fragment {
 //                Log.e("RV", "SIZE:"+String.valueOf(vector_fetched.size()));
 
                 for (int i = 0; i < vector_fetched.size(); i++) {
-                    Log.e("RV", "value of i:"+String.valueOf(i));
+                    Log.e("RV", "value of i:" + String.valueOf(i));
 //                    try {
 //
 //                        fetchedDate = vector_fetched.get(i).getDate();
@@ -211,8 +209,8 @@ public class CabPoolAll extends Fragment {
 //                    //check if DT is there or not
 //                    //if not, then will add DT to it.
 //                    if (vector_fetched.get(i).getDT() != null) {
-                        DT = vector_fetched.get(i).getDT();
-                        Log.e("RV", "value of DT:"+String.valueOf(DT));
+                    DT = vector_fetched.get(i).getDT();
+                    Log.e("RV", "value of DT:" + String.valueOf(DT));
 //                    } else {
 //
 //                        //getting fetched date to required format
@@ -329,10 +327,9 @@ public class CabPoolAll extends Fragment {
                 pasteRef.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if(databaseError != null) {
+                        if (databaseError != null) {
                             System.out.println("Copy failed");
-                        }
-                        else {
+                        } else {
                             System.out.println("Success");
                         }
                     }

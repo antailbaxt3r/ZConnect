@@ -81,6 +81,8 @@ public class ChatActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         setToolbar();
         showBackButton();
 
@@ -89,7 +91,7 @@ public class ChatActivity extends BaseActivity {
         //For Photo Posting
         intentHandle = new IntentHandle();
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 
         SharedPreferences communitySP;
         final String communityReference;
@@ -288,7 +290,7 @@ public class ChatActivity extends BaseActivity {
 
     private void postMessage(){
 
-        final MaterialEditText typer = ((MaterialEditText) findViewById(R.id.typer));
+        final EditText typer = ((EditText) findViewById(R.id.typer));
         final String text = typer.getText().toString();
         if (TextUtils.isEmpty(text)) {
             showToast("Message is empty.");

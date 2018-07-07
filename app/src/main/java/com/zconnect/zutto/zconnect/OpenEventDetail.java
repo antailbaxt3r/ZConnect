@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect;
 
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,12 +28,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -42,7 +42,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 
@@ -58,7 +58,7 @@ import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT_BOOST;
 public class  OpenEventDetail extends BaseActivity {
 
     DatabaseReference mDatabase;
-    ImageView EventImage;
+    SimpleDraweeView EventImage;
     TextView EventDescription;
     TextView EventVenue;
     ImageButton venueDirections;
@@ -73,10 +73,13 @@ public class  OpenEventDetail extends BaseActivity {
 
     ProgressDialog progressDialog;
 
+    private LinearLayout chatLayout;
+    private EditText chatEditText;
     /*db elements needed for views calculation*/
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private ValueEventListener listener;
+
 
     Uri screenshotUri;
     String path;
@@ -86,17 +89,50 @@ public class  OpenEventDetail extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_event_detail);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
 
         boostBtn = (Button) findViewById(R.id.boostBtn);
-        EventImage = (ImageView) findViewById(R.id.od_EventImage);
+        EventImage = (SimpleDraweeView) findViewById(R.id.od_EventImage);
         EventDescription = (TextView) findViewById(R.id.od_description);
         EventDescription.setMovementMethod(LinkMovementMethod.getInstance());
         EventDate = (TextView) findViewById(R.id.od_date);
 
         EventVenue = (TextView) findViewById(R.id.od_venue);
         venueDirections = (ImageButton) findViewById(R.id.od_directions);
+
+        chatLayout= (LinearLayout) findViewById(R.id.chatLayout);
+        chatEditText = (EditText) findViewById(R.id.typer);
+        chatEditText.setShowSoftInputOnFocus(false);
+
+
+        chatLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                intent.putExtra("type","events");
+                intent.putExtra("key",eventId);
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            }
+        });
+
+        chatEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                intent.putExtra("type","events");
+                intent.putExtra("key",eventId);
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+
+            }
+        });
 
         progressDialog = new ProgressDialog(this);
 
