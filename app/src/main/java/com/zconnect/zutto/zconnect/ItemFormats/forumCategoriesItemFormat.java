@@ -2,6 +2,8 @@ package com.zconnect.zutto.zconnect.ItemFormats;
 
 import android.provider.Contacts;
 
+import java.util.Vector;
+
 /**
  * Created by shubhamk on 9/2/17.
  */
@@ -11,13 +13,15 @@ public class forumCategoriesItemFormat {
     private String tabUID;
     private String catUID;
     private ChatItemFormats lastMessage;
+    private String forumType;
+    private Vector<UsersListItemFormat> usersListItemFormats;
 
-
-    public forumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage) {
+    public forumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats ) {
         this.name = name;
         this.tabUID = tabUID;
         this.catUID = catUID;
         this.lastMessage = lastMessage;
+        this.usersListItemFormats = usersListItemFormats;
     }
 
     public forumCategoriesItemFormat() {
@@ -50,5 +54,25 @@ public class forumCategoriesItemFormat {
 
     public ChatItemFormats getLastMessage() {
         return lastMessage;
+    }
+
+    public void setLastMessage(ChatItemFormats lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    public Vector<UsersListItemFormat> getUsersListItemFormats() {
+        return usersListItemFormats;
+    }
+
+    public void setUsersListItemFormats(Vector<UsersListItemFormat> usersListItemFormats) {
+        this.usersListItemFormats = usersListItemFormats;
+    }
+
+    public String getForumType() {
+        return forumType;
+    }
+
+    public void setForumType(String forumType) {
+        this.forumType = forumType;
     }
 }

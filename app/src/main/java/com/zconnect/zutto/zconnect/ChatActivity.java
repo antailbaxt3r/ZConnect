@@ -190,8 +190,12 @@ public class ChatActivity extends BaseActivity {
                     }
                 });
             }else if (type.equals("forums")){
+                String key,tab;
+                key = getIntent().getStringExtra("key");
+                tab = getIntent().getStringExtra("tab");
+                final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
                 joinButton.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.forums));
-                databaseReference.addValueEventListener(new ValueEventListener() {
+                forumCategory.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
                         setToolbarTitle(dataSnapshot.child("name").getValue().toString());
@@ -215,7 +219,7 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setName(userItemFormat.getUsername());
                                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                             userDetails.setUserUID(userItemFormat.getUserUID());
-                                            databaseReference.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                            forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                             NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
                                             notificationSender.execute();
@@ -461,6 +465,7 @@ public class ChatActivity extends BaseActivity {
     public void launchPeopleList(){
         Intent i = new Intent(this,ForumsPeopleList.class);
         i.putExtra("key",getIntent().getStringExtra("key"));
+        i.putExtra("tab",getIntent().getStringExtra("tab"));
         startActivity(i);
     }
 

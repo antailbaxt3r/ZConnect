@@ -5,27 +5,28 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.forumTypeUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -37,7 +38,7 @@ import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
  * Created by shubhamk on 9/2/17.
  */
 
-public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategoriesRVAdapter.ViewHolder> {
+public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
     Vector<forumCategoriesItemFormat> forumCategoriesItemFormats;
@@ -50,40 +51,100 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
     }
 
     @Override
-    public ForumCategoriesRVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public int getItemViewType(int position) {
+
+        if(forumCategoriesItemFormats.get(position).getForumType().equals(forumTypeUtilities.KEY_CREATE_FORUM_STR)) {
+            return forumTypeUtilities.KEY_CREATE_FORUM;
+        }else if (forumCategoriesItemFormats.get(position).getForumType().equals(forumTypeUtilities.KEY_JOINED_STR)) {
+            return forumTypeUtilities.KEY_JOINED;
+        }else if(forumCategoriesItemFormats.get(position).getForumType().equals(forumTypeUtilities.KEY_NOT_JOINED_TITLE_STR)){
+            return forumTypeUtilities.KEY_NOT_JOINED_TITLE;
+        }else if(forumCategoriesItemFormats.get(position).getForumType().equals(forumTypeUtilities.KEY_NOT_JOINED_STR)){
+            return forumTypeUtilities.KEY_NOT_JOINED;
+        }else return -1;
+    }
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.student_hostel_list_item_format, parent, false);
-
-        // Return a new holder instance
-        return new ForumCategoriesRVAdapter.ViewHolder(contactView);
+        if(viewType== forumTypeUtilities.KEY_CREATE_FORUM){
+            View createContactView = inflater.inflate(R.layout.row_forums_sub_categories_create, parent, false);
+            return new ForumCategoriesRVAdapter.createViewHolder(createContactView);
+        }else if( viewType == forumTypeUtilities.KEY_JOINED){
+            View joinedContactView = inflater.inflate(R.layout.row_forums_sub_categories_joined, parent, false);
+            return new ForumCategoriesRVAdapter.joinedViewHolder(joinedContactView);
+        }else if(viewType== forumTypeUtilities.KEY_NOT_JOINED_TITLE){
+            View titleContactView = inflater.inflate(R.layout.row_forums_sub_categories_type, parent, false);
+            return new ForumCategoriesRVAdapter.titleViewHolder(titleContactView);
+        }else if(viewType == forumTypeUtilities.KEY_NOT_JOINED){
+            View notJoinedViewHolder = inflater.inflate(R.layout.row_forums_categories_not_joined,parent,false);
+            return new ForumCategoriesRVAdapter.notJoinedViewHolder(notJoinedViewHolder);
+        }else {
+            View blankLayout = inflater.inflate(R.layout.row_blank_layout, parent, false);
+            return new ForumCategoriesRVAdapter.blankViewHolder(blankLayout);
+        }
     }
 
     @Override
-    public void onBindViewHolder(ForumCategoriesRVAdapter.ViewHolder holder, int position) {
-            holder.catName.setText(forumCategoriesItemFormats.get(position).getName());
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        final forumCategoriesItemFormat forumCategory = forumCategoriesItemFormats.get(position);
+
+        if(forumCategory.getForumType().equals(forumTypeUtilities.KEY_CREATE_FORUM_STR)){
+
+            createViewHolder holderMain = (createViewHolder) holder;
+            holderMain.createForum(tabUID);
+            holderMain.createForumText.setTextColor(context.getResources().getColor(R.color.secondaryText));
+
+        }else if(forumCategory.getForumType().equals(forumTypeUtilities.KEY_JOINED_STR)){
+
+            joinedViewHolder holderMain = (joinedViewHolder) holder;
+            holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());
             try {
-                holder.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
-                holder.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName() + " :");
-                holder.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
+                holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
+                holderMain.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName() + " :");
+                holderMain.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
             }
             catch (Exception e) {
                 Log.d("Error alert ", e.getMessage());
-                holder.lastMessageMessage.setVisibility(View.GONE);
-                holder.lastMessageUsername.setVisibility(View.GONE);
-                holder.lastMessageTime.setVisibility(View.GONE);
+                holderMain.lastMessageMessage.setVisibility(View.GONE);
+                holderMain.lastMessageUsername.setVisibility(View.GONE);
+                holderMain.lastMessageTime.setVisibility(View.GONE);
             }
-            if (position!=0) {
-                holder.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
-                holder.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
-            }else {
-                holder.catName.setTextColor(context.getResources().getColor(R.color.secondaryText));
-                holder.createCategory(tabUID);
-                holder.lastMessageMessage.setVisibility(View.GONE);
-                holder.lastMessageUsername.setVisibility(View.GONE);
-                holder.lastMessageTime.setVisibility(View.GONE);
+
+            holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
+            holderMain.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
+
+        }else if(forumCategory.getForumType().equals(forumTypeUtilities.KEY_NOT_JOINED_TITLE_STR)){
+
+            titleViewHolder holderMain = (titleViewHolder) holder;
+            holderMain.setTitle("Not Joined");
+
+        }else if(forumCategory.getForumType().equals(forumTypeUtilities.KEY_NOT_JOINED_STR)){
+
+            notJoinedViewHolder holderMain = (notJoinedViewHolder) holder;
+            holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());
+
+            try {
+                holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
+                holderMain.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName() + " :");
+                holderMain.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
             }
+            catch (Exception e) {
+                Log.d("Error alert ", e.getMessage());
+                holderMain.lastMessageMessage.setVisibility(View.GONE);
+                holderMain.lastMessageUsername.setVisibility(View.GONE);
+                holderMain.lastMessageTime.setVisibility(View.GONE);
+            }
+
+            holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
+            holderMain.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
+            holderMain.joinForum(forumCategoriesItemFormats.get(position).getCatUID(),forumCategoriesItemFormats.get(position).getName());
+
+        }else {
+            blankViewHolder holderMain = (blankViewHolder) holder;
+
+        }
     }
 
     @Override
@@ -91,47 +152,16 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
         return forumCategoriesItemFormats.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    private class createViewHolder extends RecyclerView.ViewHolder{
 
-        TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
-        View mView;
-        LinearLayout forumRowItem;
-
-        public ViewHolder(View itemView) {
+        TextView createForumText;
+        public createViewHolder(View itemView) {
             super(itemView);
-            mView = itemView;
-            catName = (TextView) itemView.findViewById(R.id.cat_name);
-            lastMessageMessage = (TextView) itemView.findViewById(R.id.forums_cat_last_message);
-            lastMessageUsername = (TextView) itemView.findViewById(R.id.forums_cat_last_message_username);
-            lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
-
-            //changing fonts
-            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
-            Typeface ralewayRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-            catName.setTypeface(ralewayMedium);
-            lastMessageMessage.setTypeface(ralewayRegular);
-            lastMessageUsername.setTypeface(ralewayRegular);
-            lastMessageTime.setTypeface(ralewayRegular);
+            createForumText = (TextView) itemView.findViewById(R.id.create_forum);
         }
 
-        void openChat(final String uid, final String tabId, final String  name){
-            mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
-                    intent.putExtra("type","forums");
-                    intent.putExtra("name", name);
-                    intent.putExtra("key",uid);
-
-                    context.startActivity(intent);
-                }
-            });
-
-        }
-
-        void createCategory(final String uid){
-            mView.setOnClickListener(new View.OnClickListener() {
+        public void createForum(final String uid){
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -241,7 +271,141 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<ForumCategori
                 }
             });
         }
-
     }
 
+    private class joinedViewHolder extends RecyclerView.ViewHolder {
+
+        TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
+        View mView;
+        LinearLayout forumRowItem;
+
+        public joinedViewHolder(View itemView) {
+            super(itemView);
+            mView = itemView;
+            catName = (TextView) itemView.findViewById(R.id.cat_name);
+            lastMessageMessage = (TextView) itemView.findViewById(R.id.forums_cat_last_message);
+            lastMessageUsername = (TextView) itemView.findViewById(R.id.forums_cat_last_message_username);
+            lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
+
+            //changing fonts
+            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+            Typeface ralewayRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            catName.setTypeface(ralewayMedium);
+            lastMessageMessage.setTypeface(ralewayRegular);
+            lastMessageUsername.setTypeface(ralewayRegular);
+            lastMessageTime.setTypeface(ralewayRegular);
+        }
+
+        void openChat(final String uid, final String tabId, final String  name){
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                    intent.putExtra("type","forums");
+                    intent.putExtra("name", name);
+                    intent.putExtra("tab",tabUID);
+                    intent.putExtra("key",uid);
+
+                    context.startActivity(intent);
+                }
+            });
+
+        }
+    }
+
+    private class titleViewHolder extends RecyclerView.ViewHolder{
+        TextView titleText;
+        public titleViewHolder(View itemView) {
+            super(itemView);
+            titleText = (TextView) itemView.findViewById(R.id.topicText);
+        }
+
+        public void setTitle(String title){
+            titleText.setText(title);
+        }
+    }
+
+    private class notJoinedViewHolder extends RecyclerView.ViewHolder{
+        TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
+        View mView;
+        Button joinButton;
+        LinearLayout forumRowItem;
+
+        public notJoinedViewHolder(View itemView) {
+            super(itemView);
+            mView = itemView;
+            catName = (TextView) itemView.findViewById(R.id.cat_name);
+            lastMessageMessage = (TextView) itemView.findViewById(R.id.forums_cat_last_message);
+            lastMessageUsername = (TextView) itemView.findViewById(R.id.forums_cat_last_message_username);
+            lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
+            joinButton = (Button) itemView.findViewById(R.id.joinCategory);
+
+            //changing fonts
+            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+            Typeface ralewayRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+            catName.setTypeface(ralewayMedium);
+            lastMessageMessage.setTypeface(ralewayRegular);
+            lastMessageUsername.setTypeface(ralewayRegular);
+            lastMessageTime.setTypeface(ralewayRegular);
+        }
+
+        void openChat(final String uid, final String tabId, final String  name){
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                    intent.putExtra("type","forums");
+                    intent.putExtra("name", name);
+                    intent.putExtra("tab",tabUID);
+                    intent.putExtra("key",uid);
+
+                    context.startActivity(intent);
+                }
+            });
+
+        }
+
+        public void joinForum(final String key,final String name){
+
+            final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tabUID).child(key);
+
+            joinButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final UsersListItemFormat userDetails = new UsersListItemFormat();
+                    DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                    user.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot2) {
+                            UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
+                            userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
+                            userDetails.setName(userItemFormat.getUsername());
+                            userDetails.setPhonenumber(userItemFormat.getMobileNumber());
+                            userDetails.setUserUID(userItemFormat.getUserUID());
+                            forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
+
+                            NotificationSender notificationSender=new NotificationSender(key,name,FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_FORUMS_JOIN,false,true,itemView.getContext());
+                            notificationSender.execute();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+
+        }
+    }
+
+    private class  blankViewHolder extends  RecyclerView.ViewHolder{
+
+        public blankViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
 }

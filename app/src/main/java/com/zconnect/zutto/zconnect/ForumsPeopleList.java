@@ -55,8 +55,10 @@ public class ForumsPeopleList extends BaseActivity {
         setSupportActionBar(getToolbar());
 
         key = getIntent().getStringExtra("key");
+        String tab = getIntent().getStringExtra("tab");
         mAuth = FirebaseAuth.getInstance();
-        forumMembersList = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).child("users");
+
+        forumMembersList = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key).child("users");
 
         usersReference.addValueEventListener(new ValueEventListener() {
             @Override
