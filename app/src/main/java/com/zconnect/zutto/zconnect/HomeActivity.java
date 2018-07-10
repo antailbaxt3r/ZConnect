@@ -109,7 +109,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences defaultPrefs;
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
-    private Fragment recent, cab, forums, store, shop, events;
+    private Fragment recent, forums, shop;
+//    events, store, cab;
     private DatabaseReference mDatabaseStats;
     private DatabaseReference mDatabaseUserStats;
     int UsersTotalNumbers = 0, TotalNumbers = 0;
@@ -217,13 +218,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         //getting all the tabs Instances
         recent = new Recents();
-        cab = new CabPoolAll();
+//        cab = new CabPoolAll();
         forums = new ForumsActivity();
-        store = new TabStoreRoom();
+//        store = new TabStoreRoom();
 
         // Messages replaced for shops
         shop = new MessagesActivity();
-        events = new TabbedEvents();
+//        events = new TabbedEvents();
 
         //Setting launching tab
         tabs();
@@ -327,11 +328,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     //Circular notification in the bottom navigation
     void setNotificationCircle(){
-        if(TotalEvents>UsersTotalEvents){
-            tabNotificationCircle[4].setVisibility(View.VISIBLE);
-        } else {
-            tabNotificationCircle[4].setVisibility(View.GONE);
-        }
+//        if(TotalEvents>UsersTotalEvents){
+//            tabNotificationCircle[4].setVisibility(View.VISIBLE);
+//        } else {
+//            tabNotificationCircle[4].setVisibility(View.GONE);
+//        }
         if (TotalNumbers > UsersTotalNumbers) {
             tabNotificationCircle[1].setVisibility(View.VISIBLE);
         } else {
@@ -342,16 +343,16 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        } else {
 //            tabNotificationCircle[5].setVisibility(View.GONE);
 //        }
-        if (TotalProducts > UsersTotalProducts) {
-            tabNotificationCircle[2].setVisibility(View.VISIBLE);
-        } else {
-            tabNotificationCircle[2].setVisibility(View.GONE);
-        }
-        if (TotalCabpools > UsersTotalCabpools) {
-            tabNotificationCircle[3].setVisibility(View.VISIBLE);
-        } else {
-            tabNotificationCircle[3].setVisibility(View.GONE);
-        }
+//        if (TotalProducts > UsersTotalProducts) {
+//            tabNotificationCircle[2].setVisibility(View.VISIBLE);
+//        } else {
+//            tabNotificationCircle[2].setVisibility(View.GONE);
+//        }
+//        if (TotalCabpools > UsersTotalCabpools) {
+//            tabNotificationCircle[3].setVisibility(View.VISIBLE);
+//        } else {
+//            tabNotificationCircle[3].setVisibility(View.GONE);
+//        }
     }
 
     //Setting contents in the different tabs
@@ -384,46 +385,46 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         infoneT.setCustomView(vInfone);
 
 
-        View vStore = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        TabLayout.Tab storeT = tabs.newTab();
+//        View vStore = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+//        TabLayout.Tab storeT = tabs.newTab();
 
-        tabTitle[2] = (TextView) vStore.findViewById(R.id.tabTitle);
-        tabTitle[2].setText("StoreRoom");
+//        tabTitle[2] = (TextView) vStore.findViewById(R.id.tabTitle);
+//        tabTitle[2].setText("StoreRoom");
 
-        tabImage[2] = (ImageView) vStore.findViewById(R.id.tabImage);
-        tabImage[2].setImageResource(R.drawable.ic_local_mall_white_24dp);
+//        tabImage[2] = (ImageView) vStore.findViewById(R.id.tabImage);
+//        tabImage[2].setImageResource(R.drawable.ic_local_mall_white_24dp);
 
-        tabNotificationCircle[2] = (ImageView) vStore.findViewById(R.id.notification_circle);
-        vStore.setAlpha((float) 0.7);
-        storeT.setCustomView(vStore);
-
-
-        View vCab = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        TabLayout.Tab cabT = tabs.newTab();
-
-        tabTitle[3] = (TextView) vCab.findViewById(R.id.tabTitle);
-        tabTitle[3].setText("CabPool");
-
-        tabImage[3] = (ImageView) vCab.findViewById(R.id.tabImage);
-        tabImage[3].setImageResource(R.drawable.ic_local_taxi_white_24dp);
-
-        tabNotificationCircle[3] = (ImageView) vCab.findViewById(R.id.notification_circle);
-        vCab.setAlpha((float) 0.7);
-        cabT.setCustomView(vCab);
+//        tabNotificationCircle[2] = (ImageView) vStore.findViewById(R.id.notification_circle);
+//        vStore.setAlpha((float) 0.7);
+//        storeT.setCustomView(vStore);
 
 
-        View vEvents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        TabLayout.Tab eventT = tabs.newTab();
+//        View vCab = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+//        TabLayout.Tab cabT = tabs.newTab();
 
-        tabTitle[4] = (TextView) vEvents.findViewById(R.id.tabTitle);
-        tabTitle[4].setText("Events");
+//        tabTitle[3] = (TextView) vCab.findViewById(R.id.tabTitle);
+//        tabTitle[3].setText("CabPool");
 
-        tabImage[4] = (ImageView) vEvents.findViewById(R.id.tabImage);
-        tabImage[4].setImageResource(R.drawable.ic_event_white_24dp);
+//        tabImage[3] = (ImageView) vCab.findViewById(R.id.tabImage);
+//        tabImage[3].setImageResource(R.drawable.ic_local_taxi_white_24dp);
 
-        tabNotificationCircle[4] = (ImageView) vEvents.findViewById(R.id.notification_circle);
-        vEvents.setAlpha((float) 0.7);
-        eventT.setCustomView(vEvents);
+//        tabNotificationCircle[3] = (ImageView) vCab.findViewById(R.id.notification_circle);
+//        vCab.setAlpha((float) 0.7);
+//        cabT.setCustomView(vCab);
+
+
+//        View vEvents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+//        TabLayout.Tab eventT = tabs.newTab();
+
+//        tabTitle[4] = (TextView) vEvents.findViewById(R.id.tabTitle);
+//        tabTitle[4].setText("Events");
+
+//        tabImage[4] = (ImageView) vEvents.findViewById(R.id.tabImage);
+//        tabImage[4].setImageResource(R.drawable.ic_event_white_24dp);
+
+//        tabNotificationCircle[4] = (ImageView) vEvents.findViewById(R.id.notification_circle);
+//        vEvents.setAlpha((float) 0.7);
+//        eventT.setCustomView(vEvents);
 
         // Temporary messages
         View vShop = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
@@ -441,9 +442,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabs.addTab(recentsT);
         tabs.addTab(infoneT);
-        tabs.addTab(storeT);
-        tabs.addTab(eventT);
-        tabs.addTab(cabT);
+//        tabs.addTab(storeT);
+//        tabs.addTab(eventT);
+//        tabs.addTab(cabT);
         tabs.addTab(shopT);
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -484,13 +485,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
                         break;
                     }
-                    case 3: {
-                        setActionBarTitle("Events");
-                        CounterManager.EventOpen();
-//                        fab.setImageResource(R.drawable.ic_add_white_36dp);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
-                        break;
-                    }
+//                    case 3: {
+//                        setActionBarTitle("Events");
+//                        CounterManager.EventOpen();
+////                        fab.setImageResource(R.drawable.ic_add_white_36dp);
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
+//                        break;
+//                    }
                     case 5: {
                         setActionBarTitle("Anonymous Messages");
                         CounterManager.anonymousMessageOpen();
@@ -500,20 +501,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                         break;
                     }
-                    case 2: {
-                        setActionBarTitle("StoreRoom");
-                        CounterManager.StoreRoomOpen();
-//                        fab.setImageResource(R.drawable.ic_add_shopping_cart_white_24dp);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
-                        break;
-                    }
-                    case 4: {
-                        setActionBarTitle("Cab Pool");
-                        CounterManager.openCabPool();
-//                        fab.setImageResource(R.drawable.ic_search_white_24dp);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
-                        break;
-                    }
+//                    case 2: {
+//                        setActionBarTitle("StoreRoom");
+//                        CounterManager.StoreRoomOpen();
+////                        fab.setImageResource(R.drawable.ic_add_shopping_cart_white_24dp);
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
+//                        break;
+//                    }
+//                    case 4: {
+//                        setActionBarTitle("Cab Pool");
+//                        CounterManager.openCabPool();
+////                        fab.setImageResource(R.drawable.ic_search_white_24dp);
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
+//                        break;
+//                    }
                 }
             }
 

@@ -45,7 +45,7 @@ import java.util.Vector;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class CabPoolAll extends Fragment {
+public class CabPoolAll extends BaseActivity {
 
     FirebaseAuth mAuth;
     FirebaseUser user;
@@ -82,39 +82,39 @@ public class CabPoolAll extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+////        setHasOptionsMenu(true);
+//
+//        try {
+//
+//            int SDK_INT = android.os.Build.VERSION.SDK_INT;
+//            if (SDK_INT > 8) {
+//                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+//                        .permitAll().build();
+//                StrictMode.setThreadPolicy(policy);
+//                //your codes here
+//                TrueTime.build().initialize();
+//
+//                Date dateTime = TrueTime.now();
+//                java.sql.Timestamp timeStampDate = new Timestamp(dateTime.getTime());
+//                Toast.makeText(getContext(), "This " + timeStampDate.toString(), Toast.LENGTH_SHORT).show();
+//
+//            }
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
 
-        try {
 
-            int SDK_INT = android.os.Build.VERSION.SDK_INT;
-            if (SDK_INT > 8) {
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                        .permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-                //your codes here
-                TrueTime.build().initialize();
-
-                Date dateTime = TrueTime.now();
-                java.sql.Timestamp timeStampDate = new Timestamp(dateTime.getTime());
-                Toast.makeText(getContext(), "This " + timeStampDate.toString(), Toast.LENGTH_SHORT).show();
-
-            }
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the Menu; this adds items to the action bar if it is present.
-        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
         if (!status) {
             inflater.inflate(R.menu.menu_cabpool_all, menu);
@@ -129,26 +129,48 @@ public class CabPoolAll extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_storeroom) {
-            startActivity(new Intent(getContext(), CabPoolLocations.class));
+            startActivity(new Intent(getApplicationContext(), CabPoolLocations.class));
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        setHasOptionsMenu(true);
 
-        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.pool_main_rv);
-        progressBar = (ProgressBar) view.findViewById(R.id.fragment_cab_pool_main_progress_circle);
-        error = (TextView) view.findViewById(R.id.message);
-        cabPoolRVAdapter = new CabPoolRVAdapter(getActivity(), vector_final);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        try {
+
+            int SDK_INT = android.os.Build.VERSION.SDK_INT;
+            if (SDK_INT > 8) {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                        .permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+                //your codes here
+                TrueTime.build().initialize();
+
+                Date dateTime = TrueTime.now();
+                java.sql.Timestamp timeStampDate = new Timestamp(dateTime.getTime());
+                Toast.makeText(getApplicationContext(), "This " + timeStampDate.toString(), Toast.LENGTH_SHORT).show();
+
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        setContentView(R.layout.fragment_cab_pool_main);
+        // Inflate the layout for this fragment
+//        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
+        recyclerView = (RecyclerView) findViewById(R.id.pool_main_rv);
+        progressBar = (ProgressBar) findViewById(R.id.fragment_cab_pool_main_progress_circle);
+        error = (TextView) findViewById(R.id.message);
+        cabPoolRVAdapter = new CabPoolRVAdapter(CabPoolAll.this, vector_final);
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(cabPoolRVAdapter);
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.INVISIBLE);
-        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communitySP = CabPoolAll.this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
         databaseReference = firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
@@ -283,12 +305,12 @@ public class CabPoolAll extends Fragment {
         onEmpty = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddCabPool.class);
+                Intent intent = new Intent(CabPoolAll.this, AddCabPool.class);
                 startActivity(intent);
             }
         };
 
-        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
         if (!status) {
@@ -317,7 +339,6 @@ public class CabPoolAll extends Fragment {
                 }
             });
         }
-        return view;
     }
 
     private void copyPaste(final DatabaseReference copyRef, final DatabaseReference pasteRef) {

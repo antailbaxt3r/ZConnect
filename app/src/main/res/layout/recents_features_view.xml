@@ -19,8 +19,7 @@
             android:layout_height="wrap_content"
             android:fillViewport="true"
             android:measureAllChildren="false"
-            android:scrollbars="none"
-            android:layout_marginTop="10dp">
+            android:scrollbars="none">
 
             <LinearLayout
                 android:id="@+id/linearLayout_recents_features_view"
@@ -28,16 +27,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp">
+                android:orientation="horizontal">
                 <LinearLayout
+                    android:id="@+id/storeroom_recents_features_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp">
+                    android:padding="15dp">
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -64,12 +61,12 @@
                     </RelativeLayout>
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/events_recents_features_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp">
+                    android:padding="15dp">
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -96,12 +93,12 @@
                     </RelativeLayout>
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/cabpool_recents_features_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp">
+                    android:padding="15dp">
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">

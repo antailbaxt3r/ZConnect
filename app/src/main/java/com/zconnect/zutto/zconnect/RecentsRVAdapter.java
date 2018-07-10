@@ -48,8 +48,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Vector;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 
 public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -509,13 +507,38 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private class FeaturesViewHolder extends RecyclerView.ViewHolder {
 
         HorizontalScrollView hsv;
-        LinearLayout linearLayout;
-        CircleImageView featureImage;
-        TextView featureName;
+        LinearLayout linearLayout, events, storeroom, cabpool;
         public FeaturesViewHolder(View itemView) {
             super(itemView);
             hsv = (HorizontalScrollView) itemView.findViewById(R.id.hsv_recents_features_view);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout_recents_features_view);
+            events = (LinearLayout) itemView.findViewById(R.id.events_recents_features_view);
+            storeroom = (LinearLayout) itemView.findViewById(R.id.storeroom_recents_features_view);
+            cabpool = (LinearLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
+
+            events.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, TabbedEvents.class);
+                    context.startActivity(intent);
+                }
+            });
+
+            storeroom.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, TabStoreRoom.class);
+                    context.startActivity(intent);
+                }
+            });
+
+            cabpool.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, CabPoolAll.class);
+                    context.startActivity(intent);
+                }
+            });
 
         }
     }

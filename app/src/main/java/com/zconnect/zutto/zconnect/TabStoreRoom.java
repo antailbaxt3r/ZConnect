@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class TabStoreRoom extends Fragment {
+public class TabStoreRoom extends BaseActivity {
 
     Toolbar mActionBarToolbar;
     FirebaseUser user;
@@ -30,16 +30,17 @@ public class TabStoreRoom extends Fragment {
     private ViewPager mViewPager;
 
 
-    @Nullable
+//    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_tab_store_room, container, false);
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_tab_store_room);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) v.findViewById(R.id.view_pager);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tab_layout_app_bar_home);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_app_bar_home);
         tabLayout.setupWithViewPager(mViewPager);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -64,21 +65,17 @@ public class TabStoreRoom extends Fragment {
 
             }
         });
-
-        return v;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setHasOptionsMenu(true);
+//    }
 
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the Menu; this adds items to the action bar if it is present.
-        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
         if (!status){
@@ -94,9 +91,9 @@ public class TabStoreRoom extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_storeroom) {
-            startActivity(new Intent(getContext(), MyProducts.class));
+            startActivity(new Intent(getApplicationContext(), MyProducts.class));
         } else if (id == R.id.action_storeroom_shortlist){
-            startActivity(new Intent(getContext(), Shortlist.class));
+            startActivity(new Intent(getApplicationContext(), Shortlist.class));
         }
         //noinspection SimplifiableIfStatement
 
@@ -114,7 +111,7 @@ public class TabStoreRoom extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
             Boolean status = sharedPref.getBoolean("mode", false);
             if (!status){
             switch (position) {
@@ -151,7 +148,7 @@ public class TabStoreRoom extends Fragment {
         @Override
         public int getCount() {
 
-            SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
             Boolean status = sharedPref.getBoolean("mode", false);
             if(!status){
                 return 2;
@@ -162,7 +159,7 @@ public class TabStoreRoom extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
             Boolean status = sharedPref.getBoolean("mode", false);
             if(!status) {
                 switch (position) {
