@@ -16,6 +16,8 @@ public class RecentsItemFormat {
     private String Key;
     private String DT;
 
+    String recentType;
+
     //new ui
     private long PostTimeMillis;
     //for infone
@@ -46,7 +48,7 @@ public class RecentsItemFormat {
                              String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate,
                              String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis,
                              PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName,
-                             String communityName, String message) {
+                             String communityName, String message, String recentType) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -69,6 +71,7 @@ public class RecentsItemFormat {
         this.productPrice = productPrice;
         this.communityName = communityName;
         this.message = message;
+        this.recentType = recentType;
     }
 
     public RecentsItemFormat() {
@@ -182,6 +185,14 @@ public class RecentsItemFormat {
 
     public void setCommunityName(String communityName) {
         this.communityName = communityName;
+    }
+
+    public String getRecentType() {
+        return recentType;
+    }
+
+    public void setRecentType(String recentType) {
+        this.recentType = recentType;
     }
 
 }

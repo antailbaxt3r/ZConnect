@@ -7,16 +7,17 @@
         android:id="@+id/recents_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:padding="10dp">
         <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/avatarCircle"
+            android:id="@+id/avatarCircle_recents_status_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/avatar_circle"
             fresco:actualImageScaleType="centerCrop"
             fresco:roundAsCircle="true" />
         <LinearLayout
+            android:id="@+id/text_area_recents_status_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
