@@ -162,6 +162,9 @@
     <string name="infone_search">Infone Search</string>
     <string name="search_infone_hint">Search People</string>
     <string name="title_storeroom_shortlist">Shortlisted Products</string>
+    <string name="GPSAlertDialogTitle">Location Permission</string>
+    <string name="GPSAlertDialogMessage">allow permission</string>
+    <string name="cancel">cancel</string>
 
     <!--test one-->
     <!--<string name="native_ad_unit_id">ca-app-pub-3940256099942544/2177258514</string>-->

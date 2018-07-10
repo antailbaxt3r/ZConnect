@@ -228,11 +228,14 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             startActivity(i);
             finish();
         }else {
-            logout();
             mProgress.dismiss();
-            Toast.makeText(LoginActivity.this, "Login through your College Email", Toast.LENGTH_SHORT).show();
-        }
+            Intent i = new Intent(this,CommunitiesAround.class);
+            startActivity(i);
+            finish();
+            //logout();
 
+            Toast.makeText(LoginActivity.this, "Welcome to ZConnect", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

@@ -139,6 +139,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
@@ -160,6 +161,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         navHeaderBackground = (SimpleDraweeView) navHeader.findViewById(R.id.iv_nav_header_background);
         //necessary for icons to retain their color
         navigationView.setItemIconTintList(null);
+
+
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -295,35 +298,35 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
 
-    // Function to open fab notification
-    public void animateFAB() {
-
-        if (isFabOpen) {
-
-            fab.startAnimation(rotate_backward);
-            fab1.startAnimation(fab_close);
-            fab2.startAnimation(fab_close);
-            fab3.startAnimation(fab_close);
-            fab1.setClickable(false);
-            fab2.setClickable(false);
-            fab3.setClickable(false);
-            isFabOpen = false;
-            Log.d("Raj", "close");
-
-        } else {
-
-            fab.startAnimation(rotate_forward);
-            fab1.startAnimation(fab_open);
-            fab2.startAnimation(fab_open);
-            fab3.startAnimation(fab_open);
-            fab1.setClickable(true);
-            fab2.setClickable(true);
-            fab3.setClickable(true);
-            isFabOpen = true;
-            Log.d("Raj", "open");
-        }
-    }
-
+//    // Function to open fab notification
+//    public void animateFAB() {
+//
+//        if (isFabOpen) {
+//
+//            fab.startAnimation(rotate_backward);
+//            fab1.startAnimation(fab_close);
+//            fab2.startAnimation(fab_close);
+//            fab3.startAnimation(fab_close);
+//            fab1.setClickable(false);
+//            fab2.setClickable(false);
+//            fab3.setClickable(false);
+//            isFabOpen = false;
+//            Log.d("Raj", "close");
+//
+//        } else {
+//
+//            fab.startAnimation(rotate_forward);
+//            fab1.startAnimation(fab_open);
+//            fab2.startAnimation(fab_open);
+//            fab3.startAnimation(fab_open);
+//            fab1.setClickable(true);
+//            fab2.setClickable(true);
+//            fab3.setClickable(true);
+//            isFabOpen = true;
+//            Log.d("Raj", "open");
+//        }
+//    }
+//
 
     //Circular notification in the bottom navigation
     void setNotificationCircle(){
@@ -628,7 +631,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 }
 
                 for (int i = 0; i < popUpUrl1.size() && dataComplete && firstTimePopUp; i++) {
-                    double random1 = Math.random();
+                      double random1 = Math.random();
                     int random = (int) (random1 * 10);
                     int importanceDigit = Integer.parseInt(importance.get(i));
                     boolean show = false;
@@ -701,26 +704,30 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     // from currentUserReference
     @SuppressLint("ApplySharedPref")
     private void launchRelevantActivitiesIfNeeded() {
-        //show tuts for first launch
-        if(!guestMode){
-            if (mUser == null) {
-                startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-            } else if (mUser != null) {
-                if (!defaultPrefs.getBoolean("isReturningUser", false)) {
-                    Intent tutIntent = new Intent(HomeActivity.this, TutorialActivity.class);
-                    tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(tutIntent);
-                    //mark first time has run.
-                    SharedPreferences.Editor editor = defaultPrefs.edit();
-                    editor.putBoolean("isReturningUser", true);
-                    editor.commit();
-                } else if(communityReference!=null) {
-                    currentUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid());
-                    currentUserReference.keepSynced(true);
-                    currentUserReference.addListenerForSingleValueEvent(editProfileValueEventListener);
-                }
+
+        //Check authentication
+        if (mUser == null) {
+            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+        } else if (mUser != null) {
+            if (!defaultPrefs.getBoolean("isReturningUser", false)) {
+                Intent tutIntent = new Intent(HomeActivity.this, TutorialActivity.class);
+                tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(tutIntent);
+                //mark first time has run.
+                SharedPreferences.Editor editor = defaultPrefs.edit();
+                editor.putBoolean("isReturningUser", true);
+                editor.commit();
+            } else if(communityReference!=null) {
+                currentUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid());
+                currentUserReference.keepSynced(true);
+                currentUserReference.addListenerForSingleValueEvent(editProfileValueEventListener);
+            } else if (communityReference == null){
+                Intent i = new Intent(this,CommunitiesAround.class);
+                startActivity(i);
+                finish();
             }
         }
+
     }
 
     @Override
@@ -927,42 +934,42 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
         }, 2000);
     }
-
-    @SuppressLint("ApplySharedPref")
-    private void promptToAddContact() {
-        final Long currTime = Calendar.getInstance().getTimeInMillis();
-        SharedPreferences addNumberDialogPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
-        if (!addNumberDialogPref.contains("firstLaunch")) {
-            addNumberDialogPref.edit().putBoolean("firstLaunch", false).commit();
-            startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
-        } else {
-            Boolean neverAddNumber = addNumberDialogPref.getBoolean("never", false);
-            if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 2 * 24 * 3600 * 1000)) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                addContactDialog = builder.setTitle("Hi " + username)
-                        .setMessage("Add your information and get discovered.")
-                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss(); // when user finishes the editProfile activity, he shouldn't see the dialog
-                                startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
-                            }
-                        }).setNegativeButton("Later", null)
-                        .setNeutralButton("Lite", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
-                                SharedPreferences.Editor editInfo = sharedPref.edit();
-                                editInfo.putBoolean("never", true);
-                                editInfo.putLong("date", currTime);
-                                editInfo.apply();
-                            }
-                        })
-                        .create();
-                addContactDialog.show();
-            }
-        }
-    }
+//
+//    @SuppressLint("ApplySharedPref")
+//    private void promptToAddContact() {
+//        final Long currTime = Calendar.getInstance().getTimeInMillis();
+//        SharedPreferences addNumberDialogPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
+//        if (!addNumberDialogPref.contains("firstLaunch")) {
+//            addNumberDialogPref.edit().putBoolean("firstLaunch", false).commit();
+//            startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
+//        } else {
+//            Boolean neverAddNumber = addNumberDialogPref.getBoolean("never", false);
+//            if (!neverAddNumber || (currTime - addNumberDialogPref.getLong("date", 0) > 2 * 24 * 3600 * 1000)) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+//                addContactDialog = builder.setTitle("Hi " + username)
+//                        .setMessage("Add your information and get discovered.")
+//                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dialog.dismiss(); // when user finishes the editProfile activity, he shouldn't see the dialog
+//                                startActivity(new Intent(HomeActivity.this, EditProfileActivity.class));
+//                            }
+//                        }).setNegativeButton("Later", null)
+//                        .setNeutralButton("Lite", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                SharedPreferences sharedPref = getSharedPreferences("addNumberDialog", MODE_PRIVATE);
+//                                SharedPreferences.Editor editInfo = sharedPref.edit();
+//                                editInfo.putBoolean("never", true);
+//                                editInfo.putLong("date", currTime);
+//                                editInfo.apply();
+//                            }
+//                        })
+//                        .create();
+//                addContactDialog.show();
+//            }
+//        }
+//    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
