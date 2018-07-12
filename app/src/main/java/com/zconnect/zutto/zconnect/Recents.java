@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.RecentTypeUtilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +54,10 @@ public class Recents extends Fragment {
     private ValueEventListener queryResponseListener;
     @BindView(R.id.recent_progress)
     ProgressBar progressBar;
+
+    RecentsItemFormat addStatus = new RecentsItemFormat();
+    RecentsItemFormat features = new RecentsItemFormat();
+    Vector<RecentsItemFormat> normalPosts = new Vector<RecentsItemFormat>();
 
     public Recents() {
         // Required empty public constructor
@@ -86,22 +91,26 @@ public class Recents extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 progressBar.setVisibility(VISIBLE);
                 recentsItemFormats.clear();
+                normalPosts.clear();
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    recentsItemFormats.add(shot.getValue(RecentsItemFormat.class));
+                    normalPosts.add(shot.getValue(RecentsItemFormat.class));
                 }
-
-                Collections.reverse(recentsItemFormats);
+                recentsItemFormats.add(features);
+                recentsItemFormats.add(addStatus);
+                Collections.reverse(normalPosts);
+                recentsItemFormats.addAll(normalPosts);
+                addStatus.setRecentType(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR);
+                features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
-                progressBar.setVisibility(INVISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(INVISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
         };
-
         //setHasFixedSize is used to optimise RV if we know for sure that this view's bounds do not
         // change with data
         recyclerView.setHasFixedSize(true);

@@ -30,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
+import com.zconnect.zutto.zconnect.Utilities.RecentTypeUtilities;
 
 import java.util.HashMap;
 import java.util.List;
@@ -121,38 +122,49 @@ public class LogoFlashActivity extends BaseActivity {
 
             }
         }, 2000);
-            temp = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("Users1");
 
+//            temp = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("home");
+//            temp.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    for(DataSnapshot shot: dataSnapshot.getChildren()) {
+//                        temp2 = shot.getRef().child("recentType");
+//                        temp2.setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
 
-            temp.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    int count =0;
-                    for (DataSnapshot shot: dataSnapshot.getChildren()){
-
-                        temp2 = temp.child(shot.getKey()).child("memberType");
-                        temp2.setValue(UsersTypeUtilities.KEY_VERIFIED);
-// if(shot.hasChild("Chat")){
-
-
+//            temp = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("features").child("forums");
+//
 //
 //                            for (DataSnapshot shot2: shot.child("Chat").getChildren()){
 //                                count++;
 //
 //
 //
-//                            }
-
-//                        }
-                    }
-                    Toast.makeText(LogoFlashActivity.this, count + " ", Toast.LENGTH_SHORT).show();
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
+////
+////                            for (DataSnapshot shot2: shot.child("Chat").getChildren()){
+////                                count++;
+////
+////
+////
+////                            }
+//
+////                        }
+//                    }
+//                    Toast.makeText(LogoFlashActivity.this, count + " ", Toast.LENGTH_SHORT).show();
+//                }
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
+//
     }
 
 
