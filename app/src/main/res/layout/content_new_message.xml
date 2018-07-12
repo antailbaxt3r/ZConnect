@@ -16,14 +16,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp">
         <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/avatarCircle"
+            android:id="@+id/avatarCircle_new_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/avatar_circle"
             fresco:actualImageScaleType="centerCrop"
             fresco:roundAsCircle="true" />
         <TextView
-            android:id="@+id/postedBy"
+            android:id="@+id/username_new_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/link"
@@ -40,19 +40,13 @@
         app:met_textColor="@color/primaryText"
         app:met_textColorHint="@color/secondaryText"
         android:layout_marginTop="10dp" />
-    <FrameLayout
+    <ImageButton
+        android:id="@+id/add_image_new_message"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <ImageButton
-            android:layout_gravity="center"
-            android:id="@+id/add_image_new_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_image_black_24dp"
-            android:background="@color/transparent"
-            android:tint="@color/secondaryText"/>
-    </FrameLayout>
-
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_insert_photo_white_36"
+        android:background="@color/transparent"
+        android:tint="@color/colorPrimary"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
