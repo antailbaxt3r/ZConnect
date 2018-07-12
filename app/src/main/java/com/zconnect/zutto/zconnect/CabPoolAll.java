@@ -4,11 +4,14 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +49,7 @@ import java.util.Vector;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class CabPoolAll extends Fragment {
+public class CabPoolAll extends BaseActivity {
 
     FirebaseAuth mAuth;
     FirebaseUser user;
@@ -73,19 +77,48 @@ public class CabPoolAll extends Fragment {
     DatabaseReference databaseReference, databaseReferenceCopy, databaseReferencePaste;
 
 
-    public CabPoolAll() {
-        // Required empty public constructor
-    }
+//    public CabPoolAll() {
+//        // Required empty public constructor
+//    }
 
-    public static CabPoolAll newInstance(String param1, String param2) {
-        CabPoolAll fragment = new CabPoolAll();
-        return fragment;
-    }
+//    public static CabPoolAll newInstance(String param1, String param2) {
+//        CabPoolAll fragment = new CabPoolAll();
+//        return fragment;
+//    }
+
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+////        setHasOptionsMenu(true);
+//
+//        try {
+//
+//            int SDK_INT = android.os.Build.VERSION.SDK_INT;
+//            if (SDK_INT > 8) {
+//                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+//                        .permitAll().build();
+//                StrictMode.setThreadPolicy(policy);
+//                //your codes here
+//                TrueTime.build().initialize();
+//
+//                Date dateTime = TrueTime.now();
+//                java.sql.Timestamp timeStampDate = new Timestamp(dateTime.getTime());
+//                Toast.makeText(getContext(), "This " + timeStampDate.toString(), Toast.LENGTH_SHORT).show();
+//
+//            }
+//
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
 
         try {
 
@@ -99,7 +132,7 @@ public class CabPoolAll extends Fragment {
 
                 Date dateTime = TrueTime.now();
                 java.sql.Timestamp timeStampDate = new Timestamp(dateTime.getTime());
-                Toast.makeText(getContext(), "This " + timeStampDate.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "This " + timeStampDate.toString(), Toast.LENGTH_SHORT).show();
 
             }
 
@@ -108,47 +141,44 @@ public class CabPoolAll extends Fragment {
             e.printStackTrace();
         }
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-    }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(toolbar);
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the Menu; this adds items to the action bar if it is present.
-        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-        Boolean status = sharedPref.getBoolean("mode", false);
-        if (!status) {
-            inflater.inflate(R.menu.menu_cabpool_all, menu);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_storeroom) {
-            startActivity(new Intent(getContext(), CabPoolLocations.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-        return super.onOptionsItemSelected(item);
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+
+        setContentView(R.layout.fragment_cab_pool_main);
         // Inflate the layout for this fragment
-
-        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.pool_main_rv);
-        progressBar = (ProgressBar) view.findViewById(R.id.fragment_cab_pool_main_progress_circle);
-        error = (TextView) view.findViewById(R.id.message);
-        cabPoolRVAdapter = new CabPoolRVAdapter(getActivity(), vector_final);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+//        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
+        recyclerView = (RecyclerView) findViewById(R.id.pool_main_rv);
+        progressBar = (ProgressBar) findViewById(R.id.fragment_cab_pool_main_progress_circle);
+        error = (TextView) findViewById(R.id.message);
+        cabPoolRVAdapter = new CabPoolRVAdapter(CabPoolAll.this, vector_final);
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(cabPoolRVAdapter);
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.INVISIBLE);
-        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communitySP = CabPoolAll.this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
         databaseReference = firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
@@ -283,12 +313,12 @@ public class CabPoolAll extends Fragment {
         onEmpty = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddCabPool.class);
+                Intent intent = new Intent(CabPoolAll.this, AddCabPool.class);
                 startActivity(intent);
             }
         };
 
-        SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
         if (!status) {
@@ -317,7 +347,38 @@ public class CabPoolAll extends Fragment {
                 }
             });
         }
-        return view;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+        if (!status) {
+            getMenuInflater().inflate(R.menu.menu_cabpool_all, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        // Inflate the Menu; this adds items to the action bar if it is present.
+//        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+//        Boolean status = sharedPref.getBoolean("mode", false);
+//        if (!status) {
+//            inflater.inflate(R.menu.menu_cabpool_all, menu);
+//        }
+//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_storeroom) {
+            startActivity(new Intent(getApplicationContext(), CabPoolLocations.class));
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void copyPaste(final DatabaseReference copyRef, final DatabaseReference pasteRef) {
