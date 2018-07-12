@@ -29,7 +29,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.Utilities.RecentTypeUtilities;
 
 import java.util.HashMap;
 import java.util.List;
@@ -121,23 +120,6 @@ public class LogoFlashActivity extends BaseActivity {
 
             }
         }, 2000);
-
-//            temp = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("home");
-//            temp.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    for(DataSnapshot shot: dataSnapshot.getChildren()) {
-//                        temp2 = shot.getRef().child("recentType");
-//                        temp2.setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//
-//                }
-//            });
-
 //            temp = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("features").child("forums");
 //
 //
