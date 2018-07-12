@@ -149,6 +149,9 @@ public class Recents extends Fragment {
             Intent infoneIntent = new Intent(getContext(), InfoneActivity.class);
             startActivity(infoneIntent);
             CounterManager.infoneOpen();
+        }else if(id == R.id.admin){
+            Intent infoneIntent = new Intent(getContext(), AdminHome.class);
+            startActivity(infoneIntent);
         }
         return super.onOptionsItemSelected(item);
     }

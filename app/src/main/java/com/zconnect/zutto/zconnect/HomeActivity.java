@@ -51,6 +51,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
 
 import java.util.ArrayList;
@@ -675,6 +678,19 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     Intent i = new Intent(HomeActivity.this,EditProfileActivity.class);
                     i.putExtra("newUser",true);
                     startActivity(i);
+                }else {
+                    DatabaseReference userReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid());
+                    userReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 

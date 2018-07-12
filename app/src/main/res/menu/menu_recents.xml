@@ -9,4 +9,13 @@
         android:orderInCategory="2"
         android:name="Open Infone"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:title="Admin"
+        android:id="@+id/admin"
+        android:icon="@drawable/ic_phone_white_24dp"
+        android:orderInCategory="2"
+        android:name="Open Infone"
+        app:showAsAction="ifRoom" />
+
 </menu>

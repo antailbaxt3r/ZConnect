@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -30,7 +32,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
@@ -42,6 +43,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 import com.zconnect.zutto.zconnect.ItemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -72,6 +74,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private SimpleDraweeView userImageView;
     private String userName,userEmail,userMobile,userWhatsapp,userAbout,userSkillTags,userInfoneType;
     private MaterialEditText userNameText, userEmailText, userMobileNumberText, userWhatsappNumberText, userAboutText;
+    private Button userTypeText;
     private TagsEditText userSkillTagsText;
     private MaterialBetterSpinner userInfoneTypeSpinner;
     private Boolean newUser = false;
@@ -81,25 +84,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private int infoneTypeIndex=-1;
     Boolean flag = false;
     private Long postTimeMillis;
-    private String key;
-//
-//    private String userEmail;
-//    private String userName;
-//    private String desc;
-//    private String imageUrl;
-//    private String mobileNumber;
-//    private String catName;
-//    private String host;
-//    private String category;
-//    private String skills;
 
-    Boolean flag2;
     private Uri mImageUri=null;
     private Uri mImageUriSmall=null;
     private StorageReference mStorageRef;
     private FirebaseUser mUser;
     private DatabaseReference mUserReference,databaseInfoneCategories,databaseHome,newContactNumRef,databaseReferenceInfone,newContactRef;
-    private Query communityInfo;
     private String communityName;
     private UserItemFormat userDetails;
     private DatabaseReference homePush;
@@ -125,6 +115,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         mProgress = new ProgressDialog(this);
 
         userNameText = (MaterialEditText) findViewById(R.id.user_name);
+        userTypeText = (Button) findViewById(R.id.user_type);
         userEmailText = (MaterialEditText) findViewById(R.id.user_email);
         userMobileNumberText = (MaterialEditText) findViewById(R.id.mobile_number);
         userWhatsappNumberText = (MaterialEditText) findViewById(R.id.whatsapp_number);
@@ -137,6 +128,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
         Typeface ralewaySemiBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-SemiBold.ttf");
         userNameText.setTypeface(ralewaySemiBold);
+        userTypeText.setTypeface(ralewaySemiBold);
         userAboutText.setTypeface(ralewayRegular);
         userMobileNumberText.setTypeface(ralewayRegular);
         userWhatsappNumberText.setTypeface(ralewayRegular);
@@ -215,6 +207,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         if(newUser) {
             userNameText.setText(mUser.getDisplayName());
             userEmailText.setText(mUser.getEmail());
+            userTypeText.setVisibility(View.GONE);
+
             userEmailText.setFocusable(false);
             if (mImageUri==null) {
                 if (mUser.getPhotoUrl() != null) {
@@ -241,6 +235,21 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
     private void updateViewDetails() {
         userEmailText.setText(userDetails.getEmail());
+        if(userDetails.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
+            userTypeText.setText("ADMIN");
+        }else if(userDetails.getUserType().equals(UsersTypeUtilities.KEY_VERIFIED)){
+            userTypeText.setText("Verfied Member");
+        }else if(userDetails.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)){
+            userTypeText.setText("Not Verified, Verify Now");
+            userTypeText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getApplicationContext(),VerificationPage.class);
+                    startActivity(i);
+                }
+            });
+        }
+
         userNameText.setText(userDetails.getUsername());
         userWhatsappNumberText.setText(userDetails.getWhatsAppNumber());
         userMobileNumberText.setText(userDetails.getMobileNumber());
@@ -414,6 +423,16 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newContactNumRef.child("UID").setValue(mUser.getUid());
 
             if(newUser){
+
+                SharedPreferences userVerification = getSharedPreferences("userType", MODE_PRIVATE);
+                Boolean userTypeBoolean = userVerification.getBoolean("userVerification", false);
+                if(userTypeBoolean){
+                    newPost.child("userType").setValue(UsersTypeUtilities.KEY_VERIFIED);
+
+                }else {
+                    newPost.child("userType").setValue(UsersTypeUtilities.KEY_NOT_VERIFIED);
+                }
+
                 homePush = databaseHome.push();
                 homePush.child("PostedBy").child("UID").setValue(mUser.getUid());
                 homePush.child("PostedBy").child("Username").setValue(userName);

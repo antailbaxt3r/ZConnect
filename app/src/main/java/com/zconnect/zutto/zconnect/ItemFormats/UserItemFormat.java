@@ -6,13 +6,15 @@ package com.zconnect.zutto.zconnect.ItemFormats;
 
 public class UserItemFormat {
 
-    private String username, email,mobileNumber,whatsAppNumber, about,imageURL,imageURLThumbnail,infoneType,skillTags,userUID;
+    private String username, email,mobileNumber,whatsAppNumber, about,imageURL,imageURLThumbnail,infoneType,skillTags,userUID,userType;
 
     public UserItemFormat(){
 
     }
 
-    public  UserItemFormat(String username, String email, String mobileNumber, String whatsAppNumber, String about, String imageURL, String imageURLThumbnail, String infoneType, String skillTags, String userUID){
+
+
+    public  UserItemFormat(String username, String email, String mobileNumber, String whatsAppNumber, String about, String imageURL, String imageURLThumbnail, String infoneType, String skillTags, String userUID, String userType){
         this.username = username;
         this.email = email;
         this.mobileNumber = mobileNumber;
@@ -23,6 +25,7 @@ public class UserItemFormat {
         this.infoneType = infoneType;
         this.skillTags = skillTags;
         this.userUID = userUID;
+        this.userType = userType;
     }
 
 
@@ -107,5 +110,12 @@ public class UserItemFormat {
         this.userUID = userUID;
     }
 
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 }
 

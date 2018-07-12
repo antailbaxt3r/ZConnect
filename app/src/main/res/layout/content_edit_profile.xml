@@ -53,6 +53,19 @@
                     fresco:actualImageScaleType="centerCrop"
                     fresco:roundAsCircle="true"
                     fresco:roundingBorderPadding="5dp"/>
+
+                <Button
+                    android:id="@+id/user_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="User Type"
+                    android:text="User Type"
+                    android:gravity="center"
+                    android:textColor="@color/red500"
+                    android:background="@color/transparent"
+                    android:textColorHint="@color/secondaryText"
+                    android:textSize="20sp"/>
+
             </LinearLayout>
 
             <LinearLayout

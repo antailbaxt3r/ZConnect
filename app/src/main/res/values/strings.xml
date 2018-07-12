@@ -165,6 +165,9 @@
     <string name="GPSAlertDialogTitle">Location Permission</string>
     <string name="GPSAlertDialogMessage">allow permission</string>
     <string name="cancel">cancel</string>
+    <string name="title_activity_verfication_page">Verfication</string>
+    <string name="title_activity_admin_page">Admin Room</string>
+    <string name="title_activity_admin_home">AdminHome</string>
 
     <!--test one-->
     <!--<string name="native_ad_unit_id">ca-app-pub-3940256099942544/2177258514</string>-->
