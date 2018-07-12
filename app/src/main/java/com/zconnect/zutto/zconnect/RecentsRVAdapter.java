@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,20 +68,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public int getItemViewType(int position) {
        if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR))
        {
-           Log.d("NORMAL", RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR);
            return RecentTypeUtilities.KEY_RECENT_ADD_STATUS;
        }
        else if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_FEATURES_STR))
        {
-           Log.d("NORMAL", RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
            return RecentTypeUtilities.KEY_RECENT_FEATURES;
        }
        else if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR)) {
-           Log.d("NORMAL", RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
            return RecentTypeUtilities.KEY_RECENT_NORMAL_POST;
        }
        else {
-           Log.d("NORMAL", "-1");
            return -1;
        }
     }
@@ -507,14 +504,15 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private class FeaturesViewHolder extends RecyclerView.ViewHolder {
 
         HorizontalScrollView hsv;
-        LinearLayout linearLayout, events, storeroom, cabpool;
+        LinearLayout linearLayout;
+        RelativeLayout events, cabpool, storeroom;
         public FeaturesViewHolder(View itemView) {
             super(itemView);
             hsv = (HorizontalScrollView) itemView.findViewById(R.id.hsv_recents_features_view);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout_recents_features_view);
-            events = (LinearLayout) itemView.findViewById(R.id.events_recents_features_view);
-            storeroom = (LinearLayout) itemView.findViewById(R.id.storeroom_recents_features_view);
-            cabpool = (LinearLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
+            events = (RelativeLayout) itemView.findViewById(R.id.events_recents_features_view);
+            storeroom = (RelativeLayout) itemView.findViewById(R.id.storeroom_recents_features_view);
+            cabpool = (RelativeLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
 
             events.setOnClickListener(new View.OnClickListener() {
                 @Override

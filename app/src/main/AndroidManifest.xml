@@ -356,13 +356,21 @@
         <activity
             android:name=".TabbedEvents"
             android:label="Events"
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TabStoreRoom"
-            android:label="Store Room" />
+            android:label="Store Room"
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CabPoolAll"
-            android:label="Cab Pool" />
+            android:label="Cab Pool"
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

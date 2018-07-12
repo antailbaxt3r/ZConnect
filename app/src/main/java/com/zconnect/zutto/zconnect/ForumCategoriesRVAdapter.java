@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -102,7 +103,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());
             try {
                 holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
-                holderMain.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName() + " :");
+                holderMain.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName().substring(0, forumCategoriesItemFormats.get(position).getLastMessage().getName().indexOf(' ')) + " :");
                 holderMain.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
             }
             catch (Exception e) {
@@ -127,7 +128,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
             try {
                 holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
-                holderMain.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName() + " :");
+                holderMain.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName().substring(0, forumCategoriesItemFormats.get(position).getLastMessage().getName().indexOf(' ')) + " :");
                 holderMain.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
             }
             catch (Exception e) {
@@ -329,7 +330,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
     private class notJoinedViewHolder extends RecyclerView.ViewHolder{
         TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
         View mView;
-        Button joinButton;
+        ImageButton joinButton;
         LinearLayout forumRowItem;
 
         public notJoinedViewHolder(View itemView) {
@@ -339,7 +340,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             lastMessageMessage = (TextView) itemView.findViewById(R.id.forums_cat_last_message);
             lastMessageUsername = (TextView) itemView.findViewById(R.id.forums_cat_last_message_username);
             lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
-            joinButton = (Button) itemView.findViewById(R.id.joinCategory);
+            joinButton = (ImageButton) itemView.findViewById(R.id.joinCategory);
 
             //changing fonts
             Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");

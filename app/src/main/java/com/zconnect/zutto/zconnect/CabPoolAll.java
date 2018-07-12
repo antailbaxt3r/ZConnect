@@ -4,11 +4,14 @@ package com.zconnect.zutto.zconnect;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,14 +77,14 @@ public class CabPoolAll extends BaseActivity {
     DatabaseReference databaseReference, databaseReferenceCopy, databaseReferencePaste;
 
 
-    public CabPoolAll() {
-        // Required empty public constructor
-    }
+//    public CabPoolAll() {
+//        // Required empty public constructor
+//    }
 
-    public static CabPoolAll newInstance(String param1, String param2) {
-        CabPoolAll fragment = new CabPoolAll();
-        return fragment;
-    }
+//    public static CabPoolAll newInstance(String param1, String param2) {
+//        CabPoolAll fragment = new CabPoolAll();
+//        return fragment;
+//    }
 
 //    @Override
 //    public void onCreate(Bundle savedInstanceState) {
@@ -111,29 +115,6 @@ public class CabPoolAll extends BaseActivity {
 //
 //    }
 
-
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the Menu; this adds items to the action bar if it is present.
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-        Boolean status = sharedPref.getBoolean("mode", false);
-        if (!status) {
-            inflater.inflate(R.menu.menu_cabpool_all, menu);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_storeroom) {
-            startActivity(new Intent(getApplicationContext(), CabPoolLocations.class));
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,6 +140,33 @@ public class CabPoolAll extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(toolbar);
+
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+
         setContentView(R.layout.fragment_cab_pool_main);
         // Inflate the layout for this fragment
 //        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
@@ -339,6 +347,38 @@ public class CabPoolAll extends BaseActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+        if (!status) {
+            getMenuInflater().inflate(R.menu.menu_cabpool_all, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        // Inflate the Menu; this adds items to the action bar if it is present.
+//        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
+//        Boolean status = sharedPref.getBoolean("mode", false);
+//        if (!status) {
+//            inflater.inflate(R.menu.menu_cabpool_all, menu);
+//        }
+//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_storeroom) {
+            startActivity(new Intent(getApplicationContext(), CabPoolLocations.class));
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void copyPaste(final DatabaseReference copyRef, final DatabaseReference pasteRef) {

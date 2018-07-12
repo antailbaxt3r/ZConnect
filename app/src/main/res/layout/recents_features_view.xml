@@ -7,12 +7,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:background="@color/colorPrimaryDark">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryDark"
-            android:text="Features"/>
+            android:textColor="@color/white"
+            android:text="@string/title_recents_feature_view"/>
         <HorizontalScrollView
             android:id="@+id/hsv_recents_features_view"
             android:layout_width="match_parent"
@@ -29,97 +30,97 @@
                 android:gravity="center"
                 android:orientation="horizontal">
                 <LinearLayout
-                    android:id="@+id/storeroom_recents_features_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="15dp">
+                    android:orientation="vertical">
                     <RelativeLayout
+                        android:id="@+id/storeroom_recents_features_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <ImageButton
+                        android:layout_height="match_parent"
+                        android:padding="15dp">
+                        <ImageView
                             xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/circle_recents_feature_item"
+                            android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:scaleType="centerCrop"
                             android:src="@drawable/outline_local_mall_white_36"
                             android:layout_centerHorizontal="true"
-                            android:tint="@color/colorPrimaryDark"
-                            android:background="@color/transparent"/>
+                            android:tint="@color/white"/>
                         <TextView
                             android:id="@+id/text_recents_feature_item"
+                            android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Storeroom"
                             android:layout_below="@+id/circle_recents_feature_item"
                             android:layout_centerHorizontal="true"
-                            android:textColor="@color/colorPrimaryDark"
+                            android:textColor="@color/white"
                             android:layout_marginTop="5dp"
                             android:textSize="10sp"/>
                     </RelativeLayout>
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/events_recents_features_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="15dp">
+                    android:orientation="vertical">
                     <RelativeLayout
+                        android:id="@+id/events_recents_features_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <ImageButton
+                        android:layout_height="match_parent"
+                        android:padding="15dp">
+                        <ImageView
                             xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/circle2_recents_feature_item"
+                            android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:scaleType="centerCrop"
                             android:src="@drawable/outline_event_white_36"
                             android:layout_centerHorizontal="true"
-                            android:tint="@color/colorPrimaryDark"
-                            android:background="@color/transparent"/>
+                            android:tint="@color/white" />
                         <TextView
                             android:id="@+id/text2_recents_feature_item"
+                            android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Events"
                             android:layout_below="@+id/circle2_recents_feature_item"
                             android:layout_centerHorizontal="true"
-                            android:textColor="@color/colorPrimaryDark"
+                            android:textColor="@color/white"
                             android:layout_marginTop="5dp"
                             android:textSize="10sp"/>
                     </RelativeLayout>
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/cabpool_recents_features_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="15dp">
+                    android:orientation="vertical">
                     <RelativeLayout
+                        android:id="@+id/cabpool_recents_features_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <ImageButton
+                        android:layout_height="match_parent"
+                        android:padding="15dp">
+                        <ImageView
                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:duplicateParentState="true"
                             android:id="@+id/circle3_recents_feature_item"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:scaleType="centerCrop"
                             android:src="@drawable/outline_local_taxi_white_36"
                             android:layout_centerHorizontal="true"
-                            android:tint="@color/colorPrimaryDark"
-                            android:background="@color/transparent"/>
+                            android:tint="@color/white" />
                         <TextView
                             android:id="@+id/text3_recents_feature_item"
+                            android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Cabpool"
                             android:layout_below="@+id/circle3_recents_feature_item"
                             android:layout_centerHorizontal="true"
-                            android:textColor="@color/colorPrimaryDark"
+                            android:textColor="@color/white"
                             android:layout_marginTop="5dp"
                             android:textSize="10sp"/>
                     </RelativeLayout>

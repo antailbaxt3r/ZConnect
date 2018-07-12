@@ -223,7 +223,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        store = new TabStoreRoom();
 
         // Messages replaced for shops
-        shop = new MessagesActivity();
+//        shop = new MessagesActivity();
 //        events = new TabbedEvents();
 
         //Setting launching tab
@@ -364,25 +364,64 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[0].setText("Recents");
 
         tabImage[0] = (ImageView) vRecents.findViewById(R.id.tabImage);
-        tabImage[0].setImageResource(R.drawable.ic_home_white_24dp);
+        tabImage[0].setImageResource(R.drawable.baseline_home_white_24);
 
         tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
 
         recentsT.setCustomView(vRecents);
 
 
+        View vForums = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab forumsT = tabs.newTab();
+
+        tabTitle[1] = (TextView) vForums.findViewById(R.id.tabTitle);
+        tabTitle[1].setText("Forums");
+
+        tabImage[1] = (ImageView) vForums.findViewById(R.id.tabImage);
+        tabImage[1].setImageResource(R.drawable.baseline_forum_white_24);
+
+        tabNotificationCircle[1] = (ImageView) vForums.findViewById(R.id.notification_circle);
+        vForums.setAlpha((float) 0.7);
+        forumsT.setCustomView(vForums);
+
+        View vAdd = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab addT = tabs.newTab();
+
+//        tabTitle[2] = (TextView) vAdd.findViewById(R.id.tabTitle);
+//        tabTitle[2].setText("Add");
+
+        tabImage[2] = (ImageView) vAdd.findViewById(R.id.tabImage);
+        tabImage[2].setImageResource(R.drawable.outline_add_circle_outline_white_36);
+
+        tabNotificationCircle[2] = (ImageView) vAdd.findViewById(R.id.notification_circle);
+        vAdd.setAlpha((float) 0.7);
+        addT.setCustomView(vAdd);
+
         View vInfone = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
         TabLayout.Tab infoneT = tabs.newTab();
 
-        tabTitle[1] = (TextView) vInfone.findViewById(R.id.tabTitle);
-        tabTitle[1].setText("Forums");
+        tabTitle[3] = (TextView) vInfone.findViewById(R.id.tabTitle);
+        tabTitle[3].setText("Infone");
 
-        tabImage[1] = (ImageView) vInfone.findViewById(R.id.tabImage);
-        tabImage[1].setImageResource(R.drawable.ic_forum_white_24dp);
+        tabImage[3] = (ImageView) vInfone.findViewById(R.id.tabImage);
+        tabImage[3].setImageResource(R.drawable.baseline_phone_white_24);
 
-        tabNotificationCircle[1] = (ImageView) vInfone.findViewById(R.id.notification_circle);
+        tabNotificationCircle[3] = (ImageView) vInfone.findViewById(R.id.notification_circle);
         vInfone.setAlpha((float) 0.7);
         infoneT.setCustomView(vInfone);
+
+        View vProfile = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        TabLayout.Tab profileT = tabs.newTab();
+
+        tabTitle[4] = (TextView) vProfile.findViewById(R.id.tabTitle);
+        tabTitle[4].setText("Profile");
+
+        tabImage[4] = (ImageView) vProfile.findViewById(R.id.tabImage);
+        tabImage[4].setImageResource(R.drawable.avatar_circle_24dp);
+
+        tabNotificationCircle[4] = (ImageView) vProfile.findViewById(R.id.notification_circle);
+        vProfile.setAlpha((float) 0.7);
+        profileT.setCustomView(vProfile);
 
 
 //        View vStore = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
@@ -427,25 +466,28 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        eventT.setCustomView(vEvents);
 
         // Temporary messages
-        View vShop = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        TabLayout.Tab shopT = tabs.newTab();
+//        View vShop = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+//        TabLayout.Tab shopT = tabs.newTab();
 
-        tabTitle[5] = (TextView) vShop.findViewById(R.id.tabTitle);
-        tabTitle[5].setText("Messages");
+//        tabTitle[5] = (TextView) vShop.findViewById(R.id.tabTitle);
+//        tabTitle[5].setText("Messages");
 
-        tabImage[5] = (ImageView) vShop.findViewById(R.id.tabImage);
-        tabImage[5].setImageResource(R.drawable.ic_message_white_24dp);
+//        tabImage[5] = (ImageView) vShop.findViewById(R.id.tabImage);
+//        tabImage[5].setImageResource(R.drawable.ic_message_white_24dp);
 
-        tabNotificationCircle[5] = (ImageView) vShop.findViewById(R.id.notification_circle);
-        vShop.setAlpha((float) 0.7);
-        shopT.setCustomView(vShop);
+//        tabNotificationCircle[5] = (ImageView) vShop.findViewById(R.id.notification_circle);
+//        vShop.setAlpha((float) 0.7);
+//        shopT.setCustomView(vShop);
 
         tabs.addTab(recentsT);
+        tabs.addTab(forumsT);
+        tabs.addTab(addT);
         tabs.addTab(infoneT);
+        tabs.addTab(profileT);
 //        tabs.addTab(storeT);
 //        tabs.addTab(eventT);
 //        tabs.addTab(cabT);
-        tabs.addTab(shopT);
+//        tabs.addTab(shopT);
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -485,6 +527,15 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
                         break;
                     }
+                    case 2: {
+                        break;
+                    }
+                    case 3: {
+                        break;
+                    }
+                    case 4: {
+                        break;
+                    }
 //                    case 3: {
 //                        setActionBarTitle("Events");
 //                        CounterManager.EventOpen();
@@ -492,15 +543,15 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //                        getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
 //                        break;
 //                    }
-                    case 5: {
-                        setActionBarTitle("Anonymous Messages");
-                        CounterManager.anonymousMessageOpen();
-//                        fab.setImageResource(R.drawable.procent_badge_256);
-//                        CounterManager.ShopOpen();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
-
-                        break;
-                    }
+//                    case 5: {
+//                        setActionBarTitle("Anonymous Messages");
+//                        CounterManager.anonymousMessageOpen();
+////                        fab.setImageResource(R.drawable.procent_badge_256);
+////                        CounterManager.ShopOpen();
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
+//
+//                        break;
+//                    }
 //                    case 2: {
 //                        setActionBarTitle("StoreRoom");
 //                        CounterManager.StoreRoomOpen();

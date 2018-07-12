@@ -96,8 +96,8 @@ public class Recents extends Fragment {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     normalPosts.add(shot.getValue(RecentsItemFormat.class));
                 }
-                recentsItemFormats.add(addStatus);
                 recentsItemFormats.add(features);
+                recentsItemFormats.add(addStatus);
                 Collections.reverse(normalPosts);
                 recentsItemFormats.addAll(normalPosts);
                 addStatus.setRecentType(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR);
