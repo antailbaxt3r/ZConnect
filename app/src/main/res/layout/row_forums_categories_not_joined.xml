@@ -65,8 +65,10 @@
                                 android:text="latest text"
                                 android:textColor="@color/secondaryText"
                                 android:ellipsize="end"
-                                android:maxLines="1"/>
+                                android:maxLines="1"
+                                android:maxLength="16"/>
                             <TextView
+                                android:layout_marginStart="5dp"
                                 android:id="@+id/forums_cat_last_message_timestamp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -83,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/outline_add_circle_outline_white_36"
                     android:background="@color/transparent"
-                    android:tint="@color/colorPrimary"
+                    android:tint="@color/secondaryText2"
                     android:layout_gravity="center"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"/>

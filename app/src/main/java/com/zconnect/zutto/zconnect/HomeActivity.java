@@ -364,7 +364,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[0].setText("Recents");
 
         tabImage[0] = (ImageView) vRecents.findViewById(R.id.tabImage);
-        tabImage[0].setImageResource(R.drawable.baseline_home_white_24);
+        tabImage[0].setImageResource(R.drawable.baseline_home_white_36);
 
         tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
 
@@ -378,7 +378,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[1].setText("Forums");
 
         tabImage[1] = (ImageView) vForums.findViewById(R.id.tabImage);
-        tabImage[1].setImageResource(R.drawable.baseline_forum_white_24);
+        tabImage[1].setImageResource(R.drawable.baseline_forum_white_36);
 
         tabNotificationCircle[1] = (ImageView) vForums.findViewById(R.id.notification_circle);
         vForums.setAlpha((float) 0.7);
@@ -404,7 +404,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[3].setText("Infone");
 
         tabImage[3] = (ImageView) vInfone.findViewById(R.id.tabImage);
-        tabImage[3].setImageResource(R.drawable.baseline_phone_white_24);
+        tabImage[3].setImageResource(R.drawable.baseline_phone_white_36);
 
         tabNotificationCircle[3] = (ImageView) vInfone.findViewById(R.id.notification_circle);
         vInfone.setAlpha((float) 0.7);
@@ -417,7 +417,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[4].setText("Profile");
 
         tabImage[4] = (ImageView) vProfile.findViewById(R.id.tabImage);
-        tabImage[4].setImageResource(R.drawable.avatar_circle_24dp);
+        tabImage[4].setImageResource(R.drawable.avatar_circle_36dp);
 
         tabNotificationCircle[4] = (ImageView) vProfile.findViewById(R.id.notification_circle);
         vProfile.setAlpha((float) 0.7);

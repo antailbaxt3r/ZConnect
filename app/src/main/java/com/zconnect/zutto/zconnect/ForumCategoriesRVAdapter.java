@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -95,7 +96,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
             createViewHolder holderMain = (createViewHolder) holder;
             holderMain.createForum(tabUID);
-            holderMain.createForumText.setTextColor(context.getResources().getColor(R.color.secondaryText));
+//            holderMain.createForumText.setTextColor(context.getResources().getColor(R.color.secondaryText));
 
         }else if(forumCategory.getForumType().equals(forumTypeUtilities.KEY_JOINED_STR)){
 
@@ -155,10 +156,10 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private class createViewHolder extends RecyclerView.ViewHolder{
 
-        TextView createForumText;
+        RelativeLayout createForum;
         public createViewHolder(View itemView) {
             super(itemView);
-            createForumText = (TextView) itemView.findViewById(R.id.create_forum);
+            createForum = (RelativeLayout) itemView.findViewById(R.id.create_forum);
         }
 
         public void createForum(final String uid){

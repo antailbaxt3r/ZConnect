@@ -61,7 +61,8 @@
                             android:text="latest text"
                             android:textColor="@color/secondaryText"
                             android:ellipsize="end"
-                            android:maxLines="1"/>
+                            android:maxLines="1"
+                            android:maxLength="16"/>
                         <TextView
                             android:layout_marginStart="5dp"
                             android:id="@+id/forums_cat_last_message_timestamp"
