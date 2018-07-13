@@ -162,6 +162,12 @@
     <string name="infone_search">Infone Search</string>
     <string name="search_infone_hint">Search People</string>
     <string name="title_storeroom_shortlist">Shortlisted Products</string>
+    <string name="GPSAlertDialogTitle">Location Permission</string>
+    <string name="GPSAlertDialogMessage">allow permission</string>
+    <string name="cancel">cancel</string>
+    <string name="title_activity_verfication_page">Verfication</string>
+    <string name="title_activity_admin_page">Admin Room</string>
+    <string name="title_activity_admin_home">AdminHome</string>
 
     <string name="title_recents_feature_view">Community Features</string>
 

@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.Utilities.RecentTypeUtilities;
 
 import java.util.HashMap;
@@ -141,15 +142,9 @@ public class LogoFlashActivity extends BaseActivity {
 //            temp = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("features").child("forums");
 //
 //
-//            temp.child("categories").addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    int count =0;
-//                    for (DataSnapshot shot: dataSnapshot.getChildren()){
+//                            for (DataSnapshot shot2: shot.child("Chat").getChildren()){
+//                                count++;
 //
-//                        temp2 = temp.child("tabsCategories").child(shot.child("tab").getValue().toString()).child(shot.getKey()).child("users");
-//                        temp2.setValue(shot.child("users").getValue());
-//// if(shot.hasChild("Chat")){
 //
 //
 ////

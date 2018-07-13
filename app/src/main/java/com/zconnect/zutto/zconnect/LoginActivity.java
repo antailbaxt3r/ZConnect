@@ -223,16 +223,31 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
             Toast.makeText(this, communityCode +" community code shared preferance ", Toast.LENGTH_SHORT).show();
             editInfo2.commit();
+
+            SharedPreferences sharedPrefVerification = getSharedPreferences("userType", MODE_PRIVATE);
+            SharedPreferences.Editor editInfo3 = sharedPrefVerification.edit();
+            editInfo2.putBoolean("userVerification", true);
+
+            editInfo3.commit();
             FirebaseMessaging.getInstance().subscribeToTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
             Intent i = new Intent(LoginActivity.this,HomeActivity.class);
             startActivity(i);
             finish();
         }else {
-            logout();
             mProgress.dismiss();
-            Toast.makeText(LoginActivity.this, "Login through your College Email", Toast.LENGTH_SHORT).show();
-        }
 
+            SharedPreferences sharedPrefVerification = getSharedPreferences("userType", MODE_PRIVATE);
+            SharedPreferences.Editor editInfo2 = sharedPrefVerification.edit();
+            editInfo2.putBoolean("userVerification", false);
+            editInfo2.commit();
+            Intent i = new Intent(this,CommunitiesAround.class);
+
+            startActivity(i);
+            finish();
+            //logout();
+
+            Toast.makeText(LoginActivity.this, "Welcome to ZConnect", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
