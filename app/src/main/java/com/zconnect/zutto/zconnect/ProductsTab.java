@@ -69,7 +69,8 @@ public class ProductsTab extends Fragment {
     private Vector<Product> productVector= new Vector<Product>();
     private ValueEventListener mListener;
     private Product singleProduct;
-
+    private Boolean flagNoProductsAvailable;
+    private TextView noProductsAvailableText;
     public ProductsTab(){
     }
 
@@ -85,6 +86,8 @@ public class ProductsTab extends Fragment {
 
 //        productLinearLayout.setReverseLayout(true);
 //        productLinearLayout.setStackFromEnd(true);
+
+        noProductsAvailableText = (TextView) view.findViewById(R.id.no_products_available_text);
         mProductList = (RecyclerView) view.findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
@@ -101,7 +104,7 @@ public class ProductsTab extends Fragment {
         communityReference = communitySP.getString("communityReference", null);
 
         // StoreRoom feature Reference
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products2");
         productsQuery = mDatabase.orderByPriority();
         mDatabase.keepSynced(true);
 
@@ -133,20 +136,26 @@ public class ProductsTab extends Fragment {
         mProductList.setAdapter(productAdapter);
 
 
+
         mListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 productVector.clear();;
+                flagNoProductsAvailable = true;
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     try{
                         singleProduct = shot.getValue(Product.class);
                         if(!singleProduct.getKey().equals(null)&& !singleProduct.getProductName().equals(null)) {
                             productVector.add(singleProduct);
+                            flagNoProductsAvailable = false;
                         }
                     }
                     catch (Exception e){
                         Log.d("Error Alert", e.getMessage());
                     }
+                }
+                if(flag){
+                    noProductsAvailableText.setVisibility(View.VISIBLE);
                 }
                 Collections.reverse(productVector);
                 productAdapter.notifyDataSetChanged();
