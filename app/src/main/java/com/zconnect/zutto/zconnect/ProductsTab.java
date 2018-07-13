@@ -109,7 +109,7 @@ public class ProductsTab extends Fragment {
         communityReference = communitySP.getString("communityReference", null);
 
         // StoreRoom feature Reference
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products2");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
         productsQuery = mDatabase.orderByPriority();
         mDatabase.keepSynced(true);
 
