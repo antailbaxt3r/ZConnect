@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,7 +58,6 @@ import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,17 +77,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private boolean doubleBackToExitPressedOnce = false;
     private ValueEventListener editProfileValueEventListener;
     private ValueEventListener popupsListener;
-    /**
-     * Listenes to /ui node in firebase.
-     */
     private ValueEventListener uiDbListener;
-    /**
-     * The user name displayed in nav header.
-     */
     private TextView navHeaderUserNameTv;
-    /**
-     * The uid displayed in nav header.
-     */
     private TextView navHeaderEmailTv;
     private SimpleDraweeView navHeaderBackground;
     private MenuItem editProfileItem;
@@ -103,9 +94,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private FloatingActionButton fab, fab1, fab2, fab3;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
 
-    /**
-     * /ui node
-     */
     private DatabaseReference uiDbRef;
     private FirebaseUser mUser;
     private boolean guestMode;
@@ -113,7 +101,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
     private Fragment recent, forums, shop;
-//    events, store, cab;
+
+
     private DatabaseReference mDatabaseStats;
     private DatabaseReference mDatabaseUserStats;
     int UsersTotalNumbers = 0, TotalNumbers = 0;
@@ -124,6 +113,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private ValueEventListener UserStats;
     private ValueEventListener TotalStats;
     private String navHeaderBackGroundImageUrl =null;
+    private String Title;
 
     String flag;
 
@@ -188,11 +178,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.hasChild("name")) {
-                        setToolbarTitle(dataSnapshot.child("name").getValue().toString() + " Connect");
-
-
+                        Title = dataSnapshot.child("name").getValue().toString() + " Connect";
+                        setToolbarTitle(Title);
                     } else {
-                        setToolbarTitle("Community Connect");
+                        Title = "Community Connect";
+                        setToolbarTitle(Title);
                     }
 
                     navHeaderBackGroundImageUrl = dataSnapshot.child("image").getValue(String.class);
@@ -364,7 +354,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     //Setting contents in the different tabs
     void tabs() {
         View vRecents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        TabLayout.Tab recentsT = tabs.newTab();
+        final TabLayout.Tab recentsT = tabs.newTab();
 
         tabTitle[0] = (TextView) vRecents.findViewById(R.id.tabTitle);
         tabTitle[0].setText("Recents");
@@ -496,42 +486,30 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        tabs.addTab(shopT);
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+            int prePos;
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
                 tab.getCustomView().setAlpha((float) 1);
                 switch (pos) {
                     case 0: {
-                        communityInfoRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                if (dataSnapshot.hasChild("name")){
-                                    setActionBarTitle(dataSnapshot.child("name").getValue().toString() + " Connect");
-                                }else {
-                                    setActionBarTitle("Community Connect");
-                                }
-
-                                CounterManager.RecentsOpen();
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-//                        fab.setImageResource(R.drawable.ic_add_white_36dp);
+                        setToolbarTitle(Title);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
-                        setActionBarTitle("Forums");
-                        CounterManager.forumsOpen();
+                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
+                           buildAlertCheckNewUser("Forums");
+                           recentsT.select();
+                        }else{
+                            setActionBarTitle("Forums");
+                            CounterManager.forumsOpen();
 //                        CounterManager.InfoneOpen();
 //                        fab.setImageResource(R.drawable.ic_edit_white_24dp);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
-                        break;
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
+                            break;
+                        }
                     }
                     case 2: {
                         break;
@@ -578,6 +556,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 tab.getCustomView().setAlpha((float) .7);
+                prePos = tab.getPosition();
             }
 
             @Override
@@ -1077,6 +1056,41 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        editInfo2.putString("communityReference", communityName);
 //        editInfo2.commit();
 //    }
+
+
+    private  void buildAlertCheckNewUser(String featureName)
+    {
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setMessage("You need to verify to access " + featureName)
+                .setCancelable(false)
+                .setPositiveButton("Verify Now", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent(HomeActivity.this,VerificationPage.class);
+                        startActivity(intent);
+
+                    }
+                })
+                .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(HomeActivity.this, "You need to verify to access this feature", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+        final android.app.AlertDialog alert = builder.create();
+
+        if(!((Activity)this).isFinishing())
+        {
+            if(!alert.isShowing()) {
+                alert.show();
+                //show dialog
+            }
+        }
+
+    }
 
 
 

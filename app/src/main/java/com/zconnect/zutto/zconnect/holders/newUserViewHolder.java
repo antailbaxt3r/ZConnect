@@ -50,6 +50,10 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
         declineUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(UID).child("userType");
+                userReference.setValue(UsersTypeUtilities.KEY_NOT_VERIFIED);
+
                 DatabaseReference newUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers").child(UID).child("statusCode");
                 newUserReference.setValue(VerificationUtilities.KEY_NOT_APPROVED);
             }

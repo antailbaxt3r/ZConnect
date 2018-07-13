@@ -43,6 +43,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 import com.zconnect.zutto.zconnect.ItemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
 
 import java.io.ByteArrayOutputStream;
@@ -223,6 +224,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     userDetails=dataSnapshot.getValue(UserItemFormat.class);
                     updateViewDetails();
+
                 }
 
                 @Override
@@ -472,6 +474,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                         newContactNumRef.child("imageurl").setValue(downloadUri.toString());
 
                         if (flag){
+                            updateCurrentUser();
                             mProgress.dismiss();
                             finish();
                         }else {
@@ -495,7 +498,9 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                         newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
                         newContactNumRef.child("thumbnail").setValue(downloadUriThumb.toString());
                         if (flag){
+                            updateCurrentUser();
                             mProgress.dismiss();
+
                             finish();
                         }else {
                             flag=true;
@@ -512,10 +517,28 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 newContactNumRef.child("imageurl").setValue(mUser.getPhotoUrl().toString());
                 newContactRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
                 newContactNumRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
+
+                updateCurrentUser();
                 mProgress.dismiss();
                 finish();
             }
         }
+    }
+
+    public void updateCurrentUser(){
+        DatabaseReference currentUserDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        currentUserDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
