@@ -13,7 +13,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:text="@string/title_recents_feature_view"/>
+            android:text="@string/title_recents_feature_view"
+            android:layout_gravity="start"
+            android:textStyle="bold"/>
         <HorizontalScrollView
             android:id="@+id/hsv_recents_features_view"
             android:layout_width="match_parent"
@@ -35,7 +37,8 @@
                     android:gravity="center"
                     android:orientation="vertical">
                     <RelativeLayout
-                        android:id="@+id/storeroom_recents_features_view"
+                        android:visibility="gone"
+                        android:id="@+id/admin_recents_features_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="15dp">
@@ -45,7 +48,7 @@
                             android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/outline_local_mall_white_36"
+                            android:src="@drawable/ic_settings_applications_white_36dp"
                             android:layout_centerHorizontal="true"
                             android:tint="@color/white"/>
                         <TextView
@@ -53,8 +56,40 @@
                             android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Storeroom"
+                            android:text="Admin"
                             android:layout_below="@+id/circle_recents_feature_item"
+                            android:layout_centerHorizontal="true"
+                            android:textColor="@color/white"
+                            android:layout_marginTop="5dp"
+                            android:textSize="10sp"/>
+                    </RelativeLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <RelativeLayout
+                        android:id="@+id/storeroom_recents_features_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="15dp">
+                        <ImageView
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/circle1_recents_feature_item"
+                            android:duplicateParentState="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/outline_local_mall_white_36"
+                            android:layout_centerHorizontal="true"
+                            android:tint="@color/white"/>
+                        <TextView
+                            android:id="@+id/text1_recents_feature_item"
+                            android:duplicateParentState="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Storeroom"
+                            android:layout_below="@+id/circle1_recents_feature_item"
                             android:layout_centerHorizontal="true"
                             android:textColor="@color/white"
                             android:layout_marginTop="5dp"

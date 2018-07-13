@@ -118,6 +118,7 @@ public class CabPoolAll extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_cab_pool_main);
 //        setHasOptionsMenu(true);
 
         try {
@@ -166,8 +167,6 @@ public class CabPoolAll extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
-        setContentView(R.layout.fragment_cab_pool_main);
         // Inflate the layout for this fragment
 //        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
         recyclerView = (RecyclerView) findViewById(R.id.pool_main_rv);

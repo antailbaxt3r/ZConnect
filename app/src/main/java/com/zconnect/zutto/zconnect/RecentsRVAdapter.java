@@ -505,7 +505,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         HorizontalScrollView hsv;
         LinearLayout linearLayout;
-        RelativeLayout events, cabpool, storeroom;
+        RelativeLayout events, cabpool, storeroom, admin;
         public FeaturesViewHolder(View itemView) {
             super(itemView);
             hsv = (HorizontalScrollView) itemView.findViewById(R.id.hsv_recents_features_view);
@@ -513,6 +513,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             events = (RelativeLayout) itemView.findViewById(R.id.events_recents_features_view);
             storeroom = (RelativeLayout) itemView.findViewById(R.id.storeroom_recents_features_view);
             cabpool = (RelativeLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
+            admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
+
+            admin.setVisibility(View.VISIBLE);
 
             events.setOnClickListener(new View.OnClickListener() {
                 @Override
