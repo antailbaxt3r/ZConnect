@@ -12,16 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
@@ -93,7 +97,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
             createViewHolder holderMain = (createViewHolder) holder;
             holderMain.createForum(tabUID);
-            holderMain.createForumText.setTextColor(context.getResources().getColor(R.color.secondaryText));
+//            holderMain.createForumText.setTextColor(context.getResources().getColor(R.color.secondaryText));
 
         }else if(forumCategory.getForumType().equals(ForumTypeUtilities.KEY_JOINED_STR)){
 
@@ -153,10 +157,10 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private class createViewHolder extends RecyclerView.ViewHolder{
 
-        TextView createForumText;
+        RelativeLayout createForum;
         public createViewHolder(View itemView) {
             super(itemView);
-            createForumText = (TextView) itemView.findViewById(R.id.create_forum);
+            createForum = (RelativeLayout) itemView.findViewById(R.id.create_forum);
         }
 
         public void createForum(final String uid){
@@ -165,10 +169,15 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 public void onClick(View v) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle("Enter Title");
-                    final EditText input = new EditText(context);
+                    LayoutInflater inflater = LayoutInflater.from(context);
+                    View view = inflater.inflate(R.layout.create_forum_alert, null);
+                    builder.setView(view);
+                    final MaterialEditText addForumName = (MaterialEditText) view.findViewById(R.id.add_name_create_forum_alert);
+                    final FrameLayout addForumIcon = (FrameLayout) view.findViewById(R.id.add_icon_create_forum_alert);
+//                    final EditText input = new EditText(context);
                     // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                    input.setInputType(InputType.TYPE_CLASS_TEXT);
-                    builder.setView(input);
+//                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+//                    builder.setView(input);
 
                     builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                         @Override
@@ -177,7 +186,10 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                             tabName.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    addCategory(input.getText().toString(),uid,dataSnapshot.child("name").getValue().toString());
+                                    Log.d("FORUM NAME", addForumName.getText().toString());
+//                                    addCategory(addForumName.getText().toString(),uid,dataSnapshot.child("name").getValue().toString());
+//                                    addCategory(addForumIcon.get);
+//                                    addCategory(input.getText().toString(),uid,dataSnapshot.child("name").getValue().toString());
                                 }
 
                                 @Override
