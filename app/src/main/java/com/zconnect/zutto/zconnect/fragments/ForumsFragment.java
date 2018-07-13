@@ -2,7 +2,6 @@ package com.zconnect.zutto.zconnect.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,13 +21,11 @@ import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.ForumCategoriesRVAdapter;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.Utilities.forumTypeUtilities;
+import com.zconnect.zutto.zconnect.Utilities.ForumTypeUtilities;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
 
 import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 
@@ -78,9 +75,9 @@ public class ForumsFragment extends Fragment {
                 addCategoryButton.setName("+ create a forum");
                 addCategoryButton.setCatUID("add");
                 addCategoryButton.setTabUID("this");
-                addCategoryButton.setForumType(forumTypeUtilities.KEY_CREATE_FORUM_STR);
+                addCategoryButton.setForumType(ForumTypeUtilities.KEY_CREATE_FORUM_STR);
 
-                titleNotJoined.setForumType(forumTypeUtilities.KEY_NOT_JOINED_TITLE_STR);
+                titleNotJoined.setForumType(ForumTypeUtilities.KEY_NOT_JOINED_TITLE_STR);
 
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     forumCategoriesItemFormat temp = new forumCategoriesItemFormat();
@@ -88,7 +85,7 @@ public class ForumsFragment extends Fragment {
                         temp = shot.getValue(forumCategoriesItemFormat.class);
                         try {
                             if(temp.getName()!=null) {
-                                temp.setForumType(forumTypeUtilities.KEY_JOINED_STR);
+                                temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
                                 if(shot.hasChild("lastMessage")){
                                     joinedForumCategories.add(temp);
                                 }else {
@@ -110,7 +107,7 @@ public class ForumsFragment extends Fragment {
                         temp=shot.getValue(forumCategoriesItemFormat.class);
                         try {
                             if(temp.getName()!=null) {
-                                temp.setForumType(forumTypeUtilities.KEY_NOT_JOINED_STR);
+                                temp.setForumType(ForumTypeUtilities.KEY_NOT_JOINED_STR);
                                 notJoinedForumCategories.add(temp);
                             }
                         }catch (Exception e){}

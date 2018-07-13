@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -22,6 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.Utilities.FeatureNamesUtilities;
+import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
 
 import java.util.Vector;
 
@@ -34,14 +38,15 @@ import static android.content.Context.MODE_PRIVATE;
 public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.ViewHolder> {
     Context context;
     Vector<UsersListItemFormat> usersListItemFormats;
-
+    String featureType;
 
     private SharedPreferences communitySP;
     public String communityReference;
 
-    public UsersListRVAdapter(Context context, Vector<UsersListItemFormat> usersListItemFormats) {
+    public UsersListRVAdapter(Context context, Vector<UsersListItemFormat> usersListItemFormats, String featureType) {
         this.context = context;
         this.usersListItemFormats = usersListItemFormats;
+        this.featureType = featureType;
     }
 
     @Override
@@ -56,6 +61,7 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
         holder.name.setText(usersListItemFormats.get(position).getName());
         holder.number.setText(usersListItemFormats.get(position).getPhonenumber());
         holder.avatarCircle.setImageURI(usersListItemFormats.get(position).getImageThumb());
+        holder.openOptions(featureType,usersListItemFormats.get(position).getUserType());
     }
 
     @Override
@@ -94,16 +100,75 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                             Uri.parse("tel:" + Long.parseLong(number.getText().toString().trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });
-            rv_item.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+
+        }
+
+        public void openOptions(String featureType, final String forumUserType){
+
+            if(featureType.equals(FeatureNamesUtilities.KEY_CABPOOL)){
+
                 String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
                 intent=new Intent(context, OpenUserDetail.class);
                 intent.putExtra("Uid",userUID);
                 context.startActivity(intent);
 
-                }
-            });
+            }else if(featureType.equals(FeatureNamesUtilities.KEY_FORUMS)){
+                rv_item.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if(forumUserType.equals(ForumsUserTypeUtilities.KEY_USER)){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                            String[] animals = {"View Profile"};
+                            builder.setItems(animals, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    switch (which) {
+                                        case 0: String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
+                                            intent=new Intent(context, OpenUserDetail.class);
+                                            intent.putExtra("Uid",userUID);
+                                            context.startActivity(intent);
+                                            break;
+                                    }
+                                }
+                            });
+
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+
+                        }else if(forumUserType.equals(ForumsUserTypeUtilities.KEY_ADMIN)){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                            String[] animals = {"View Profile","Make Admin","Remove"};
+                            builder.setItems(animals, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    switch (which) {
+                                        case 0: String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
+                                            intent=new Intent(context, OpenUserDetail.class);
+                                            intent.putExtra("Uid",userUID);
+                                            context.startActivity(intent);
+                                            break;
+                                        case 1: // cow
+                                        case 2: // camel
+                                    }
+                                }
+                            });
+
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        }else {
+                            String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
+                            intent=new Intent(context, OpenUserDetail.class);
+                            intent.putExtra("Uid",userUID);
+                            context.startActivity(intent);
+                        }
+                    }
+                });
+
+            }
+
         }
     }
 }

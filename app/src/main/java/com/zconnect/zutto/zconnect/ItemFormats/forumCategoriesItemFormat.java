@@ -14,6 +14,7 @@ public class forumCategoriesItemFormat {
     private String catUID;
     private ChatItemFormats lastMessage;
     private String forumType;
+    private PostedByDetails PostedBy;
     private Vector<UsersListItemFormat> usersListItemFormats;
 
     public forumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats ) {

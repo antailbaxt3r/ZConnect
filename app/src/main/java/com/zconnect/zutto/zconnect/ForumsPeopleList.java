@@ -19,6 +19,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.FeatureNamesUtilities;
+import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
 
 import java.util.Vector;
 
@@ -93,6 +95,8 @@ public class ForumsPeopleList extends BaseActivity {
                         if (usersListItemFormat.getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             flag = true;
                         }
+
+
                         usersListItemFormatVector.add(usersListItemFormat);
                     }catch (Exception e){}
 
@@ -147,7 +151,7 @@ public class ForumsPeopleList extends BaseActivity {
             }
         };
 
-        adapter = new UsersListRVAdapter(this, usersListItemFormatVector);
+        adapter = new UsersListRVAdapter(this, usersListItemFormatVector, FeatureNamesUtilities.KEY_FORUMS);
         forumsPeopleRV.setHasFixedSize(true);
         forumsPeopleRV.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         forumsPeopleRV.setAdapter(adapter);

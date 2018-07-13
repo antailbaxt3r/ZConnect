@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -22,12 +21,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
-import com.zconnect.zutto.zconnect.Utilities.forumTypeUtilities;
+import com.zconnect.zutto.zconnect.Utilities.ForumTypeUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -54,30 +52,30 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
     @Override
     public int getItemViewType(int position) {
 
-        if(forumCategoriesItemFormats.get(position).getForumType().equals(forumTypeUtilities.KEY_CREATE_FORUM_STR)) {
-            return forumTypeUtilities.KEY_CREATE_FORUM;
-        }else if (forumCategoriesItemFormats.get(position).getForumType().equals(forumTypeUtilities.KEY_JOINED_STR)) {
-            return forumTypeUtilities.KEY_JOINED;
-        }else if(forumCategoriesItemFormats.get(position).getForumType().equals(forumTypeUtilities.KEY_NOT_JOINED_TITLE_STR)){
-            return forumTypeUtilities.KEY_NOT_JOINED_TITLE;
-        }else if(forumCategoriesItemFormats.get(position).getForumType().equals(forumTypeUtilities.KEY_NOT_JOINED_STR)){
-            return forumTypeUtilities.KEY_NOT_JOINED;
+        if(forumCategoriesItemFormats.get(position).getForumType().equals(ForumTypeUtilities.KEY_CREATE_FORUM_STR)) {
+            return ForumTypeUtilities.KEY_CREATE_FORUM;
+        }else if (forumCategoriesItemFormats.get(position).getForumType().equals(ForumTypeUtilities.KEY_JOINED_STR)) {
+            return ForumTypeUtilities.KEY_JOINED;
+        }else if(forumCategoriesItemFormats.get(position).getForumType().equals(ForumTypeUtilities.KEY_NOT_JOINED_TITLE_STR)){
+            return ForumTypeUtilities.KEY_NOT_JOINED_TITLE;
+        }else if(forumCategoriesItemFormats.get(position).getForumType().equals(ForumTypeUtilities.KEY_NOT_JOINED_STR)){
+            return ForumTypeUtilities.KEY_NOT_JOINED;
         }else return -1;
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        if(viewType== forumTypeUtilities.KEY_CREATE_FORUM){
+        if(viewType== ForumTypeUtilities.KEY_CREATE_FORUM){
             View createContactView = inflater.inflate(R.layout.row_forums_sub_categories_create, parent, false);
             return new ForumCategoriesRVAdapter.createViewHolder(createContactView);
-        }else if( viewType == forumTypeUtilities.KEY_JOINED){
+        }else if( viewType == ForumTypeUtilities.KEY_JOINED){
             View joinedContactView = inflater.inflate(R.layout.row_forums_sub_categories_joined, parent, false);
             return new ForumCategoriesRVAdapter.joinedViewHolder(joinedContactView);
-        }else if(viewType== forumTypeUtilities.KEY_NOT_JOINED_TITLE){
+        }else if(viewType== ForumTypeUtilities.KEY_NOT_JOINED_TITLE){
             View titleContactView = inflater.inflate(R.layout.row_forums_sub_categories_type, parent, false);
             return new ForumCategoriesRVAdapter.titleViewHolder(titleContactView);
-        }else if(viewType == forumTypeUtilities.KEY_NOT_JOINED){
+        }else if(viewType == ForumTypeUtilities.KEY_NOT_JOINED){
             View notJoinedViewHolder = inflater.inflate(R.layout.row_forums_categories_not_joined,parent,false);
             return new ForumCategoriesRVAdapter.notJoinedViewHolder(notJoinedViewHolder);
         }else {
@@ -91,13 +89,13 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
         final forumCategoriesItemFormat forumCategory = forumCategoriesItemFormats.get(position);
 
-        if(forumCategory.getForumType().equals(forumTypeUtilities.KEY_CREATE_FORUM_STR)){
+        if(forumCategory.getForumType().equals(ForumTypeUtilities.KEY_CREATE_FORUM_STR)){
 
             createViewHolder holderMain = (createViewHolder) holder;
             holderMain.createForum(tabUID);
             holderMain.createForumText.setTextColor(context.getResources().getColor(R.color.secondaryText));
 
-        }else if(forumCategory.getForumType().equals(forumTypeUtilities.KEY_JOINED_STR)){
+        }else if(forumCategory.getForumType().equals(ForumTypeUtilities.KEY_JOINED_STR)){
 
             joinedViewHolder holderMain = (joinedViewHolder) holder;
             holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());
@@ -116,12 +114,12 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
             holderMain.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
 
-        }else if(forumCategory.getForumType().equals(forumTypeUtilities.KEY_NOT_JOINED_TITLE_STR)){
+        }else if(forumCategory.getForumType().equals(ForumTypeUtilities.KEY_NOT_JOINED_TITLE_STR)){
 
             titleViewHolder holderMain = (titleViewHolder) holder;
             holderMain.setTitle("Not Joined");
 
-        }else if(forumCategory.getForumType().equals(forumTypeUtilities.KEY_NOT_JOINED_STR)){
+        }else if(forumCategory.getForumType().equals(ForumTypeUtilities.KEY_NOT_JOINED_STR)){
 
             notJoinedViewHolder holderMain = (notJoinedViewHolder) holder;
             holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());

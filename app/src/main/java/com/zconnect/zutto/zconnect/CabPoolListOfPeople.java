@@ -26,6 +26,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.FeatureNamesUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -182,7 +183,7 @@ public class CabPoolListOfPeople extends BaseActivity {
         });
 
 
-        adapter = new UsersListRVAdapter(this, usersListItemFormatVector);
+        adapter = new UsersListRVAdapter(this, usersListItemFormatVector, FeatureNamesUtilities.KEY_CABPOOL);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(adapter);
