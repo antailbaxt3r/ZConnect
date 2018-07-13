@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".CabPoolAll">
 
-    <!-- TODO: Update blank fragment layout -->
     <ProgressBar
         android:id="@+id/fragment_cab_pool_main_progress_circle"
         android:layout_width="wrap_content"

@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +72,8 @@ public class ProductsTab extends Fragment {
     private Product singleProduct;
     private Boolean flagNoProductsAvailable;
     private TextView noProductsAvailableText;
+    private ProgressBar progressBar;
+
     public ProductsTab(){
     }
 
@@ -88,11 +91,13 @@ public class ProductsTab extends Fragment {
 //        productLinearLayout.setStackFromEnd(true);
 
         noProductsAvailableText = (TextView) view.findViewById(R.id.no_products_available_text);
+        progressBar = (ProgressBar) view.findViewById(R.id.products_tab_progress_bar);
         mProductList = (RecyclerView) view.findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
 
         mAuth = FirebaseAuth.getInstance();
+        progressBar.setVisibility(View.VISIBLE);
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
@@ -154,8 +159,12 @@ public class ProductsTab extends Fragment {
                         Log.d("Error Alert", e.getMessage());
                     }
                 }
-                if(flag){
+
+                progressBar.setVisibility(View.INVISIBLE);
+                if(flagNoProductsAvailable){
                     noProductsAvailableText.setVisibility(View.VISIBLE);
+                }else{
+                    noProductsAvailableText.setVisibility(View.GONE);
                 }
                 Collections.reverse(productVector);
                 productAdapter.notifyDataSetChanged();

@@ -8,13 +8,25 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.zconnect.zutto.zconnect.StoreroomIndividualCategory"
     tools:showIn="@layout/activity_individual_category">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/individual_categories_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:id="@+id/no_products_available_text"
             android:text="No Products Available"
             android:layout_width="wrap_content"

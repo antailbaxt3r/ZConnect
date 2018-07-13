@@ -20,6 +20,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -63,6 +64,7 @@ public class StoreroomIndividualCategory extends BaseActivity {
     private Vector<Product> productVector = new Vector<Product>();
     private Boolean flagNoProductsAvailable;
     private TextView noProductsAvailableText;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +105,10 @@ public class StoreroomIndividualCategory extends BaseActivity {
         mProductList.setHasFixedSize(true);
         gridLayoutManager = new GridLayoutManager(this,2);
         mProductList.setLayoutManager(gridLayoutManager);
+        progressBar = (ProgressBar) findViewById(R.id.individual_categories_progress_bar);
         mAuth = FirebaseAuth.getInstance();
+
+        progressBar.setVisibility(View.VISIBLE);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
         queryCategory = mDatabase.orderByChild("Category").equalTo(category);
@@ -118,15 +123,21 @@ public class StoreroomIndividualCategory extends BaseActivity {
                         singleProduct = shot.getValue(Product.class);
                         if(!singleProduct.getKey().equals(null)&& !singleProduct.getProductName().equals(null)) {
                             productVector.add(singleProduct);
+                            flagNoProductsAvailable=false;
                         }
                     }
                     catch (Exception e){
                         Log.d("Error Alert", e.getMessage());
                     }
+
+
                 }
 
-                if(flag){
+                progressBar.setVisibility(View.INVISIBLE);
+                if(flagNoProductsAvailable){
                     noProductsAvailableText.setVisibility(View.VISIBLE);
+                }else {
+                    noProductsAvailableText.setVisibility(View.GONE);
                 }
                 Collections.reverse(productVector);
                 adapter.notifyDataSetChanged();

@@ -44,7 +44,7 @@ public class LogoFlashActivity extends BaseActivity {
     //Request code permission request external storage
     private final int RC_PERM_REQ_EXT_STORAGE = 7;
     private ImageView bgImage;
-    private DatabaseReference mDatabase,temp,temp2;
+    private DatabaseReference mDatabase,temp,temp2,t,t2;
     private View bgColor;
 
 
@@ -123,13 +123,17 @@ public class LogoFlashActivity extends BaseActivity {
             }
         }, 2000);
 
-//            temp = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("home");
-//            temp.addListenerForSingleValueEvent(new ValueEventListener() {
+//                   temp = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("Users1");
+//            t = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Users1");
+//
+//            t.addListenerForSingleValueEvent(new ValueEventListener() {
 //                @Override
 //                public void onDataChange(DataSnapshot dataSnapshot) {
 //                    for(DataSnapshot shot: dataSnapshot.getChildren()) {
-//                        temp2 = shot.getRef().child("recentType");
-//                        temp2.setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+//                        t.child(shot.getKey()).child("memberType").setValue(null);
+//                        t.child(shot.getKey()).child("userType").setValue(UsersTypeUtilities.KEY_VERIFIED);
+////                        temp2 = temp.child(shot.getKey());
+////                        temp2.setValue(UsersTypeUtilities.KEY_VERIFIED);
 //                    }
 //                }
 //
@@ -139,32 +143,6 @@ public class LogoFlashActivity extends BaseActivity {
 //                }
 //            });
 
-//            temp = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("features").child("forums");
-//
-//
-//                            for (DataSnapshot shot2: shot.child("Chat").getChildren()){
-//                                count++;
-//
-//
-//
-////
-////                            for (DataSnapshot shot2: shot.child("Chat").getChildren()){
-////                                count++;
-////
-////
-////
-////                            }
-//
-////                        }
-//                    }
-//                    Toast.makeText(LogoFlashActivity.this, count + " ", Toast.LENGTH_SHORT).show();
-//                }
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//
-//                }
-//            });
-//
     }
 
 
