@@ -108,6 +108,8 @@ public class ForumsFragment extends Fragment {
                                             lastMessage.setMessage(" ");
                                             lastMessage.setTimeDate(1388534400);
                                             lastMessage.setName(" ");
+                                            lastMessage.setMessageType("message");
+                                            lastMessage.setUuid(" ");
                                             temp.setLastMessage(lastMessage);
                                             joinedForumCategories.add(temp);
                                         }
@@ -137,7 +139,8 @@ public class ForumsFragment extends Fragment {
                 Collections.sort(joinedForumCategories, new Comparator<forumCategoriesItemFormat>() {
                     @Override
                     public int compare(forumCategoriesItemFormat o1, forumCategoriesItemFormat o2) {
-                        return Integer.valueOf((int) o1.getLastMessage().getTimeDate()).compareTo((int) o2.getLastMessage().getTimeDate()) ;
+
+                        return Long.valueOf((Long) o2.getLastMessage().getTimeDate()).compareTo((Long) o1.getLastMessage().getTimeDate()) ;
                     }
                 });
 
