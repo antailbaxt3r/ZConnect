@@ -210,7 +210,7 @@ public class CabPoolAll extends BaseActivity {
                     } else {
                         String key = vector_fetched.get(i).getKey();
                         FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key).removeValue();
-                        ArchivePool(firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs").child(key), firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("archives").child(key).child(key));
+                       //ArchivePool(firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs").child(key), firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("archives").child(key).child(key));
                     }
                 }
 

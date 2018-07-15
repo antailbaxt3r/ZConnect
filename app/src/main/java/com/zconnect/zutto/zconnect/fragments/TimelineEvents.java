@@ -138,8 +138,12 @@ public class TimelineEvents extends Fragment {
                     try {
                         singleEvent = shot.getValue(Event.class);
                         if(!singleEvent.getKey().equals(null) && !singleEvent.getEventName().equals(null)) {
-                            eventsVector.add(singleEvent);
-                            flag=true;
+                            Long currentDate = System.currentTimeMillis() - 86400000;
+                            Long dateMillis = singleEvent.getEventTimeMillis();
+                            if (currentDate<dateMillis){
+                                eventsVector.add(singleEvent);
+                                flag=true;
+                            }
                         }
                     }catch (Exception e){}
                 }

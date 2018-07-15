@@ -51,7 +51,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsViewHolder> {
     public void onBindViewHolder(EventsViewHolder holder, int position) {
         if(type.equals("trending")) {
             holder.openEvent(eventsVector.get(position).getKey());
-            holder.checkDelete(eventsVector.get(position).getEventTimeMillis(), eventsVector.get(position).getKey());
             holder.setEventName(eventsVector.get(position).getEventName());
             holder.setEventImage(ctx, eventsVector.get(position).getEventImage());
             holder.setEventTimestamp(eventsVector.get(position).getPostTimeMillis());
