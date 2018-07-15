@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -148,7 +149,6 @@ public class Recents extends Fragment {
                 recentsItemFormats.clear();
                 normalPostsHome.clear();
                 normalPosts.clear();
-
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     tempUser = new RecentsItemFormat();
                     tempUser = shot.getValue(RecentsItemFormat.class);
@@ -158,7 +158,6 @@ public class Recents extends Fragment {
                         tempUser.setRecentType(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
                         normalPostsHome.add(tempUser);
                     }
-
                 }
 
                 recentsItemFormats.add(features);

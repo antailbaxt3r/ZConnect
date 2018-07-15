@@ -1,34 +1,34 @@
 package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.AlertDialog;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.rengwuxian.materialedittext.MaterialEditText;
-import com.zconnect.zutto.zconnect.ChatActivity;
-import com.zconnect.zutto.zconnect.CounterManager;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.zconnect.zutto.zconnect.ForumsClasses.CreateForum;
+import com.zconnect.zutto.zconnect.IntentHandle;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.KeyHelper;
 import com.zconnect.zutto.zconnect.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
@@ -46,6 +46,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
     Context context;
     Vector<forumCategoriesItemFormat> forumCategoriesItemFormats;
     String tabUID;
+
+    StorageReference mStorage;
 
     public ForumCategoriesRVAdapter(Vector<forumCategoriesItemFormat> forumCategoriesItemFormats, Context context, String tabUID) {
         this.forumCategoriesItemFormats = forumCategoriesItemFormats;
@@ -164,128 +166,16 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         public createViewHolder(View itemView) {
             super(itemView);
             createForum = (RelativeLayout) itemView.findViewById(R.id.create_forum);
+            mStorage = FirebaseStorage.getInstance().getReference();
         }
 
         public void createForum(final String uid){
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("Enter Title");
-                    LayoutInflater inflater = LayoutInflater.from(context);
-                    View view = inflater.inflate(R.layout.create_forum_alert, null);
-                    builder.setView(view);
-                    final MaterialEditText addForumName = (MaterialEditText) view.findViewById(R.id.add_name_create_forum_alert);
-                    final FrameLayout addForumIcon = (FrameLayout) view.findViewById(R.id.add_icon_create_forum_alert);
-//                    final EditText input = new EditText(context);
-                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-//                    input.setInputType(InputType.TYPE_CLASS_TEXT);
-//                    builder.setView(input);
-
-                    builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            DatabaseReference tabName= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabs").child(uid);
-                            tabName.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    Log.d("FORUM NAME", addForumName.getText().toString());
-//                                    addCategory(addForumName.getText().toString(),uid,dataSnapshot.child("name").getValue().toString());
-//                                    addCategory(addForumIcon.get);
-//                                    addCategory(input.getText().toString(),uid,dataSnapshot.child("name").getValue().toString());
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-
-                        }
-                    });
-
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-
-
-                    builder.show();
-                }
-            });
-        }
-
-        public void addCategory(String catName, String uid, final String tabName){
-
-            final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
-            DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid);
-            final DatabaseReference databaseReferenceHome = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
-
-            final DatabaseReference newPush=databaseReferenceCategories.push();
-            DatabaseReference mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-            newPush.child("name").setValue(catName);
-            Long postTimeMillis = System.currentTimeMillis();
-            newPush.child("PostTimeMillis").setValue(postTimeMillis);
-            newPush.child("UID").setValue(newPush.getKey());
-            newPush.child("tab").setValue(uid);
-            final UsersListItemFormat userDetails = new UsersListItemFormat();
-            DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-            user.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot2) {
-                    UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
-                    userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
-                    userDetails.setName(userItemFormat.getUsername());
-                    userDetails.setPhonenumber(userItemFormat.getMobileNumber());
-                    userDetails.setUserUID(userItemFormat.getUserUID());
-                    userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
-                    databaseReferenceCategories.child(newPush.getKey()).child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
-                    CounterManager.forumsAddCategory(tabName);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-            databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
-            databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
-            databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(uid);
-
-
-            //Home
-
-            databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
-            databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
-            databaseReferenceHome.child(newPush.getKey()).child("id").setValue(uid);
-            databaseReferenceHome.child(newPush.getKey()).child("desc").setValue(tabName);
-            databaseReferenceHome.child(newPush.getKey()).child("Key").setValue(newPush.getKey());
-            databaseReferenceHome.child(newPush.getKey()).child("PostTimeMillis").setValue(postTimeMillis);
-
-            newPush.child("PostedBy").child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-            databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-            mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                    newPush.child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
-                    newPush.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
-
-                    databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
-                    databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
+                    final Intent intent = new Intent(context, CreateForum.class);
+                    intent.putExtra("uid", uid);
+                    context.startActivity(intent);
                 }
             });
         }
@@ -348,7 +238,6 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
         View mView;
         ImageButton joinButton;
-        LinearLayout forumRowItem;
 
         public notJoinedViewHolder(View itemView) {
             super(itemView);
@@ -426,4 +315,5 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             super(itemView);
         }
     }
+
 }
