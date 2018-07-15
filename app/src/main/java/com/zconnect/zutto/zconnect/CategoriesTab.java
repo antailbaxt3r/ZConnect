@@ -107,7 +107,7 @@ class CategoryAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 CounterManager.StoroomCategory(temp.categoryName);
-                Intent intent = new Intent(view.getContext(), IndividualCategory.class);
+                Intent intent = new Intent(view.getContext(), StoreroomIndividualCategory.class);
                 intent.putExtra("Category", temp.categoryName);
                 context.startActivity(intent);
 

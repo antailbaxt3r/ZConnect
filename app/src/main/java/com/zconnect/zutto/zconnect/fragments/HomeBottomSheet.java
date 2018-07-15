@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,14 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.zconnect.zutto.zconnect.AddEvent;
 import com.zconnect.zutto.zconnect.AddProduct;
 import com.zconnect.zutto.zconnect.CabPooling;
 import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.HomeActivity;
-import com.zconnect.zutto.zconnect.NewMessageActivity;
+import com.zconnect.zutto.zconnect.AddStatus;
 import com.zconnect.zutto.zconnect.R;
 
 public class HomeBottomSheet extends BottomSheetDialogFragment{
@@ -74,7 +71,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             public void onClick(View view) {
                 CounterManager.eventAddClick();
                 Intent intent;
-                intent = new Intent(getContext(), NewMessageActivity.class);
+                intent = new Intent(getContext(), AddStatus.class);
                 startActivity(intent);
             }
         };

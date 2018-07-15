@@ -21,6 +21,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:clipToPadding="false"
+        android:layout_above="@id/join"
         android:scrollbars="vertical"/>
     <Button
         android:id="@+id/join"

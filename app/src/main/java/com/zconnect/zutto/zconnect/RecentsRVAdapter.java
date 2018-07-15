@@ -1,24 +1,13 @@
 package com.zconnect.zutto.zconnect;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
@@ -26,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,17 +26,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.Utilities.DrawableUtilities;
 import com.zconnect.zutto.zconnect.Utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 import com.zconnect.zutto.zconnect.Utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Vector;
 
 import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
@@ -154,6 +139,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 catch (Exception e) {
                     Log.d("Error Message", e.getMessage());
                 }
+
                 if(recentsItemFormats.get(position).getFeature().equals("Infone"))
                 {
                     holder.post.setVisibility(View.VISIBLE);
@@ -291,10 +277,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.VISIBLE);
 
+                    try {
+                        if(!recentsItemFormats.get(position).getImageurl().equals(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS) && recentsItemFormats.get(position).getImageurl()!=null){
+                            holder.postImage.setVisibility(View.VISIBLE);
+                            holder.postImage.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
+                        }
+                    }catch (Exception e){}
+
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.messages), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_18dp));
-                    holder.postConjunction.setText(" posted a ");
-                    holder.post.setText(recentsItemFormats.get(position).getFeature());
+                    holder.postConjunction.setText(" created a ");
+                    holder.post.setText("Post");
                     holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
                     if(recentsItemFormats.get(position).getDesc2().equals("y")) {
                         holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
@@ -350,6 +343,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 forumsName, forumCategory;
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
+                postImage,
                 productImage;
         ImageView featureIcon;
         LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem;
@@ -395,6 +389,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             forumsRecentItem = (LinearLayout) itemView.findViewById(R.id.forumsRecentItem);
             forumsName = (TextView) itemView.findViewById(R.id.forumsRecentItem_name);
             forumCategory = (TextView) itemView.findViewById(R.id.forumsRecentItem_category);
+            postImage = (SimpleDraweeView) itemView.findViewById(R.id.messagesRecentItem_image);
             //
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -497,7 +492,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             textArea.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, NewMessageActivity.class);
+                    Intent intent = new Intent(context, AddStatus.class);
                     context.startActivity(intent);
                 }
             });

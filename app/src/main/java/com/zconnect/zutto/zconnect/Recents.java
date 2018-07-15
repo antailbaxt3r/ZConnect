@@ -15,8 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,8 +27,8 @@ import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.Utilities.RecentTypeUtilities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -36,7 +36,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.content.Context.MODE_PRIVATE;
-import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 public class Recents extends Fragment {
@@ -50,14 +49,19 @@ public class Recents extends Fragment {
     public String communityReference;
 
 
-    private DatabaseReference homeDbRef;
+    private DatabaseReference homeDbRef,userReference;
     Query queryRef;
-    private ValueEventListener queryResponseListener;
+    private ValueEventListener homeListener,userListener;
     @BindView(R.id.recent_progress)
     ProgressBar progressBar;
 
     RecentsItemFormat addStatus = new RecentsItemFormat();
     RecentsItemFormat features = new RecentsItemFormat();
+
+    RecentsItemFormat tempUser = new RecentsItemFormat();
+
+    Vector<RecentsItemFormat> normalPostsHome = new Vector<RecentsItemFormat>();
+    Vector<RecentsItemFormat> normalPostsUsers = new Vector<RecentsItemFormat>();
     Vector<RecentsItemFormat> normalPosts = new Vector<RecentsItemFormat>();
 
     public Recents() {
@@ -82,28 +86,92 @@ public class Recents extends Fragment {
         communityReference = communitySP.getString("communityReference", null);
 
         homeDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
+        userReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("personalHome");
+        userReference.keepSynced(true);
         //Keep databaseReference in sync even without needing to call valueEventListener
         homeDbRef.keepSynced(true);
         queryRef = homeDbRef;
         queryRef.keepSynced(true);
 
-        queryResponseListener = new ValueEventListener() {
+        progressBar.setVisibility(VISIBLE);
+
+        userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                progressBar.setVisibility(VISIBLE);
                 recentsItemFormats.clear();
+                normalPostsUsers.clear();
                 normalPosts.clear();
+
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                    if(!shot.hasChild("recentType"))
-                    {
-                        Log.d("Recents", "adding type");
-                        shot.getRef().child("recentType").setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+                    tempUser = new RecentsItemFormat();
+                    tempUser = shot.getValue(RecentsItemFormat.class);
+                    if(shot.hasChild("recentType")){
+                        normalPostsUsers.add(tempUser);
+                    }else {
+                        tempUser.setRecentType(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+                        normalPostsUsers.add(tempUser);
                     }
-                    normalPosts.add(shot.getValue(RecentsItemFormat.class));
+
                 }
+
                 recentsItemFormats.add(features);
                 recentsItemFormats.add(addStatus);
-                Collections.reverse(normalPosts);
+
+                normalPosts.addAll(normalPostsHome);
+                normalPosts.addAll(normalPostsUsers);
+
+                Collections.sort(normalPosts, new Comparator<RecentsItemFormat>() {
+                    @Override
+                    public int compare(RecentsItemFormat o1, RecentsItemFormat o2) {
+                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()) ;
+                    }
+                });
+                recentsItemFormats.addAll(normalPosts);
+
+                addStatus.setRecentType(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR);
+                features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
+                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+
+        homeListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                recentsItemFormats.clear();
+                normalPostsHome.clear();
+                normalPosts.clear();
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    tempUser = new RecentsItemFormat();
+                    tempUser = shot.getValue(RecentsItemFormat.class);
+                    if(shot.hasChild("recentType")){
+                        normalPostsHome.add(tempUser);
+                    }else {
+                        tempUser.setRecentType(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+                        normalPostsHome.add(tempUser);
+                    }
+                }
+
+                recentsItemFormats.add(features);
+                recentsItemFormats.add(addStatus);
+
+                normalPosts.addAll(normalPostsHome);
+                normalPosts.addAll(normalPostsUsers);
+
+                Collections.sort(normalPosts, new Comparator<RecentsItemFormat>() {
+                    @Override
+                    public int compare(RecentsItemFormat o1, RecentsItemFormat o2) {
+                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()) ;
+                    }
+                });
                 recentsItemFormats.addAll(normalPosts);
                 addStatus.setRecentType(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR);
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
@@ -116,29 +184,22 @@ public class Recents extends Fragment {
                 progressBar.setVisibility(View.GONE);
             }
         };
-        //setHasFixedSize is used to optimise RV if we know for sure that this view's bounds do not
-        // change with data
+
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
-//        productLinearLayout.setReverseLayout(true);
-//        productLinearLayout.setStackFromEnd(true);
+
         recyclerView.setLayoutManager(productLinearLayout);
-        //Setup layout manager. VERY IMP ALWAYS
+
         adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity());
         recyclerView.setAdapter(adapter);
         return view;
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        //queryRef.addValueEventListener(queryResponseListener);
-//    }
-
     @Override
     public void onResume() {
         super.onResume();
-        queryRef.addValueEventListener(queryResponseListener);
+        queryRef.addValueEventListener(homeListener);
+        userReference.addValueEventListener(userListener);
 
 
     }
@@ -146,8 +207,8 @@ public class Recents extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        queryRef.removeEventListener(queryResponseListener);
-
+        queryRef.removeEventListener(homeListener);
+        userReference.removeEventListener(userListener);
     }
 
     @Override

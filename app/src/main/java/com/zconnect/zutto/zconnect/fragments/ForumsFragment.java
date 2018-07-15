@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,15 +21,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
-import com.zconnect.zutto.zconnect.ForumCategoriesRVAdapter;
+import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.adapters.ForumCategoriesRVAdapter;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.Utilities.forumTypeUtilities;
+import com.zconnect.zutto.zconnect.Utilities.ForumTypeUtilities;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
 
 import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 
@@ -83,39 +81,57 @@ public class ForumsFragment extends Fragment {
                 addCategoryButton.setName("+ create a forum");
                 addCategoryButton.setCatUID("add");
                 addCategoryButton.setTabUID("this");
-                addCategoryButton.setForumType(forumTypeUtilities.KEY_CREATE_FORUM_STR);
+                addCategoryButton.setForumType(ForumTypeUtilities.KEY_CREATE_FORUM_STR);
 
-                titleNotJoined.setForumType(forumTypeUtilities.KEY_NOT_JOINED_TITLE_STR);
+                titleNotJoined.setForumType(ForumTypeUtilities.KEY_NOT_JOINED_TITLE_STR);
 
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     forumCategoriesItemFormat temp = new forumCategoriesItemFormat();
                     if(shot.child("users").hasChild(mAuth.getCurrentUser().getUid())) {
-                        temp = shot.getValue(forumCategoriesItemFormat.class);
-                        try {
-                            if(temp.getName()!=null) {
-                                temp.setForumType(forumTypeUtilities.KEY_JOINED_STR);
-                                if(shot.hasChild("lastMessage")){
-                                    joinedForumCategories.add(temp);
-                                }else {
-                                    ChatItemFormats lastMessage = new ChatItemFormats();
-                                    lastMessage.setMessage(" ");
-                                    lastMessage.setTimeDate(1388534400);
-                                    lastMessage.setName(" ");
-                                    temp.setLastMessage(lastMessage);
-                                    joinedForumCategories.add(temp);
+                            temp = shot.getValue(forumCategoriesItemFormat.class);
+                            try {
+                                if (temp.getName() != null) {
+                                    temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
+                                    if(shot.child("users").child(mAuth.getCurrentUser().getUid()).hasChild("userType")){
+                                        if(!(shot.child("users").child(mAuth.getCurrentUser().getUid()).child("userType").getValue().equals(ForumsUserTypeUtilities.KEY_BLOCKED))) {
+                                            if (shot.hasChild("lastMessage")) {
+                                                joinedForumCategories.add(temp);
+                                            } else {
+                                                ChatItemFormats lastMessage = new ChatItemFormats();
+                                                lastMessage.setMessage(" ");
+                                                lastMessage.setTimeDate(1388534400);
+                                                lastMessage.setName(" ");
+                                                temp.setLastMessage(lastMessage);
+                                                joinedForumCategories.add(temp);
+                                            }
+                                        }
+                                    }else {
+                                        if (shot.hasChild("lastMessage")) {
+                                            joinedForumCategories.add(temp);
+                                        } else {
+                                            ChatItemFormats lastMessage = new ChatItemFormats();
+                                            lastMessage.setMessage(" ");
+                                            lastMessage.setTimeDate(1388534400);
+                                            lastMessage.setName(" ");
+                                            lastMessage.setMessageType("message");
+                                            lastMessage.setUuid(" ");
+                                            temp.setLastMessage(lastMessage);
+                                            joinedForumCategories.add(temp);
+                                        }
+                                    }
+
+
                                 }
+                            } catch (Exception e) {
 
                             }
-                        }catch (Exception e){
-
-                        }
 
                     }else {
 
                         temp=shot.getValue(forumCategoriesItemFormat.class);
                         try {
                             if(temp.getName()!=null) {
-                                temp.setForumType(forumTypeUtilities.KEY_NOT_JOINED_STR);
+                                temp.setForumType(ForumTypeUtilities.KEY_NOT_JOINED_STR);
                                 notJoinedForumCategories.add(temp);
                             }
                         }catch (Exception e){}
@@ -128,7 +144,8 @@ public class ForumsFragment extends Fragment {
                 Collections.sort(joinedForumCategories, new Comparator<forumCategoriesItemFormat>() {
                     @Override
                     public int compare(forumCategoriesItemFormat o1, forumCategoriesItemFormat o2) {
-                        return Integer.valueOf((int) o1.getLastMessage().getTimeDate()).compareTo((int) o2.getLastMessage().getTimeDate()) ;
+
+                        return Long.valueOf((Long) o2.getLastMessage().getTimeDate()).compareTo((Long) o1.getLastMessage().getTimeDate()) ;
                     }
                 });
 

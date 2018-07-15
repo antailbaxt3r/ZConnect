@@ -1,6 +1,6 @@
 package com.zconnect.zutto.zconnect.Utilities;
 
-public class forumTypeUtilities {
+public class ForumTypeUtilities {
 
     public static final int KEY_CREATE_FORUM = 0;
     public static final int KEY_JOINED = 1;
@@ -11,5 +11,4 @@ public class forumTypeUtilities {
     public static final String KEY_JOINED_STR = "Joined";
     public static final String KEY_NOT_JOINED_STR = "Not Joined";
     public static final String KEY_CREATE_FORUM_STR = "Create Forum";
-
 }

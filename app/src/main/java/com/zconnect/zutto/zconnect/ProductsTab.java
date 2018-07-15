@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,6 +70,9 @@ public class ProductsTab extends Fragment {
     private Vector<Product> productVector= new Vector<Product>();
     private ValueEventListener mListener;
     private Product singleProduct;
+    private Boolean flagNoProductsAvailable;
+    private TextView noProductsAvailableText;
+    private ProgressBar progressBar;
 
     public ProductsTab(){
     }
@@ -85,11 +89,15 @@ public class ProductsTab extends Fragment {
 
 //        productLinearLayout.setReverseLayout(true);
 //        productLinearLayout.setStackFromEnd(true);
+
+        noProductsAvailableText = (TextView) view.findViewById(R.id.no_products_available_text);
+        progressBar = (ProgressBar) view.findViewById(R.id.products_tab_progress_bar);
         mProductList = (RecyclerView) view.findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
 
         mAuth = FirebaseAuth.getInstance();
+        progressBar.setVisibility(View.VISIBLE);
 
         SharedPreferences sharedPref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
@@ -133,20 +141,30 @@ public class ProductsTab extends Fragment {
         mProductList.setAdapter(productAdapter);
 
 
+
         mListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 productVector.clear();;
+                flagNoProductsAvailable = true;
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     try{
                         singleProduct = shot.getValue(Product.class);
                         if(!singleProduct.getKey().equals(null)&& !singleProduct.getProductName().equals(null)) {
                             productVector.add(singleProduct);
+                            flagNoProductsAvailable = false;
                         }
                     }
                     catch (Exception e){
                         Log.d("Error Alert", e.getMessage());
                     }
+                }
+
+                progressBar.setVisibility(View.INVISIBLE);
+                if(flagNoProductsAvailable){
+                    noProductsAvailableText.setVisibility(View.VISIBLE);
+                }else{
+                    noProductsAvailableText.setVisibility(View.GONE);
                 }
                 Collections.reverse(productVector);
                 productAdapter.notifyDataSetChanged();

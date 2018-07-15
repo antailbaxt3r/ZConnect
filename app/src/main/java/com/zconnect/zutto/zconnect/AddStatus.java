@@ -8,24 +8,20 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,23 +29,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-
-import org.w3c.dom.Text;
+import com.zconnect.zutto.zconnect.Utilities.RecentTypeUtilities;
 
 import java.io.IOException;
 
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
-
-public class NewMessageActivity extends BaseActivity {
+public class AddStatus extends BaseActivity {
 
     Button submit;
     ImageButton addImage;
+    private ImageView postImageView;
     CheckBox anonymousCheck;
     MaterialEditText messageInput;
     View.OnClickListener submitlistener;
@@ -98,7 +95,7 @@ public class NewMessageActivity extends BaseActivity {
         }
 
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
+        mStorage = FirebaseStorage.getInstance().getReference().child(communityReference).child("Post");
 
         final DatabaseReference home;
         home= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
@@ -109,6 +106,7 @@ public class NewMessageActivity extends BaseActivity {
         addImage = (ImageButton) findViewById(R.id.add_image_new_message);
         userAvatar = (SimpleDraweeView) findViewById(R.id.avatarCircle_new_message);
         username = (TextView) findViewById(R.id.username_new_message);
+        postImageView = (ImageView) findViewById(R.id.post_image_view);
 
 
         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -131,16 +129,16 @@ public class NewMessageActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(
-                        NewMessageActivity.this,
+                        AddStatus.this,
                         android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                         PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(
-                            NewMessageActivity.this,
+                            AddStatus.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             12345
                     );
                 } else {
-                    galleryIntent = intentHandle.getPickImageIntent(NewMessageActivity.this);
+                    galleryIntent = intentHandle.getPickImageIntent(AddStatus.this);
                     startActivityForResult(galleryIntent, GALLERY_REQUEST);
                 }
             }
@@ -150,7 +148,7 @@ public class NewMessageActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
 
-                mProgress.setMessage("Posting Product..");
+                mProgress.setMessage("Posting Status..");
                 mProgress.show();
 
                 String messageText = messageInput.getText().toString();
@@ -166,6 +164,8 @@ public class NewMessageActivity extends BaseActivity {
                 newMessage.child("desc2").setValue(anonymous);
                 newMessage.child("feature").setValue("Message");
                 newMessage.child("name").setValue("Message");
+                newMessage.child("recentType").setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+
                 newMessage.child("imageurl").setValue("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png");
                 newMessage.child("id").setValue(key);
                 newMessage.child("PostTimeMillis").setValue(System.currentTimeMillis());
@@ -182,9 +182,6 @@ public class NewMessageActivity extends BaseActivity {
                         newMessage.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
                         FirebaseMessaging.getInstance().subscribeToTopic(key);
                         CounterManager.publicStatusAdd(anonymousCheck.isChecked());
-                        mProgress.dismiss();
-                        finish();
-
                     }
 
                     @Override
@@ -192,6 +189,28 @@ public class NewMessageActivity extends BaseActivity {
 
                     }
                 });
+
+                if(mImageUri!= null) {
+
+                    StorageReference filepath = mStorage.child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Uri downloadUri = taskSnapshot.getDownloadUrl();
+                            newMessage.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
+
+                            mProgress.dismiss();
+                            finish();
+
+                        }
+                    });
+
+                }else {
+                    newMessage.child("imageurl").setValue(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS);
+                    mProgress.dismiss();
+                    finish();
+                }
             }
         };
 
@@ -224,11 +243,11 @@ public class NewMessageActivity extends BaseActivity {
 
                         bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), false);
                     }
-                    String path = MediaStore.Images.Media.insertImage(NewMessageActivity.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+                    String path = MediaStore.Images.Media.insertImage(AddStatus.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
 
-//                    postPhoto();
+                    postImageView.setImageURI(mImageUri);
 
                 } catch (IOException e) {
                     e.printStackTrace();

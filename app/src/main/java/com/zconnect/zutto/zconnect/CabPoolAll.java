@@ -119,28 +119,6 @@ public class CabPoolAll extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_cab_pool_main);
-//        setHasOptionsMenu(true);
-
-        try {
-
-            int SDK_INT = android.os.Build.VERSION.SDK_INT;
-            if (SDK_INT > 8) {
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                        .permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-                //your codes here
-                TrueTime.build().initialize();
-
-                Date dateTime = TrueTime.now();
-                java.sql.Timestamp timeStampDate = new Timestamp(dateTime.getTime());
-                Toast.makeText(getApplicationContext(), "This " + timeStampDate.toString(), Toast.LENGTH_SHORT).show();
-
-            }
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -167,6 +145,7 @@ public class CabPoolAll extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
         // Inflate the layout for this fragment
 //        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
         recyclerView = (RecyclerView) findViewById(R.id.pool_main_rv);
@@ -221,60 +200,11 @@ public class CabPoolAll extends BaseActivity {
                 DecimalFormat decimalFormat = new DecimalFormat("00");
 
                 String date = output.format(c.getTime());
-//                Log.e("ABC", date);
-//                Log.e("RV", "SIZE:"+String.valueOf(vector_fetched.size()));
 
                 for (int i = 0; i < vector_fetched.size(); i++) {
-                    Log.e("RV", "value of i:" + String.valueOf(i));
-//                    try {
-//
-//                        fetchedDate = vector_fetched.get(i).getDate();
-//                        Log.e("RV", "FETCHED DATE:" + fetchedDate);
-//
-//                    }catch (Exception e){
-//
-//                    }
 
-//                    //check if DT is there or not
-//                    //if not, then will add DT to it.
-//                    if (vector_fetched.get(i).getDT() != null) {
                     DT = vector_fetched.get(i).getDT();
-                    Log.e("RV", "value of DT:" + String.valueOf(DT));
-//                    } else {
-//
-//                        //getting fetched date to required format
-//                        try {
-//
-//                            fDate = input.parse(fetchedDate);
-//
-//                        } catch (ParseException e) {
-//
-//                            System.err.println("Could not parse date: " + fetchedDate);
-//
-//                        }
-//
-//
-//                        String date1 = output.format(fDate);
-//
-//                        double T1 = Integer.valueOf((vector_fetched.get(i).getTime()).substring(0, 2));
-//                        double T2 = Integer.valueOf((vector_fetched.get(i).getTime()).substring(9, 11));
-//                        double Av = (T1 + T2) / 2;
-//                        String time;
-//
-//                        if (Av == ((int) Av)) {
-//                            time = decimalFormat.format((int)Av + 00) + ":00";
-//                        } else {
-//                            time = (decimalFormat.format((int) Av + 00) + ":30");
-//                        }
-//
-//
-//                        DT = date1 + " " + time;
-//                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Cab").child(vector_fetched.get(i).getKey());
-//                        newPost2.child("DT").setValue(DT);
-//                        Log.e("ABC", DT);
-//                        vector_fetched.get(i).setDT(DT);
-//
-//                    }
+
                     if (date.compareTo(DT) <= 0) {
                         treeMap.put(DT, vector_fetched.get(i));
                     } else {
@@ -285,8 +215,7 @@ public class CabPoolAll extends BaseActivity {
                 }
 
                 vector_final.addAll(treeMap.values());
-                Log.e("ABC1", String.valueOf(vector_final.size()));
-                //
+
                 if (vector_final.size() == 0) {
                     recyclerView.setVisibility(View.GONE);
                     error.setVisibility(View.VISIBLE);
@@ -357,15 +286,6 @@ public class CabPoolAll extends BaseActivity {
         }
         return super.onCreateOptionsMenu(menu);
     }
-
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        // Inflate the Menu; this adds items to the action bar if it is present.
-//        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-//        Boolean status = sharedPref.getBoolean("mode", false);
-//        if (!status) {
-//            inflater.inflate(R.menu.menu_cabpool_all, menu);
-//        }
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

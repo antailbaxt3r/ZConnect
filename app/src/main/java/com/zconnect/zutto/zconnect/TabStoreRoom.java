@@ -96,11 +96,6 @@ public class TabStoreRoom extends BaseActivity {
         });
     }
 
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setHasOptionsMenu(true);
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,22 +108,9 @@ public class TabStoreRoom extends BaseActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        // Inflate the Menu; this adds items to the action bar if it is present.
-//        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-//        Boolean status = sharedPref.getBoolean("mode", false);
-//
-//        if (!status){
-//            inflater.inflate(R.menu.menu_storeroom, menu);
-//        }
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         if (id == R.id.action_storeroom) {
@@ -155,19 +137,17 @@ public class TabStoreRoom extends BaseActivity {
             SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
             Boolean status = sharedPref.getBoolean("mode", false);
             if (!status){
-            switch (position) {
-                case 0:
-                    ProductsTab productsTab = new ProductsTab();
-                    return productsTab;
-//                case 1:
-//                    Shortlist reservedTab = new Shortlist();
-//                    return reservedTab;
-                case 1:
-                    CategoriesTab categoriesTab = new CategoriesTab();
-                    return categoriesTab;
-                default:
-                    return null;
-            }}else {
+                switch (position) {
+                    case 0:
+                        ProductsTab productsTab = new ProductsTab();
+                        return productsTab;
+                    case 1:
+                        CategoriesTab categoriesTab = new CategoriesTab();
+                        return categoriesTab;
+                    default:
+                        return null;
+                }
+            }else {
                 switch (position) {
                     case 0:
                         ProductsTab productsTab = new ProductsTab();
@@ -180,9 +160,6 @@ public class TabStoreRoom extends BaseActivity {
                 }
 
             }
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            //return PlaceholderFragment.newInstance(position + 1);
         }
 
 
@@ -206,8 +183,6 @@ public class TabStoreRoom extends BaseActivity {
                 switch (position) {
                     case 0:
                         return "Products";
-//                    case 1:
-//                        return "Shortlist";
                     case 1:
                         return "Categories";
                 }
