@@ -14,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,15 +40,25 @@ import static android.content.Context.MODE_PRIVATE;
 public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.ViewHolder> {
     Context context;
     Vector<UsersListItemFormat> usersListItemFormats;
-    String featureType;
+    String featureType,userType,tab,key;
 
     private SharedPreferences communitySP;
     public String communityReference;
 
-    public UsersListRVAdapter(Context context, Vector<UsersListItemFormat> usersListItemFormats, String featureType) {
+    public UsersListRVAdapter(Context context, Vector<UsersListItemFormat> usersListItemFormats, String featureType,String userType) {
         this.context = context;
         this.usersListItemFormats = usersListItemFormats;
         this.featureType = featureType;
+        this.userType = userType;
+    }
+
+    public UsersListRVAdapter(Context context, Vector<UsersListItemFormat> usersListItemFormats, String featureType,String userType,String tab,String key) {
+        this.context = context;
+        this.usersListItemFormats = usersListItemFormats;
+        this.featureType = featureType;
+        this.userType = userType;
+        this.tab = tab;
+        this.key = key;
     }
 
     @Override
@@ -61,7 +73,8 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
         holder.name.setText(usersListItemFormats.get(position).getName());
         holder.number.setText(usersListItemFormats.get(position).getPhonenumber());
         holder.avatarCircle.setImageURI(usersListItemFormats.get(position).getImageThumb());
-        holder.openOptions(featureType,usersListItemFormats.get(position).getUserType());
+        holder.openOptions(featureType, userType);
+
     }
 
     @Override
@@ -105,7 +118,7 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
 
         public void openOptions(String featureType, final String forumUserType){
 
-            if(featureType.equals(FeatureNamesUtilities.KEY_CABPOOL)){
+            if(featureType.equals(FeatureNamesUtilities.KEY_CABPOOL) || featureType.equals(FeatureNamesUtilities.KEY_STOREROOM)){
 
                 String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
                 intent=new Intent(context, OpenUserDetail.class);
@@ -140,18 +153,24 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                         }else if(forumUserType.equals(ForumsUserTypeUtilities.KEY_ADMIN)){
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                            String[] animals = {"View Profile","Make Admin","Remove"};
+                            String[] animals = {"View Profile","Make Admin","Remove","Block " +usersListItemFormats.get(getAdapterPosition()).getName()};
                             builder.setItems(animals, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key).child("users").child(usersListItemFormats.get(getAdapterPosition()).getUserUID());
                                     switch (which) {
                                         case 0: String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
                                             intent=new Intent(context, OpenUserDetail.class);
                                             intent.putExtra("Uid",userUID);
                                             context.startActivity(intent);
                                             break;
-                                        case 1: // cow
-                                        case 2: // camel
+                                        case 1: userReference.child("userType").setValue(ForumsUserTypeUtilities.KEY_ADMIN);
+                                            break;
+                                        case 2: userReference.removeValue();
+                                            Toast.makeText(context, usersListItemFormats.get(getAdapterPosition()).getName() + " is removed from ", Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case 3: userReference.child("userType").setValue(ForumsUserTypeUtilities.KEY_BLOCKED);
+                                            break;
                                     }
                                 }
                             });

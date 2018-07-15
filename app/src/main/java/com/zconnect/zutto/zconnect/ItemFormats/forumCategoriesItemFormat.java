@@ -17,12 +17,13 @@ public class forumCategoriesItemFormat {
     private PostedByDetails PostedBy;
     private Vector<UsersListItemFormat> usersListItemFormats;
 
-    public forumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats ) {
+    public forumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats, PostedByDetails PostedBy) {
         this.name = name;
         this.tabUID = tabUID;
         this.catUID = catUID;
         this.lastMessage = lastMessage;
         this.usersListItemFormats = usersListItemFormats;
+        this.PostedBy = PostedBy;
     }
 
     public forumCategoriesItemFormat() {
@@ -75,5 +76,13 @@ public class forumCategoriesItemFormat {
 
     public void setForumType(String forumType) {
         this.forumType = forumType;
+    }
+
+    public PostedByDetails getPostedBy() {
+        return PostedBy;
+    }
+
+    public void setPostedBy(PostedByDetails postedBy) {
+        PostedBy = postedBy;
     }
 }

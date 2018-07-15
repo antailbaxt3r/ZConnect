@@ -21,6 +21,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.Utilities.FeatureNamesUtilities;
 import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
 
 import java.util.Vector;
 
@@ -43,6 +44,8 @@ public class ForumsPeopleList extends BaseActivity {
     private ValueEventListener valueEventListener;
     private View.OnClickListener onClickListener;
     Vector<UsersListItemFormat> usersListItemFormatVector = new Vector<>();
+    private String userType = ForumsUserTypeUtilities.KEY_USER;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +59,9 @@ public class ForumsPeopleList extends BaseActivity {
         showBackButton();
         setSupportActionBar(getToolbar());
 
+
         key = getIntent().getStringExtra("key");
-        String tab = getIntent().getStringExtra("tab");
+        final String tab = getIntent().getStringExtra("tab");
         mAuth = FirebaseAuth.getInstance();
 
         forumMembersList = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key).child("users");
@@ -88,22 +92,23 @@ public class ForumsPeopleList extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 usersListItemFormatVector.clear();
                 flag = false;
+                userType = ForumsUserTypeUtilities.KEY_USER;
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     UsersListItemFormat usersListItemFormat;
                     try {
                         usersListItemFormat = shot.getValue(UsersListItemFormat.class);
                         if (usersListItemFormat.getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             flag = true;
+                            if(shot.hasChild("userType")){
+                                userType = usersListItemFormat.getUserType();
+                            }
                         }
-
-
                         usersListItemFormatVector.add(usersListItemFormat);
                     }catch (Exception e){}
 
                 }
 
                 progressBar.setVisibility(INVISIBLE);
-                adapter.notifyDataSetChanged();
 
                 if (flag) {
                     joinLeaveButton.setText("Leave");
@@ -111,6 +116,8 @@ public class ForumsPeopleList extends BaseActivity {
                     joinLeaveButton.setText("Join");
                 }
 
+                adapter = new UsersListRVAdapter(ForumsPeopleList.this, usersListItemFormatVector, FeatureNamesUtilities.KEY_FORUMS,userType,tab,key);
+                forumsPeopleRV.setAdapter(adapter);
             }
 
             @Override
@@ -138,6 +145,7 @@ public class ForumsPeopleList extends BaseActivity {
                             userDetails.setName(userItemFormat.getUsername());
                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                             userDetails.setUserUID(userItemFormat.getUserUID());
+                            userDetails.setUserType(userType);
                             forumMembersList.child(userItemFormat.getUserUID()).setValue(userDetails);
                         }
 
@@ -151,10 +159,10 @@ public class ForumsPeopleList extends BaseActivity {
             }
         };
 
-        adapter = new UsersListRVAdapter(this, usersListItemFormatVector, FeatureNamesUtilities.KEY_FORUMS);
+
         forumsPeopleRV.setHasFixedSize(true);
         forumsPeopleRV.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
-        forumsPeopleRV.setAdapter(adapter);
+
 
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

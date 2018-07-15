@@ -18,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.FeatureNamesUtilities;
+import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -41,7 +43,7 @@ public class Shortlisted extends BaseActivity {
         final String key = getIntent().getStringExtra("Key");
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
-        final UsersListRVAdapter adapter = new UsersListRVAdapter(this, usersListItemFormatVector);
+        final UsersListRVAdapter adapter = new UsersListRVAdapter(this, usersListItemFormatVector, FeatureNamesUtilities.KEY_STOREROOM, ForumsUserTypeUtilities.KEY_USER);
 
         LinearLayoutManager productLinearLayout = new LinearLayoutManager(this);
         productLinearLayout.setReverseLayout(true);

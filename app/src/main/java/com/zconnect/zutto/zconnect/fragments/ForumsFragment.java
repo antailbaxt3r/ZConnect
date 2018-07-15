@@ -19,7 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
-import com.zconnect.zutto.zconnect.ForumCategoriesRVAdapter;
+import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.adapters.ForumCategoriesRVAdapter;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.Utilities.ForumTypeUtilities;
 
@@ -82,25 +83,41 @@ public class ForumsFragment extends Fragment {
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     forumCategoriesItemFormat temp = new forumCategoriesItemFormat();
                     if(shot.child("users").hasChild(mAuth.getCurrentUser().getUid())) {
-                        temp = shot.getValue(forumCategoriesItemFormat.class);
-                        try {
-                            if(temp.getName()!=null) {
-                                temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
-                                if(shot.hasChild("lastMessage")){
-                                    joinedForumCategories.add(temp);
-                                }else {
-                                    ChatItemFormats lastMessage = new ChatItemFormats();
-                                    lastMessage.setMessage(" ");
-                                    lastMessage.setTimeDate(1388534400);
-                                    lastMessage.setName(" ");
-                                    temp.setLastMessage(lastMessage);
-                                    joinedForumCategories.add(temp);
+                            temp = shot.getValue(forumCategoriesItemFormat.class);
+                            try {
+                                if (temp.getName() != null) {
+                                    temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
+                                    if(shot.child("users").child(mAuth.getCurrentUser().getUid()).hasChild("userType")){
+                                        if(!(shot.child("users").child(mAuth.getCurrentUser().getUid()).child("userType").getValue().equals(ForumsUserTypeUtilities.KEY_BLOCKED))) {
+                                            if (shot.hasChild("lastMessage")) {
+                                                joinedForumCategories.add(temp);
+                                            } else {
+                                                ChatItemFormats lastMessage = new ChatItemFormats();
+                                                lastMessage.setMessage(" ");
+                                                lastMessage.setTimeDate(1388534400);
+                                                lastMessage.setName(" ");
+                                                temp.setLastMessage(lastMessage);
+                                                joinedForumCategories.add(temp);
+                                            }
+                                        }
+                                    }else {
+                                        if (shot.hasChild("lastMessage")) {
+                                            joinedForumCategories.add(temp);
+                                        } else {
+                                            ChatItemFormats lastMessage = new ChatItemFormats();
+                                            lastMessage.setMessage(" ");
+                                            lastMessage.setTimeDate(1388534400);
+                                            lastMessage.setName(" ");
+                                            temp.setLastMessage(lastMessage);
+                                            joinedForumCategories.add(temp);
+                                        }
+                                    }
+
+
                                 }
+                            } catch (Exception e) {
 
                             }
-                        }catch (Exception e){
-
-                        }
 
                     }else {
 

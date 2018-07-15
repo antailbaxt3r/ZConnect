@@ -45,6 +45,7 @@ import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.Utilities.messageTypeUtilities;
 
 import java.io.IOException;
@@ -76,6 +77,7 @@ public class ChatActivity extends BaseActivity {
     private Intent galleryIntent;
     private Uri mImageUri = null;
     private StorageReference mStorage;
+    private String userType = ForumsUserTypeUtilities.KEY_USER;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,6 +201,7 @@ public class ChatActivity extends BaseActivity {
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
                         setToolbarTitle(dataSnapshot.child("name").getValue().toString());
+
                         FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
                         if (!dataSnapshot.child("users").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                             joinButton.setVisibility(View.VISIBLE);
@@ -219,6 +222,7 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setName(userItemFormat.getUsername());
                                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                             userDetails.setUserUID(userItemFormat.getUserUID());
+                                            userDetails.setUserType(ForumsUserTypeUtilities.KEY_USER);
                                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                             NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
@@ -466,6 +470,7 @@ public class ChatActivity extends BaseActivity {
         Intent i = new Intent(this,ForumsPeopleList.class);
         i.putExtra("key",getIntent().getStringExtra("key"));
         i.putExtra("tab",getIntent().getStringExtra("tab"));
+        i.putExtra("userType",userType);
         startActivity(i);
     }
 

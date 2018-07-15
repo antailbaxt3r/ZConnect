@@ -9,12 +9,14 @@ public class UsersListItemFormat {
     String phonenumber;
     String imageThumb;
     String userUID;
+    String userType;
 
-    public UsersListItemFormat(String name, String phonenumber, String imageThumb, String userUID) {
+    public UsersListItemFormat(String name, String phonenumber, String imageThumb, String userUID, String userType) {
         this.name = name;
         this.phonenumber = phonenumber;
         this.imageThumb = this.imageThumb;
         this.userUID = userUID;
+        this.userType = userType;
     }
 
     public UsersListItemFormat() {
@@ -38,6 +40,14 @@ public class UsersListItemFormat {
 
     public void setUserUID(String userUID) {
         this.userUID = userUID;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
 }
