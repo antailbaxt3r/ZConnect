@@ -1,9 +1,18 @@
 package com.zconnect.zutto.zconnect;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -15,11 +24,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,17 +38,27 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.ForumsClasses.CreateForum;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.Utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.Utilities.forumTypeUtilities;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Vector;
 
+import static android.app.Activity.RESULT_OK;
 import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.Utilities.RequestCodes.GALLERY_REQUEST;
 
 /**
  * Created by shubhamk on 9/2/17.
@@ -48,6 +69,12 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
     Context context;
     Vector<forumCategoriesItemFormat> forumCategoriesItemFormats;
     String tabUID;
+    static Uri mImageUri, mImageUriThumb;
+
+    IntentHandle intentHandle = new IntentHandle();
+    Intent galleryIntent;
+
+    StorageReference mStorage;
 
     public ForumCategoriesRVAdapter(Vector<forumCategoriesItemFormat> forumCategoriesItemFormats, Context context, String tabUID) {
         this.forumCategoriesItemFormats = forumCategoriesItemFormats;
@@ -163,55 +190,75 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         public createViewHolder(View itemView) {
             super(itemView);
             createForum = (RelativeLayout) itemView.findViewById(R.id.create_forum);
+            mStorage = FirebaseStorage.getInstance().getReference();
         }
 
         public void createForum(final String uid){
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("Enter Title");
-                    LayoutInflater inflater = LayoutInflater.from(context);
-                    View view = inflater.inflate(R.layout.create_forum_alert, null);
-                    builder.setView(view);
-                    final MaterialEditText addForumName = (MaterialEditText) view.findViewById(R.id.add_name_create_forum_alert);
-                    final FrameLayout addForumIcon = (FrameLayout) view.findViewById(R.id.add_icon_create_forum_alert);
+                    final Intent intent = new Intent(context, CreateForum.class);
+                    intent.putExtra("uid", uid);
+                    context.startActivity(intent);
+//                    final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//                    builder.setTitle("Enter Title");
+//                    LayoutInflater inflater = LayoutInflater.from(context);
+//                    View view = inflater.inflate(R.layout.create_forum_alert, null);
+//                    builder.setView(view);
+//                    final MaterialEditText addForumName = (MaterialEditText) view.findViewById(R.id.add_name_create_forum_alert);
+//                    final FrameLayout addForumIcon = (FrameLayout) view.findViewById(R.id.layout_add_icon_create_forum_alert);
+//                    addForumIcon.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            if (ContextCompat.checkSelfPermission(
+//                                    context,
+//                                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+//                                    PackageManager.PERMISSION_GRANTED) {
+//                                ActivityCompat.requestPermissions(
+//                                        (Activity) context,
+//                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                                        12345
+//                                );
+//                            } else {
+//                                galleryIntent = intentHandle.getPickImageIntent(context);
+//                                ((Activity)context).startActivityForResult(galleryIntent, GALLERY_REQUEST);
+//                            }
+//                        }
+//                    });
 //                    final EditText input = new EditText(context);
                     // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
 //                    input.setInputType(InputType.TYPE_CLASS_TEXT);
 //                    builder.setView(input);
 
-                    builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            DatabaseReference tabName= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabs").child(uid);
-                            tabName.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    Log.d("FORUM NAME", addForumName.getText().toString());
+//                    builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            DatabaseReference tabName= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabs").child(uid);
+//                            tabName.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                    Log.d("FORUM NAME", addForumName.getText().toString());
 //                                    addCategory(addForumName.getText().toString(),uid,dataSnapshot.child("name").getValue().toString());
-//                                    addCategory(addForumIcon.get);
-//                                    addCategory(input.getText().toString(),uid,dataSnapshot.child("name").getValue().toString());
-                                }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError) {
+//
+//                                }
+//                            });
+//
+//                        }
+//                    });
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-
-                        }
-                    });
-
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
+//                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.cancel();
+//                        }
+//                    });
 
 
-                    builder.show();
+//                    builder.show();
                 }
             });
         }
@@ -230,6 +277,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             newPush.child("PostTimeMillis").setValue(postTimeMillis);
             newPush.child("UID").setValue(newPush.getKey());
             newPush.child("tab").setValue(uid);
+
+
+
             final UsersListItemFormat userDetails = new UsersListItemFormat();
             DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -421,4 +471,54 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             super(itemView);
         }
     }
+
+//    public static void onActivityResult(int requestCode, int resultCode, Intent data, Context context, View view) {
+//
+//        Log.d("AKHILKAM", "B");
+//        IntentHandle intentHandle = new IntentHandle();
+//        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+//            Uri imageUri = intentHandle.getPickImageResultUri(data); //Get data
+//            CropImage.activity(imageUri).setAspectRatio(1,1)
+//                    .setCropShape(CropImageView.CropShape.RECTANGLE)
+//                    .setGuidelines(CropImageView.Guidelines.ON)
+//                    .start((Activity)context);
+//        }
+//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//            if (resultCode == RESULT_OK) {
+//
+//                try {
+//                    mImageUri = result.getUri();
+//
+//                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), mImageUri);
+//                    Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
+//                    if (bitmap.getByteCount() > 350000) {
+//
+//                        bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), false);
+//                    }
+//                    Bitmap bitmapSmall = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
+//                    String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+//                    String pathSmall = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmapSmall, mImageUri.getLastPathSegment(), null);
+//
+//                    mImageUri = Uri.parse(path);
+//                    mImageUriThumb = Uri.parse(pathSmall);
+//
+//                    ((SimpleDraweeView)view.findViewById(R.id.forum_icon_create_forum_alert)).setImageURI(mImageUriThumb);
+//                    (view.findViewById(R.id.camera_icon_create_forum_alert)).setVisibility(View.GONE);
+//                    Log.d("SET IMAGE", "");
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//                Exception error = result.getError();
+//                try {
+//                    throw error;
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//
+//    }
 }

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -92,8 +93,12 @@ public class Recents extends Fragment {
                 progressBar.setVisibility(VISIBLE);
                 recentsItemFormats.clear();
                 normalPosts.clear();
-
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    if(!shot.hasChild("recentType"))
+                    {
+                        Log.d("Recents", "adding type");
+                        shot.getRef().child("recentType").setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+                    }
                     normalPosts.add(shot.getValue(RecentsItemFormat.class));
                 }
                 recentsItemFormats.add(features);

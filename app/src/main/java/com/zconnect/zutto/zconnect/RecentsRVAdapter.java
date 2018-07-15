@@ -41,6 +41,8 @@ import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.Utilities.DrawableUtilities;
 import com.zconnect.zutto.zconnect.Utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
+import com.zconnect.zutto.zconnect.Utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,20 +68,28 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //
     @Override
     public int getItemViewType(int position) {
-       if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR))
-       {
-           return RecentTypeUtilities.KEY_RECENT_ADD_STATUS;
-       }
-       else if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_FEATURES_STR))
-       {
-           return RecentTypeUtilities.KEY_RECENT_FEATURES;
-       }
-       else if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR)) {
-           return RecentTypeUtilities.KEY_RECENT_NORMAL_POST;
-       }
-       else {
-           return -1;
-       }
+        try {
+            if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR))
+            {
+                return RecentTypeUtilities.KEY_RECENT_ADD_STATUS;
+            }
+            else if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_FEATURES_STR))
+            {
+                return RecentTypeUtilities.KEY_RECENT_FEATURES;
+            }
+            else if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR)) {
+                return RecentTypeUtilities.KEY_RECENT_NORMAL_POST;
+            }
+            else {
+                return -1;
+            }
+        }
+        catch (NullPointerException e)
+        {
+            Log.d("Exception", "adding type");
+            recentsItemFormats.get(position).setRecentType(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+            return RecentTypeUtilities.KEY_RECENT_NORMAL_POST;
+        }
     }
 
 
@@ -444,6 +454,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         Intent intent = new Intent(context, ChatActivity.class);
                         intent.putExtra("type","forums");
                         intent.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getKey());
+                        intent.putExtra("tab",recentsItemFormats.get(getAdapterPosition()).getId());
                         intent.putExtra("name",recentsItemFormats.get(getAdapterPosition()).getName());
                         intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(recentsItemFormats.get(getAdapterPosition()).getKey()).toString());
                         context.startActivity(intent);
@@ -515,7 +526,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             cabpool = (RelativeLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
             admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
 
-            admin.setVisibility(View.VISIBLE);
+            if(UserUtilities.currentUser.getUsername()!=null) {
+                if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
+                    admin.setVisibility(View.VISIBLE);
+                }
+            }
+
 
             events.setOnClickListener(new View.OnClickListener() {
                 @Override
