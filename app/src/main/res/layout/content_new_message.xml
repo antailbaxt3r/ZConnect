@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edittext_newmessage_input"
-        android:hint="What do you want to say?"
+        android:hint="@string/status_hint"
         android:textSize="25dp"
         app:met_textColor="@color/primaryText"
         app:met_textColorHint="@color/secondaryText"
