@@ -13,8 +13,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
+import com.zconnect.zutto.zconnect.itemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.itemFormats.PhonebookItem;
 
 import java.util.Vector;
 

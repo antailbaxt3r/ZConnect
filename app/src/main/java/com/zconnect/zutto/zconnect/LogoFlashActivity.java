@@ -13,28 +13,19 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
-import com.zconnect.zutto.zconnect.Utilities.RecentTypeUtilities;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 

@@ -1,14 +1,11 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.SearchManager;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,12 +16,10 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,17 +28,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.InfoneContactsRVItem;
+import com.zconnect.zutto.zconnect.itemFormats.InfoneContactsRVItem;
 import com.zconnect.zutto.zconnect.adapters.InfoneContactsRVAdpater;
+import com.zconnect.zutto.zconnect.addActivities.AddInfoneCat;
+import com.zconnect.zutto.zconnect.addActivities.AddInfoneContact;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-
-import butterknife.BindView;
 
 public class InfoneContactListActivity extends AppCompatActivity {
 
@@ -204,7 +196,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
     private void addContact() {
 
-        Intent addContactIntent = new Intent(this, InfoneAddContactActivity.class);
+        Intent addContactIntent = new Intent(this, AddInfoneContact.class);
         addContactIntent.putExtra("catId", catId);
         addContactIntent.putExtra("catImageURL",catImageurl);
         addContactIntent.putExtra("catName", catName);
@@ -215,7 +207,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
     private void editCategory() {
 
-        Intent editCatIntent=new Intent(InfoneContactListActivity.this,InfoneAddCatActivity.class);
+        Intent editCatIntent=new Intent(InfoneContactListActivity.this,AddInfoneCat.class);
         editCatIntent.putExtra("catId",catId);
         editCatIntent.putExtra("catName",catName);
         editCatIntent.putExtra("catImageurl",catImageurl);

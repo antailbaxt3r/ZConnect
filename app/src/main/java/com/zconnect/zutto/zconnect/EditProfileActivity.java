@@ -41,10 +41,11 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
-import com.zconnect.zutto.zconnect.ItemFormats.InfoneCategoryModel;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.Utilities.UserUtilities;
-import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.InfoneCategoryModel;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -57,10 +58,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import mabbas007.tagsedittext.TagsEditText;
 
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL;
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT;
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_OFFERS;
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_STOREROOM;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_OFFERS;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_STOREROOM;
 
 public class EditProfileActivity extends BaseActivity implements TagsEditText.TagsEditListener, View.OnClickListener {
 

@@ -1,7 +1,5 @@
 package com.zconnect.zutto.zconnect;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,11 +10,8 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -29,8 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.InfoneCategoryModel;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.adapters.InfoneCategoriesRVAdapter;
+import com.zconnect.zutto.zconnect.addActivities.AddInfoneCat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -154,7 +151,7 @@ public class InfoneActivity extends BaseActivity {
                 Boolean status = sharedPref.getBoolean("mode", false);
 
                 if (!status) {
-                    Intent addCatIntent = new Intent(InfoneActivity.this,InfoneAddCatActivity.class);
+                    Intent addCatIntent = new Intent(InfoneActivity.this,AddInfoneCat.class);
                     startActivity(addCatIntent);
                 } else {
                     Toast.makeText(InfoneActivity.this, "Log in to use this function", Toast.LENGTH_SHORT).show();
@@ -194,7 +191,7 @@ public class InfoneActivity extends BaseActivity {
 //                            Toast.makeText(InfoneActivity.this, "Add a contact in your new category",
 //                                    Toast.LENGTH_SHORT).show();
 //                            Intent addContactIntent = new Intent(InfoneActivity.this,
-//                                    InfoneAddContactActivity.class);
+//                                    AddInfoneContact.class);
 //                            addContactIntent.putExtra("categoryName", newCat);
 //                            startActivity(addContactIntent);
 //                        }
@@ -232,7 +229,7 @@ public class InfoneActivity extends BaseActivity {
 //                            Toast.makeText(InfoneActivity.this, "Add a contact in your new category",
 //                                    Toast.LENGTH_SHORT).show();
 //                            Intent addContactIntent = new Intent(InfoneActivity.this,
-//                                    InfoneAddContactActivity.class);
+//                                    AddInfoneContact.class);
 //                            addContactIntent.putExtra("categoryName", newCat);
 //                            startActivity(addContactIntent);
 //                        }

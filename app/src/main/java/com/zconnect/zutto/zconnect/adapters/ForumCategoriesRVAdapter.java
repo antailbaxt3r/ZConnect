@@ -3,7 +3,6 @@ package com.zconnect.zutto.zconnect.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,34 +14,34 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+<<<<<<< HEAD
 import com.facebook.drawee.view.SimpleDraweeView;
+=======
+>>>>>>> c87053a52be5274426a035a3facc4a51411a7338
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.zconnect.zutto.zconnect.ForumsClasses.CreateForum;
-import com.zconnect.zutto.zconnect.IntentHandle;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ChatActivity;
-import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.KeyHelper;
-import com.zconnect.zutto.zconnect.NotificationSender;
+import com.zconnect.zutto.zconnect.addActivities.CreateForum;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.forumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.Utilities.ForumTypeUtilities;
-import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Vector;
 
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -255,8 +254,12 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
         View mView;
         ImageButton joinButton;
+<<<<<<< HEAD
         ImageView defaultForumIcon;
         SimpleDraweeView forumIcon;
+=======
+        LinearLayout forumRowItem;
+>>>>>>> c87053a52be5274426a035a3facc4a51411a7338
 
         public notJoinedViewHolder(View itemView) {
             super(itemView);
@@ -315,7 +318,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                             userDetails.setUserUID(userItemFormat.getUserUID());
                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                            NotificationSender notificationSender=new NotificationSender(key,name,FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), KeyHelper.KEY_FORUMS_JOIN,false,true,itemView.getContext());
+                            NotificationSender notificationSender=new NotificationSender(key,name,FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,itemView.getContext());
                             notificationSender.execute();
                         }
 
@@ -336,5 +339,4 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             super(itemView);
         }
     }
-
 }

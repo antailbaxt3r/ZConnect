@@ -1,55 +1,28 @@
 package com.zconnect.zutto.zconnect.fragments;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.provider.CalendarContract;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.ItemFormats.Event;
-import com.zconnect.zutto.zconnect.LoginActivity;
-import com.zconnect.zutto.zconnect.NotificationSender;
-import com.zconnect.zutto.zconnect.OpenEventDetail;
+import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
 import com.zconnect.zutto.zconnect.adapters.EventsAdapter;
 
-import org.w3c.dom.Text;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 
 public class TimelineEvents extends Fragment {
@@ -138,8 +111,12 @@ public class TimelineEvents extends Fragment {
                     try {
                         singleEvent = shot.getValue(Event.class);
                         if(!singleEvent.getKey().equals(null) && !singleEvent.getEventName().equals(null)) {
-                            eventsVector.add(singleEvent);
-                            flag=true;
+                            Long currentDate = System.currentTimeMillis() - 86400000;
+                            Long dateMillis = singleEvent.getEventTimeMillis();
+                            if (currentDate<dateMillis){
+                                eventsVector.add(singleEvent);
+                                flag=true;
+                            }
                         }
                     }catch (Exception e){}
                 }

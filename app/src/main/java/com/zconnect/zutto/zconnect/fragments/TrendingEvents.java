@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,7 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.Event;
+import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.adapters.EventsAdapter;
 
@@ -120,8 +119,12 @@ public class TrendingEvents extends Fragment {
                     try {
                         singleEvent = shot.getValue(Event.class);
                         if(!singleEvent.getKey().equals(null) && !singleEvent.getEventName().equals(null)) {
-                            eventsVector.add(singleEvent);
-                            flag=true;
+                            Long currentDate = System.currentTimeMillis() - 86400000;
+                            Long dateMillis = singleEvent.getEventTimeMillis();
+                            if (currentDate<dateMillis) {
+                                eventsVector.add(singleEvent);
+                                flag = true;
+                            }
                         }
                     }catch (Exception e){}
                 }

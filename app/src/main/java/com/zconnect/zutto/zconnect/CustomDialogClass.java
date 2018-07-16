@@ -75,11 +75,8 @@ public class CustomDialogClass extends Dialog implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_update:
-                //c.finish();
-
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 c.startActivity(browserIntent);
-
                 break;
             case R.id.btn_skip:
                 dismiss();

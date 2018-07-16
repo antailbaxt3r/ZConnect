@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
-import com.zconnect.zutto.zconnect.ItemFormats.Event;
+import com.zconnect.zutto.zconnect.itemFormats.Event;
 
 /**
  * Created by akhiller on 30/10/17.

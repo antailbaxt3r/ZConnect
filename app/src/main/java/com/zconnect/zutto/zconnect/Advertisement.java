@@ -29,7 +29,10 @@ import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.VideoOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.zconnect.zutto.zconnect.ItemFormats.AdItemFormat;
+import com.zconnect.zutto.zconnect.adapters.RecyclerViewAdapterAdvertisement;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.AdItemFormat;
+import com.zconnect.zutto.zconnect.adapters.AdRVAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

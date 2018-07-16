@@ -9,7 +9,7 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.zconnect.zutto.zconnect.AddCabPool"
+    tools:context="com.zconnect.zutto.zconnect.addActivities.AddCabPool"
     tools:showIn="@layout/activity_add_cab_pool">
 
     <TextView
@@ -48,7 +48,7 @@
             android:layout_marginStart="5dp"
             android:textColor="@color/primaryText"/>
 
-        <com.zconnect.zutto.zconnect.CustomSpinner
+        <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
             android:id="@+id/spinner_source"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
             android:textColor="@color/primaryText"
             android:layout_marginStart="5dp"/>
 
-        <com.zconnect.zutto.zconnect.CustomSpinner
+        <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
             android:id="@+id/spinner_destination"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
             android:textColor="@color/primaryText"
             android:layout_marginStart="23dp"/>
 
-        <com.zconnect.zutto.zconnect.CustomSpinner
+        <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
             android:id="@+id/spinner_time_from"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
             android:layout_marginStart="23dp"
             android:textColor="@color/primaryText"/>
 
-        <com.zconnect.zutto.zconnect.CustomSpinner
+        <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
             android:id="@+id/spinner_time_to"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

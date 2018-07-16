@@ -1,17 +1,16 @@
 package com.zconnect.zutto.zconnect;
 
-import android.content.SharedPreferences;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 
 import org.joda.time.LocalDate;
 
-public class CounterManager extends BaseActivity{
+public class CounterManager extends BaseActivity {
     private static LocalDate dateTime = new LocalDate();
 
     private final static DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(dateTime.toString());

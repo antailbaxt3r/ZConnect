@@ -5,28 +5,22 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.KeyHelper;
-import com.zconnect.zutto.zconnect.NotificationSender;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 
 import java.util.Calendar;
 
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 /**
  * Created by tanmay on 25/3/18.
@@ -115,7 +109,7 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
         UsersReference.child("users").child(senderUID).child("chats").child(chatID).removeValue();
         UsersReference.child("chats").child(chatID).removeValue();
 
-        NotificationSender notificationSender=new NotificationSender(senderUID,FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), KeyHelper.KEY_MESSAGES_CHAT_DELETE,false,true,mView.getContext());
+        NotificationSender notificationSender=new NotificationSender(senderUID,FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,null,FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), OtherKeyUtilities.KEY_MESSAGES_CHAT_DELETE,false,true,mView.getContext());
         notificationSender.execute();
 
     }

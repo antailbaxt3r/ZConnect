@@ -141,7 +141,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AddProduct"
+            android:name=".addActivities.AddProduct"
             android:label="Add Product"
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
@@ -151,7 +151,7 @@
                 android:value=".HomeActivity" />
         </activity>
         <activity
-            android:name=".viewImage"
+            android:name=".commonModules.viewImage"
             android:label="@string/title_activity_view_image"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -159,7 +159,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.HomeActivity" />
         </activity>
-        <activity android:name=".image_view" />
+        <activity android:name=".commonModules.image_view" />
         <activity
             android:name=".MyProducts"
             android:label="My Products"
@@ -167,7 +167,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AddEvent"
+            android:name=".addActivities.AddEvent"
             android:label="Add Events"
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
@@ -255,7 +255,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AddCabPool"
+            android:name=".addActivities.AddCabPool"
             android:label="@string/title_activity_add_cab_pool"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -271,12 +271,12 @@
             android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".NotificationService">
+        <service android:name=".commonModules.NotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".instantIDService">
+        <service android:name=".commonModules.instantIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -303,11 +303,11 @@
             android:label="@string/title_activity_guest_login"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CreateCommunity"
+            android:name=".addActivities.CreateCommunity"
             android:label="@string/title_activity_create_community"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AddStatus"
+            android:name=".addActivities.AddStatus"
             android:label="@string/title_activity_new_message"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -334,10 +334,10 @@
             android:name=".InfoneProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".InfoneAddContactActivity"
+            android:name=".addActivities.AddInfoneContact"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".InfoneAddCatActivity"
+            android:name=".addActivities.AddInfoneCat"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CabPoolLocations"
@@ -377,7 +377,7 @@
             android:name=".AdminHome"
             android:label="@string/title_activity_admin_home"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ForumsClasses.CreateForum"
+        <activity android:name=".addActivities.CreateForum"
             android:label="Create Forum"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

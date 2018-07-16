@@ -26,10 +26,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.NewUserItemFormat;
-import com.zconnect.zutto.zconnect.Utilities.VerificationUtilities;
-import com.zconnect.zutto.zconnect.adapters.newUserRVAdapter;
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+import com.zconnect.zutto.zconnect.itemFormats.NewUserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
+import com.zconnect.zutto.zconnect.adapters.NewUserRVAdapter;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 import java.util.Vector;
 
@@ -100,7 +100,7 @@ public class AdminHome extends AppCompatActivity {
         private static final String ARG_SECTION_NUMBER = "section_number";
         private RecyclerView newUsersRV;
         private LinearLayoutManager linearLayoutManager;
-        private newUserRVAdapter adapter;
+        private NewUserRVAdapter adapter;
         private Vector<NewUserItemFormat> newUserItemFormats = new Vector<NewUserItemFormat>();
         private DatabaseReference newUsersDataReference;
         public PlaceholderFragment() {
@@ -163,7 +163,7 @@ public class AdminHome extends AppCompatActivity {
             });
 
 
-            adapter = new newUserRVAdapter(rootView.getContext(),newUserItemFormats);
+            adapter = new NewUserRVAdapter(rootView.getContext(),newUserItemFormats);
             newUsersRV.setAdapter(adapter);
             return rootView;
 

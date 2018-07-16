@@ -6,9 +6,9 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:context="com.zconnect.zutto.zconnect.ForumsClasses.CreateForum"
-    tools:showIn="@layout/activity_create_forum"
-    android:padding="10dp">
+    android:padding="10dp"
+    tools:context="com.zconnect.zutto.zconnect.addActivities.CreateForum"
+    tools:showIn="@layout/activity_create_forum">
     <RelativeLayout
         android:id="@+id/create_forum"
         android:layout_width="match_parent"

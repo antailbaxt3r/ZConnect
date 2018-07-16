@@ -8,13 +8,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,11 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,18 +36,20 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
-import com.rengwuxian.materialedittext.MaterialEditText;
-import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
-import com.zconnect.zutto.zconnect.Utilities.messageTypeUtilities;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
+import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
+import com.zconnect.zutto.zconnect.adapters.ChatRVAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 
 public class ChatActivity extends BaseActivity {
 
@@ -166,7 +163,7 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             databaseReference.child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
-                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_CABPOOL_JOIN,false,true,ChatActivity.this);
+                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_CABPOOL_JOIN,false,true,ChatActivity.this);
                                             notificationSender.execute();
                                             FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 
@@ -225,7 +222,7 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setUserType(ForumsUserTypeUtilities.KEY_USER);
                                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
+                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
                                             notificationSender.execute();
                                         }
 
@@ -315,10 +312,10 @@ public class ChatActivity extends BaseActivity {
                 message.setName(userItem.getUsername());
                 message.setImageThumb(userItem.getImageURLThumbnail());
                 message.setMessage("\""+text+"\"");
-                message.setMessageType(messageTypeUtilities.KEY_MESSAGE_STR);
+                message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                 databaseReference.child("Chat").push().setValue(message);
                 if (type.equals("forums")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,getIntent().getStringExtra("name"),null,null,userItem.getUsername(),KeyHelper.KEY_FORUMS,false,true,ChatActivity.this);
+                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,getIntent().getStringExtra("name"),null,null,userItem.getUsername(), OtherKeyUtilities.KEY_FORUMS,false,true,ChatActivity.this);
                     notificationSender.execute();
 
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -333,19 +330,19 @@ public class ChatActivity extends BaseActivity {
                         }
                     });
                 }else if(type.equals("storeroom")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_PRODUCT_CHAT,false,true,ChatActivity.this);
+                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_PRODUCT_CHAT,false,true,ChatActivity.this);
                     notificationSender.execute();
                 }else if(type.equals("post")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_POST_CHAT,false,true,ChatActivity.this);
+                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_POST_CHAT,false,true,ChatActivity.this);
                     notificationSender.execute();
                 }else if(type.equals("messages")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
+                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
                     notificationSender.execute();
                 }else if(type.equals("events")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_EVENTS_CHAT,false,true,ChatActivity.this);
+                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_EVENTS_CHAT,false,true,ChatActivity.this);
                     notificationSender.execute();
                 }else if(type.equals("cabPool")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_CAB_POOL_CHAT,false,true,ChatActivity.this);
+                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_CAB_POOL_CHAT,false,true,ChatActivity.this);
                     notificationSender.execute();
                 }
 
@@ -386,11 +383,11 @@ public class ChatActivity extends BaseActivity {
                             message.setPhotoURL(downloadUri != null ? downloadUri.toString() : null);
                             message.setImageThumb(userItem.getImageURLThumbnail());
                             message.setMessage("Added Image");
-                            message.setMessageType(messageTypeUtilities.KEY_PHOTO_STR);
+                            message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
 
                             databaseReference.child("Chat").push().setValue(message);
                             if (type.equals("forums")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,getIntent().getStringExtra("name"),null,null,userItem.getUsername(),KeyHelper.KEY_FORUMS,false,true,ChatActivity.this);
+                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,getIntent().getStringExtra("name"),null,null,userItem.getUsername(), OtherKeyUtilities.KEY_FORUMS,false,true,ChatActivity.this);
                                 notificationSender.execute();
 
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -405,19 +402,19 @@ public class ChatActivity extends BaseActivity {
                                     }
                                 });
                             }else if(type.equals("storeroom")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_PRODUCT_CHAT,false,true,ChatActivity.this);
+                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_PRODUCT_CHAT,false,true,ChatActivity.this);
                                 notificationSender.execute();
                             }else if(type.equals("post")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_POST_CHAT,false,true,ChatActivity.this);
+                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_POST_CHAT,false,true,ChatActivity.this);
                                 notificationSender.execute();
                             }else if(type.equals("messages")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
+                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
                                 notificationSender.execute();
                             }else if(type.equals("events")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_EVENTS_CHAT,false,true,ChatActivity.this);
+                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_EVENTS_CHAT,false,true,ChatActivity.this);
                                 notificationSender.execute();
                             }else if(type.equals("cabPool")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(),KeyHelper.KEY_CAB_POOL_CHAT,false,true,ChatActivity.this);
+                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_CAB_POOL_CHAT,false,true,ChatActivity.this);
                                 notificationSender.execute();
                             }
 

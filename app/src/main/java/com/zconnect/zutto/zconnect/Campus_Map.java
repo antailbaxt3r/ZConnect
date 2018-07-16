@@ -3,8 +3,6 @@ package com.zconnect.zutto.zconnect;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 
 public class Campus_Map extends BaseActivity implements OnMapReadyCallback {
 

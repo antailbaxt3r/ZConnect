@@ -23,8 +23,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.RecentsItemFormat;
-import com.zconnect.zutto.zconnect.Utilities.RecentTypeUtilities;
+import com.zconnect.zutto.zconnect.adapters.RecentsRVAdapter;
+import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
+import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 
 import java.util.ArrayList;
 import java.util.Collections;

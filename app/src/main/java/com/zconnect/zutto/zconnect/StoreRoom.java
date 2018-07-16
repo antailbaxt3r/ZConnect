@@ -27,7 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.zconnect.zutto.zconnect.ItemFormats.Product;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.itemFormats.Product;
 
 public class StoreRoom extends BaseActivity {
 

@@ -21,16 +21,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
-import com.zconnect.zutto.zconnect.AddEvent;
+import com.zconnect.zutto.zconnect.addActivities.AddEvent;
 import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.ItemFormats.Event;
 import com.zconnect.zutto.zconnect.LoginActivity;
-import com.zconnect.zutto.zconnect.NotificationSender;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.Utilities.TimeAgo;
+import com.zconnect.zutto.zconnect.utilities.TimeAgo;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -99,30 +97,30 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void checkDelete(Long date, final String eventID){
-        final DatabaseReference eventReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventID);
-        final DatabaseReference archivedReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("archivedEvents").child(eventID);
-        flag2 = false;
-        Long currentDate = System.currentTimeMillis() - 86400000;
-        if (currentDate>date){
-            eventReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(!flag2) {
-                        archivedReference.setValue(dataSnapshot.getValue());
-                        flag2 = true;
-                        eventReference.removeValue();
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(eventID).removeValue();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-    }
+//    public void checkDelete(Long date, final String eventID){
+//        final DatabaseReference eventReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventID);
+//        final DatabaseReference archivedReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("archivedEvents").child(eventID);
+//        flag2 = false;
+//        Long currentDate = System.currentTimeMillis() - 86400000;
+//        if (currentDate>date){
+//            eventReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    if(!flag2) {
+//                        archivedReference.setValue(dataSnapshot.getValue());
+//                        flag2 = true;
+//                        eventReference.removeValue();
+//                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(eventID).removeValue();
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
+//        }
+//    }
 
     public void setEventDate(String eventDate) {
         if (eventDate != null) {

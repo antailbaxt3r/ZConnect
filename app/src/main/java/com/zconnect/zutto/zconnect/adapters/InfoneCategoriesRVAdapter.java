@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.holders.InfoneCategoriesRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
-import com.zconnect.zutto.zconnect.ItemFormats.InfoneCategoryModel;
+import com.zconnect.zutto.zconnect.itemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.R;
 
 import java.util.ArrayList;

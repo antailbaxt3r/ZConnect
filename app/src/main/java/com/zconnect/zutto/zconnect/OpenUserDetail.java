@@ -32,7 +32,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 
 import java.util.Calendar;
 
@@ -225,7 +228,7 @@ public class OpenUserDetail extends BaseActivity {
 
                         }
                     });
-                    NotificationSender notificationSender=new NotificationSender(userProfile.getUserUID(),null,null,null,null,mAuth.getCurrentUser().getEmail(),null,KeyHelper.KEY_LIKE,false,true,OpenUserDetail.this);
+                    NotificationSender notificationSender=new NotificationSender(userProfile.getUserUID(),null,null,null,null,mAuth.getCurrentUser().getEmail(),null, OtherKeyUtilities.KEY_LIKE,false,true,OpenUserDetail.this);
                     notificationSender.execute();
                 }
             }
@@ -253,7 +256,7 @@ public class OpenUserDetail extends BaseActivity {
 
                         }
                     });
-                    NotificationSender notificationSender=new NotificationSender(userProfile.getUserUID(),null,null,null,null,mAuth.getCurrentUser().getEmail(),null,KeyHelper.KEY_LOVE,false,true, OpenUserDetail.this);
+                    NotificationSender notificationSender=new NotificationSender(userProfile.getUserUID(),null,null,null,null,mAuth.getCurrentUser().getEmail(),null, OtherKeyUtilities.KEY_LOVE,false,true, OpenUserDetail.this);
                     notificationSender.execute();
                 }
             }
