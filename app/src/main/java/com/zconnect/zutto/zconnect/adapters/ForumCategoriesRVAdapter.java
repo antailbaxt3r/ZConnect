@@ -1,16 +1,13 @@
 package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -25,10 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.ChatActivity;
-import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.ForumsClasses.CreateForum;
+import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.forumCategoriesItemFormat;
@@ -36,7 +31,6 @@ import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
-import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

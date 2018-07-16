@@ -377,7 +377,7 @@
             android:name=".AdminHome"
             android:label="@string/title_activity_admin_home"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ForumsClasses.CreateForum"
+        <activity android:name=".addActivities.CreateForum"
             android:label="Create Forum"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
