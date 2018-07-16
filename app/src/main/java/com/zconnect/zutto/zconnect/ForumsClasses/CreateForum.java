@@ -34,14 +34,14 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.IntentHandle;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import java.io.IOException;
 
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.Utilities.RequestCodes.GALLERY_REQUEST;
 
 public class CreateForum extends AppCompatActivity {
