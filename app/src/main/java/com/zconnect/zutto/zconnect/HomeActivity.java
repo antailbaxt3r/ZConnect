@@ -63,7 +63,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
     private final String TAG = getClass().getSimpleName();
     @BindView(R.id.drawer_layout)
@@ -102,21 +102,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
     private Fragment recent, forums, shop;
+    public Boolean flag = false;
 
 
     private DatabaseReference mDatabaseStats;
     private DatabaseReference mDatabaseUserStats;
-    int UsersTotalNumbers = 0, TotalNumbers = 0;
-    int UsersTotalProducts = 0, TotalProducts = 0;
-    int UsersTotalOffers = 0, TotalOffers = 0;
-    int UsersTotalEvents = 0, TotalEvents = 0;
-    int UsersTotalCabpools = 0, TotalCabpools = 0;
-    private ValueEventListener UserStats;
-    private ValueEventListener TotalStats;
     private String navHeaderBackGroundImageUrl =null;
     private String Title;
-
-    String flag;
 
     TextView[] tabTitle= new TextView[6];
     ImageView[] tabImage = new ImageView[6];
@@ -124,6 +116,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     BottomSheetBehavior sheetBehavior;
     LinearLayout layoutBottomSheet;
+
+    public TabLayout.Tab recentsT,forumsT,addT,infoneT,profileT;
 
     public HomeActivity() {
         isFabOpen = false;
@@ -138,68 +132,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        guestPrefs = getSharedPreferences("guestMode", MODE_PRIVATE);
-        guestPrefs.registerOnSharedPreferenceChangeListener(this);
-        guestMode = guestPrefs.getBoolean("mode", false);
-        mAuth = FirebaseAuth.getInstance();
-        mAuth.addAuthStateListener(this);
-
-        try {
-            FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid());
-        }catch (Exception e){}
-
-        View navHeader = navigationView.getHeaderView(0);
-        //These initializations **can't** be done by glide
-        navHeaderUserNameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
-        navHeaderEmailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
-        navHeaderBackground = (SimpleDraweeView) navHeader.findViewById(R.id.iv_nav_header_background);
-        //necessary for icons to retain their color
-        navigationView.setItemIconTintList(null);
-
-
-
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        initListeners();
         setSupportActionBar(toolbar);
-
-        if(communityReference!=null) {
-            communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
-
-            communityInfoRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.hasChild("name")) {
-                        Title = dataSnapshot.child("name").getValue().toString() + " Connect";
-                        setToolbarTitle(Title);
-                    } else {
-                        Title = "Community Connect";
-                        setToolbarTitle(Title);
-                    }
-
-                    navHeaderBackGroundImageUrl = dataSnapshot.child("image").getValue(String.class);
-                    if (navHeaderBackGroundImageUrl != null
-                            && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)
-                            && navHeaderBackground != null) {
-                        navHeaderBackground.setImageURI(navHeaderBackGroundImageUrl);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -213,45 +146,61 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        //getting all the tabs Instances
 
+        defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-//            //Floating Buttons
-        fab = (FloatingActionButton)findViewById(R.id.fab);
-//        fab1 = (FloatingActionButton)findViewById(R.id.fab1);
-//        fab2 = (FloatingActionButton)findViewById(R.id.fab2);
-//        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
-        layoutBottomSheet = (LinearLayout) findViewById(R.id.home_bottom_sheet);
+        mAuth = FirebaseAuth.getInstance();
 
-        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_backward);
+        View navHeader = navigationView.getHeaderView(0);
+        try {
+            FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid());
+        }catch (Exception e){}
 
-        final HomeBottomSheet bottomSheetFragment = new HomeBottomSheet();
-        View bottomSheetView = getLayoutInflater().inflate(R.layout.content_home_bottomsheet, null);
+        // Navigation Drawer initialization
+        navHeaderUserNameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
+        navHeaderEmailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
+        navHeaderBackground = (SimpleDraweeView) navHeader.findViewById(R.id.iv_nav_header_background);
+        navigationView.setItemIconTintList(null);
 
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-                Boolean status = sharedPref.getBoolean("mode", false);
-                int i=tabs.getSelectedTabPosition();
-                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-            }
-        });
-
-
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
 
+
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
+
+        // Bottom Sheet
+        layoutBottomSheet = (LinearLayout) findViewById(R.id.home_bottom_sheet);
+        final HomeBottomSheet bottomSheetFragment = new HomeBottomSheet();
+
+        //Floating Button
+        fab = (FloatingActionButton)findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int i=tabs.getSelectedTabPosition();
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+            }
+        });
+
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
+
+        initListeners();
+
+        tabs();
     }
 
     //Alert box to display guest login
@@ -276,38 +225,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         });
         android.app.AlertDialog dialog = builder.create();
         dialog.show();
+
+
     }
-
-
-//    // Function to open fab notification
-//    public void animateFAB() {
-//
-//        if (isFabOpen) {
-//
-//            fab.startAnimation(rotate_backward);
-//            fab1.startAnimation(fab_close);
-//            fab2.startAnimation(fab_close);
-//            fab3.startAnimation(fab_close);
-//            fab1.setClickable(false);
-//            fab2.setClickable(false);
-//            fab3.setClickable(false);
-//            isFabOpen = false;
-//            Log.d("Raj", "close");
-//
-//        } else {
-//
-//            fab.startAnimation(rotate_forward);
-//            fab1.startAnimation(fab_open);
-//            fab2.startAnimation(fab_open);
-//            fab3.startAnimation(fab_open);
-//            fab1.setClickable(true);
-//            fab2.setClickable(true);
-//            fab3.setClickable(true);
-//            isFabOpen = true;
-//            Log.d("Raj", "open");
-//        }
-//    }
-//
 
     //Circular notification in the bottom navigation
     void setNotificationCircle(){
@@ -316,11 +236,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        } else {
 //            tabNotificationCircle[4].setVisibility(View.GONE);
 //        }
-        if (TotalNumbers > UsersTotalNumbers) {
-            tabNotificationCircle[1].setVisibility(View.VISIBLE);
-        } else {
-            tabNotificationCircle[1].setVisibility(View.GONE);
-        }
+//        if (TotalNumbers > UsersTotalNumbers) {
+//            tabNotificationCircle[1].setVisibility(View.VISIBLE);
+//        } else {
+//            tabNotificationCircle[1].setVisibility(View.GONE);
+//        }
 //        if (TotalOffers > UsersTotalOffers) {
 //            tabNotificationCircle[5].setVisibility(View.VISIBLE);
 //        } else {
@@ -338,139 +258,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        }
     }
 
-    //Setting contents in the different tabs
-    void tabs() {
-        View vRecents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        final TabLayout.Tab recentsT = tabs.newTab();
+    public void setTabListener(){
 
-        tabTitle[0] = (TextView) vRecents.findViewById(R.id.tabTitle);
-        tabTitle[0].setText("Recents");
-
-        tabImage[0] = (ImageView) vRecents.findViewById(R.id.tabImage);
-        tabImage[0].setImageResource(R.drawable.baseline_home_white_36);
-
-        tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
-
-        recentsT.setCustomView(vRecents);
-
-
-        View vForums = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        TabLayout.Tab forumsT = tabs.newTab();
-
-        tabTitle[1] = (TextView) vForums.findViewById(R.id.tabTitle);
-        tabTitle[1].setText("Forums");
-
-        tabImage[1] = (ImageView) vForums.findViewById(R.id.tabImage);
-        tabImage[1].setImageResource(R.drawable.baseline_forum_white_36);
-
-        tabNotificationCircle[1] = (ImageView) vForums.findViewById(R.id.notification_circle);
-        vForums.setAlpha((float) 0.7);
-        forumsT.setCustomView(vForums);
-
-        View vAdd = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        TabLayout.Tab addT = tabs.newTab();
-
-//        tabTitle[2] = (TextView) vAdd.findViewById(R.id.tabTitle);
-//        tabTitle[2].setText("Add");
-
-        tabImage[2] = (ImageView) vAdd.findViewById(R.id.tabImage);
-        tabImage[2].setImageResource(R.drawable.outline_add_circle_outline_white_36);
-
-        tabNotificationCircle[2] = (ImageView) vAdd.findViewById(R.id.notification_circle);
-        vAdd.setAlpha((float) 0.7);
-        addT.setCustomView(vAdd);
-
-        View vInfone = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        TabLayout.Tab infoneT = tabs.newTab();
-
-        tabTitle[3] = (TextView) vInfone.findViewById(R.id.tabTitle);
-        tabTitle[3].setText("Infone");
-
-        tabImage[3] = (ImageView) vInfone.findViewById(R.id.tabImage);
-        tabImage[3].setImageResource(R.drawable.baseline_phone_white_36);
-
-        tabNotificationCircle[3] = (ImageView) vInfone.findViewById(R.id.notification_circle);
-        vInfone.setAlpha((float) 0.7);
-        infoneT.setCustomView(vInfone);
-
-        View vProfile = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        TabLayout.Tab profileT = tabs.newTab();
-
-        tabTitle[4] = (TextView) vProfile.findViewById(R.id.tabTitle);
-        tabTitle[4].setText("Profile");
-
-        tabImage[4] = (ImageView) vProfile.findViewById(R.id.tabImage);
-        tabImage[4].setImageResource(R.drawable.avatar_circle_36dp);
-
-        tabNotificationCircle[4] = (ImageView) vProfile.findViewById(R.id.notification_circle);
-        vProfile.setAlpha((float) 0.7);
-        profileT.setCustomView(vProfile);
-
-
-//        View vStore = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-//        TabLayout.Tab storeT = tabs.newTab();
-
-//        tabTitle[2] = (TextView) vStore.findViewById(R.id.tabTitle);
-//        tabTitle[2].setText("StoreRoom");
-
-//        tabImage[2] = (ImageView) vStore.findViewById(R.id.tabImage);
-//        tabImage[2].setImageResource(R.drawable.ic_local_mall_white_24dp);
-
-//        tabNotificationCircle[2] = (ImageView) vStore.findViewById(R.id.notification_circle);
-//        vStore.setAlpha((float) 0.7);
-//        storeT.setCustomView(vStore);
-
-
-//        View vCab = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-//        TabLayout.Tab cabT = tabs.newTab();
-
-//        tabTitle[3] = (TextView) vCab.findViewById(R.id.tabTitle);
-//        tabTitle[3].setText("CabPool");
-
-//        tabImage[3] = (ImageView) vCab.findViewById(R.id.tabImage);
-//        tabImage[3].setImageResource(R.drawable.ic_local_taxi_white_24dp);
-
-//        tabNotificationCircle[3] = (ImageView) vCab.findViewById(R.id.notification_circle);
-//        vCab.setAlpha((float) 0.7);
-//        cabT.setCustomView(vCab);
-
-
-//        View vEvents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-//        TabLayout.Tab eventT = tabs.newTab();
-
-//        tabTitle[4] = (TextView) vEvents.findViewById(R.id.tabTitle);
-//        tabTitle[4].setText("Events");
-
-//        tabImage[4] = (ImageView) vEvents.findViewById(R.id.tabImage);
-//        tabImage[4].setImageResource(R.drawable.ic_event_white_24dp);
-
-//        tabNotificationCircle[4] = (ImageView) vEvents.findViewById(R.id.notification_circle);
-//        vEvents.setAlpha((float) 0.7);
-//        eventT.setCustomView(vEvents);
-
-        // Temporary messages
-//        View vShop = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-//        TabLayout.Tab shopT = tabs.newTab();
-
-//        tabTitle[5] = (TextView) vShop.findViewById(R.id.tabTitle);
-//        tabTitle[5].setText("Messages");
-
-//        tabImage[5] = (ImageView) vShop.findViewById(R.id.tabImage);
-//        tabImage[5].setImageResource(R.drawable.ic_message_white_24dp);
-
-//        tabNotificationCircle[5] = (ImageView) vShop.findViewById(R.id.notification_circle);
-//        vShop.setAlpha((float) 0.7);
-//        shopT.setCustomView(vShop);
-
-        tabs.addTab(recentsT);
-        tabs.addTab(forumsT);
-        tabs.addTab(addT);
-        tabs.addTab(infoneT);
-        tabs.addTab(profileT);
-//        tabs.addTab(storeT);
-//        tabs.addTab(eventT);
-//        tabs.addTab(cabT);
-//        tabs.addTab(shopT);
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
@@ -487,8 +276,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                     case 1: {
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
-                           buildAlertCheckNewUser("Forums");
-                           recentsT.select();
+                            buildAlertCheckNewUser("Forums");
+                            recentsT.select();
                         }else{
                             setActionBarTitle("Forums");
                             CounterManager.forumsOpen();
@@ -507,36 +296,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     case 4: {
                         break;
                     }
-//                    case 3: {
-//                        setActionBarTitle("Events");
-//                        CounterManager.EventOpen();
-////                        fab.setImageResource(R.drawable.ic_add_white_36dp);
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.container, events).commit();
-//                        break;
-//                    }
-//                    case 5: {
-//                        setActionBarTitle("Anonymous Messages");
-//                        CounterManager.anonymousMessageOpen();
-////                        fab.setImageResource(R.drawable.procent_badge_256);
-////                        CounterManager.ShopOpen();
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.container, shop).commit();
-//
-//                        break;
-//                    }
-//                    case 2: {
-//                        setActionBarTitle("StoreRoom");
-//                        CounterManager.StoreRoomOpen();
-////                        fab.setImageResource(R.drawable.ic_add_shopping_cart_white_24dp);
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.container, store).commit();
-//                        break;
-//                    }
-//                    case 4: {
-//                        setActionBarTitle("Cab Pool");
-//                        CounterManager.openCabPool();
-////                        fab.setImageResource(R.drawable.ic_search_white_24dp);
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.container, cab).commit();
-//                        break;
-//                    }
                 }
             }
 
@@ -554,59 +313,135 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     }
 
+    //Setting contents in the different tabs
+    void tabs() {
+        View vRecents = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        recentsT = tabs.newTab();
+
+        tabTitle[0] = (TextView) vRecents.findViewById(R.id.tabTitle);
+        tabTitle[0].setText("Recents");
+
+        tabImage[0] = (ImageView) vRecents.findViewById(R.id.tabImage);
+        tabImage[0].setImageResource(R.drawable.baseline_home_white_36);
+
+        tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
+
+        recentsT.setCustomView(vRecents);
+
+
+        View vForums = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        forumsT = tabs.newTab();
+
+        tabTitle[1] = (TextView) vForums.findViewById(R.id.tabTitle);
+        tabTitle[1].setText("Forums");
+
+        tabImage[1] = (ImageView) vForums.findViewById(R.id.tabImage);
+        tabImage[1].setImageResource(R.drawable.baseline_forum_white_36);
+
+        tabNotificationCircle[1] = (ImageView) vForums.findViewById(R.id.notification_circle);
+        vForums.setAlpha((float) 0.7);
+        forumsT.setCustomView(vForums);
+
+        View vAdd = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        addT = tabs.newTab();
+
+//        tabTitle[2] = (TextView) vAdd.findViewById(R.id.tabTitle);
+//        tabTitle[2].setText("Add");
+
+        tabImage[2] = (ImageView) vAdd.findViewById(R.id.tabImage);
+        tabImage[2].setImageResource(R.drawable.outline_add_circle_outline_white_36);
+
+        tabNotificationCircle[2] = (ImageView) vAdd.findViewById(R.id.notification_circle);
+        vAdd.setAlpha((float) 0.7);
+        addT.setCustomView(vAdd);
+
+        View vInfone = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        infoneT = tabs.newTab();
+
+        tabTitle[3] = (TextView) vInfone.findViewById(R.id.tabTitle);
+        tabTitle[3].setText("Infone");
+
+        tabImage[3] = (ImageView) vInfone.findViewById(R.id.tabImage);
+        tabImage[3].setImageResource(R.drawable.baseline_phone_white_36);
+
+        tabNotificationCircle[3] = (ImageView) vInfone.findViewById(R.id.notification_circle);
+        vInfone.setAlpha((float) 0.7);
+        infoneT.setCustomView(vInfone);
+
+        View vProfile = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        profileT = tabs.newTab();
+
+        tabTitle[4] = (TextView) vProfile.findViewById(R.id.tabTitle);
+        tabTitle[4].setText("Profile");
+
+        tabImage[4] = (ImageView) vProfile.findViewById(R.id.tabImage);
+        tabImage[4].setImageResource(R.drawable.avatar_circle_36dp);
+
+        tabNotificationCircle[4] = (ImageView) vProfile.findViewById(R.id.notification_circle);
+        vProfile.setAlpha((float) 0.7);
+        profileT.setCustomView(vProfile);
+
+        tabs.addTab(recentsT);
+        tabs.addTab(forumsT);
+        tabs.addTab(addT);
+        tabs.addTab(infoneT);
+        tabs.addTab(profileT);
+
+    }
+
 
     //All ValueEventListener used in this class are defined here.
     private void initListeners() {
 
-        TotalStats = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("TotalNumbers").getValue() != null)
-                    TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-                if (dataSnapshot.child("TotalEvents").getValue() != null)
-                    TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-//                if (dataSnapshot.child("TotalOffers").getValue() != null)
-//                    TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
-                if (dataSnapshot.child("TotalProducts").getValue() != null)
-                    TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
-                if (dataSnapshot.child("TotalCabpools").getValue() != null)
-                    TotalCabpools = Integer.parseInt(dataSnapshot.child("TotalCabpools").getValue().toString());
-
-//                setNotificationCircle();
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: ", databaseError.toException());
-            }
-        };
-
-        UserStats = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("TotalNumbers").getValue() != null) {
-                    UsersTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
-                }
-                if (dataSnapshot.child("TotalEvents").getValue() != null) {
-                    UsersTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
-                }
-//                if (dataSnapshot.child("TotalOffers").getValue() != null) {
-//                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
+//        TotalStats = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.child("TotalNumbers").getValue() != null)
+//                    TotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
+//                if (dataSnapshot.child("TotalEvents").getValue() != null)
+//                    TotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+////                if (dataSnapshot.child("TotalOffers").getValue() != null)
+////                    TotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
+//                if (dataSnapshot.child("TotalProducts").getValue() != null)
+//                    TotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+//                if (dataSnapshot.child("TotalCabpools").getValue() != null)
+//                    TotalCabpools = Integer.parseInt(dataSnapshot.child("TotalCabpools").getValue().toString());
+//
+////                setNotificationCircle();
+//            }
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.e(TAG, "onCancelled: ", databaseError.toException());
+//            }
+//        };
+////
+//        UserStats = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.child("TotalNumbers").getValue() != null) {
+//                    UsersTotalNumbers = Integer.parseInt(dataSnapshot.child("TotalNumbers").getValue().toString());
 //                }
-                if (dataSnapshot.child("TotalProducts").getValue() != null) {
-                    UsersTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
-                }
-                if (dataSnapshot.child("TotalCabpools").getValue() != null) {
-                    UsersTotalCabpools = Integer.parseInt(dataSnapshot.child("TotalCabpools").getValue().toString());
-                }
-
-                setNotificationCircle();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "onCancelled: ", databaseError.toException());
-            }
-        };
+//                if (dataSnapshot.child("TotalEvents").getValue() != null) {
+//                    UsersTotalEvents = Integer.parseInt(dataSnapshot.child("TotalEvents").getValue().toString());
+//                }
+////                if (dataSnapshot.child("TotalOffers").getValue() != null) {
+////                    UsersTotalOffers = Integer.parseInt(dataSnapshot.child("TotalOffers").getValue(String.class));
+////                }
+//                if (dataSnapshot.child("TotalProducts").getValue() != null) {
+//                    UsersTotalProducts = Integer.parseInt(dataSnapshot.child("TotalProducts").getValue().toString());
+//                }
+//                if (dataSnapshot.child("TotalCabpools").getValue() != null) {
+//                    UsersTotalCabpools = Integer.parseInt(dataSnapshot.child("TotalCabpools").getValue().toString());
+//                }
+//
+//                setNotificationCircle();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.e(TAG, "onCancelled: ", databaseError.toException());
+//            }
+//        };
 
         popupsListener = new ValueEventListener() {
             @Override
@@ -704,18 +539,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
                             recent = new Recents();
                             forums = new ForumsActivity();
-                            tabs();
 
-                            if(communityReference!=null) {
+
+                            if(communityReference!=null && !flag) {
+                                flag =true;
                                 getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                             }
 
-                            if(mAuth.getCurrentUser()!=null) {
-                                mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid()).child("Stats");
-                                mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
-                                mDatabaseStats.addValueEventListener(TotalStats);
-                                mDatabaseUserStats.addValueEventListener(UserStats);
-                            }
+                            setTabListener();
                         }
 
                         @Override
@@ -735,14 +566,19 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void updateViews() {
-        navHeaderUserNameTv.setText(username != null ? username : "ZConnect");
-        navHeaderEmailTv.setText(userEmail != null ? userEmail : "The way to connect!");
-        if (guestMode) {
-            editProfileItem.setVisible(false);
-            editProfileItem.setEnabled(false);
-        } else {
+        if(mAuth.getCurrentUser()!=null) {
+            username = mAuth.getCurrentUser().getDisplayName();
+            userEmail = mAuth.getCurrentUser().getEmail();
+
+            navHeaderUserNameTv.setText(username != null ? username : "ZConnect");
+            navHeaderEmailTv.setText(userEmail != null ? userEmail : "The way to connect!");
+
             editProfileItem.setEnabled(true);
             editProfileItem.setVisible(true);
+
+        }else {
+            editProfileItem.setVisible(false);
+            editProfileItem.setEnabled(false);
         }
     }
 
@@ -766,6 +602,35 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 editor.putBoolean("isReturningUser", true);
                 editor.commit();
             } else if(communityReference!=null) {
+
+                communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
+
+                communityInfoRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChild("name")) {
+                            Title = dataSnapshot.child("name").getValue().toString() + " Connect";
+                            setToolbarTitle(Title);
+                        } else {
+                            Title = "Community Connect";
+                            setToolbarTitle(Title);
+                        }
+
+                        navHeaderBackGroundImageUrl = dataSnapshot.child("image").getValue(String.class);
+                        if (navHeaderBackGroundImageUrl != null
+                                && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)
+                                && navHeaderBackground != null) {
+                            navHeaderBackground.setImageURI(navHeaderBackGroundImageUrl);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
                 currentUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid());
                 currentUserReference.keepSynced(true);
                 currentUserReference.addListenerForSingleValueEvent(editProfileValueEventListener);
@@ -1019,32 +884,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         Log.e(TAG, "onConnectionFailed: error message is " + connectionResult.getErrorMessage());
     }
 
-    @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        mUser = mAuth.getCurrentUser();
-        username = null;
-        userEmail = null;
+//    @Override
+//    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//        mUser = mAuth.getCurrentUser();
+//        username = null;
+//        userEmail = null;
+//
+//        if (mUser != null) {
+//            username = mUser.getDisplayName();
+//            userEmail = mUser.getEmail();
+//        }
+//        guestMode = guestPrefs.getBoolean("mode", false);
+//        updateViews();
+//    }
 
-        if (mUser != null) {
-            username = mUser.getDisplayName();
-            userEmail = mUser.getEmail();
-        }
-        guestMode = guestPrefs.getBoolean("mode", false);
-        updateViews();
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        mUser = mAuth.getCurrentUser();
-        username = null;
-        userEmail = null;
-        if (mUser != null) {
-            username = mUser.getDisplayName();
-            userEmail = mUser.getEmail();
-        }
-        guestMode = guestPrefs.getBoolean("mode", false);
-        updateViews();
-    }
 
 //    public void setCommunity(String communityName){
 //        SharedPreferences sharedPref2 = getSharedPreferences("communityName", MODE_PRIVATE);
@@ -1087,7 +940,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
 
     }
-
 
 
     public void changeFragment(int i) {
