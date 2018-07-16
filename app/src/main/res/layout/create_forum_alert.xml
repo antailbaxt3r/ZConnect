@@ -10,10 +10,11 @@
         android:layout_height="wrap_content"
         android:padding="10dp">
         <FrameLayout
-            android:id="@+id/add_icon_create_forum_alert"
+            android:id="@+id/layout_add_icon_create_forum_alert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/forum_icon_create_forum_alert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/forum_circle"
@@ -22,6 +23,7 @@
                 app:roundAsCircle="true"
                 android:layout_centerVertical="true"/>
             <ImageView
+                android:id="@+id/camera_icon_create_forum_alert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -30,7 +32,7 @@
         </FrameLayout>
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/add_name_create_forum_alert"
-            android:layout_toRightOf="@+id/add_icon_create_forum_alert"
+            android:layout_toRightOf="@+id/layout_add_icon_create_forum_alert"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Type forum name here..."

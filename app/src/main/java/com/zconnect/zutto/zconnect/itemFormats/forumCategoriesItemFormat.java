@@ -14,13 +14,18 @@ public class forumCategoriesItemFormat {
     private String forumType;
     private PostedByDetails PostedBy;
     private Vector<UsersListItemFormat> usersListItemFormats;
+    private String image;
+    private String imageThumb;
 
-    public forumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats, PostedByDetails PostedBy) {
+    public forumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats, PostedByDetails PostedBy, String imageThumb, String image ) {
+
         this.name = name;
         this.tabUID = tabUID;
         this.catUID = catUID;
         this.lastMessage = lastMessage;
         this.usersListItemFormats = usersListItemFormats;
+        this.image = image;
+        this.imageThumb = imageThumb;
         this.PostedBy = PostedBy;
     }
 
@@ -74,6 +79,22 @@ public class forumCategoriesItemFormat {
 
     public void setForumType(String forumType) {
         this.forumType = forumType;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImageThumb(String imageThumb) {
+        this.imageThumb = imageThumb;
+    }
+
+    public String getImageThumb() {
+        return imageThumb;
     }
 
     public PostedByDetails getPostedBy() {

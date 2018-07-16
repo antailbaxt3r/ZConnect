@@ -214,21 +214,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
 
         //getting all the tabs Instances
-        recent = new Recents();
-//        cab = new CabPoolAll();
-        forums = new ForumsActivity();
-//        store = new TabStoreRoom();
 
-        // Messages replaced for shops
-//        shop = new MessagesActivity();
-//        events = new TabbedEvents();
-
-        //Setting launching tab
-        tabs();
-
-        if(communityReference!=null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
-        }
 
 //            //Floating Buttons
         fab = (FloatingActionButton)findViewById(R.id.fab);
@@ -716,6 +702,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
+                            recent = new Recents();
+                            forums = new ForumsActivity();
+                            tabs();
+
+                            if(communityReference!=null) {
+                                getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+                            }
+
+                            if(mAuth.getCurrentUser()!=null) {
+                                mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid()).child("Stats");
+                                mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
+                                mDatabaseStats.addValueEventListener(TotalStats);
+                                mDatabaseUserStats.addValueEventListener(UserStats);
+                            }
                         }
 
                         @Override
@@ -898,12 +898,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
             mDatabasePopUps.keepSynced(true);
 
-            if(mAuth.getCurrentUser()!=null) {
-                mDatabaseUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid()).child("Stats");
-                mDatabaseStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
-                mDatabaseStats.addValueEventListener(TotalStats);
-                mDatabaseUserStats.addValueEventListener(UserStats);
-            }
+
 
             mDatabasePopUps.addValueEventListener(popupsListener);
         }
