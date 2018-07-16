@@ -8,7 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.zconnect.zutto.zconnect.AddProduct"
+    tools:context="com.zconnect.zutto.zconnect.addActivities.AddProduct"
     tools:showIn="@layout/activity_add_product"
     android:paddingEnd="5dp"
     android:paddingStart="5dp"
@@ -85,7 +85,7 @@
         android:layout_marginTop="5dp"
         android:text="Choose Category"
         android:textColor="@color/primaryText"/>
-    <com.zconnect.zutto.zconnect.CustomSpinner
+    <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
         android:id="@+id/categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

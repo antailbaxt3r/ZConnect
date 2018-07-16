@@ -6,15 +6,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.zconnect.zutto.zconnect.ItemFormats.NewUserItemFormat;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
-import com.zconnect.zutto.zconnect.Utilities.VerificationUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class newUserViewHolder extends RecyclerView.ViewHolder{
 

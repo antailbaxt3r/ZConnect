@@ -1,19 +1,13 @@
 package com.zconnect.zutto.zconnect.holders;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.Uri;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,15 +20,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.ItemFormats.Product;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
-import com.zconnect.zutto.zconnect.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.R;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_PRODUCT;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT;
 
 /**
  * Created by Lokesh Garg on 28-03-2018.

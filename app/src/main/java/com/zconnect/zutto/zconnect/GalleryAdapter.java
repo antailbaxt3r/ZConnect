@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.zconnect.zutto.zconnect.ItemFormats.GalleryFormat;
+import com.zconnect.zutto.zconnect.itemFormats.GalleryFormat;
 
 import java.util.ArrayList;
 import java.util.Vector;

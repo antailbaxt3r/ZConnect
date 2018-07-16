@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zconnect.zutto.zconnect.ItemFormats.MessageTabRVItem;
+import com.zconnect.zutto.zconnect.itemFormats.MessageTabRVItem;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.holders.MessageTabRVViewHolder;
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.zconnect.zutto.zconnect.InfoneAddCatActivity"
+    tools:context="com.zconnect.zutto.zconnect.addActivities.AddInfoneCat"
     android:paddingStart="15dp"
     android:paddingEnd="15dp">
 

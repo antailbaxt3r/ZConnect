@@ -52,9 +52,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.Utilities.UserUtilities;
-import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
 
 import java.util.ArrayList;

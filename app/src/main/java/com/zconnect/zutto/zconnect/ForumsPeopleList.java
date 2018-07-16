@@ -1,8 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -17,11 +15,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
-import com.zconnect.zutto.zconnect.Utilities.FeatureNamesUtilities;
-import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
-import com.zconnect.zutto.zconnect.Utilities.UsersTypeUtilities;
+import com.zconnect.zutto.zconnect.adapters.UsersListRVAdapter;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 
 import java.util.Vector;
 

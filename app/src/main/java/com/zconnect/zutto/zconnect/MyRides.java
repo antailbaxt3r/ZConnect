@@ -17,8 +17,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.CabItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.adapters.CabPoolRVAdapter;
 
 import java.util.Vector;
 

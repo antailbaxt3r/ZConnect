@@ -42,9 +42,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
-import com.zconnect.zutto.zconnect.ItemFormats.Event;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.itemFormats.Event;
 
 import java.io.File;
 import java.net.URL;
@@ -53,7 +55,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT_BOOST;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT_BOOST;
 
 public class  OpenEventDetail extends BaseActivity {
 

@@ -26,20 +26,20 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
-import com.zconnect.zutto.zconnect.KeyHelper;
-import com.zconnect.zutto.zconnect.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.forumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.Utilities.ForumTypeUtilities;
-import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Vector;
 
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -405,7 +405,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                             userDetails.setUserUID(userItemFormat.getUserUID());
                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                            NotificationSender notificationSender=new NotificationSender(key,name,FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), KeyHelper.KEY_FORUMS_JOIN,false,true,itemView.getContext());
+                            NotificationSender notificationSender=new NotificationSender(key,name,FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,itemView.getContext());
                             notificationSender.execute();
                         }
 

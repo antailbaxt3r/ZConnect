@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.zconnect.zutto.zconnect.ItemFormats.ShopOfferItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.ShopOfferItemFormat;
 
 import java.util.Vector;
 

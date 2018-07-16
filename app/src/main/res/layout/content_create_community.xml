@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.zconnect.zutto.zconnect.CreateCommunity"
+    tools:context="com.zconnect.zutto.zconnect.addActivities.CreateCommunity"
     tools:showIn="@layout/activity_create_community">
 
     <ImageButton

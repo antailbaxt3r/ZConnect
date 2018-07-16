@@ -23,11 +23,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.Utilities.FeatureNamesUtilities;
-import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.adapters.UsersListRVAdapter;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.CabItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -215,7 +219,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                                 userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                 userDetails.setUserUID(userItemFormat.getUserUID());
                                 databaseReference.child(key).child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(),KeyHelper.KEY_CABPOOL_JOIN,false,true,CabPoolListOfPeople.this);
+                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_CABPOOL_JOIN,false,true,CabPoolListOfPeople.this);
                                 notificationSender.execute();
                                 FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 

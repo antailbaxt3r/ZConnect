@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.zconnect.zutto.zconnect.AddStatus"
+    tools:context="com.zconnect.zutto.zconnect.addActivities.AddStatus"
     tools:showIn="@layout/activity_new_message"
     android:paddingStart="15dp"
     android:paddingEnd="15dp">

@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.zconnect.zutto.zconnect.AddEvent;
-import com.zconnect.zutto.zconnect.AddProduct;
+import com.zconnect.zutto.zconnect.addActivities.AddEvent;
+import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.CabPooling;
 import com.zconnect.zutto.zconnect.CounterManager;
-import com.zconnect.zutto.zconnect.AddStatus;
+import com.zconnect.zutto.zconnect.addActivities.AddStatus;
 import com.zconnect.zutto.zconnect.R;
 
 public class HomeBottomSheet extends BottomSheetDialogFragment{

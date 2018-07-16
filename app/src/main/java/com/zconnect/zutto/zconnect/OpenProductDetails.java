@@ -30,14 +30,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
-import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_PRODUCT;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT;
 
 public class OpenProductDetails extends BaseActivity {
 

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.zconnect.zutto.zconnect.ItemFormats.Event;
+import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.holders.EventsViewHolder;
 

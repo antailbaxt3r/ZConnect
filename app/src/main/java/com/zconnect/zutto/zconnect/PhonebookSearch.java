@@ -20,8 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookDisplayItem;
-import com.zconnect.zutto.zconnect.ItemFormats.PhonebookItem;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.PhonebookDisplayItem;
+import com.zconnect.zutto.zconnect.itemFormats.PhonebookItem;
 
 import java.util.Vector;
 

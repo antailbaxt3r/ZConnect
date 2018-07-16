@@ -6,23 +6,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,11 +25,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.instacart.library.truetime.TrueTime;
-import com.zconnect.zutto.zconnect.ItemFormats.CabItemFormat;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.CabItemFormat;
+import com.zconnect.zutto.zconnect.adapters.CabPoolRVAdapter;
+import com.zconnect.zutto.zconnect.addActivities.AddCabPool;
 
-import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,9 +38,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
-
-
-import static android.content.Context.MODE_PRIVATE;
 
 
 public class CabPoolAll extends BaseActivity {

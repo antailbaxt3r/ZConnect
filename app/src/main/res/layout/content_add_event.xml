@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.zconnect.zutto.zconnect.AddEvent"
+    tools:context="com.zconnect.zutto.zconnect.addActivities.AddEvent"
     tools:showIn="@layout/activity_add_event"
     android:paddingTop="5dp"
     android:paddingEnd="5dp"

@@ -27,7 +27,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
-import com.zconnect.zutto.zconnect.ItemFormats.Product;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.Product;
 
 public class MyProducts extends BaseActivity {
     Query query;

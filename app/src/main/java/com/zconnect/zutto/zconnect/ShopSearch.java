@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -21,8 +20,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.ShopDetailsItem;
-import com.zconnect.zutto.zconnect.ItemFormats.ShopListItem;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.ShopDetailsItem;
+import com.zconnect.zutto.zconnect.itemFormats.ShopListItem;
 
 import java.util.Vector;
 

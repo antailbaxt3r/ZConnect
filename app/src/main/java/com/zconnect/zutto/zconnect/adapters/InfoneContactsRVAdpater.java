@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.holders.InfoneContactsRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
-import com.zconnect.zutto.zconnect.ItemFormats.InfoneContactsRVItem;
+import com.zconnect.zutto.zconnect.itemFormats.InfoneContactsRVItem;
 import com.zconnect.zutto.zconnect.R;
 
 import java.util.ArrayList;

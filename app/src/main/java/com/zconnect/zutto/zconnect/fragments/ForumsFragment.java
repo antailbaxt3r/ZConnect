@@ -17,18 +17,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
-import com.zconnect.zutto.zconnect.ItemFormats.forumCategoriesItemFormat;
-import com.zconnect.zutto.zconnect.Utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
+import com.zconnect.zutto.zconnect.itemFormats.forumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.adapters.ForumCategoriesRVAdapter;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.Utilities.ForumTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 
 public class ForumsFragment extends Fragment {

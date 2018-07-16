@@ -45,7 +45,7 @@
             android:text="Source: "
             android:layout_marginStart="5dp"
             android:textColor="@color/primaryText"/>
-        <com.zconnect.zutto.zconnect.CustomSpinner
+        <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
             android:id="@+id/spinner_source"
             android:layout_width="0dp"
             android:layout_weight=".7"
@@ -77,7 +77,7 @@
             android:layout_marginStart="5dp"
             android:textColor="@color/primaryText"/>
 
-        <com.zconnect.zutto.zconnect.CustomSpinner
+        <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
             android:id="@+id/spinner_destination"
             android:layout_width="0dp"
             android:layout_weight=".7"
@@ -151,7 +151,7 @@
             android:textColor="@color/primaryText"
             android:layout_marginStart="23dp"/>
 
-        <com.zconnect.zutto.zconnect.CustomSpinner
+        <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
             android:id="@+id/spinner_time_from"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
             android:layout_marginStart="23dp"
             android:textColor="@color/primaryText"/>
 
-        <com.zconnect.zutto.zconnect.CustomSpinner
+        <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
             android:id="@+id/spinner_time_to"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

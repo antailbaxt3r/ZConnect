@@ -17,7 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.ShopOfferItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.ShopOfferItemFormat;
 
 import java.util.Vector;
 

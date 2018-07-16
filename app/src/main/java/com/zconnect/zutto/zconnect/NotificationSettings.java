@@ -3,7 +3,6 @@ package com.zconnect.zutto.zconnect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,12 +16,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 
-import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_CABPOOL;
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_EVENT;
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_OFFERS;
-import static com.zconnect.zutto.zconnect.KeyHelper.KEY_STOREROOM;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_OFFERS;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_STOREROOM;
 
 public class NotificationSettings extends BaseActivity {
     Switch switch_events;

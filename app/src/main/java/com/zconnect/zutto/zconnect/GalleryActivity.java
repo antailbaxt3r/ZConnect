@@ -26,6 +26,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 
 import junit.framework.Assert;
 

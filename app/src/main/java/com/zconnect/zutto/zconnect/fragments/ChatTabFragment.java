@@ -18,8 +18,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.ItemFormats.ChatTabRVItem;
-import com.zconnect.zutto.zconnect.ItemFormats.MessageTabRVItem;
+import com.zconnect.zutto.zconnect.itemFormats.ChatTabRVItem;
+import com.zconnect.zutto.zconnect.itemFormats.MessageTabRVItem;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.adapters.ChatTabRVAdapter;
 
