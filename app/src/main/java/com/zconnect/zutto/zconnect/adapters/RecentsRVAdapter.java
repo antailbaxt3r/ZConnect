@@ -18,10 +18,12 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.CabPoolAll;
@@ -525,7 +527,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         HorizontalScrollView hsv;
         LinearLayout linearLayout;
         RelativeLayout events, cabpool, storeroom, admin;
-        public FeaturesViewHolder(View itemView) {
+        Query mOtherFeatures;
+
+        //for other features
+        ImageView featureIcon;
+        TextView featureName;
+        LinearLayout otherFeatureItemLayout;
+        public FeaturesViewHolder(final View itemView) {
             super(itemView);
             hsv = (HorizontalScrollView) itemView.findViewById(R.id.hsv_recents_features_view);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout_recents_features_view);
@@ -533,7 +541,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             storeroom = (RelativeLayout) itemView.findViewById(R.id.storeroom_recents_features_view);
             cabpool = (RelativeLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
             admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
-
+            mOtherFeatures = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("otherFeatures").orderByChild("pos");
+//            featureIcon = (ImageView) itemView.findViewById(R.id.icon_recents_features_view_item);
+//            featureName = (TextView) itemView.findViewById(R.id.name_recents_features_view_item);
+//            otherFeatureItemLayout = (LinearLayout) itemView.findViewById(R.id.layout_recents_features_view_item);
             if(UserUtilities.currentUser.getUsername()!=null) {
                 if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
                     admin.setVisibility(View.VISIBLE);
@@ -546,6 +557,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 public void onClick(View v) {
                     Intent intent = new Intent(context, TabbedEvents.class);
                     context.startActivity(intent);
+
                 }
             });
 
@@ -562,6 +574,34 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 public void onClick(View v) {
                     Intent intent = new Intent(context, CabPoolAll.class);
                     context.startActivity(intent);
+                }
+            });
+            mOtherFeatures.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(final DataSnapshot shot: dataSnapshot.getChildren()){
+                        Log.d("KEYYYYY", shot.getKey());
+                        if(Integer.parseInt(shot.child("show").getValue().toString())==0)
+                            continue;
+                        otherFeatureItemLayout = (LinearLayout) View.inflate(context, R.layout.recents_features_view_item, null);
+                        featureName = (TextView)otherFeatureItemLayout.findViewById(R.id.name_recents_features_view_item);
+                        featureIcon = (ImageView)otherFeatureItemLayout.findViewById(R.id.icon_recents_features_view_item);
+//                        featureIcon.setImageURI(Uri.parse(shot.child("image").getValue().toString()));
+                        featureName.setText(shot.child("name").getValue(String.class));
+//                        otherFeatureItemLayout.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").toString()));
+//                                context.startActivity(urlIntent);
+//                            }
+//                        });
+                        linearLayout.addView(otherFeatureItemLayout);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
             });
 
