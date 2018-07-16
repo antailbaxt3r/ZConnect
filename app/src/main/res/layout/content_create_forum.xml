@@ -7,12 +7,12 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:context="com.zconnect.zutto.zconnect.ForumsClasses.CreateForum"
-    tools:showIn="@layout/activity_create_forum">
+    tools:showIn="@layout/activity_create_forum"
+    android:padding="10dp">
     <RelativeLayout
         android:id="@+id/create_forum"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:layout_height="wrap_content">
         <FrameLayout
             android:id="@+id/layout_add_icon_activity_create_forum"
             android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
                 android:tint="@color/white"/>
         </FrameLayout>
         <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/add_name_activity_create_forum"
+            android:id="@+id/edit_forum_name_activity_create_forum"
             android:layout_toEndOf="@+id/layout_add_icon_activity_create_forum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +45,21 @@
             android:layout_centerVertical="true"
             android:maxLength="25"/>
     </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/forum_first_msg_label"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@color/primaryText"/>
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edit_first_msg_create_forum_alert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/forum_first_msg_hint"/>
     <FrameLayout
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <View
@@ -57,7 +71,6 @@
             />
         <FrameLayout
             android:id="@+id/layout_done_activity_create_forum"
-            android:padding="10dp"
             android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">

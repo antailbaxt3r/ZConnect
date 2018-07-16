@@ -1,7 +1,6 @@
 package com.zconnect.zutto.zconnect.ForumsClasses;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -35,11 +34,15 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.IntentHandle;
+import com.zconnect.zutto.zconnect.ItemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.ItemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.ItemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.Utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.Utilities.messageTypeUtilities;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import static com.zconnect.zutto.zconnect.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.Utilities.RequestCodes.GALLERY_REQUEST;
@@ -47,12 +50,13 @@ import static com.zconnect.zutto.zconnect.Utilities.RequestCodes.GALLERY_REQUEST
 public class CreateForum extends AppCompatActivity {
     String mtabName, uid;
     FrameLayout addForumIcon, done;
-    MaterialEditText addForumName;
+    MaterialEditText addForumName, firstMessage;
     IntentHandle intentHandle;
     Intent galleryIntent;
     Uri mImageUri, mImageUriThumb;
     StorageReference mStorage;
     boolean flag;
+    Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class CreateForum extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         intentHandle = new IntentHandle();
+        calendar = Calendar.getInstance();
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -98,8 +103,9 @@ public class CreateForum extends AppCompatActivity {
             }
         });
 
-        addForumName = (MaterialEditText) findViewById(R.id.add_name_activity_create_forum);
+        addForumName = (MaterialEditText) findViewById(R.id.edit_forum_name_activity_create_forum);
         addForumIcon = (FrameLayout) findViewById(R.id.layout_add_icon_activity_create_forum);
+        firstMessage = (MaterialEditText) findViewById(R.id.edit_first_msg_create_forum_alert);
         done = (FrameLayout) findViewById(R.id.layout_done_activity_create_forum);
         intentHandle = new IntentHandle();
         mStorage = FirebaseStorage.getInstance().getReference();
@@ -128,7 +134,8 @@ public class CreateForum extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(addForumName.getText()!=null && addForumName.getText().toString().length()!=0)
+                if(addForumName.getText()!=null && addForumName.getText().toString().length()!=0
+                        && firstMessage.getText()!=null && firstMessage.getText().toString().length()!=0)
                 {
                     String catName = addForumName.getText().toString();
                     final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
@@ -199,6 +206,16 @@ public class CreateForum extends AppCompatActivity {
 
                         }
                     });
+                    ChatItemFormats message = new ChatItemFormats();
+                    message.setTimeDate(calendar.getTimeInMillis());
+                    UserItemFormat userItem = UserUtilities.currentUser;
+//                    UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                    message.setUuid(userItem.getUserUID());
+                    message.setName(userItem.getUsername());
+                    message.setImageThumb(userItem.getImageURLThumbnail());
+                    message.setMessage("\""+firstMessage.getText()+"\"");
+                    message.setMessageType(messageTypeUtilities.KEY_MESSAGE_STR);
+                    newPush.child("Chat").push().setValue(message);
                     if(mImageUri!=null && mImageUriThumb!=null)
                     {
                         flag = false;
@@ -233,7 +250,7 @@ public class CreateForum extends AppCompatActivity {
                     }
                 }
                 else {
-                    Snackbar snack = Snackbar.make(addForumName, "Forum name required", Snackbar.LENGTH_SHORT);
+                    Snackbar snack = Snackbar.make(addForumName, "Forum name and first message required", Snackbar.LENGTH_SHORT);
                     snack.show();
                 }
             }
@@ -265,7 +282,7 @@ public class CreateForum extends AppCompatActivity {
 
                         bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), false);
                     }
-                    Bitmap bitmapSmall = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+                    Bitmap bitmapSmall = Bitmap.createScaledBitmap(bitmap, 500, 500, true);
                     String path = MediaStore.Images.Media.insertImage(CreateForum.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
                     String pathSmall = MediaStore.Images.Media.insertImage(CreateForum.this.getContentResolver(), bitmapSmall, mImageUri.getLastPathSegment(), null);
 

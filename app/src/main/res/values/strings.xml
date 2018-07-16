@@ -173,6 +173,8 @@
 
 
     <string name="create_forum">New Forum</string>
+    <string name="forum_first_msg_label">First Message</string>
+    <string name="forum_first_msg_hint">Type a welcome message here</string>
 
     <!--test one-->
     <!--<string name="native_ad_unit_id">ca-app-pub-3940256099942544/2177258514</string>-->
