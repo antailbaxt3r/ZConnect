@@ -10,9 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -107,6 +110,11 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
             joinedViewHolder holderMain = (joinedViewHolder) holder;
             holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());
+            if(forumCategoriesItemFormats.get(position).getImageThumb()!=null)
+            {
+                holderMain.forumIcon.setImageURI(forumCategoriesItemFormats.get(position).getImageThumb());
+                holderMain.defaultForumIcon.setVisibility(View.GONE);
+            }
             try {
                 holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
                 holderMain.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName().substring(0, forumCategoriesItemFormats.get(position).getLastMessage().getName().indexOf(' ')) + " :");
@@ -132,6 +140,11 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             FirebaseMessaging.getInstance().unsubscribeFromTopic(forumCategoriesItemFormats.get(position).getCatUID());
             notJoinedViewHolder holderMain = (notJoinedViewHolder) holder;
             holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());
+            if(forumCategoriesItemFormats.get(position).getImageThumb()!=null)
+            {
+                holderMain.forumIcon.setImageURI(forumCategoriesItemFormats.get(position).getImageThumb());
+                holderMain.defaultForumIcon.setVisibility(View.GONE);
+            }
 
             try {
                 holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
@@ -186,6 +199,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
         View mView;
         LinearLayout forumRowItem;
+        SimpleDraweeView forumIcon;
+        ImageView defaultForumIcon;
 
         public joinedViewHolder(View itemView) {
             super(itemView);
@@ -194,6 +209,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             lastMessageMessage = (TextView) itemView.findViewById(R.id.forums_cat_last_message);
             lastMessageUsername = (TextView) itemView.findViewById(R.id.forums_cat_last_message_username);
             lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
+            forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_sub_categories_joined);
+            defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_sub_categories_joined);
 
             //changing fonts
             Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
@@ -238,6 +255,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
         View mView;
         ImageButton joinButton;
+        ImageView defaultForumIcon;
+        SimpleDraweeView forumIcon;
 
         public notJoinedViewHolder(View itemView) {
             super(itemView);
@@ -247,6 +266,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             lastMessageUsername = (TextView) itemView.findViewById(R.id.forums_cat_last_message_username);
             lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
             joinButton = (ImageButton) itemView.findViewById(R.id.joinCategory);
+            forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_categories_not_joined);
+            defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_categories_not_joined);
 
             //changing fonts
             Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
