@@ -13,11 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-<<<<<<< HEAD
 import com.facebook.drawee.view.SimpleDraweeView;
-=======
->>>>>>> c87053a52be5274426a035a3facc4a51411a7338
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -254,12 +250,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
         View mView;
         ImageButton joinButton;
-<<<<<<< HEAD
         ImageView defaultForumIcon;
         SimpleDraweeView forumIcon;
-=======
         LinearLayout forumRowItem;
->>>>>>> c87053a52be5274426a035a3facc4a51411a7338
 
         public notJoinedViewHolder(View itemView) {
             super(itemView);
