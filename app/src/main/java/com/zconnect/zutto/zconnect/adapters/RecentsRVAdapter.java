@@ -7,9 +7,11 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,7 +20,6 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.CabPoolAll;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
+import com.zconnect.zutto.zconnect.CabPooling;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
@@ -59,6 +61,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     Vector<RecentsItemFormat> recentsItemFormats;
     private HomeActivity mHomeActivity;
     DatabaseReference mRef;
+    View.OnClickListener openUserProfileListener;
 
     public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity) {
         this.context = context;
@@ -128,6 +131,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 break;
             case 2:
                 Viewholder holder = (Viewholder)holder2;
+                openUserProfileListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(context,OpenUserDetail.class);
+                        i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
+                        context.startActivity(i);
+                    }
+                };
                 try {
                     if (recentsItemFormats.get(position).getPostTimeMillis() > 0) {
                         TimeAgo ta = new TimeAgo(recentsItemFormats.get(position).getPostTimeMillis(), System.currentTimeMillis());
@@ -135,20 +146,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
                     if (recentsItemFormats.get(position).getPostedBy().getUsername() != null) {
                         holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
-                        holder.postedBy.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent i = new Intent(context,OpenUserDetail.class);
-                                i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
-                                context.startActivity(i);
-                            }
-                        });
+                        holder.postedBy.setOnClickListener(openUserProfileListener);
                         if(recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y")) {
                             holder.postedBy.setOnClickListener(null);
                         }
                     }
                     if (recentsItemFormats.get(position).getPostedBy().getImageThumb() != null) {
                         holder.avatarCircle.setImageURI(recentsItemFormats.get(position).getPostedBy().getImageThumb());
+                        holder.avatarCircle.setOnClickListener(openUserProfileListener);
                     }
                 }
                 catch (Exception e) {
@@ -198,6 +203,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.eventsRecentItem.setVisibility(View.VISIBLE);
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_18dp));
+                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context, TabbedEvents.class);
+                            context.startActivity(intent);
+                        }
+                    });
                     holder.postConjunction.setText(" created an ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
                     holder.eventName.setText(recentsItemFormats.get(position).getName());
@@ -230,6 +242,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            holder.featureCircle.setBackground(layerDrawable);
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.storeroom), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_mall_white_18dp));
+                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context, TabStoreRoom.class);
+                            context.startActivity(intent);
+                        }
+                    });
                     holder.postConjunction.setText(" added a ");
                     holder.post.setText("Product");
                     holder.productName.setText(recentsItemFormats.get(position).getName());
@@ -262,6 +281,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            holder.featureCircle.setBackground(layerDrawable);
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_taxi_white_18dp));
+                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context, CabPoolAll.class);
+                            context.startActivity(intent);
+                        }
+                    });
                     //set text for source and destination...
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("Shop"))
@@ -301,12 +327,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.messages), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_18dp));
-                    holder.postConjunction.setText(" created a ");
-                    holder.post.setText("Post");
+                    holder.postConjunction.setText(" wrote a ");
+                    holder.post.setText("status");
+                    holder.post.setTextColor(context.getResources().getColor(R.color.secondaryText));
+                    holder.post.setTypeface(Typeface.DEFAULT);
                     holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
+                    if(recentsItemFormats.get(position).getDesc().length()<20)
+                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
+                    else if(recentsItemFormats.get(position).getDesc().length()<70)
+                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+                    else
+                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                     if(recentsItemFormats.get(position).getDesc2().equals("y")) {
                         holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
                         holder.avatarCircle.setImageResource(R.drawable.question_mark_icon);
+                        holder.avatarCircle.setOnClickListener(null);
 //                holder.avatarCircle.setBackground(context.getResources().getDrawable(R.drawable.question_mark_icon));
                     } else {
                         //Message is not anonymous
@@ -344,7 +379,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     class Viewholder extends RecyclerView.ViewHolder {
 
         TextView feature, name, desc;
-        SimpleDraweeView simpleDraweeView;
+//        SimpleDraweeView simpleDraweeView;
         Intent i;
         String nam;
 
@@ -362,13 +397,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 productImage;
         ImageView featureIcon;
         LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem;
+        FrameLayout layoutFeatureIcon;
         //
 
 
 
         public Viewholder(View itemView) {
             super(itemView);
-            simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.recents_image);
+//            simpleDraweeView = (SimpleDraweeView) itemView.findViewById(R.id.recents_image);
             name = (TextView) itemView.findViewById(R.id.recentname);
             feature = (TextView) itemView.findViewById(R.id.featurename);
             desc = (TextView) itemView.findViewById(R.id.recentdesc);
@@ -380,6 +416,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             postTime = (TextView) itemView.findViewById(R.id.postTime);
             featureCircle = (SimpleDraweeView) itemView.findViewById(R.id.featureCircle);
             featureIcon = (ImageView) itemView.findViewById(R.id.recents_featIcon);
+            layoutFeatureIcon = (FrameLayout) itemView.findViewById(R.id.layout_feature_icon);
             avatarCircle = (SimpleDraweeView) itemView.findViewById(R.id.avatarCircle);
             infoneRecentItem = (LinearLayout) itemView.findViewById(R.id.infoneRecentItem);
             infoneContactName = (TextView) itemView.findViewById(R.id.infoneName);
