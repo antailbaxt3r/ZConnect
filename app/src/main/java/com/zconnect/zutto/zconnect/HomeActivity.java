@@ -100,7 +100,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences defaultPrefs;
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
-    private Fragment recent, forums, shop, myProfile;
+    private Fragment recent, forums, shop, myProfile, infone;
     public Boolean flag = false;
 
 
@@ -293,8 +293,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 3: {
-                        Intent infoneIntent = new Intent(HomeActivity.this,InfoneActivity.class);
-                        startActivity(infoneIntent);
+                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
+                            buildAlertCheckNewUser("Infone");
+                            recentsT.select();
+                        }
+                        else {
+                            setActionBarTitle("Infone");
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
+                        }
                         break;
                     }
                     case 4: {
@@ -552,6 +558,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             recent = new Recents();
                             forums = new ForumsActivity();
                             myProfile = new MyProfileFragment();
+                            infone = new InfoneActivity();
 
                             if(communityReference!=null && !flag) {
                                 flag =true;
