@@ -26,6 +26,7 @@
             android:paddingBottom="5dp"
             android:layout_marginStart="0dp">
             <FrameLayout
+                android:id="@+id/layout_feature_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <com.facebook.drawee.view.SimpleDraweeView
@@ -136,9 +137,9 @@
                 android:orientation="vertical"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:visibility="gone">
-
+                android:visibility="gone" >
                 <TextView
+                    android:textSize="14sp"
                     android:id="@+id/messagesRecentItem_message"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
@@ -47,9 +49,9 @@ import java.io.IOException;
 
 public class AddStatus extends BaseActivity {
 
-    Button submit;
+    FrameLayout submit;
     ImageButton addImage;
-    private ImageView postImageView;
+    private SimpleDraweeView postImageView;
     CheckBox anonymousCheck;
     MaterialEditText messageInput;
     View.OnClickListener submitlistener;
@@ -103,13 +105,13 @@ public class AddStatus extends BaseActivity {
         final DatabaseReference home;
         home= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
 
-        submit = (Button) findViewById(R.id.button_newmessage_submit);
+        submit = (FrameLayout) findViewById(R.id.done_content_new_message);
         anonymousCheck = (CheckBox) findViewById(R.id.checkbox_newmessage_anonymous);
         messageInput = (MaterialEditText) findViewById(R.id.edittext_newmessage_input);
         addImage = (ImageButton) findViewById(R.id.add_image_new_message);
         userAvatar = (SimpleDraweeView) findViewById(R.id.avatarCircle_new_message);
         username = (TextView) findViewById(R.id.username_new_message);
-        postImageView = (ImageView) findViewById(R.id.post_image_view);
+        postImageView = (SimpleDraweeView) findViewById(R.id.post_image_view);
 
 
         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -249,8 +251,8 @@ public class AddStatus extends BaseActivity {
                     String path = MediaStore.Images.Media.insertImage(AddStatus.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
-
-                    postImageView.setImageURI(mImageUri);
+                    postImageView.setVisibility(View.VISIBLE);
+                    Picasso.with(AddStatus.this).load(mImageUri).into(postImageView);
 
                 } catch (IOException e) {
                     e.printStackTrace();

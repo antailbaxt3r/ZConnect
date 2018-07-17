@@ -40,13 +40,27 @@
         app:met_textColor="@color/primaryText"
         app:met_textColorHint="@color/secondaryText"
         android:layout_marginTop="10dp" />
-    <ImageButton
-        android:id="@+id/add_image_new_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_insert_photo_white_36"
-        android:background="@color/transparent"
-        android:tint="@color/colorPrimary"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/add_image_new_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_insert_photo_white_36"
+            android:background="@color/transparent"
+            android:tint="@color/colorPrimary"/>
+
+        <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:contentDescription="Status Image"
+            fresco:viewAspectRatio="1.33"
+            android:id="@+id/post_image_view"
+            fresco:roundingBorderPadding="5dp"
+            fresco:overlayImage="@drawable/border"
+            android:visibility="gone"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -68,18 +82,45 @@
             android:layout_weight="95"
             android:textColor="@color/primaryText"/>
     </LinearLayout>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_newmessage_submit"
-        android:text="Post"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/messages"
-        android:layout_marginTop="10dp"
-        android:textAllCaps="false"/>
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/done_content_new_message"-->
+        <!--android:text="Post"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:background="@color/messages"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:textAllCaps="false"/>-->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/secondaryText"
+            android:layout_gravity="center"
+            />
+        <FrameLayout
+            android:id="@+id/done_content_new_message"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/forum_circle"
+                android:backgroundTint="@color/colorHighlight"
+                app:actualImageScaleType="centerCrop"
+                app:roundAsCircle="true" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_check_white_24dp"
+                android:tint="@color/white"/>
+        </FrameLayout>
+    </FrameLayout>
 
-    <ImageView
-        android:id="@+id/post_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
 </LinearLayout>

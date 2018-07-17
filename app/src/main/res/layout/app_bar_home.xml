@@ -55,7 +55,8 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
                     app:layout_anchorGravity="top|right"
-                    app:pressedTranslationZ="12dp" />
+                    app:pressedTranslationZ="12dp"
+                    android:visibility="gone"/>
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/fab1"
