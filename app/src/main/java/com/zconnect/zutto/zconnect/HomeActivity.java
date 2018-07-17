@@ -2,7 +2,6 @@ package com.zconnect.zutto.zconnect;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,7 +31,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,6 +51,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -101,7 +100,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences defaultPrefs;
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
-    private Fragment recent, forums, shop;
+    private Fragment recent, forums, shop, myProfile;
     public Boolean flag = false;
 
 
@@ -184,17 +183,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         // Bottom Sheet
         layoutBottomSheet = (LinearLayout) findViewById(R.id.home_bottom_sheet);
-        final HomeBottomSheet bottomSheetFragment = new HomeBottomSheet();
+//        final HomeBottomSheet bottomSheetFragment = new HomeBottomSheet();
 
         //Floating Button
-        fab = (FloatingActionButton)findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int i=tabs.getSelectedTabPosition();
-                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-            }
-        });
+//        fab = (FloatingActionButton)findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int i=tabs.getSelectedTabPosition();
+//                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+//            }
+//        });
 
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
 
@@ -288,12 +287,25 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         }
                     }
                     case 2: {
+                        HomeBottomSheet bottomSheetFragment = new HomeBottomSheet();
+                        int i=tabs.getSelectedTabPosition();
+                        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                         break;
                     }
                     case 3: {
+                        Intent infoneIntent = new Intent(HomeActivity.this,InfoneActivity.class);
+                        startActivity(infoneIntent);
                         break;
                     }
                     case 4: {
+                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
+                            buildAlertCheckNewUser("Your Profile");
+                            recentsT.select();
+                        }
+                        else {
+                            setActionBarTitle("You");
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
+                        }
                         break;
                     }
                 }
@@ -539,7 +551,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
                             recent = new Recents();
                             forums = new ForumsActivity();
-
+                            myProfile = new MyProfileFragment();
 
                             if(communityReference!=null && !flag) {
                                 flag =true;

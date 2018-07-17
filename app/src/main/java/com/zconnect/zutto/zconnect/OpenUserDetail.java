@@ -36,6 +36,7 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.util.Calendar;
 
@@ -63,6 +64,7 @@ public class OpenUserDetail extends BaseActivity {
     private UserItemFormat userProfile;
     private LinearLayout content;
     private ProgressBar progressBar;
+    private Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +142,10 @@ public class OpenUserDetail extends BaseActivity {
                     setUserDetails();
                     progressBar.setVisibility(View.GONE);
                     content.setVisibility(View.VISIBLE);
+                    if(userProfile.getUserUID().equals(UserUtilities.currentUser.getUserUID()));
+                    {
+                        menu.findItem(R.id.action_edit_profile).setVisible(true);
+                    }
                 }catch (Exception e){}
             }
 
@@ -436,6 +442,7 @@ public class OpenUserDetail extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if (id == R.id.action_report) {
 
             CounterManager.report(mobileNumber);
@@ -459,6 +466,11 @@ public class OpenUserDetail extends BaseActivity {
             sharingIntent.putExtra(Intent.EXTRA_TEXT, send);
             startActivity(sharingIntent);
 
+        }
+        else if(id==R.id.action_edit_profile) {
+            Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+            intent.putExtra("newUser",false);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
