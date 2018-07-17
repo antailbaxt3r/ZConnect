@@ -335,11 +335,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
                     holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
                     if(recentsItemFormats.get(position).getDesc().length()<20)
-                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
+                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
                     else if(recentsItemFormats.get(position).getDesc().length()<70)
-                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
                     else
-                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                     if(recentsItemFormats.get(position).getDesc2().equals("y")) {
                         holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
                         holder.avatarCircle.setImageResource(R.drawable.question_mark_icon);
