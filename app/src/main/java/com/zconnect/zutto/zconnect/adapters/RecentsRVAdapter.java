@@ -580,7 +580,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(final DataSnapshot shot: dataSnapshot.getChildren()){
-                        Log.d("KEYYYYY", shot.getKey());
+
                         if(Integer.parseInt(shot.child("show").getValue().toString())==0)
                             continue;
                         otherFeatureItemLayout = (LinearLayout) View.inflate(context, R.layout.recents_features_view_item, null);

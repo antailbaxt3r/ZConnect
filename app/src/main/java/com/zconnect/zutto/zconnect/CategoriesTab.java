@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -48,9 +49,11 @@ class EachCategory {
 
 class viewHolder {
     ImageView categoryImage;
+    TextView categoryName;
 
     viewHolder(View view) {
         categoryImage = (ImageView) view.findViewById(R.id.categoryImage);
+        categoryName = (TextView) view.findViewById(R.id.categoryName);
     }
 
 }
@@ -65,7 +68,7 @@ class CategoryAdapter extends BaseAdapter {
         list = new ArrayList<EachCategory>();
         Resources res = context.getResources();
         String[] categoriesNames = res.getStringArray(R.array.categories);
-        int[] categoriesIcons = {R.drawable.electronics, R.drawable.speakers, R.drawable.storage, R.drawable.books, R.drawable.roomnecessities, R.drawable.novels, R.drawable.others};
+        int[] categoriesIcons = {R.drawable.baseline_devices_other_white_48, R.drawable.baseline_speaker_white_48, R.drawable.baseline_storage_white_48, R.drawable.baseline_library_books_white_48, R.drawable.baseline_hotel_white_48, R.drawable.baseline_book_white_48, R.drawable.baseline_more_white_48};
         for (int i = 0; i < 7; i++) {
             EachCategory tempCategory = new EachCategory(categoriesIcons[i], categoriesNames[i]);
             list.add(tempCategory);
@@ -103,6 +106,7 @@ class CategoryAdapter extends BaseAdapter {
         }
         final EachCategory temp = list.get(i);
         holder.categoryImage.setImageResource(temp.categoryIcon);
+        holder.categoryName.setText(temp.categoryName);
         row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
