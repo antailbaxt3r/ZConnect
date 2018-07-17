@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -332,6 +333,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.post.setTextColor(context.getResources().getColor(R.color.secondaryText));
                     holder.post.setTypeface(Typeface.DEFAULT);
                     holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
+                    holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
                     if(recentsItemFormats.get(position).getDesc().length()<20)
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
                     else if(recentsItemFormats.get(position).getDesc().length()<70)
@@ -613,7 +615,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     context.startActivity(intent);
                 }
             });
-            mOtherFeatures.addListenerForSingleValueEvent(new ValueEventListener() {
+            mOtherFeatures.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(final DataSnapshot shot: dataSnapshot.getChildren()){
@@ -625,13 +627,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         featureIcon = (ImageView)otherFeatureItemLayout.findViewById(R.id.icon_recents_features_view_item);
 //                        featureIcon.setImageURI(Uri.parse(shot.child("image").getValue().toString()));
                         featureName.setText(shot.child("name").getValue(String.class));
-//                        otherFeatureItemLayout.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").toString()));
-//                                context.startActivity(urlIntent);
-//                            }
-//                        });
+                        otherFeatureItemLayout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").getValue().toString()));
+                                context.startActivity(urlIntent);
+                            }
+                        });
                         linearLayout.addView(otherFeatureItemLayout);
                     }
                 }
