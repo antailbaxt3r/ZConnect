@@ -61,9 +61,10 @@ public class MyProfileFragment extends Fragment {
     private TagsEditText editTextSkills;
     private SimpleDraweeView image;
     private ImageView mail, call;
-    private EditText textMessage;
-    private LinearLayout anonymMessageLayout;
-    private ImageButton sendButton,btn_love,btn_like;
+//    private EditText textMessage;
+//    private LinearLayout anonymMessageLayout;
+//    private ImageButton sendButton;
+    private ImageButton btn_love,btn_like;
     private Boolean flagforNull=false;
     private TextView like_text,love_text;
     private boolean love_status = false,like_status=false;
@@ -110,10 +111,10 @@ public class MyProfileFragment extends Fragment {
         like_text = (TextView) view.findViewById(R.id.like_text);
         love_text = (TextView) view.findViewById(R.id.love_text);
 
-        textMessage = (EditText) view.findViewById(R.id.textInput);
-        anonymMessageLayout = (LinearLayout) view.findViewById(R.id.anonymTextInput);
-        anonymMessageLayout.setVisibility(View.GONE);
-        sendButton = (ImageButton) view.findViewById(R.id.send);
+//        textMessage = (EditText) view.findViewById(R.id.textInput);
+//        anonymMessageLayout = (LinearLayout) view.findViewById(R.id.anonymTextInput);
+//        anonymMessageLayout.setVisibility(View.GONE);
+//        sendButton = (ImageButton) view.findViewById(R.id.send);
 
         call = (ImageView) view.findViewById(R.id.ib_call_contact_item);
         mail = (ImageView) view.findViewById(R.id.mailbutton);
@@ -274,7 +275,7 @@ public class MyProfileFragment extends Fragment {
 
         if (Uid.equals("null"))
         {
-            anonymMessageLayout.setVisibility(View.GONE);
+//            anonymMessageLayout.setVisibility(View.GONE);
             flagforNull=true;
         }
 

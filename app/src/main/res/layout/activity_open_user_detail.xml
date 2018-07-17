@@ -32,42 +32,42 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <LinearLayout
-        android:id="@+id/anonymTextInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/anonymTextInput"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentStart="true">-->
 
 
-        <EditText
-            android:id="@+id/textInput"
-            android:layout_margin="10dp"
-            android:padding="5dp"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circular_text_background"
-            android:textSize="18dp"
-            android:hint="Send Anonymously"/>
+        <!--<EditText-->
+            <!--android:id="@+id/textInput"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:padding="5dp"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/circular_text_background"-->
+            <!--android:textSize="18dp"-->
+            <!--android:hint="Send Anonymously"/>-->
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+        <!--<RelativeLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent">-->
 
-            <ImageButton
-                android:id="@+id/send"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/ic_send_white_24dp" />
-        </RelativeLayout>
+            <!--<ImageButton-->
+                <!--android:id="@+id/send"-->
+                <!--android:layout_width="28dp"-->
+                <!--android:layout_height="28dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginEnd="10dp"-->
+                <!--android:scaleType="fitXY"-->
+                <!--android:background="@drawable/ic_send_white_24dp" />-->
+        <!--</RelativeLayout>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 </RelativeLayout>
