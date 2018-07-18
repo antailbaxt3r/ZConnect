@@ -139,8 +139,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:visibility="gone" >
+                android:paddingBottom="5dp">
                 <TextView
                     android:textSize="16sp"
                     android:id="@+id/messagesRecentItem_message"
@@ -158,7 +157,67 @@
                     android:id="@+id/messagesRecentItem_image"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"/>
-
+                <View
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/secondaryText"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.5"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="10dp">
+                        <TextView
+                            android:id="@+id/like_text_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:textSize="16sp"
+                            android:text="123"
+                            android:textColor="@color/primaryText"/>
+                        <ImageView
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="5dp"
+                            android:id="@+id/like_image_status"
+                            android:layout_toRightOf="@+id/like_text_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/outline_thumb_up_alt_white_24"
+                            android:tint="@color/primaryText"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.5"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="10dp">
+                        <TextView
+                            android:id="@+id/comment_text_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:textSize="16sp"
+                            android:text="123"
+                            android:textColor="@color/primaryText"/>
+                        <ImageView
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="5dp"
+                            android:id="@+id/comment_image_status"
+                            android:layout_toRightOf="@+id/comment_text_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/outline_mode_comment_white_24"
+                            android:tint="@color/primaryText"/>
+                    </RelativeLayout>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/secondaryText"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/infoneRecentItem"
