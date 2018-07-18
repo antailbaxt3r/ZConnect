@@ -220,15 +220,6 @@ public class Recents extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_open_menu_phonebook) {
-
-            Intent infoneIntent = new Intent(getContext(), InfoneActivity.class);
-            startActivity(infoneIntent);
-            CounterManager.infoneOpen();
-        }else if(id == R.id.admin){
-            Intent infoneIntent = new Intent(getContext(), AdminHome.class);
-            startActivity(infoneIntent);
-        }
         return super.onOptionsItemSelected(item);
     }
 }

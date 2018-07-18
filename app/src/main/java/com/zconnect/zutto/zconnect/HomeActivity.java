@@ -677,13 +677,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(intent);
                 break;
             }
-            case R.id.infone: {
-                Intent infoneIntent = new Intent(HomeActivity.this,InfoneActivity.class);
-                startActivity(infoneIntent);
-                tabs.getTabAt(1).select();
-                break;
-            }
-
             case R.id.MyProducts: {
                 Intent MyProductsIntent = new Intent(HomeActivity.this,MyProducts.class);
                 startActivity(MyProductsIntent);
@@ -711,20 +704,21 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(new Intent(HomeActivity.this,NotificationSettings.class));
                 break;
             }
-            case R.id.ad: {
-                CounterManager.AdvertisementOpen();
-                startActivity(new Intent(HomeActivity.this, Advertisement.class));
-                break;
-            }
+//            case R.id.ad: {
+//                CounterManager.AdvertisementOpen();
+//                startActivity(new Intent(HomeActivity.this, Advertisement.class));
+//                break;
+//            }
             case R.id.about: {
                 startActivity(new Intent(HomeActivity.this, AboutUs.class));
                 break;
             }
-            case R.id.mapActivity: {
-                CounterManager.MapOpen();
-                startActivity(new Intent(this, Campus_Map.class));
-                break;
-            }
+            //MAP ACTIVITY TEMPORARILY REMOVED
+//            case R.id.mapActivity: {
+//                CounterManager.MapOpen();
+//                startActivity(new Intent(this, Campus_Map.class));
+//                break;
+//            }
             case R.id.bugReport: {
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(HomeActivity.this);
                 // 2. Chain together various setter methods to set the dialog characteristics

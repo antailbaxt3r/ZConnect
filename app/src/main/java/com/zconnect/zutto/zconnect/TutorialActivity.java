@@ -20,7 +20,7 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
  * status bar and navigation/system bar) with user interaction.
  */
 public class TutorialActivity extends BaseActivity {
-    Drawable pageData[]=new Drawable[6];	        //Stores the text to swipe.
+    Drawable pageData[]=new Drawable[5];	        //Stores the text to swipe.
     LayoutInflater inflater;	//Used to create individual pages
     ViewPager vp;	            //Reference to class to swipe views
     TabLayout tabLayout;
@@ -40,7 +40,6 @@ public class TutorialActivity extends BaseActivity {
         pageData[3] = ContextCompat.getDrawable(this, R.drawable.storeroom_tut);
         pageData[1] = ContextCompat.getDrawable(this, R.drawable.cabpool_tut);
         pageData[4] = ContextCompat.getDrawable(this, R.drawable.forums_tut);
-        pageData[5] = ContextCompat.getDrawable(this, R.drawable.anonymous_tut);
 
         tabLayout = (TabLayout) findViewById(R.id.tabDots);
 
