@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.AdminHome;
 import com.zconnect.zutto.zconnect.CabPoolAll;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.CabPooling;
@@ -214,6 +215,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
                     holder.postConjunction.setText(" created an ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
+                    holder.post.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context, TabbedEvents.class);
+                            context.startActivity(intent);
+                        }
+                    });
                     holder.eventName.setText(recentsItemFormats.get(position).getName());
                     try {
                         Date date = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(recentsItemFormats.get(position).getDesc2());
@@ -253,6 +261,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
                     holder.postConjunction.setText(" added a ");
                     holder.post.setText("Product");
+                    holder.post.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context, TabStoreRoom.class);
+                            context.startActivity(intent);
+                        }
+                    });
                     holder.productName.setText(recentsItemFormats.get(position).getName());
                     holder.productDesc.setText(recentsItemFormats.get(position).getDesc());
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
@@ -271,6 +286,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.postConjunction.setText(" started a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
+                    holder.post.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context, CabPoolAll.class);
+                            context.startActivity(intent);
+                        }
+                    });
                     holder.cabpoolSource.setText(recentsItemFormats.get(position).getCabpoolSource());
                     holder.cabpoolDestination.setText(recentsItemFormats.get(position).getCabpoolDestination());
                     holder.cabpoolDate.setText(recentsItemFormats.get(position).getCabpoolDate());
@@ -586,10 +608,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             if(UserUtilities.currentUser.getUsername()!=null) {
                 if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
                     admin.setVisibility(View.VISIBLE);
+                    admin.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            context.startActivity(new Intent(context, AdminHome.class));
+                        }
+                    });
                 }
             }
-
-
             events.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

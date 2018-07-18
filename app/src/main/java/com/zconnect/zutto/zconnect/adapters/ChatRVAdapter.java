@@ -178,8 +178,9 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.time.setText(time);
                 holder.name.setText(message.getName());
                 holder.userAvatar.setImageURI(message.getImageThumb());
-
+                holder.photo.setBackground(holder.context.getResources().getDrawable(R.drawable.photo_background_chat));
                 holder.photo.setImageURI(message.getPhotoURL());
+                holder.photo.setClipToOutline(true);
 
                 holder.photo.setOnClickListener(new View.OnClickListener() {
                     @Override
