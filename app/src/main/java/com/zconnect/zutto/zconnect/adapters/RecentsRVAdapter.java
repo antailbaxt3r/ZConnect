@@ -435,7 +435,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             i.putExtra("ShopId", recentsItemFormats.get(getAdapterPosition()).getId());
                             i.putExtra("Name", recentsItemFormats.get(getAdapterPosition()).getName());
                             i.putExtra("Imageurl", recentsItemFormats.get(getAdapterPosition()).getImageurl());
-                            //  Log.v("im1",recentsItemFormats.get(getAdapterPosition()).getDesc2());
                             context.startActivity(i);
                         }catch (Exception e) {
                             Log.d("Error Alert: ", e.getMessage());
