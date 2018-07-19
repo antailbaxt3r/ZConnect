@@ -364,8 +364,8 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                 }
             });
 
-            NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,null,null,KEY_STOREROOM,true,false,getApplicationContext());
-            notificationSender.execute();
+//            NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,null,null,KEY_STOREROOM,true,false,getApplicationContext());
+//            notificationSender.execute();
 
         } else {
             Snackbar snack = Snackbar.make(mProductDescription, "Fields are empty. Can't Add Product.", Snackbar.LENGTH_LONG);

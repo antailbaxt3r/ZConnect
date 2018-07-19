@@ -28,7 +28,10 @@ import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeAgo;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -364,9 +367,16 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
                         CounterManager.eventBoost(key, "Trending-Out");
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
 
-                        //Sending Notifications
-                        NotificationSender notificationSender=new NotificationSender(key,null,null,name,null,user.getDisplayName(),null,"EventBoosted",false,true,itemView.getContext());
-                        notificationSender.execute();
+                        NotificationSender notificationSender = new NotificationSender(itemView.getContext());
+
+                        NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST);
+                        eventBoostNotification.setItemKey(key);
+                        eventBoostNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                        eventBoostNotification.setItemName(name);
+                        eventBoostNotification.setUserName(user.getDisplayName());
+                        eventBoostNotification.setCommunityName(UserUtilities.CommunityName);
+
+                        notificationSender.execute(eventBoostNotification);
 
                     }else {
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();

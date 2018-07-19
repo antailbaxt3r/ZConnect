@@ -47,6 +47,9 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
 import com.zconnect.zutto.zconnect.itemFormats.Event;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.File;
 import java.net.URL;
@@ -57,7 +60,7 @@ import java.util.Map;
 
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT_BOOST;
 
-public class  OpenEventDetail extends BaseActivity {
+public class  OpenEventDetail extends BaseActivity{
 
     DatabaseReference mDatabase;
     SimpleDraweeView EventImage;
@@ -537,11 +540,19 @@ public class  OpenEventDetail extends BaseActivity {
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
                         CounterManager.eventBoost(event.getKey(), "Details");
-//                        Log.d("SUBSCRIBED TO TOPIC", event.getKey().toString());
-                        eventDatabase.child("BoostersUids").updateChildren(taskMap);
-                        NotificationSender notificationSender=new NotificationSender(event.getKey().toString(),null,null,event.getEventName(),null,user.getDisplayName(),null,KEY_EVENT_BOOST,false,true,getApplicationContext());
-                        notificationSender.execute();
 
+                        eventDatabase.child("BoostersUids").updateChildren(taskMap);
+
+                        NotificationSender notificationSender = new NotificationSender(OpenEventDetail.this);
+
+                        NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST);
+                        eventBoostNotification.setItemKey(event.getKey());
+                        eventBoostNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                        eventBoostNotification.setItemName(event.getEventName());
+                        eventBoostNotification.setUserName(user.getDisplayName());
+                        eventBoostNotification.setCommunityName(UserUtilities.CommunityName);
+
+                        notificationSender.execute(eventBoostNotification);
                     }else {
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
 

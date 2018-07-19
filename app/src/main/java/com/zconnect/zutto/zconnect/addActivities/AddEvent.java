@@ -496,6 +496,7 @@ public class AddEvent extends BaseActivity {
                                 }
                             });
                             //Sending Notifications
+                            FirebaseMessaging.getInstance().subscribeToTopic(key);
                             NotificationSender notificationSender=new NotificationSender(key,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
                             notificationSender.execute();
 

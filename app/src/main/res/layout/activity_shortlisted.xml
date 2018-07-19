@@ -7,7 +7,7 @@
     style="@style/Theme.AppCompat.NoActionBar"
     android:fitsSystemWindows="true"
     android:layout_height="match_parent"
-    tools:context="com.zconnect.zutto.zconnect.Shortlisted">
+    tools:context="com.zconnect.zutto.zconnect.ShortlistedPeopleList">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

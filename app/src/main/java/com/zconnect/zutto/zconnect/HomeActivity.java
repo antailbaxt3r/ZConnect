@@ -537,6 +537,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
+
+                            if(UserUtilities.currentUser.getUserType()== null){
+                                UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_VERIFIED);
+                            }
                             recent = new Recents();
                             forums = new ForumsActivity();
 
@@ -606,11 +610,15 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
 
                 communityInfoRef.addValueEventListener(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+
+
                         if (dataSnapshot.hasChild("name")) {
                             Title = dataSnapshot.child("name").getValue().toString() + " Connect";
                             setToolbarTitle(Title);
+                            UserUtilities.CommunityName = Title;
                         } else {
                             Title = "Community Connect";
                             setToolbarTitle(Title);

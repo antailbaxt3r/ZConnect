@@ -34,8 +34,11 @@ import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -288,7 +291,7 @@ public class OpenProductDetails extends BaseActivity {
 
                             } else {
                                 CounterManager.StoroomShortList(category, dataSnapshot.getKey());
-                                productShortlist.setText("Shortlisted");
+                                productShortlist.setText("ShortlistedPeopleList");
                                 final UsersListItemFormat userDetails = new UsersListItemFormat();
                                 DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 user.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -300,8 +303,22 @@ public class OpenProductDetails extends BaseActivity {
                                         userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                         userDetails.setUserUID(userItemFormat.getUserUID());
                                         userReservedReference.child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
-                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.child("PostedBy").child("UID").getValue().toString(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,true,getApplicationContext());
-                                        notificationSender.execute();
+//
+//                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.child("PostedBy").child("UID").getValue().toString(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,true,getApplicationContext());
+//                                        notificationSender.execute();
+
+                                        NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this);
+                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST);
+                                        productShortlistNotification.setCommunityName(UserUtilities.CommunityName);
+                                        productShortlistNotification.setItemKey(productKey);
+                                        productShortlistNotification.setItemName(dataSnapshot.child("ProductName").getValue().toString());
+                                        productShortlistNotification.setUserName(userItemFormat.getUsername());
+                                        productShortlistNotification.setUserMobileNumber(UserUtilities.currentUser.getMobileNumber());
+
+
+                                        notificationSender.execute(productShortlistNotification);
+
+
                                     }
 
                                     @Override
@@ -347,9 +364,6 @@ public class OpenProductDetails extends BaseActivity {
             productPrice.setText("₹" + productPriceValue + "/-");
         }
 
-
-//        Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
-//        post_price.setTypeface(ralewayMedium);
     }
 
     public void setImage(final Activity activity, final String productName, final String imageUrl, final ImageView productImage) {
@@ -401,7 +415,7 @@ public class OpenProductDetails extends BaseActivity {
                 productShortlist.setOnClickListener(null);
                 if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
                     productShortlist.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                    productShortlist.setText("Shortlisted");
+                    productShortlist.setText("ShortlistedPeopleList");
                     CounterManager.StoroomShortList(category, key);
                     Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
                     productShortlist.setTypeface(customfont);

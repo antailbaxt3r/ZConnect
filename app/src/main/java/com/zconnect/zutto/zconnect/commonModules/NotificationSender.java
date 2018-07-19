@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -13,25 +14,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.RemoteMessage;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static android.content.Context.MODE_PRIVATE;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT_BOOST;
 
-/**
- * Created by aayush on 12/2/18.
- */
 
-public class NotificationSender extends AsyncTask<Void,Void,Void> {
+public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Void> {
     private RemoteMessage.Builder creator;
     private String key;
     private String type,temp;
@@ -40,12 +42,43 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
     private long normal_frequency;
     private boolean sendToKey;
     private boolean result;
-    SharedPreferences communitySP;
-    String communityReference;
+    private URL url;
+    private HttpURLConnection connection;
+    Context ctx;
 
+    public NotificationSender(Context ctx) {
+        this.ctx = ctx;
+        try {
+            url = new URL("https://fcm.googleapis.com/fcm/send");
+
+           connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Authorization", "key=AIzaSyC-OEClz9DTH1GDb9R0YGcqGsYqUXy50GI");
+            connection.setDoOutput(true);
+            connection.connect();
+        }catch (Exception e){
+
+        }
+    }
 
     public NotificationSender(String key,String temp,String number,String event,String timeInMilli,String PersonEmail,
                               String Product,String type,boolean checkFrequency,boolean sendToKey,Context ctx){
+
+        try {
+            url = new URL("https://fcm.googleapis.com/fcm/send");
+
+            connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Authorization", "key=AIzaSyC-OEClz9DTH1GDb9R0YGcqGsYqUXy50GI");
+            connection.setDoOutput(true);
+            connection.connect();
+        }catch (Exception e){
+
+        }
         try {
             String pName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
             if (sendToKey)
@@ -68,26 +101,81 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
             this.sendToKey = sendToKey;
             this.checkFrequency = checkFrequency;
 
-            communitySP = ctx.getSharedPreferences("communityName", MODE_PRIVATE);
-            communityReference = communitySP.getString("communityReference", null);
-
         }catch (Exception e){
 
         }
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
-        Log.e("noti","do in background");
-                if(checkFrequency){
-                    CompareFrequency();
-                }else{
-                    sendNotification();
-                    Log.e("noti","Notification sent");
+    protected Void doInBackground(NotificationItemFormat... notificationDetails) {
 
-                }
+        NotificationItemFormat ND = notificationDetails[0];
+
+        String notificationIdentifier = ND.getNotificationIdentifier();
+
+        switch (notificationIdentifier){
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST:
+                eventBoostNotification(ND.getItemKey(),ND.getItemName(),ND.getUserName(),ND.getCommunityName(),ND.getUserImage());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN:
+                cabJoinNotification(ND.getItemKey(),ND.getUserName(),ND.getCommunityName(),ND.getUserImage());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE:
+                cabLeaveNotification(ND.getItemKey(),ND.getUserName(),ND.getCommunityName(),ND.getUserImage());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST:
+                productShortlistNotification(ND.getItemKey(),ND.getUserName(),ND.getUserMobileNumber(),ND.getItemName(),ND.getCommunityName(),ND.getUserImage());
+
+        }
+//        if(checkFrequency){
+//            CompareFrequency();
+//        }else{
+//            sendNotification();
+//            Log.e("noti","Notification sent");
+//        }
 
         return null;
+    }
+
+    private void productShortlistNotification(String productKey,String userName,String userMobileNumber,String productName, String communityName,String userImage){
+
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("userName",userName);
+        creator.addData("userMobileNumber",userMobileNumber);
+        creator.addData("productKey",productKey);
+        creator.addData("productName",productName);
+        creator.addData("communityName",communityName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST);
+
+        sendNotification(true, productKey);
+    }
+
+    private void cabLeaveNotification(String cabKey,String userName,String communityName,String userImage) {
+        creator = new RemoteMessage.Builder("data");
+
+        creator.addData("userName",userName);
+        creator.addData("cabKey",cabKey);
+        creator.addData("communityName",communityName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE);
+
+        sendNotification(true, cabKey);
+    }
+
+    private void cabJoinNotification(String cabKey,String userName,String communityName,String userImage) {
+        creator = new RemoteMessage.Builder("data");
+
+        creator.addData("userName",userName);
+        creator.addData("cabKey",cabKey);
+        creator.addData("communityName",communityName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN);
+
+        sendNotification(true, cabKey);
     }
 
 
@@ -142,7 +230,23 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
     }
 
 
-    private void sendNotification(){
+    public void eventBoostNotification(String eventKey, String eventName, String userName,String communityName,String userImage) {
+        creator = new RemoteMessage.Builder("data");
+
+        creator.addData("eventKey",eventKey);
+        creator.addData("eventName",eventName);
+        creator.addData("userName",userName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("communityName",communityName);
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST);
+
+        sendNotification(true,eventKey);
+    }
+
+
+    public void sendNotification(Boolean isTopic, String condition){
+
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -150,35 +254,32 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
 
 
         try {
+            url = new URL("https://fcm.googleapis.com/fcm/send");
 
-            URL url = new URL("https://fcm.googleapis.com/fcm/send");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
+
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Authorization", "key=AIzaSyC-OEClz9DTH1GDb9R0YGcqGsYqUXy50GI");
             connection.setDoOutput(true);
             connection.connect();
 
-
             DataOutputStream os = new DataOutputStream(connection.getOutputStream());
 
-
             Map<String, Object> data = new HashMap<String, Object>();
-            if(sendToKey)
-                data.put("to", "/topics/" + key);
-            else
-                data.put("to","/topics/"+type);
 
+            if(isTopic) {
+                data.put("to","/topics/" + condition);
+            }
             data.put("data", creator.build().getData());
 
             JSONObject object = new JSONObject(data);
-            Log.e("noti","o:"+object.toString());
+
             String s2 = object.toString().replace("\\", "");
             os.writeBytes(s2);
             os.close();
 
-
-            //recieving response
+                        //recieving response
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
             StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
@@ -188,14 +289,44 @@ public class NotificationSender extends AsyncTask<Void,Void,Void> {
             }
             rd.close();
 
-            Log.e("noti","r:"+response.toString());
-
-
-        } catch (Exception e) {
-            Log.e("msg","nahi ho raha");
+        }catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+
+    private void sendNotification(){
+
+            try {
+                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
+
+                Map<String, Object> data = new HashMap<String, Object>();
+                if (sendToKey)
+                    data.put("to", "/topics/" + key);
+                else
+                    data.put("to", "/topics/" + type);
+
+                data.put("data", creator.build().getData());
+
+                JSONObject object = new JSONObject(data);
+                Log.e("noti", "o:" + object.toString());
+                String s2 = object.toString().replace("\\", "");
+                os.writeBytes(s2);
+                os.close();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+
+//            //recieving response
+//            InputStream is = connection.getInputStream();
+//            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+//            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+//            String line;
+//            while ((line = rd.readLine()) != null) {
+//                response.append(line);
+//            }
+//            rd.close();
 
 
 

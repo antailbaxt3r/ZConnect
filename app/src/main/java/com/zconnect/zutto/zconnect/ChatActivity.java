@@ -39,13 +39,16 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.adapters.ChatRVAdapter;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -163,8 +166,15 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             databaseReference.child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
-                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_CABPOOL_JOIN,false,true,ChatActivity.this);
-                                            notificationSender.execute();
+
+                                            NotificationSender notificationSender = new NotificationSender(ChatActivity.this);
+                                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN);
+                                            cabPoolJoinNotification.setCommunityName(UserUtilities.CommunityName);
+                                            cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
+                                            cabPoolJoinNotification.setUserName(userItemFormat.getUsername());
+                                            cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                                            notificationSender.execute(cabPoolJoinNotification);
+
                                             FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 
                                         }

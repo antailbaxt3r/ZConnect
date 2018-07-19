@@ -8,6 +8,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -29,9 +36,9 @@ import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.Shortlisted;
+import com.zconnect.zutto.zconnect.ShortlistedPeopleList;
 import com.zconnect.zutto.zconnect.itemFormats.Event;
-import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +68,9 @@ import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_STORER
 
 public class NotificationService extends FirebaseMessagingService {
 
+    private Map data;
+    private Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
 
@@ -70,115 +80,32 @@ public class NotificationService extends FirebaseMessagingService {
         communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        final Map data = remoteMessage.getData();
+        data = remoteMessage.getData();
         if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
 
-            final Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            switch (type){
+                case NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST : eventBoostNotification();
+                break;
+                case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN : cabJoinNotification();
+                break;
+                case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE : cabLeaveNotification();
+                break;
+                case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST : productShortlistNotification();
+                break;
 
-            // When someone boost a event
+
+            }
             try {
+                // When someone boost a event
                 if (type.equals(KEY_EVENT_BOOST)) {
-                    final String key = data.get("Key").toString();
-                    final String name = data.get("PersonEmail").toString();
-                    final String event = data.get("Event").toString();
-                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-                    NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
 
-                    style.bigText(name + " boosted your event " + event)
-                            .setBigContentTitle("Event Boosted | ZConnect");
 
-                    mBuilder.setSmallIcon(R.drawable.ic_whatshot_white_24dp)
-                            .setStyle(style)
-                            .setColor(ContextCompat.getColor(NotificationService.this, R.color.orange))
-                            .setContentTitle("Event Boosted | ZConnect")
-                            .setSound(defaultSoundUri)
-                            .setContentText(name + " boosted your event " + event);
-
-                    Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
-                    intent.putExtra("id", key);
-                    PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    mBuilder.setContentIntent(intent1);
-
-                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.notify(1, mBuilder.build());
 
                 } else if (type.equals(KEY_CABPOOL_JOIN)) {//Notification to all the members of cab pool if a new member joins in
-                    final String key = data.get("Key").toString();
-                    NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-                    style.bigText(data.get("Product").toString() + " joined your cab pool")
-                            .setBigContentTitle("Cab Pool | ZConnect");
 
-                    android.support.v4.app.NotificationCompat.Builder mBuilder =
-                            new NotificationCompat.Builder(NotificationService.this)
-                                    .setSmallIcon(R.drawable.ic_directions_car_white_24dp)
-                                    .setStyle(style)
-                                    .setSound(defaultSoundUri)
-                                    .setColor(ContextCompat.getColor(NotificationService.this, R.color.cabpool))
-                                    .setContentTitle("Cab Pool | ZConnect")
-                                    .setContentText(data.get("Product").toString() + " joined your cab pool");
-
-                    Intent intent = new Intent(NotificationService.this, CabPoolListOfPeople.class);
-                    intent.putExtra("key", (String) data.get("Key"));
-
-                    PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    mBuilder.setContentIntent(intent1);
-
-
-                    // Gets an instance of the NotificationMa
-
-                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.notify(key.compareTo(data.get("Product").toString()), mBuilder.build());
 
                 } else if (type.equals(KEY_PRODUCT)) {
-                    final String personEmail = data.get("PersonEmail").toString();
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").orderByChild("userUID").equalTo(personEmail).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            String personName = data.get("Person").toString();
-                            android.support.v4.app.NotificationCompat.Builder mBuilder =
-                                    new NotificationCompat.Builder(NotificationService.this);
-
-                            if (dataSnapshot.getChildrenCount() != 0) {
-                                UserItemFormat item = new UserItemFormat();
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren())
-                                    item = snapshot.getValue(UserItemFormat.class);
-
-                                personName = item.getUsername();
-
-                                Intent call = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + item.getMobileNumber()));
-                                PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, call, PendingIntent.FLAG_UPDATE_CURRENT);
-                                mBuilder.addAction(R.drawable.ic_phone_black_18dp, "Call", pendingIntent);
-                            }
-
-                            String product = data.get("Product").toString();
-                            NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-                            style.bigText(personName + " shortlisted your product " + product)
-                                    .setBigContentTitle("Product Shortlisted | ZConnect");
-
-                            mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_18dp)
-                                    .setColor(ContextCompat.getColor(NotificationService.this, R.color.storeroom))
-                                    .setStyle(style)
-                                    .setSound(defaultSoundUri)
-                                    .setContentTitle("Product Shortlisted | ZConnect")
-                                    .setContentText(personName + " shortlisted your product " + product);
-
-                            Intent intent = new Intent(NotificationService.this, Shortlisted.class);
-                            intent.putExtra("Key", (String) data.get("Key"));
-
-                            PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                            mBuilder.setContentIntent(intent1);
-
-                            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                            mNotificationManager.notify((product.length()), mBuilder.build());
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
 
                 } else if (type.equals("crash")) {
 
@@ -218,28 +145,6 @@ public class NotificationService extends FirebaseMessagingService {
                 } else if (type.equals(KEY_CABPOOL)) {
 
                     String name = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                    NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-                    style.bigText("Hey! " + name + ", People around you are using Cab Pool very often")
-                            .setBigContentTitle("Cab Pool | ZConnect");
-                    android.support.v4.app.NotificationCompat.Builder mBuilder =
-                            new NotificationCompat.Builder(NotificationService.this)
-                                    .setSmallIcon(R.drawable.ic_directions_car_white_24dp)
-                                    .setStyle(style)
-                                    .setSound(defaultSoundUri)
-                                    .setColor(ContextCompat.getColor(NotificationService.this, R.color.cabpool))
-                                    .setContentTitle("Cab Pool | ZConnect")
-                                    .setContentText("Hey! " + name + ", People around you are using Cab Pool very often");
-
-
-                    Intent intent = new Intent(NotificationService.this, HomeActivity.class);
-                    PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    mBuilder.setContentIntent(intent1);
-
-
-                    //Gets an instance of the NotificationMa
-
-                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.notify(1, mBuilder.build());
 
                 } else if (type.equals(KEY_EVENT)) {
                     final String key = data.get("Key").toString();
@@ -629,6 +534,207 @@ public class NotificationService extends FirebaseMessagingService {
                 }
             }catch (Exception e){}
         }
+    }
+
+
+    private void cabAddNotification(){
+
+    }
+
+
+
+    private void productShortlistNotification(){
+
+        final String userName = data.get("userName").toString();
+        final String userMobileNumber = data.get("userMobileNumber").toString();
+        final String productKey = data.get("productKey").toString();
+        final String productName = data.get("productName").toString();
+        final String communityName = data.get("communityName").toString();
+        final String userImage = data.get("userImage").toString();
+
+        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationService.this);
+
+        Intent call = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + userMobileNumber));
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, call, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.addAction(R.drawable.ic_phone_black_18dp, "Call", pendingIntent);
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText(userName + " shortlisted your product " + productName)
+                .setBigContentTitle(communityName);
+
+        mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_18dp)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setStyle(style)
+                .setSound(defaultSoundUri)
+                .setContentTitle(communityName)
+                .setContentText(userName + " shortlisted your product " + productName);
+
+        Intent intent = new Intent(NotificationService.this, ShortlistedPeopleList.class);
+        intent.putExtra("Key", productKey);
+
+        PendingIntent pendingIntent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendingIntent1);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(3, mBuilder.build());
+    }
+
+
+    private void cabLeaveNotification() {
+
+        final String userName = data.get("userName").toString();
+        final String cabKey = data.get("cabKey").toString();
+        final String communityName = data.get("communityName").toString();
+        final String userImage = data.get("userImage").toString();
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText(userName + " left your cab pool").setBigContentTitle(communityName);
+
+        android.support.v4.app.NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(NotificationService.this)
+                        .setSmallIcon(R.drawable.ic_directions_car_white_24dp)
+                        .setStyle(style)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                        .setContentTitle(communityName)
+                        .setContentText(userName + " left your cab pool");
+
+        Bitmap image = null;
+        image  = getRoundedBitmap(userImage);
+
+        if(image!=null){
+            mBuilder.setLargeIcon(image);
+        }
+
+        Intent intent = new Intent(NotificationService.this, CabPoolListOfPeople.class);
+        intent.putExtra("key", cabKey);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendingIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(2, mBuilder.build());
+    }
+
+    private void cabJoinNotification() {
+
+        final String userName = data.get("userName").toString();
+        final String cabKey = data.get("cabKey").toString();
+        final String communityName = data.get("communityName").toString();
+        final String userImage = data.get("userImage").toString();
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText(userName + " joined your cab pool").setBigContentTitle(communityName);
+
+        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        Bitmap image = null;
+        image  = getRoundedBitmap(userImage);
+
+        if(image!=null){
+            mBuilder.setLargeIcon(image);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.ic_directions_car_white_24dp)
+                .setStyle(style)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(communityName)
+                .setContentText(userName + " joined your cab pool");
+
+        Intent intent = new Intent(NotificationService.this, CabPoolListOfPeople.class);
+        intent.putExtra("key", cabKey);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendingIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1, mBuilder.build());
+    }
+
+    public void eventBoostNotification(){
+
+        final String eventKey = data.get("eventKey").toString();
+        final String userName = data.get("userName").toString();
+        final String eventName = data.get("eventName").toString();
+        final String communityName = data.get("communityName").toString();
+        final String userImage = data.get("userImage").toString();
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText(userName + " boosted your event " + eventName).setBigContentTitle(communityName);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        Bitmap image = null;
+        image  = getRoundedBitmap(userImage);
+
+        if(image!=null){
+            mBuilder.setLargeIcon(image);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.ic_whatshot_white_24dp)
+                .setStyle(style)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(communityName)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentText(userName + " boosted your event " + eventName);
+
+        Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
+        intent.putExtra("id",eventKey);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendingIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
+    }
+
+    public static Bitmap getRoundedBitmap(String userImage) {
+
+        Bitmap bitmap= null;
+        int cornerRadius;
+
+        try {
+            URL url = new URL(userImage);
+            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+
+
+        if (bitmap == null) {
+            return null;
+        }else {
+            cornerRadius = bitmap.getHeight()/2;
+        }
+        if (cornerRadius < 0) {
+            cornerRadius = 0;
+        }
+        // Create plain bitmap
+        Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(canvasBitmap);
+        canvas.drawARGB(0,0,0,0);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.WHITE);
+
+        Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        RectF rectF = new RectF(rect);
+
+        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, paint);
+
+        final int width = bitmap.getWidth();
+        final int height = bitmap.getHeight();
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return canvasBitmap;
     }
 
 }

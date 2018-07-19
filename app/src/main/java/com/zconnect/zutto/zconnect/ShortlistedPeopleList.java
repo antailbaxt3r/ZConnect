@@ -18,7 +18,7 @@ import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class Shortlisted extends BaseActivity {
+public class ShortlistedPeopleList extends BaseActivity {
 
     private Vector<UsersListItemFormat> usersListItemFormatVector = new Vector<UsersListItemFormat>();
     private ArrayList<String> names = new ArrayList<>(), nos = new ArrayList<>(), images = new ArrayList<>();
