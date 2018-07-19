@@ -307,8 +307,8 @@ public class OpenProductDetails extends BaseActivity {
 //                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.child("PostedBy").child("UID").getValue().toString(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,true,getApplicationContext());
 //                                        notificationSender.execute();
 
-                                        NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this);
-                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST);
+                                        NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this,UserUtilities.currentUser.getUserUID());
+                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,UserUtilities.currentUser.getUserUID());
                                         productShortlistNotification.setCommunityName(UserUtilities.CommunityName);
                                         productShortlistNotification.setItemKey(productKey);
                                         productShortlistNotification.setItemName(dataSnapshot.child("ProductName").getValue().toString());

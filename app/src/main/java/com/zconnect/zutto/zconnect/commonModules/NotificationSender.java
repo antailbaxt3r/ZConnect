@@ -2,6 +2,8 @@ package com.zconnect.zutto.zconnect.commonModules;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.icu.text.StringPrepParseException;
+import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
@@ -45,9 +47,12 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
     private URL url;
     private HttpURLConnection connection;
     Context ctx;
+    private String userKey;
 
-    public NotificationSender(Context ctx) {
+    public NotificationSender(Context ctx,String userKey) {
         this.ctx = ctx;
+        this.userKey = userKey;
+
         try {
             url = new URL("https://fcm.googleapis.com/fcm/send");
 
@@ -113,19 +118,31 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
         String notificationIdentifier = ND.getNotificationIdentifier();
 
-        switch (notificationIdentifier){
+        switch (notificationIdentifier) {
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST:
-                eventBoostNotification(ND.getItemKey(),ND.getItemName(),ND.getUserName(),ND.getCommunityName(),ND.getUserImage());
+                eventBoostNotification(ND.getItemKey(), ND.getItemName(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage());
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN:
-                cabJoinNotification(ND.getItemKey(),ND.getUserName(),ND.getCommunityName(),ND.getUserImage());
+                cabJoinNotification(ND.getItemKey(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage());
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE:
-                cabLeaveNotification(ND.getItemKey(),ND.getUserName(),ND.getCommunityName(),ND.getUserImage());
+                cabLeaveNotification(ND.getItemKey(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage());
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST:
-                productShortlistNotification(ND.getItemKey(),ND.getUserName(),ND.getUserMobileNumber(),ND.getItemName(),ND.getCommunityName(),ND.getUserImage());
-
+                productShortlistNotification(ND.getItemKey(), ND.getUserName(), ND.getUserMobileNumber(), ND.getItemName(), ND.getCommunityName(), ND.getUserImage());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD:
+                cabAddNotification(ND.getCommunityName());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD:
+                eventAddNotification(ND.getCommunityName(),ND.getItemName(),ND.getItemLocation(),ND.getItemKey(),ND.getItemImage());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD:
+                productAddNotification(ND.getCommunityName(),ND.getItemName(),ND.getItemPrice(),ND.getItemKey(),ND.getItemImage(),ND.getUserName(),ND.getUserImage());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD:
+                forumAddNotification(ND.getCommunityName(), ND.getItemName(),ND.getItemCategory(),ND.getItemCategoryUID(),ND.getItemKey(),ND.getUserName(),ND.getUserImage());
+                break;
         }
 //        if(checkFrequency){
 //            CompareFrequency();
@@ -135,6 +152,70 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 //        }
 
         return null;
+    }
+
+    private void forumAddNotification(String communityName, String forumName, String forumCategory, String forumCategoryUID, String forumKey, String userName,String userImage) {
+
+
+        creator = new RemoteMessage.Builder("data");
+
+        creator.addData("communityName",communityName);
+        creator.addData("forumName",forumName);
+        creator.addData("forumCategory",forumCategory);
+        creator.addData("forumCategoryUID",forumCategoryUID);
+        creator.addData("forumKey",forumKey);
+
+        creator.addData("userName", userName);
+        creator.addData("userImage", userImage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD);
+        creator.addData("userKey",userKey);
+
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD_FREQUENCY_STR);
+    }
+
+    private void productAddNotification(String communityName, String productName,String productPrice,String productKey,String productImage,String userName,String userImage) {
+
+
+        creator = new RemoteMessage.Builder("data");
+
+        creator.addData("communityName",communityName);
+        creator.addData("productName",productName);
+        creator.addData("productPrice",productPrice);
+        creator.addData("productKey",productKey);
+        creator.addData("productImage",productImage);
+        creator.addData("userName", userName);
+        creator.addData("userImage", userImage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD);
+        creator.addData("userKey",userKey);
+
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR);
+    }
+
+    private void eventAddNotification(String communityName,String eventName,String eventLocation,String eventKey,String eventImage) {
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+        creator.addData("eventName",eventName);
+        creator.addData("eventLocation",eventLocation);
+        creator.addData("eventKey",eventKey);
+        creator.addData("eventImage",eventImage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD);
+        creator.addData("userKey",userKey);
+
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR);
+    }
+
+    private void cabAddNotification(String communityName) {
+
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD);
+        creator.addData("userKey",userKey);
+
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD_FREQUENCY_STR);
     }
 
     private void productShortlistNotification(String productKey,String userName,String userMobileNumber,String productName, String communityName,String userImage){
@@ -147,7 +228,10 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("communityName",communityName);
         creator.addData("userImage",userImage);
 
+
+
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST);
+        creator.addData("userKey",userKey);
 
         sendNotification(true, productKey);
     }
@@ -160,7 +244,9 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("communityName",communityName);
         creator.addData("userImage",userImage);
 
+
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE);
+        creator.addData("userKey",userKey);
 
         sendNotification(true, cabKey);
     }
@@ -174,61 +260,10 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("userImage",userImage);
 
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN);
+        creator.addData("userKey",userKey);
 
         sendNotification(true, cabKey);
     }
-
-
-    private void CompareFrequency(){
-
-        DatabaseReference DB_NORMAL = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("frequency").child(type);
-        DB_NORMAL.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                normal_frequency = dataSnapshot.getValue(Long.class);
-                Log.e("noti:value of current F", String.valueOf( normal_frequency));
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-        final DatabaseReference DB_CURRENT = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("current").child(type);
-        DB_CURRENT.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                current_frequency = dataSnapshot.getValue(Long.class);
-                Log.e("noti:value of current F", String.valueOf( current_frequency));
-
-
-                if(String.valueOf(current_frequency).equals(String.valueOf(normal_frequency))){
-                    DB_CURRENT.setValue(Long.valueOf(0));
-                    sendNotification();
-                    Log.e("noti","Notification sent");
-                    result=true;
-                    Log.e("noti",String.valueOf(result));
-
-                }else{
-
-                    DB_CURRENT.setValue(current_frequency+1);
-                    result=false;
-                    Log.e("noti","Notification not sent");
-                    Log.e("noti",String.valueOf(result));
-
-                }}
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
 
     public void eventBoostNotification(String eventKey, String eventName, String userName,String communityName,String userImage) {
         creator = new RemoteMessage.Builder("data");
@@ -240,6 +275,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
         creator.addData("communityName",communityName);
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST);
+        creator.addData("userKey",userKey);
 
         sendNotification(true,eventKey);
     }
@@ -292,6 +328,59 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         }catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+
+    private void compareFrequency(final String notificationType){
+
+        DatabaseReference DB_NORMAL = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("frequency").child(notificationType);
+        final DatabaseReference DB_CURRENT = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("current").child(notificationType);
+
+        DB_NORMAL.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                normal_frequency = dataSnapshot.getValue(Long.class);
+
+                DB_CURRENT.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        current_frequency = dataSnapshot.getValue(Long.class);
+
+                        if(current_frequency == normal_frequency){
+
+                            DB_CURRENT.setValue(Long.valueOf(0));
+
+                            sendNotification(true,communityReference);
+
+//                            if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD)){
+//                                cabAddNotiication();
+//                            }else if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD)){
+//                                eventAddNotification();
+//                            }else if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD)){
+//                                productAddNotification();
+//                            }else if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD)){
+//                                forumAddNotification();
+//                            }
+
+                        }else{
+                            DB_CURRENT.setValue(current_frequency + 1);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 

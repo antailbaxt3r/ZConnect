@@ -20,11 +20,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.CounterManager;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT;
@@ -132,10 +135,16 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                         userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                         userDetails.setUserUID(userItemFormat.getUserUID());
                                         StoreRoom.child(key).child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
-                                        try {
-                                            NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,mAuth.getCurrentUser().getEmail(),productName,KEY_PRODUCT,false,true,itemView.getContext());
-                                            notificationSender.execute();
-                                        }catch (Exception e){}
+
+                                        NotificationSender notificationSender = new NotificationSender(itemView.getContext(),UserUtilities.currentUser.getUserUID());
+                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,UserUtilities.currentUser.getUserUID());
+                                        productShortlistNotification.setCommunityName(UserUtilities.CommunityName);
+                                        productShortlistNotification.setItemKey(key);
+                                        productShortlistNotification.setItemName(dataSnapshot.child(key).child("ProductName").getValue().toString());
+                                        productShortlistNotification.setUserName(userItemFormat.getUsername());
+                                        productShortlistNotification.setUserMobileNumber(UserUtilities.currentUser.getMobileNumber());
+
+                                        notificationSender.execute(productShortlistNotification);
 
                                     }
 
@@ -146,11 +155,6 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                 });
                                 flag = false;
                                 productShortList.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
-//                                productShortList.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.curvedradiusbutton_sr));
-//                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-//                                productShortList.setTypeface(customfont);
-
-
                             }
                         }
                     }

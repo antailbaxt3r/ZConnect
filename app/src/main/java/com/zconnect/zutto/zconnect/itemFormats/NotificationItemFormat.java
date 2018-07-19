@@ -4,18 +4,25 @@ public class NotificationItemFormat {
 
     private String notificationIdentifier;
     private String communityName;
+
+    private String userKey;
     private String userName;
     private String userImage;
-
     private String userMobileNumber;
 
     private String itemKey;
     private String itemName;
+    private String itemImage;
+    private String itemLocation;
+    private String itemPrice;
+
+    private String itemCategory;
+    private String itemCategoryUID;
 
 
-
-    public NotificationItemFormat(String notificationIdentifier){
+    public NotificationItemFormat(String notificationIdentifier, String userKey){
         this.notificationIdentifier = notificationIdentifier;
+        this.userKey = userKey;
     }
 
     public String getUserName() {
@@ -73,6 +80,54 @@ public class NotificationItemFormat {
 
     public void setUserMobileNumber(String userMobileNumber) {
         this.userMobileNumber = userMobileNumber;
+    }
+
+    public String getItemLocation() {
+        return itemLocation;
+    }
+
+    public void setItemLocation(String itemLocation) {
+        this.itemLocation = itemLocation;
+    }
+
+    public String getUserKey() {
+        return userKey;
+    }
+
+    public void setUserKey(String userKey) {
+        this.userKey = userKey;
+    }
+
+    public String getItemImage() {
+        return itemImage;
+    }
+
+    public void setItemImage(String itemImage) {
+        this.itemImage = itemImage;
+    }
+
+    public String getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(String itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+    public String getItemCategory() {
+        return itemCategory;
+    }
+
+    public void setItemCategory(String itemCategory) {
+        this.itemCategory = itemCategory;
+    }
+
+    public String getItemCategoryUID() {
+        return itemCategoryUID;
+    }
+
+    public void setItemCategoryUID(String itemCategoryUID) {
+        this.itemCategoryUID = itemCategoryUID;
     }
 
 

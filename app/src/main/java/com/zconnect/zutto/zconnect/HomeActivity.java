@@ -607,6 +607,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 editor.commit();
             } else if(communityReference!=null) {
 
+                FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
+
                 communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
 
                 communityInfoRef.addValueEventListener(new ValueEventListener() {
@@ -812,6 +814,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private void logoutAndSendToLogin() {
 
         FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid());
+        try {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(communityReference);
+        }catch (Exception e){}
         mAuth.signOut();
         SharedPreferences preferences = getSharedPreferences("communityName", 0);
         preferences.edit().remove("communityReference").commit();

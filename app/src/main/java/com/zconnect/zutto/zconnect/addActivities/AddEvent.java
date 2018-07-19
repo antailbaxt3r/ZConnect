@@ -49,12 +49,16 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -416,10 +420,21 @@ public class AddEvent extends BaseActivity {
 
                             //Sending Notifications
                             //Sending Notifications
-                            FirebaseMessaging.getInstance().subscribeToTopic(key);
-                            NotificationSender notificationSender=new NotificationSender(key,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
-                            notificationSender.execute();
+//                            FirebaseMessaging.getInstance().subscribeToTopic(key);
+//                            NotificationSender notificationSender=new NotificationSender(key,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
+//                            notificationSender.execute();
 
+                            NotificationSender notificationSender = new NotificationSender(AddEvent.this, UserUtilities.currentUser.getUserUID());
+                            NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,UserUtilities.currentUser.getUserUID());
+                            addEventNotification.setCommunityName(UserUtilities.CommunityName);
+                            addEventNotification.setItemKey(key);
+                            addEventNotification.setItemImage(downloadUri.toString());
+                            addEventNotification.setItemName(eventNameValue);
+                            addEventNotification.setItemLocation(eventVenue);
+
+                            notificationSender.execute(addEventNotification);
+
+                            FirebaseMessaging.getInstance().subscribeToTopic(key);
 
                         } else {
                             DatabaseReference newPost = mDatabaseVerified.push();
@@ -497,8 +512,17 @@ public class AddEvent extends BaseActivity {
                             });
                             //Sending Notifications
                             FirebaseMessaging.getInstance().subscribeToTopic(key);
-                            NotificationSender notificationSender=new NotificationSender(key,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
-                            notificationSender.execute();
+
+                            NotificationSender notificationSender = new NotificationSender(AddEvent.this, UserUtilities.currentUser.getUserUID());
+                            NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,UserUtilities.currentUser.getUserUID());
+                            addEventNotification.setCommunityName(UserUtilities.CommunityName);
+                            addEventNotification.setItemKey(key);
+                            addEventNotification.setItemImage(downloadUri.toString());
+                            addEventNotification.setItemName(eventNameValue);
+                            addEventNotification.setItemLocation(eventVenue);
+
+
+                            notificationSender.execute(addEventNotification);
 
                         }
 

@@ -167,8 +167,8 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             databaseReference.child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                                            NotificationSender notificationSender = new NotificationSender(ChatActivity.this);
-                                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN);
+                                            NotificationSender notificationSender = new NotificationSender(ChatActivity.this,UserUtilities.currentUser.getUserUID());
+                                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,UserUtilities.currentUser.getUserUID());
                                             cabPoolJoinNotification.setCommunityName(UserUtilities.CommunityName);
                                             cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
                                             cabPoolJoinNotification.setUserName(userItemFormat.getUsername());

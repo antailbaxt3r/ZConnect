@@ -367,9 +367,9 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
                         CounterManager.eventBoost(key, "Trending-Out");
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
 
-                        NotificationSender notificationSender = new NotificationSender(itemView.getContext());
+                        NotificationSender notificationSender = new NotificationSender(itemView.getContext(),UserUtilities.currentUser.getUserUID());
 
-                        NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST);
+                        NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,UserUtilities.currentUser.getUserUID());
                         eventBoostNotification.setItemKey(key);
                         eventBoostNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
                         eventBoostNotification.setItemName(name);

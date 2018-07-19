@@ -543,9 +543,9 @@ public class  OpenEventDetail extends BaseActivity{
 
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
 
-                        NotificationSender notificationSender = new NotificationSender(OpenEventDetail.this);
+                        NotificationSender notificationSender = new NotificationSender(OpenEventDetail.this,UserUtilities.currentUser.getUserUID());
 
-                        NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST);
+                        NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,UserUtilities.currentUser.getUserUID());
                         eventBoostNotification.setItemKey(event.getKey());
                         eventBoostNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
                         eventBoostNotification.setItemName(event.getEventName());

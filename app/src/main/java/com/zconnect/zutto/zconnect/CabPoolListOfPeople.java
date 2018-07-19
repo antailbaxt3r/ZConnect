@@ -210,8 +210,8 @@ public class CabPoolListOfPeople extends BaseActivity {
                         databaseReference.child(key).child("usersListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
 
-                        NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this);
-                        NotificationItemFormat cabPoolLeaveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE);
+                        NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,UserUtilities.currentUser.getUserUID());
+                        NotificationItemFormat cabPoolLeaveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE,UserUtilities.currentUser.getUserUID());
                         cabPoolLeaveNotification.setCommunityName(UserUtilities.CommunityName);
                         cabPoolLeaveNotification.setItemKey(getIntent().getStringExtra("key"));
                         cabPoolLeaveNotification.setUserName(UserUtilities.currentUser.getUsername());
@@ -234,8 +234,8 @@ public class CabPoolListOfPeople extends BaseActivity {
                                 databaseReference.child(key).child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                // NotificationSender notificationSender = new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_CABPOOL_JOIN,false,true,CabPoolListOfPeople.this);
-                                NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this);
-                                NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN);
+                                NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,UserUtilities.currentUser.getUserUID());
+                                NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,UserUtilities.currentUser.getUserUID());
                                 cabPoolJoinNotification.setCommunityName(UserUtilities.CommunityName);
                                 cabPoolJoinNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
                                 cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));

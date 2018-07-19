@@ -30,10 +30,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.zconnect.zutto.zconnect.CabPoolAll;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
+import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ShortlistedPeopleList;
@@ -48,6 +50,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Random;
 
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL_JOIN;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CAB_POOL_CHAT;
@@ -81,21 +84,20 @@ public class NotificationService extends FirebaseMessagingService {
         communityReference = communitySP.getString("communityReference", null);
 
         data = remoteMessage.getData();
+
         if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
 
-            switch (type){
-                case NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST : eventBoostNotification();
-                break;
-                case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN : cabJoinNotification();
-                break;
-                case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE : cabLeaveNotification();
-                break;
-                case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST : productShortlistNotification();
-                break;
-
-
+            if(data.containsKey("userKey")){
+                final String userKey = data.get("userKey").toString();
+                if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)){
+                    handleNotifications(type);
+                }
+            }else {
+                handleNotifications(type);
             }
+
+
             try {
                 // When someone boost a event
                 if (type.equals(KEY_EVENT_BOOST)) {
@@ -147,68 +149,11 @@ public class NotificationService extends FirebaseMessagingService {
                     String name = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
                 } else if (type.equals(KEY_EVENT)) {
-                    final String key = data.get("Key").toString();
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Event format = dataSnapshot.getValue(Event.class);
-                            Log.d("Entered ", format.getKey());
-                            android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationService.this);
-
-                            String event = data.get("Event").toString();
-                            NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-                            style.bigText(event + " is going to happen near you.")
-                                    .setBigContentTitle(format.getEventDescription());
-
-                            mBuilder.setSmallIcon(R.drawable.ic_event_white_24dp)
-                                    .setSound(defaultSoundUri)
-                                    .setColor(ContextCompat.getColor(NotificationService.this, R.color.events))
-                                    .setStyle(style)
-                                    .setContentTitle("New Event | ZConnect")
-                                    .setContentText(event + " is going to happen near you.");
-
-                            Intent intent = new Intent(NotificationService.this, HomeActivity.class);
-                            PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                            mBuilder.setContentIntent(intent1);
-
-//                        Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
-//                        intent.putExtra("currentEvent", format);
-//                        intent.putExtra("Eventtag","1");
-
-//                        PendingIntent pIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-//                        mBuilder.setContentIntent(pIntent);
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
 
 
                 } else if (type.equals(KEY_STOREROOM)) {
 
-                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-                    NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-                    String name = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                    style.bigText("Hey! " + name + ", products have been added. Check what your friend's are selling!")
-                            .setBigContentTitle("StoreRoom | ZConnect");
 
-                    mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_24dp)
-                            .setSound(defaultSoundUri)
-                            .setColor(ContextCompat.getColor(NotificationService.this, R.color.storeroom))
-                            .setStyle(style)
-                            .setContentTitle("StoreRoom | ZConnect")
-                            .setContentText("Hey! " + name + ", products have been added. Check what your friend's are selling!");
-
-                    Intent intent = new Intent(NotificationService.this, HomeActivity.class);
-                    PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    mBuilder.setContentIntent(intent1);
-
-                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.notify(1, mBuilder.build());
 
                 } else if (type.equals(KEY_LIKE)) {
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -533,12 +478,210 @@ public class NotificationService extends FirebaseMessagingService {
                     }
                 }
             }catch (Exception e){}
+
+
         }
+
+
     }
 
+    private void handleNotifications(String type){
+        switch (type){
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST : eventBoostNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN : cabJoinNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE : cabLeaveNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST : productShortlistNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD : cabAddNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD : eventAddNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD: productAddNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD: forumAddNotification();
+                break;
+        }
+
+    }
+
+    private void forumAddNotification() {
+
+        final String communityName = data.get("communityName").toString();
+        final String forumName = data.get("forumName").toString();
+        final String forumCategory = data.get("forumCategory").toString();
+        final String forumCategoryUID = data.get("forumCategoryUID").toString();
+        final String forumKey = data.get("forumKey").toString();
+
+        final String userName = data.get("userName").toString();
+        final String userImage = data.get("userImage").toString();
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.setBigContentTitle(communityName).setSummaryText(userName + " started a new forum " + forumName + " in " + forumCategory).setBigContentTitle(communityName);
+
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(userImage);
+            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+
+        if (bitmap!=null){
+            mBuilder.setLargeIcon(bitmap);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.ic_forum_white_18dp)
+                .setSound(defaultSoundUri)
+                .setStyle(style)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setAutoCancel(true)
+                .setContentTitle(communityName)
+                .setContentText(userName + " started a new forum " + forumName + " in " + forumCategory);
+
+        Intent intent = new Intent(NotificationService.this, ChatActivity.class);
+        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(forumKey).toString());
+        intent.putExtra("type","forums");
+        intent.putExtra("name", forumName);
+        intent.putExtra("tab",forumCategoryUID);
+        intent.putExtra("key",forumKey);
+
+        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(intent1);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(7, mBuilder.build());
+
+
+    }
+
+    private void productAddNotification() {
+
+        final String communityName = data.get("communityName").toString();
+        final String productName = data.get("productName").toString();
+        final String productPrice = data.get("productPrice").toString();
+        final String productKey = data.get("productKey").toString();
+        final String productImage = data.get("productImage").toString();
+
+        final String userName = data.get("userName").toString();
+        final String userImage = data.get("userImage").toString();
+
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(productImage);
+            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+
+        Bitmap bitmap2 = null;
+        try {
+            URL url = new URL(userImage);
+            bitmap2 = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        if(bitmap!=null) {
+            NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
+            style.bigPicture(bitmap).setSummaryText(userName + " is selling " + productName + " for ₹" + productPrice).setBigContentTitle(communityName);
+            mBuilder.setStyle(style);
+        }
+
+        if (bitmap2!=null){
+            mBuilder.setLargeIcon(bitmap2);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_24dp)
+                .setSound(defaultSoundUri)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setAutoCancel(true)
+                .setContentTitle(communityName)
+                .setContentText(userName + " is selling " + productName + " for ₹" + productPrice);
+
+        Intent intent = new Intent(NotificationService.this, OpenProductDetails.class);
+        intent.putExtra("key", productKey);
+
+        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(intent1);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(6, mBuilder.build());
+
+
+    }
+
+    private void eventAddNotification(){
+
+        final String communityName = data.get("communityName").toString();
+        final String eventName = data.get("eventName").toString();
+        final String eventLocation = data.get("eventLocation").toString();
+        final String eventKey = data.get("eventKey").toString();
+        final String eventImage = data.get("eventImage").toString();
+
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(eventImage);
+            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationService.this);
+
+        if(bitmap!=null) {
+            NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
+            style.bigPicture(bitmap).setSummaryText(eventName + " will be happening at " + eventLocation).setBigContentTitle(communityName);
+            mBuilder.setStyle(style);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.ic_event_white_24dp)
+                .setSound(defaultSoundUri)
+                .setAutoCancel(true)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(communityName)
+                .setContentText(eventName + " will be happening at " + eventLocation);
+
+        Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
+        intent.putExtra("id", eventKey);
+
+        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(intent1);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(5, mBuilder.build());
+
+    }
 
     private void cabAddNotification(){
 
+        final String communityName = data.get("communityName").toString();
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText("Hey! People around you are using Cab Pool very often").setBigContentTitle(communityName);
+
+        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationService.this)
+                        .setSmallIcon(R.drawable.ic_directions_car_white_24dp)
+                        .setStyle(style)
+                        .setSound(defaultSoundUri)
+                        .setAutoCancel(true)
+                        .setColor(ContextCompat.getColor(NotificationService.this,R.color.colorPrimary))
+                        .setContentTitle(communityName)
+                        .setContentText("Hey! People around you are using Cab Pool very often");
+
+
+        Intent intent = new Intent(NotificationService.this, CabPoolAll.class);
+        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(intent1);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(4, mBuilder.build());
     }
 
 
@@ -560,12 +703,19 @@ public class NotificationService extends FirebaseMessagingService {
         mBuilder.addAction(R.drawable.ic_phone_black_18dp, "Call", pendingIntent);
 
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-        style.bigText(userName + " shortlisted your product " + productName)
-                .setBigContentTitle(communityName);
+        style.bigText(userName + " shortlisted your product " + productName).setBigContentTitle(communityName);
+
+        Bitmap image = null;
+        image  = getRoundedBitmap(userImage);
+
+        if(image!=null){
+            mBuilder.setLargeIcon(image);
+        }
 
         mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_18dp)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setStyle(style)
+                .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentTitle(communityName)
                 .setContentText(userName + " shortlisted your product " + productName);
@@ -579,7 +729,6 @@ public class NotificationService extends FirebaseMessagingService {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(3, mBuilder.build());
     }
-
 
     private void cabLeaveNotification() {
 
