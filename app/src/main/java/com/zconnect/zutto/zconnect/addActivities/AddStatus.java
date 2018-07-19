@@ -46,6 +46,7 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class AddStatus extends BaseActivity {
 
@@ -62,6 +63,7 @@ public class AddStatus extends BaseActivity {
     ProgressDialog mProgress;
     SimpleDraweeView userAvatar;
     TextView username;
+    ArrayList<TextView> statusHints;
 
     //For posting photo
     private IntentHandle intentHandle;
@@ -112,7 +114,25 @@ public class AddStatus extends BaseActivity {
         userAvatar = (SimpleDraweeView) findViewById(R.id.avatarCircle_new_message);
         username = (TextView) findViewById(R.id.username_new_message);
         postImageView = (SimpleDraweeView) findViewById(R.id.post_image_view);
-
+        statusHints = new ArrayList<>();
+        statusHints.add((TextView) findViewById(R.id.status_hint_1));
+        statusHints.add((TextView) findViewById(R.id.status_hint_2));
+        statusHints.add((TextView) findViewById(R.id.status_hint_3));
+        statusHints.add((TextView) findViewById(R.id.status_hint_4));
+        statusHints.add((TextView) findViewById(R.id.status_hint_5));
+        for(int i =0; i<5; i++)
+        {
+            final TextView hint = statusHints.get(i);
+            statusHints.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    messageInput.setText(hint.getText());
+                    messageInput.setEnabled(true);
+                    messageInput.requestFocus();
+                    messageInput.setSelection(hint.getText().length()-1);
+                }
+            });
+        }
 
         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
