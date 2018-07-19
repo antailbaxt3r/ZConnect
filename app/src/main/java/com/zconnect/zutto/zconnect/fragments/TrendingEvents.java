@@ -1,8 +1,10 @@
 package com.zconnect.zutto.zconnect.fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.addActivities.AddEvent;
 import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.adapters.EventsAdapter;
@@ -35,6 +38,7 @@ public class TrendingEvents extends Fragment {
     private ValueEventListener mListener;
     private ProgressBar progressBar;
     private TextView noevents;
+    private FloatingActionButton fab;
 
     public TrendingEvents() {
         // Required empty public constructor
@@ -108,6 +112,13 @@ public class TrendingEvents extends Fragment {
         mEventList.setVisibility(View.GONE);
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(mlinearmanager);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab_trending_events);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getContext().startActivity(new Intent(getContext(), AddEvent.class));
+            }
+        });
 
         mListener = new ValueEventListener() {
             @Override

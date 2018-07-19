@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.adapters.CabPoolRVAdapter;
@@ -57,6 +59,7 @@ public class CabPoolAll extends BaseActivity {
     View.OnClickListener onEmpty;
     ValueEventListener allPools;
     ProgressBar progressBar;
+    FloatingActionButton fab;
 
     private SharedPreferences communitySP;
     public String communityReference;
@@ -149,6 +152,13 @@ public class CabPoolAll extends BaseActivity {
         recyclerView.setVisibility(View.INVISIBLE);
         communitySP = CabPoolAll.this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
+        fab = (FloatingActionButton) findViewById(R.id.fab_cab_pool_main);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CabPoolAll.this.startActivity(new Intent(CabPoolAll.this, CabPooling.class));
+            }
+        });
 
         databaseReference = firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
 //        databaseReferenceCopy = firebaseDatabase.getReference().child("communities").child(communityReference).child("features").child("cabPool").child("archives");

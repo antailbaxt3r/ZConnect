@@ -86,7 +86,7 @@ public class TutorialActivity extends BaseActivity {
     }
 
     private void doneButton(int position) {
-        if(position==5){
+        if(position==4){
 
             doneBtn.setVisibility(View.VISIBLE);
         } else

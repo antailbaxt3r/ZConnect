@@ -49,5 +49,15 @@
             android:text="No upcoming Pools.\nAdd one."
             android:textSize="25sp" />
     </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_cab_pool_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_white_36dp"
+        app:backgroundTint="@color/colorHighlight"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"/>
 
 </FrameLayout>
