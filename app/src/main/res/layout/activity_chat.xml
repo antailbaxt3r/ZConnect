@@ -74,7 +74,8 @@
                     android:hint="Type here.."
                     android:textColorHint="@color/secondaryText"
                     android:textColor="@color/black"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:inputType="textCapSentences"/>
                 <ImageButton
                     android:id="@+id/sendBtn"
                     android:layout_width="0dp"
@@ -83,7 +84,7 @@
                     android:src="@drawable/ic_menu_send"
                     android:tint="@color/colorPrimary"
                     android:background="@color/transparent"
-                    android:layout_marginStart="5dp"/>
+                    android:layout_marginStart="5dp" />
             </LinearLayout>
 
             <LinearLayout

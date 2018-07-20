@@ -55,7 +55,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:11.0.2'
     api 'com.squareup.picasso:picasso:2.5.2'
     api 'com.commit451:PhotoView:1.2.5'
-    api 'net.danlew:android.joda:2.9.7'
+//    api 'net.danlew:android.joda:2.9.7'
     api 'com.facebook.fresco:fresco:1.5.0'
     implementation 'com.android.support:multidex:1.0.1'
     api 'com.miguelcatalan:materialsearchview:1.4.0'
@@ -74,6 +74,7 @@ dependencies {
 
     implementation 'com.github.instacart.truetime-android:library:3.3'
 //    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    api 'joda-time:joda-time:2.10'
 
     api('com.weiwangcn.betterspinner:library-material:1.1.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'

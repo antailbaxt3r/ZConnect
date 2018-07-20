@@ -56,9 +56,10 @@ public class OpenUserDetail extends BaseActivity {
     private TagsEditText editTextSkills;
     private SimpleDraweeView image;
     private ImageView mail, call;
-    private EditText textMessage;
-    private LinearLayout anonymMessageLayout;
-    private ImageButton sendButton,btn_love,btn_like;
+//    private EditText textMessage;
+//    private LinearLayout anonymMessageLayout;
+//    private ImageButton sendButton;
+    private ImageButton btn_love,btn_like;
     private Boolean flagforNull=false;
     private TextView like_text,love_text;
     private boolean love_status = false,like_status=false;
@@ -66,6 +67,7 @@ public class OpenUserDetail extends BaseActivity {
     private UserItemFormat userProfile;
     private LinearLayout content;
     private ProgressBar progressBar;
+    private Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,9 +93,9 @@ public class OpenUserDetail extends BaseActivity {
         like_text = (TextView) findViewById(R.id.like_text);
         love_text = (TextView) findViewById(R.id.love_text);
 
-        textMessage = (EditText) findViewById(R.id.textInput);
-        anonymMessageLayout = (LinearLayout) findViewById(R.id.anonymTextInput);
-        sendButton = (ImageButton) findViewById(R.id.send);
+//        textMessage = (EditText) findViewById(R.id.textInput);
+//        anonymMessageLayout = (LinearLayout) findViewById(R.id.anonymTextInput);
+//        sendButton = (ImageButton) findViewById(R.id.send);
 
         call = (ImageView) findViewById(R.id.ib_call_contact_item);
         mail = (ImageView) findViewById(R.id.mailbutton);
@@ -143,6 +145,10 @@ public class OpenUserDetail extends BaseActivity {
                     setUserDetails();
                     progressBar.setVisibility(View.GONE);
                     content.setVisibility(View.VISIBLE);
+                    if(userProfile.getUserUID().equals(UserUtilities.currentUser.getUserUID()));
+                    {
+                        menu.findItem(R.id.action_edit_profile).setVisible(true);
+                    }
                 }catch (Exception e){}
             }
 
@@ -297,51 +303,51 @@ public class OpenUserDetail extends BaseActivity {
 
         if (Uid.equals("null"))
         {
-            anonymMessageLayout.setVisibility(View.GONE);
+//            anonymMessageLayout.setVisibility(View.GONE);
             flagforNull=true;
         }
 
 
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-            String textMessageString;
-            Calendar calendar;
-            calendar = Calendar.getInstance();
-            textMessageString = textMessage.getText().toString();
-            if (textMessageString!=null && !flagforNull){
-                DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages");
-                String s = UsersReference.child("chats").push().getKey();
-
-                DatabaseReference chatReference = UsersReference.child("chats").child(s).push();
-                chatReference.child("message").setValue("\""+textMessageString+"\"");
-                chatReference.child("sender").setValue(mAuth.getCurrentUser().getUid());
-                chatReference.child("senderName").setValue("Anonymous");
-                chatReference.child("timeStamp").setValue(calendar.getTimeInMillis());
-
-                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("name").setValue(name);
-                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("message").setValue(textMessageString);
-                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("type").setValue("sent");
-                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("chatUID").setValue(s);
-                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("sender").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                UsersReference.child("users").child(Uid).child("messages").child(s).child("message").setValue(textMessageString);
-                UsersReference.child("users").child(Uid).child("messages").child(s).child("sender").setValue(mAuth.getCurrentUser().getUid());
-                UsersReference.child("users").child(Uid).child("messages").child(s).child("type").setValue("recieved");
-                UsersReference.child("users").child(Uid).child("messages").child(s).child("chatUID").setValue(s);
-                UsersReference.child("users").child(Uid).child("messages").child(s).child("timeStamp").setValue(calendar.getTimeInMillis());
-
-                FirebaseMessaging.getInstance().subscribeToTopic(s);
-
-
-                textMessage.setText(null);
-                Toast.makeText(OpenUserDetail.this, "Encrypted message sent", Toast.LENGTH_SHORT).show();
-                CounterManager.anonymousMessageSend();
-            }
-            }
-        });
+//        sendButton.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//            String textMessageString;
+//            Calendar calendar;
+//            calendar = Calendar.getInstance();
+//            textMessageString = textMessage.getText().toString();
+//            if (textMessageString!=null && !flagforNull){
+//                DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("messages");
+//                String s = UsersReference.child("chats").push().getKey();
+//
+//                DatabaseReference chatReference = UsersReference.child("chats").child(s).push();
+//                chatReference.child("message").setValue("\""+textMessageString+"\"");
+//                chatReference.child("sender").setValue(mAuth.getCurrentUser().getUid());
+//                chatReference.child("senderName").setValue("Anonymous");
+//                chatReference.child("timeStamp").setValue(calendar.getTimeInMillis());
+//
+//                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("name").setValue(name);
+//                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("message").setValue(textMessageString);
+//                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("type").setValue("sent");
+//                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("chatUID").setValue(s);
+//                UsersReference.child("users").child(mAuth.getCurrentUser().getUid()).child("chats").child(s).child("sender").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//
+//                UsersReference.child("users").child(Uid).child("messages").child(s).child("message").setValue(textMessageString);
+//                UsersReference.child("users").child(Uid).child("messages").child(s).child("sender").setValue(mAuth.getCurrentUser().getUid());
+//                UsersReference.child("users").child(Uid).child("messages").child(s).child("type").setValue("recieved");
+//                UsersReference.child("users").child(Uid).child("messages").child(s).child("chatUID").setValue(s);
+//                UsersReference.child("users").child(Uid).child("messages").child(s).child("timeStamp").setValue(calendar.getTimeInMillis());
+//
+//                FirebaseMessaging.getInstance().subscribeToTopic(s);
+//
+//
+//                textMessage.setText(null);
+//                Toast.makeText(OpenUserDetail.this, "Encrypted message sent", Toast.LENGTH_SHORT).show();
+//                CounterManager.anonymousMessageSend();
+//            }
+//            }
+//        });
 
         //changing fonts
         Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
@@ -455,6 +461,7 @@ public class OpenUserDetail extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if (id == R.id.action_report) {
 
             CounterManager.report(mobileNumber);
@@ -478,6 +485,11 @@ public class OpenUserDetail extends BaseActivity {
             sharingIntent.putExtra(Intent.EXTRA_TEXT, send);
             startActivity(sharingIntent);
 
+        }
+        else if(id==R.id.action_edit_profile) {
+            Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+            intent.putExtra("newUser",false);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -12,11 +12,6 @@
 
     <group android:id="@+id/group">
         <item
-            android:title="My Infone"
-            android:id="@+id/infone"
-            android:icon="@drawable/ic_local_phone_blue"
-            android:name="My Infone" />
-        <item
             android:title="My Products"
             android:id="@+id/MyProducts"
             android:icon="@drawable/ic_local_mall_black_24dp"
@@ -26,11 +21,11 @@
             android:id="@+id/MyRides"
             android:icon="@drawable/ic_local_taxi_orange"
             android:name="My Rides" />
-        <item
-            android:title="My Community Map"
-            android:id="@+id/mapActivity"
-            android:icon="@drawable/ic_place_red"
-            android:name="Campus Map" />
+        <!--<item-->
+            <!--android:title="My Community Map"-->
+            <!--android:id="@+id/mapActivity"-->
+            <!--android:icon="@drawable/ic_place_red"-->
+            <!--android:name="Campus Map" />-->
         <item
             android:title="My Notifications"
             android:id="@+id/Noti_Settings"
@@ -40,18 +35,18 @@
     <group
         android:id="@+id/group1"
         android:checkableBehavior="none">
-        <item
-            android:title="Advertisements"
-            android:id="@+id/ad"
-            android:icon="@drawable/ic_live_tv_black_24dp"
-            android:name="Advertisement" />
+        <!--<item-->
+            <!--android:title="Advertisements"-->
+            <!--android:id="@+id/ad"-->
+            <!--android:icon="@drawable/ic_live_tv_black_24dp"-->
+            <!--android:name="Advertisement" />-->
         <item
             android:title="About Us"
             android:id="@+id/about"
             android:icon="@drawable/aboutus"
             android:name="About Us" />
         <item
-            android:title="Share"
+            android:title="Invite friends"
             android:id="@+id/share"
             android:icon="@drawable/ic_menu_share"
             android:name="Share" />

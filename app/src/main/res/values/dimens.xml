@@ -16,4 +16,10 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     -->
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="price_negotiable">16sp</dimen>
+
+
+    <!--status text size defined here-->
+    <dimen name="status_big">22sp</dimen>
+    <dimen name="status_medium">18sp</dimen>
+    <dimen name="status_small">14dp</dimen>
 </resources>

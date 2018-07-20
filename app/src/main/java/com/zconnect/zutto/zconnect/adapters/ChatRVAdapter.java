@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,13 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 
@@ -80,6 +86,12 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if(message.getMessageType().equals("message")){
 
             messageViewHolder holder = (messageViewHolder) rvHolder;
+            long previousTs = 0;
+            if(position>1){
+                ChatItemFormats pm = chatFormats.get(position-1);
+                previousTs = pm.getTimeDate();
+            }
+            setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
             if(message.getUuid()!=null)
             {
 
@@ -128,6 +140,12 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 
             final photoViewHolder holder = (photoViewHolder) rvHolder;
+            long previousTs = 0;
+            if(position>1){
+                ChatItemFormats pm = chatFormats.get(position-1);
+                previousTs = pm.getTimeDate();
+            }
+            setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
             if(message.getUuid()!=null) {
 
                 if (position > 0 && chatFormats.get(position - 1).getUuid().equals(message.getUuid())) {
@@ -160,8 +178,9 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.time.setText(time);
                 holder.name.setText(message.getName());
                 holder.userAvatar.setImageURI(message.getImageThumb());
-
+                holder.photo.setBackground(holder.context.getResources().getDrawable(R.drawable.photo_background_chat));
                 holder.photo.setImageURI(message.getPhotoURL());
+                holder.photo.setClipToOutline(true);
 
                 holder.photo.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -175,6 +194,55 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 });
             }
+        }
+    }
+
+    private void setTimeTextVisibility(long ts1, long ts2, TextView timeText){
+
+        if(ts2==0){
+            timeText.setVisibility(View.VISIBLE);
+            DateTime dt = new DateTime(ts1, DateTimeZone.UTC);
+            DateTime date = new DateTime();
+            if(dt.getYearOfEra()==date.getYearOfEra() && dt.getMonthOfYear() == date.getMonthOfYear() && dt.getDayOfMonth() == date.getDayOfMonth())
+            {
+                timeText.setText("TODAY");
+            }
+            else if(dt.getYearOfEra()==date.getYearOfEra() && dt.getMonthOfYear() == date.getMonthOfYear() && dt.getDayOfMonth() == date.getDayOfMonth()-1)
+            {
+                timeText.setText("YESTERDAY");
+            }
+            else {
+                timeText.setText(dt.toString("MMMM") + " " + dt.getDayOfMonth() + " " + dt.getYearOfEra());
+            }
+        }else {
+            Calendar cal1 = Calendar.getInstance();
+            Calendar cal2 = Calendar.getInstance();
+            cal1.setTimeInMillis(ts1);
+            cal2.setTimeInMillis(ts2);
+
+            boolean sameMonth = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                    cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
+
+            if(sameMonth){
+                timeText.setVisibility(View.GONE);
+                timeText.setText("");
+            }else {
+                timeText.setVisibility(View.VISIBLE);
+                DateTime dt = new DateTime(ts2, DateTimeZone.UTC);
+                DateTime date = new DateTime();
+                if(dt.getYearOfEra()==date.getYearOfEra() && dt.getMonthOfYear() == date.getMonthOfYear() && dt.getDayOfMonth() == date.getDayOfMonth())
+                {
+                    timeText.setText("TODAY");
+                }
+                else if(dt.getYearOfEra()==date.getYearOfEra() && dt.getMonthOfYear() == date.getMonthOfYear() && dt.getDayOfMonth() == date.getDayOfMonth()-1)
+                {
+                    timeText.setText("YESTERDAY");
+                }
+                else {
+                    timeText.setText(dt.toString("MMMM") + " " + dt.getDayOfMonth() + " " + dt.getYearOfEra());
+                }
+            }
+
         }
     }
 
@@ -196,7 +264,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     class messageViewHolder extends RecyclerView.ViewHolder {
 
-        TextView message, name, time;
+        TextView message, name, time, timeGroupText;
         SimpleDraweeView userAvatar;
         LinearLayout rightDummy, leftDummy, messageBubble, chatContainer, chatItem;
         Context context;
@@ -208,6 +276,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             name = (TextView) itemView.findViewById(R.id.chat_format_name);
             message = (TextView) itemView.findViewById(R.id.chat_format_message);
             time = (TextView) itemView.findViewById(R.id.chat_format_timestamp);
+            timeGroupText = (TextView) itemView.findViewById(R.id.time_group_text_chat_message_format);
             chatItem = (LinearLayout) itemView.findViewById(R.id.chat_format_chat_item);
             chatContainer =(LinearLayout) itemView.findViewById(R.id.chat_format_chat_container);
             leftDummy = (LinearLayout) itemView.findViewById(R.id.chat_format_leftdummy);
@@ -225,7 +294,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     class photoViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name, time;
+        TextView name, time, timeGroupText;
         SimpleDraweeView userAvatar,photo;
         LinearLayout rightDummy, leftDummy, messageBubble, chatContainer, chatItem;
         Context context;
@@ -236,6 +305,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             userAvatar = (SimpleDraweeView) itemView.findViewById(R.id.chat_format_user_avatar);
             name = (TextView) itemView.findViewById(R.id.chat_format_name);
             time = (TextView) itemView.findViewById(R.id.chat_format_timestamp);
+            timeGroupText = (TextView) itemView.findViewById(R.id.time_group_text_photo_message_format);
             chatItem = (LinearLayout) itemView.findViewById(R.id.chat_format_chat_item);
             chatContainer =(LinearLayout) itemView.findViewById(R.id.chat_format_chat_container);
             leftDummy = (LinearLayout) itemView.findViewById(R.id.chat_format_leftdummy);
