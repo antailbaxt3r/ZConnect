@@ -57,7 +57,7 @@ public class CommunitiesAround extends BaseActivity {
         communitiesReference = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
         communitiesRecycler = (RecyclerView) findViewById(R.id.all_communities);
         communitiesRecycler.setLayoutManager(new LinearLayoutManager(this));
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_activity_communities_around);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

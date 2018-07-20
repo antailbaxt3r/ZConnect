@@ -186,6 +186,10 @@
     <string name="status_hint_3">Does anyone have ...?</string>
     <string name="status_hint_4">Can anyone suggest ...?</string>
     <string name="status_hint_5">Which is a better option ...?</string>
+
+
+    <!--admin fragments text-->
+    <string name="no_user_to_validate">No user to validate. Check again later.</string>
     <!--test one-->
     <!--<string name="native_ad_unit_id">ca-app-pub-3940256099942544/2177258514</string>-->
 

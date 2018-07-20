@@ -3,36 +3,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    android:background="@color/card_background_color"
+    android:layout_marginBottom="10dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/id_image_new_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:viewAspectRatio="1.33"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop" />
     <TextView
+        android:layout_marginTop="10dp"
         android:id="@+id/about_new_user"
         android:text="About user"
+        android:textSize="16sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryText"/>
     <TextView
         android:id="@+id/admin_approved_by"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/accept_new_user"
-        android:text="Accept"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/decline_new_user"
-        android:text="Decline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Akhil Kamath"
+        android:textSize="16sp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/primaryText"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+        <Button
+            android:id="@+id/decline_new_user"
+            android:text="Decline"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_button_simple"
+            android:backgroundTint="@color/transparent"
+            android:layout_marginEnd="10dp"
+            style="?android:attr/borderlessButtonStyle"/>
+        <Button
+            android:id="@+id/accept_new_user"
+            android:text="Accept"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_button_primary"
+            android:textColor="@color/white"
+            android:layout_marginStart="10dp"
+            style="?android:attr/borderlessButtonStyle"/>
+    </LinearLayout>
 
 
 </LinearLayout>
