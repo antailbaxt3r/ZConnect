@@ -121,6 +121,13 @@
                 android:tint="@color/white"/>
         </FrameLayout>
     </FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/status_hint_ask_questions"
+        android:textSize="22sp"
+        android:textColor="@color/secondaryText"
+        android:padding="5dp"/>
     <com.google.android.flexbox.FlexboxLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
