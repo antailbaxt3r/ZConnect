@@ -75,45 +75,51 @@ public class NotificationSettings extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Setting data=dataSnapshot.getValue(Setting.class);
+                try {
 
-                switch_cabPool.setChecked(data.getAddCabPool());
-                switch_events.setChecked(data.getAddEvent());
-                switch_offers.setChecked(data.getOffers());
-                switch_storeroom.setChecked(data.getStoreRoom());
-                switch_forums.setChecked(data.getAddForum());
+                    Setting data = dataSnapshot.getValue(Setting.class);
+
+                    switch_cabPool.setChecked(data.getAddCabPool());
+                    switch_events.setChecked(data.getAddEvent());
+                    switch_offers.setChecked(data.getOffers());
+                    switch_storeroom.setChecked(data.getStoreRoom());
+                    switch_forums.setChecked(data.getAddForum());
 
 
-                if(data.getAddCabPool()){
+                    if (data.getAddCabPool()) {
                         FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
-                }else{
+                    } else {
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
+                    }
+
+                    if (data.getAddEvent()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
+                    }
+
+                    if (data.getOffers()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
+                    }
+
+                    if (data.getStoreRoom()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
+                    }
+
+
+                    if (data.getAddForum()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
+                    }
+                }catch (Exception e){
+
                 }
 
-                if(data.getAddEvent()){
-                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
-                }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
-                }
-
-                if(data.getOffers()){
-                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
-                }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
-                }
-
-                if(data.getStoreRoom()){
-                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
-                }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
-                }
-
-
-                if(data.getAddForum()){
-                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
-                }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
-                }
             }
 
             @Override

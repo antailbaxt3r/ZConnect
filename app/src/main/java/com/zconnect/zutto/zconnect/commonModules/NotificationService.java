@@ -113,9 +113,7 @@ public class NotificationService extends FirebaseMessagingService {
 
                 } else if (type.equals("crash")) {
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        ((ActivityManager) getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
-                    }
+
 
                 } else if (type.equals("url")) {
 
@@ -254,9 +252,105 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST: postChatNotification();
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT_URL: textURLNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL: imageURLNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CACHE: cacheDeleteNotification();
+                break;
         }
 
     }
+
+    private void cacheDeleteNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ((ActivityManager) getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
+        }
+    }
+
+    private void imageURLNotification() {
+        final String imageURL = data.get("imageURL").toString();
+        final String URL = data.get("URL").toString();
+        final String title = data.get("title").toString();
+        final String message = data.get("message").toString();
+
+        Bitmap appLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
+        style.setBigContentTitle(title).setSummaryText(message);
+
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(imageURL);
+            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+
+        if (appLogo!=null){
+            mBuilder.setLargeIcon(appLogo);
+        }
+
+        if(bitmap!=null){
+            style.bigPicture(bitmap);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.ic_whatshot_white_24dp)
+                .setStyle(style)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(title)
+                .setContentText(message);
+
+        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
+        PendingIntent contentIntent = PendingIntent.getActivity(NotificationService.this, 0, notificationIntent, 0);
+        mBuilder.setContentIntent(contentIntent);
+
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(17, mBuilder.build());
+    }
+
+    private void textURLNotification() {
+
+        final String URL = data.get("URL").toString();
+        final String title = data.get("title").toString();
+        final String message = data.get("message").toString();
+
+        Bitmap appLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.setBigContentTitle(title).setSummaryText(message);
+
+        if (appLogo!=null){
+            mBuilder.setLargeIcon(appLogo);
+        }
+
+
+        mBuilder.setSmallIcon(R.drawable.ic_whatshot_white_24dp)
+                .setStyle(style)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(title)
+                .setContentText(message);
+
+        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
+        PendingIntent contentIntent = PendingIntent.getActivity(NotificationService.this, 0, notificationIntent, 0);
+        mBuilder.setContentIntent(contentIntent);
+
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(16, mBuilder.build());
+    }
+
 
     private void postChatNotification() {
         final String communityName = data.get("communityName").toString();
@@ -375,6 +469,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         if (bitmap!=null){
             mBuilder.setLargeIcon(bitmap);
+
         }
 
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();

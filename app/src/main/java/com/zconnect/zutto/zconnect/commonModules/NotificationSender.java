@@ -176,7 +176,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("postMessage",postMessage);
         creator.addData("postKey",postKey);
 
-        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_EVENT);
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST);
         creator.addData("userKey",userKey);
 
         sendNotification(true, postKey);
