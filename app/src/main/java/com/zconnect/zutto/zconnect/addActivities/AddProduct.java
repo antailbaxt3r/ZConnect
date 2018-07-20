@@ -342,6 +342,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     NotificationSender notificationSender = new NotificationSender(AddProduct.this, UserUtilities.currentUser.getUserUID());
                     NotificationItemFormat addProductNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,UserUtilities.currentUser.getUserUID());
                     addProductNotification.setCommunityName(UserUtilities.CommunityName);
+
                     addProductNotification.setItemKey(key);
                     addProductNotification.setItemImage(downloadUri.toString());
                     addProductNotification.setItemName(productNameValue);

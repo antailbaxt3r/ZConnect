@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.commonModules;
 
 import android.app.ActivityManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -34,6 +35,7 @@ import com.zconnect.zutto.zconnect.CabPoolAll;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.HomeActivity;
+import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
@@ -88,14 +90,14 @@ public class NotificationService extends FirebaseMessagingService {
         if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
 
-            if(data.containsKey("userKey")){
-                final String userKey = data.get("userKey").toString();
-                if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)){
-                    handleNotifications(type);
-                }
-            }else {
+//            if(data.containsKey("userKey")){
+//                final String userKey = data.get("userKey").toString();
+//                if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)){
+//                    handleNotifications(type);
+//                }
+//            }else {
                 handleNotifications(type);
-            }
+//            }
 
 
             try {
@@ -507,6 +509,53 @@ public class NotificationService extends FirebaseMessagingService {
 
     }
 
+    private void infoneCategoryAddNotification(){
+        final String communityName = data.get("communityName").toString();
+        final String categoryName = data.get("categoryName").toString();
+        final String categoryID = data.get("categoryID").toString();
+        final String categoryImage = data.get("categoryImage").toString();
+        final String categoryAdmin = data.get("categoryAdmin").toString();
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.setBigContentTitle(communityName).setSummaryText(categoryName + " is created in Infone, add relevant contacts").setBigContentTitle(communityName);
+
+        Bitmap bitmap = null;
+
+        try {
+            bitmap = getRoundedBitmap(categoryImage);
+        }catch (Exception e){}
+
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        if(bitmap!=null){
+            mBuilder.setLargeIcon(bitmap);
+        }
+        mBuilder.setSmallIcon(R.drawable.ic_phone)
+                .setSound(defaultSoundUri)
+                .setStyle(style)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setAutoCancel(true)
+                .setContentTitle(communityName)
+                .setContentText(categoryName + " is created in Infone, add relevant contacts");
+
+        Intent intentInfoneList = new Intent(NotificationService.this, InfoneContactListActivity.class);
+        intentInfoneList.putExtra("catId", categoryID);
+        intentInfoneList.putExtra("catName",categoryName);
+        intentInfoneList.putExtra("catImageurl",categoryName);
+        intentInfoneList.putExtra("catAdmin",categoryAdmin);
+
+
+        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intentInfoneList, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(intent1);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(8, mBuilder.build());
+
+
+
+    }
+
     private void forumAddNotification() {
 
         final String communityName = data.get("communityName").toString();
@@ -614,7 +663,6 @@ public class NotificationService extends FirebaseMessagingService {
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(6, mBuilder.build());
-
 
     }
 

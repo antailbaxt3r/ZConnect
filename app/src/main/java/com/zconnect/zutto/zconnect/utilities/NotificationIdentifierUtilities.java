@@ -11,6 +11,7 @@ public class NotificationIdentifierUtilities {
     public static final String KEY_NOTIFICATION_PRODUCT_ADD = "Product Add";
     public static final String KEY_NOTIFICATION_EVENT_ADD = "Event Add";
     public static final String KEY_NOTIFICATION_FORUM_ADD = "Forum Add";
+    public static final String KEY_NOTIFICATION_INFONE_CATEGORY_ADD = "Infone Add";
 
     public static final String KEY_NOTIFICATION_FORUM_ADD_FREQUENCY_STR = "AddForum";
     public static final String KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR = "AddEvent";

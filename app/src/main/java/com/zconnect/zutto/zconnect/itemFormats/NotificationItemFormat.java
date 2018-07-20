@@ -19,6 +19,8 @@ public class NotificationItemFormat {
     private String itemCategory;
     private String itemCategoryUID;
 
+    private String itemCategoryAdmin;
+
 
     public NotificationItemFormat(String notificationIdentifier, String userKey){
         this.notificationIdentifier = notificationIdentifier;
@@ -129,6 +131,15 @@ public class NotificationItemFormat {
     public void setItemCategoryUID(String itemCategoryUID) {
         this.itemCategoryUID = itemCategoryUID;
     }
+
+    public String getItemCategoryAdmin() {
+        return itemCategoryAdmin;
+    }
+
+    public void setItemCategoryAdmin(String itemCategoryAdmin) {
+        this.itemCategoryAdmin = itemCategoryAdmin;
+    }
+
 
 
 }

@@ -143,15 +143,29 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD:
                 forumAddNotification(ND.getCommunityName(), ND.getItemName(),ND.getItemCategory(),ND.getItemCategoryUID(),ND.getItemKey(),ND.getUserName(),ND.getUserImage());
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_CATEGORY_ADD:
+                infoneCategoryAddNotification(ND.getCommunityName(),ND.getItemName(),ND.getItemKey(),ND.getItemImage(),ND.getItemCategoryAdmin());
+                break;
         }
-//        if(checkFrequency){
-//            CompareFrequency();
-//        }else{
-//            sendNotification();
-//            Log.e("noti","Notification sent");
-//        }
 
         return null;
+    }
+
+    private void infoneCategoryAddNotification(String communityName,String categoryName,String categoryID,String categoryImage,String categoryAdmin) {
+
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+        creator.addData("categoryName",categoryName);
+        creator.addData("categoryID",categoryID);
+        creator.addData("categoryImage",categoryImage);
+        creator.addData("categoryAdmin",categoryAdmin);
+
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true, communityReference);
+
     }
 
     private void forumAddNotification(String communityName, String forumName, String forumCategory, String forumCategoryUID, String forumKey, String userName,String userImage) {
@@ -184,6 +198,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("productPrice",productPrice);
         creator.addData("productKey",productKey);
         creator.addData("productImage",productImage);
+
         creator.addData("userName", userName);
         creator.addData("userImage", userImage);
 
