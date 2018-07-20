@@ -1,13 +1,9 @@
 package com.zconnect.zutto.zconnect.commonModules;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.icu.text.StringPrepParseException;
-import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -31,8 +27,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
-import static android.content.Context.MODE_PRIVATE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT_BOOST;
 
 
 public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Void> {
@@ -146,10 +140,149 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_CATEGORY_ADD:
                 infoneCategoryAddNotification(ND.getCommunityName(),ND.getItemName(),ND.getItemKey(),ND.getItemImage(),ND.getItemCategoryAdmin());
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LOVE :
+                infoneLoveNotification(ND.getCommunityName(),ND.getUserName(),ND.getUserImage(),ND.getItemKey());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LIKE:
+                infoneLikeNotification(ND.getCommunityName(),ND.getUserName(),ND.getUserImage(),ND.getItemKey());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM:
+                forumChatNotification(ND.getCommunityName(),ND.getUserName(),ND.getUserImage(),ND.getItemMessage(),ND.getItemName(),ND.getItemCategoryUID(),ND.getItemKey());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_PRODUCT:
+                productChatNotification(ND.getUserName(), ND.getCommunityName(), ND.getUserImage(), ND.getItemMessage(), ND.getItemKey(), ND.getItemName());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_CAB:
+                cabChatNotification(ND.getCommunityName(),ND.getUserName(), ND.getUserImage(), ND.getItemMessage(), ND.getItemKey());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_EVENT:
+                eventChatNotification(ND.getCommunityName(),ND.getUserName(), ND.getUserImage(),ND.getItemMessage(), ND.getItemKey(), ND.getItemName());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST:
+                postChatNotification(ND.getCommunityName(), ND.getUserName(), ND.getUserImage(), ND.getItemMessage(), ND.getItemKey());
+                break;
         }
 
         return null;
     }
+
+    private void postChatNotification(String communityName, String userName, String userImage, String postMessage, String postKey) {
+
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+        creator.addData("userName",userName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("postMessage",postMessage);
+        creator.addData("postKey",postKey);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_EVENT);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true, postKey);
+    }
+
+    private void eventChatNotification(String communityName, String userName, String userImage, String eventMessage, String eventKey, String eventName) {
+
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+        creator.addData("userName",userName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("eventMessage",eventMessage);
+        creator.addData("eventKey",eventKey);
+        creator.addData("eventName",eventName);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_EVENT);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true, eventKey);
+
+    }
+
+    private void cabChatNotification(String communityName, String userName, String userImage, String cabMessage, String cabKey) {
+
+
+
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+        creator.addData("userName",userName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("cabMessage",cabMessage);
+        creator.addData("cabKey",cabKey);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_CAB);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true, cabKey);
+
+    }
+
+    private void productChatNotification(String userName, String communityName, String userImage, String productMessage, String productKey, String productName) {
+
+
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+        creator.addData("userName",userName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("productMessage",productMessage);
+        creator.addData("productKey",productKey);
+        creator.addData("productName",productName);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_PRODUCT);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true, productKey);
+
+    }
+
+    private void forumChatNotification(String communityName, String userName, String userImage,String forumMessage,String forumName,String forumCategoryUID,String forumKey) {
+
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+        creator.addData("userName",userName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("forumMessage",forumMessage);
+        creator.addData("forumName",forumName);
+        creator.addData("forumCategoryUID",forumCategoryUID);
+        creator.addData("forumKey",forumKey);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true, forumKey);
+    }
+
+
+    private void infoneLikeNotification(String communityName, String userName, String userImage, String infoneUserKey) {
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+        creator.addData("userName",userName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LIKE);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true, infoneUserKey);
+    }
+
+    private void infoneLoveNotification(String communityName, String userName, String userImage, String infoneUserKey) {
+
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+        creator.addData("userName",userName);
+        creator.addData("userImage",userImage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LOVE);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true, infoneUserKey);
+
+    }
+
 
     private void infoneCategoryAddNotification(String communityName,String categoryName,String categoryID,String categoryImage,String categoryAdmin) {
 
@@ -161,10 +294,10 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("categoryAdmin",categoryAdmin);
 
 
-        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD);
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_CATEGORY_ADD);
         creator.addData("userKey",userKey);
 
-        sendNotification(true, communityReference);
+        sendNotification(true,NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_CATEGORY_ADD + communityReference);
 
     }
 
@@ -185,7 +318,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD);
         creator.addData("userKey",userKey);
 
-        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD_FREQUENCY_STR);
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD_FREQUENCY_STR);
     }
 
     private void productAddNotification(String communityName, String productName,String productPrice,String productKey,String productImage,String userName,String userImage) {
@@ -205,7 +338,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD);
         creator.addData("userKey",userKey);
 
-        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR);
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR);
     }
 
     private void eventAddNotification(String communityName,String eventName,String eventLocation,String eventKey,String eventImage) {
@@ -219,7 +352,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD);
         creator.addData("userKey",userKey);
 
-        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR);
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR);
     }
 
     private void cabAddNotification(String communityName) {
@@ -230,7 +363,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD);
         creator.addData("userKey",userKey);
 
-        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD_FREQUENCY_STR);
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD_FREQUENCY_STR);
     }
 
     private void productShortlistNotification(String productKey,String userName,String userMobileNumber,String productName, String communityName,String userImage){
@@ -347,7 +480,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
     }
 
 
-    private void compareFrequency(final String notificationType){
+    private void compareFrequency(final String notificationIdentifier,final String notificationType){
 
         DatabaseReference DB_NORMAL = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("frequency").child(notificationType);
         final DatabaseReference DB_CURRENT = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Notifications").child("current").child(notificationType);
@@ -366,7 +499,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
                             DB_CURRENT.setValue(Long.valueOf(0));
 
-                            sendNotification(true,communityReference);
+                            sendNotification(true,notificationIdentifier + communityReference);
 
 //                            if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD)){
 //                                cabAddNotiication();

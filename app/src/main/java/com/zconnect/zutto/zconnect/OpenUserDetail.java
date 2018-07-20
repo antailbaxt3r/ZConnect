@@ -34,8 +34,11 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.util.Calendar;
 
@@ -228,8 +231,16 @@ public class OpenUserDetail extends BaseActivity {
 
                         }
                     });
-                    NotificationSender notificationSender=new NotificationSender(userProfile.getUserUID(),null,null,null,null,mAuth.getCurrentUser().getEmail(),null, OtherKeyUtilities.KEY_LIKE,false,true,OpenUserDetail.this);
-                    notificationSender.execute();
+                    NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, UserUtilities.currentUser.getUserUID());
+
+                    NotificationItemFormat infoneLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LIKE,UserUtilities.currentUser.getUserUID());
+
+                    infoneLikeNotification.setItemKey(userProfile.getUserUID());
+                    infoneLikeNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                    infoneLikeNotification.setUserName(UserUtilities.currentUser.getUsername());
+                    infoneLikeNotification.setCommunityName(UserUtilities.CommunityName);
+
+                    notificationSender.execute(infoneLikeNotification);
                 }
             }
         });
@@ -256,8 +267,16 @@ public class OpenUserDetail extends BaseActivity {
 
                         }
                     });
-                    NotificationSender notificationSender=new NotificationSender(userProfile.getUserUID(),null,null,null,null,mAuth.getCurrentUser().getEmail(),null, OtherKeyUtilities.KEY_LOVE,false,true, OpenUserDetail.this);
-                    notificationSender.execute();
+                    NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, UserUtilities.currentUser.getUserUID());
+
+                    NotificationItemFormat infoneLoveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LOVE,UserUtilities.currentUser.getUserUID());
+
+                    infoneLoveNotification.setItemKey(userProfile.getUserUID());
+                    infoneLoveNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                    infoneLoveNotification.setUserName(UserUtilities.currentUser.getUsername());
+                    infoneLoveNotification.setCommunityName(UserUtilities.CommunityName);
+
+                    notificationSender.execute(infoneLoveNotification);
                 }
             }
         });

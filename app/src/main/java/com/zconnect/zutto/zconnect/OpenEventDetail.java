@@ -119,6 +119,7 @@ public class  OpenEventDetail extends BaseActivity{
                 Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
                 intent.putExtra("type","events");
                 intent.putExtra("key",eventId);
+                intent.putExtra("name",getSupportActionBar().getTitle());
                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
                 startActivity(intent);
                 overridePendingTransition(0, 0);
@@ -132,6 +133,7 @@ public class  OpenEventDetail extends BaseActivity{
                 Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
                 intent.putExtra("type","events");
                 intent.putExtra("key",eventId);
+                intent.putExtra("name",getSupportActionBar().getTitle());
                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
                 startActivity(intent);
                 overridePendingTransition(0, 0);

@@ -120,6 +120,7 @@ public class OpenProductDetails extends BaseActivity {
                 Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
                 intent.putExtra("type","storeroom");
                 intent.putExtra("key",productKey);
+                intent.putExtra("name",productName.getText());
                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
                 startActivity(intent);
                 overridePendingTransition(0, 0);
@@ -133,6 +134,7 @@ public class OpenProductDetails extends BaseActivity {
                 Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
                 intent.putExtra("type","storeroom");
                 intent.putExtra("key",productKey);
+                intent.putExtra("name",productName.getText());
                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
                 startActivity(intent);
                 overridePendingTransition(0, 0);
@@ -188,6 +190,7 @@ public class OpenProductDetails extends BaseActivity {
         mDatabaseProduct.child(productKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
+
                 productName.setText(dataSnapshot.child("ProductName").getValue().toString());
                 productPrice.setText(dataSnapshot.child("Price").getValue().toString());
                 productDescription.setText(dataSnapshot.child("ProductDescription").getValue().toString());

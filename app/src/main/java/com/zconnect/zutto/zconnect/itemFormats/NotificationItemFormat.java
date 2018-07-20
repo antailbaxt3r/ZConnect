@@ -21,6 +21,8 @@ public class NotificationItemFormat {
 
     private String itemCategoryAdmin;
 
+    private String itemMessage;
+
 
     public NotificationItemFormat(String notificationIdentifier, String userKey){
         this.notificationIdentifier = notificationIdentifier;
@@ -140,6 +142,13 @@ public class NotificationItemFormat {
         this.itemCategoryAdmin = itemCategoryAdmin;
     }
 
+    public String getItemMessage() {
+        return itemMessage;
+    }
+
+    public void setItemMessage(String itemMessage) {
+        this.itemMessage = itemMessage;
+    }
 
 
 }

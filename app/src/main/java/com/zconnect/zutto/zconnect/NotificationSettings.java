@@ -17,9 +17,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_FORUMS_ADD;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_OFFERS;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_STOREROOM;
 
@@ -28,6 +30,7 @@ public class NotificationSettings extends BaseActivity {
     Switch switch_cabPool;
     Switch switch_storeroom;
     Switch switch_offers;
+    Switch switch_forums;
 
 
     @Override
@@ -63,6 +66,7 @@ public class NotificationSettings extends BaseActivity {
         switch_events=(Switch) findViewById(R.id.switch_events);
         switch_storeroom=(Switch) findViewById(R.id.switch_storeroom);
         switch_offers=(Switch) findViewById(R.id.switch_offers);
+        switch_forums=(Switch) findViewById(R.id.switch_forums);
 
         String Uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
         final DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid).child("NotificationChannels");
@@ -77,32 +81,39 @@ public class NotificationSettings extends BaseActivity {
                 switch_events.setChecked(data.getAddEvent());
                 switch_offers.setChecked(data.getOffers());
                 switch_storeroom.setChecked(data.getStoreRoom());
+                switch_forums.setChecked(data.getAddForum());
+
 
                 if(data.getAddCabPool()){
-                        FirebaseMessaging.getInstance().subscribeToTopic(KEY_CABPOOL);
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
                 }else{
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(KEY_CABPOOL);
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
                 }
 
                 if(data.getAddEvent()){
-                    FirebaseMessaging.getInstance().subscribeToTopic(KEY_EVENT);
+                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
                 }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(KEY_EVENT);
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
                 }
 
                 if(data.getOffers()){
-                    FirebaseMessaging.getInstance().subscribeToTopic(KEY_OFFERS);
+                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
                 }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(KEY_OFFERS);
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
                 }
 
                 if(data.getStoreRoom()){
-                    FirebaseMessaging.getInstance().subscribeToTopic(KEY_STOREROOM);
+                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
                 }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(KEY_STOREROOM);
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
                 }
 
 
+                if(data.getAddForum()){
+                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
+                }else{
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
+                }
             }
 
             @Override
@@ -116,9 +127,9 @@ public class NotificationSettings extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
 
-                    FirebaseMessaging.getInstance().subscribeToTopic(KEY_EVENT);
+                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
                 }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(KEY_EVENT);
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
                 }
                 databaseReference.child(KEY_EVENT).setValue(isChecked);
 
@@ -129,9 +140,9 @@ public class NotificationSettings extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    FirebaseMessaging.getInstance().subscribeToTopic(KEY_STOREROOM);
+                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
                 }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(KEY_STOREROOM);
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
                 }
                 databaseReference.child(KEY_STOREROOM).setValue(isChecked);
 
@@ -142,9 +153,9 @@ public class NotificationSettings extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    FirebaseMessaging.getInstance().subscribeToTopic(KEY_OFFERS);
+                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
                 }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(KEY_OFFERS);
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
                 }
                 databaseReference.child(KEY_OFFERS).setValue(isChecked);
 
@@ -157,15 +168,28 @@ public class NotificationSettings extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    FirebaseMessaging.getInstance().subscribeToTopic(KEY_CABPOOL);
+                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
                 }else{
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(KEY_CABPOOL);
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
                 }
                 databaseReference.child(KEY_CABPOOL).setValue(isChecked);
 
             }
         });
 
+        switch_forums.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
+                }else{
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
+                }
+                databaseReference.child(KEY_FORUMS_ADD).setValue(isChecked);
+
+            }
+        });
     }
 }
 
@@ -176,17 +200,19 @@ public class NotificationSettings extends BaseActivity {
     private Boolean AddEvent;
     private Boolean StoreRoom;
     private Boolean Offers;
+    private Boolean AddForum;
 
     public Setting(){
 
     }
 
 
-    public Setting(Boolean AddCabPool,Boolean AddEvent,Boolean EventBoosted,Boolean StoreRoom,Boolean Offers ){
+    public Setting(Boolean AddCabPool,Boolean AddEvent,Boolean EventBoosted,Boolean StoreRoom,Boolean Offers,Boolean AddForum ){
         this.AddCabPool=AddCabPool;
         this.AddEvent=AddEvent;
         this.StoreRoom=StoreRoom;
         this.Offers=Offers;
+        this.AddForum = AddForum;
     }
 
      public Boolean getAddEvent(){
@@ -221,5 +247,14 @@ public class NotificationSettings extends BaseActivity {
 
      public void setOffers(Boolean Offers){
          this.Offers=Offers;
+     }
+
+
+     public Boolean getAddForum() {
+         return AddForum;
+     }
+
+     public void setAddForum(Boolean addForum) {
+         AddForum = addForum;
      }
 }
