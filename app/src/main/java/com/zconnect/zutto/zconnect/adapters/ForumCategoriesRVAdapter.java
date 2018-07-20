@@ -103,6 +103,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
         }else if(forumCategory.getForumType().equals(ForumTypeUtilities.KEY_JOINED_STR)){
 
+            FirebaseMessaging.getInstance().subscribeToTopic(forumCategoriesItemFormats.get(position).getCatUID());
+
             joinedViewHolder holderMain = (joinedViewHolder) holder;
             holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());
             if(forumCategoriesItemFormats.get(position).getImageThumb()!=null)
@@ -311,8 +313,6 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                             userDetails.setUserUID(userItemFormat.getUserUID());
                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                            NotificationSender notificationSender=new NotificationSender(key,name,FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,itemView.getContext());
-                            notificationSender.execute();
                         }
 
                         @Override
