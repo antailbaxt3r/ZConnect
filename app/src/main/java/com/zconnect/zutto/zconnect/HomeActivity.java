@@ -110,7 +110,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private String Title;
 
     TextView[] tabTitle= new TextView[6];
-    ImageView[] tabImage = new ImageView[6];
+    SimpleDraweeView[] tabImage = new SimpleDraweeView[6];
     ImageView[] tabNotificationCircle = new ImageView[6];
 
     BottomSheetBehavior sheetBehavior;
@@ -322,7 +322,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.getCustomView().setAlpha((float) .7);
+                if(tab.getPosition()!=4)
+                    tab.getCustomView().setAlpha((float) .7);
                 prePos = tab.getPosition();
             }
 
@@ -342,7 +343,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[0] = (TextView) vRecents.findViewById(R.id.tabTitle);
         tabTitle[0].setText("Recents");
 
-        tabImage[0] = (ImageView) vRecents.findViewById(R.id.tabImage);
+        tabImage[0] = (SimpleDraweeView) vRecents.findViewById(R.id.tabImage);
         tabImage[0].setImageResource(R.drawable.baseline_home_white_36);
 
         tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
@@ -356,7 +357,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[1] = (TextView) vForums.findViewById(R.id.tabTitle);
         tabTitle[1].setText("Forums");
 
-        tabImage[1] = (ImageView) vForums.findViewById(R.id.tabImage);
+        tabImage[1] = (SimpleDraweeView) vForums.findViewById(R.id.tabImage);
         tabImage[1].setImageResource(R.drawable.baseline_forum_white_36);
 
         tabNotificationCircle[1] = (ImageView) vForums.findViewById(R.id.notification_circle);
@@ -369,7 +370,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        tabTitle[2] = (TextView) vAdd.findViewById(R.id.tabTitle);
 //        tabTitle[2].setText("Add");
 
-        tabImage[2] = (ImageView) vAdd.findViewById(R.id.tabImage);
+        tabImage[2] = (SimpleDraweeView) vAdd.findViewById(R.id.tabImage);
         tabImage[2].setImageResource(R.drawable.outline_add_circle_outline_white_36);
 
         tabNotificationCircle[2] = (ImageView) vAdd.findViewById(R.id.notification_circle);
@@ -382,7 +383,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[3] = (TextView) vInfone.findViewById(R.id.tabTitle);
         tabTitle[3].setText("Infone");
 
-        tabImage[3] = (ImageView) vInfone.findViewById(R.id.tabImage);
+        tabImage[3] = (SimpleDraweeView) vInfone.findViewById(R.id.tabImage);
         tabImage[3].setImageResource(R.drawable.baseline_phone_white_36);
 
         tabNotificationCircle[3] = (ImageView) vInfone.findViewById(R.id.notification_circle);
@@ -395,11 +396,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[4] = (TextView) vProfile.findViewById(R.id.tabTitle);
         tabTitle[4].setText("Profile");
 
-        tabImage[4] = (ImageView) vProfile.findViewById(R.id.tabImage);
+        tabImage[4] = (SimpleDraweeView) vProfile.findViewById(R.id.tabImage);
         tabImage[4].setImageResource(R.drawable.avatar_circle_36dp);
 
         tabNotificationCircle[4] = (ImageView) vProfile.findViewById(R.id.notification_circle);
-        vProfile.setAlpha((float) 0.7);
+//        vProfile.setAlpha((float) 0.7);
         profileT.setCustomView(vProfile);
 
         tabs.addTab(recentsT);
@@ -571,7 +572,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 flag =true;
                                 getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                             }
-
+                            tabImage[4].setImageURI(UserUtilities.currentUser.getImageURLThumbnail());
                             setTabListener();
                         }
 

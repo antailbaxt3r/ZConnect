@@ -23,7 +23,7 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout_app_bar_home"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:padding="0dp"
                 android:layout_margin="0dp"
                 android:background="@color/colorPrimary" />

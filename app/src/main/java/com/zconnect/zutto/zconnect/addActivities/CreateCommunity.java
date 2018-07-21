@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
@@ -38,7 +39,7 @@ public class CreateCommunity extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 7;
     IntentHandle intentHandle;
     ImageButton communityImage;
-    EditText communityName,communityEmail,communityCode;
+    MaterialEditText communityName,communityEmail,communityCode;
     Button createCommunity;
     Intent galleryIntent;
     StorageReference mStorage;
@@ -77,9 +78,9 @@ public class CreateCommunity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        communityEmail= (EditText) findViewById(com.zconnect.zutto.zconnect.R.id.community_email);
-        communityName= (EditText) findViewById(com.zconnect.zutto.zconnect.R.id.community_name);
-        communityCode = (EditText) findViewById(com.zconnect.zutto.zconnect.R.id.community_code);
+        communityEmail= (MaterialEditText) findViewById(com.zconnect.zutto.zconnect.R.id.community_email);
+        communityName= (MaterialEditText) findViewById(com.zconnect.zutto.zconnect.R.id.community_name);
+        communityCode = (MaterialEditText) findViewById(com.zconnect.zutto.zconnect.R.id.community_code);
         communityImage = (ImageButton) findViewById(com.zconnect.zutto.zconnect.R.id.community_image);
         createCommunity = (Button) findViewById(com.zconnect.zutto.zconnect.R.id.create_community);
         mProgress = new ProgressDialog(this);

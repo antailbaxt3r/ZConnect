@@ -80,7 +80,7 @@ public class CommunitiesAroundAdapter extends RecyclerView.Adapter<CommunitiesAr
 
         public void enterCommunity(final String communityCode){
 
-            mView.setOnClickListener(new View.OnClickListener() {
+            communityGuestLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     SharedPreferences sharedPref2 = context.getSharedPreferences("communityName", MODE_PRIVATE);

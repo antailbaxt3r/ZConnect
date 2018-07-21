@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.zconnect.zutto.zconnect.fragments.TrendingEvents">
 
     <RelativeLayout
@@ -29,6 +30,16 @@
         android:id="@+id/eventList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_trending_events"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_white_36dp"
+        app:backgroundTint="@color/colorHighlight"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp" />
 
 
 </FrameLayout>

@@ -162,9 +162,23 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 catch (Exception e) {
                     Log.d("Error Message", e.getMessage());
                 }
-
-                if(recentsItemFormats.get(position).getFeature().equals("Infone"))
+                if(recentsItemFormats.get(position).getFeature().equals("Banner"))
                 {
+                    holder.prePostDetails.setVisibility(View.GONE);
+                    holder.infoneRecentItem.setVisibility(View.GONE);
+                    holder.storeroomRecentItem.setVisibility(View.GONE);
+                    holder.cabpoolRecentItem.setVisibility(View.GONE);
+                    holder.eventsRecentItem.setVisibility(View.GONE);
+                    holder.messagesRecentItem.setVisibility(View.GONE);
+                    holder.forumsRecentItem.setVisibility(View.GONE);
+                    holder.bannerRecentItem.setVisibility(View.VISIBLE);
+
+                    holder.bannerImage.setImageURI(recentsItemFormats.get(position).getImageurl());
+
+                }
+                else if(recentsItemFormats.get(position).getFeature().equals("Infone"))
+                {
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.VISIBLE);
                     holder.storeroomRecentItem.setVisibility(View.GONE);
@@ -172,6 +186,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.eventsRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.GONE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_18dp));
@@ -183,12 +198,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 else if(recentsItemFormats.get(position).getFeature().equals("Users"))
                 {
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
                     holder.storeroomRecentItem.setVisibility(View.GONE);
                     holder.cabpoolRecentItem.setVisibility(View.GONE);
                     holder.eventsRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.GONE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.users), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_home_white_18dp));
@@ -197,6 +214,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("Event"))
                 {
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
                     holder.storeroomRecentItem.setVisibility(View.GONE);
@@ -204,6 +222,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.eventsRecentItem.setVisibility(View.VISIBLE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_18dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
@@ -236,6 +255,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
                 {
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
                     holder.eventsRecentItem.setVisibility(View.GONE);
@@ -243,6 +263,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.storeroomRecentItem.setVisibility(View.VISIBLE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
 
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
@@ -276,6 +297,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("CabPool"))
                 {
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
                     holder.eventsRecentItem.setVisibility(View.GONE);
@@ -283,6 +305,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.cabpoolRecentItem.setVisibility(View.VISIBLE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
 
                     holder.postConjunction.setText(" started a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
@@ -316,6 +339,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("Shop"))
                 {
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
                     holder.eventsRecentItem.setVisibility(View.GONE);
@@ -323,6 +347,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.cabpoolRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.GONE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
 //            layers[0].setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
@@ -334,6 +359,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.postConjunction.setText(" put an ");
                     holder.post.setText("Offer");
                 }else if(recentsItemFormats.get(position).getFeature().equals("Message")) {
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
                     holder.eventsRecentItem.setVisibility(View.GONE);
@@ -341,6 +367,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.cabpoolRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.VISIBLE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
 
                     try {
                         if(!recentsItemFormats.get(position).getImageurl().equals(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS) && recentsItemFormats.get(position).getImageurl()!=null){
@@ -373,6 +400,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         holder.name.setText(recentsItemFormats.get(position).getName());
                     }
                 }else if(recentsItemFormats.get(position).getFeature().equals("Forums")){
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
                     holder.eventsRecentItem.setVisibility(View.GONE);
@@ -380,6 +408,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.cabpoolRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.VISIBLE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.forums), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_18dp));
@@ -419,9 +448,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
                 postImage,
-                productImage;
+                productImage,
+                bannerImage;
         ImageView featureIcon;
-        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem;
+        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails;
         FrameLayout layoutFeatureIcon;
         //
 
@@ -467,6 +497,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             forumsName = (TextView) itemView.findViewById(R.id.forumsRecentItem_name);
             forumCategory = (TextView) itemView.findViewById(R.id.forumsRecentItem_category);
             postImage = (SimpleDraweeView) itemView.findViewById(R.id.messagesRecentItem_image);
+            bannerRecentItem = (LinearLayout) itemView.findViewById(R.id.bannerRecentItem);
+            bannerImage = (SimpleDraweeView) itemView.findViewById(R.id.bannerRecentItem_image);
+            prePostDetails = (LinearLayout) itemView.findViewById(R.id.prePostDetails);
             //
 
             itemView.setOnClickListener(new View.OnClickListener() {
