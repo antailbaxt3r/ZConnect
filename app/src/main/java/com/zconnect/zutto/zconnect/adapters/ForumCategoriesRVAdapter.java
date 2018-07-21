@@ -28,10 +28,12 @@ import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.forumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -317,8 +319,17 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                             userDetails.setName(userItemFormat.getUsername());
                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                             userDetails.setUserUID(userItemFormat.getUserUID());
+                            userDetails.setUserType(ForumsUserTypeUtilities.KEY_USER);
+
                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
+                            Intent intent = new Intent(context, ChatActivity.class);
+                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                            intent.putExtra("type", "forums");
+                            intent.putExtra("name", name);
+                            intent.putExtra("tab", tabUID);
+                            intent.putExtra("key", key);
+                            context.startActivity(intent);
                         }
 
                         @Override
