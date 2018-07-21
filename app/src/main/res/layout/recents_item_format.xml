@@ -177,7 +177,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/secondaryText"/>
+                    android:background="@color/horizontalLine"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -233,7 +233,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/secondaryText"/>
+                    android:background="@color/horizontalLine"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/infoneRecentItem"
