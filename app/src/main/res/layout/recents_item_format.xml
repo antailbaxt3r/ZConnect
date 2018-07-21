@@ -111,12 +111,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="visible">
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/bannerRecentItem_image"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    fresco:actualImageScaleType="centerCrop"
-                    android:background="@drawable/banner_recent_item"/>
+                    android:layout_height="wrap_content">
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/bannerRecentItem_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        fresco:actualImageScaleType="centerCrop"
+                        android:background="@drawable/banner_recent_item"/>
+                    <FrameLayout
+                        android:id="@+id/bannerRecentItem_link_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:visibility="invisible">
+                        <com.facebook.drawee.view.SimpleDraweeView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/banner_recent_item_link_bar"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/padding_start_end_small"
+                            android:paddingEnd="@dimen/padding_start_end_small"
+                            android:layout_gravity="center">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.9"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:text="@string/banner_link"/>
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.1"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_chevron_right_white_24dp"/>
+                        </LinearLayout>
+                    </FrameLayout>
+                </FrameLayout>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/forumsRecentItem"

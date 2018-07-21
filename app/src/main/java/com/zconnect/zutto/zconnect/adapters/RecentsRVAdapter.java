@@ -55,6 +55,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 
+import static com.google.android.gms.internal.zzagz.runOnUiThread;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -133,7 +134,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 FeaturesViewHolder featuresViewHolder = (FeaturesViewHolder) holder2;
                 break;
             case 2:
-                Viewholder holder = (Viewholder)holder2;
+                final Viewholder holder = (Viewholder)holder2;
                 openUserProfileListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -173,7 +174,42 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.VISIBLE);
 
-                    holder.bannerImage.setImageURI(recentsItemFormats.get(position).getImageurl());
+                    Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.bannerImage);
+//                    holder.bannerImage.setImageURI(recentsItemFormats.get(position).getImageurl());
+                    holder.bannerImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            holder.bannerLinkLayout.setVisibility(View.VISIBLE);
+                            holder.bannerLinkLayout.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(recentsItemFormats.get(position).getDesc())));
+
+                                }
+                            });
+                            Thread thread = new Thread() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.sleep(3000);
+                                    }
+                                    catch (InterruptedException ie)
+                                    {
+                                        Log.d("Interrupted Error", ie.getMessage());
+                                    }
+
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            // Do some stuff
+                                            holder.bannerLinkLayout.setVisibility(View.INVISIBLE);
+                                        }
+                                    });
+                                }
+                            };
+                            thread.start();
+                        }
+                    });
 
                 }
                 else if(recentsItemFormats.get(position).getFeature().equals("Infone"))
@@ -452,7 +488,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 bannerImage;
         ImageView featureIcon;
         LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails;
-        FrameLayout layoutFeatureIcon;
+        FrameLayout layoutFeatureIcon, bannerLinkLayout;
         //
 
 
@@ -499,6 +535,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             postImage = (SimpleDraweeView) itemView.findViewById(R.id.messagesRecentItem_image);
             bannerRecentItem = (LinearLayout) itemView.findViewById(R.id.bannerRecentItem);
             bannerImage = (SimpleDraweeView) itemView.findViewById(R.id.bannerRecentItem_image);
+            bannerLinkLayout = (FrameLayout) itemView.findViewById(R.id.bannerRecentItem_link_layout);
             prePostDetails = (LinearLayout) itemView.findViewById(R.id.prePostDetails);
             //
 

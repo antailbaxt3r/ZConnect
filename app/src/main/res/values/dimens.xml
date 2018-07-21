@@ -29,6 +29,8 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
 
     <!--button padding-->
     <dimen name="button_padding_start_end">30dp</dimen>
+
+    <dimen name="padding_start_end_small">10dp</dimen>
     <!--set of margins-->
     <dimen name="margin_top_between_similar_views">5dp</dimen>
     <dimen name="margin_top_between_non_similar_views">10dp</dimen>
