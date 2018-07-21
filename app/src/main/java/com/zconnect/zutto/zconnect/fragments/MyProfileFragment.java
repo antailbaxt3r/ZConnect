@@ -154,7 +154,7 @@ public class MyProfileFragment extends Fragment {
         });
 
         usersReference = db.child("contactHidden");
-        infoneContact = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("numbers").child(UserUtilities.currentUser.getUserUID()).child("contactHidden");
+        infoneContact = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories").child(UserUtilities.currentUser.getInfoneType()).child(UserUtilities.currentUser.getUserUID()).child("contactHidden");
 
         final DatabaseReference db_like = db.child("Likes");
         final DatabaseReference db_love = db.child("Loves");
