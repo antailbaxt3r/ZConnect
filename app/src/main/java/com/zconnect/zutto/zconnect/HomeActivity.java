@@ -789,10 +789,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onStart() {
         super.onStart();
         mUser = mAuth.getCurrentUser();
-
-
-
-
     }
 
     @Override

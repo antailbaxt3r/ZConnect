@@ -143,23 +143,30 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
                             Log.e("tt", "data " + phoneNumbs.toString());
                         }
+                        Boolean contactHidden = false;
+
+                        try {
+                            contactHidden = childSnapshot.child("contactHidden").getValue(Boolean.class);
+                        }catch (Exception e){ }
 
 
-                        if (search){
-                            if(name.toLowerCase().trim().contains(queryString.toLowerCase())){
+                        if(!contactHidden) {
+                            if(childSnapshot.child("contactHidden").getValue(Boolean.class))
+                            if (search) {
+                                if (name.toLowerCase().trim().contains(queryString.toLowerCase())) {
+                                    infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
+                                    contactsRVItems.add(infoneContactsRVItem);
+                                    if (contactsRVItems.size() > 7) {
+                                        break;
+                                    }
+                                }
+
+
+                            } else {
                                 infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
                                 contactsRVItems.add(infoneContactsRVItem);
-                                if(contactsRVItems.size()>7){
-                                    break;
-                                }
                             }
-
-
-                        }else {
-                            infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
-                            contactsRVItems.add(infoneContactsRVItem);
                         }
-
 
                         totalContacts = contactsRVItems.size();
                     }catch (Exception e){}

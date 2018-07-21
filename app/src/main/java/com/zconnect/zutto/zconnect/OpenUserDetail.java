@@ -46,6 +46,7 @@ import mabbas007.tagsedittext.TagsEditText;
 
 public class OpenUserDetail extends BaseActivity {
     String name, mobileNumber,whatsAppNumber, email, desc, imagelink ,skills ,category, Uid;
+    Boolean contactHidden = false;
     private MaterialEditText editTextName;
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
@@ -377,6 +378,14 @@ public class OpenUserDetail extends BaseActivity {
         email = userProfile.getEmail();
         skills = userProfile.getSkillTags();
 
+        if(userProfile.getContactHidden()!=null){
+            contactHidden = userProfile.getContactHidden();
+        }
+
+        if(contactHidden){
+            //Define if contact hidden here also link the request call function with the button
+         }
+
 
         if(skills==null)
             skills="";
@@ -493,6 +502,22 @@ public class OpenUserDetail extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void requestCallFunction(String itemUID){
+
+
+            NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this,UserUtilities.currentUser.getUserUID());
+
+            NotificationItemFormat requestCallNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL,UserUtilities.currentUser.getUserUID());
+            requestCallNotification.setItemKey(itemUID);
+
+            requestCallNotification.setUserMobileNumber(UserUtilities.currentUser.getMobileNumber());
+            requestCallNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+            requestCallNotification.setUserName(UserUtilities.currentUser.getUsername());
+            requestCallNotification.setCommunityName(UserUtilities.CommunityName);
+
+            notificationSender.execute(requestCallNotification);
+        }
 
 }
 

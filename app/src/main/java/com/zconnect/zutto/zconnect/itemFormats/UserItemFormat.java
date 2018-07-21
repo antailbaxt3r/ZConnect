@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
+import android.text.BoringLayout;
+
 /**
  * Created by Lokesh Garg on 29-03-2018.
  */
@@ -8,13 +10,12 @@ public class UserItemFormat {
 
     private String username, email,mobileNumber,whatsAppNumber, about,imageURL,imageURLThumbnail,infoneType,skillTags,userUID,userType;
 
+    Boolean contactHidden;
     public UserItemFormat(){
 
     }
 
-
-
-    public  UserItemFormat(String username, String email, String mobileNumber, String whatsAppNumber, String about, String imageURL, String imageURLThumbnail, String infoneType, String skillTags, String userUID, String userType){
+    public  UserItemFormat(String username, String email, String mobileNumber, String whatsAppNumber, String about, String imageURL, String imageURLThumbnail, String infoneType, String skillTags, String userUID, String userType, Boolean contactHidden){
         this.username = username;
         this.email = email;
         this.mobileNumber = mobileNumber;
@@ -26,6 +27,7 @@ public class UserItemFormat {
         this.skillTags = skillTags;
         this.userUID = userUID;
         this.userType = userType;
+        this.contactHidden = contactHidden;
     }
 
 
@@ -116,6 +118,15 @@ public class UserItemFormat {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+
+    public Boolean getContactHidden() {
+        return contactHidden;
+    }
+
+    public void setContactHidden(Boolean contactHidden) {
+        this.contactHidden = contactHidden;
     }
 }
 

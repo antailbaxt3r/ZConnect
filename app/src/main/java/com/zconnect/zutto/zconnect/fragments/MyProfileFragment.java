@@ -1,7 +1,9 @@
 package com.zconnect.zutto.zconnect.fragments;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -37,12 +39,15 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.EditProfileActivity;
+import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.VerificationPage;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.Calendar;
 
@@ -74,6 +79,7 @@ public class MyProfileFragment extends Fragment {
     private ProgressBar progressBar;
     private Menu menu;
 
+    private DatabaseReference infoneContact,usersReference;
     public MyProfileFragment() {
         // Required empty public constructor
     }
@@ -129,7 +135,7 @@ public class MyProfileFragment extends Fragment {
 //        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(myUID);
         //Value fill listener
 
-        db.addListenerForSingleValueEvent(new ValueEventListener() {
+        db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
@@ -146,6 +152,9 @@ public class MyProfileFragment extends Fragment {
                 content.setVisibility(View.VISIBLE);
             }
         });
+
+        usersReference = db.child("contactHidden");
+        infoneContact = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("numbers").child(UserUtilities.currentUser.getUserUID()).child("contactHidden");
 
         final DatabaseReference db_like = db.child("Likes");
         final DatabaseReference db_love = db.child("Loves");
@@ -259,19 +268,6 @@ public class MyProfileFragment extends Fragment {
 //            }
 //        });
 
-        try {
-            Log.e("msg", name);
-
-            Log.e("msg", desc);
-            Log.e("msg", mobileNumber);
-            Log.e("msg", imagelink);
-            Log.e("msg", email);
-            Log.e("msg", skills);
-            Log.e("msg", category);
-            Log.e("msg", Uid);
-        }catch (Exception e){
-
-        }
 
         if (Uid.equals("null"))
         {
@@ -418,8 +414,17 @@ public class MyProfileFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_phonebook_details, menu);
+        inflater.inflate(R.menu.menu_my_profile, menu);
         menu.findItem(R.id.action_edit_profile).setVisible(true);
+
+
+        if(UserUtilities.currentUser.getContactHidden()!=null){
+            if(UserUtilities.currentUser.getContactHidden()){
+                menu.findItem(R.id.action_privacy).setTitle("Show Contact");
+            }
+        }
+
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -427,35 +432,58 @@ public class MyProfileFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_report) {
-
-            CounterManager.report(mobileNumber);
-            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                    "mailto", "zconnectinc@gmail.com", null));
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Problem with the content displayed");
-            // emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
-            startActivity(Intent.createChooser(emailIntent, "Send uid..."));
-
-            return true;
-        }else if (id==R.id.menu_share_conatct) {
-            String send = "";
-            String format1 = "%1$-20s %2$-20s\n";
-            String format2 = "%1$-40s\n";
-            send =
-                    String.format(format1,"Name :",name)+
-                            String.format(format1,"Number :", mobileNumber)+
-                            "\n               \t\t\t  Zconnect";
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-            sharingIntent.setType("text/*");
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, send);
-            startActivity(sharingIntent);
-
-        }
-        else if(id==R.id.action_edit_profile) {
+       if(id==R.id.action_edit_profile) {
             Intent intent = new Intent(getActivity().getApplicationContext(), EditProfileActivity.class);
             intent.putExtra("newUser",false);
             startActivity(intent);
-        }
+       }else if(id== R.id.action_privacy){
+
+           if(UserUtilities.currentUser.getContactHidden()!=null) {
+               if (UserUtilities.currentUser.getContactHidden()) {
+
+                   usersReference.setValue(false);
+                   infoneContact.setValue(false);
+
+                   Toast.makeText(getContext(), "Your contact is visible now!", Toast.LENGTH_SHORT).show();
+
+               } else {
+                   hideContactAlert();
+
+               }
+           }else {
+               hideContactAlert();
+           }
+
+       }
         return super.onOptionsItemSelected(item);
+    }
+
+    private  void hideContactAlert()
+    {
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        builder.setMessage("Please confirm to hide your contact!")
+                .setCancelable(false)
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        infoneContact.setValue(true);
+                        usersReference.setValue(true);
+                    }
+                })
+                .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+        final android.app.AlertDialog alert = builder.create();
+
+        if(!(getActivity()).isFinishing())
+        {
+            if(!alert.isShowing()) {
+                alert.show();
+            }
+        }
+
     }
 }

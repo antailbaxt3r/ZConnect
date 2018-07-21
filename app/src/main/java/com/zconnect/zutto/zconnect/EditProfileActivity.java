@@ -397,6 +397,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newPost.child("skillTags").setValue(userSkillTags);
             newPost.child("userUID").setValue(mUser.getUid().toString());
             newPost.child("infoneType").setValue(userInfoneType);
+            newPost.child("contactHidden").setValue(false);
 
             if(!newUser) {
                 databaseReferenceInfone.child("categories").child(userDetails.getInfoneType()).child(mUser.getUid()).removeValue();
@@ -425,6 +426,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
             newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
             newContactNumRef.child("UID").setValue(mUser.getUid());
+            newContactNumRef.child("contactHidden").setValue(false);
 
             if(newUser){
 

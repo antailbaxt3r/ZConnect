@@ -161,9 +161,26 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST:
                 postChatNotification(ND.getCommunityName(), ND.getUserName(), ND.getUserImage(), ND.getItemMessage(), ND.getItemKey());
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL:
+                requestCallNotification(ND.getCommunityName(),ND.getUserName(),ND.getUserImage(),ND.getUserMobileNumber(),ND.getItemKey());
+                break;
         }
 
         return null;
+    }
+
+    private void requestCallNotification(String communityName,String userName,String userImage,String userMobileNumber,String receiverKey) {
+
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+        creator.addData("userName",userName);
+        creator.addData("userImage",userImage);
+        creator.addData("userMobileNumber",userMobileNumber);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true,receiverKey );
     }
 
     private void postChatNotification(String communityName, String userName, String userImage, String postMessage, String postKey) {
