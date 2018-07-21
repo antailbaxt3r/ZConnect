@@ -69,7 +69,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity) {
         this.context = context;
         this.recentsItemFormats = recentsItemFormats;
-        mHomeActivity = HomeActivity;
+        this.mHomeActivity = HomeActivity;
     }
 //
     @Override

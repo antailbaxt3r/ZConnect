@@ -119,6 +119,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     public TabLayout.Tab recentsT,forumsT,addT,infoneT,profileT;
 
     public HomeActivity() {
+
         isFabOpen = false;
     }
 
@@ -159,6 +160,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         navHeaderUserNameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
         navHeaderEmailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
         navHeaderBackground = (SimpleDraweeView) navHeader.findViewById(R.id.iv_nav_header_background);
+
+
         navigationView.setItemIconTintList(null);
 
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -590,18 +593,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void updateViews() {
         if(mAuth.getCurrentUser()!=null) {
-            username = mAuth.getCurrentUser().getDisplayName();
-            userEmail = mAuth.getCurrentUser().getEmail();
 
-            navHeaderUserNameTv.setText(username != null ? username : "ZConnect");
-            navHeaderEmailTv.setText(userEmail != null ? userEmail : "The way to connect!");
 
-            editProfileItem.setEnabled(true);
-            editProfileItem.setVisible(true);
+
 
         }else {
-            editProfileItem.setVisible(false);
-            editProfileItem.setEnabled(false);
+
         }
     }
 
@@ -614,8 +611,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         //Check authentication
         if (mUser == null) {
+            editProfileItem.setVisible(false);
+            editProfileItem.setEnabled(false);
             startActivity(new Intent(HomeActivity.this, LoginActivity.class));
         } else if (mUser != null) {
+
+            username = mAuth.getCurrentUser().getDisplayName();
+            userEmail = mAuth.getCurrentUser().getEmail();
+
+            editProfileItem.setEnabled(true);
+            editProfileItem.setVisible(true);
+
+            navHeaderUserNameTv.setText(username != null ? username : "ZConnect");
+            navHeaderEmailTv.setText(userEmail != null ? userEmail : "The way to connect!");
+
             if (!defaultPrefs.getBoolean("isReturningUser", false)) {
                 Intent tutIntent = new Intent(HomeActivity.this, TutorialActivity.class);
                 tutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -624,6 +633,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 SharedPreferences.Editor editor = defaultPrefs.edit();
                 editor.putBoolean("isReturningUser", true);
                 editor.commit();
+
+
             } else if(communityReference!=null) {
 
                 FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
@@ -778,6 +789,16 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         super.onStart();
         mUser = mAuth.getCurrentUser();
 
+
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mUser = mAuth.getCurrentUser();
+
         launchRelevantActivitiesIfNeeded();
 
         if(communityReference!=null) {
@@ -786,17 +807,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
             mDatabasePopUps.keepSynced(true);
 
-
-
             mDatabasePopUps.addValueEventListener(popupsListener);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mUser = mAuth.getCurrentUser();
-        updateViews();
     }
 
     @Override
