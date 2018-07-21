@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,15 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zconnect.zutto.zconnect.addActivities.AddProduct;
+
 import java.util.ArrayList;
 
 
 public class CategoriesTab extends Fragment {
 
     GridView category;
+    FloatingActionButton fab;
 
     public CategoriesTab() {
         // Required empty public constructor
@@ -32,7 +36,13 @@ public class CategoriesTab extends Fragment {
         category = (GridView) view.findViewById(R.id.category_grid);
         category.setAdapter(new CategoryAdapter(getContext()));
 //        category.setOnItemClickListener(this);
-
+        fab = (FloatingActionButton) view.findViewById(R.id.fab_fragment_categories_tab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getContext().startActivity(new Intent(getContext(), AddProduct.class));
+            }
+        });
         return view;
     }
 }
@@ -50,7 +60,6 @@ class EachCategory {
 class viewHolder {
     ImageView categoryImage;
     TextView categoryName;
-
     viewHolder(View view) {
         categoryImage = (ImageView) view.findViewById(R.id.categoryImage);
         categoryName = (TextView) view.findViewById(R.id.categoryName);

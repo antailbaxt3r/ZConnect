@@ -7,30 +7,42 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:orientation="vertical"
     tools:context=".VerificationPage"
-    tools:showIn="@layout/activity_verfication_page">
+    tools:showIn="@layout/activity_verfication_page"
+    android:padding="@dimen/parent_layout_padding">
 
     <TextView
         android:id="@+id/verification_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="status"
-        android:textSize="30dp"/>
+        android:textSize="30dp"
+        android:textColor="@color/primaryText"/>
 
     <ImageButton
+        android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
         android:id="@+id/verication_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="200dp"
+        android:background="@drawable/dashed_border"
+        tools:src="@drawable/addimage"/>
 
     <EditText
         android:id="@+id/about_new_user"
+        android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
         android:hint="About you (Optional)"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryText" />
 
     <Button
         android:id="@+id/submit_verification_button"
+        android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
         android:text="Submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_gravity="center"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_button_primary"
+        android:textColor="@color/white"
+        style="?android:attr/borderlessButtonStyle" />
 
 </LinearLayout>

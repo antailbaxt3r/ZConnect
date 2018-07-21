@@ -112,6 +112,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 holderMain.forumIcon.setImageURI(forumCategoriesItemFormats.get(position).getImageThumb());
                 holderMain.defaultForumIcon.setVisibility(View.GONE);
             }
+            else {
+                holderMain.forumIcon.setBackground(context.getResources().getDrawable(R.drawable.forum_circle));
+            }
             try {
                 holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
                 holderMain.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName().substring(0, forumCategoriesItemFormats.get(position).getLastMessage().getName().indexOf(' ')) + " :");
@@ -141,6 +144,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             {
                 holderMain.forumIcon.setImageURI(forumCategoriesItemFormats.get(position).getImageThumb());
                 holderMain.defaultForumIcon.setVisibility(View.GONE);
+            }
+            else {
+                holderMain.forumIcon.setBackground(context.getResources().getDrawable(R.drawable.forum_circle));
             }
 
             try {

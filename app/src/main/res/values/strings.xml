@@ -176,8 +176,20 @@
     <string name="forum_first_msg_label">First Message</string>
     <string name="forum_first_msg_hint">Type a welcome message here</string>
 
-    <string name="status_hint">What are you thinking?</string>
+    <string name="status_hint">Type what are you thinking...</string>
+    <string name="status_hint_ask_questions">Or ask anything a question</string>
 
+
+    <!--add status hints-->
+    <string name="status_hint_1">Is there ...?</string>
+    <string name="status_hint_2">Where can I ...?</string>
+    <string name="status_hint_3">Does anyone have ...?</string>
+    <string name="status_hint_4">Can anyone suggest ...?</string>
+    <string name="status_hint_5">Which is a better option ...?</string>
+
+
+    <!--admin fragments text-->
+    <string name="no_user_to_validate">No user to validate. Check again later.</string>
     <!--test one-->
     <!--<string name="native_ad_unit_id">ca-app-pub-3940256099942544/2177258514</string>-->
 

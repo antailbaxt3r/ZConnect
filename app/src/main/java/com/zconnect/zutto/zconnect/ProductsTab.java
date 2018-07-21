@@ -1,8 +1,10 @@
 package com.zconnect.zutto.zconnect;
 
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.addActivities.AddEvent;
+import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.itemFormats.Product;
 import com.zconnect.zutto.zconnect.adapters.ProductsRVAdapter;
 
@@ -56,7 +60,7 @@ public class ProductsTab extends Fragment {
     private Boolean flagNoProductsAvailable;
     private TextView noProductsAvailableText;
     private ProgressBar progressBar;
-
+    private FloatingActionButton fab;
     public ProductsTab(){
     }
 
@@ -78,6 +82,13 @@ public class ProductsTab extends Fragment {
         mProductList = (RecyclerView) view.findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab_content_store_room);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getContext().startActivity(new Intent(getContext(), AddProduct.class));
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         progressBar.setVisibility(View.VISIBLE);
