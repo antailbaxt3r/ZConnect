@@ -33,7 +33,10 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.CounterManager;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.R;
@@ -216,6 +219,20 @@ public class CreateForum extends AppCompatActivity {
                     message.setMessage("\""+firstMessage.getText()+"\"");
                     message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                     newPush.child("Chat").push().setValue(message);
+
+                    NotificationSender notificationSender = new NotificationSender(CreateForum.this, UserUtilities.currentUser.getUserUID());
+                    NotificationItemFormat addForumNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,UserUtilities.currentUser.getUserUID());
+                    addForumNotification.setCommunityName(UserUtilities.CommunityName);
+                    addForumNotification.setItemKey(newPush.getKey());
+                    addForumNotification.setItemCategoryUID(uid);
+                    addForumNotification.setItemCategory(mtabName);
+                    addForumNotification.setItemName(catName);
+                    addForumNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                    addForumNotification.setUserName(UserUtilities.currentUser.getUsername());
+
+                    notificationSender.execute(addForumNotification);
+
+
                     if(mImageUri!=null && mImageUriThumb!=null)
                     {
                         flag = false;

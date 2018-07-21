@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -39,13 +40,16 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.adapters.ChatRVAdapter;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -163,8 +167,15 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setPhonenumber(userItemFormat.getMobileNumber());
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             databaseReference.child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
-                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_CABPOOL_JOIN,false,true,ChatActivity.this);
-                                            notificationSender.execute();
+
+                                            NotificationSender notificationSender = new NotificationSender(ChatActivity.this,UserUtilities.currentUser.getUserUID());
+                                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,UserUtilities.currentUser.getUserUID());
+                                            cabPoolJoinNotification.setCommunityName(UserUtilities.CommunityName);
+                                            cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
+                                            cabPoolJoinNotification.setUserName(userItemFormat.getUsername());
+                                            cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                                            notificationSender.execute(cabPoolJoinNotification);
+
                                             FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 
                                         }
@@ -221,9 +232,9 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             userDetails.setUserType(ForumsUserTypeUtilities.KEY_USER);
                                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
-
-                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
-                                            notificationSender.execute();
+//
+//                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
+//                                            notificationSender.execute();
                                         }
 
                                         @Override
@@ -315,8 +326,20 @@ public class ChatActivity extends BaseActivity {
                 message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                 databaseReference.child("Chat").push().setValue(message);
                 if (type.equals("forums")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,getIntent().getStringExtra("name"),null,null,userItem.getUsername(), OtherKeyUtilities.KEY_FORUMS,false,true,ChatActivity.this);
-                    notificationSender.execute();
+                    NotificationSender notificationSender = new NotificationSender(ChatActivity.this, UserUtilities.currentUser.getUserUID());
+
+                    NotificationItemFormat forumChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM,UserUtilities.currentUser.getUserUID());
+
+                    forumChatNotification.setItemMessage(text);
+                    forumChatNotification.setItemCategoryUID(getIntent().getStringExtra("tab"));
+                    forumChatNotification.setItemName(getIntent().getStringExtra("name"));
+                    forumChatNotification.setItemKey(getIntent().getStringExtra("key"));
+
+                    forumChatNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                    forumChatNotification.setUserName(UserUtilities.currentUser.getUsername());
+                    forumChatNotification.setCommunityName(UserUtilities.CommunityName);
+
+                    notificationSender.execute(forumChatNotification);
 
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -330,20 +353,65 @@ public class ChatActivity extends BaseActivity {
                         }
                     });
                 }else if(type.equals("storeroom")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_PRODUCT_CHAT,false,true,ChatActivity.this);
-                    notificationSender.execute();
+
+                    NotificationSender notificationSender = new NotificationSender(ChatActivity.this, UserUtilities.currentUser.getUserUID());
+
+                    NotificationItemFormat productChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_PRODUCT,UserUtilities.currentUser.getUserUID());
+
+                    productChatNotification.setItemMessage(text);
+                    productChatNotification.setItemName(getIntent().getStringExtra("name"));
+                    productChatNotification.setItemKey(getIntent().getStringExtra("key"));
+
+                    productChatNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                    productChatNotification.setUserName(UserUtilities.currentUser.getUsername());
+                    productChatNotification.setCommunityName(UserUtilities.CommunityName);
+
+                    notificationSender.execute(productChatNotification);
+
                 }else if(type.equals("post")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_POST_CHAT,false,true,ChatActivity.this);
-                    notificationSender.execute();
+                    NotificationSender notificationSender = new NotificationSender(ChatActivity.this, UserUtilities.currentUser.getUserUID());
+
+                    NotificationItemFormat postChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST,UserUtilities.currentUser.getUserUID());
+
+                    postChatNotification.setItemMessage(text);
+                    postChatNotification.setItemKey(getIntent().getStringExtra("key"));
+
+                    postChatNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                    postChatNotification.setUserName(UserUtilities.currentUser.getUsername());
+                    postChatNotification.setCommunityName(UserUtilities.CommunityName);
+
+                    notificationSender.execute(postChatNotification);
+
                 }else if(type.equals("messages")){
                     NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
                     notificationSender.execute();
                 }else if(type.equals("events")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_EVENTS_CHAT,false,true,ChatActivity.this);
-                    notificationSender.execute();
+                    NotificationSender notificationSender = new NotificationSender(ChatActivity.this, UserUtilities.currentUser.getUserUID());
+
+                    NotificationItemFormat eventChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_EVENT,UserUtilities.currentUser.getUserUID());
+
+                    eventChatNotification.setItemMessage(text);
+                    eventChatNotification.setItemKey(getIntent().getStringExtra("key"));
+                    eventChatNotification.setItemName(getIntent().getStringExtra("name"));
+
+                    eventChatNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                    eventChatNotification.setUserName(UserUtilities.currentUser.getUsername());
+                    eventChatNotification.setCommunityName(UserUtilities.CommunityName);
+
+                    notificationSender.execute(eventChatNotification);
                 }else if(type.equals("cabPool")){
-                    NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_CAB_POOL_CHAT,false,true,ChatActivity.this);
-                    notificationSender.execute();
+                    NotificationSender notificationSender = new NotificationSender(ChatActivity.this, UserUtilities.currentUser.getUserUID());
+
+                    NotificationItemFormat cabChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_CAB,UserUtilities.currentUser.getUserUID());
+
+                    cabChatNotification.setItemMessage(text);
+                    cabChatNotification.setItemKey(getIntent().getStringExtra("key"));
+
+                    cabChatNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                    cabChatNotification.setUserName(UserUtilities.currentUser.getUsername());
+                    cabChatNotification.setCommunityName(UserUtilities.CommunityName);
+
+                    notificationSender.execute(cabChatNotification);
                 }
 
 
@@ -382,13 +450,25 @@ public class ChatActivity extends BaseActivity {
                             message.setName(userItem.getUsername());
                             message.setPhotoURL(downloadUri != null ? downloadUri.toString() : null);
                             message.setImageThumb(userItem.getImageURLThumbnail());
-                            message.setMessage("Added Image");
+                            message.setMessage("Image");
                             message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
 
                             databaseReference.child("Chat").push().setValue(message);
                             if (type.equals("forums")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,getIntent().getStringExtra("name"),null,null,userItem.getUsername(), OtherKeyUtilities.KEY_FORUMS,false,true,ChatActivity.this);
-                                notificationSender.execute();
+                                NotificationSender notificationSender = new NotificationSender(ChatActivity.this, UserUtilities.currentUser.getUserUID());
+
+                                NotificationItemFormat forumChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM,UserUtilities.currentUser.getUserUID());
+
+                                forumChatNotification.setItemMessage("Image");
+                                forumChatNotification.setItemCategoryUID(getIntent().getStringExtra("tab"));
+                                forumChatNotification.setItemName(getIntent().getStringExtra("name"));
+                                forumChatNotification.setItemKey(getIntent().getStringExtra("key"));
+
+                                forumChatNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                                forumChatNotification.setUserName(UserUtilities.currentUser.getUsername());
+                                forumChatNotification.setCommunityName(UserUtilities.CommunityName);
+
+                                notificationSender.execute(forumChatNotification);
 
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -402,20 +482,63 @@ public class ChatActivity extends BaseActivity {
                                     }
                                 });
                             }else if(type.equals("storeroom")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_PRODUCT_CHAT,false,true,ChatActivity.this);
-                                notificationSender.execute();
+                                NotificationSender notificationSender = new NotificationSender(ChatActivity.this, UserUtilities.currentUser.getUserUID());
+
+                                NotificationItemFormat productChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_PRODUCT,UserUtilities.currentUser.getUserUID());
+
+                                productChatNotification.setItemMessage("Image");
+                                productChatNotification.setItemName(getIntent().getStringExtra("name"));
+                                productChatNotification.setItemKey(getIntent().getStringExtra("key"));
+
+                                productChatNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                                productChatNotification.setUserName(UserUtilities.currentUser.getUsername());
+                                productChatNotification.setCommunityName(UserUtilities.CommunityName);
+
+                                notificationSender.execute(productChatNotification);
+
                             }else if(type.equals("post")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_POST_CHAT,false,true,ChatActivity.this);
-                                notificationSender.execute();
+                                NotificationSender notificationSender = new NotificationSender(ChatActivity.this, UserUtilities.currentUser.getUserUID());
+
+                                NotificationItemFormat postChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST,UserUtilities.currentUser.getUserUID());
+
+                                postChatNotification.setItemMessage("Image");
+                                postChatNotification.setItemKey(getIntent().getStringExtra("key"));
+
+                                postChatNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                                postChatNotification.setUserName(UserUtilities.currentUser.getUsername());
+                                postChatNotification.setCommunityName(UserUtilities.CommunityName);
+
+                                notificationSender.execute(postChatNotification);
                             }else if(type.equals("messages")){
                                 NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
                                 notificationSender.execute();
                             }else if(type.equals("events")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_EVENTS_CHAT,false,true,ChatActivity.this);
-                                notificationSender.execute();
+                                NotificationSender notificationSender = new NotificationSender(ChatActivity.this, UserUtilities.currentUser.getUserUID());
+
+                                NotificationItemFormat eventChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_EVENT,UserUtilities.currentUser.getUserUID());
+
+                                eventChatNotification.setItemMessage("Image");
+                                eventChatNotification.setItemKey(getIntent().getStringExtra("key"));
+                                eventChatNotification.setItemName(getIntent().getStringExtra("name"));
+
+                                eventChatNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                                eventChatNotification.setUserName(UserUtilities.currentUser.getUsername());
+                                eventChatNotification.setCommunityName(UserUtilities.CommunityName);
+
+                                notificationSender.execute(eventChatNotification);
                             }else if(type.equals("cabPool")){
-                                NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_CAB_POOL_CHAT,false,true,ChatActivity.this);
-                                notificationSender.execute();
+                                NotificationSender notificationSender = new NotificationSender(ChatActivity.this, UserUtilities.currentUser.getUserUID());
+
+                                NotificationItemFormat cabChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_CAB,UserUtilities.currentUser.getUserUID());
+
+                                cabChatNotification.setItemMessage("Image");
+                                cabChatNotification.setItemKey(getIntent().getStringExtra("key"));
+
+                                cabChatNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                                cabChatNotification.setUserName(UserUtilities.currentUser.getUsername());
+                                cabChatNotification.setCommunityName(UserUtilities.CommunityName);
+
+                                notificationSender.execute(cabChatNotification);
                             }
 
 

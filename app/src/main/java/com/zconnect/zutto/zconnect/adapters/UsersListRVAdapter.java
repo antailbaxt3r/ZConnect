@@ -115,10 +115,15 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
 
             if(featureType.equals(FeatureNamesUtilities.KEY_CABPOOL) || featureType.equals(FeatureNamesUtilities.KEY_STOREROOM)){
 
-                String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
-                intent=new Intent(context, OpenUserDetail.class);
-                intent.putExtra("Uid",userUID);
-                context.startActivity(intent);
+                rv_item.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
+                        intent=new Intent(context, OpenUserDetail.class);
+                        intent.putExtra("Uid",userUID);
+                        context.startActivity(intent);
+                    }
+                });
 
             }else if(featureType.equals(FeatureNamesUtilities.KEY_FORUMS)){
                 rv_item.setOnClickListener(new View.OnClickListener() {

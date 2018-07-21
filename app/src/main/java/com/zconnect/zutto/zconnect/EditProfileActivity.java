@@ -44,6 +44,7 @@ import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
@@ -446,15 +447,17 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 Map<String, Object> taskMap = new HashMap<>();
                 taskMap.put("AddCabPool", true);
                 taskMap.put("AddEvent", true);
+                taskMap.put("AddForum",true);
                 taskMap.put("EventBoosted", true);
                 taskMap.put("StoreRoom", true);
                 taskMap.put("Offers", true);
                 newPost.child("NotificationChannels").setValue(taskMap);
 
-                FirebaseMessaging.getInstance().subscribeToTopic(KEY_STOREROOM);
-                FirebaseMessaging.getInstance().subscribeToTopic(KEY_EVENT);
-                FirebaseMessaging.getInstance().subscribeToTopic(KEY_OFFERS);
-                FirebaseMessaging.getInstance().subscribeToTopic(KEY_CABPOOL);
+                FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
+                FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
+                FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
+                FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
+                FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
 
                 FirebaseMessaging.getInstance().subscribeToTopic(mUser.getUid());
             }

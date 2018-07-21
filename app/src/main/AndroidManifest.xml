@@ -283,7 +283,7 @@
         </service>
 
         <activity
-            android:name=".Shortlisted"
+            android:name=".ShortlistedPeopleList"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CabPooling"

@@ -556,6 +556,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
+
+                            if(UserUtilities.currentUser.getUserType()== null){
+                                UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_VERIFIED);
+                            }
                             recent = new Recents();
                             forums = new ForumsActivity();
                             myProfile = new MyProfileFragment();
@@ -623,14 +627,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 editor.commit();
             } else if(communityReference!=null) {
 
+                FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
+
                 communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
 
                 communityInfoRef.addValueEventListener(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+
+
                         if (dataSnapshot.hasChild("name")) {
                             Title = dataSnapshot.child("name").getValue().toString() + " Connect";
                             setToolbarTitle(Title);
+                            UserUtilities.CommunityName = Title;
                         } else {
                             Title = "Community Connect";
                             setToolbarTitle(Title);
@@ -818,6 +828,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private void logoutAndSendToLogin() {
 
         FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid());
+        try {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(communityReference);
+        }catch (Exception e){}
         mAuth.signOut();
         SharedPreferences preferences = getSharedPreferences("communityName", 0);
         preferences.edit().remove("communityReference").commit();

@@ -167,7 +167,7 @@ public class MyProducts extends BaseActivity {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemView.getContext().startActivity(new Intent(itemView.getContext(),Shortlisted.class).putExtra("Key",key));
+                    itemView.getContext().startActivity(new Intent(itemView.getContext(),ShortlistedPeopleList.class).putExtra("Key",key));
                 }
             });
         }

@@ -32,6 +32,8 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.adapters.InfoneCategoriesRVAdapter;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneCat;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -128,6 +130,9 @@ public class InfoneActivity extends Fragment {
         };
         databaseReferenceCat.addValueEventListener(listener);
 
+        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
+            fabCatAdd.setVisibility(View.VISIBLE);
+        }
         fabCatAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

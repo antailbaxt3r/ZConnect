@@ -46,9 +46,12 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -336,6 +339,21 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     });
 
 
+                    NotificationSender notificationSender = new NotificationSender(AddProduct.this, UserUtilities.currentUser.getUserUID());
+                    NotificationItemFormat addProductNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,UserUtilities.currentUser.getUserUID());
+                    addProductNotification.setCommunityName(UserUtilities.CommunityName);
+
+                    addProductNotification.setItemKey(key);
+                    addProductNotification.setItemImage(downloadUri.toString());
+                    addProductNotification.setItemName(productNameValue);
+                    addProductNotification.setItemPrice(productPriceValue);
+
+                    addProductNotification.setUserName(UserUtilities.currentUser.getUsername());
+                    addProductNotification.setUserImage(UserUtilities.currentUser.getImageURL());
+
+                    notificationSender.execute(addProductNotification);
+
+
                     // Adding stats
 
                     mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -364,8 +382,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                 }
             });
 
-            NotificationSender notificationSender=new NotificationSender(key,null,null,null,null,null,null,KEY_STOREROOM,true,false,getApplicationContext());
-            notificationSender.execute();
 
         } else {
             Snackbar snack = Snackbar.make(mProductDescription, "Fields are empty. Can't Add Product.", Snackbar.LENGTH_LONG);

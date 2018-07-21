@@ -9,7 +9,7 @@ public class instantIDService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("TOken", refreshedToken);
+        Log.d("Token", refreshedToken);
         sendRegistrationToServer(refreshedToken);
     }
 

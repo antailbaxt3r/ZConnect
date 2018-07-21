@@ -30,6 +30,10 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -161,6 +165,7 @@ public class AddInfoneCat extends AppCompatActivity {
                         Log.e(TAG, "onSuccess: error got empty downloadUri");
                         return;
                     }
+                    catImageurl = downloadUri.toString();
                     newCategoryRef.child("imageurl").setValue(downloadUri.toString());
                     flag1=true;
                     addContact();
@@ -183,12 +188,25 @@ public class AddInfoneCat extends AppCompatActivity {
         } else {
             newCategoryRef.removeValue();
             Toast.makeText(this, "Fill all details including image", Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
         }
 
     }
 
     public void addContact(){
         if(flag1&&flag2){
+
+            NotificationSender notificationSender = new NotificationSender(AddInfoneCat.this, UserUtilities.currentUser.getUserUID());
+            NotificationItemFormat addInfoneCategoryNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_CATEGORY_ADD,UserUtilities.currentUser.getUserUID());
+            addInfoneCategoryNotification.setCommunityName(UserUtilities.CommunityName);
+
+            addInfoneCategoryNotification.setItemKey(catId);
+            addInfoneCategoryNotification.setItemImage(catImageurl);
+            addInfoneCategoryNotification.setItemName(nameEt.getText().toString());
+            addInfoneCategoryNotification.setItemCategoryAdmin(UserUtilities.currentUser.getUserUID());
+
+            notificationSender.execute(addInfoneCategoryNotification);
+
             Toast.makeText(AddInfoneCat.this, "Add a contact in your new category",
                     Toast.LENGTH_SHORT).show();
             final Intent addContactIntent = new Intent(AddInfoneCat.this,

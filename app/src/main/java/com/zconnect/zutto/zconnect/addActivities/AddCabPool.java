@@ -27,13 +27,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -270,8 +274,6 @@ public class AddCabPool extends BaseActivity {
                                         });
 
                                         CounterManager.createPool(String.valueOf(destination.getSelectedItem()));
-                                        FirebaseMessaging.getInstance().subscribeToTopic(key);
-                                        FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid()).child("Topics").push().setValue(key);
 
                                         //writing to database for recent items
                                         DatabaseReference newPost2 = homeReference.child(key);
@@ -336,9 +338,16 @@ public class AddCabPool extends BaseActivity {
                                         snackBarText.setTextColor(Color.WHITE);
                                         snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
                                         snack.show();
+//
+//                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,null,KEY_CABPOOL,true,false,getApplicationContext());
+//                                        notificationSender.execute();
+                                        FirebaseMessaging.getInstance().subscribeToTopic(key);
+                                        NotificationSender notificationSender = new NotificationSender(AddCabPool.this,UserUtilities.currentUser.getUserUID());
 
-                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,null,KEY_CABPOOL,true,false,getApplicationContext());
-                                        notificationSender.execute();
+                                        NotificationItemFormat cabAddNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        cabAddNotification.setCommunityName(UserUtilities.CommunityName);
+                                        notificationSender.execute(cabAddNotification);
+
 
                                         finish();
 
