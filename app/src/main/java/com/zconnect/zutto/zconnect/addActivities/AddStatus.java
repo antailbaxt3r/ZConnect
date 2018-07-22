@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -173,68 +175,73 @@ public class AddStatus extends BaseActivity {
             @Override
             public void onClick(View view) {
 
-                mProgress.setMessage("Posting Status..");
-                mProgress.show();
-
-                String messageText = messageInput.getText().toString();
-                if(anonymousCheck.isChecked())
-                    anonymous = "y";
+                if(messageInput.getText().toString().length()==0 && mImageUri ==null)
+                    Snackbar.make(view, "Text or image needed.", Snackbar.LENGTH_SHORT).show();
                 else
-                    anonymous = "n";
+                {
+                    mProgress.setMessage("Posting Status..");
+                    mProgress.show();
 
-                final DatabaseReference newMessage = home.push();
-                final String key = newMessage.getKey();
-                newMessage.child("Key").setValue(key);
-                newMessage.child("desc").setValue(messageText);
-                newMessage.child("desc2").setValue(anonymous);
-                newMessage.child("feature").setValue("Message");
-                newMessage.child("name").setValue("Message");
-                newMessage.child("recentType").setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+                    String messageText = messageInput.getText().toString();
+                    if(anonymousCheck.isChecked())
+                        anonymous = "y";
+                    else
+                        anonymous = "n";
 
-                newMessage.child("imageurl").setValue("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png");
-                newMessage.child("id").setValue(key);
-                newMessage.child("PostTimeMillis").setValue(System.currentTimeMillis());
-                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                        if (anonymousCheck.isChecked()){
-                            newMessage.child("PostedBy").child("Username").setValue("Anonymous");
-                        }else {
-                            newMessage.child("PostedBy").child("Username").setValue(user.getUsername());
-                        }
-                        newMessage.child("PostedBy").child("UID").setValue(user.getUserUID());
-                        newMessage.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
-                        FirebaseMessaging.getInstance().subscribeToTopic(key);
-                        CounterManager.publicStatusAdd(anonymousCheck.isChecked());
-                    }
+                    final DatabaseReference newMessage = home.push();
+                    final String key = newMessage.getKey();
+                    newMessage.child("Key").setValue(key);
+                    newMessage.child("desc").setValue(messageText);
+                    newMessage.child("desc2").setValue(anonymous);
+                    newMessage.child("feature").setValue("Message");
+                    newMessage.child("name").setValue("Message");
+                    newMessage.child("recentType").setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-                if(mImageUri!= null) {
-
-                    StorageReference filepath = mStorage.child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    newMessage.child("imageurl").setValue("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png");
+                    newMessage.child("id").setValue(key);
+                    newMessage.child("PostTimeMillis").setValue(System.currentTimeMillis());
+                    mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Uri downloadUri = taskSnapshot.getDownloadUrl();
-                            newMessage.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                            if (anonymousCheck.isChecked()){
+                                newMessage.child("PostedBy").child("Username").setValue("Anonymous");
+                            }else {
+                                newMessage.child("PostedBy").child("Username").setValue(user.getUsername());
+                            }
+                            newMessage.child("PostedBy").child("UID").setValue(user.getUserUID());
+                            newMessage.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
+                            FirebaseMessaging.getInstance().subscribeToTopic(key);
+                            CounterManager.publicStatusAdd(anonymousCheck.isChecked());
+                        }
 
-                            mProgress.dismiss();
-                            finish();
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
                         }
                     });
 
-                }else {
-                    newMessage.child("imageurl").setValue(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS);
-                    mProgress.dismiss();
-                    finish();
+                    if(mImageUri!= null) {
+
+                        StorageReference filepath = mStorage.child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                        filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Uri downloadUri = taskSnapshot.getDownloadUrl();
+                                newMessage.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
+
+                                mProgress.dismiss();
+                                finish();
+
+                            }
+                        });
+
+                    }else {
+                        newMessage.child("imageurl").setValue(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS);
+                        mProgress.dismiss();
+                        finish();
+                    }
                 }
             }
         };

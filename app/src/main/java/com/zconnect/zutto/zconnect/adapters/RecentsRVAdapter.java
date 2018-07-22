@@ -416,12 +416,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
-
+                    if(recentsItemFormats.get(position).getDesc().length()<=0)
+                        holder.messagesMessage.setVisibility(View.GONE);
+                    else
+                        holder.messagesMessage.setVisibility(View.VISIBLE);
                     try {
                         if(!recentsItemFormats.get(position).getImageurl().equals(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS) && recentsItemFormats.get(position).getImageurl()!=null){
                             holder.postImage.setVisibility(View.VISIBLE);
                             holder.postImage.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
                         }
+                        else
+                            holder.postImage.setVisibility(View.GONE);
                     }catch (Exception e){}
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.messages), PorterDuff.Mode.SRC_ATOP);
