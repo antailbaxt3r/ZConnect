@@ -1,7 +1,5 @@
 package com.zconnect.zutto.zconnect.fragments;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,14 +17,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,21 +32,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.EditProfileActivity;
-import com.zconnect.zutto.zconnect.HomeActivity;
-import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.VerificationPage;
-import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
-
-import java.util.Calendar;
 
 import mabbas007.tagsedittext.TagsEditText;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
@@ -60,7 +49,7 @@ public class MyProfileFragment extends Fragment {
     private android.support.design.widget.TextInputEditText editTextEmail;
     private android.support.design.widget.TextInputEditText editTextDetails;
     private android.support.design.widget.TextInputEditText editTextNumber;
-
+    Boolean contactHidden = false;
     TextView whatsAppNumberText;
     //private android.support.design.widget.TextInputEditText editTextSkills;
     private TagsEditText editTextSkills;
@@ -78,6 +67,7 @@ public class MyProfileFragment extends Fragment {
     private LinearLayout content;
     private ProgressBar progressBar;
     private Menu menu;
+    private Button userTypeText, showContact;
 
     private DatabaseReference infoneContact,usersReference;
     public MyProfileFragment() {
@@ -116,6 +106,8 @@ public class MyProfileFragment extends Fragment {
         //btn_like.setEnabled(false);
         like_text = (TextView) view.findViewById(R.id.like_text);
         love_text = (TextView) view.findViewById(R.id.love_text);
+        userTypeText = (Button) view.findViewById(R.id.user_type_content_phonebook_details);
+        showContact = (Button) view.findViewById(R.id.show_cum_request_contact_button);
 
 //        textMessage = (EditText) view.findViewById(R.id.textInput);
 //        anonymMessageLayout = (LinearLayout) view.findViewById(R.id.anonymTextInput);
@@ -155,6 +147,14 @@ public class MyProfileFragment extends Fragment {
 
         usersReference = db.child("contactHidden");
         infoneContact = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories").child(UserUtilities.currentUser.getInfoneType()).child(UserUtilities.currentUser.getUserUID()).child("contactHidden");
+        showContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                usersReference.setValue(false);
+                infoneContact.setValue(false);
+                menu.findItem(R.id.action_privacy).setTitle("Hide Contact");
+            }
+        });
 
         final DatabaseReference db_like = db.child("Likes");
         final DatabaseReference db_love = db.child("Loves");
@@ -337,6 +337,9 @@ public class MyProfileFragment extends Fragment {
         email = userProfile.getEmail();
         skills = userProfile.getSkillTags();
 
+        if(userProfile.getContactHidden()!=null){
+            contactHidden = userProfile.getContactHidden();
+        }
 
         if(skills==null)
             skills="";
@@ -370,6 +373,24 @@ public class MyProfileFragment extends Fragment {
         if(whatsAppNumber != null) {
             whatsAppNumberText.setText(whatsAppNumber);
         }
+
+        if(contactHidden){
+            //Define if contact hidden here also link the request call function with the button
+            call.setVisibility(View.GONE);
+            showContact.setVisibility(View.VISIBLE);
+            editTextNumber.setText("******" + mobileNumber.substring(6));
+            whatsAppNumberText.setText("******" + whatsAppNumber.substring(6));
+            showContact.setText(getContext().getResources().getString(R.string.show_contact));
+            editTextNumber.setOnClickListener(null);
+
+        }
+        else {
+            editTextNumber.setText(mobileNumber);
+            whatsAppNumberText.setText(whatsAppNumber);
+            showContact.setVisibility(View.GONE);
+            call.setVisibility(View.VISIBLE);
+        }
+
         if (imagelink != null) {
             if (imagelink.equals("https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336")) {
 
@@ -405,6 +426,23 @@ public class MyProfileFragment extends Fragment {
         }
         if (!skills.equals(""))
             skillsArray = skills.split(",");
+        if(userProfile.getUserType()!=null)
+        {
+            if(userProfile.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
+                userTypeText.setText("Admin");
+            }else if(userProfile.getUserType().equals(UsersTypeUtilities.KEY_VERIFIED)){
+                userTypeText.setText("Verfied Member");
+            }else if(userProfile.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
+                userTypeText.setText("Not Verified, Verify Now");
+                userTypeText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getContext(), VerificationPage.class);
+                        startActivity(i);
+                    }
+                });
+            }
+        }
 
         editTextSkills.setTags(skillsArray);
         SharedPreferences sharedPref = getActivity().getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
@@ -415,12 +453,16 @@ public class MyProfileFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_my_profile, menu);
+        this.menu = menu;
         menu.findItem(R.id.action_edit_profile).setVisible(true);
 
 
         if(UserUtilities.currentUser.getContactHidden()!=null){
             if(UserUtilities.currentUser.getContactHidden()){
                 menu.findItem(R.id.action_privacy).setTitle("Show Contact");
+            }
+            else {
+                menu.findItem(R.id.action_privacy).setTitle("Hide Contact");
             }
         }
 
@@ -443,22 +485,22 @@ public class MyProfileFragment extends Fragment {
 
                    usersReference.setValue(false);
                    infoneContact.setValue(false);
-
+                   item.setTitle("Hide Contact");
                    Toast.makeText(getContext(), "Your contact is visible now!", Toast.LENGTH_SHORT).show();
 
                } else {
-                   hideContactAlert();
+                   hideContactAlert(item);
 
                }
            }else {
-               hideContactAlert();
+               hideContactAlert(item);
            }
 
        }
         return super.onOptionsItemSelected(item);
     }
 
-    private  void hideContactAlert()
+    private  void hideContactAlert(final MenuItem item)
     {
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
         builder.setMessage("Please confirm to hide your contact!")
@@ -468,6 +510,7 @@ public class MyProfileFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         infoneContact.setValue(true);
                         usersReference.setValue(true);
+                        item.setTitle("Show Contact");
                     }
                 })
                 .setNegativeButton("Skip", new DialogInterface.OnClickListener() {

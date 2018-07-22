@@ -240,7 +240,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private void updateViewDetails() {
         userEmailText.setText(userDetails.getEmail());
         if(userDetails.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
-            userTypeText.setText("ADMIN");
+            userTypeText.setText("Admin");
         }else if(userDetails.getUserType().equals(UsersTypeUtilities.KEY_VERIFIED)){
             userTypeText.setText("Verfied Member");
         }else if(userDetails.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)){

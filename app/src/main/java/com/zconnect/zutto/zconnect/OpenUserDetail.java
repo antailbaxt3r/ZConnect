@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,6 +40,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.Calendar;
 
@@ -69,6 +71,8 @@ public class OpenUserDetail extends BaseActivity {
     private LinearLayout content;
     private ProgressBar progressBar;
     private Menu menu;
+    private Button userTypeText, requestContact;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +104,8 @@ public class OpenUserDetail extends BaseActivity {
 
         call = (ImageView) findViewById(R.id.ib_call_contact_item);
         mail = (ImageView) findViewById(R.id.mailbutton);
+        userTypeText = (Button) findViewById(R.id.user_type_content_phonebook_details);
+        requestContact = (Button) findViewById(R.id.show_cum_request_contact_button);
         mAuth = FirebaseAuth.getInstance();
         setSupportActionBar(toolbar);
         if (toolbar != null) {
@@ -138,7 +144,7 @@ public class OpenUserDetail extends BaseActivity {
         final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(myUID);
         //Value fill listener
 
-        db.addListenerForSingleValueEvent(new ValueEventListener() {
+        db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
@@ -369,7 +375,6 @@ public class OpenUserDetail extends BaseActivity {
 //        email = getIntent().getStringExtra("uid");
 //        skills=getIntent().getStringExtra("skills");
 //        category=getIntent().getStringExtra("category");
-
         name = userProfile.getUsername();
         desc = userProfile.getAbout();
         mobileNumber = userProfile.getMobileNumber();
@@ -377,15 +382,20 @@ public class OpenUserDetail extends BaseActivity {
         imagelink = userProfile.getImageURL();
         email = userProfile.getEmail();
         skills = userProfile.getSkillTags();
-
+        requestContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("SHOTGUN", "RISE");
+                requestCallFunction(userProfile.getUserUID());
+                String shortname = name;
+                if(name.indexOf(' ')>0)
+                    shortname = name.substring(0, name.indexOf(' '));
+                Toast.makeText(getApplicationContext(), "Request sent. " + shortname + " will contact you back.", Toast.LENGTH_SHORT).show();
+            }
+        });
         if(userProfile.getContactHidden()!=null){
             contactHidden = userProfile.getContactHidden();
         }
-
-        if(contactHidden){
-            //Define if contact hidden here also link the request call function with the button
-         }
-
 
         if(skills==null)
             skills="";
@@ -419,6 +429,37 @@ public class OpenUserDetail extends BaseActivity {
         if(whatsAppNumber != null) {
             whatsAppNumberText.setText(whatsAppNumber);
         }
+
+        if(contactHidden){
+            //Define if contact hidden here also link the request call function with the button
+            requestContact.setVisibility(View.VISIBLE);
+            call.setVisibility(View.GONE);
+            editTextNumber.setText("******" + mobileNumber.substring(6));
+            whatsAppNumberText.setText("******" + whatsAppNumber.substring(6));
+            requestContact.setText(getApplicationContext().getResources().getString(R.string.request_contact));
+            editTextNumber.setOnClickListener(null);
+            call.setOnClickListener(null);
+        }
+        else {
+            editTextName.setText(mobileNumber);
+            whatsAppNumberText.setText(whatsAppNumber);
+            requestContact.setVisibility(View.GONE);
+            call.setVisibility(View.VISIBLE);
+            editTextNumber.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mobileNumber)));
+                }
+            });
+            call.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                    CounterManager.InfoneCallAfterProfile(mobileNumber);
+                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mobileNumber)));
+                }
+            });
+        }
+
         if (imagelink != null) {
             if (imagelink.equals("https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336")) {
 
@@ -454,6 +495,23 @@ public class OpenUserDetail extends BaseActivity {
         }
         if (!skills.equals(""))
             skillsArray = skills.split(",");
+        if(userProfile.getUserType()!=null)
+        {
+            if(userProfile.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
+                userTypeText.setText("Admin");
+            }else if(userProfile.getUserType().equals(UsersTypeUtilities.KEY_VERIFIED)){
+                userTypeText.setText("Verfied Member");
+            }else if(userProfile.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
+                userTypeText.setText("Not Verified, Verify Now");
+                userTypeText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(), VerificationPage.class);
+                        startActivity(i);
+                    }
+                });
+            }
+        }
 
         editTextSkills.setTags(skillsArray);
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
