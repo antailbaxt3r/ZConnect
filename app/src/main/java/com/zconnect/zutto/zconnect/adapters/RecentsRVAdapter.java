@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -31,7 +30,6 @@ import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.AdminHome;
 import com.zconnect.zutto.zconnect.CabPoolAll;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
-import com.zconnect.zutto.zconnect.CabPooling;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
@@ -104,7 +102,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         if(viewType == RecentTypeUtilities.KEY_RECENT_ADD_STATUS) {
-            View addStatusView = inflater.inflate(R.layout.recents_status_add, parent, false);
+            View addStatusView = inflater.inflate(R.layout.recents_add_status, parent, false);
             Log.d("VIEWTYPE", String.valueOf(viewType));
             return new RecentsRVAdapter.ViewHolderStatus(addStatusView);
         }
@@ -138,9 +136,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 openUserProfileListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(context,OpenUserDetail.class);
-                        i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
-                        context.startActivity(i);
+                        if(UserUtilities.currentUser.getUserUID().equals(recentsItemFormats.get(position).getPostedBy().getUID()))
+                        {
+                            mHomeActivity.changeFragment(4);
+                        }
+                        else
+                        {
+                            Intent i = new Intent(context,OpenUserDetail.class);
+                            i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
+                            context.startActivity(i);
+                        }
                     }
                 };
                 try {
@@ -226,6 +231,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_18dp));
+                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mHomeActivity.changeFragment(3);
+                        }
+                    });
                     holder.postConjunction.setText(" added a ");
                     holder.post.setText("Contact");
                     holder.infoneContactName.setText(recentsItemFormats.get(position).getInfoneContactName());
@@ -242,9 +253,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
-
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.users), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_home_white_18dp));
+                    holder.layoutFeatureIcon.setOnClickListener(null);
                     holder.postConjunction.setText(" just joined your community ");
                     holder.post.setVisibility(View.GONE);
                 }
@@ -394,6 +405,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_18dp));
                     holder.postConjunction.setText(" put an ");
                     holder.post.setText("Offer");
+                    holder.layoutFeatureIcon.setOnClickListener(null);
                 }else if(recentsItemFormats.get(position).getFeature().equals("Message")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
@@ -414,6 +426,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.messages), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_18dp));
+                    holder.layoutFeatureIcon.setOnClickListener(null);
                     holder.postConjunction.setText(" wrote a ");
                     holder.post.setText("status");
                     holder.post.setTextColor(context.getResources().getColor(R.color.secondaryText));
@@ -448,6 +461,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.forums), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_18dp));
+                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mHomeActivity.changeFragment(1);
+                        }
+                    });
                     holder.postConjunction.setText(" created a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
                     holder.forumsName.setText(recentsItemFormats.get(position).getName());
