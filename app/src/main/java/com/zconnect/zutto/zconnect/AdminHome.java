@@ -172,11 +172,12 @@ public class AdminHome extends AppCompatActivity {
 
 
                     for (DataSnapshot shot: dataSnapshot.getChildren()) {
-                        NewUserItemFormat newUser = shot.getValue(NewUserItemFormat.class);
-
-                        if(newUser.getStatusCode().equals(finalTabType)){
-                            newUserItemFormats.add(newUser);
-                        }
+                        try {
+                            NewUserItemFormat newUser = shot.getValue(NewUserItemFormat.class);
+                            if (newUser.getStatusCode().equals(finalTabType)) {
+                                newUserItemFormats.add(newUser);
+                            }
+                        }catch (Exception e){}
                     }
                     adapter.notifyDataSetChanged();
 

@@ -6,18 +6,21 @@ public class NewUserItemFormat {
     private String about;
     private String statusCode;
     private String UID;
-    private PostedByDetails approvedBy;
+    private String name;
+    private PostedByDetails approvedRejectedBy;
 
-    public NewUserItemFormat(String idImageURL, String about, String statusCode, String UID, PostedByDetails approvedBy) {
+
+    public NewUserItemFormat(){
+
+    }
+
+    public NewUserItemFormat(String idImageURL, String about, String statusCode, String UID, PostedByDetails approvedRejectedBy, String name) {
         this.idImageURL = idImageURL;
         this.about = about;
         this.statusCode = statusCode;
         this.UID = UID;
-        this.approvedBy = approvedBy;
-    }
-
-    public NewUserItemFormat(){
-
+        this.approvedRejectedBy = approvedRejectedBy;
+        this.name = name;
     }
 
     public String getIdImageURL() {
@@ -52,12 +55,19 @@ public class NewUserItemFormat {
         this.UID = UID;
     }
 
-    public PostedByDetails getApprovedBy() {
-        return approvedBy;
+    public PostedByDetails getApprovedRejectedBy() {
+        return approvedRejectedBy;
     }
 
-    public void setApprovedBy(PostedByDetails approvedBy) {
-        this.approvedBy = approvedBy;
+    public void setApprovedRejectedBy(PostedByDetails approvedRejectedBy) {
+        this.approvedRejectedBy = approvedRejectedBy;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

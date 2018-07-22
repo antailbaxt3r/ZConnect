@@ -20,4 +20,19 @@ public class PostedByDetails {
     public String getUsername() { return  Username; }
     public String getImageThumb() { return  ImageThumb; }
     public String getUID() { return UID; }
+
+    public void setUsername(String username) {
+        Username = username;
+    }
+
+    public void setImageThumb(String imageThumb) {
+        ImageThumb = imageThumb;
+    }
+
+    public void setUID(String UID) {
+        this.UID = UID;
+    }
+
+
 }
+
