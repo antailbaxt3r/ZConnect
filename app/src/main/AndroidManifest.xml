@@ -300,7 +300,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CommunitiesAround"
-            android:label="@string/title_activity_guest_login"
+            android:label="@string/title_activity_communities_around"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".addActivities.CreateCommunity"
@@ -314,9 +314,7 @@
             android:name=".NotificationSettings"
             android:label="@string/title_activity_nitification_settings"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".InfoneActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".InfoneContactListActivity"
             android:label="@string/infone_search"
@@ -377,6 +375,7 @@
             android:name=".AdminHome"
             android:label="@string/title_activity_admin_home"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".addActivities.CreateForum"
             android:label="Create Forum"
             android:theme="@style/AppTheme.NoActionBar">
