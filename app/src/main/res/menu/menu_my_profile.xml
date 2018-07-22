@@ -17,5 +17,5 @@
         android:orderInCategory="0"
         android:name="Edit Profile"
         app:showAsAction="collapseActionView"
-        android:visible="false"/>
+        android:visible="true"/>
 </menu>

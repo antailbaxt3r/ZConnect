@@ -4,11 +4,11 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_marginBottom="5dp"
+    android:layout_marginBottom="@dimen/margin_small8dp"
     android:layout_marginEnd="0dp"
     android:layout_marginStart="0dp"
-    android:layout_marginTop="5dp"
-    app:cardBackgroundColor="@android:color/transparent"
+    android:layout_marginTop="@dimen/margin_small8dp"
+    app:cardBackgroundColor="@android:color/white"
     app:cardElevation="0dp">
 
     <LinearLayout
@@ -16,49 +16,31 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginStart="0dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp">
+        android:paddingTop="@dimen/padding_x_small"
+        android:paddingBottom="@dimen/padding_x_small"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:paddingTop="@dimen/padding_x_small"
+            android:paddingBottom="@dimen/padding_x_small"
             android:layout_marginStart="0dp"
             android:id="@+id/prePostDetails">
-            <FrameLayout
-                android:id="@+id/layout_feature_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/featureCircle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/feature_circle" />
-                <ImageView
-                    android:id="@+id/recents_featIcon"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:src="@drawable/ic_home_white_18dp"
-                    android:scaleType="centerCrop"
-                    android:layout_gravity="center"/>
-            </FrameLayout>
-
             <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/avatarCircle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="@dimen/margin_small"
                 android:background="@drawable/avatar_circle"
                 fresco:actualImageScaleType="centerCrop"
                 fresco:roundAsCircle="true" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginStart="10dp">
+                android:layout_marginStart="@dimen/margin_small">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -89,13 +71,34 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+                    <FrameLayout
+                        android:id="@+id/layout_feature_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/avatarCircle"
+                        android:layout_alignEnd="@+id/avatarCircle">
+                        <com.facebook.drawee.view.SimpleDraweeView
+                            android:id="@+id/featureCircle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/feature_circle" />
+                        <ImageView
+                            android:id="@+id/recents_featIcon"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:src="@drawable/ic_home_white_18dp"
+                            android:scaleType="centerCrop"
+                            android:layout_gravity="center"/>
+                    </FrameLayout>
                     <TextView
                         android:id="@+id/postTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Unkown time ago"
                         android:textColor="@color/secondaryText"
-                        android:textSize="11sp"/>
+                        android:textSize="12sp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/margin_x_small"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -104,27 +107,64 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="20dp">
+            android:layout_marginBottom="-5dp"
+            android:layout_marginTop="-5dp">
             <LinearLayout
                 android:id="@+id/bannerRecentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible">
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/bannerRecentItem_image"
+                android:visibility="gone">
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    fresco:actualImageScaleType="centerCrop"
-                    android:background="@drawable/banner_recent_item"/>
+                    android:layout_height="wrap_content">
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/bannerRecentItem_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        fresco:actualImageScaleType="centerCrop"
+                        android:background="@drawable/banner_recent_item"/>
+                    <FrameLayout
+                        android:id="@+id/bannerRecentItem_link_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:visibility="invisible">
+                        <com.facebook.drawee.view.SimpleDraweeView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/banner_recent_item_link_bar"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/padding_start_end_small"
+                            android:paddingEnd="@dimen/padding_start_end_small"
+                            android:layout_gravity="center">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.9"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:text="@string/banner_link"/>
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_weight="0.1"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_chevron_right_white_24dp"/>
+                        </LinearLayout>
+                    </FrameLayout>
+                </FrameLayout>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/forumsRecentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:visibility="gone">
+                android:paddingTop="@dimen/padding_x_small"
+                android:paddingBottom="@dimen/padding_x_small"
+                android:visibility="gone"
+                android:paddingStart="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_small">
                 <TextView
                     android:id="@+id/forumsRecentItem_name"
                     android:layout_width="wrap_content"
@@ -155,14 +195,17 @@
                 android:orientation="vertical"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:clipToPadding="false">
                 <TextView
                     android:textSize="16sp"
                     android:id="@+id/messagesRecentItem_message"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Message goes here"
-                    android:textColor="@color/primaryText"/>
+                    android:textColor="@color/primaryText"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small"/>
 
                 <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
@@ -180,13 +223,14 @@
                     android:background="@color/horizontalLine"/>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="-5dp">
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_weight="0.5"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:padding="10dp">
+                        android:padding="@dimen/padding_small">
                         <TextView
                             android:id="@+id/like_text_status"
                             android:layout_width="wrap_content"
@@ -197,7 +241,7 @@
                             android:textColor="@color/primaryText"/>
                         <ImageView
                             android:layout_centerVertical="true"
-                            android:layout_marginStart="5dp"
+                            android:layout_marginStart="@dimen/margin_x_small"
                             android:id="@+id/like_image_status"
                             android:layout_toRightOf="@+id/like_text_status"
                             android:layout_width="wrap_content"
@@ -210,7 +254,7 @@
                         android:layout_weight="0.5"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:padding="10dp">
+                        android:padding="@dimen/padding_small">
                         <TextView
                             android:id="@+id/comment_text_status"
                             android:layout_width="wrap_content"
@@ -221,7 +265,7 @@
                             android:textColor="@color/primaryText"/>
                         <ImageView
                             android:layout_centerVertical="true"
-                            android:layout_marginStart="5dp"
+                            android:layout_marginStart="@dimen/margin_x_small"
                             android:id="@+id/comment_image_status"
                             android:layout_toRightOf="@+id/comment_text_status"
                             android:layout_width="wrap_content"
@@ -230,10 +274,6 @@
                             android:tint="@color/primaryText"/>
                     </RelativeLayout>
                 </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/horizontalLine"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/infoneRecentItem"
@@ -245,7 +285,9 @@
                 android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -281,7 +323,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="0dp"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp">
                     <TextView
@@ -308,7 +351,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="0dp"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp">
                     <TextView
@@ -386,7 +430,8 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
-                    android:layout_marginStart="0dp">
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small">
                     <TextView
                         android:id="@+id/eventsRecentItem_name"
                         android:layout_width="wrap_content"
@@ -411,7 +456,8 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:textSize="16sp"
-                    android:layout_marginStart="0dp"/>
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small"/>
                 <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -475,7 +521,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
-                    android:layout_marginStart="0dp">
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small">
                     <TextView
                         android:id="@+id/storeroomRecentItem_name"
                         android:layout_width="wrap_content"
@@ -500,7 +547,8 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:textSize="16sp"
-                    android:layout_marginStart="0dp"/>
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_small"/>
                 <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

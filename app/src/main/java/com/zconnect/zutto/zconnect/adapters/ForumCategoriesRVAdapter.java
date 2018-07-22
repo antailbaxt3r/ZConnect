@@ -119,7 +119,10 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             }
             try {
                 holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
-                holderMain.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName().substring(0, forumCategoriesItemFormats.get(position).getLastMessage().getName().indexOf(' ')) + " :");
+                String shortName = forumCategoriesItemFormats.get(position).getLastMessage().getName();
+                if(shortName.indexOf(' ')>0)
+                    shortName = shortName.substring(0, shortName.indexOf(' '));
+                holderMain.lastMessageUsername.setText(shortName + " :");
                 holderMain.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
             }
             catch (Exception e) {
@@ -153,7 +156,10 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
             try {
                 holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
-                holderMain.lastMessageUsername.setText(forumCategoriesItemFormats.get(position).getLastMessage().getName().substring(0, forumCategoriesItemFormats.get(position).getLastMessage().getName().indexOf(' ')) + " :");
+                String shortName = forumCategoriesItemFormats.get(position).getLastMessage().getName();
+                if(shortName.indexOf(' ')>0)
+                    shortName = shortName.substring(0, shortName.indexOf(' '));
+                holderMain.lastMessageUsername.setText(shortName + " :");
                 holderMain.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
             }
             catch (Exception e) {

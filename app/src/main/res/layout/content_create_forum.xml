@@ -70,7 +70,7 @@
             android:layout_gravity="center"
             />
         <FrameLayout
-            android:id="@+id/layout_done_activity_create_forum"
+            android:id="@+id/layout_done_content_create_forum"
             android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -89,4 +89,10 @@
                 android:tint="@color/white"/>
         </FrameLayout>
     </FrameLayout>
+    <ProgressBar
+        android:id="@+id/progrss_bar_content_create_forum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 </LinearLayout>
