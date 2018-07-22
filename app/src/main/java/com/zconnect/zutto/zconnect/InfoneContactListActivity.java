@@ -151,7 +151,6 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
 
                         if(!contactHidden) {
-                            if(childSnapshot.child("contactHidden").getValue(Boolean.class))
                             if (search) {
                                 if (name.toLowerCase().trim().contains(queryString.toLowerCase())) {
                                     infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);

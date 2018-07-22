@@ -9,7 +9,7 @@
         android:orderInCategory="1"
         android:name="Hide Contact"
         app:showAsAction="collapseActionView"
-        android:visible="false"/>
+        android:visible="true"/>
 
     <item
         android:title="Edit Profile"

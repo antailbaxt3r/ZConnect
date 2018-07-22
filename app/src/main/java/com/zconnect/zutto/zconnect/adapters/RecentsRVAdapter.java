@@ -624,12 +624,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         Query mOtherFeatures;
 
         //for other features
-        ImageView otherFeatureIcon;
+        SimpleDraweeView otherFeatureIcon;
         TextView featureName;
         LinearLayout otherFeatureItemLayout;
         public FeaturesViewHolder(final View itemView) {
             super(itemView);
-            flag = false;
+            flag = true;
             hsv = (HorizontalScrollView) itemView.findViewById(R.id.hsv_recents_features_view);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout_recents_features_view);
             events = (RelativeLayout) itemView.findViewById(R.id.events_recents_features_view);
@@ -676,26 +676,34 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mOtherFeatures.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(final DataSnapshot shot: dataSnapshot.getChildren()){
+                    if(flag) {
 
-                        if(Integer.parseInt(shot.child("show").getValue().toString())==0)
-                            continue;
-                        otherFeatureItemLayout = (LinearLayout) View.inflate(context, R.layout.recents_features_view_item, null);
-                        featureName = (TextView)otherFeatureItemLayout.findViewById(R.id.name_recents_features_view_item);
-                        otherFeatureIcon = (ImageView)otherFeatureItemLayout.findViewById(R.id.icon_recents_features_view_item);
+                        for (final DataSnapshot shot : dataSnapshot.getChildren()) {
+
+                            if (Integer.parseInt(shot.child("show").getValue().toString()) == 0)
+                                continue;
+
+                            otherFeatureItemLayout = (LinearLayout) View.inflate(context, R.layout.recents_features_view_item, null);
+                            featureName = (TextView) otherFeatureItemLayout.findViewById(R.id.name_recents_features_view_item);
+                            otherFeatureIcon = (SimpleDraweeView) otherFeatureItemLayout.findViewById(R.id.icon_recents_features_view_item);
 //                        Picasso.with(context).load(Uri.parse(shot.child("URL").toString())).into(otherFeatureIcon);
-//                        otherFeatureIcon.setImageURI(Uri.parse(shot.child("image").getValue().toString()));
-                        featureName.setText(shot.child("name").getValue(String.class));
-                        otherFeatureItemLayout.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").getValue().toString()));
-                                context.startActivity(urlIntent);
-                            }
-                        });
-                        linearLayout.addView(otherFeatureItemLayout);
+                            otherFeatureIcon.setImageURI(shot.child("image").getValue().toString());
+                            featureName.setText(shot.child("name").getValue(String.class));
+                            otherFeatureItemLayout.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").getValue().toString()));
+                                    context.startActivity(urlIntent);
+                                }
+                            });
+                            linearLayout.addView(otherFeatureItemLayout);
+                        }
+                        flag =false;
                     }
+                    linearLayout.setVerticalScrollbarPosition(0);
+                    linearLayout.setHorizontalGravity(0);
                 }
+
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
