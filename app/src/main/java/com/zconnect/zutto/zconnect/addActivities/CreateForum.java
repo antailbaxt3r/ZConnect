@@ -33,10 +33,12 @@ import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
@@ -44,6 +46,7 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import java.io.IOException;
@@ -144,7 +147,7 @@ public class CreateForum extends AppCompatActivity {
                         && firstMessage.getText()!=null && firstMessage.getText().toString().length()!=0)
                 {
                     progressBar.setVisibility(View.VISIBLE);
-                    String catName = addForumName.getText().toString();
+                    final String catName = addForumName.getText().toString();
                     final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
                     final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid);
                     final DatabaseReference databaseReferenceHome = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
@@ -160,31 +163,21 @@ public class CreateForum extends AppCompatActivity {
 
 
 
-                    final UsersListItemFormat userDetails = new UsersListItemFormat();
-                    DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    UsersListItemFormat userDetails = new UsersListItemFormat();
 
-                    user.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot2) {
-                            UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
-                            userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
-                            userDetails.setName(userItemFormat.getUsername());
-                            userDetails.setPhonenumber(userItemFormat.getMobileNumber());
-                            userDetails.setUserUID(userItemFormat.getUserUID());
-                            newPush.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
-                            CounterManager.forumsAddCategory(mtabName);
-                        }
+                    userDetails.setImageThumb(UserUtilities.currentUser.getImageURLThumbnail());
+                    userDetails.setName(UserUtilities.currentUser.getUsername());
+                    userDetails.setPhonenumber(UserUtilities.currentUser.getMobileNumber());
+                    userDetails.setUserUID(UserUtilities.currentUser.getUserUID());
+                    userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
 
                     databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
                     databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
                     databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(uid);
+                    databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(UserUtilities.currentUser.getUserUID()).setValue(userDetails);
 
+                    CounterManager.forumsAddCategory(mtabName);
 
                     //Home
 
@@ -250,6 +243,13 @@ public class CreateForum extends AppCompatActivity {
                                 databaseReferenceHome.child(newPush.getKey()).child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
                                 if(flag)
                                 {
+                                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                                    intent.putExtra("type", "forums");
+                                    intent.putExtra("name", catName);
+                                    intent.putExtra("tab", uid);
+                                    intent.putExtra("key", newPush.getKey());
+                                    startActivity(intent);
                                     finish();
                                 }
                                 else flag = true;
@@ -263,9 +263,18 @@ public class CreateForum extends AppCompatActivity {
                                 newPush.child("imageThumb").setValue(downlaodUri != null ? downlaodUri.toString() : null);
                                 databaseReferenceTabsCategories.child(newPush.getKey()).child("imageThumb").setValue(downlaodUri != null ? downlaodUri.toString() : null);
                                 databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue(downlaodUri != null ? downlaodUri.toString() : null);
-                                if (flag)
+                                if (flag) {
+                                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                                    intent.putExtra("type", "forums");
+                                    intent.putExtra("name", catName);
+                                    intent.putExtra("tab", uid);
+                                    intent.putExtra("key", newPush.getKey());
+                                    startActivity(intent);
                                     finish();
-                                else flag = true;
+                                } else {
+                                    flag = true;
+                                }
                             }
                         });
                     }
@@ -276,6 +285,14 @@ public class CreateForum extends AppCompatActivity {
 //                        newPush.child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
 //                        databaseReferenceTabsCategories.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
 //                        databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
+                        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                        intent.putExtra("type","forums");
+                        intent.putExtra("name", catName);
+                        intent.putExtra("tab",uid);
+                        intent.putExtra("key",newPush.getKey());
+                        startActivity(intent);
+
                         finish();
                     }
                 }

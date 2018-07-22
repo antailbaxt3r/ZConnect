@@ -90,14 +90,14 @@ public class NotificationService extends FirebaseMessagingService {
         if (data.containsKey("Type")) {
             final String type = data.get("Type").toString();
 
-//            if(data.containsKey("userKey")){
-//                final String userKey = data.get("userKey").toString();
-//                if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)){
-//                    handleNotifications(type);
-//                }
-//            }else {
+            if(data.containsKey("userKey")){
+                final String userKey = data.get("userKey").toString();
+                if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)){
+                    handleNotifications(type);
+                }
+            }else {
                 handleNotifications(type);
-//            }
+            }
         }
 
 
@@ -142,6 +142,8 @@ public class NotificationService extends FirebaseMessagingService {
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL: imageURLNotification();
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CACHE: cacheDeleteNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL: requestCallNotification();
                 break;
         }
 
@@ -211,7 +213,7 @@ public class NotificationService extends FirebaseMessagingService {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
 
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-        style.setBigContentTitle(title).setSummaryText(message);
+        style.setBigContentTitle(title).bigText(message);
 
         if (appLogo!=null){
             mBuilder.setLargeIcon(appLogo);
@@ -234,6 +236,53 @@ public class NotificationService extends FirebaseMessagingService {
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(16, mBuilder.build());
+    }
+
+    private void requestCallNotification() {
+
+        final String communityName = data.get("communityName").toString();
+
+        final String userKey = data.get("userKey").toString();
+        final String userName = data.get("userName").toString();
+        final String userImage = data.get("userImage").toString();
+        final String userMobileNumber = data.get("userMobileNumber").toString();
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText(userName + " tried contacting you, call him now! ").setBigContentTitle(communityName);
+
+        Intent call = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + userMobileNumber));
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, call, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.addAction(R.drawable.ic_phone_black_18dp, "Call Now", pendingIntent);
+
+        Bitmap bitmap = null;
+
+        try {
+            bitmap = getRoundedBitmap(userImage);
+        }catch (Exception e) {}
+
+        if (bitmap!= null){
+            mBuilder.setLargeIcon(bitmap);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.ic_phone)
+                .setStyle(style)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(communityName)
+                .setContentText(userName + " tried contacting you, call him now! ");
+
+        Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);
+        intent.putExtra("Uid",userKey);
+
+        PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(intent1);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(18, mBuilder.build());
+
     }
 
 
@@ -574,7 +623,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String categoryAdmin = data.get("categoryAdmin").toString();
 
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-        style.setBigContentTitle(communityName).setSummaryText(categoryName + " is created in Infone, add relevant contacts").setBigContentTitle(communityName);
+        style.setBigContentTitle(communityName).bigText(categoryName + " is created in Infone, add relevant contacts").setBigContentTitle(communityName);
 
         Bitmap bitmap = null;
 
@@ -625,7 +674,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String userImage = data.get("userImage").toString();
 
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-        style.setBigContentTitle(communityName).setSummaryText(userName + " started a new forum " + forumName + " in " + forumCategory).setBigContentTitle(communityName);
+        style.setBigContentTitle(communityName).bigText(userName + " started a new forum " + forumName + " in " + forumCategory).setBigContentTitle(communityName);
 
         Bitmap bitmap = null;
         try {

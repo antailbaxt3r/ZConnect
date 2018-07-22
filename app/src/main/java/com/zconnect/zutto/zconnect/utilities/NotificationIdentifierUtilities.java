@@ -22,6 +22,8 @@ public class NotificationIdentifierUtilities {
     public static final String KEY_NOTIFICATION_CHAT_CAB = "CabChat";
     public static final String KEY_NOTIFICATION_CHAT_POST = "PostChat";
 
+    public static final String KEY_NOTIFICATION_REQUEST_CALL = "RequestCall";
+
     public static final String KEY_NOTIFICATION_TEXT_URL = "textURL";
     public static final String KEY_NOTIFICATION_IMAGE_URL = "imageURL";
     public static final String KEY_NOTIFICATION_CACHE = "cacheRemove";

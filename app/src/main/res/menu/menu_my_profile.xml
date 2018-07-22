@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:title="Hide Contact"
+        android:id="@+id/action_privacy"
+        android:orderInCategory="1"
+        android:name="Hide Contact"
+        app:showAsAction="collapseActionView"
+        android:visible="true"/>
+
+    <item
+        android:title="Edit Profile"
+        android:id="@+id/action_edit_profile"
+        android:orderInCategory="0"
+        android:name="Edit Profile"
+        app:showAsAction="collapseActionView"
+        android:visible="true"/>
+</menu>

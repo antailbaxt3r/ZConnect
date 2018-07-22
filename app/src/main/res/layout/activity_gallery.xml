@@ -13,11 +13,11 @@
     <ImageButton
         android:id="@+id/btn_close"
         style="@style/Widget.AppCompat.ActionButton"
-        android:layout_width="?attr/actionBarSize"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="top|right"
         android:scaleType="fitCenter"
-        android:src="@mipmap/ic_close_black_24dp" />
+        android:src="@drawable/ic_close_white_24dp" />
 
     <HorizontalScrollView
         android:layout_width="match_parent"

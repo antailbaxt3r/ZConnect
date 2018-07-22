@@ -193,6 +193,10 @@
 
     <!--for banner in recents-->
     <string name="banner_link">Open link</string>
+
+    <!--in profile activity-->
+    <string name="show_contact">Show Contact</string>
+    <string name="request_contact">Request Contact</string>
     <!--test one-->
     <!--<string name="native_ad_unit_id">ca-app-pub-3940256099942544/2177258514</string>-->
 
