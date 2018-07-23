@@ -41,6 +41,7 @@ import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ShortlistedPeopleList;
+import com.zconnect.zutto.zconnect.VerificationPage;
 import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
@@ -145,7 +146,84 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL: requestCallNotification();
                 break;
+            case  NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT: newUserAcceptNotification();
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT: newUserRejectNotification();
+                break;
         }
+
+    }
+
+    private void newUserRejectNotification() {
+
+        final String communityName = data.get("communityName").toString();
+
+        Bitmap appLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.setBigContentTitle(communityName).bigText("Your profile is rejected, please again add your details.");
+
+        if (appLogo!=null){
+            mBuilder.setLargeIcon(appLogo);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.ic_person_white_24dp)
+                .setStyle(style)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(communityName)
+                .setContentText("Your profile is rejected, please again add your details.");
+
+
+        Intent intent = new Intent(NotificationService.this, VerificationPage.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendingIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(19, mBuilder.build());
+
+
+
+
+    }
+
+
+    private void newUserAcceptNotification() {
+
+        final String communityName = data.get("communityName").toString();
+
+        Bitmap appLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.setBigContentTitle(communityName).bigText("Your profile is approved, you can enjoy access to all features.");
+
+        if (appLogo!=null){
+            mBuilder.setLargeIcon(appLogo);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.ic_person_white_24dp)
+                .setStyle(style)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(communityName)
+                .setContentText("Your profile is approved, you can enjoy access to all features.");
+
+
+        Intent intent = new Intent(NotificationService.this, HomeActivity.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendingIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(18, mBuilder.build());
+
 
     }
 

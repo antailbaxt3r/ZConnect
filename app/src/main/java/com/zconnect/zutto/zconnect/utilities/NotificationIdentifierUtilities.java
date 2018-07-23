@@ -23,6 +23,8 @@ public class NotificationIdentifierUtilities {
     public static final String KEY_NOTIFICATION_CHAT_POST = "PostChat";
 
     public static final String KEY_NOTIFICATION_REQUEST_CALL = "RequestCall";
+    public static final String KEY_NOTIFICATION_NEW_USER_ACCEPT = "NewUserAccept";
+    public static final String KEY_NOTIFICATION_NEW_USER_REJECT = "NewUserReject";
 
     public static final String KEY_NOTIFICATION_TEXT_URL = "textURL";
     public static final String KEY_NOTIFICATION_IMAGE_URL = "imageURL";

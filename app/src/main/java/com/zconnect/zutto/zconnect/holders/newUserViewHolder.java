@@ -9,8 +9,12 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
@@ -53,6 +57,14 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
                 currentAdmin.setUID(UserUtilities.currentUser.getUserUID());
 
                 newUserReference.child("approvedRejectedBy").setValue(currentAdmin);
+
+                NotificationSender notificationSender = new NotificationSender(itemView.getContext(),UserUtilities.currentUser.getUserUID());
+
+                NotificationItemFormat newUserAcceptNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT,UserUtilities.currentUser.getUserUID());
+                newUserAcceptNotification.setCommunityName(UserUtilities.CommunityName);
+                newUserAcceptNotification.setItemKey(UID);
+
+                notificationSender.execute(newUserAcceptNotification);
             }
 
         });
@@ -75,6 +87,14 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
                 currentAdmin.setUID(UserUtilities.currentUser.getUserUID());
 
                 newUserReference.child("approvedRejectedBy").setValue(currentAdmin);
+
+                NotificationSender notificationSender = new NotificationSender(itemView.getContext(),UserUtilities.currentUser.getUserUID());
+
+                NotificationItemFormat newUserRejectNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT,UserUtilities.currentUser.getUserUID());
+                newUserRejectNotification.setCommunityName(UserUtilities.CommunityName);
+                newUserRejectNotification.setItemKey(UID);
+
+                notificationSender.execute(newUserRejectNotification);
             }
         });
 

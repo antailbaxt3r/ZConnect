@@ -164,9 +164,35 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL:
                 requestCallNotification(ND.getCommunityName(),ND.getUserName(),ND.getUserImage(),ND.getUserMobileNumber(),ND.getItemKey());
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT:
+                newUserAcceptNotification(ND.getCommunityName(),ND.getItemKey());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT:
+                newUserRejectNotification(ND.getCommunityName(),ND.getItemKey());
+                break;
         }
 
         return null;
+    }
+
+    private void newUserRejectNotification(String communityName,String receiverKey) {
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true,receiverKey);
+    }
+
+    private void newUserAcceptNotification(String communityName,String receiverKey) {
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true,receiverKey);
     }
 
     private void requestCallNotification(String communityName,String userName,String userImage,String userMobileNumber,String receiverKey) {
