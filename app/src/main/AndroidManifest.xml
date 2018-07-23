@@ -154,7 +154,8 @@
             android:name=".commonModules.viewImage"
             android:label="@string/title_activity_view_image"
             android:parentActivityName=".HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.HomeActivity" />
@@ -223,10 +224,12 @@
         <activity
             android:name=".Offers"
             android:label="@string/title_activity_offers"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Shop_detail"
             android:label="@string/title_activity_shop_detail"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -240,6 +243,7 @@
         <activity
             android:name=".CapPoolSearchList"
             android:label="@string/title_activity_pool_list"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Campus_Map"
@@ -257,6 +261,7 @@
         <activity
             android:name=".addActivities.AddCabPool"
             android:label="@string/title_activity_add_cab_pool"
+            android:screenOrientation="portrait"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -268,6 +273,7 @@
         <activity
             android:name=".MyRides"
             android:label="@string/title_activity_my_rides"
+            android:screenOrientation="portrait"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -284,9 +290,11 @@
 
         <activity
             android:name=".ShortlistedPeopleList"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CabPooling"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChatActivity"
@@ -301,53 +309,66 @@
         <activity
             android:name=".CommunitiesAround"
             android:label="@string/title_activity_guest_login"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".addActivities.CreateCommunity"
             android:label="@string/title_activity_create_community"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".addActivities.AddStatus"
             android:label="@string/title_activity_new_message"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NotificationSettings"
             android:label="@string/title_activity_nitification_settings"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".InfoneActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".InfoneContactListActivity"
             android:label="@string/infone_search"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.SEARCH" /> -->
             <!-- </intent-filter> -->
-
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name=".InfoneProfileActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".addActivities.AddInfoneContact"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="Add Contact"/>
         <activity
             android:name=".addActivities.AddInfoneCat"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="Create Category"/>
         <activity
+            android:screenOrientation="portrait"
             android:name=".CabPoolLocations"
             android:label="@string/title_activity_cab_pool_locations"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ForumsPeopleList"
             android:label="@string/title_activity_forums_people_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".Shortlist"
             android:label="@string/title_storeroom_shortlist"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -372,13 +393,16 @@
         <activity
             android:name=".VerificationPage"
             android:label="@string/title_activity_verfication_page"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AdminHome"
             android:label="@string/title_activity_admin_home"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".addActivities.CreateForum"
             android:label="Create Forum"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
