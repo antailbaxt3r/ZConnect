@@ -200,6 +200,7 @@ public class AddStatus extends BaseActivity {
                     newMessage.child("imageurl").setValue("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png");
                     newMessage.child("id").setValue(key);
                     newMessage.child("PostTimeMillis").setValue(System.currentTimeMillis());
+                    FirebaseMessaging.getInstance().subscribeToTopic(key);
                     mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -211,7 +212,7 @@ public class AddStatus extends BaseActivity {
                             }
                             newMessage.child("PostedBy").child("UID").setValue(user.getUserUID());
                             newMessage.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
-                            FirebaseMessaging.getInstance().subscribeToTopic(key);
+//                            FirebaseMessaging.getInstance().subscribeToTopic(key);
                             CounterManager.publicStatusAdd(anonymousCheck.isChecked());
                         }
 
@@ -220,6 +221,7 @@ public class AddStatus extends BaseActivity {
 
                         }
                     });
+
 
                     if(mImageUri!= null) {
 

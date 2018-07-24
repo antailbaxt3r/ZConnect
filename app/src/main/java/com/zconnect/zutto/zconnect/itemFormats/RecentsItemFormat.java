@@ -34,6 +34,7 @@ public class RecentsItemFormat {
 
         //for messages
     String message;
+    int msgLikes;
 
         //for Forums
 
@@ -46,7 +47,7 @@ public class RecentsItemFormat {
                              String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate,
                              String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis,
                              PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName,
-                             String communityName, String message, String recentType) {
+                             String communityName, String message, String recentType, int msgLikes) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -69,6 +70,7 @@ public class RecentsItemFormat {
         this.productPrice = productPrice;
         this.communityName = communityName;
         this.message = message;
+        this.msgLikes = msgLikes;
         this.recentType = recentType;
     }
 

@@ -170,6 +170,10 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT:
                 newUserRejectNotification(ND.getCommunityName(),ND.getItemKey());
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED:
+                statusLikeNotification(ND.getItemKey(), ND.getCommunityName(), ND.getUserName(), ND.getUserImage(), ND.getItemLikeCount());
+                Log.d("LIKESSSS", "2");
+                break;
         }
 
         return null;
@@ -195,6 +199,26 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         sendNotification(true,receiverKey);
     }
 
+    private void statusLikeNotification(String statusKey, String communityName, String userName, String userImage, long likeCount)
+    {
+        creator = new RemoteMessage.Builder("data");
+        if(likeCount%3==0 && likeCount!=0)
+            creator.addData("likeCount", String.valueOf(likeCount - 1));
+        else
+            creator.addData("likeCount", "");
+        creator.addData("statusKey", statusKey);
+        creator.addData("communityName", communityName);
+        creator.addData("userName", userName);
+        creator.addData("userImage", userImage);
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED);
+        creator.addData("userKey",userKey);
+
+        //subscribe to topic first
+        sendNotification(true, statusKey);
+        Log.d("LIKESSSS", "3");
+
+    }
+
     private void requestCallNotification(String communityName,String userName,String userImage,String userMobileNumber,String receiverKey) {
 
         creator = new RemoteMessage.Builder("data");
@@ -206,7 +230,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL);
         creator.addData("userKey",userKey);
 
-        sendNotification(true,receiverKey );
+        sendNotification(true,receiverKey);
     }
 
     private void postChatNotification(String communityName, String userName, String userImage, String postMessage, String postKey) {

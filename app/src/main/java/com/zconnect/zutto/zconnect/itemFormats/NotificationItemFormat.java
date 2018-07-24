@@ -24,6 +24,8 @@ public class NotificationItemFormat {
 
     private String itemMessage;
 
+    private long itemLikeCount;
+
 
     public NotificationItemFormat(String notificationIdentifier, String userKey){
         this.notificationIdentifier = notificationIdentifier;
@@ -149,6 +151,12 @@ public class NotificationItemFormat {
 
     public void setItemMessage(String itemMessage) {
         this.itemMessage = itemMessage;
+    }
+
+    public long getItemLikeCount() { return itemLikeCount; }
+
+    public void setItemLikeCount(long itemLikeCount) {
+        this.itemLikeCount = itemLikeCount;
     }
 
     public String getCommunityReference() {
