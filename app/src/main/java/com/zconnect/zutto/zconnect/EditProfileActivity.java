@@ -372,12 +372,21 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
         if (userName == null
                 || userEmail == null
-                || userMobile.length() == 0 || userInfoneType ==null || ((mUser.getPhotoUrl() == null)&&(mImageUri.equals(null)))) {
-            Snackbar snackbar = Snackbar.make(userAboutText, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
-            TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-            snackBarText.setTextColor(Color.WHITE);
-            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-            snackbar.show();
+                || userMobile.length() != 10 || userWhatsapp.length() != 10 || userInfoneType ==null || ((mUser.getPhotoUrl() == null)&&(mImageUri.equals(null)))) {
+
+            if(userMobile.length()!=10 || userWhatsapp.length() != 10)
+            {
+                Snackbar snackbar = Snackbar.make(userAboutText, "10 digit number required", Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+            else
+            {
+                Snackbar snackbar = Snackbar.make(userAboutText, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snackbar.show();
+            }
             mProgress.dismiss();
         } else {
             final DatabaseReference newPost = mUserReference;
