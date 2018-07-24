@@ -81,18 +81,20 @@ public class NotificationService extends FirebaseMessagingService {
 
         data = remoteMessage.getData();
 
-        if (data.containsKey("Type")) {
-            final String type = data.get("Type").toString();
+        try {
+            if (data.containsKey("Type")) {
+                final String type = data.get("Type").toString();
 
-            if(data.containsKey("userKey")){
-                final String userKey = data.get("userKey").toString();
-                if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)){
+                if (data.containsKey("userKey")) {
+                    final String userKey = data.get("userKey").toString();
+                    if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)) {
+                        handleNotifications(type);
+                    }
+                } else {
                     handleNotifications(type);
                 }
-            }else {
-                handleNotifications(type);
             }
-        }
+        }catch (Exception e){}
 
 
     }

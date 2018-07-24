@@ -50,8 +50,6 @@ public class LogoFlashActivity extends BaseActivity {
         bgImage = (ImageView) findViewById(R.id.bgImage);
         bgColor = findViewById(R.id.bgColor);
 
-        //Toast.makeText(this, ServerValue.TIMESTAMP.ge.toString(), Toast.LENGTH_SHORT).show();
-
         if (communityReference != null) {
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
@@ -63,7 +61,6 @@ public class LogoFlashActivity extends BaseActivity {
                     } else {
                         bgColor.setVisibility(View.GONE);
                         bgImage.setBackground(null);
-                        bgImage.setBackgroundColor(Color.parseColor(dataSnapshot.child("bgUrl").getValue().toString()));
                     }
                 }
 
@@ -83,7 +80,6 @@ public class LogoFlashActivity extends BaseActivity {
                     } else {
                         bgColor.setVisibility(View.GONE);
                         bgImage.setBackground(null);
-                        bgImage.setBackgroundColor(Color.parseColor(dataSnapshot.child("bgUrl").getValue().toString()));
                     }
                 }
 
@@ -96,20 +92,17 @@ public class LogoFlashActivity extends BaseActivity {
 
 
 
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        new Timer().schedule(new TimerTask() {
 
-//        link();
-            // Setting full screen view
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
 
-                @Override
-                public void run() {
-
-                    if (checkPermission()) {
-                        // Do not wait so that user doesn't realise this is a new launch.
-                        startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
-                        finish();
-                    }
+                if (checkPermission()) {
+                    // Do not wait so that user doesn't realise this is a new launch.
+                    startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
+                    finish();
+                }
 
             }
         }, 2000);
