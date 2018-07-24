@@ -38,6 +38,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class VerificationPage extends BaseActivity {
     private ImageButton idImageButton;
     private EditText aboutNewUserEditText;
     private Button submitUserIDButton;
-    private DatabaseReference newUsersDatabaseReference;
+    private DatabaseReference newUsersDatabaseReference,userReference;
     private FirebaseAuth mAuth;
 
     private IntentHandle intentHandle;
@@ -100,7 +101,9 @@ public class VerificationPage extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference().child("verificationID").child(communityReference);
+        userReference  =FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
         newUsersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers");
+
 
         newUsersDatabaseReference.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -182,6 +185,7 @@ public class VerificationPage extends BaseActivity {
         }
 
         if(mImageUri != null){
+
             final DatabaseReference newPost =  newUsersDatabaseReference.child(mAuth.getCurrentUser().getUid());
             StorageReference filepath = mStorage.child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid() + System.currentTimeMillis());
             final String finalAboutText = aboutText;
@@ -194,10 +198,11 @@ public class VerificationPage extends BaseActivity {
                     newPost.child("about").setValue(finalAboutText);
                     newPost.child("UID").setValue(mAuth.getCurrentUser().getUid());
                     newPost.child("name").setValue(UserUtilities.currentUser.getUsername());
+                    userReference.child(mAuth.getCurrentUser().getUid()).child("userType").setValue(UsersTypeUtilities.KEY_PENDING);
+                    UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_PENDING);
                     progressDialog.dismiss();
                     Toast.makeText(VerificationPage.this, "Your details are submitted, you will be notified once verification is done.", Toast.LENGTH_LONG).show();
                     finish();
-
                 }
             });
 

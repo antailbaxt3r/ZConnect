@@ -40,6 +40,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
@@ -50,6 +51,7 @@ import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.adapters.ChatRVAdapter;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -276,8 +278,12 @@ public class ChatActivity extends BaseActivity {
         findViewById(R.id.sendBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postMessage();
+                if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
+                    newUserVerificationAlert.buildAlertCheckNewUser("Chat",ChatActivity.this);
+                }else {
+                    postMessage();
 
+                }
             }
         });
 

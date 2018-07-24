@@ -49,8 +49,8 @@ public class CommunitiesAroundAdapter extends RecyclerView.Adapter<CommunitiesAr
     @Override
     public void onBindViewHolder(communitiesViewHolder holder, int position) {
 
-        holder.communityName.setText(allCommunities.get(position).getName());
-        holder.communitySize.setText("32 people");
+        holder.communityName.setText(allCommunities.get(position).getName() + " Connect");
+        holder.communitySize.setText(allCommunities.get(position).getSize().toString() + " members");
 //        Picasso.with(context).load(allCommunities.get(position).getImage()).into(holder.communityImage);
         holder.communityImage.setImageURI(Uri.parse(allCommunities.get(position).getImage()));
         holder.enterCommunity(allCommunities.get(position).getCode());
@@ -67,7 +67,7 @@ public class CommunitiesAroundAdapter extends RecyclerView.Adapter<CommunitiesAr
         View mView;
         TextView communityName,communitySize;
         SimpleDraweeView communityImage;
-        Button communityGuestLogin;
+        Button communityLogin;
 
         public communitiesViewHolder(View itemView){
             super(itemView);
@@ -75,12 +75,12 @@ public class CommunitiesAroundAdapter extends RecyclerView.Adapter<CommunitiesAr
             communityName = (TextView) itemView.findViewById(R.id.community_name);
             communitySize = (TextView) itemView.findViewById(R.id.community_size);
             communityImage = (SimpleDraweeView) itemView.findViewById(R.id.community_image);
-            communityGuestLogin=(Button) itemView.findViewById(R.id.guest_login_button);
+            communityLogin=(Button) itemView.findViewById(R.id.guest_login_button);
         }
 
         public void enterCommunity(final String communityCode){
 
-            communityGuestLogin.setOnClickListener(new View.OnClickListener() {
+            communityLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     SharedPreferences sharedPref2 = context.getSharedPreferences("communityName", MODE_PRIVATE);

@@ -53,7 +53,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Random;
 
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL_JOIN;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CAB_POOL_CHAT;
@@ -79,12 +78,6 @@ public class NotificationService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
-
-        SharedPreferences communitySP;
-        String communityReference;
-
-        communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
-        communityReference = communitySP.getString("communityReference", null);
 
         data = remoteMessage.getData();
 
@@ -366,6 +359,7 @@ public class NotificationService extends FirebaseMessagingService {
 
     private void postChatNotification() {
         final String communityName = data.get("communityName").toString();
+        final String communityReference = data.get("communityReference").toString();
 
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
@@ -413,6 +407,7 @@ public class NotificationService extends FirebaseMessagingService {
 
     private void eventChatNotification() {
         final String communityName = data.get("communityName").toString();
+        final String communityReference = data.get("communityReference").toString();
 
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
@@ -463,6 +458,7 @@ public class NotificationService extends FirebaseMessagingService {
     private void cabChatNotification() {
 
         final String communityName = data.get("communityName").toString();
+        final String communityReference = data.get("communityReference").toString();
 
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
@@ -511,6 +507,7 @@ public class NotificationService extends FirebaseMessagingService {
 
     private void productChatNotification() {
         final String communityName = data.get("communityName").toString();
+        final String communityReference = data.get("communityReference").toString();
 
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
@@ -561,6 +558,7 @@ public class NotificationService extends FirebaseMessagingService {
     private void forumChatNotification() {
 
         final String communityName = data.get("communityName").toString();
+        final String communityReference = data.get("communityReference").toString();
 
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
@@ -743,6 +741,8 @@ public class NotificationService extends FirebaseMessagingService {
     private void forumAddNotification() {
 
         final String communityName = data.get("communityName").toString();
+        final String communityReference = data.get("communityReference").toString();
+
         final String forumName = data.get("forumName").toString();
         final String forumCategory = data.get("forumCategory").toString();
         final String forumCategoryUID = data.get("forumCategoryUID").toString();
