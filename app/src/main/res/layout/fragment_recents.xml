@@ -10,6 +10,16 @@
         <!--<FrameLayout-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content">-->
+            <Button
+                android:id="@+id/scroll_to_top_fab_fragments_recents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_button_simple"
+                android:text="Scroll to top"
+                android:paddingStart="@dimen/button_padding_start_end"
+                android:paddingEnd="@dimen/button_padding_start_end"
+                android:layout_gravity="center|top"
+                android:visibility="gone"/>
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
