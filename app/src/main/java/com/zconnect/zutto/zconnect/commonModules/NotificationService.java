@@ -145,8 +145,49 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL: requestCallNotification();
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED: statusLikeNotification();
+                break;
         }
 
+    }
+
+    private void statusLikeNotification() {
+        final String statusKey = data.get("statusKey").toString();
+        final String userName = data.get("userName").toString();
+        final String communityName = data.get("communityName").toString();
+        final String userImage = data.get("userImage").toString();
+        final String likeCount = data.get("likeCount").toString();
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText(userName + " likes your status").setBigContentTitle(communityName);
+        if(likeCount.length()>0)
+            style.bigText(userName + " and " + likeCount + " others " + " like your status").setBigContentTitle(communityName);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        Bitmap image = null;
+        image  = getRoundedBitmap(userImage);
+
+        if(image!=null){
+            mBuilder.setLargeIcon(image);
+        }
+
+        mBuilder.setSmallIcon(R.drawable.baseline_thumb_up_alt_white_24)
+                .setStyle(style)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(communityName)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentText(userName + " likes your status");
+        if(likeCount.length()>0)
+            mBuilder.setContentText(userName + " and " + likeCount + " others " + " like your status");
+
+//        Intent intent = new Intent(NotificationService.this, HomeActivity.class);
+////        intent.putExtra("id",eventKey);
+//
+//        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        mBuilder.setContentIntent(pendingIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(19, mBuilder.build());
     }
 
     private void cacheDeleteNotification() {

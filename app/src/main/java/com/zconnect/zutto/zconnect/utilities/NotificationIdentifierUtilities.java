@@ -33,4 +33,6 @@ public class NotificationIdentifierUtilities {
     public static final String KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR = "StoreRoom";
     public static final String KEY_NOTIFICATION_CAB_ADD_FREQUENCY_STR = "AddCabPool";
 
+    public static final String KEY_NOTIFICATION_STATUS_LIKED = "StatusLiked";
+
 }
