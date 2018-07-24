@@ -326,10 +326,7 @@
             android:label="@string/title_activity_nitification_settings"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".InfoneActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+        
         <activity
             android:name=".InfoneContactListActivity"
             android:label="@string/infone_search"
