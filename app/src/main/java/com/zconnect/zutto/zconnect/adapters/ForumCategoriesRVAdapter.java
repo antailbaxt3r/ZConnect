@@ -109,6 +109,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
             joinedViewHolder holderMain = (joinedViewHolder) holder;
             holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());
+
+            holderMain.setUnSeenMessages(forumCategoriesItemFormats.get(position).getTotalMessages(),forumCategoriesItemFormats.get(position).getSeenMessages());
+
             if(forumCategoriesItemFormats.get(position).getImageThumb()!=null)
             {
                 holderMain.forumIcon.setImageURI(forumCategoriesItemFormats.get(position).getImageThumb());
@@ -208,6 +211,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
     private class joinedViewHolder extends RecyclerView.ViewHolder {
 
         TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
+        TextView unSeenMessages;
         View mView;
         LinearLayout forumRowItem;
         SimpleDraweeView forumIcon;
@@ -220,6 +224,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             lastMessageMessage = (TextView) itemView.findViewById(R.id.forums_cat_last_message);
             lastMessageUsername = (TextView) itemView.findViewById(R.id.forums_cat_last_message_username);
             lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
+
+            unSeenMessages = (TextView) itemView.findViewById(R.id.forums_unseen_messages);
+
             forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_sub_categories_joined);
             defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_sub_categories_joined);
 
@@ -246,6 +253,16 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                     context.startActivity(intent);
                 }
             });
+
+        }
+
+        void setUnSeenMessages(Integer totalMessages,Integer readMessages){
+
+            if(totalMessages-readMessages>0){
+                unSeenMessages.setText((totalMessages-readMessages) + "");
+            }else {
+                unSeenMessages.setVisibility(View.GONE);
+            }
 
         }
     }

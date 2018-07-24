@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.forumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
@@ -45,7 +46,9 @@ public class ForumsFragment extends Fragment {
     forumCategoriesItemFormat titleNotJoined = new forumCategoriesItemFormat();
     ProgressBar progressBar;
     FirebaseAuth mAuth;
+    DBHelper mydb;
 
+    Vector<forumCategoriesItemFormat> forumCategoriesItemFormats = new Vector<forumCategoriesItemFormat>();
 
     Uri mImageUri;
 
@@ -69,7 +72,26 @@ public class ForumsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAuth = FirebaseAuth.getInstance();
 
+
+
+
+
         tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(currenttab);
+
+
+
+        adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab);
+        recyclerView.setAdapter(adapter);
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mydb = new DBHelper(getContext());
+        forumCategoriesItemFormats = mydb.getAllForums(currenttab);
+
 
         tabsCategories.addValueEventListener(new ValueEventListener() {
             @Override
@@ -87,25 +109,21 @@ public class ForumsFragment extends Fragment {
 
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     forumCategoriesItemFormat temp = new forumCategoriesItemFormat();
+
                     if(shot.child("users").hasChild(mAuth.getCurrentUser().getUid())) {
-                            temp = shot.getValue(forumCategoriesItemFormat.class);
-                            try {
-                                if (temp.getName() != null) {
-                                    temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
-                                    if(shot.child("users").child(mAuth.getCurrentUser().getUid()).hasChild("userType")){
-                                        if(!(shot.child("users").child(mAuth.getCurrentUser().getUid()).child("userType").getValue().equals(ForumsUserTypeUtilities.KEY_BLOCKED))) {
-                                            if (shot.hasChild("lastMessage")) {
-                                                joinedForumCategories.add(temp);
-                                            } else {
-                                                ChatItemFormats lastMessage = new ChatItemFormats();
-                                                lastMessage.setMessage(" ");
-                                                lastMessage.setTimeDate(1388534400);
-                                                lastMessage.setName(" ");
-                                                temp.setLastMessage(lastMessage);
-                                                joinedForumCategories.add(temp);
-                                            }
-                                        }
-                                    }else {
+                        temp = shot.getValue(forumCategoriesItemFormat.class);
+                        temp.setSeenMessages(totalSeenNumber(temp.getCatUID()));
+
+                        //Toast.makeText(getContext(), totalSeenNumber(temp.getCatUID())+"", Toast.LENGTH_SHORT).show();
+                        if(!shot.hasChild("totalMessages")){
+                            temp.setTotalMessages(0);
+                        }
+
+                        try {
+                            if (temp.getName() != null) {
+                                temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
+                                if(shot.child("users").child(mAuth.getCurrentUser().getUid()).hasChild("userType")){
+                                    if(!(shot.child("users").child(mAuth.getCurrentUser().getUid()).child("userType").getValue().equals(ForumsUserTypeUtilities.KEY_BLOCKED))) {
                                         if (shot.hasChild("lastMessage")) {
                                             joinedForumCategories.add(temp);
                                         } else {
@@ -113,18 +131,30 @@ public class ForumsFragment extends Fragment {
                                             lastMessage.setMessage(" ");
                                             lastMessage.setTimeDate(1388534400);
                                             lastMessage.setName(" ");
-                                            lastMessage.setMessageType("message");
-                                            lastMessage.setUuid(" ");
                                             temp.setLastMessage(lastMessage);
                                             joinedForumCategories.add(temp);
                                         }
                                     }
-
-
+                                }else {
+                                    if (shot.hasChild("lastMessage")) {
+                                        joinedForumCategories.add(temp);
+                                    } else {
+                                        ChatItemFormats lastMessage = new ChatItemFormats();
+                                        lastMessage.setMessage(" ");
+                                        lastMessage.setTimeDate(1388534400);
+                                        lastMessage.setName(" ");
+                                        lastMessage.setMessageType("message");
+                                        lastMessage.setUuid(" ");
+                                        temp.setLastMessage(lastMessage);
+                                        joinedForumCategories.add(temp);
+                                    }
                                 }
-                            } catch (Exception e) {
+
 
                             }
+                        } catch (Exception e) {
+
+                        }
 
                     }else {
 
@@ -139,7 +169,6 @@ public class ForumsFragment extends Fragment {
                 }
 
                 forumCategories.add(addCategoryButton);
-
 
                 Collections.sort(joinedForumCategories, new Comparator<forumCategoriesItemFormat>() {
                     @Override
@@ -176,10 +205,18 @@ public class ForumsFragment extends Fragment {
         });
 
 
+    }
 
-        adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab);
-        recyclerView.setAdapter(adapter);
+    public Integer totalSeenNumber(String catID){
+        Integer seenMessages = 0;
 
-        return view;
+        for (int i=0;i<forumCategoriesItemFormats.size(); i++){
+            if(forumCategoriesItemFormats.get(i).getCatUID().equals(catID)){
+                seenMessages++;
+                seenMessages = forumCategoriesItemFormats.get(i).getSeenMessages();
+            }
+        }
+
+       return seenMessages;
     }
 }

@@ -45,20 +45,30 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         View.OnClickListener addEventListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                try {
+                    HomeBottomSheet.this.dismiss();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
                 CounterManager.eventAddClick();
                 Intent intent;
                 intent = new Intent(getContext(), AddEvent.class);
                 startActivity(intent);
-                try {
-                    HomeBottomSheet.this.finalize();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
+
             }
         };
         View.OnClickListener addProductListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                try {
+                    HomeBottomSheet.this.dismiss();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
                 CounterManager.eventAddClick();
                 Intent intent;
                 intent = new Intent(getContext(), AddProduct.class);
@@ -69,6 +79,13 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         View.OnClickListener addMessageListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                try {
+                    HomeBottomSheet.this.dismiss();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
                 CounterManager.eventAddClick();
                 Intent intent;
                 intent = new Intent(getContext(), AddStatus.class);
@@ -79,6 +96,13 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         View.OnClickListener searchPoolListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                try {
+                    HomeBottomSheet.this.dismiss();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
                 CounterManager.eventAddClick();
                 Intent intent;
                 intent = new Intent(getContext(), CabPooling.class);

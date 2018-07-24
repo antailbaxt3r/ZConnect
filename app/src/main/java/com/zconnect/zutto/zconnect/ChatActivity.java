@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +39,7 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
@@ -573,10 +575,25 @@ public class ChatActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+
+
+
                 messages.clear();
                 for (DataSnapshot snapshot:dataSnapshot.getChildren()){
                     messages.add(snapshot.getValue(ChatItemFormats.class));
                 }
+
+                if (type.equals("forums")) {
+                    DBHelper mydb = new DBHelper(ChatActivity.this);
+
+                    String key, tab, name;
+                    key = getIntent().getStringExtra("key");
+                    tab = getIntent().getStringExtra("tab");
+                    name = getIntent().getStringExtra("name");
+
+                    mydb.replaceForum(name,key,tab,messages.size());
+                }
+
                 adapter.notifyDataSetChanged();
                 chatView.scrollToPosition(messages.size()-1);
                 progressBar.setVisibility(View.GONE);
