@@ -195,7 +195,7 @@
                 android:orientation="vertical"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:clipToPadding="false">
                 <TextView
                     android:textSize="16sp"
@@ -226,6 +226,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="-5dp">
                     <RelativeLayout
+                        android:id="@+id/messagesRecentItem_like_layout"
                         android:layout_width="0dp"
                         android:layout_weight="0.5"
                         android:layout_height="wrap_content"
@@ -237,7 +238,6 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:textSize="16sp"
-                            android:text="123"
                             android:textColor="@color/primaryText"/>
                         <ImageView
                             android:layout_centerVertical="true"

@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,8 +34,10 @@ import com.zconnect.zutto.zconnect.AdminHome;
 import com.zconnect.zutto.zconnect.CabPoolAll;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
+import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
@@ -40,8 +45,11 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.Shop_detail;
 import com.zconnect.zutto.zconnect.TabStoreRoom;
 import com.zconnect.zutto.zconnect.TabbedEvents;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeAgo;
 import com.zconnect.zutto.zconnect.addActivities.AddStatus;
@@ -51,6 +59,8 @@ import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import static com.google.android.gms.internal.zzagz.runOnUiThread;
@@ -416,6 +426,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.setLike(recentsItemFormats.get(position).getKey());
                     if(recentsItemFormats.get(position).getDesc().length()<=0)
                         holder.messagesMessage.setVisibility(View.GONE);
                     else
@@ -514,6 +525,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails;
         FrameLayout layoutFeatureIcon, bannerLinkLayout;
         //
+        long statusLikeCount;
+        boolean statusLikeFlag;
 
 
 
@@ -633,6 +646,103 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             name.setTypeface(quicksandMedium);
             feature.setTypeface(quicksandBold);
             desc.setTypeface(quicksandLight);
+        }
+
+        public void setLike(final String key) {
+
+            final DatabaseReference statusDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key);
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final RelativeLayout likeLayout = (RelativeLayout) itemView.findViewById(R.id.messagesRecentItem_like_layout);
+            final ImageView likeIcon = (ImageView) itemView.findViewById(R.id.like_image_status);
+            final TextView likeText = (TextView) itemView.findViewById(R.id.like_text_status);
+            statusDatabase.child("likeUids").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    statusLikeCount = dataSnapshot.getChildrenCount();
+                    statusDatabase.child("likeCount").setValue(dataSnapshot.getChildrenCount());
+
+                    if(dataSnapshot.hasChild(user.getUid())){
+//                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                        if(dataSnapshot.getChildrenCount()>0)
+                            likeText.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                        else
+                            likeText.setText("");
+                        likeText.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                        likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
+                        likeIcon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+                        statusLikeFlag=true;
+                    }else {
+//                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
+                        if(dataSnapshot.getChildrenCount()>0)
+                            likeText.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+                        else
+                            likeText.setText("");
+                        likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
+//                        likeIcon.setBackground(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_24));
+                        likeIcon.setColorFilter(itemView.getContext().getResources().getColor(R.color.primaryText));
+                        statusLikeFlag=false;
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+
+            if (user != null) {
+                likeLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!statusLikeFlag){
+                            Map<String, Object> taskMap = new HashMap<String, Object>();
+                            taskMap.put(user.getUid(), user.getUid());
+//                            CounterManager.eventBoost(key, "Trending-Out");
+                            statusDatabase.child("likeUids").updateChildren(taskMap);
+                            NotificationSender notificationSender = new NotificationSender(itemView.getContext(),UserUtilities.currentUser.getUserUID());
+                            NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED,UserUtilities.currentUser.getUserUID());
+                            statusLikeNotification.setItemKey(key);
+                            statusLikeNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+//                            statusLikeNotification.setItemName(statusText);
+//                            statusLikeNotification.setItemImage(statusImage);
+                            statusLikeNotification.setUserName(user.getDisplayName());
+                            statusLikeNotification.setCommunityName(UserUtilities.CommunityName);
+                            statusLikeNotification.setItemLikeCount(statusLikeCount);
+
+                            notificationSender.execute(statusLikeNotification);
+                            Log.d("LIKESSSS", "1");
+
+                        }else {
+                            statusDatabase.child("likeUids").child(user.getUid()).removeValue();
+
+                        }
+                    }
+                });
+
+            } else {
+                likeLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(itemView.getContext());
+                        dialog.setNegativeButton("Lite", null)
+                                .setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent loginIntent = new Intent(itemView.getContext(), LoginActivity.class);
+                                        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        itemView.getContext().startActivity(loginIntent);
+                                    }
+                                })
+                                .setTitle("Please login to boost.")
+                                .create().show();
+                    }
+                });
+            }
+
+//            Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//            eventNumLit.setTypeface(customfont);
         }
     }
 
@@ -759,7 +869,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             });
                             linearLayout.addView(otherFeatureItemLayout);
                         }
-                        flag =false;
+                        flag = false;
                     }
                     linearLayout.setVerticalScrollbarPosition(0);
                     linearLayout.setHorizontalGravity(0);
