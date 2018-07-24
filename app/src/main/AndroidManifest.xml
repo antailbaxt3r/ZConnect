@@ -308,7 +308,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CommunitiesAround"
-            android:label="@string/title_activity_guest_login"
+            android:label="@string/title_activity_communities_around"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -400,6 +400,7 @@
             android:label="@string/title_activity_admin_home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".addActivities.CreateForum"
             android:label="Create Forum"
             android:screenOrientation="portrait"

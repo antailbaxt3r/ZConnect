@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +37,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 
 import java.io.IOException;
@@ -54,6 +57,7 @@ public class VerificationPage extends BaseActivity {
     private Intent galleryIntent;
     private Uri mImageUri = null;
 
+    private ProgressDialog progressDialog;
     private StorageReference mStorage;
 
 
@@ -64,6 +68,17 @@ public class VerificationPage extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        progressDialog = new ProgressDialog(this);
+
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -157,6 +172,10 @@ public class VerificationPage extends BaseActivity {
 
     private void startPosting(){
 
+        progressDialog.setMessage("Submitting details..");
+        progressDialog.show();
+
+
         String aboutText = statusTextView.getText().toString().trim();
         if(aboutText.equals("")){
             aboutText = " ";
@@ -174,11 +193,18 @@ public class VerificationPage extends BaseActivity {
                     newPost.child("statusCode").setValue(VerificationUtilities.KEY_PENDING);
                     newPost.child("about").setValue(finalAboutText);
                     newPost.child("UID").setValue(mAuth.getCurrentUser().getUid());
+                    newPost.child("name").setValue(UserUtilities.currentUser.getUsername());
+                    progressDialog.dismiss();
+                    Toast.makeText(VerificationPage.this, "Your details are submitted, you will be notified once verification is done.", Toast.LENGTH_LONG).show();
+                    finish();
+
                 }
             });
 
+        }else {
+            progressDialog.dismiss();
+            Toast.makeText(this, "Please add relevant ID..", Toast.LENGTH_SHORT).show();
         }
-
 
     }
     @Override
@@ -193,6 +219,8 @@ public class VerificationPage extends BaseActivity {
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .start(this);
         }
+
+
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);

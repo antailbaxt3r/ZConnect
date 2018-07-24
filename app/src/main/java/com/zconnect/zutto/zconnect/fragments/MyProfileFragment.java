@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -67,6 +68,7 @@ public class MyProfileFragment extends Fragment {
     private LinearLayout content;
     private ProgressBar progressBar;
     private Menu menu;
+    private android.support.design.widget.AppBarLayout appBarLayout;
     private Button userTypeText, showContact;
 
     private DatabaseReference infoneContact,usersReference;
@@ -86,8 +88,10 @@ public class MyProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_open_user_detail, container, false);
         content = (LinearLayout) view.findViewById(R.id.phonebook_details_content);
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) view.findViewById(R.id.toolbar_app_bar_home);
-        toolbar.setVisibility(View.GONE);
+        appBarLayout = (android.support.design.widget.AppBarLayout ) view.findViewById(R.id.topToolbar);
+        appBarLayout.setVisibility(View.GONE);
+//        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) view.findViewById(R.id.toolbar_app_bar_home);
+//        toolbar.setVisibility(View.GONE);
         progressBar = (ProgressBar) view.findViewById(R.id.phonebook_details_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         content.setVisibility(View.INVISIBLE);

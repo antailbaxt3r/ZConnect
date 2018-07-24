@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/layout_recents_features_view_item"
+<LinearLayout android:id="@+id/layout_recents_features_view_item"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:duplicateParentState="true"
         android:padding="15dp">
-        <ImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/icon_recents_features_view_item"
             android:duplicateParentState="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/outline_local_mall_white_36"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:viewAspectRatio="1"
             android:layout_centerHorizontal="true"
             android:tint="@color/white"/>
         <TextView
@@ -24,7 +24,7 @@
             android:duplicateParentState="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Storeroom"
+            android:text="feature"
             android:layout_below="@+id/icon_recents_features_view_item"
             android:layout_centerHorizontal="true"
             android:textColor="@color/white"

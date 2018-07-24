@@ -57,8 +57,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
             holder.userAvatar.setImageURI(imageuri);
         }
         final ArrayList<String> phoneNums = infoneContactsRVItems.get(position).getPhoneNums();
-        phoneNums.set(0, phoneNums.get(0).toString() + " (Mobile)");
-        phoneNums.set(1, phoneNums.get(1).toString() + " (Whatsapp)");
+
         holder.callImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,14 +81,16 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
 
     }
 
-    private void callOptionsDialog(ArrayList<String> phoneArrayList) {
+    private void callOptionsDialog(final ArrayList<String> phoneArrayList) {
 
 
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
         builderSingle.setIcon(android.R.drawable.ic_menu_call);
-        builderSingle.setTitle("Select One Name:-");
+        builderSingle.setTitle("Select to call: ");
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_item);
+
         arrayAdapter.addAll(phoneArrayList);
 
         builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -102,7 +103,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                final String strName = arrayAdapter.getItem(which);
+                final String strName = phoneArrayList.get(which);
 
                 Intent intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse("tel:" + strName));

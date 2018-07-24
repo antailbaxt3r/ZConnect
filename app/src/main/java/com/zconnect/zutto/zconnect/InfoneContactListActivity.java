@@ -145,13 +145,11 @@ public class InfoneContactListActivity extends AppCompatActivity {
                         }
                         Boolean contactHidden = false;
 
-                        try {
+                        if(childSnapshot.hasChild("contactHidden")){
                             contactHidden = childSnapshot.child("contactHidden").getValue(Boolean.class);
-                        }catch (Exception e){ }
-
+                        }
 
                         if(!contactHidden) {
-                            if(childSnapshot.child("contactHidden").getValue(Boolean.class))
                             if (search) {
                                 if (name.toLowerCase().trim().contains(queryString.toLowerCase())) {
                                     infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
@@ -182,8 +180,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
                 }
 
 
-                infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this,
-                        contactsRVItems, catId);
+                infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
                 progressBar.setVisibility(View.GONE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);

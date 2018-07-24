@@ -6,10 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.zconnect.zutto.zconnect.itemFormats.NewUserItemFormat;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.holders.newUserViewHolder;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 
 import java.util.Vector;
 
@@ -17,6 +20,7 @@ public class NewUserRVAdapter extends RecyclerView.Adapter<newUserViewHolder> {
 
     private Context context;
     private Vector<NewUserItemFormat> newUserItemFormats;
+
 
     public NewUserRVAdapter(Context context, Vector<NewUserItemFormat> newUserItemFormats) {
         this.context = context;
@@ -36,12 +40,18 @@ public class NewUserRVAdapter extends RecyclerView.Adapter<newUserViewHolder> {
     public void onBindViewHolder(newUserViewHolder holder, int position) {
         holder.idImageSDV.setImageURI(Uri.parse(newUserItemFormats.get(position).getIdImageURL()));
         holder.aboutTextView.setText(newUserItemFormats.get(position).getAbout());
+        holder.newUserName.setText(newUserItemFormats.get(position).getName());
         try {
-            holder.adminApprovedByTextView.setText(newUserItemFormats.get(position).getApprovedBy().getUsername());
-        }catch (Exception e){
-            holder.adminApprovedByTextView.setVisibility(View.GONE);
-        }
+            if (newUserItemFormats.get(position).getApprovedRejectedBy()!= null) {
+                holder.setCardUI(newUserItemFormats.get(position).getStatusCode(), newUserItemFormats.get(position).getApprovedRejectedBy().getUsername());
+            } else {
+                holder.adminApprovedByTextView.setVisibility(View.GONE);
+            }
+        }catch (Exception e){}
+
         holder.setAcceptDeclineButton(newUserItemFormats.get(position).getUID());
+
+
     }
 
     @Override

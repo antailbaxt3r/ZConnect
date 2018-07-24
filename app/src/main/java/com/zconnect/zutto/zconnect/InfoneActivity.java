@@ -77,7 +77,7 @@ public class InfoneActivity extends Fragment {
         fabCatAdd = (FloatingActionButton) view.findViewById(R.id.fab_cat_infone);
 
 
-        communitySP = getActivity().getApplicationContext().getSharedPreferences("communityName", MODE_PRIVATE);
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
         databaseReferenceCat = FirebaseDatabase.getInstance().getReference().child("communities")
@@ -115,7 +115,7 @@ public class InfoneActivity extends Fragment {
                     }
                 });
 
-                infoneCategoriesRVAdapter = new InfoneCategoriesRVAdapter(categoriesList, getActivity().getApplicationContext());
+                infoneCategoriesRVAdapter = new InfoneCategoriesRVAdapter(categoriesList, getContext());
                 recyclerViewCat.setAdapter(infoneCategoriesRVAdapter);
 
             }
