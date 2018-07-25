@@ -13,7 +13,8 @@ import org.joda.time.LocalDate;
 public class CounterManager extends BaseActivity {
     private static LocalDate dateTime = new LocalDate();
 
-    private final static DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(dateTime.toString());
+    public static  String communityCode = "jangal";
+    private static final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityCode).child("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(dateTime.toString());
 
     public static void infoneOpen() {
         ref.keepSynced(true);

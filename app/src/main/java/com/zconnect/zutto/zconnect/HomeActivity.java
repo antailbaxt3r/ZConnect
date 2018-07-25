@@ -604,6 +604,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
 
+                CounterManager.communityCode = communityReference;
+
                 communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
 
                 communityInfoRef.addValueEventListener(new ValueEventListener() {

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
+import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.R;
 
 import org.joda.time.LocalDate;
@@ -61,6 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         registerReceiver(receiver, filter);
         SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
+        //CounterManager.communityCode = communityReference;
     }
 
     public void setColour(int colour) {

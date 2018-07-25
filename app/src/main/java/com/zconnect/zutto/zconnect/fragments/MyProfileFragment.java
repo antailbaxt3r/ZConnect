@@ -134,12 +134,18 @@ public class MyProfileFragment extends Fragment {
         db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    userProfile = dataSnapshot.getValue(UserItemFormat.class);
-                    setUserDetails();
-                    progressBar.setVisibility(View.GONE);
-                    content.setVisibility(View.VISIBLE);
-                }catch (Exception e){}
+
+                userProfile = dataSnapshot.getValue(UserItemFormat.class);
+                if(!dataSnapshot.hasChild("contactHidden")){
+                    userProfile.setContactHidden(false);
+                    UserUtilities.currentUser.setContactHidden(false);
+                }else {
+                    UserUtilities.currentUser.setContactHidden(userProfile.getContactHidden());
+                }
+                setUserDetails();
+                progressBar.setVisibility(View.GONE);
+                content.setVisibility(View.VISIBLE);
+
             }
 
             @Override
@@ -382,11 +388,15 @@ public class MyProfileFragment extends Fragment {
             //Define if contact hidden here also link the request call function with the button
             call.setVisibility(View.GONE);
             showContact.setVisibility(View.VISIBLE);
-            editTextNumber.setText("******" + mobileNumber.substring(6));
-            whatsAppNumberText.setText("******" + whatsAppNumber.substring(6));
-            showContact.setText(getContext().getResources().getString(R.string.show_contact));
-            editTextNumber.setOnClickListener(null);
+            try {
+                editTextNumber.setText("******" + mobileNumber.substring(6));
+                whatsAppNumberText.setText("******" + whatsAppNumber.substring(6));
+                showContact.setText(getContext().getResources().getString(R.string.show_contact));
+                editTextNumber.setOnClickListener(null);
 
+            }catch (Exception e){
+
+            }
         }
         else {
             editTextNumber.setText(mobileNumber);
