@@ -259,6 +259,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         void setUnSeenMessages(Integer totalMessages,Integer readMessages){
 
             if(totalMessages-readMessages>0){
+                unSeenMessages.setVisibility(View.VISIBLE);
                 unSeenMessages.setText((totalMessages-readMessages) + "");
             }else {
                 unSeenMessages.setVisibility(View.GONE);
