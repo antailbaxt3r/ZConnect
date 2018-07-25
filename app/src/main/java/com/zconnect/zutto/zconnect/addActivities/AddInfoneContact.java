@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +22,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -227,34 +232,69 @@ public class AddInfoneContact extends AppCompatActivity {
 
 
         if (mImageUri != null) {
-            StorageReference filepath = mStorageRef.child("InfoneImage").child(mImageUri.getLastPathSegment() + key);
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            final StorageReference filepath = mStorageRef.child("InfoneImage").child(mImageUri.getLastPathSegment() + key);
+            UploadTask uploadTask = filepath.putFile(mImageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-                    if (downloadUri == null) {
-                        Log.e(TAG, "onSuccess: error got empty downloadUri");
-                        return;
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if(!task.isSuccessful()) {
+                        throw task.getException();
                     }
-                    //newContactRef.child("imageurl").setValue(downloadUri.toString());
-                    newContactNumRef.child("imageurl").setValue(downloadUri.toString());
-                    flag1 = true;
-                    customFinish();
+                    return filepath.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful())
+                    {
+                        Uri downloadUri = task.getResult();
+                        if (downloadUri == null) {
+                            Log.e(TAG, "onSuccess: error got empty downloadUri");
+                            return;
+                        }
+                        //newContactRef.child("imageurl").setValue(downloadUri.toString());
+                        newContactNumRef.child("imageurl").setValue(downloadUri.toString());
+                        flag1 = true;
+                        customFinish();
+                    }
+                    else {
+                        // Handle failures
+                        // ...
+                        Snackbar.make(nameEt, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             });
-            StorageReference filepathThumb = mStorageRef.child("InfoneImageSmall").child(mImageUriSmall.getLastPathSegment() + key + "Thumbnail");
-            filepathThumb.putFile(mImageUriSmall).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            final StorageReference filepathThumb = mStorageRef.child("InfoneImageSmall").child(mImageUriSmall.getLastPathSegment() + key + "Thumbnail");
+            UploadTask uploadTaskThumb = filepathThumb.putFile(mImageUriSmall);
+            uploadTaskThumb.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUriThumb = taskSnapshot.getDownloadUrl();
-                    if (downloadUriThumb == null) {
-                        Log.e(TAG, "onSuccess: error got empty downloadUri");
-                        return;
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if(!task.isSuccessful())
+                    {
+                        throw task.getException();
                     }
-                    newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
-                    newContactNumRef.child("thumbnail").setValue(downloadUriThumb.toString());
-                    flag2=true;
-                    customFinish();
+                    return filepathThumb.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful())
+                    {
+                        Uri downloadUriThumb = task.getResult();
+                        if (downloadUriThumb == null) {
+                            Log.e(TAG, "onSuccess: error got empty downloadUri");
+                            return;
+                        }
+                        newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
+                        newContactNumRef.child("thumbnail").setValue(downloadUriThumb.toString());
+                        flag2=true;
+                        customFinish();
+                    }
+                    else {
+                        // Handle failures
+                        // ...
+                        Snackbar.make(nameEt, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             });
         } else {

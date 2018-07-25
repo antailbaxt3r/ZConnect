@@ -6,11 +6,11 @@
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/white"
     android:orientation="vertical"
-    app:cardElevation="0dp"
-    android:layout_margin="10dp">
+    app:cardElevation="0dp">
 
     <TextView
         android:id="@+id/topicText"
+        android:padding="@dimen/padding_small"
         android:textStyle="bold"
         android:textSize="18sp"
         android:textColor="@color/primaryText"
