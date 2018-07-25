@@ -11,10 +11,8 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import org.joda.time.LocalDate;
 
 public class CounterManager extends BaseActivity {
-    private static LocalDate dateTime = new LocalDate();
 
-    public static  String communityCode = "jangal";
-    private static final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityCode).child("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(dateTime.toString());
+    public static DatabaseReference ref;
 
     public static void infoneOpen() {
         ref.keepSynced(true);

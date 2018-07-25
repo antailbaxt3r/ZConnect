@@ -58,6 +58,8 @@ import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
 
+import org.joda.time.LocalDate;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -603,8 +605,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             } else if(communityReference!=null) {
 
                 FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
+                LocalDate dateTime = new LocalDate();
+                CounterManager.ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(dateTime.toString());
 
-                CounterManager.communityCode = communityReference;
 
                 communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
 
