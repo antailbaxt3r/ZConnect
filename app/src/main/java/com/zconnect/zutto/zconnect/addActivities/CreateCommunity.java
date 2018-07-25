@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +22,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -180,20 +185,36 @@ public class CreateCommunity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
 
         if(!TextUtils.isEmpty(communityEmailString)&&!TextUtils.isEmpty(communityImageString)&&!TextUtils.isEmpty(communityNameString)){
-            StorageReference filepath = mStorage.child("CommunityImages").child((mImageUri.getLastPathSegment()));
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            final StorageReference filepath = mStorage.child("CommunityImages").child((mImageUri.getLastPathSegment()));
+            UploadTask uploadTask = filepath.putFile(mImageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-
-                    DatabaseReference newPost = mDatabase.push();
-                    String key = newPost.getKey();
-                    newPost.child("name").setValue(communityNameString);
-                    newPost.child("key").setValue(key);
-                    newPost.child("uid").setValue(communityEmailString);
-                    newPost.child("image").setValue(downloadUri.toString());
-
-                    mProgress.dismiss();
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if(!task.isSuccessful())
+                    {
+                        throw task.getException();
+                    }
+                    return filepath.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful())
+                    {
+                        Uri downloadUri = task.getResult();
+                        DatabaseReference newPost = mDatabase.push();
+                        String key = newPost.getKey();
+                        newPost.child("name").setValue(communityNameString);
+                        newPost.child("key").setValue(key);
+                        newPost.child("uid").setValue(communityEmailString);
+                        newPost.child("image").setValue(downloadUri.toString());
+                        mProgress.dismiss();
+                    }
+                    else {
+                        // Handle failures
+                        // ...
+                        Snackbar.make(communityName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             });
             Toast.makeText(this, "Posted", Toast.LENGTH_SHORT).show();

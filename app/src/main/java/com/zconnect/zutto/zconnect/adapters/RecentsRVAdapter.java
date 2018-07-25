@@ -71,7 +71,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import static com.google.android.gms.internal.zzagz.runOnUiThread;
+//import static com.google.android.gms.internal.zzagz.runOnUiThread;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -255,7 +255,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                         Log.d("Interrupted Error", ie.getMessage());
                                     }
 
-                                    runOnUiThread(new Runnable() {
+                                    mHomeActivity.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             // Do some stuff
@@ -320,7 +320,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.users), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_home_white_18dp));
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_home_white_18));
                     holder.layoutFeatureIcon.setOnClickListener(null);
                     holder.postConjunction.setText(" just joined your community ");
                     holder.post.setVisibility(View.GONE);

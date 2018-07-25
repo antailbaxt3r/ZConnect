@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -24,7 +25,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -173,7 +177,7 @@ public class AddStatus extends BaseActivity {
 
         submitlistener = new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
 
                 if(messageInput.getText().toString().length()==0 && mImageUri ==null)
                     Snackbar.make(view, "Text or image needed.", Snackbar.LENGTH_SHORT).show();
@@ -225,17 +229,33 @@ public class AddStatus extends BaseActivity {
 
                     if(mImageUri!= null) {
 
-                        StorageReference filepath = mStorage.child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                        filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        final StorageReference filepath = mStorage.child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        UploadTask uploadTask = filepath.putFile(mImageUri);
+                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                             @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Uri downloadUri = taskSnapshot.getDownloadUrl();
-                                newMessage.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if(!task.isSuccessful())
+                                {
+                                    throw task.getException();
+                                }
+                                return filepath.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if(task.isSuccessful())
+                                {
+                                    Uri downloadUri = task.getResult();
+                                    newMessage.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
 
-                                mProgress.dismiss();
-                                finish();
-
+                                    mProgress.dismiss();
+                                    finish();
+                                }
+                                else {
+                                    // Handle failures
+                                    // ...
+                                    Snackbar.make(view, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                                }
                             }
                         });
 

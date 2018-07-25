@@ -5,18 +5,22 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,7 +42,7 @@ public class MyProducts extends BaseActivity {
     private RecyclerView mProductList;
     //    private List<String> reserveList;
     private FirebaseAuth mAuth;
-
+    private FirebaseRecyclerOptions<Product> options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,9 @@ public class MyProducts extends BaseActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
         query = mDatabase.orderByChild("userID").equalTo(userId);
+        options = new FirebaseRecyclerOptions.Builder<Product>()
+                        .setQuery(query, Product.class)
+                        .build();
 
     }
 
@@ -85,22 +92,25 @@ public class MyProducts extends BaseActivity {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<Product, ProductViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, ProductViewHolder>(
-                Product.class,
-                R.layout.my_product_row,
-                ProductViewHolder.class,
-                query
-        ) {
+        FirebaseRecyclerAdapter<Product, ProductViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, ProductViewHolder>(options) {
             @Override
-            protected void populateViewHolder(final MyProducts.ProductViewHolder viewHolder, Product model, int position) {
+            public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.my_product_row, parent, false);
 
+                return new ProductViewHolder(view);
+//                return null;
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull ProductViewHolder holder, int position, @NonNull Product model) {
                 final String product_key = getRef(position).getKey();
-                viewHolder.setProductName(model.getProductName());
-                viewHolder.setProductDesc(model.getProductDescription());
-                viewHolder.setPrice(model.getPrice(),model.getNegotiable());
-                viewHolder.setIntent(model.getKey());
-                viewHolder.setImage(getApplicationContext(), model.getImage());
-                viewHolder.setArchiveButton(product_key);
+                holder.setProductName(model.getProductName());
+                holder.setProductDesc(model.getProductDescription());
+                holder.setPrice(model.getPrice(),model.getNegotiable());
+                holder.setIntent(model.getKey());
+                holder.setImage(getApplicationContext(), model.getImage());
+                holder.setArchiveButton(product_key);
             }
         };
         mProductList.setAdapter(firebaseRecyclerAdapter);
