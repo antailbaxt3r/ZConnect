@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 
+import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -50,8 +52,6 @@ public class LogoFlashActivity extends BaseActivity {
         bgImage = (ImageView) findViewById(R.id.bgImage);
         bgColor = findViewById(R.id.bgColor);
 
-        //Toast.makeText(this, ServerValue.TIMESTAMP.ge.toString(), Toast.LENGTH_SHORT).show();
-
         if (communityReference != null) {
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
@@ -63,7 +63,6 @@ public class LogoFlashActivity extends BaseActivity {
                     } else {
                         bgColor.setVisibility(View.GONE);
                         bgImage.setBackground(null);
-                        bgImage.setBackgroundColor(Color.parseColor(dataSnapshot.child("bgUrl").getValue().toString()));
                     }
                 }
 
@@ -83,7 +82,6 @@ public class LogoFlashActivity extends BaseActivity {
                     } else {
                         bgColor.setVisibility(View.GONE);
                         bgImage.setBackground(null);
-                        bgImage.setBackgroundColor(Color.parseColor(dataSnapshot.child("bgUrl").getValue().toString()));
                     }
                 }
 
@@ -94,22 +92,20 @@ public class LogoFlashActivity extends BaseActivity {
             });
         }
 
+        showDebugDBAddressLogToast(this);
 
 
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        new Timer().schedule(new TimerTask() {
 
-//        link();
-            // Setting full screen view
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
 
-                @Override
-                public void run() {
-
-                    if (checkPermission()) {
-                        // Do not wait so that user doesn't realise this is a new launch.
-                        startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
-                        finish();
-                    }
+                if (checkPermission()) {
+                    // Do not wait so that user doesn't realise this is a new launch.
+                    startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
+                    finish();
+                }
 
             }
         }, 2000);
@@ -134,6 +130,19 @@ public class LogoFlashActivity extends BaseActivity {
 //                }
 //            });
 
+    }
+
+    public static void showDebugDBAddressLogToast(Context context) {
+        if (BuildConfig.DEBUG) {
+            try {
+                Class<?> debugDB = Class.forName("com.amitshekhar.DebugDB");
+                Method getAddressLog = debugDB.getMethod("getAddressLog");
+                Object value = getAddressLog.invoke(null);
+                Toast.makeText(context, (String) value, Toast.LENGTH_LONG).show();
+            } catch (Exception ignore) {
+
+            }
+        }
     }
 
 

@@ -164,6 +164,12 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL:
                 requestCallNotification(ND.getCommunityName(),ND.getUserName(),ND.getUserImage(),ND.getUserMobileNumber(),ND.getItemKey());
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT:
+                newUserAcceptNotification(ND.getCommunityName(),ND.getItemKey());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT:
+                newUserRejectNotification(ND.getCommunityName(),ND.getItemKey());
+                break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED:
                 statusLikeNotification(ND.getItemKey(), ND.getCommunityName(), ND.getUserName(), ND.getUserImage(), ND.getItemLikeCount());
                 Log.d("LIKESSSS", "2");
@@ -171,6 +177,26 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         }
 
         return null;
+    }
+
+    private void newUserRejectNotification(String communityName,String receiverKey) {
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true,receiverKey);
+    }
+
+    private void newUserAcceptNotification(String communityName,String receiverKey) {
+        creator = new RemoteMessage.Builder("data");
+        creator.addData("communityName",communityName);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL);
+        creator.addData("userKey",userKey);
+
+        sendNotification(true,receiverKey);
     }
 
     private void statusLikeNotification(String statusKey, String communityName, String userName, String userImage, long likeCount)
@@ -211,6 +237,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
+        creator.addData("communityReference",communityReference);
+
         creator.addData("userName",userName);
         creator.addData("userImage",userImage);
 
@@ -227,6 +255,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
+        creator.addData("communityReference",communityReference);
+
         creator.addData("userName",userName);
         creator.addData("userImage",userImage);
 
@@ -247,6 +277,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
+        creator.addData("communityReference",communityReference);
+
         creator.addData("userName",userName);
         creator.addData("userImage",userImage);
 
@@ -265,6 +297,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
+        creator.addData("communityReference",communityReference);
+
         creator.addData("userName",userName);
         creator.addData("userImage",userImage);
 
@@ -283,6 +317,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
+        creator.addData("communityReference",communityReference);
+
         creator.addData("userName",userName);
         creator.addData("userImage",userImage);
 
@@ -348,6 +384,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator = new RemoteMessage.Builder("data");
 
         creator.addData("communityName",communityName);
+        creator.addData("communityReference",communityReference);
+
         creator.addData("forumName",forumName);
         creator.addData("forumCategory",forumCategory);
         creator.addData("forumCategoryUID",forumCategoryUID);
@@ -385,6 +423,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
     private void eventAddNotification(String communityName,String eventName,String eventLocation,String eventKey,String eventImage) {
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
+        creator.addData("communityReference",communityReference);
+
         creator.addData("eventName",eventName);
         creator.addData("eventLocation",eventLocation);
         creator.addData("eventKey",eventKey);

@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,8 +44,10 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
@@ -55,6 +58,7 @@ import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.adapters.ChatRVAdapter;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -281,8 +285,12 @@ public class ChatActivity extends BaseActivity {
         findViewById(R.id.sendBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postMessage();
+                if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
+                    newUserVerificationAlert.buildAlertCheckNewUser("Chat",ChatActivity.this);
+                }else {
+                    postMessage();
 
+                }
             }
         });
 
@@ -583,10 +591,25 @@ public class ChatActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+
+
+
                 messages.clear();
                 for (DataSnapshot snapshot:dataSnapshot.getChildren()){
                     messages.add(snapshot.getValue(ChatItemFormats.class));
                 }
+
+                if (type.equals("forums")) {
+                    DBHelper mydb = new DBHelper(ChatActivity.this);
+
+                    String key, tab, name;
+                    key = getIntent().getStringExtra("key");
+                    tab = getIntent().getStringExtra("tab");
+                    name = getIntent().getStringExtra("name");
+
+                    mydb.replaceForum(name,key,tab,messages.size());
+                }
+
                 adapter.notifyDataSetChanged();
                 chatView.scrollToPosition(messages.size()-1);
                 progressBar.setVisibility(View.GONE);

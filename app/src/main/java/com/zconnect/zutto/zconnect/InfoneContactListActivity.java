@@ -42,11 +42,10 @@ public class InfoneContactListActivity extends AppCompatActivity {
     Toolbar toolbar;
     String catId;
     RecyclerView recyclerViewContacts;
-    ArrayList<InfoneContactsRVItem> contactsRVItems;
+    ArrayList<InfoneContactsRVItem> contactsRVItems,contactsRVSearchItems;
     InfoneContactsRVAdpater infoneContactsRVAdpater;
     DatabaseReference databaseReferenceList;
     ValueEventListener listener;
-    InfoneContactsRVItem infoneContactsRVItem;
     FloatingActionButton fabAddContact;
     private SharedPreferences communitySP;
     public String communityReference;
@@ -114,20 +113,24 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
     private  void setAdapter(final String queryString, final Boolean search) {
 
-
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 contactsRVItems = new ArrayList<>();
-                for (DataSnapshot childSnapshot :
-                        dataSnapshot.getChildren()) {
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
 
                     try {
+                        InfoneContactsRVItem temp = new InfoneContactsRVItem();
 
                         String name = childSnapshot.child("name").getValue(String.class);
                         String imageThumb = childSnapshot.child("thumbnail").getValue(String.class);
                         String infoneUserId = childSnapshot.getKey();
+
+                        temp.setName(name);
+                        temp.setImageThumb(imageThumb);
+                        temp.setInfoneUserId(infoneUserId);
+
 
                         Log.e("tt", "data " + name);
                         Log.e("tt", "data " + imageThumb);
@@ -143,41 +146,31 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
                             Log.e("tt", "data " + phoneNumbs.toString());
                         }
+
+                        temp.setPhoneNums(phoneNumbs);
+
                         Boolean contactHidden = false;
 
                         if(childSnapshot.hasChild("contactHidden")){
                             contactHidden = childSnapshot.child("contactHidden").getValue(Boolean.class);
                         }
 
+                        temp.setContactHidden(contactHidden);
+
                         if(!contactHidden) {
-                            if (search) {
-                                if (name.toLowerCase().trim().contains(queryString.toLowerCase())) {
-                                    infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
-                                    contactsRVItems.add(infoneContactsRVItem);
-                                    if (contactsRVItems.size() > 7) {
-                                        break;
-                                    }
-                                }
-
-
-                            } else {
-                                infoneContactsRVItem = new InfoneContactsRVItem(name, "0", imageThumb, phoneNumbs, infoneUserId);
-                                contactsRVItems.add(infoneContactsRVItem);
-                            }
+                            contactsRVItems.add(temp);
                         }
 
                         totalContacts = contactsRVItems.size();
                     }catch (Exception e){}
                 }
 
-                if(!search || queryString.trim().equals("")){
-                    Collections.sort(contactsRVItems, new Comparator<InfoneContactsRVItem>() {
-                        @Override
-                        public int compare(InfoneContactsRVItem contact1, InfoneContactsRVItem contact2) {
-                            return contact1.getName().trim().compareToIgnoreCase(contact2.getName().trim());
-                        }
-                    });
-                }
+                Collections.sort(contactsRVItems, new Comparator<InfoneContactsRVItem>() {
+                    @Override
+                    public int compare(InfoneContactsRVItem contact1, InfoneContactsRVItem contact2) {
+                        return contact1.getName().trim().compareToIgnoreCase(contact2.getName().trim());
+                    }
+                });
 
 
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVItems, catId);
@@ -194,7 +187,34 @@ public class InfoneContactListActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
-        databaseReferenceList.addListenerForSingleValueEvent(listener);
+
+        if(search){
+            if(!queryString.equals("")) {
+                contactsRVSearchItems = new ArrayList<>();
+                for (int i = 0; i < contactsRVItems.size(); i++) {
+
+                    if (contactsRVItems.get(i).getName().toLowerCase().trim().contains(queryString.toLowerCase()) && !contactsRVItems.get(i).getContactHidden()) {
+                        contactsRVSearchItems.add(contactsRVItems.get(i));
+                    }
+                    if (contactsRVSearchItems.size() > 7) {
+                        break;
+                    }
+                }
+
+                infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVSearchItems, catId);
+                recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
+                progressBar.setVisibility(View.GONE);
+                recyclerViewContacts.setVisibility(View.VISIBLE);
+            }else {
+                infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVItems, catId);
+                recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
+                progressBar.setVisibility(View.GONE);
+                recyclerViewContacts.setVisibility(View.VISIBLE);
+            }
+
+        }else {
+            databaseReferenceList.addListenerForSingleValueEvent(listener);
+        }
 
     }
 

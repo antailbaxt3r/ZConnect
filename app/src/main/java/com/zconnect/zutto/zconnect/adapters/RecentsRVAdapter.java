@@ -55,6 +55,7 @@ import com.zconnect.zutto.zconnect.TabStoreRoom;
 import com.zconnect.zutto.zconnect.TabbedEvents;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
@@ -542,8 +543,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         holder.messagesMessage.setVisibility(View.VISIBLE);
                     try {
                         if(!recentsItemFormats.get(position).getImageurl().equals(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS) && recentsItemFormats.get(position).getImageurl()!=null){
-                            holder.postImage.setVisibility(View.VISIBLE);
-                            holder.postImage.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
+                            if(!recentsItemFormats.get(position).getImageurl().equals("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png")) {
+                                holder.postImage.setVisibility(View.VISIBLE);
+                                holder.postImage.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
+                            }
                         }
                         else
                             holder.postImage.setVisibility(View.GONE);
@@ -921,8 +924,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             textArea.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, AddStatus.class);
-                    context.startActivity(intent);
+                    if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                        Intent intent = new Intent(context, AddStatus.class);
+                        context.startActivity(intent);
+                    }else {
+                        newUserVerificationAlert.buildAlertCheckNewUser("Add Status",context);
+                    }
                 }
             });
 
@@ -934,6 +941,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public BlankViewHolder(View itemView) {
             super(itemView);
         }
+
     }
 
     private class FeaturesViewHolder extends RecyclerView.ViewHolder {
@@ -972,27 +980,41 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             events.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, TabbedEvents.class);
-                    context.startActivity(intent);
-
+                    if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                        Intent intent = new Intent(context, TabbedEvents.class);
+                        context.startActivity(intent);
+                    }else {
+                        newUserVerificationAlert.buildAlertCheckNewUser("Events",context);
+                    }
                 }
             });
 
             storeroom.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, TabStoreRoom.class);
-                    context.startActivity(intent);
+                    if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                        Intent intent = new Intent(context, TabStoreRoom.class);
+                        context.startActivity(intent);
+                    }else {
+                        newUserVerificationAlert.buildAlertCheckNewUser("Storeroom",context);
+                    }
+
                 }
             });
 
             cabpool.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, CabPoolAll.class);
-                    context.startActivity(intent);
+                    if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                        Intent intent = new Intent(context, CabPoolAll.class);
+                        context.startActivity(intent);
+                    }else {
+                        newUserVerificationAlert.buildAlertCheckNewUser("Cab Pool",context);
+                    }
+
                 }
             });
+
             mOtherFeatures.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1006,14 +1028,18 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             otherFeatureItemLayout = (LinearLayout) View.inflate(context, R.layout.recents_features_view_item, null);
                             featureName = (TextView) otherFeatureItemLayout.findViewById(R.id.name_recents_features_view_item);
                             otherFeatureIcon = (SimpleDraweeView) otherFeatureItemLayout.findViewById(R.id.icon_recents_features_view_item);
-//                        Picasso.with(context).load(Uri.parse(shot.child("URL").toString())).into(otherFeatureIcon);
                             otherFeatureIcon.setImageURI(shot.child("image").getValue().toString());
                             featureName.setText(shot.child("name").getValue(String.class));
                             otherFeatureItemLayout.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").getValue().toString()));
-                                    context.startActivity(urlIntent);
+                                    if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                        Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").getValue().toString()));
+                                        context.startActivity(urlIntent);
+                                    }else {
+                                        newUserVerificationAlert.buildAlertCheckNewUser(shot.child("name").getValue(String.class),context);
+                                    }
+
                                 }
                             });
                             linearLayout.addView(otherFeatureItemLayout);

@@ -4,6 +4,7 @@ public class NotificationItemFormat {
 
     private String notificationIdentifier;
     private String communityName;
+    private String communityReference;
 
     private String userKey;
     private String userName;
@@ -157,6 +158,15 @@ public class NotificationItemFormat {
     public void setItemLikeCount(long itemLikeCount) {
         this.itemLikeCount = itemLikeCount;
     }
+
+    public String getCommunityReference() {
+        return communityReference;
+    }
+
+    public void setCommunityReference(String communityReference) {
+        this.communityReference = communityReference;
+    }
+
 
 
 }

@@ -567,13 +567,13 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             }else{
                 if (newUser) {
                     homePush.child("PostedBy").child("ImageThumb").setValue(mUser.getPhotoUrl().toString());
-                }
-                newPost.child("imageURLThumbnail").setValue(mUser.getPhotoUrl().toString());
-                newPost.child("imageURL").setValue(mUser.getPhotoUrl().toString());
-                newContactNumRef.child("imageurl").setValue(mUser.getPhotoUrl().toString());
-                newContactRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
-                newContactNumRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
+                    newPost.child("imageURLThumbnail").setValue(mUser.getPhotoUrl().toString());
+                    newPost.child("imageURL").setValue(mUser.getPhotoUrl().toString());
+                    newContactNumRef.child("imageurl").setValue(mUser.getPhotoUrl().toString());
+                    newContactRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
+                    newContactNumRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
 
+                }
                 updateCurrentUser();
                 mProgress.dismiss();
                 finish();

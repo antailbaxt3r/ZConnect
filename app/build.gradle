@@ -75,6 +75,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
+
     implementation 'com.github.instacart.truetime-android:library:3.3'
 //    implementation 'de.hdodenhof:circleimageview:2.2.0'
     api 'joda-time:joda-time:2.10'

@@ -53,11 +53,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.Utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
+
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 
@@ -115,10 +118,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     SimpleDraweeView[] tabImage = new SimpleDraweeView[6];
     ImageView[] tabNotificationCircle = new ImageView[6];
 
-    BottomSheetBehavior sheetBehavior;
-    LinearLayout layoutBottomSheet;
-
     public TabLayout.Tab recentsT,forumsT,addT,infoneT,profileT;
+    HomeBottomSheet bottomSheetFragment;
 
     public HomeActivity() {
 
@@ -153,6 +154,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         mAuth = FirebaseAuth.getInstance();
 
+        bottomSheetFragment = new HomeBottomSheet();
+
         View navHeader = navigationView.getHeaderView(0);
         try {
             FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid());
@@ -185,52 +188,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 .build();
 
 
-
-        // Bottom Sheet
-        layoutBottomSheet = (LinearLayout) findViewById(R.id.home_bottom_sheet);
-//        final HomeBottomSheet bottomSheetFragment = new HomeBottomSheet();
-
-        //Floating Button
-//        fab = (FloatingActionButton)findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int i=tabs.getSelectedTabPosition();
-//                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-//            }
-//        });
-
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
 
         initListeners();
 
         tabs();
-    }
-
-    //Alert box to display guest login
-    void alertBox(){
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getApplicationContext());
-
-        builder.setMessage("Please Log In to access this feature.")
-                .setTitle("Dear Guest!");
-
-        builder.setPositiveButton("Log In", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-
-            }
-        });
-        builder.setNegativeButton("Lite :P", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
-        android.app.AlertDialog dialog = builder.create();
-        dialog.show();
-
-
     }
 
     //Circular notification in the bottom navigation
@@ -279,28 +241,29 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 1: {
-                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
-                            buildAlertCheckNewUser("Forums");
-                            recentsT.select();
+                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                            newUserVerificationAlert.buildAlertCheckNewUser("Forums",HomeActivity.this);
+                            tabs.getTabAt(prePos);
                         }else{
                             setActionBarTitle("Forums");
                             CounterManager.forumsOpen();
-//                        CounterManager.InfoneOpen();
-//                        fab.setImageResource(R.drawable.ic_edit_white_24dp);
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
-                            break;
                         }
+                        break;
                     }
                     case 2: {
-                        HomeBottomSheet bottomSheetFragment = new HomeBottomSheet();
-                        int i=tabs.getSelectedTabPosition();
-                        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                            newUserVerificationAlert.buildAlertCheckNewUser("Add",HomeActivity.this);
+                            tabs.getTabAt(prePos);
+                        }else {
+                            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+                        }
                         break;
                     }
                     case 3: {
-                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
-                            buildAlertCheckNewUser("Infone");
-                            recentsT.select();
+                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                            newUserVerificationAlert.buildAlertCheckNewUser("Infone",HomeActivity.this);
+                            tabs.getTabAt(prePos);
                         }
                         else {
                             setActionBarTitle("Infone");
@@ -309,14 +272,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 4: {
-                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
-                            buildAlertCheckNewUser("Your Profile");
-                            recentsT.select();
-                        }
-                        else {
-                            setActionBarTitle("You");
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
-                        }
+                        setActionBarTitle("You");
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
                         break;
                     }
                 }
@@ -331,6 +288,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+
+                int pos = tab.getPosition();
+                tab.getCustomView().setAlpha((float) 1);
+                switch (pos) {
+                    case 2: {
+                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                            newUserVerificationAlert.buildAlertCheckNewUser("Add",HomeActivity.this);
+                            tabs.getTabAt(prePos);
+                        }else {
+                            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+                        }
+                        break;
+                    }
+                }
 
             }
         });
@@ -470,13 +441,15 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         popupsListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 ArrayList<String> popUpUrl1 = new ArrayList<>();
                 ArrayList<String> importance = new ArrayList<>();
-                boolean dataComplete = true;
+
+                Boolean updateAvailable = false;
+
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
                 String first = preferences.getString("popup", "");
                 boolean firstTimePopUp = Boolean.parseBoolean(first);
-                boolean updateAvailable = true;
 
                 int versionCode = BuildConfig.VERSION_CODE;
 
@@ -484,19 +457,21 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 if (newVersion != null && newVersion > (versionCode)) {
 
-                    updateAvailable = false;
                     String updateImageURL = dataSnapshot.child("update").child("imageUrl").getValue(String.class);
 
                     CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, updateImageURL, "UPDATE");
-                    cdd.show();
+
+                    if(!cdd.isShowing()) {
+                        cdd.show();
+                    }
                     if (cdd.getWindow() == null)
                         return;
+
                     cdd.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //style id
                     Window window = cdd.getWindow();
                     window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
-                } else {
-                    updateAvailable = false;
+                    updateAvailable = true;
                 }
 
 
@@ -504,17 +479,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     if (shot.child("imp").getValue(String.class) != null && shot.child("imageUrl").getValue(String.class) != null) {
                         popUpUrl1.add(shot.child("imageUrl").getValue(String.class));
                         importance.add(shot.child("imp").getValue(String.class));
-                        dataComplete = true;
-                    } else if (!shot.getKey().equalsIgnoreCase("update")) {
-                        dataComplete = false;
                     }
                 }
 
-                for (int i = 0; i < popUpUrl1.size() && dataComplete && firstTimePopUp; i++) {
-                      double random1 = Math.random();
+                for (int i = 0; i < popUpUrl1.size()&& firstTimePopUp && !updateAvailable; i++) {
+
+                    double random1 = Math.random();
                     int random = (int) (random1 * 10);
                     int importanceDigit = Integer.parseInt(importance.get(i));
+
                     boolean show = false;
+
                     if (importanceDigit == 3) {
                         if (random % 2 == 0)
                             show = true;
@@ -565,17 +540,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             if(UserUtilities.currentUser.getUserType()== null){
                                 UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_VERIFIED);
                             }
-                            recent = new Recents();
-                            forums = new ForumsActivity();
-                            myProfile = new MyProfileFragment();
-                            infone = new InfoneActivity();
-
                             if(communityReference!=null && !flag) {
-                                flag =true;
+                                recent = new Recents();
+                                forums = new ForumsActivity();
+                                myProfile = new MyProfileFragment();
+                                infone = new InfoneActivity();
+
                                 getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+
+                                tabImage[4].setImageURI(UserUtilities.currentUser.getImageURLThumbnail());
+                                setTabListener();
+                                flag = true;
                             }
-                            tabImage[4].setImageURI(UserUtilities.currentUser.getImageURLThumbnail());
-                            setTabListener();
                         }
 
                         @Override
@@ -594,16 +570,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     }
 
-    private void updateViews() {
-        if(mAuth.getCurrentUser()!=null) {
-
-
-
-
-        }else {
-
-        }
-    }
 
     // must be launched from onStart()
     // else remove the eventListener in corresponding call.
@@ -641,6 +607,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             } else if(communityReference!=null) {
 
                 FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
+                LocalDate dateTime = new LocalDate();
+                CounterManager.ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(dateTime.toString());
+
 
                 communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
 
@@ -648,7 +617,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
 
                         if (dataSnapshot.hasChild("name")) {
                             Title = dataSnapshot.child("name").getValue().toString() + " Connect";
@@ -664,6 +632,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)
                                 && navHeaderBackground != null) {
                             navHeaderBackground.setImageURI(navHeaderBackGroundImageUrl);
+                        }else {
+                            navHeaderBackground.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                         }
                     }
 
@@ -952,43 +922,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //    }
 
 
-    private  void buildAlertCheckNewUser(String featureName)
-    {
-        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setMessage("You need to verify to access " + featureName)
-                .setCancelable(false)
-                .setPositiveButton("Verify Now", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Intent intent = new Intent(HomeActivity.this,VerificationPage.class);
-                        startActivity(intent);
-
-                    }
-                })
-                .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(HomeActivity.this, "You need to verify to access this feature", Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
-        final android.app.AlertDialog alert = builder.create();
-
-        if(!((Activity)this).isFinishing())
-        {
-            if(!alert.isShowing()) {
-                alert.show();
-                //show dialog
-            }
-        }
-
-    }
-
-
     public void changeFragment(int i) {
-
         tabs.getTabAt(i).select();
     }
 
