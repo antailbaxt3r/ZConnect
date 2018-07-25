@@ -459,9 +459,6 @@ public class MyProfileFragment extends Fragment {
         }
 
         editTextSkills.setTags(skillsArray);
-        SharedPreferences sharedPref = getActivity().getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
-        Boolean status = sharedPref.getBoolean("mode", false);
-
     }
 
     @Override
