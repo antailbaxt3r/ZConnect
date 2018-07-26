@@ -64,7 +64,8 @@
                         android:layout_weight="0.25"
                         android:text="03:33 PM"
                         android:textColor="@color/secondaryText"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp"
+                        android:gravity="end"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -73,33 +74,37 @@
                         android:id="@+id/forums_cat_last_message_with_username"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.85"
+                        android:layout_weight="0.9"
                         android:textColor="@color/secondaryText"
                         android:ellipsize="end"
                         style="@style/autoscroll"
                         android:maxLines="1"
                         android:textSize="14sp"/>
-                    <FrameLayout
-                        android:id="@+id/layout_forums_unseen_messages"
+                    <LinearLayout
                         android:layout_width="0dp"
+                        android:layout_weight="0.1"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".15"
-                        android:layout_gravity="center">
-                        <com.facebook.drawee.view.SimpleDraweeView
+                        android:gravity="end"
+                        android:id="@+id/layout_forums_unseen_messages">
+                        <FrameLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/unread_msg_circle"
-                            android:layout_gravity="center"/>
-                        <TextView
-                            android:id="@+id/forums_unseen_messages"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:layout_gravity="center"
-                            android:textColor="@color/white"
-                            android:textStyle="bold"
-                            android:textSize="11sp"/>
-                    </FrameLayout>
+                            android:layout_height="wrap_content">
+                            <com.facebook.drawee.view.SimpleDraweeView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/unread_msg_circle"
+                                android:layout_gravity="center"/>
+                            <TextView
+                                android:id="@+id/forums_unseen_messages"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:layout_gravity="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:textSize="11sp" />
+                        </FrameLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>

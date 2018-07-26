@@ -229,10 +229,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView catName, lastMessageTime, lastMessageWithName;
         TextView unSeenMessages;
         View mView;
-        LinearLayout forumRowItem;
+        LinearLayout forumRowItem, layoutUnseenMessages;
         SimpleDraweeView forumIcon;
         ImageView defaultForumIcon;
-        FrameLayout layoutUnseenMessages;
 
         public joinedViewHolder(View itemView) {
             super(itemView);
@@ -242,7 +241,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             lastMessageWithName = (TextView) itemView.findViewById(R.id.forums_cat_last_message_with_username);
 
             unSeenMessages = (TextView) itemView.findViewById(R.id.forums_unseen_messages);
-            layoutUnseenMessages = (FrameLayout) itemView.findViewById(R.id.layout_forums_unseen_messages);
+            layoutUnseenMessages = (LinearLayout) itemView.findViewById(R.id.layout_forums_unseen_messages);
 
             forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_sub_categories_joined);
             defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_sub_categories_joined);
