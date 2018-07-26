@@ -37,6 +37,9 @@ public class newUserVerificationAlert {
                         }
                     });
 
+            final android.app.AlertDialog alert = builder.create();
+            alert.show();
+
         }else if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
             final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ctx);
             builder.setMessage("You need to verify to access " + featureName)

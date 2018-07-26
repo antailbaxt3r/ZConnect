@@ -174,6 +174,9 @@ public class AdminHome extends AppCompatActivity {
                     for (DataSnapshot shot: dataSnapshot.getChildren()) {
                         try {
                             NewUserItemFormat newUser = shot.getValue(NewUserItemFormat.class);
+                            if(!shot.hasChild("approvedRejectedBy")){
+                                newUser.setApprovedRejectedBy(null);
+                            }
                             if (newUser.getStatusCode().equals(finalTabType)) {
                                 newUserItemFormats.add(newUser);
                             }

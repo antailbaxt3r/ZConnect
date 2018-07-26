@@ -105,7 +105,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private AlertDialog addContactDialog;
     private Fragment recent, forums, shop, myProfile, infone;
     public Boolean flag = false;
-
+    public Boolean setTitleFlag = true;
 
     private DatabaseReference mDatabaseStats;
     private DatabaseReference mDatabaseUserStats;
@@ -616,15 +616,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if (dataSnapshot.hasChild("name")) {
-                            Title = dataSnapshot.child("name").getValue().toString() + " Connect";
-                            setToolbarTitle(Title);
-                            UserUtilities.CommunityName = Title;
-                        } else {
-                            Title = "Community Connect";
-                            setToolbarTitle(Title);
+                        if(setTitleFlag) {
+                            if (dataSnapshot.hasChild("name")) {
+                                Title = dataSnapshot.child("name").getValue().toString() + " Connect";
+                                setToolbarTitle(Title);
+                                UserUtilities.CommunityName = Title;
+                            } else {
+                                Title = "Community Connect";
+                                setToolbarTitle(Title);
+                            }
+                            setTitleFlag = false;
                         }
-
                         navHeaderBackGroundImageUrl = dataSnapshot.child("image").getValue(String.class);
                         if (navHeaderBackGroundImageUrl != null
                                 && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)

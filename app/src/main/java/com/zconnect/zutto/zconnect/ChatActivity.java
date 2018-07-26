@@ -425,7 +425,6 @@ public class ChatActivity extends BaseActivity {
                     notificationSender.execute(cabChatNotification);
                 }
 
-
             }
 
             @Override
@@ -582,8 +581,16 @@ public class ChatActivity extends BaseActivity {
 
 
                 messages.clear();
-                for (DataSnapshot snapshot:dataSnapshot.getChildren()){
-                    messages.add(snapshot.getValue(ChatItemFormats.class));
+                for (DataSnapshot snapshot:dataSnapshot.getChildren()) {
+                    ChatItemFormats temp = new ChatItemFormats();
+
+                    temp = snapshot.getValue(ChatItemFormats.class);
+
+                    if (!snapshot.hasChild("messageType")) {
+                        temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                    }
+
+                    messages.add(temp);
                 }
 
                 if (type.equals("forums")) {
