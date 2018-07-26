@@ -16,7 +16,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="12-march-1993" />
+        android:text="12-march-1993"
+        android:visibility="gone"/>
     <LinearLayout
         android:id="@+id/chat_format_chat_item"
         android:layout_width="match_parent"
