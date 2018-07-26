@@ -69,7 +69,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                     throwable.printStackTrace();
                 }
 
-                CounterManager.eventAddClick();
+                CounterManager.StoreRoomAddClick();
                 Intent intent;
                 intent = new Intent(getContext(), AddProduct.class);
                 startActivity(intent);
@@ -86,7 +86,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                     throwable.printStackTrace();
                 }
 
-                CounterManager.eventAddClick();
+                CounterManager.publicStatusAddClick();
                 Intent intent;
                 intent = new Intent(getContext(), AddStatus.class);
                 startActivity(intent);

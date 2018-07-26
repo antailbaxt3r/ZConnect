@@ -241,9 +241,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
             startActivity(i);
             finish();
-            //logout();
-
-            Toast.makeText(LoginActivity.this, "Welcome to ZConnect", Toast.LENGTH_SHORT).show();
         }
     }
 

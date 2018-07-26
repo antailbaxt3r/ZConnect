@@ -180,6 +180,7 @@ public class ChatActivity extends BaseActivity {
                                             cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                                             notificationSender.execute(cabPoolJoinNotification);
 
+                                            CounterManager.openCabPoolJoin(getIntent().getStringExtra("key"));
                                             FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 
                                         }
@@ -204,7 +205,7 @@ public class ChatActivity extends BaseActivity {
                     }
                 });
             }else if (type.equals("forums")){
-                String key,tab;
+                final String key,tab;
                 key = getIntent().getStringExtra("key");
                 tab = getIntent().getStringExtra("tab");
                 final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
@@ -236,6 +237,8 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setUserUID(userItemFormat.getUserUID());
                                             userDetails.setUserType(ForumsUserTypeUtilities.KEY_USER);
                                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
+
+                                            CounterManager.forumsJoinCategory(tab,key);
 //
 //                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
 //                                            notificationSender.execute();

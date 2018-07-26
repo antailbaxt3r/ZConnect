@@ -834,6 +834,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
                         Intent intent = new Intent(context, TabbedEvents.class);
                         context.startActivity(intent);
+
+                        CounterManager.eventOpenClick();
                     }else {
                         newUserVerificationAlert.buildAlertCheckNewUser("Events",context);
                     }
@@ -846,6 +848,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
                         Intent intent = new Intent(context, TabStoreRoom.class);
                         context.startActivity(intent);
+                        CounterManager.StoreRoomOpen();
                     }else {
                         newUserVerificationAlert.buildAlertCheckNewUser("Storeroom",context);
                     }
@@ -859,6 +862,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
                         Intent intent = new Intent(context, CabPoolAll.class);
                         context.startActivity(intent);
+                        CounterManager.openCabPool();
                     }else {
                         newUserVerificationAlert.buildAlertCheckNewUser("Cab Pool",context);
                     }

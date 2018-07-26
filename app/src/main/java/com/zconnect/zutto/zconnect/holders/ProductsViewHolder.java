@@ -95,6 +95,8 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                 intent.putExtra("key", key);
                 mView.getContext().startActivity(intent);
 
+                CounterManager.StoroomOpenProduct(key);
+
             }
         });
 
@@ -106,7 +108,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 flag = true;
-                StoreRoom.addValueEventListener(new ValueEventListener() {
+                StoreRoom.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
                         if (flag) {
@@ -115,14 +117,15 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                 StoreRoom.child(key).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
 //                                productShortList.setText("ShortlistedPeopleList");
                                 flag = false;
-                                CounterManager.StoroomShortListDelete(category, key);
+                               // CounterManager.StoroomShortListDelete(category, key);
                                 productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
 //                                productShortList.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.curvedradiusbutton2_sr));
 //                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
 //                                productShortList.setTypeface(customfont);
 
+
                             } else {
-                                CounterManager.StoroomShortList(category, key);
+                                //CounterManager.StoroomShortList(category, key);
 //                                productShortList.setText("Shortlist");
                                 final UsersListItemFormat userDetails = new UsersListItemFormat();
                                 DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -194,7 +197,6 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 //                    productShortList.setText("Shortlist");
 //                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
 //                    productShortList.setTypeface(customfont);
-                    CounterManager.StoroomShortListDelete(category, key);
                 }
                 productShortList.setOnClickListener(mListener);
             }

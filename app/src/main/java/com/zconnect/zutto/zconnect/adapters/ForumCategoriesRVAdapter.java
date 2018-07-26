@@ -24,6 +24,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
@@ -244,6 +245,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ChatActivity.class);
+
+                    CounterManager.forumsOpenCategory(tabId,uid);
                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
                     intent.putExtra("type","forums");
                     intent.putExtra("name", name);
@@ -347,6 +350,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
+                            CounterManager.forumsJoinCategory(tabUID,key);
                             Intent intent = new Intent(context, ChatActivity.class);
                             intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
                             intent.putExtra("type", "forums");

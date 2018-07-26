@@ -177,7 +177,7 @@ public class CreateForum extends AppCompatActivity {
                     databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(uid);
                     databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(UserUtilities.currentUser.getUserUID()).setValue(userDetails);
 
-                    CounterManager.forumsAddCategory(mtabName);
+                    CounterManager.forumsAddCategory(uid);
 
                     //Home
 
@@ -265,7 +265,7 @@ public class CreateForum extends AppCompatActivity {
                                 databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue(downlaodUri != null ? downlaodUri.toString() : null);
                                 if (flag) {
                                     Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
                                     intent.putExtra("type", "forums");
                                     intent.putExtra("name", catName);
                                     intent.putExtra("tab", uid);

@@ -633,6 +633,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         }else {
                             navHeaderBackground.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                         }
+
                     }
 
                     @Override

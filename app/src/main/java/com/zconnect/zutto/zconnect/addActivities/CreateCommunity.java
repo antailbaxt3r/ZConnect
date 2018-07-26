@@ -194,11 +194,13 @@ public class CreateCommunity extends AppCompatActivity {
                     newPost.child("image").setValue(downloadUri.toString());
 
                     mProgress.dismiss();
+                    Toast.makeText(CreateCommunity.this, "Your community is sent for approval..", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             });
-            Toast.makeText(this, "Posted", Toast.LENGTH_SHORT).show();
+
         }else{
-            Toast.makeText(this, "Fields Empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Some fields are empty", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -169,7 +169,7 @@ public class ForumsActivity extends Fragment{
         }
 
         viewPager.setAdapter(adapter);
-        CounterManager.forumsOpenTab(infoneTabItemFormats.get(viewPager.getCurrentItem()).getName());
+        CounterManager.forumsOpenTab(infoneTabItemFormats.get(viewPager.getCurrentItem()).getUID());
 //        increaseCount(guestMode, viewPager.getCurrentItem());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

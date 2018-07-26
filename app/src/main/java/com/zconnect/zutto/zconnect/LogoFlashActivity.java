@@ -92,8 +92,6 @@ public class LogoFlashActivity extends BaseActivity {
             });
         }
 
-        showDebugDBAddressLogToast(this);
-
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         new Timer().schedule(new TimerTask() {
@@ -131,20 +129,6 @@ public class LogoFlashActivity extends BaseActivity {
 //            });
 
     }
-
-    public static void showDebugDBAddressLogToast(Context context) {
-        if (BuildConfig.DEBUG) {
-            try {
-                Class<?> debugDB = Class.forName("com.amitshekhar.DebugDB");
-                Method getAddressLog = debugDB.getMethod("getAddressLog");
-                Object value = getAddressLog.invoke(null);
-                Toast.makeText(context, (String) value, Toast.LENGTH_LONG).show();
-            } catch (Exception ignore) {
-
-            }
-        }
-    }
-
 
 //    void link(){
 //
