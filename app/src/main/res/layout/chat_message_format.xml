@@ -12,7 +12,7 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:background="@drawable/roundradius"
-        android:backgroundTint="@color/secondaryText2"
+        android:backgroundTint="@color/secondaryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
