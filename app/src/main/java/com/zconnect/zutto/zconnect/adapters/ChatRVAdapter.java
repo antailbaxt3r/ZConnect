@@ -87,7 +87,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             messageViewHolder holder = (messageViewHolder) rvHolder;
             long previousTs = 0;
-            if(position>1){
+            if(position>=1){
                 ChatItemFormats pm = chatFormats.get(position-1);
                 previousTs = pm.getTimeDate();
             }
@@ -141,7 +141,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             final photoViewHolder holder = (photoViewHolder) rvHolder;
             long previousTs = 0;
-            if(position>1){
+            if(position>=1){
                 ChatItemFormats pm = chatFormats.get(position-1);
                 previousTs = pm.getTimeDate();
             }
@@ -199,10 +199,11 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void setTimeTextVisibility(long ts1, long ts2, TextView timeText){
 
+        DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
         if(ts2==0){
             timeText.setVisibility(View.VISIBLE);
-            DateTime dt = new DateTime(ts1, DateTimeZone.UTC);
-            DateTime date = new DateTime();
+            DateTime dt = new DateTime(ts1, indianZone);
+            DateTime date = new DateTime(indianZone);
             if(dt.getYearOfEra()==date.getYearOfEra() && dt.getMonthOfYear() == date.getMonthOfYear() && dt.getDayOfMonth() == date.getDayOfMonth())
             {
                 timeText.setText("TODAY");
@@ -215,21 +216,17 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 timeText.setText(dt.toString("MMMM") + " " + dt.getDayOfMonth() + " " + dt.getYearOfEra());
             }
         }else {
-            Calendar cal1 = Calendar.getInstance();
-            Calendar cal2 = Calendar.getInstance();
-            cal1.setTimeInMillis(ts1);
-            cal2.setTimeInMillis(ts2);
-
-            boolean sameMonth = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                    cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
-
-            if(sameMonth){
+            timeText.setVisibility(View.GONE);
+            DateTime dt1 = new DateTime(ts1, indianZone);
+            DateTime dt2 = new DateTime(ts2, indianZone);
+            boolean sameDay = (dt1.getYearOfEra() == dt2.getYearOfEra()) && (dt1.getMonthOfYear() == dt2.getMonthOfYear()) && (dt1.getDayOfMonth() == dt2.getDayOfMonth());
+            if(sameDay){
                 timeText.setVisibility(View.GONE);
                 timeText.setText("");
             }else {
                 timeText.setVisibility(View.VISIBLE);
-                DateTime dt = new DateTime(ts2, DateTimeZone.UTC);
-                DateTime date = new DateTime();
+                DateTime dt = new DateTime(ts1, indianZone);
+                DateTime date = new DateTime(indianZone);
                 if(dt.getYearOfEra()==date.getYearOfEra() && dt.getMonthOfYear() == date.getMonthOfYear() && dt.getDayOfMonth() == date.getDayOfMonth())
                 {
                     timeText.setText("TODAY");

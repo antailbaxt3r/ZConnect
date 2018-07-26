@@ -42,6 +42,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
@@ -333,6 +335,12 @@ public class  OpenEventDetail extends BaseActivity{
     private void shareEvent(final String image, final Context context) {
 
         try {
+            DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                    .setLink(Uri.parse("https://www.zconnect.com/"))
+                    .setDynamicLinkDomain("zconnect.page.link")
+                    .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                    .buildDynamicLink();
+            Uri dynamicUri = dynamicLink.getUri();
             progressDialog.setMessage("Loading...");
             progressDialog.show();
             //shareIntent.setPackage("com.whatsapp");

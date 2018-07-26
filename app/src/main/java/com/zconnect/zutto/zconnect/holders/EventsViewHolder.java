@@ -30,7 +30,7 @@ import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
-import com.zconnect.zutto.zconnect.utilities.TimeAgo;
+import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.util.Calendar;
@@ -426,7 +426,7 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
     public void setEventTimestamp(long postTimeMillis) {
         if(postTimeMillis > 0) {
             TextView timestamp = (TextView) mView.findViewById(R.id.evTrendTimestamp);
-            TimeAgo ta = new TimeAgo(postTimeMillis, System.currentTimeMillis());
+            TimeUtilities ta = new TimeUtilities(postTimeMillis, System.currentTimeMillis());
             timestamp.setText(ta.calculateTimeAgo());
         }
     }
