@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,7 +41,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-import com.zconnect.zutto.zconnect.utilities.TimeAgo;
+import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -175,7 +174,7 @@ public class InfoneProfileActivity extends BaseActivity {
 
                 userType = dataSnapshot.child("type").getValue(String.class);
                 verfiedDate = dataSnapshot.child("verifiedDate").getValue().toString();
-                TimeAgo ta = new TimeAgo(Long.parseLong(verfiedDate), System.currentTimeMillis());
+                TimeUtilities ta = new TimeUtilities(Long.parseLong(verfiedDate), System.currentTimeMillis());
                 verifiedDateTextView.setText(ta.calculateTimeAgo());
 
                 if (userType.equals("User")) {

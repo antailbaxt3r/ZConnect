@@ -43,7 +43,7 @@
             android:textColor="@color/primaryText"
             android:layout_marginStart="10dp"
             android:layout_centerVertical="true"
-            android:maxLength="25"/>
+            android:maxLength="20"/>
     </RelativeLayout>
     <TextView
         android:layout_width="wrap_content"

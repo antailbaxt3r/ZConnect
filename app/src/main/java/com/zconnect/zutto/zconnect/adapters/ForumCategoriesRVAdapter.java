@@ -2,12 +2,14 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,7 +35,11 @@ import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -121,18 +127,24 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 holderMain.forumIcon.setBackground(context.getResources().getDrawable(R.drawable.forum_circle));
             }
             try {
-                holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
+                holderMain.lastMessageWithName.setVisibility(View.VISIBLE);
+                holderMain.lastMessageTime.setVisibility(View.VISIBLE);
                 String shortName = forumCategoriesItemFormats.get(position).getLastMessage().getName();
                 if(shortName.indexOf(' ')>0)
                     shortName = shortName.substring(0, shortName.indexOf(' '));
-                holderMain.lastMessageUsername.setText(shortName + " :");
+                holderMain.lastMessageWithName.setText(shortName + " :" + forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
                 holderMain.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
+                String timeStamp = new TimeUtilities().getTimeStamp(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate());
+                if(timeStamp.length()!=0)
+                {
+                    holderMain.lastMessageTime.setText(timeStamp);
+                }
+
             }
             catch (Exception e) {
                 Log.d("Error alert ", e.getMessage());
-                holderMain.lastMessageMessage.setVisibility(View.GONE);
-                holderMain.lastMessageUsername.setVisibility(View.GONE);
-                holderMain.lastMessageTime.setVisibility(View.GONE);
+                holderMain.lastMessageWithName.setVisibility(View.INVISIBLE);
+                holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
             }
 
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
@@ -158,20 +170,24 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             }
 
             try {
-                holderMain.lastMessageMessage.setText(forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
+                holderMain.lastMessageWithName.setVisibility(View.VISIBLE);
+                holderMain.lastMessageTime.setVisibility(View.VISIBLE);
                 String shortName = forumCategoriesItemFormats.get(position).getLastMessage().getName();
                 if(shortName.indexOf(' ')>0)
                     shortName = shortName.substring(0, shortName.indexOf(' '));
-                holderMain.lastMessageUsername.setText(shortName + " :");
                 holderMain.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
+                String timeStamp = new TimeUtilities().getTimeStamp(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate());
+                if(timeStamp.length()!=0)
+                {
+                    holderMain.lastMessageTime.setText(timeStamp);
+                }
+                holderMain.lastMessageWithName.setText(shortName + " :" + forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
             }
             catch (Exception e) {
                 Log.d("Error alert ", e.getMessage());
-                holderMain.lastMessageMessage.setVisibility(View.GONE);
-                holderMain.lastMessageUsername.setVisibility(View.GONE);
-                holderMain.lastMessageTime.setVisibility(View.GONE);
+                holderMain.lastMessageWithName.setVisibility(View.INVISIBLE);
+                holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
             }
-
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
             holderMain.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
             holderMain.joinForum(forumCategoriesItemFormats.get(position).getCatUID(),forumCategoriesItemFormats.get(position).getName());
@@ -210,33 +226,33 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private class joinedViewHolder extends RecyclerView.ViewHolder {
 
-        TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
+        TextView catName, lastMessageTime, lastMessageWithName;
         TextView unSeenMessages;
         View mView;
         LinearLayout forumRowItem;
         SimpleDraweeView forumIcon;
         ImageView defaultForumIcon;
+        FrameLayout layoutUnseenMessages;
 
         public joinedViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             catName = (TextView) itemView.findViewById(R.id.cat_name);
-            lastMessageMessage = (TextView) itemView.findViewById(R.id.forums_cat_last_message);
-            lastMessageUsername = (TextView) itemView.findViewById(R.id.forums_cat_last_message_username);
             lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
+            lastMessageWithName = (TextView) itemView.findViewById(R.id.forums_cat_last_message_with_username);
 
             unSeenMessages = (TextView) itemView.findViewById(R.id.forums_unseen_messages);
+            layoutUnseenMessages = (FrameLayout) itemView.findViewById(R.id.layout_forums_unseen_messages);
 
             forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_sub_categories_joined);
             defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_sub_categories_joined);
 
             //changing fonts
-            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
-            Typeface ralewayRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-            catName.setTypeface(ralewayMedium);
-            lastMessageMessage.setTypeface(ralewayRegular);
-            lastMessageUsername.setTypeface(ralewayRegular);
-            lastMessageTime.setTypeface(ralewayRegular);
+//            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+//            Typeface ralewayRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+//            catName.setTypeface(ralewayMedium);
+//            lastMessageTime.setTypeface(ralewayRegular);
+//            lastMessageWithName.setTypeface(ralewayRegular);
         }
 
         void openChat(final String uid, final String tabId, final String  name){
@@ -259,10 +275,12 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         void setUnSeenMessages(Integer totalMessages,Integer readMessages){
 
             if(totalMessages-readMessages>0){
-                unSeenMessages.setVisibility(View.VISIBLE);
+                layoutUnseenMessages.setVisibility(View.VISIBLE);
                 unSeenMessages.setText((totalMessages-readMessages) + "");
+                lastMessageTime.setTextColor(context.getResources().getColor(R.color.colorHighlight));
             }else {
-                unSeenMessages.setVisibility(View.GONE);
+                layoutUnseenMessages.setVisibility(View.INVISIBLE);
+                lastMessageTime.setTextColor(context.getResources().getColor(R.color.secondaryText));
             }
 
         }
@@ -281,7 +299,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     private class notJoinedViewHolder extends RecyclerView.ViewHolder{
-        TextView catName, lastMessageMessage, lastMessageUsername, lastMessageTime;
+        TextView catName, lastMessageTime, lastMessageWithName;
         View mView;
         ImageButton joinButton;
         ImageView defaultForumIcon;
@@ -292,20 +310,17 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             super(itemView);
             mView = itemView;
             catName = (TextView) itemView.findViewById(R.id.cat_name);
-            lastMessageMessage = (TextView) itemView.findViewById(R.id.forums_cat_last_message);
-            lastMessageUsername = (TextView) itemView.findViewById(R.id.forums_cat_last_message_username);
             lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
+            lastMessageWithName = (TextView) itemView.findViewById(R.id.forums_cat_not_joined_last_message_with_username);
             joinButton = (ImageButton) itemView.findViewById(R.id.joinCategory);
             forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_categories_not_joined);
             defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_categories_not_joined);
 
             //changing fonts
-            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
-            Typeface ralewayRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-            catName.setTypeface(ralewayMedium);
-            lastMessageMessage.setTypeface(ralewayRegular);
-            lastMessageUsername.setTypeface(ralewayRegular);
-            lastMessageTime.setTypeface(ralewayRegular);
+//            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
+//            Typeface ralewayRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
+//            catName.setTypeface(ralewayMedium);
+//            lastMessageTime.setTypeface(ralewayRegular);
         }
 
         void openChat(final String uid, final String tabId, final String  name){
