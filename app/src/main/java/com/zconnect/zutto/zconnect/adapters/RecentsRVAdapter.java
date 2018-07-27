@@ -423,7 +423,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.productName.setText(recentsItemFormats.get(position).getName());
                     holder.productDesc.setText(recentsItemFormats.get(position).getDesc());
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
-                    holder.productPrice.setText(recentsItemFormats.get(position).getProductPrice());
+                    holder.productPrice.setText("₹" + recentsItemFormats.get(position).getProductPrice());
 
                     posted = " added a ";
                     post = "Product";
