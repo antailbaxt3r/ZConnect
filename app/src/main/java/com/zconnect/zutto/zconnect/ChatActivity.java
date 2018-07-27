@@ -174,8 +174,6 @@ public class ChatActivity extends BaseActivity {
 
         if(type!=null){
             if(type.equals("cabPool")){
-                joinButton.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.cabpool));
-
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -239,7 +237,6 @@ public class ChatActivity extends BaseActivity {
                 key = getIntent().getStringExtra("key");
                 tab = getIntent().getStringExtra("tab");
                 final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
-                joinButton.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.forums));
                 forumCategory.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -310,7 +307,7 @@ public class ChatActivity extends BaseActivity {
         findViewById(R.id.sendBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
+                if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                     newUserVerificationAlert.buildAlertCheckNewUser("Chat",ChatActivity.this);
                 }else {
                     postMessage();

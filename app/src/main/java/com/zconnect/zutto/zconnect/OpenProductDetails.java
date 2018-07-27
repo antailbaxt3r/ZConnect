@@ -60,7 +60,6 @@ import java.net.URLEncoder;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT;
 
 public class OpenProductDetails extends BaseActivity {
 
@@ -85,6 +84,7 @@ public class OpenProductDetails extends BaseActivity {
     private ProgressDialog progressDialog;
     private String path;
     private Uri screenshotUri;
+    Typeface ralewayBold, ralewayLight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +116,8 @@ public class OpenProductDetails extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+        ralewayBold = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Bold.ttf");
+        ralewayLight = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
 
         productImage = (ImageView) findViewById(R.id.product_image);
         productName = (TextView) findViewById(R.id.product_name);
@@ -126,11 +128,8 @@ public class OpenProductDetails extends BaseActivity {
         productShortlist = (Button) findViewById(R.id.product_shortlist);
         progressBar = (ProgressBar) findViewById(R.id.product_loading);
         productContent = (LinearLayout) findViewById(R.id.product_content);
-
-        Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
-        productShortlist.setTypeface(customfont);
         productCall = (Button) findViewById(R.id.product_call);
-
+        productCall.setTypeface(ralewayBold);
         chatLayout= (LinearLayout) findViewById(R.id.chatLayout);
         chatEditText = (EditText) findViewById(R.id.typer);
         chatEditText.setShowSoftInputOnFocus(false);
@@ -322,7 +321,9 @@ public class OpenProductDetails extends BaseActivity {
         try {
             Uri BASE_URI = Uri.parse("http://www.zconnect.com/openproduct/");
 
-            Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("key", productKey).build();
+            Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("key", productKey)
+                    .appendQueryParameter("communityRef", communityReference)
+                    .build();
             String encodedUri = null;
             try {
                 encodedUri = URLEncoder.encode(APP_URI.toString(), "UTF-8");
@@ -426,7 +427,13 @@ public class OpenProductDetails extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
         Intent intent = getIntent();
-        final String productKey = intent.getStringExtra("key");
+        try {
+            final String productKey = intent.getStringExtra("key");
+        }
+        catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
 
         mListener = new View.OnClickListener() {
             @Override
@@ -444,13 +451,12 @@ public class OpenProductDetails extends BaseActivity {
                                 productShortlist.setText("Shortlist");
                                 flag = false;
                                 CounterManager.StoroomShortListDelete(category, dataSnapshot.getKey());
-                                productShortlist.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
-                                Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
-                                productShortlist.setTypeface(customfont);
+                                productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.primaryText));
+                                productShortlist.setTypeface(ralewayBold);
 
                             } else {
                                 CounterManager.StoroomShortList(category, dataSnapshot.getKey());
-                                productShortlist.setText("ShortlistedPeopleList");
+                                productShortlist.setText("Shortlisted");
                                 final UsersListItemFormat userDetails = new UsersListItemFormat();
                                 DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 user.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -485,10 +491,9 @@ public class OpenProductDetails extends BaseActivity {
 
                                     }
                                 });
-                                productShortlist.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                                productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
+                                productShortlist.setTypeface(ralewayBold);
                                 flag = false;
-                                Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
-                                productShortlist.setTypeface(customfont);
                             }
                         }
                     }
@@ -573,19 +578,17 @@ public class OpenProductDetails extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 productShortlist.setOnClickListener(null);
                 if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-                    productShortlist.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
-                    productShortlist.setText("ShortlistedPeopleList");
+                    productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
+                    productShortlist.setTypeface(ralewayBold);
+                    productShortlist.setText("Shortlisted");
                     CounterManager.StoroomShortList(category, key);
-                    Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
-                    productShortlist.setTypeface(customfont);
                     //ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
 
                 } else {
 
-                    productShortlist.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+                    productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.primaryText));
+                    productShortlist.setTypeface(ralewayBold);
                     productShortlist.setText("Shortlist");
-                    Typeface customfont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
-                    productShortlist.setTypeface(customfont);
                     CounterManager.StoroomShortListDelete(category, key);
                 }
                 productShortlist.setOnClickListener(mListener);

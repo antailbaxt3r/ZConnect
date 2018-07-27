@@ -5,10 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -48,6 +50,7 @@ import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
 
 public class VerificationPage extends BaseActivity {
@@ -136,6 +139,11 @@ public class VerificationPage extends BaseActivity {
             }
         };
 
+        if (android.os.Build.VERSION.SDK_INT > 9)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
 
         newUsersDatabaseReference.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -144,11 +152,18 @@ public class VerificationPage extends BaseActivity {
                     if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_APPROVED)) {
                         statusTextView.setText("Your account has been approved you are a verified user now.");
                         idImageButton.setOnClickListener(null);
+                        Bitmap bitmap = null;
+
                         try {
-                            idImageButton.setBackground(Drawables.drawableFromUrl(dataSnapshot.child("idImageURL").getValue(String.class),VerificationPage.this));
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            URL url = new URL(dataSnapshot.child("idImageURL").getValue(String.class));
+                            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                        } catch(IOException e) {
+                            System.out.println(e);
                         }
+                        if(bitmap!=null){
+                            idImageButton.setImageBitmap(bitmap);
+                        }
+
                         aboutNewUserEditText.setFocusable(false);
                         submitUserIDButton.setVisibility(View.GONE);
 
@@ -164,11 +179,20 @@ public class VerificationPage extends BaseActivity {
                         aboutNewUserEditText.setText(dataSnapshot.child("about").getValue(String.class));
                         aboutNewUserEditText.setFocusable(true);
                         submitUserIDButton.setVisibility(View.VISIBLE);
+
+                        Bitmap bitmap = null;
+
                         try {
-                            idImageButton.setBackground(Drawables.drawableFromUrl(dataSnapshot.child("idImageURL").getValue(String.class),VerificationPage.this));
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            URL url = new URL(dataSnapshot.child("idImageURL").getValue(String.class));
+                            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                        } catch(IOException e) {
+                            System.out.println(e);
                         }
+                       if(bitmap!=null){
+                           idImageButton.setImageBitmap(bitmap);
+                       }
+
+
                     }
                     progressDialogInitial.dismiss();
                 }else {

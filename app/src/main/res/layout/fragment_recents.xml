@@ -16,8 +16,11 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_button_simple"
                 android:text="Scroll to top"
+                android:textStyle="bold"
                 android:paddingStart="@dimen/button_padding_start_end"
                 android:paddingEnd="@dimen/button_padding_start_end"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textColor="@color/colorPrimary"
                 android:layout_gravity="center|top"
                 android:visibility="gone"/>
             <View

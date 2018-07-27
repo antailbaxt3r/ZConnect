@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -91,30 +93,39 @@ public class LogoFlashActivity extends BaseActivity {
                             if(deepLink!=null)
                             {
                                 String path = deepLink.getPath();
-                                if(path.equals("/openevent/"))
+                                if(!deepLink.getQueryParameter("communityRef").equals(communityReference))
                                 {
-                                    Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("eventID"));
-                                    Intent intent = new Intent(LogoFlashActivity.this, OpenEventDetail.class);
-                                    intent.putExtra("id", deepLink.getQueryParameter("eventID"));
-                                    intent.putExtra("flag", true);
-                                    startActivity(intent);
-                                    flag = true;
+                                    Snackbar snackbar = Snackbar.make(bgImage, "Can't open link. Sent from another community", BaseTransientBottomBar.LENGTH_LONG);
+                                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                                    snackbar.show();
                                 }
-                                else if(path.equals("/cabpooling/"))
+                                else
                                 {
-                                    Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
-                                    Intent intent = new Intent(LogoFlashActivity.this, CabPoolAll.class);
-                                    intent.putExtra("key", deepLink.getQueryParameter("key"));
-                                    startActivity(intent);
-                                    flag = true;
-                                }
-                                else if(path.equals("/openproduct/"))
-                                {
-                                    Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
-                                    Intent intent = new Intent(LogoFlashActivity.this, OpenProductDetails.class);
-                                    intent.putExtra("key", deepLink.getQueryParameter("key"));
-                                    startActivity(intent);
-                                    flag = true;
+                                    if(path.equals("/openevent/"))
+                                    {
+                                        Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("eventID"));
+                                        Intent intent = new Intent(LogoFlashActivity.this, OpenEventDetail.class);
+                                        intent.putExtra("id", deepLink.getQueryParameter("eventID"));
+                                        intent.putExtra("flag", true);
+                                        startActivity(intent);
+                                        flag = true;
+                                    }
+                                    else if(path.equals("/cabpooling/"))
+                                    {
+                                        Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
+                                        Intent intent = new Intent(LogoFlashActivity.this, CabPoolAll.class);
+                                        intent.putExtra("key", deepLink.getQueryParameter("key"));
+                                        startActivity(intent);
+                                        flag = true;
+                                    }
+                                    else if(path.equals("/openproduct/"))
+                                    {
+                                        Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
+                                        Intent intent = new Intent(LogoFlashActivity.this, OpenProductDetails.class);
+                                        intent.putExtra("key", deepLink.getQueryParameter("key"));
+                                        startActivity(intent);
+                                        flag = true;
+                                    }
                                 }
                             }
                             // Handle the deep link. For example, open the linked

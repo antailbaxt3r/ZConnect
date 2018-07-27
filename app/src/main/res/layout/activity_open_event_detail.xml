@@ -114,20 +114,22 @@
                             android:id="@+id/boostBtn"
                             android:layout_width="0dp"
                             android:layout_weight=".5"
-                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/margin_small"
+                            android:layout_height="wrap_content"
                             android:text="Boost"
-                            android:background="@drawable/curvedradiusbutton_sr"
-                            android:layout_marginRight="5dp"
-                            android:textColor="@color/white"/>
+                            android:background="@drawable/round_button_simple"
+                            android:textColor="@color/primaryText"
+                            style="?android:attr/borderlessButtonStyle"/>
                         <Button
                             android:id="@+id/setReminder"
                             android:layout_width="0dp"
                             android:layout_weight=".5"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="Set Reminder"
-                            android:background="@drawable/curveradiusgoogle"
-                            android:layout_marginLeft="5dp"
-                            android:textColor="@color/white"/>
+                            android:background="@drawable/round_button_primary"
+                            android:layout_marginStart="@dimen/margin_small"
+                            android:textColor="@color/white"
+                            style="?android:attr/borderlessButtonStyle"/>
                     </LinearLayout>
 
                 </LinearLayout>

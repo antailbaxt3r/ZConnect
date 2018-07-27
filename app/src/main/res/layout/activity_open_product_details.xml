@@ -141,7 +141,8 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
-                            android:text="@string/lorem_ipsum" />
+                            android:text="@string/lorem_ipsum"
+                            android:visibility="visible"/>
 
 
                         <LinearLayout
@@ -157,21 +158,21 @@
                                 android:layout_height="40dp"
                                 android:layout_margin="3dp"
                                 android:layout_weight=".5"
-                                android:background="@drawable/curvedradiusbutton_sr"
+                                android:background="@drawable/round_button_simple"
                                 android:text="Shortlist"
-                                android:textColor="@color/white"
-                                android:textSize="10dp" />
+                                android:textColor="@color/primaryText"
+                                style="?android:attr/borderlessButtonStyle"/>
 
                             <Button
                                 android:id="@+id/product_call"
                                 android:layout_width="0dp"
-                                android:layout_height="40dp"
+                                android:layout_height="wrap_content"
                                 android:layout_margin="3dp"
                                 android:layout_weight=".5"
-                                android:background="@drawable/curveradiusgoogle"
+                                android:background="@drawable/round_button_primary"
                                 android:text="Call"
                                 android:textColor="@color/white"
-                                android:textSize="10dp" />
+                                style="?android:attr/borderlessButtonStyle"/>
                         </LinearLayout>
                     </LinearLayout>
                 </ScrollView>
