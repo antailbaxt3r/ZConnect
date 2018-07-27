@@ -58,7 +58,7 @@ import java.util.Calendar;
 
 import javax.xml.datatype.Duration;
 
-import static com.zconnect.zutto.zconnect.Utilities.RequestCodes.GALLERY_REQUEST;
+import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST;
 
 public class CreateForum extends AppCompatActivity {
     String mtabName, uid;
