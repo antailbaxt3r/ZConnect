@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -35,6 +36,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +49,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
@@ -54,7 +61,9 @@ import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -86,6 +95,8 @@ public class  OpenEventDetail extends BaseActivity{
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private ValueEventListener listener;
+    private static final String TAG = "OpenEventDetail";
+    boolean viaDynamicLinkFlag=false;
 
 
     Uri screenshotUri;
@@ -167,7 +178,13 @@ public class  OpenEventDetail extends BaseActivity{
 
         Bundle extras = getIntent().getExtras();
         eventId = (String) extras.get("id");
-
+        try {
+            viaDynamicLinkFlag = (boolean) extras.get("flag");
+        }
+        catch (NullPointerException e)
+        {
+            viaDynamicLinkFlag = false;
+        }
         databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -319,7 +336,7 @@ public class  OpenEventDetail extends BaseActivity{
         if (id == R.id.share) {
 
             CounterManager.eventShare(event.getKey());
-            shareEvent(event.getEventImage(), this.getApplicationContext());
+            shareEvent(event.getEventImage(), this.getApplicationContext(), eventId);
 
         } else if (id == R.id.menu_chat_room) {
             //chat room clicked;
@@ -332,66 +349,102 @@ public class  OpenEventDetail extends BaseActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private void shareEvent(final String image, final Context context) {
+    private void shareEvent(final String image, final Context context, final String eventID) {
 
         try {
-            DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                    .setLink(Uri.parse("https://www.zconnect.com/"))
-                    .setDynamicLinkDomain("zconnect.page.link")
-                    .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
-                    .buildDynamicLink();
-            Uri dynamicUri = dynamicLink.getUri();
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
-            //shareIntent.setPackage("com.whatsapp");
-            //Add text and then Image URI
-            Thread thread = new Thread(new Runnable() {
+            Uri BASE_URI = Uri.parse("http://www.zconnect.com/openevent/");
 
-                @Override
-                public void run() {
-                    try {
-                        //Your code goes here
-                        Uri imageUri = Uri.parse(image);
-                        Intent shareIntent = new Intent();
-                        shareIntent.setAction(Intent.ACTION_SEND);
+            Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("eventID", eventID).build();
+            String encodedUri = null;
+            try {
+                encodedUri = URLEncoder.encode(APP_URI.toString(), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+//            https://your_subdomain.page.link/?link=your_deep_link&apn=package_name[&amv=minimum_version][&afl=fallback_link]
+//            https://example.page.link/?link=https://www.example.com/invitation?gameid%3D1234%26referrer%3D555&apn=com.example.android&ibi=com.example.ios&isi=12345
+                    .setLongLink(Uri.parse("https://zconnect.page.link/?link="+encodedUri+"&apn=com.zconnect.zutto.zconnect&amv=11" ))
+                    .buildShortDynamicLink()
+                    .addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
+                        @Override
+                        public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                            if(task.isSuccessful())
+                            {
+                                //short link
+                                final Uri shortLink = task.getResult().getShortLink();
+                                final Uri flowcharLink = task.getResult().getPreviewLink();
+                                progressDialog.setMessage("Loading...");
+                                progressDialog.show();
+                                //shareIntent.setPackage("com.whatsapp");
+                                //Add text and then Image URI
+                                Thread thread = new Thread(new Runnable() {
 
-                        Bitmap bm = BitmapFactory.decodeStream(new URL(image)
-                                .openConnection()
-                                .getInputStream());
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            //Your code goes here
+                                            Uri imageUri = Uri.parse(image);
+                                            Intent shareIntent = new Intent();
+                                            shareIntent.setAction(Intent.ACTION_SEND);
+
+                                            Bitmap bm = BitmapFactory.decodeStream(new URL(image)
+                                                    .openConnection()
+                                                    .getInputStream());
 
 
-                        bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
-                                R.drawable.background_icon_z), bm, context);
-                        String temp = "*Event:* " + event.getEventName()
-                                + "\n*Venue:* " + event.getVenue()
-                                + "\n*Date:* " + event.getEventDate()
-                                + "\n" + event.getEventDescription()
-                                + "\n\n" + "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
+                                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
+                                                    R.drawable.background_icon_z), bm, context);
+                                            String temp = "Hey, check out this event!" +
+                                                    "\n*Event:* " + event.getEventName()
+                                                    + "\n*Venue:* " + event.getVenue()
+                                                    + "\n*Date:* " + event.getEventDate()
+                                                    + "\n*About:* " + event.getEventDescription()
+                                                    + "\n\n" + shortLink +
+                                                    "\n" + flowcharLink;
 
-                        shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
-                        shareIntent.setType("text/plain");
+                                            shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
+                                            shareIntent.setType("text/plain");
 
-                        path = MediaStore.Images.Media.insertImage(
-                                context.getContentResolver(),
-                                bm, "", null);
-                        screenshotUri = Uri.parse(path);
+                                            path = MediaStore.Images.Media.insertImage(
+                                                    context.getContentResolver(),
+                                                    bm, "", null);
+                                            screenshotUri = Uri.parse(path);
 
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                        shareIntent.setType("image/png");
-                        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                            shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                                            shareIntent.setType("image/png");
+                                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                        progressDialog.dismiss();
-                        startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
-                        //context.startActivity(shareIntent);
+                                            progressDialog.dismiss();
+                                            startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
+                                            //context.startActivity(shareIntent);
 
-                    } catch (Exception e) {
-                        progressDialog.dismiss();
-                        e.printStackTrace();
-                    }
-                }
-            });
+                                        } catch (Exception e) {
+                                            progressDialog.dismiss();
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
 
-            thread.start();
+                                thread.start();
+                            }
+                            else {
+                                Log.d("AAAAAAA", task.getException().getMessage());
+                                Log.d("AAAAAAA", "To Err is to mend");
+                            }
+                        }
+                    });
+//                    .setLink(Uri.parse("https://www.zconnect.com/openevent?eventid%" ))
+//                    .setDynamicLinkDomain("zconnect.page.link/")
+//                    .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
+//                            .setMinimumVersion(11)
+//                            .build())
+//                    .setIosParameters(new DynamicLink.IosParameters.Builder("https://www.google.com").build())
+//                    .buildDynamicLink();
+//            final Uri dynamicUri = dynamicLink.getUri();
+
+
+
 
         } catch (android.content.ActivityNotFoundException ex) {
             progressDialog.dismiss();
@@ -614,6 +667,11 @@ public class  OpenEventDetail extends BaseActivity{
         super.onBackPressed();
 //        Intent eventsIntent=new Intent(OpenEventDetail.this,TrendingEvents.class);
 //        startActivity(eventsIntent);
+        if(viaDynamicLinkFlag)
+        {
+            Intent eventsIntent=new Intent(OpenEventDetail.this,HomeActivity.class);
+            startActivity(eventsIntent);
+        }
         finish();
     }
 }

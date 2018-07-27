@@ -214,7 +214,9 @@ public class AddInfoneCat extends AppCompatActivity {
                     else {
                         // Handle failures
                         // ...
-                        Snackbar.make(nameEt, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                        Snackbar snackbar = Snackbar.make(nameEt, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                        snackbar.show();
                     }
                 }
             });
@@ -246,7 +248,9 @@ public class AddInfoneCat extends AppCompatActivity {
                     else {
                         // Handle failures
                         // ...
-                        Snackbar.make(nameEt, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                        Snackbar snackbar = Snackbar.make(nameEt, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                        snackbar.show();
                     }
                 }
             });

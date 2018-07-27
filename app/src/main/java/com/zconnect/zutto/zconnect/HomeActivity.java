@@ -687,7 +687,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     Snackbar snack = Snackbar.make(navHeaderUserNameTv, "No Internet. Can't Log Out.", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
-                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                     snack.show();
                 } else {
                     logoutAndSendToLogin();
@@ -941,7 +941,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             } else {
                 // Sending failed or it was canceled, show failure message to the user
                 // ...
-                Snackbar.make(navHeaderUserNameTv, "Invite send failed.", Snackbar.LENGTH_LONG).show();
+                Snackbar snackbar = Snackbar.make(navHeaderUserNameTv, "Invite send failed.", Snackbar.LENGTH_LONG);
+                snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                snackbar.show();
             }
         }
 

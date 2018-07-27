@@ -388,7 +388,9 @@ public class InfoneProfileActivity extends BaseActivity {
                     else {
                         // Handle failures
                         // ...
-                        Snackbar.make(nameEt, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                        Snackbar snackbar = Snackbar.make(nameEt, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                        snackbar.show();
                     }
                 }
             });
@@ -420,7 +422,9 @@ public class InfoneProfileActivity extends BaseActivity {
                     else {
                         // Handle failures
                         // ...
-                        Snackbar.make(nameEt, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                        Snackbar snackbar = Snackbar.make(nameEt, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                        snackbar.show();
                     }
                 }
             });

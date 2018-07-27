@@ -145,7 +145,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Login failed", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                 snackbar.show();
             }
         } else {
@@ -170,7 +170,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                             Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Authentication failed.", Snackbar.LENGTH_LONG);
                             TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                             snackBarText.setTextColor(Color.WHITE);
-                            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                             snackbar.show();
                             mProgress.dismiss();
                         } else {
@@ -296,7 +296,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                     Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
-                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                    snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                     snackbar.show();
                 } else {
                     launchGoogleSignInIntent();

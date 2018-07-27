@@ -195,13 +195,14 @@
             android:background="@color/horizontalLine"/>
         <Button
             android:id="@+id/done"
-            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
+            android:layout_width="@dimen/single_line_btn_min_width"
             android:layout_height="wrap_content"
-            android:textColor="@color/primaryText"
+            android:textColor="@color/white"
             android:textSize="16dp"
-            android:background="@color/cabpool"
-            android:text="Search"
-            android:textAllCaps="false"/>
+            android:background="@drawable/round_button_primary"
+            android:text="Search"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"

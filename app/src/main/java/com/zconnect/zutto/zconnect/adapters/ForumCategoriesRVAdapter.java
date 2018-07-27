@@ -132,7 +132,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 String shortName = forumCategoriesItemFormats.get(position).getLastMessage().getName();
                 if(shortName.indexOf(' ')>0)
                     shortName = shortName.substring(0, shortName.indexOf(' '));
-                holderMain.lastMessageWithName.setText(shortName + " :" + forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
+                holderMain.lastMessageWithName.setText(shortName + ": " + forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
                 holderMain.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
                 String timeStamp = new TimeUtilities().getTimeStamp(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate());
                 if(timeStamp.length()!=0)
@@ -181,7 +181,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 {
                     holderMain.lastMessageTime.setText(timeStamp);
                 }
-                holderMain.lastMessageWithName.setText(shortName + " :" + forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
+                holderMain.lastMessageWithName.setText(shortName + ": " + forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
             }
             catch (Exception e) {
                 Log.d("Error alert ", e.getMessage());

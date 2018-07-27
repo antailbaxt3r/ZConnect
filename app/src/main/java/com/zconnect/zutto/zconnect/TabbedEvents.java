@@ -178,7 +178,7 @@ public class TabbedEvents extends BaseActivity {
                 snackBarText.setTextColor(Color.WHITE);
                 Typeface customFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Regular.ttf");
                 snackBarText.setTypeface(customFont);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                 snack.show();
             }
         }

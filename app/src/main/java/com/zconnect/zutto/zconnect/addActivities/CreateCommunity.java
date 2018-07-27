@@ -35,6 +35,7 @@ import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 
 import java.io.IOException;
@@ -213,7 +214,9 @@ public class CreateCommunity extends AppCompatActivity {
                     else {
                         // Handle failures
                         // ...
-                        Snackbar.make(communityName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                        Snackbar snackbar = Snackbar.make(communityName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                        snackbar.show();
                     }
                 }
             });

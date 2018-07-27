@@ -151,8 +151,11 @@
             android:layout_height="2px"
             android:background="@color/horizontalLine"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             />
         <LinearLayout
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -161,26 +164,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:background="@color/cabpool"
+                android:background="@drawable/round_button_primary"
                 android:text="List of People"
-                android:textColor="@color/primaryText"
+                android:textColor="@color/white"
                 android:textSize="16dp"
-                android:textAllCaps="false"/>
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_marginEnd="@dimen/margin_small"/>
             <Button
                 android:id="@+id/sharecab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:background="@color/cabpool"
+                android:background="@drawable/round_button_simple"
                 android:text="Share"
-                android:textColor="@color/primaryText"
+                android:textColor="@color/colorPrimary"
                 android:textSize="16dp"
-                android:textAllCaps="false"/>
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_marginStart="@dimen/margin_small"/>
         </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"
             android:background="@color/horizontalLine"
+            android:visibility="gone"
             />
     </LinearLayout>
     <!--<LinearLayout-->
