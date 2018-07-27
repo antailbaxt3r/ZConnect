@@ -197,7 +197,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
 
-        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL);
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT);
         creator.addData("userKey",userKey);
 
         sendNotification(true,receiverKey);
@@ -207,7 +207,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
 
-        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL);
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT);
         creator.addData("userKey",userKey);
 
         sendNotification(true,receiverKey);
