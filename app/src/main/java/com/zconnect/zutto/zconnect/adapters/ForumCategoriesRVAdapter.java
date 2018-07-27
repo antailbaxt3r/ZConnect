@@ -121,10 +121,12 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
             if(forumCategoriesItemFormats.get(position).getImageThumb()!=null)
             {
-                holderMain.forumIcon.setImageURI(forumCategoriesItemFormats.get(position).getImageThumb());
                 holderMain.defaultForumIcon.setVisibility(View.GONE);
+                holderMain.forumIcon.setImageURI(forumCategoriesItemFormats.get(position).getImageThumb());
             }
             else {
+                holderMain.forumIcon.setImageResource(android.R.color.transparent);
+                holderMain.defaultForumIcon.setVisibility(View.VISIBLE);
                 holderMain.forumIcon.setBackground(context.getResources().getDrawable(R.drawable.forum_circle));
             }
             try {
@@ -163,10 +165,12 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());
             if(forumCategoriesItemFormats.get(position).getImageThumb()!=null)
             {
-                holderMain.forumIcon.setImageURI(forumCategoriesItemFormats.get(position).getImageThumb());
                 holderMain.defaultForumIcon.setVisibility(View.GONE);
+                holderMain.forumIcon.setImageURI(forumCategoriesItemFormats.get(position).getImageThumb());
             }
             else {
+                holderMain.forumIcon.setImageResource(android.R.color.transparent);
+                holderMain.defaultForumIcon.setVisibility(View.VISIBLE);
                 holderMain.forumIcon.setBackground(context.getResources().getDrawable(R.drawable.forum_circle));
             }
 
