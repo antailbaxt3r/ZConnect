@@ -209,10 +209,10 @@ public class InfoneProfileActivity extends BaseActivity {
 
                 if (dataSnapshot.child("valid").hasChild(mAuth.getCurrentUser().getUid())){
                     flag=true;
-                    validButton.setBackground(getResources().getDrawable(R.drawable.roundradius));
-                    validButton.setTextColor(getResources().getColor(R.color.primaryText));
+                    validButton.setBackground(getResources().getDrawable(R.drawable.round_button_simple));
+                    validButton.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }else {
-                    validButton.setBackgroundColor(getResources().getColor(R.color.infone));
+                    validButton.setBackground(getResources().getDrawable(R.drawable.round_button_primary));
                     validButton.setTextColor(getResources().getColor(R.color.white));
                     flag=false;
                 }

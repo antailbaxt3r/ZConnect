@@ -49,7 +49,7 @@
                 android:layout_gravity="end|bottom"
                 android:layout_margin="@dimen/fab_margin"
                 android:visibility="visible"
-                android:tint="@color/colorHighlight"
+                android:backgroundTint="@color/colorHighlight"
                 app:srcCompat="@drawable/ic_add_white_36dp" />
         </FrameLayout>
 

@@ -58,8 +58,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     Button mGoogleSignInBtn;
     @BindView(R.id.btn_guest_login)
     Button mGuestLogInBtn;
-    @BindView(R.id.bitsgoaemailinfo)
-    TextView bpgcEmailInfo;
     private int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseUser mUser;
@@ -95,7 +93,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
         Typeface ralewayLight = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
         Typeface ralewayMedium = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
-        bpgcEmailInfo.setTypeface(ralewayLight);
         mGoogleSignInBtn.setTypeface(ralewayMedium);
         mGuestLogInBtn.setTypeface(ralewayMedium);
 

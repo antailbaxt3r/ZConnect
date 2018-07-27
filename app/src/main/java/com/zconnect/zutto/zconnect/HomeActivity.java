@@ -676,7 +676,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.MyProducts: {
                 Intent MyProductsIntent = new Intent(HomeActivity.this,MyProducts.class);
                 startActivity(MyProductsIntent);
-                tabs.getTabAt(2).select();
                 break;
             }
             case R.id.MyRides: {
@@ -747,7 +746,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
                         .setMessage(getString(R.string.invitation_message))
                         .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-                        .setCustomImage(Uri.parse("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2FPost%2F389823xq0GnjOkKaWYKsHms22pSzGjqAX2?alt=media&token=ed57176f-c4fd-40d2-9f77-37116a6fcc35"))
                         .setCallToActionText(getString(R.string.invitation_cta))
                         .build();
                 startActivityForResult(intent, RequestCodes.REQUEST_INVITE);

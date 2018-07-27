@@ -97,6 +97,7 @@ public class  OpenEventDetail extends BaseActivity{
     private ValueEventListener listener;
     private static final String TAG = "OpenEventDetail";
     boolean viaDynamicLinkFlag=false;
+    private Typeface ralewayBold;
 
 
     Uri screenshotUri;
@@ -125,6 +126,7 @@ public class  OpenEventDetail extends BaseActivity{
         chatEditText = (EditText) findViewById(R.id.typer);
         chatEditText.setShowSoftInputOnFocus(false);
 
+        ralewayBold = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Bold.ttf");
         Bundle extras = getIntent().getExtras();
         eventId = (String) extras.get("id");
 
@@ -219,7 +221,8 @@ public class  OpenEventDetail extends BaseActivity{
                 try {
                     if(dataSnapshot.child("BoostersUids").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
-                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
+                        boostBtn.setTypeface(ralewayBold);
                     }
                     Date date = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(event.getEventDate());
                     EventDate.setText(new SimpleDateFormat("EEE, MMM dd yyyy HH:mm").format(date));
@@ -355,7 +358,9 @@ public class  OpenEventDetail extends BaseActivity{
         try {
             Uri BASE_URI = Uri.parse("http://www.zconnect.com/openevent/");
 
-            Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("eventID", eventID).build();
+            Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("eventID", eventID)
+                    .appendQueryParameter("communityRef", communityReference)
+                    .build();
             String encodedUri = null;
             try {
                 encodedUri = URLEncoder.encode(APP_URI.toString(), "UTF-8");
@@ -401,8 +406,7 @@ public class  OpenEventDetail extends BaseActivity{
                                                     + "\n*Venue:* " + event.getVenue()
                                                     + "\n*Date:* " + event.getEventDate()
                                                     + "\n*About:* " + event.getEventDescription()
-                                                    + "\n\n" + shortLink +
-                                                    "\n" + flowcharLink;
+                                                    + "\n\n" + shortLink;
 
                                             shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
                                             shareIntent.setType("text/plain");
@@ -537,8 +541,7 @@ public class  OpenEventDetail extends BaseActivity{
             }
 
         });
-        Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
-        Reminder.setTypeface(customFont);
+        Reminder.setTypeface(ralewayBold);
 
     }
 
@@ -577,15 +580,18 @@ public class  OpenEventDetail extends BaseActivity{
                 if (user != null) {
                     if (dataSnapshot.hasChild(user.getUid())) {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
-                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton2_sr));
+                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
+                        boostBtn.setTypeface(ralewayBold);
                         flag = true;
                     } else {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                        boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.primaryText));
+                        boostBtn.setTypeface(ralewayBold);
                         flag = false;
                     }
                 } else {
-                    boostBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.curvedradiusbutton_sr));
+                    boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.primaryText));
+                    boostBtn.setTypeface(ralewayBold);
                 }
             }
 
@@ -644,9 +650,6 @@ public class  OpenEventDetail extends BaseActivity{
                 }
             });
         }
-
-        Typeface customfont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
-        boostBtn.setTypeface(customfont);
     }
 
 

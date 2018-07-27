@@ -103,7 +103,6 @@
                     android:background="@drawable/round_button_simple"
                     android:backgroundTint="@color/colorHighlight"
                     android:layout_margin="@dimen/margin_small"
-                    android:textAllCaps="false"
                     style="?android:attr/borderlessButtonStyle"/>
             </LinearLayout>
 

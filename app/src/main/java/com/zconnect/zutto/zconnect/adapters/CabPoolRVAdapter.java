@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+
 /**
  * Created by shubhamk on 26/7/17.
  */
@@ -160,6 +162,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                     Uri BASE_URI = Uri.parse("http://www.zconnect.com/cabpooling/");
 
                     Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("key", cabItemFormat.get(getAdapterPosition()).getKey())
+                            .appendQueryParameter("communityRef", communityReference)
                             .build();
                     Log.d("AAAAAAA", String.valueOf(getAdapterPosition()));
                     String encodedUri = null;

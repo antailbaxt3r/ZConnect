@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.addActivities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -126,9 +128,6 @@ public class AddInfoneContact extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            mProgress.setMessage("Saving Contact");
-            mProgress.setCancelable(false);
-            mProgress.show();
 
             String name = nameEt.getText().toString();
             String phoneNum1 = phone1Et.getText().toString();
@@ -139,9 +138,12 @@ public class AddInfoneContact extends AppCompatActivity {
                 phoneNum2 = "";
             }
 
-            Log.e(TAG, "data cat name:" + catId);
+            if (!name.isEmpty() && !phoneNum1.isEmpty() && !(phoneNum1.length()<10)) {
 
-            if (!name.isEmpty() && !phoneNum1.isEmpty()) {
+                mProgress.setMessage("Saving Contact");
+                mProgress.setCancelable(false);
+                mProgress.show();
+
                 postTimeMillis = System.currentTimeMillis();
                 key = databaseReferenceInfone.child("numbers").push().getKey();
                 newContactNumRef = databaseReferenceInfone.child("numbers").child(key);
@@ -200,7 +202,13 @@ public class AddInfoneContact extends AppCompatActivity {
                 });
                 CounterManager.infoneAddContact(catId);
             }else {
-                Toast.makeText(AddInfoneContact.this, "All fields not set, including image.", Toast.LENGTH_SHORT).show();
+                if(phoneNum1.length()<10) {
+                    Snackbar snackbar = Snackbar.make(nameEt, "10 digit number required", Snackbar.LENGTH_LONG);
+                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                    snackbar.show();
+                }else {
+                    Toast.makeText(AddInfoneContact.this, "All fields not set, including image.", Toast.LENGTH_SHORT).show();
+                }
             }
 
             }
@@ -357,5 +365,18 @@ public class AddInfoneContact extends AppCompatActivity {
                 Log.e(TAG, "onActivityResult: ", result.getError());
             }
         }
+    }
+
+
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

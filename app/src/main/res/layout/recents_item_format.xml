@@ -208,7 +208,7 @@
                 android:orientation="vertical"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:clipToPadding="false">
                 <TextView
                     android:textSize="16sp"
@@ -275,7 +275,8 @@
                             android:layout_centerVertical="true"
                             android:textSize="16sp"
                             android:text="123"
-                            android:textColor="@color/primaryText"/>
+                            android:textColor="@color/primaryText"
+                            android:visibility="gone"/>
                         <ImageView
                             android:layout_centerVertical="true"
                             android:layout_marginStart="@dimen/margin_x_small"
@@ -437,14 +438,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_small">
+                    android:layout_marginEnd="@dimen/margin_small"
+                    android:orientation="vertical">
                     <TextView
                         android:id="@+id/eventsRecentItem_name"
                         android:layout_width="wrap_content"
@@ -458,7 +460,7 @@
                         android:layout_height="wrap_content"
                         android:text="Event Date"
                         android:textSize="16sp"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="@dimen/margin_top_between_similar_views"
                         android:textColor="@color/primaryText"/>
                 </LinearLayout>
                 <TextView
