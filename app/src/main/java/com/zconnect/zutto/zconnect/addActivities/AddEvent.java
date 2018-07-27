@@ -444,7 +444,7 @@ public class AddEvent extends BaseActivity {
 //                            notificationSender.execute();
 
                                 NotificationSender notificationSender = new NotificationSender(AddEvent.this, UserUtilities.currentUser.getUserUID());
-                                NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,UserUtilities.currentUser.getUserUID());
+                                NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,UserUtilities.currentUser.getUserUID());
                                 addEventNotification.setCommunityName(UserUtilities.CommunityName);
                                 addEventNotification.setItemKey(key);
                                 addEventNotification.setItemImage(downloadUri.toString());
