@@ -290,9 +290,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
                     holder.postConjunction.setText(" added a ");
                     holder.post.setText("Contact");
-                    holder.infoneContactName.setText(recentsItemFormats.get(position).getInfoneContactName());
-                    holder.infoneContactCategory.setText(recentsItemFormats.get(position).getInfoneContactCategoryName());
-
+                    holder.infoneNameCategorySentence.setText("Contact of " +
+                            recentsItemFormats.get(position).getInfoneContactName() +
+                            " added in " +
+                            recentsItemFormats.get(position).getInfoneContactCategoryName());
                     posted = " added a ";
                     post = "Contact";
                     clickableSpanFeature = new ClickableSpan() {
@@ -600,9 +601,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
                     holder.postConjunction.setText(" created a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
-                    holder.forumsName.setText(recentsItemFormats.get(position).getName());
-                    holder.forumCategory.setText(recentsItemFormats.get(position).getDesc());
-
+                    holder.forumNameCategorySentence.setText(recentsItemFormats.get(position).getName()
+                    + " in " + recentsItemFormats.get(position).getDesc());
                     posted = " created a ";
                     post = recentsItemFormats.get(position).getFeature();
                     clickableSpanFeature = new ClickableSpan() {
@@ -658,12 +658,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         //new ui
         TextView postedBy, postConjunction, post, postTime,
-                infoneContactName, infoneContactCategory,
+                infoneNameCategorySentence,
                 cabpoolSource, cabpoolDestination, cabpoolDate, cabpoolTime,
                 eventName, eventDate, eventDesc,
                 productName, productPrice, productDesc,
                 messagesMessage,
-                forumsName, forumCategory,
+                forumNameCategorySentence,
                 sentence;
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
@@ -696,8 +696,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             layoutFeatureIcon = (FrameLayout) itemView.findViewById(R.id.layout_feature_icon);
             avatarCircle = (SimpleDraweeView) itemView.findViewById(R.id.avatarCircle);
             infoneRecentItem = (LinearLayout) itemView.findViewById(R.id.infoneRecentItem);
-            infoneContactName = (TextView) itemView.findViewById(R.id.infoneName);
-            infoneContactCategory = (TextView) itemView.findViewById(R.id.infoneCategory);
+            infoneNameCategorySentence = (TextView) itemView.findViewById(R.id.infone_name_with_category_sentence);
             cabpoolRecentItem = (LinearLayout) itemView.findViewById(R.id.cabpoolRecentItem);
             cabpoolSource = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_source);
             cabpoolDestination = (TextView) itemView.findViewById(R.id.cabpoolRecentItem_destination);
@@ -716,8 +715,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             messagesRecentItem = (LinearLayout) itemView.findViewById(R.id.messagesRecentItem);
             messagesMessage = (TextView) itemView.findViewById(R.id.messagesRecentItem_message);
             forumsRecentItem = (LinearLayout) itemView.findViewById(R.id.forumsRecentItem);
-            forumsName = (TextView) itemView.findViewById(R.id.forumsRecentItem_name);
-            forumCategory = (TextView) itemView.findViewById(R.id.forumsRecentItem_category);
+            forumNameCategorySentence = (TextView) itemView.findViewById(R.id.forum_name_with_category_sentence);
             postImage = (SimpleDraweeView) itemView.findViewById(R.id.messagesRecentItem_image);
             bannerRecentItem = (LinearLayout) itemView.findViewById(R.id.bannerRecentItem);
             bannerImage = (SimpleDraweeView) itemView.findViewById(R.id.bannerRecentItem_image);

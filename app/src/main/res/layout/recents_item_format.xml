@@ -179,27 +179,11 @@
                 android:paddingStart="@dimen/padding_small"
                 android:paddingEnd="@dimen/padding_small">
                 <TextView
-                    android:id="@+id/forumsRecentItem_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Name"
+                    android:id="@+id/forum_name_with_category_sentence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:textColor="@color/primaryText"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="in"
-                    android:textSize="16sp"
-                    android:textColor="@color/primaryText"
-                    android:layout_marginStart="5dp"/>
-                <TextView
-                    android:id="@+id/forumsRecentItem_category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="category"
-                    android:textSize="16sp"
-                    android:textColor="@color/primaryText"
-                    android:layout_marginStart="5dp"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/messagesRecentItem"
@@ -303,26 +287,8 @@
                     android:layout_marginStart="@dimen/margin_small"
                     android:layout_marginEnd="@dimen/margin_small">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Contact of "
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText"/>
-                    <TextView
-                        android:id="@+id/infoneName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText"/>
-                    <TextView
-                        android:text=" added in "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/primaryText"/>
-                    <TextView
-                        android:id="@+id/infoneCategory"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/infone_name_with_category_sentence"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:textColor="@color/primaryText"/>
@@ -438,7 +404,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

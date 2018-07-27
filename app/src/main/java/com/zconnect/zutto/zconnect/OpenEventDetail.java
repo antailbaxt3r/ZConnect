@@ -671,11 +671,6 @@ public class  OpenEventDetail extends BaseActivity{
         super.onBackPressed();
 //        Intent eventsIntent=new Intent(OpenEventDetail.this,TrendingEvents.class);
 //        startActivity(eventsIntent);
-        if(viaDynamicLinkFlag)
-        {
-            Intent eventsIntent=new Intent(OpenEventDetail.this,HomeActivity.class);
-            startActivity(eventsIntent);
-        }
         finish();
     }
 }
