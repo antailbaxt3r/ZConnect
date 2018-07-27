@@ -175,8 +175,8 @@
     <string name="forum_first_msg_label">First Message</string>
     <string name="forum_first_msg_hint">Type a welcome message here</string>
 
-    <string name="status_hint">Type what are you thinking...</string>
-    <string name="status_hint_ask_questions">Or ask anything a question</string>
+    <string name="status_hint">Type what you are thinking...</string>
+    <string name="status_hint_ask_questions">Or ask anyone a question</string>
 
 
     <!--add status hints-->

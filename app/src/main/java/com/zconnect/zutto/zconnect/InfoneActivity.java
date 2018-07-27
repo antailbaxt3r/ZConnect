@@ -75,7 +75,6 @@ public class InfoneActivity extends Fragment {
         recyclerViewCat = (RecyclerView) view.findViewById(R.id.rv_cat_infone);
         recyclerViewCat.setVisibility(View.GONE);
         fabCatAdd = (FloatingActionButton) view.findViewById(R.id.fab_cat_infone);
-
         CounterManager.infoneOpen();
 
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
