@@ -222,7 +222,7 @@ public class CreateCommunity extends AppCompatActivity {
             });
             Toast.makeText(this, "Posted", Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(this, "Fields Empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Some fields are empty", Toast.LENGTH_SHORT).show();
         }
     }
 }

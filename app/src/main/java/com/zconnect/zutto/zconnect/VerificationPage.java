@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.Drawables;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -64,6 +66,9 @@ public class VerificationPage extends BaseActivity {
 
     private ProgressDialog progressDialog;
     private StorageReference mStorage;
+    private View.OnClickListener imageClickListener;
+
+    private ProgressDialog progressDialogInitial;
 
 
     @Override
@@ -74,6 +79,10 @@ public class VerificationPage extends BaseActivity {
         setSupportActionBar(toolbar);
 
         progressDialog = new ProgressDialog(this);
+        progressDialogInitial = new ProgressDialog(this);
+        progressDialogInitial.setMessage("Loading");
+
+        progressDialogInitial.show();
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -108,38 +117,7 @@ public class VerificationPage extends BaseActivity {
         userReference  =FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
         newUsersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers");
 
-
-        newUsersDatabaseReference.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild("statusCode")){
-                        if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_APPROVED)) {
-                            statusTextView.setText("Your Account have been approved you are a verified user now.");
-                            idImageButton.setOnClickListener(null);
-                            aboutNewUserEditText.setFocusable(false);
-                            submitUserIDButton.setVisibility(View.GONE);
-
-                        } else if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_NOT_APPROVED)) {
-                            statusTextView.setText("Your Account has been disapproved, please add relevant community id.");
-                        } else if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_PENDING)) {
-                            statusTextView.setText("Verification Pending...");
-                            aboutNewUserEditText.setText(dataSnapshot.child("about").getValue(String.class));
-                            Picasso.with(getApplicationContext()).load(dataSnapshot.child("imageURL").getValue(String.class)).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(idImageButton);
-                        }
-                    statusTextView.setText(dataSnapshot.child("status").getValue(String.class));
-                }else {
-                    statusTextView.setText("Submit Details");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-        idImageButton.setOnClickListener(new View.OnClickListener() {
+        imageClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ContextCompat.checkSelfPermission(
@@ -156,6 +134,56 @@ public class VerificationPage extends BaseActivity {
                     startActivityForResult(galleryIntent, GALLERY_REQUEST);
                 }
             }
+        };
+
+
+        newUsersDatabaseReference.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild("statusCode")){
+                    if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_APPROVED)) {
+                        statusTextView.setText("Your account has been approved you are a verified user now.");
+                        idImageButton.setOnClickListener(null);
+                        try {
+                            idImageButton.setBackground(Drawables.drawableFromUrl(dataSnapshot.child("idImageURL").getValue(String.class),VerificationPage.this));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        aboutNewUserEditText.setFocusable(false);
+                        submitUserIDButton.setVisibility(View.GONE);
+
+                    } else if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_NOT_APPROVED)) {
+                        statusTextView.setText("Your account has been disapproved, please add relevant college admission related id.");
+                        idImageButton.setOnClickListener(imageClickListener);
+                        aboutNewUserEditText.setFocusable(true);
+                        aboutNewUserEditText.setText("");
+                        submitUserIDButton.setVisibility(View.VISIBLE);
+                    } else if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_PENDING)) {
+                        statusTextView.setText("Verification pending! You can update your verification details.");
+                        idImageButton.setOnClickListener(imageClickListener);
+                        aboutNewUserEditText.setText(dataSnapshot.child("about").getValue(String.class));
+                        aboutNewUserEditText.setFocusable(true);
+                        submitUserIDButton.setVisibility(View.VISIBLE);
+                        try {
+                            idImageButton.setBackground(Drawables.drawableFromUrl(dataSnapshot.child("idImageURL").getValue(String.class),VerificationPage.this));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    progressDialogInitial.dismiss();
+                }else {
+                    statusTextView.setText("Submit any document related to college admission!");
+                    idImageButton.setOnClickListener(imageClickListener);
+                    aboutNewUserEditText.setFocusable(true);
+                    submitUserIDButton.setVisibility(View.VISIBLE);
+                    progressDialogInitial.dismiss();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
         });
 
         submitUserIDButton.setOnClickListener(new View.OnClickListener() {
@@ -166,7 +194,6 @@ public class VerificationPage extends BaseActivity {
         });
 
 
-
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -175,6 +202,7 @@ public class VerificationPage extends BaseActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+
     }
 
     private void startPosting(){
@@ -183,7 +211,7 @@ public class VerificationPage extends BaseActivity {
         progressDialog.show();
 
 
-        String aboutText = statusTextView.getText().toString().trim();
+        String aboutText = aboutNewUserEditText.getText().toString().trim();
         if(aboutText.equals("")){
             aboutText = " ";
         }
@@ -232,7 +260,7 @@ public class VerificationPage extends BaseActivity {
 
         }else {
             progressDialog.dismiss();
-            Toast.makeText(this, "Please add relevant ID..", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You haven't added any ID proof.", Toast.LENGTH_SHORT).show();
         }
 
     }

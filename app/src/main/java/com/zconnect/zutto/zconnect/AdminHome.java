@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.itemFormats.NewUserItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 import com.zconnect.zutto.zconnect.adapters.NewUserRVAdapter;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
@@ -174,6 +175,12 @@ public class AdminHome extends AppCompatActivity {
                     for (DataSnapshot shot: dataSnapshot.getChildren()) {
                         try {
                             NewUserItemFormat newUser = shot.getValue(NewUserItemFormat.class);
+
+                            PostedByDetails postedByDetails = new PostedByDetails();
+                            postedByDetails.setUsername("none");
+                            if(!shot.hasChild("approvedRejectedBy")){
+                                newUser.setApprovedRejectedBy(postedByDetails);
+                            }
                             if (newUser.getStatusCode().equals(finalTabType)) {
                                 newUserItemFormats.add(newUser);
                             }

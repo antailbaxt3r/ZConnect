@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +22,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -49,6 +51,7 @@ public class CommunitiesAround extends BaseActivity {
     LocationManager locationManager;
     LocationListener locationListener;
     private ProgressDialog progressDialog;
+    private TextView noCommunitiesTextView;
 
     private double lon,lat;
 
@@ -60,7 +63,7 @@ public class CommunitiesAround extends BaseActivity {
         setSupportActionBar(toolbar);
 
         progressDialog = new ProgressDialog(this);
-
+        progressDialog.setCancelable(false);
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -86,6 +89,8 @@ public class CommunitiesAround extends BaseActivity {
         communitiesReference = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
         communitiesRecycler = (RecyclerView) findViewById(R.id.all_communities);
         communitiesRecycler.setLayoutManager(new LinearLayoutManager(this));
+        noCommunitiesTextView = (TextView) findViewById(R.id.no_community);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_activity_communities_around);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +114,6 @@ public class CommunitiesAround extends BaseActivity {
                 lat = location.getLatitude();
 
                 loadCommunities(lon,lat);
-                Toast.makeText(CommunitiesAround.this, location.toString(), Toast.LENGTH_SHORT).show();
                 locationManager.removeUpdates(this);
             }
 
@@ -120,13 +124,13 @@ public class CommunitiesAround extends BaseActivity {
 
             @Override
             public void onProviderEnabled(String provider) {
-                Toast.makeText(CommunitiesAround.this, "GPS On", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CommunitiesAround.this, "GPS Enabled", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onProviderDisabled(String provider) {
                 if(provider.equals(LocationManager.GPS_PROVIDER)) {
-                    buildAlertMessageNoGps();
+                    buildAlertMessageNoGps(CommunitiesAround.this);
                 }
             }
         };
@@ -141,6 +145,9 @@ public class CommunitiesAround extends BaseActivity {
             ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 10);
             return;
         } else {
+            progressDialog.setMessage("Searching Communities");
+            progressDialog.show();
+
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
@@ -156,6 +163,9 @@ public class CommunitiesAround extends BaseActivity {
                     if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
+                    progressDialog.setMessage("Searching Communities");
+                    progressDialog.show();
+
                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
@@ -171,13 +181,11 @@ public class CommunitiesAround extends BaseActivity {
 
     public void loadCommunities(final double lon,final double lat){
 
-        progressDialog.setMessage("Searching Communities");
-        progressDialog.show();
-
         communitiesReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 communitiesList.clear();
+                Boolean flagNoCommunity = true;
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     CommunitiesItemFormat communitiesItemFormat = shot.getValue(CommunitiesItemFormat.class);
@@ -189,12 +197,10 @@ public class CommunitiesAround extends BaseActivity {
                        comLon = shot.child("location").child("lon").getValue(Double.class);
 
                        totalDistance = distance(lat,comLat,lon,comLon);
-
-                       Toast.makeText(CommunitiesAround.this, " " + totalDistance, Toast.LENGTH_SHORT).show();
-
                        if(totalDistance<2){
                            //Toast.makeText(CommunitiesAround.this, " " + totalDistance, Toast.LENGTH_SHORT).show();
                            communitiesList.add(communitiesItemFormat);
+                           flagNoCommunity = false;
                        }
 
                    }catch (Exception e){
@@ -202,6 +208,9 @@ public class CommunitiesAround extends BaseActivity {
                    }
                 }
 
+                if(flagNoCommunity){
+                    noCommunitiesTextView.setVisibility(View.VISIBLE);
+                }
                 progressDialog.dismiss();
                 adapter.notifyDataSetChanged();
             }
@@ -213,7 +222,7 @@ public class CommunitiesAround extends BaseActivity {
         });
     }
 
-    private  void buildAlertMessageNoGps()
+    private  void buildAlertMessageNoGps(final Context ctx)
     {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your GPS seems to be disabled, you need to enable it!")

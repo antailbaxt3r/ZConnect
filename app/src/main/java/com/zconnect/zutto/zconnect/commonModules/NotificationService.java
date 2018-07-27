@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect.commonModules;
 
 import android.app.ActivityManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -20,8 +21,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -75,9 +77,38 @@ public class NotificationService extends FirebaseMessagingService {
 
     private Map data;
     private Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    private NotificationManager manager;
+    public static final String FORUMS_CHANNEL_ID = "forums";
+    public static final String PERSONAL_CHANNEL_ID = "personal";
+    public static final String COMMUNITY_CHANNEL_ID = "community";
+
+    NotificationChannel forumChannel = null;
+    NotificationChannel personalChannel = null;
+    NotificationChannel communityChannel = null;
 
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
+
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            forumChannel = new NotificationChannel(FORUMS_CHANNEL_ID, getString(R.string.noti_channel_forums), NotificationManager.IMPORTANCE_DEFAULT);
+            forumChannel.setLightColor(Color.GREEN);
+            forumChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            getManager().createNotificationChannel(forumChannel);
+
+
+            personalChannel = new NotificationChannel(PERSONAL_CHANNEL_ID, getString(R.string.noti_channel_personal), NotificationManager.IMPORTANCE_DEFAULT);
+            personalChannel.setLightColor(Color.GREEN);
+            personalChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            getManager().createNotificationChannel(personalChannel);
+
+
+            communityChannel = new NotificationChannel(COMMUNITY_CHANNEL_ID, getString(R.string.noti_channel_community), NotificationManager.IMPORTANCE_DEFAULT);
+            communityChannel.setLightColor(Color.GREEN);
+            communityChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            getManager().createNotificationChannel(communityChannel);
+        }
+
 
         data = remoteMessage.getData();
 
@@ -161,7 +192,8 @@ public class NotificationService extends FirebaseMessagingService {
         style.bigText(userName + " likes your status").setBigContentTitle(communityName);
         if(likeCount.length()>0)
             style.bigText(userName + " and " + likeCount + " others " + " like your status").setBigContentTitle(communityName);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
+
 
         Bitmap image = null;
         image  = getRoundedBitmap(userImage);
@@ -196,7 +228,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         Bitmap appLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
 
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.setBigContentTitle(communityName).bigText("Your profile is rejected, please again add your details.");
@@ -234,7 +266,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         Bitmap appLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
 
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.setBigContentTitle(communityName).bigText("Your profile is approved, you can enjoy access to all features.");
@@ -277,7 +309,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         Bitmap appLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID);
 
         NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
         style.setBigContentTitle(title).setSummaryText(message);
@@ -324,7 +356,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         Bitmap appLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID);
 
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.setBigContentTitle(title).bigText(message);
@@ -361,7 +393,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String userImage = data.get("userImage").toString();
         final String userMobileNumber = data.get("userMobileNumber").toString();
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.bigText(userName + " tried contacting you, call him now! ").setBigContentTitle(communityName);
 
@@ -410,7 +442,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String postMessage = data.get("postMessage").toString();
         final String postKey = data.get("postKey").toString();
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
 
         Bitmap bitmap = null;
 
@@ -459,7 +491,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String eventKey = data.get("eventKey").toString();
         final String eventName = data.get("eventName").toString();
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
 
         Bitmap bitmap = null;
 
@@ -509,7 +541,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String cabMessage = data.get("cabMessage").toString();
         final String cabKey = data.get("cabKey").toString();
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
 
         Bitmap bitmap = null;
 
@@ -559,7 +591,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String productKey = data.get("productKey").toString();
         final String productName = data.get("productName").toString();
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
 
         Bitmap bitmap = null;
 
@@ -611,7 +643,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String forumKey = data.get("forumKey").toString();
         final String forumName = data.get("forumName").toString();
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,FORUMS_CHANNEL_ID);
 
         Bitmap bitmap = null;
 
@@ -658,9 +690,10 @@ public class NotificationService extends FirebaseMessagingService {
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
+
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-        style.bigText("Hey!" + userName + " loved your profile").setBigContentTitle(communityName);
+        style.bigText("Hey! " + userName + " loved your profile").setBigContentTitle(communityName);
 
         Bitmap bitmap = null;
 
@@ -678,7 +711,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setSound(defaultSoundUri)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
-                .setContentText("Hey!" + userName + " loved your profile");
+                .setContentText("Hey! " + userName + " loved your profile");
 
         Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);
         intent.putExtra("Uid",userKey);
@@ -699,9 +732,9 @@ public class NotificationService extends FirebaseMessagingService {
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-        style.bigText("Hey!" + userName + " liked your profile").setBigContentTitle(communityName);
+        style.bigText("Hey! " + userName + " liked your profile").setBigContentTitle(communityName);
 
         Bitmap bitmap = null;
 
@@ -719,7 +752,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setSound(defaultSoundUri)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
-                .setContentText("Hey!" + userName + " liked your profile");
+                .setContentText("Hey! " + userName + " liked your profile");
 
         Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);
         intent.putExtra("Uid",userKey);
@@ -751,7 +784,7 @@ public class NotificationService extends FirebaseMessagingService {
         }catch (Exception e){}
 
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID);
 
         if(bitmap!=null){
             mBuilder.setLargeIcon(bitmap);
@@ -805,7 +838,7 @@ public class NotificationService extends FirebaseMessagingService {
             System.out.println(e);
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,FORUMS_CHANNEL_ID);
 
 
         if (bitmap!=null){
@@ -863,7 +896,7 @@ public class NotificationService extends FirebaseMessagingService {
             System.out.println(e);
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID);
 
         if(bitmap!=null) {
             NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
@@ -908,7 +941,7 @@ public class NotificationService extends FirebaseMessagingService {
         } catch(IOException e) {
             System.out.println(e);
         }
-        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationService.this);
+        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID);
 
         if(bitmap!=null) {
             NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
@@ -941,7 +974,7 @@ public class NotificationService extends FirebaseMessagingService {
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.bigText("Hey! People around you are using Cab Pool very often").setBigContentTitle(communityName);
 
-        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationService.this)
+        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_directions_car_white_24dp)
                         .setStyle(style)
                         .setSound(defaultSoundUri)
@@ -970,7 +1003,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String communityName = data.get("communityName").toString();
         final String userImage = data.get("userImage").toString();
 
-        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationService.this);
+        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
 
         Intent call = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + userMobileNumber));
 
@@ -1016,7 +1049,7 @@ public class NotificationService extends FirebaseMessagingService {
         style.bigText(userName + " left your cab pool").setBigContentTitle(communityName);
 
         android.support.v4.app.NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(NotificationService.this)
+                new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_directions_car_white_24dp)
                         .setStyle(style)
                         .setAutoCancel(true)
@@ -1052,7 +1085,7 @@ public class NotificationService extends FirebaseMessagingService {
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.bigText(userName + " joined your cab pool").setBigContentTitle(communityName);
 
-        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
 
         Bitmap image = null;
         image  = getRoundedBitmap(userImage);
@@ -1090,7 +1123,7 @@ public class NotificationService extends FirebaseMessagingService {
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.bigText(userName + " boosted your event " + eventName).setBigContentTitle(communityName);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
 
         Bitmap image = null;
         image  = getRoundedBitmap(userImage);
@@ -1159,6 +1192,13 @@ public class NotificationService extends FirebaseMessagingService {
         canvas.drawBitmap(bitmap, rect, rect, paint);
 
         return canvasBitmap;
+    }
+
+    private NotificationManager getManager() {
+        if (manager == null) {
+            manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        return manager;
     }
 
 }

@@ -242,6 +242,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                         cabPoolLeaveNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
                         notificationSender.execute(cabPoolLeaveNotification);
 
+                        CounterManager.openCabPoolLeave(getIntent().getStringExtra("key"));
                         Toast.makeText(getApplicationContext(), "Left CabPool", Toast.LENGTH_SHORT).show();
 
                     } else {
@@ -265,6 +266,8 @@ public class CabPoolListOfPeople extends BaseActivity {
                                 cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
                                 cabPoolJoinNotification.setUserName(userItemFormat.getUsername());
                                 notificationSender.execute(cabPoolJoinNotification);
+
+                                CounterManager.openCabPoolJoin(getIntent().getStringExtra("key"));
 
                                 FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
                             }

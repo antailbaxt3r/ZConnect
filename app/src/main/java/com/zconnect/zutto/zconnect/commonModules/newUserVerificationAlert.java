@@ -19,7 +19,7 @@ public class newUserVerificationAlert {
         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)){
 
             final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ctx);
-            builder.setMessage("Your profile will be verified soon to access " + featureName +", want to change proof?")
+            builder.setMessage("Your profile will be verified soon to access " + featureName +", do you want to change proof ID?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
@@ -36,6 +36,9 @@ public class newUserVerificationAlert {
 
                         }
                     });
+
+            final android.app.AlertDialog alert = builder.create();
+            alert.show();
 
         }else if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
             final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ctx);

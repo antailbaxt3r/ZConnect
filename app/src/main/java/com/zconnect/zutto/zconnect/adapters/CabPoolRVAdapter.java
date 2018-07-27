@@ -143,6 +143,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                     intent.putExtra("key", array.get(getAdapterPosition()).getKey());
                     intent.putExtra("date", (array.get(getAdapterPosition()).getDT()).substring(0,8));
                     context.startActivity(intent);
+                    CounterManager.openCabPoolList(array.get(getAdapterPosition()).getKey());
                 }
 
                 if(i==1) {
@@ -150,6 +151,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                         intent.putExtra("key", cabItemFormat.get(getAdapterPosition()).getKey());
                         intent.putExtra("date", (cabItemFormat.get(getAdapterPosition()).getDT()).substring(0,8));
                         context.startActivity(intent);
+                        CounterManager.openCabPoolList(cabItemFormat.get(getAdapterPosition()).getKey());
                     }}
             });
             share.setOnClickListener(new View.OnClickListener() {

@@ -61,7 +61,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
         holder.callImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                CounterManager.infoneCallContact();
                 callOptionsDialog(phoneNums);
 
             }

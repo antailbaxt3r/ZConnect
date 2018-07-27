@@ -95,7 +95,7 @@ public class InfoneProfileActivity extends BaseActivity {
     private Button viewProfileButton;
 
     private final String TAG = getClass().getSimpleName();
-    private String catId;
+    private String catId,name;
     LinearLayout linearLayout;
     ProgressBar progressBar;
 
@@ -163,7 +163,7 @@ public class InfoneProfileActivity extends BaseActivity {
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
-                String name = dataSnapshot.child("name").getValue(String.class);
+                name = dataSnapshot.child("name").getValue(String.class);
                 nameEt.setText(name);
                 toolbar.setTitle(name);
 
@@ -245,6 +245,7 @@ public class InfoneProfileActivity extends BaseActivity {
         phone1EtCallbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CounterManager.infoneCallContact();
                 Intent intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse("tel:" + phone1Et.getText().toString()));
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -306,6 +307,8 @@ public class InfoneProfileActivity extends BaseActivity {
                 }
                 postTimeMillis = System.currentTimeMillis();
                 databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
+
+                CounterManager.infoneVerifyContact();
             }
         });
     }

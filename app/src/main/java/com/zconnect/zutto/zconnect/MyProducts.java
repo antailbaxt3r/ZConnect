@@ -145,7 +145,7 @@ public class MyProducts extends BaseActivity {
         }
 
         public void setArchiveButton(final String product_key){
-            CounterManager.StoreRoomMyProductDelete();
+
             FirebaseMessaging.getInstance().unsubscribeFromTopic(product_key);
             ReserveReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(product_key);
 
@@ -156,6 +156,7 @@ public class MyProducts extends BaseActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if(!flag) {
+                                CounterManager.StoreRoomMyProductDelete();
                                 FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("archiveProducts").child(product_key).setValue(dataSnapshot.getValue());
                                 flag= true;
                                 ReserveReference.removeValue();

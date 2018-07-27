@@ -223,7 +223,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
             SharedPreferences sharedPrefVerification = getSharedPreferences("userType", MODE_PRIVATE);
             SharedPreferences.Editor editInfo3 = sharedPrefVerification.edit();
-            editInfo2.putBoolean("userVerification", true);
+            editInfo3.putBoolean("userVerification", true);
 
             editInfo3.commit();
             FirebaseMessaging.getInstance().subscribeToTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -241,9 +241,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
             startActivity(i);
             finish();
-            //logout();
-
-            Toast.makeText(LoginActivity.this, "Welcome to ZConnect", Toast.LENGTH_SHORT).show();
         }
     }
 

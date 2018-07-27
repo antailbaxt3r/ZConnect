@@ -51,11 +51,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.zconnect.zutto.zconnect.Utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
@@ -107,7 +107,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private AlertDialog addContactDialog;
     private Fragment recent, forums, shop, myProfile, infone;
     public Boolean flag = false;
-
+    public Boolean setTitleFlag = true;
 
     private DatabaseReference mDatabaseStats;
     private DatabaseReference mDatabaseUserStats;
@@ -537,7 +537,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
 
-                            if(UserUtilities.currentUser.getUserType()== null){
+                            if(!dataSnapshot.hasChild("userType")){
                                 UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_VERIFIED);
                             }
                             if(communityReference!=null && !flag) {
@@ -618,15 +618,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if (dataSnapshot.hasChild("name")) {
-                            Title = dataSnapshot.child("name").getValue().toString() + " Connect";
-                            setToolbarTitle(Title);
-                            UserUtilities.CommunityName = Title;
-                        } else {
-                            Title = "Community Connect";
-                            setToolbarTitle(Title);
+                        if(setTitleFlag) {
+                            if (dataSnapshot.hasChild("name")) {
+                                Title = dataSnapshot.child("name").getValue().toString() + " Connect";
+                                setToolbarTitle(Title);
+                                UserUtilities.CommunityName = Title;
+                            } else {
+                                Title = "Community Connect";
+                                setToolbarTitle(Title);
+                            }
+                            setTitleFlag = false;
                         }
-
                         navHeaderBackGroundImageUrl = dataSnapshot.child("image").getValue(String.class);
                         if (navHeaderBackGroundImageUrl != null
                                 && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)
@@ -635,6 +637,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         }else {
                             navHeaderBackground.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                         }
+
                     }
 
                     @Override

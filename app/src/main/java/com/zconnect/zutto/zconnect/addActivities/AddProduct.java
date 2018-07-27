@@ -325,7 +325,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                         FirebaseMessaging.getInstance().subscribeToTopic(key);
 
 
-                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid()).child("personalHome").child(newPost.getKey());
+                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
                         final DatabaseReference newPost2Postedby = newPost2.child("PostedBy");
                         newPost2.child("name").setValue(productNameValue);
                         newPost2.child("desc").setValue(productDescriptionValue);

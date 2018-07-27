@@ -448,6 +448,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
                 SharedPreferences userVerification = getSharedPreferences("userType", MODE_PRIVATE);
                 Boolean userTypeBoolean = userVerification.getBoolean("userVerification", false);
+
                 if(userTypeBoolean){
                     newPost.child("userType").setValue(UsersTypeUtilities.KEY_VERIFIED);
 

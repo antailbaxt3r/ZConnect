@@ -227,7 +227,7 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
         {
             @Override
             public void onClick(View view) {
-                CounterManager.eventOpenCounter(key, "Trending");
+                CounterManager.eventOpenCounter(key);
                 Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
                 i.putExtra("id", key);
                 mView.getContext().startActivity(i);

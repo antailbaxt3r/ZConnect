@@ -58,7 +58,7 @@ import java.util.Calendar;
 
 import javax.xml.datatype.Duration;
 
-import static com.zconnect.zutto.zconnect.Utilities.RequestCodes.GALLERY_REQUEST;
+import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST;
 
 public class CreateForum extends AppCompatActivity {
     String mtabName, uid;
@@ -183,7 +183,7 @@ public class CreateForum extends AppCompatActivity {
                     databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(uid);
                     databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(UserUtilities.currentUser.getUserUID()).setValue(userDetails);
 
-                    CounterManager.forumsAddCategory(mtabName);
+                    CounterManager.forumsAddCategory(uid);
 
                     //Home
 
@@ -303,7 +303,7 @@ public class CreateForum extends AppCompatActivity {
                                     databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue(downloadUri != null ? downloadUri.toString() : null);
                                     if (flag) {
                                         Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
                                         intent.putExtra("type", "forums");
                                         intent.putExtra("name", catName);
                                         intent.putExtra("tab", uid);
@@ -332,7 +332,7 @@ public class CreateForum extends AppCompatActivity {
 //                        databaseReferenceTabsCategories.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
 //                        databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
                         Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
                         intent.putExtra("type","forums");
                         intent.putExtra("name", catName);
                         intent.putExtra("tab",uid);
