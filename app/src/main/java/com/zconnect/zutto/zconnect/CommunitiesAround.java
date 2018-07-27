@@ -113,6 +113,8 @@ public class CommunitiesAround extends BaseActivity {
                 lon = location.getLongitude();
                 lat = location.getLatitude();
 
+                Toast.makeText(CommunitiesAround.this, lon + " " + lat, Toast.LENGTH_SHORT).show();
+
                 loadCommunities(lon,lat);
                 locationManager.removeUpdates(this);
             }

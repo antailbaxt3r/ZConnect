@@ -296,7 +296,6 @@ public class AddInfoneCat extends AppCompatActivity {
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1, 1)
-                    .setBackgroundColor(R.color.white)
                     .setSnapRadius(2)
                     .start(this);
         }

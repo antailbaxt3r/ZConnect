@@ -208,7 +208,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             {
                 communityCode = CommunitiesEmails.get(i).getCode();
 
-                Toast.makeText(this, communityCode + " Setting community code " + CommunitiesEmails.get(i).getEmail() , Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -218,7 +217,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             SharedPreferences.Editor editInfo2 = sharedPref2.edit();
             editInfo2.putString("communityReference", communityCode);
 
-            Toast.makeText(this, communityCode +" community code shared preferance ", Toast.LENGTH_SHORT).show();
             editInfo2.commit();
 
             SharedPreferences sharedPrefVerification = getSharedPreferences("userType", MODE_PRIVATE);

@@ -137,7 +137,7 @@ public class VerificationPage extends BaseActivity {
         };
 
 
-        newUsersDatabaseReference.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+        newUsersDatabaseReference.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild("statusCode")){

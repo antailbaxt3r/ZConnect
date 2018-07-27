@@ -180,7 +180,6 @@ public class ChatActivity extends BaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
                         if(!dataSnapshot.child("usersListItemFormats").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             joinButton.setVisibility(View.VISIBLE);
                             joinLayout.setVisibility(View.VISIBLE);
@@ -245,7 +244,6 @@ public class ChatActivity extends BaseActivity {
                     public void onDataChange(final DataSnapshot dataSnapshot) {
                         setToolbarTitle(dataSnapshot.child("name").getValue().toString());
 
-                        FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
                         if (!dataSnapshot.child("users").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                             joinButton.setVisibility(View.VISIBLE);
                             joinLayout.setVisibility(View.VISIBLE);
@@ -256,7 +254,7 @@ public class ChatActivity extends BaseActivity {
                                 public void onClick(View v) {
                                     final UsersListItemFormat userDetails = new UsersListItemFormat();
                                     DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
+                                    FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
                                     user.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot2) {

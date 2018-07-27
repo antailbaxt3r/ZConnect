@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -57,6 +58,9 @@ public class LogoFlashActivity extends BaseActivity {
         setContentView(R.layout.activity_logo_flash);
         bgImage = (ImageView) findViewById(R.id.bgImage);
         bgColor = findViewById(R.id.bgColor);
+
+        SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
@@ -137,7 +141,7 @@ public class LogoFlashActivity extends BaseActivity {
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.child("bgUrl").getValue() != null) {
+                    if (dataSnapshot.hasChild("bgUrl")) {
                         bgImage.setImageURI(Uri.parse(dataSnapshot.child("bgUrl").getValue(String.class)));
                     } else {
                         bgColor.setVisibility(View.GONE);
@@ -152,7 +156,7 @@ public class LogoFlashActivity extends BaseActivity {
             });
         }
 
-        showDebugDBAddressLogToast(this);
+//        showDebugDBAddressLogToast(this);
 
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -193,18 +197,18 @@ public class LogoFlashActivity extends BaseActivity {
 
     }
 
-    public static void showDebugDBAddressLogToast(Context context) {
-        if (BuildConfig.DEBUG) {
-            try {
-                Class<?> debugDB = Class.forName("com.amitshekhar.DebugDB");
-                Method getAddressLog = debugDB.getMethod("getAddressLog");
-                Object value = getAddressLog.invoke(null);
-                Toast.makeText(context, (String) value, Toast.LENGTH_LONG).show();
-            } catch (Exception ignore) {
-
-            }
-        }
-    }
+//    public static void showDebugDBAddressLogToast(Context context) {
+//        if (BuildConfig.DEBUG) {
+//            try {
+//                Class<?> debugDB = Class.forName("com.amitshekhar.DebugDB");
+//                Method getAddressLog = debugDB.getMethod("getAddressLog");
+//                Object value = getAddressLog.invoke(null);
+//                Toast.makeText(context, (String) value, Toast.LENGTH_LONG).show();
+//            } catch (Exception ignore) {
+//
+//            }
+//        }
+//    }
 
 
 //    void link(){
