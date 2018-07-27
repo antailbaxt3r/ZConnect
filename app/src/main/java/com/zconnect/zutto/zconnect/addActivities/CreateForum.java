@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.addActivities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -70,7 +71,7 @@ public class CreateForum extends AppCompatActivity {
     StorageReference mStorage;
     boolean flag;
     Calendar calendar;
-    ProgressBar progressBar;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,8 @@ public class CreateForum extends AppCompatActivity {
         setSupportActionBar(toolbar);
         intentHandle = new IntentHandle();
         calendar = Calendar.getInstance();
+
+        progressDialog = new ProgressDialog(this);
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -123,7 +126,6 @@ public class CreateForum extends AppCompatActivity {
         done = (FrameLayout) findViewById(R.id.layout_done_content_create_forum);
         intentHandle = new IntentHandle();
         mStorage = FirebaseStorage.getInstance().getReference();
-        progressBar = (ProgressBar) findViewById(R.id.progrss_bar_content_create_forum);
 
         addForumIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +154,9 @@ public class CreateForum extends AppCompatActivity {
                 if(addForumName.getText()!=null && addForumName.getText().toString().length()!=0
                         && firstMessage.getText()!=null && firstMessage.getText().toString().length()!=0)
                 {
-                    progressBar.setVisibility(View.VISIBLE);
+                    progressDialog.setMessage("Creating forum");
+                    progressDialog.show();
+
                     final String catName = addForumName.getText().toString();
                     final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
                     final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid);
