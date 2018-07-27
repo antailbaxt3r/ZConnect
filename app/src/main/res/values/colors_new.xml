@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="link">#03A9F4</color>
+    <!--<color name="link">#03A9F4</color>-->
+    <color name="link">#673ab7</color>
     <color name="defaultAvatar">#BDBDBD</color>
 
     <color name="users">#795548</color>

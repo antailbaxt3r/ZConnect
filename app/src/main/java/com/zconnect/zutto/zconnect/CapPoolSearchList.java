@@ -70,7 +70,6 @@ public class CapPoolSearchList extends BaseActivity {
         setContentView(R.layout.activity_pool_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
-
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -91,8 +90,6 @@ public class CapPoolSearchList extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
-
         //getting values from intent
         try {
             source = getIntent().getStringExtra("source");
