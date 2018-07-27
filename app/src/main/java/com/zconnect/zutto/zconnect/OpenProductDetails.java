@@ -2,15 +2,25 @@ package com.zconnect.zutto.zconnect;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +33,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +42,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
@@ -39,6 +53,10 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -63,6 +81,10 @@ public class OpenProductDetails extends BaseActivity {
 
     private LinearLayout chatLayout;
     private EditText chatEditText;
+    private String mImageUri;
+    private ProgressDialog progressDialog;
+    private String path;
+    private Uri screenshotUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +134,8 @@ public class OpenProductDetails extends BaseActivity {
         chatLayout= (LinearLayout) findViewById(R.id.chatLayout);
         chatEditText = (EditText) findViewById(R.id.typer);
         chatEditText.setShowSoftInputOnFocus(false);
+
+        progressDialog = new ProgressDialog(this);
 
         chatLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,7 +232,7 @@ public class OpenProductDetails extends BaseActivity {
                 } catch (Exception e){
 
                 }
-
+                mImageUri = dataSnapshot.child("Image").getValue().toString();
                 setImage(OpenProductDetails.this, dataSnapshot.child("ProductName").getValue().toString(), dataSnapshot.child("Image").getValue().toString(), productImage);
 
                 if (dataSnapshot.hasChild("negotiable")) {
@@ -249,6 +273,11 @@ public class OpenProductDetails extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.share:
+
+                CounterManager.eventShare(productKey);
+                shareProduct(mImageUri, this.getApplicationContext(), productKey);
+                break;
             case R.id.menu_chat_room:
                 //char room clicked
                 Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
@@ -261,6 +290,133 @@ public class OpenProductDetails extends BaseActivity {
                 break;
         }
         return true;
+    }
+
+    public Bitmap mergeBitmap(Bitmap bitmap2, Bitmap bitmap1, Context context) {
+        Bitmap mergedBitmap = null;
+
+
+        Drawable[] layers = new Drawable[2];
+
+        layers[0] = new BitmapDrawable(context.getResources(), bitmap1);
+        layers[1] = new BitmapDrawable(context.getResources(), bitmap2);
+
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+
+        int width = layers[0].getIntrinsicWidth();
+        int height = layers[0].getIntrinsicHeight();
+
+        mergedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mergedBitmap);
+        layerDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        layerDrawable.draw(canvas);
+
+
+        //mergedBitmap=BitmapFactory.decodeResourceStream(layerDrawable)
+
+        return mergedBitmap;
+    }
+
+    private void shareProduct(final String image, final Context context, final String productKey) {
+
+        try {
+            Uri BASE_URI = Uri.parse("http://www.zconnect.com/openproduct/");
+
+            Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("key", productKey).build();
+            String encodedUri = null;
+            try {
+                encodedUri = URLEncoder.encode(APP_URI.toString(), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+//            https://your_subdomain.page.link/?link=your_deep_link&apn=package_name[&amv=minimum_version][&afl=fallback_link]
+//            https://example.page.link/?link=https://www.example.com/invitation?gameid%3D1234%26referrer%3D555&apn=com.example.android&ibi=com.example.ios&isi=12345
+                    .setLongLink(Uri.parse("https://zconnect.page.link/?link="+encodedUri+"&apn=com.zconnect.zutto.zconnect&amv=11" ))
+                    .buildShortDynamicLink()
+                    .addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
+                        @Override
+                        public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                            if(task.isSuccessful())
+                            {
+                                //short link
+                                final Uri shortLink = task.getResult().getShortLink();
+                                final Uri flowcharLink = task.getResult().getPreviewLink();
+                                progressDialog.setMessage("Loading...");
+                                progressDialog.show();
+                                //shareIntent.setPackage("com.whatsapp");
+                                //Add text and then Image URI
+                                Thread thread = new Thread(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            //Your code goes here
+                                            Uri imageUri = Uri.parse(image);
+                                            Intent shareIntent = new Intent();
+                                            shareIntent.setAction(Intent.ACTION_SEND);
+
+                                            Bitmap bm = BitmapFactory.decodeStream(new URL(image)
+                                                    .openConnection()
+                                                    .getInputStream());
+
+
+                                            bm = mergeBitmap(BitmapFactory.decodeResource(context.getResources(),
+                                                    R.drawable.background_icon_z), bm, context);
+                                            String temp = "Hey, check out this product!" +
+                                                    "\n*Item:* " + productName.getText()
+                                                    + "\n*Price:* " + productPrice.getText()
+                                                    + "\n*About:* " + productDescription.getText()
+                                                    + "\n\n" + shortLink;
+
+                                            shareIntent.putExtra(Intent.EXTRA_TEXT, temp);
+                                            shareIntent.setType("text/plain");
+
+                                            path = MediaStore.Images.Media.insertImage(
+                                                    context.getContentResolver(),
+                                                    bm, "", null);
+                                            screenshotUri = Uri.parse(path);
+
+                                            shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                                            shareIntent.setType("image/png");
+                                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                                            progressDialog.dismiss();
+                                            startActivityForResult(Intent.createChooser(shareIntent, "Share Via"), 0);
+                                            //context.startActivity(shareIntent);
+
+                                        } catch (Exception e) {
+                                            progressDialog.dismiss();
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+
+                                thread.start();
+                            }
+                            else {
+                                Log.d("Dynamic link ERROR", task.getException().getMessage());
+
+                            }
+                        }
+                    });
+//                    .setLink(Uri.parse("https://www.zconnect.com/openevent?eventid%" ))
+//                    .setDynamicLinkDomain("zconnect.page.link/")
+//                    .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
+//                            .setMinimumVersion(11)
+//                            .build())
+//                    .setIosParameters(new DynamicLink.IosParameters.Builder("https://www.google.com").build())
+//                    .buildDynamicLink();
+//            final Uri dynamicUri = dynamicLink.getUri();
+
+
+
+
+        } catch (android.content.ActivityNotFoundException ex) {
+            progressDialog.dismiss();
+            //ToastHelper.MakeShortText("Whatsapp have not been installed.");
+        }
+
     }
 
     @Override

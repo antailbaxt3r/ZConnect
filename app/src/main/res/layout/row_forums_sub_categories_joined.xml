@@ -50,7 +50,7 @@
                     <TextView
                         android:id="@+id/cat_name"
                         android:layout_width="0dp"
-                        android:layout_weight="0.75"
+                        android:layout_weight="0.72"
                         android:layout_height="wrap_content"
                         android:text="Cat Name"
                         android:maxLines="1"
@@ -61,7 +61,7 @@
                         android:id="@+id/forums_cat_last_message_timestamp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.25"
+                        android:layout_weight="0.28"
                         android:text="03:33 PM"
                         android:textColor="@color/secondaryText"
                         android:textSize="12sp"

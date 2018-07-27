@@ -146,7 +146,6 @@ public class CabPoolAll extends BaseActivity {
         Bundle extras = getIntent().getExtras();
         try {
             cabKey = (String) extras.get("key");
-//            cabPosition = Integer.parseInt((String) extras.get("position"));
             Log.d("AAAAAAA", cabKey);
             viaDynamicLinkFlag = true;
         }
@@ -218,20 +217,18 @@ public class CabPoolAll extends BaseActivity {
                 String date = output.format(c.getTime());
 
                 for (int i = 0; i < vector_fetched.size(); i++) {
-
-                    if(viaDynamicLinkFlag)
-                    {
-                        if(vector_fetched.get(i).getKey().equals(cabKey))
-                        {
-                            cabPosition = i;
-                            Log.d("AAAAAA", " " + cabPosition);
-                        }
-                    }
-
                     DT = vector_fetched.get(i).getDT();
 
                     if (date.compareTo(DT) <= 0) {
                         treeMap.put(DT, vector_fetched.get(i));
+                        if(viaDynamicLinkFlag)
+                        {
+                            if(vector_fetched.get(i).getKey().equals(cabKey))
+                            {
+                                cabPosition = i;
+                                Log.d("AAAAAA", " " + cabPosition);
+                            }
+                        }
                     } else {
                         String key = vector_fetched.get(i).getKey();
                         FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key).removeValue();
@@ -257,8 +254,8 @@ public class CabPoolAll extends BaseActivity {
                 if(viaDynamicLinkFlag)
                 {
                     LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                    linearLayoutManager.scrollToPositionWithOffset(2, 0);
-                    Log.d("AAAAAAAAA", " " + recyclerView.getLayoutManager().findViewByPosition(cabPosition));
+                    linearLayoutManager.scrollToPositionWithOffset(0, 0);
+                    Log.d("AAAAAAAAA", " " + cabPosition);
                 }
             }
 

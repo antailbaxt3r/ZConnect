@@ -157,8 +157,9 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                 public void onClick(View v) {
                     Uri BASE_URI = Uri.parse("http://www.zconnect.com/cabpooling/");
 
-                    Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("position", String.valueOf(getAdapterPosition()))
-                            .appendQueryParameter("key", cabItemFormat.get(getAdapterPosition()).getKey()).build();
+                    Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("key", cabItemFormat.get(getAdapterPosition()).getKey())
+                            .build();
+                    Log.d("AAAAAAA", String.valueOf(getAdapterPosition()));
                     String encodedUri = null;
                     try {
                         encodedUri = URLEncoder.encode(APP_URI.toString(), "UTF-8");

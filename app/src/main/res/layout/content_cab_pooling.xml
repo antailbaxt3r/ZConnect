@@ -202,7 +202,8 @@
             android:textColor="@color/white"
             android:textSize="16dp"
             android:background="@drawable/round_button_primary"
-            android:text="Search"/>
+            android:text="Search"
+            style="?android:attr/borderlessButtonStyle"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"

@@ -91,14 +91,9 @@ public class LogoFlashActivity extends BaseActivity {
                             if(deepLink!=null)
                             {
                                 String path = deepLink.getPath();
-//                                Log.d("AAAAA", "abc1 " + deepLink.getPath());
-//                                Log.d("AAAAA", "abc2 " + deepLink.getPathSegments());
-//                                Log.d("AAAAA", "abc3 " + deepLink.getLastPathSegment());
-//                                Log.d("AAAAA", "abc4 " + deepLink.getEncodedPath());
                                 if(path.equals("/openevent/"))
                                 {
                                     Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("eventID"));
-//                                Log.d("AAAAAAAA", deepLink.toString());
                                     Intent intent = new Intent(LogoFlashActivity.this, OpenEventDetail.class);
                                     intent.putExtra("id", deepLink.getQueryParameter("eventID"));
                                     intent.putExtra("flag", true);
@@ -108,11 +103,15 @@ public class LogoFlashActivity extends BaseActivity {
                                 else if(path.equals("/cabpooling/"))
                                 {
                                     Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
-                                    Log.d("AAAAAAAA", "abc2 " + deepLink.getQueryParameter("position"));
-                                    Log.d("AAAAAAAA", "abc3" +
-                                            " " + deepLink.getQueryParameterNames());
                                     Intent intent = new Intent(LogoFlashActivity.this, CabPoolAll.class);
-                                    intent.putExtra("position", deepLink.getQueryParameter("position"));
+                                    intent.putExtra("key", deepLink.getQueryParameter("key"));
+                                    startActivity(intent);
+                                    flag = true;
+                                }
+                                else if(path.equals("/openproduct/"))
+                                {
+                                    Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
+                                    Intent intent = new Intent(LogoFlashActivity.this, OpenProductDetails.class);
                                     intent.putExtra("key", deepLink.getQueryParameter("key"));
                                     startActivity(intent);
                                     flag = true;

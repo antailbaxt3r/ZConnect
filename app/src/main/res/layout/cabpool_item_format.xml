@@ -160,17 +160,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <Button
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:background="@drawable/round_button_primary"
-                android:text="List of People"
-                android:textColor="@color/white"
-                android:textSize="16dp"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_marginEnd="@dimen/margin_small"/>
-            <Button
                 android:id="@+id/sharecab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -181,6 +170,17 @@
                 android:textSize="16dp"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_marginStart="@dimen/margin_small"/>
+            <Button
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:background="@drawable/round_button_primary"
+                android:text="List of People"
+                android:textColor="@color/white"
+                android:textSize="16dp"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_marginEnd="@dimen/margin_small"/>
         </LinearLayout>
         <View
             android:layout_width="match_parent"
