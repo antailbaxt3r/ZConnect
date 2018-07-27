@@ -88,6 +88,7 @@ public class ChatActivity extends BaseActivity {
     private Uri mImageUri = null;
     private StorageReference mStorage;
     private String userType = ForumsUserTypeUtilities.KEY_USER;
+    private ValueEventListener loadMessagesListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -274,7 +275,6 @@ public class ChatActivity extends BaseActivity {
         chatView = (RecyclerView) findViewById(R.id.chatList);
         adapter = new ChatRVAdapter(messages,this);
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
-        progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -297,6 +297,47 @@ public class ChatActivity extends BaseActivity {
             }
         });
 
+        loadMessagesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                progressBar.setVisibility(View.VISIBLE);
+                messages.clear();
+                for (DataSnapshot snapshot:dataSnapshot.getChildren()) {
+                    ChatItemFormats temp = new ChatItemFormats();
+
+                    temp = snapshot.getValue(ChatItemFormats.class);
+
+                    if (!snapshot.hasChild("messageType")) {
+                        temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                    }
+
+                    messages.add(temp);
+                }
+
+                if (type.equals("forums")) {
+                    DBHelper mydb = new DBHelper(ChatActivity.this);
+
+                    String key, tab, name;
+                    key = getIntent().getStringExtra("key");
+                    tab = getIntent().getStringExtra("tab");
+                    name = getIntent().getStringExtra("name");
+
+                    mydb.replaceForum(name,key,tab,messages.size());
+                }
+
+                adapter.notifyDataSetChanged();
+                chatView.scrollToPosition(messages.size()-1);
+                progressBar.setVisibility(View.GONE);
+                chatView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                showSnack("Unable to load messages");
+                progressBar.setVisibility(View.GONE);
+                chatView.setVisibility(View.VISIBLE);
+            }
+        };
 
         //Posting Photo
         findViewById(R.id.chat_photo_button).setOnClickListener(new View.OnClickListener() {
@@ -317,7 +358,6 @@ public class ChatActivity extends BaseActivity {
                 }
             }
         });
-        loadMessages();
     }
 
     private void postMessage(){
@@ -588,51 +628,16 @@ public class ChatActivity extends BaseActivity {
     }
 
 
-    private void loadMessages() {
-        databaseReference.child("Chat").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        databaseReference.child("Chat").addValueEventListener(loadMessagesListener);
+    }
 
-
-
-
-                messages.clear();
-                for (DataSnapshot snapshot:dataSnapshot.getChildren()) {
-                    ChatItemFormats temp = new ChatItemFormats();
-
-                    temp = snapshot.getValue(ChatItemFormats.class);
-
-                    if (!snapshot.hasChild("messageType")) {
-                        temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
-                    }
-
-                    messages.add(temp);
-                }
-
-                if (type.equals("forums")) {
-                    DBHelper mydb = new DBHelper(ChatActivity.this);
-
-                    String key, tab, name;
-                    key = getIntent().getStringExtra("key");
-                    tab = getIntent().getStringExtra("tab");
-                    name = getIntent().getStringExtra("name");
-
-                    mydb.replaceForum(name,key,tab,messages.size());
-                }
-
-                adapter.notifyDataSetChanged();
-                chatView.scrollToPosition(messages.size()-1);
-                progressBar.setVisibility(View.GONE);
-                chatView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                showSnack("Unable to load messages");
-                progressBar.setVisibility(View.GONE);
-                chatView.setVisibility(View.VISIBLE);
-            }
-        });
+    @Override
+    protected void onPause() {
+        super.onPause();
+        databaseReference.child("Chat").removeEventListener(loadMessagesListener);
     }
 
     public void launchPeopleList(){

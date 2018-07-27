@@ -72,13 +72,7 @@ public class ForumsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAuth = FirebaseAuth.getInstance();
 
-
-
-
-
         tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(currenttab);
-
-
 
         adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab);
         recyclerView.setAdapter(adapter);
@@ -90,8 +84,8 @@ public class ForumsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mydb = new DBHelper(getContext());
-        forumCategoriesItemFormats = mydb.getAllForums(currenttab);
 
+        forumCategoriesItemFormats = mydb.getAllForums(currenttab);
 
         tabsCategories.addValueEventListener(new ValueEventListener() {
             @Override
@@ -204,7 +198,6 @@ public class ForumsFragment extends Fragment {
             }
         });
 
-
     }
 
     public Integer totalSeenNumber(String catID){
@@ -212,7 +205,6 @@ public class ForumsFragment extends Fragment {
 
         for (int i=0;i<forumCategoriesItemFormats.size(); i++){
             if(forumCategoriesItemFormats.get(i).getCatUID().equals(catID)){
-                seenMessages++;
                 seenMessages = forumCategoriesItemFormats.get(i).getSeenMessages();
             }
         }
