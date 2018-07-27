@@ -178,7 +178,6 @@ public class ChatActivity extends BaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
                         if(!dataSnapshot.child("usersListItemFormats").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             joinButton.setVisibility(View.VISIBLE);
                             joinLayout.setVisibility(View.VISIBLE);
@@ -242,7 +241,6 @@ public class ChatActivity extends BaseActivity {
                     public void onDataChange(final DataSnapshot dataSnapshot) {
                         setToolbarTitle(dataSnapshot.child("name").getValue().toString());
 
-                        FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
                         if (!dataSnapshot.child("users").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                             joinButton.setVisibility(View.VISIBLE);
                             joinLayout.setVisibility(View.VISIBLE);
@@ -266,6 +264,7 @@ public class ChatActivity extends BaseActivity {
                                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                             CounterManager.forumsJoinCategory(tab,key);
+                                            FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 //
 //                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
 //                                            notificationSender.execute();

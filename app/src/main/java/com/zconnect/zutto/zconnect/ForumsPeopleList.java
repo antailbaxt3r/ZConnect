@@ -155,7 +155,6 @@ public class ForumsPeopleList extends BaseActivity {
                 if (flag) {
                     forumMembersList.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
-                    Toast.makeText(getApplicationContext(), "Removed", Toast.LENGTH_SHORT).show();
                     CounterManager.forumsLeaveCategory(tab,key);
                 } else {
                     FirebaseMessaging.getInstance().subscribeToTopic(key);

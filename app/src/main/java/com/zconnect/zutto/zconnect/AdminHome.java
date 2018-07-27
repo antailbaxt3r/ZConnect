@@ -178,6 +178,9 @@ public class AdminHome extends AppCompatActivity {
 
                             PostedByDetails postedByDetails = new PostedByDetails();
                             postedByDetails.setUsername("none");
+                            postedByDetails.setUID("none");
+                            postedByDetails.setImageThumb("none");
+
                             if(!shot.hasChild("approvedRejectedBy")){
                                 newUser.setApprovedRejectedBy(postedByDetails);
                             }

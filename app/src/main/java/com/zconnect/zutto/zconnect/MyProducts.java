@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -31,6 +32,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.Product;
 
@@ -44,6 +46,10 @@ public class MyProducts extends BaseActivity {
     private FirebaseAuth mAuth;
     private FirebaseRecyclerOptions<Product> options;
     private FirebaseRecyclerAdapter firebaseRecyclerAdapter;
+    private RelativeLayout noProductRL;
+    private TextView noProductTextView;
+    private Boolean flag = false;
+    private View.OnClickListener openAddProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,21 @@ public class MyProducts extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
+        openAddProduct = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MyProducts.this, AddProduct.class);
+                startActivity(i);
+            }
+        };
+
+        noProductRL = (RelativeLayout) findViewById(R.id.no_product_relative_layout);
+        noProductTextView = (TextView) findViewById(R.id.no_products_available_text);
+
+        noProductRL.setVisibility(View.VISIBLE);
+        noProductTextView.setVisibility(View.VISIBLE);
+        noProductTextView.setOnClickListener(openAddProduct);
+
         mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(new LinearLayoutManager(MyProducts.this));
@@ -99,6 +120,11 @@ public class MyProducts extends BaseActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull ProductViewHolder holder, int position, @NonNull Product model) {
+
+                noProductRL.setVisibility(View.GONE);
+                noProductTextView.setVisibility(View.GONE);
+                noProductRL.setOnClickListener(null);
+
                 final String product_key = getRef(position).getKey();
                 holder.setProductName(model.getProductName());
                 holder.setProductDesc(model.getProductDescription());
@@ -140,7 +166,9 @@ public class MyProducts extends BaseActivity {
         public ProductViewHolder(final View itemView) {
             super(itemView);
             mView = itemView;
-            //to delete reserved items
+
+
+
             archiveButton = (Button) mView.findViewById(R.id.archive);
         }
 

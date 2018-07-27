@@ -157,9 +157,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         bottomSheetFragment = new HomeBottomSheet();
 
         View navHeader = navigationView.getHeaderView(0);
-        try {
-            FirebaseMessaging.getInstance().subscribeToTopic(mAuth.getCurrentUser().getUid());
-        }catch (Exception e){}
 
         // Navigation Drawer initialization
         navHeaderUserNameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
@@ -584,6 +581,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             editProfileItem.setEnabled(false);
             startActivity(new Intent(HomeActivity.this, LoginActivity.class));
         } else if (mUser != null) {
+
+            FirebaseMessaging.getInstance().subscribeToTopic(mUser.getUid());
 
             username = mAuth.getCurrentUser().getDisplayName();
             userEmail = mAuth.getCurrentUser().getEmail();

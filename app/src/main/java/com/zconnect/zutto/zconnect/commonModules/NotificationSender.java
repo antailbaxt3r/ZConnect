@@ -113,12 +113,15 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         String notificationIdentifier = ND.getNotificationIdentifier();
 
         switch (notificationIdentifier) {
+            //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST:
                 eventBoostNotification(ND.getItemKey(), ND.getItemName(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage());
                 break;
+            //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN:
                 cabJoinNotification(ND.getItemKey(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage());
                 break;
+            //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE:
                 cabLeaveNotification(ND.getItemKey(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage());
                 break;
@@ -137,21 +140,31 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD:
                 forumAddNotification(ND.getCommunityName(), ND.getItemName(),ND.getItemCategory(),ND.getItemCategoryUID(),ND.getItemKey(),ND.getUserName(),ND.getUserImage());
                 break;
+
+                //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_CATEGORY_ADD:
                 infoneCategoryAddNotification(ND.getCommunityName(),ND.getItemName(),ND.getItemKey(),ND.getItemImage(),ND.getItemCategoryAdmin());
                 break;
+
+                //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LOVE :
                 infoneLoveNotification(ND.getCommunityName(),ND.getUserName(),ND.getUserImage(),ND.getItemKey());
                 break;
+                //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LIKE:
                 infoneLikeNotification(ND.getCommunityName(),ND.getUserName(),ND.getUserImage(),ND.getItemKey());
                 break;
+
+                //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM:
                 forumChatNotification(ND.getCommunityName(),ND.getUserName(),ND.getUserImage(),ND.getItemMessage(),ND.getItemName(),ND.getItemCategoryUID(),ND.getItemKey());
                 break;
+
+                //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_PRODUCT:
                 productChatNotification(ND.getUserName(), ND.getCommunityName(), ND.getUserImage(), ND.getItemMessage(), ND.getItemKey(), ND.getItemName());
                 break;
+                //DOne
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_CAB:
                 cabChatNotification(ND.getCommunityName(),ND.getUserName(), ND.getUserImage(), ND.getItemMessage(), ND.getItemKey());
                 break;
@@ -170,6 +183,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT:
                 newUserRejectNotification(ND.getCommunityName(),ND.getItemKey());
                 break;
+                //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED:
                 statusLikeNotification(ND.getItemKey(), ND.getCommunityName(), ND.getUserName(), ND.getUserImage(), ND.getItemLikeCount());
                 Log.d("LIKESSSS", "2");
@@ -183,7 +197,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
 
-        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL);
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT);
         creator.addData("userKey",userKey);
 
         sendNotification(true,receiverKey);
@@ -193,7 +207,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
 
-        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL);
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT);
         creator.addData("userKey",userKey);
 
         sendNotification(true,receiverKey);
