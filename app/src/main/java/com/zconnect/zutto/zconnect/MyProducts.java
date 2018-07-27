@@ -113,6 +113,7 @@ public class MyProducts extends BaseActivity {
                 holder.setArchiveButton(product_key);
             }
         };
+
         mProductList.setAdapter(firebaseRecyclerAdapter);
     }
 

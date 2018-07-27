@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.Drawables;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -142,6 +144,11 @@ public class VerificationPage extends BaseActivity {
                     if (Objects.requireNonNull(dataSnapshot.child("statusCode").getValue(String.class)).equals(VerificationUtilities.KEY_APPROVED)) {
                         statusTextView.setText("Your account has been approved you are a verified user now.");
                         idImageButton.setOnClickListener(null);
+                        try {
+                            idImageButton.setBackground(Drawables.drawableFromUrl(dataSnapshot.child("idImageURL").getValue(String.class),VerificationPage.this));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         aboutNewUserEditText.setFocusable(false);
                         submitUserIDButton.setVisibility(View.GONE);
 
@@ -157,7 +164,11 @@ public class VerificationPage extends BaseActivity {
                         aboutNewUserEditText.setText(dataSnapshot.child("about").getValue(String.class));
                         aboutNewUserEditText.setFocusable(true);
                         submitUserIDButton.setVisibility(View.VISIBLE);
-                        Picasso.with(getApplicationContext()).load(dataSnapshot.child("imageURL").getValue(String.class)).error(R.drawable.defaultevent).placeholder(R.drawable.defaultevent).into(idImageButton);
+                        try {
+                            idImageButton.setBackground(Drawables.drawableFromUrl(dataSnapshot.child("idImageURL").getValue(String.class),VerificationPage.this));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     progressDialogInitial.dismiss();
                 }else {
