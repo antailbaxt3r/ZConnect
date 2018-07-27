@@ -222,7 +222,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                 Snackbar snack = Snackbar.make(spinner1, "No Internet. Can't Add Product.", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                 snack.show();
 
             } else {
@@ -398,7 +398,9 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     else {
                         // Handle failures
                         // ...
-                        Snackbar.make(mProductName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                        Snackbar snackbar = Snackbar.make(mProductName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                        snackbar.show();
                     }
                 }
             });
@@ -408,7 +410,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
             Snackbar snack = Snackbar.make(mProductDescription, "Fields are empty. Can't Add Product.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
-            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
             snack.show();
             mProgress.dismiss();
         }

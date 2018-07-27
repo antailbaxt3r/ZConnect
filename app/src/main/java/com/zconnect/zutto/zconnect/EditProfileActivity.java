@@ -297,10 +297,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_done) {
             if (!isNetworkAvailable(getApplicationContext())) {
-                Snackbar snack = Snackbar.make(userAboutText, "No Internet. Can't Add Contact.", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(userAboutText, "No Internet. Can't Add Contact.", Snackbar.LENGTH_LONG);
+                snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                snackbar.show();
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                 snack.show();
             } else {
                 try {
@@ -381,6 +383,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             if(userMobile.length()!=10 || userWhatsapp.length() != 10)
             {
                 Snackbar snackbar = Snackbar.make(userAboutText, "10 digit number required", Snackbar.LENGTH_LONG);
+                snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
                 snackbar.show();
             }
             else
@@ -388,7 +391,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 Snackbar snackbar = Snackbar.make(userAboutText, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                 snackbar.show();
             }
             mProgress.dismiss();
@@ -517,7 +520,9 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                         else {
                             // Handle failures
                             // ...
-                            Snackbar.make(userAboutText, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                            Snackbar snackbar = Snackbar.make(userAboutText, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                            snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                            snackbar.show();
                         }
                     }
                 });
@@ -561,7 +566,9 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                         else {
                             // Handle failures
                             // ...
-                            Snackbar.make(userAboutText, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                            Snackbar snackbar = Snackbar.make(userAboutText, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                            snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                            snackbar.show();
                         }
                     }
                 });

@@ -25,12 +25,14 @@
         android:scrollbars="vertical"/>
     <Button
         android:id="@+id/join"
-        android:layout_width="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_width="@dimen/single_line_btn_min_width"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/forums"
+        android:background="@drawable/round_button_simple"
+        android:backgroundTint="@color/colorHighlight"
         android:text="Join"
-        android:textAllCaps="false"
-        android:textColor="@color/primaryText" />
+        android:textColor="@color/white"
+        android:layout_marginBottom="@dimen/margin_small"/>
 
 </RelativeLayout>

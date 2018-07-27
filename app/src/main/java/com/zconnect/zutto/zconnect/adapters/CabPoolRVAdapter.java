@@ -3,6 +3,8 @@ package com.zconnect.zutto.zconnect.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,11 +13,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.itemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.R;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -149,29 +157,73 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Uri BASE_URI = Uri.parse("http://www.zconnect.com/cabpooling/");
+
+                    Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("key", cabItemFormat.get(getAdapterPosition()).getKey())
+                            .build();
+                    Log.d("AAAAAAA", String.valueOf(getAdapterPosition()));
+                    String encodedUri = null;
+                    try {
+                        encodedUri = URLEncoder.encode(APP_URI.toString(), "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                   if(i==0) {
                       CounterManager.searchPool(array.get(getAdapterPosition()).getKey());
-                      Intent intent = new Intent();
-                      intent.setAction(Intent.ACTION_SEND);
-                      intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + array.get(getAdapterPosition()).getSource() +
-                              " to " + array.get(getAdapterPosition()).getDestination() + " on " +
-                              array.get(getAdapterPosition()).getDate() +
-                              "\n Use the ZConnect app to join the pool \n"
-                              + url);
-                      intent.setType("text/plain");
-                      context.startActivity(Intent.createChooser(intent, "Share app url via ... "));
+                      Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                              .setLongLink(Uri.parse("https://zconnect.page.link/?link=" + encodedUri + "&apn=com.zconnect.zutto.zconnect&amv=11"))
+                              .buildShortDynamicLink()
+                              .addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
+                                  @Override
+                                  public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                                      if (task.isSuccessful()) {
+                                          //short link
+                                          final Uri shortLink = task.getResult().getShortLink();
+                                          Uri flowcharLink = task.getResult().getPreviewLink();
+                                          Intent intent = new Intent();
+                                          intent.setAction(Intent.ACTION_SEND);
+                                          intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + array.get(getAdapterPosition()).getSource() +
+                                                  " to " + array.get(getAdapterPosition()).getDestination() + " on " +
+                                                  array.get(getAdapterPosition()).getDate() +
+                                                  "\n Use ZConnect app to join the pool \n"
+                                                  + shortLink);
+
+                                          intent.setType("text/plain");
+                                          context.startActivity(Intent.createChooser(intent, "Share content url via ... "));
+                                      }
+                                      else {
+                                          Log.d("CabPoolRVAdapter", task.getException().getMessage());
+                                      }
+                                  }
+                              });
                   }
                     if(i==1) {
                         CounterManager.searchPool(cabItemFormat.get(getAdapterPosition()).getKey());
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_SEND);
-                        intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + cabItemFormat.get(getAdapterPosition()).getSource() +
-                                " to " + cabItemFormat.get(getAdapterPosition()).getDestination() + " on " +
-                                cabItemFormat.get(getAdapterPosition()).getDate() +
-                                "\n Use the ZConnect app to join the pool \n"
-                                + url);
-                        intent.setType("text/plain");
-                        context.startActivity(Intent.createChooser(intent, "Share app url via ... "));
+                        Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                                .setLongLink(Uri.parse("https://zconnect.page.link/?link=" + encodedUri + "&apn=com.zconnect.zutto.zconnect&amv=11"))
+                                .buildShortDynamicLink()
+                                .addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                                        if (task.isSuccessful()) {
+                                            //short link
+                                            final Uri shortLink = task.getResult().getShortLink();
+                                            Uri flowcharLink = task.getResult().getPreviewLink();
+                                            Intent intent = new Intent();
+                                            intent.setAction(Intent.ACTION_SEND);
+                                            intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + cabItemFormat.get(getAdapterPosition()).getSource() +
+                                                    " to " + cabItemFormat.get(getAdapterPosition()).getDestination() + " on " +
+                                                    cabItemFormat.get(getAdapterPosition()).getDate() +
+                                                    "\n Use the ZConnect app to join the pool \n"
+                                                    + shortLink);
+                                            intent.setType("text/plain");
+                                            context.startActivity(Intent.createChooser(intent, "Share app url via ... "));
+                                        }
+                                        else {
+                                            Log.d("CabPoolRVAdapter", task.getException().getMessage());
+                                        }
+                                    }
+                                });
                     }
                 }
             });

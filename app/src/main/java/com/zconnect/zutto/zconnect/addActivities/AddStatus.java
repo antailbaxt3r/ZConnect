@@ -180,7 +180,11 @@ public class AddStatus extends BaseActivity {
             public void onClick(final View view) {
 
                 if(messageInput.getText().toString().length()==0 && mImageUri ==null)
-                    Snackbar.make(view, "Text or image needed.", Snackbar.LENGTH_SHORT).show();
+                {
+                    Snackbar snackbar = Snackbar.make(view, "Text or image needed.", Snackbar.LENGTH_SHORT);
+                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                    snackbar.show();
+                }
                 else
                 {
                     mProgress.setMessage("Posting Status..");
@@ -254,7 +258,9 @@ public class AddStatus extends BaseActivity {
                                 else {
                                     // Handle failures
                                     // ...
-                                    Snackbar.make(view, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                                    Snackbar snackbar = Snackbar.make(view, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                                    snackbar.show();
                                 }
                             }
                         });

@@ -142,7 +142,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder2, final int position) {
         final RecentsItemFormat recentItem = recentsItemFormats.get(position);
-        if(position>30)
+        if(position>10)
         {
             scrollToTopBtn.setVisibility(View.VISIBLE);
         }

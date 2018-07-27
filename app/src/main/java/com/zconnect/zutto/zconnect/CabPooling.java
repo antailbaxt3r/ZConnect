@@ -185,7 +185,7 @@ public class CabPooling extends BaseActivity {
                 Snackbar snack = Snackbar.make(done, "All fields can't be simultaneously empty", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
+                snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.colorPrimaryDark));
                 snack.show();
 
             } else {
@@ -193,7 +193,7 @@ public class CabPooling extends BaseActivity {
                     Snackbar snack = Snackbar.make(done, "Source and Destination can't be same", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
-                    snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.colorPrimaryDark));
                     snack.show();
 
                 } else {
@@ -216,7 +216,7 @@ public class CabPooling extends BaseActivity {
                         Snackbar snack = Snackbar.make(done, "Mention proper time intervals", Snackbar.LENGTH_LONG);
                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                         snackBarText.setTextColor(Color.WHITE);
-                        snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.colorPrimaryDark));
                         snack.show();
                     } else {
 
@@ -226,7 +226,7 @@ public class CabPooling extends BaseActivity {
                             Snackbar snack = Snackbar.make(done, "Mention proper time intervals", Snackbar.LENGTH_LONG);
                             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                             snackBarText.setTextColor(Color.WHITE);
-                            snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.teal800));
+                            snack.getView().setBackgroundColor(ContextCompat.getColor(CabPooling.this, R.color.colorPrimaryDark));
                             snack.show();
 
                         }else{

@@ -43,6 +43,7 @@ public class MyProducts extends BaseActivity {
     //    private List<String> reserveList;
     private FirebaseAuth mAuth;
     private FirebaseRecyclerOptions<Product> options;
+    private FirebaseRecyclerAdapter firebaseRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,13 +87,7 @@ public class MyProducts extends BaseActivity {
                         .setQuery(query, Product.class)
                         .build();
 
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        FirebaseRecyclerAdapter<Product, ProductViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, ProductViewHolder>(options) {
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Product, ProductViewHolder>(options) {
             @Override
             public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
@@ -115,6 +110,19 @@ public class MyProducts extends BaseActivity {
         };
 
         mProductList.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        firebaseRecyclerAdapter.startListening();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        firebaseRecyclerAdapter.stopListening();
     }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {

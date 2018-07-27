@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -69,6 +70,9 @@ public class CabPoolAll extends BaseActivity {
     Date fDate;
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference, databaseReferenceCopy, databaseReferencePaste;
+    boolean viaDynamicLinkFlag=false;
+    String cabKey;
+    int cabPosition=0;
 
 
 //    public CabPoolAll() {
@@ -139,6 +143,16 @@ public class CabPoolAll extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+        Bundle extras = getIntent().getExtras();
+        try {
+            cabKey = (String) extras.get("key");
+            Log.d("AAAAAAA", cabKey);
+            viaDynamicLinkFlag = true;
+        }
+        catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
 
         // Inflate the layout for this fragment
 //        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
@@ -203,11 +217,18 @@ public class CabPoolAll extends BaseActivity {
                 String date = output.format(c.getTime());
 
                 for (int i = 0; i < vector_fetched.size(); i++) {
-
                     DT = vector_fetched.get(i).getDT();
 
                     if (date.compareTo(DT) <= 0) {
                         treeMap.put(DT, vector_fetched.get(i));
+                        if(viaDynamicLinkFlag)
+                        {
+                            if(vector_fetched.get(i).getKey().equals(cabKey))
+                            {
+                                cabPosition = i;
+                                Log.d("AAAAAA", " " + cabPosition);
+                            }
+                        }
                     } else {
                         String key = vector_fetched.get(i).getKey();
                         FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key).removeValue();
@@ -230,6 +251,12 @@ public class CabPoolAll extends BaseActivity {
                 }
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+                if(viaDynamicLinkFlag)
+                {
+                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                    linearLayoutManager.scrollToPositionWithOffset(0, 0);
+                    Log.d("AAAAAAAAA", " " + cabPosition);
+                }
             }
 
             @Override
@@ -276,6 +303,9 @@ public class CabPoolAll extends BaseActivity {
                 }
             });
         }
+
+
+
     }
 
     @Override

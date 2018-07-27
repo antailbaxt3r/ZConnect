@@ -217,7 +217,7 @@ public class AddCabPool extends BaseActivity {
                                 Snackbar snack = Snackbar.make(done, "Source and destination can't be same", Snackbar.LENGTH_LONG);
                                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                 snackBarText.setTextColor(Color.WHITE);
-                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                                 snack.show();
 
                             } else {
@@ -225,7 +225,7 @@ public class AddCabPool extends BaseActivity {
                                     Snackbar snack = Snackbar.make(done, "Please select a valid interval", Snackbar.LENGTH_LONG);
                                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                     snackBarText.setTextColor(Color.WHITE);
-                                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                                     snack.show();
 
 
@@ -336,7 +336,7 @@ public class AddCabPool extends BaseActivity {
                                         Snackbar snack = Snackbar.make(done, "Added", Snackbar.LENGTH_LONG);
                                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                         snackBarText.setTextColor(Color.WHITE);
-                                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                                         snack.show();
 //
 //                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,null,KEY_CABPOOL,true,false,getApplicationContext());
@@ -355,7 +355,7 @@ public class AddCabPool extends BaseActivity {
                                         Snackbar snack = Snackbar.make(done, "Add pool for a single day", Snackbar.LENGTH_LONG);
                                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                         snackBarText.setTextColor(Color.WHITE);
-                                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                                         snack.show();
 
 
@@ -368,14 +368,14 @@ public class AddCabPool extends BaseActivity {
                             Snackbar snack = Snackbar.make(done, "Please add your contact to Infone before adding a pool", Snackbar.LENGTH_LONG);
                             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                             snackBarText.setTextColor(Color.WHITE);
-                            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                             snack.show();
                         }
                     } else {
                         Snackbar snack = Snackbar.make(done, "No Internet. Try later", Snackbar.LENGTH_LONG);
                         TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                         snackBarText.setTextColor(Color.WHITE);
-                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                        snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                         snack.show();
                     }
 
@@ -383,7 +383,7 @@ public class AddCabPool extends BaseActivity {
                     Snackbar snack = Snackbar.make(done, "Fields are empty", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
-                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                     snack.show();
                 }
 

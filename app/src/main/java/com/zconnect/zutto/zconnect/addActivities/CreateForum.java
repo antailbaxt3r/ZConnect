@@ -274,7 +274,10 @@ public class CreateForum extends AppCompatActivity {
                                 } else {
                                     // Handle failures
                                     // ...
-                                    Snackbar.make(addForumName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                                    Snackbar snackbar = Snackbar.make(addForumName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                                    snackbar.show();
+
                                 }
                             }
                         });
@@ -313,7 +316,9 @@ public class CreateForum extends AppCompatActivity {
                                 } else {
                                     // Handle failures
                                     // ...
-                                    Snackbar.make(addForumName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                                    Snackbar snackbar = Snackbar.make(addForumName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                                    snackbar.show();
                                 }
 
                             }
@@ -338,8 +343,9 @@ public class CreateForum extends AppCompatActivity {
                     }
                 }
                 else {
-                    Snackbar snack = Snackbar.make(addForumName, "Forum name and first message required", Snackbar.LENGTH_SHORT);
-                    snack.show();
+                    Snackbar snackbar = Snackbar.make(addForumName, "Forum name and first message required", Snackbar.LENGTH_SHORT);
+                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                    snackbar.show();
                 }
             }
         });

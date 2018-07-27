@@ -14,18 +14,24 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.NotificationService;
 
 import java.lang.reflect.Method;
 import java.util.Timer;
@@ -39,7 +45,7 @@ public class LogoFlashActivity extends BaseActivity {
     private ImageView bgImage;
     private DatabaseReference mDatabase,temp,temp2,t,t2;
     private View bgColor;
-
+    boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,60 @@ public class LogoFlashActivity extends BaseActivity {
 
                 }
             });
+            FirebaseDynamicLinks.getInstance()
+                    .getDynamicLink(getIntent())
+                    .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                        @Override
+                        public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                            // Get deep link from result (may be null if no link is found)
+                            Uri deepLink = null;
+                            if (pendingDynamicLinkData != null) {
+                                deepLink = pendingDynamicLinkData.getLink();
+                            }
+
+                            if(deepLink!=null)
+                            {
+                                String path = deepLink.getPath();
+                                if(path.equals("/openevent/"))
+                                {
+                                    Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("eventID"));
+                                    Intent intent = new Intent(LogoFlashActivity.this, OpenEventDetail.class);
+                                    intent.putExtra("id", deepLink.getQueryParameter("eventID"));
+                                    intent.putExtra("flag", true);
+                                    startActivity(intent);
+                                    flag = true;
+                                }
+                                else if(path.equals("/cabpooling/"))
+                                {
+                                    Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
+                                    Intent intent = new Intent(LogoFlashActivity.this, CabPoolAll.class);
+                                    intent.putExtra("key", deepLink.getQueryParameter("key"));
+                                    startActivity(intent);
+                                    flag = true;
+                                }
+                                else if(path.equals("/openproduct/"))
+                                {
+                                    Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
+                                    Intent intent = new Intent(LogoFlashActivity.this, OpenProductDetails.class);
+                                    intent.putExtra("key", deepLink.getQueryParameter("key"));
+                                    startActivity(intent);
+                                    flag = true;
+                                }
+                            }
+                            // Handle the deep link. For example, open the linked
+                            // content, or apply promotional credit to the user's
+                            // account.
+                            // ...
+
+                            // ...
+                        }
+                    })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("AAAAAA", "getDynamicLink:onFailure " + e);
+                        }
+                    });
         } else {
             mDatabase = FirebaseDatabase.getInstance().getReference().child("ui/logoFlash");
 
@@ -103,7 +163,8 @@ public class LogoFlashActivity extends BaseActivity {
 
                 if (checkPermission()) {
                     // Do not wait so that user doesn't realise this is a new launch.
-                    startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
+                    if(!flag)
+                        startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
                     finish();
                 }
 

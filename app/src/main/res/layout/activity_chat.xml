@@ -90,18 +90,21 @@
             <LinearLayout
                 android:id="@+id/joinLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center">
                 <Button
                     android:id="@+id/join"
                     android:text="Join"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/single_line_btn_min_width"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:textSize="18sp"
-                    android:textColor="@color/primaryText"
-                    android:background="@color/teal50"
-                    android:layout_margin="5dp"
-                    android:textAllCaps="false"/>
+                    android:textColor="@color/white"
+                    android:background="@drawable/round_button_simple"
+                    android:backgroundTint="@color/colorHighlight"
+                    android:layout_margin="@dimen/margin_small"
+                    android:textAllCaps="false"
+                    style="?android:attr/borderlessButtonStyle"/>
             </LinearLayout>
 
         </FrameLayout>

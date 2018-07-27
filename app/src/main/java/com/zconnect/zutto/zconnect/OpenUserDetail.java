@@ -544,8 +544,8 @@ public class OpenUserDetail extends BaseActivity {
             String format1 = "%1$-20s %2$-20s\n";
             String format2 = "%1$-40s\n";
             send =
-                    String.format(format1,"Name :",name)+
-                    String.format(format1,"Number :", mobileNumber)+
+                    String.format(format1,"Name: ",name)+
+                    String.format(format1,"Number: ", mobileNumber)+
                     "\n               \t\t\t  Zconnect";
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/*");

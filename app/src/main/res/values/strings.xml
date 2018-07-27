@@ -129,7 +129,7 @@
     <string name="title_activity_pool_list">Pools Available</string>
 
     <string name="title_activity_campus__map">Campus Map</string>
-    <string name="title_activity_cab_list_of_people">Cab Pooled By</string>
+    <string name="title_activity_cab_list_of_people">List of people</string>
     <string name="title_activity_add_cab_pool">Add Cab Pool</string>
     <string name="title_activity_my_rides">My Rides</string>
 
@@ -175,8 +175,8 @@
     <string name="forum_first_msg_label">First Message</string>
     <string name="forum_first_msg_hint">Type a welcome message here</string>
 
-    <string name="status_hint">Type what are you thinking...</string>
-    <string name="status_hint_ask_questions">Or ask anything a question</string>
+    <string name="status_hint">Type what you are thinking...</string>
+    <string name="status_hint_ask_questions">Or ask anyone a question</string>
 
 
     <!--add status hints-->

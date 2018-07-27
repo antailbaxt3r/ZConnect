@@ -137,7 +137,7 @@ public class AddEvent extends BaseActivity {
             Snackbar snack = Snackbar.make(mEventDescription, "Cannot open Maps , Please input your venue.", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);
-            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
             snack.show();
             e.printStackTrace();
         }
@@ -279,7 +279,7 @@ public class AddEvent extends BaseActivity {
                 Snackbar snack = Snackbar.make(mEventDescription, "No Internet. Can't Add Event.", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                 snack.show();
 
             } else {
@@ -550,7 +550,7 @@ public class AddEvent extends BaseActivity {
                                 Snackbar snack = Snackbar.make(mEventDescription, "Event sent for verification !!", Snackbar.LENGTH_LONG);
                                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                 snackBarText.setTextColor(Color.WHITE);
-                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                                 snack.show();
                             }
 //                        Intent intent = new Intent(AddEvent.this, TabbedEvents.class);
@@ -563,7 +563,9 @@ public class AddEvent extends BaseActivity {
                         else {
                             // Handle failures
                             // ...
-                            Snackbar.make(mEventDescription, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                            Snackbar snackbar = Snackbar.make(mEventDescription, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                            snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                            snackbar.show();
                         }
                     }
                 });
@@ -571,7 +573,7 @@ public class AddEvent extends BaseActivity {
                 Snackbar snack = Snackbar.make(mEventDescription, "Fields are empty. Can't Add Event.", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
-                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                 snack.show();
                 mProgress.dismiss();
             }
@@ -633,7 +635,9 @@ public class AddEvent extends BaseActivity {
                             else {
                                 // Handle failures
                                 // ...
-                                Snackbar.make(mEventDescription, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                                Snackbar snackbar = Snackbar.make(mEventDescription, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                                snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                                snackbar.show();
                             }
                         }
                     });
@@ -641,7 +645,7 @@ public class AddEvent extends BaseActivity {
                     Snackbar snack = Snackbar.make(mEventDescription, "Fields are empty. Can't Add Event.", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
-                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                     snack.show();
                     mProgress.dismiss();
                 }
