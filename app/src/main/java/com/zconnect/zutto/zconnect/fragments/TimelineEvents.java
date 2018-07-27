@@ -268,7 +268,7 @@ public class TimelineEvents extends Fragment {
 //            if (postTimeMillis > 0)
 //            {
 //                TextView post_timestamp = (TextView) mView.findViewById(R.id.timestamp);
-//                TimeAgo ta = new TimeAgo(postTimeMillis, System.currentTimeMillis());
+//                TimeUtilities ta = new TimeUtilities(postTimeMillis, System.currentTimeMillis());
 //                post_timestamp.setText(ta.calculateTimeAgo());
 //            }
 //        }

@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,7 +26,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -372,12 +376,21 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
         if (userName == null
                 || userEmail == null
-                || userMobile.length() == 0 || userInfoneType ==null || ((mUser.getPhotoUrl() == null)&&(mImageUri.equals(null)))) {
-            Snackbar snackbar = Snackbar.make(userAboutText, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
-            TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-            snackBarText.setTextColor(Color.WHITE);
-            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-            snackbar.show();
+                || userMobile.length() != 10 || userWhatsapp.length() != 10 || userInfoneType ==null || ((mUser.getPhotoUrl() == null)&&(mImageUri.equals(null)))) {
+
+            if(userMobile.length()!=10 || userWhatsapp.length() != 10)
+            {
+                Snackbar snackbar = Snackbar.make(userAboutText, "10 digit number required", Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+            else
+            {
+                Snackbar snackbar = Snackbar.make(userAboutText, "Fields are empty. Can't Update details.", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                snackbar.show();
+            }
             mProgress.dismiss();
         } else {
             final DatabaseReference newPost = mUserReference;
@@ -468,53 +481,90 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
             if (mImageUri != null) {
                 flag = false;
-                StorageReference filepath = mStorageRef.child("Users").child(mImageUri.getLastPathSegment() + mUser.getUid());
-                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                final StorageReference filepath = mStorageRef.child("Users").child(mImageUri.getLastPathSegment() + mUser.getUid());
+                UploadTask uploadTask = filepath.putFile(mImageUri);
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        if (downloadUri == null) {
-                            Log.e(TAG, "onSuccess: error got empty downloadUri");
-                            return;
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if(!task.isSuccessful()) {
+                            throw task.getException();
                         }
-                        newPost.child("imageURL").setValue(downloadUri.toString());
-                        newContactNumRef.child("imageurl").setValue(downloadUri.toString());
 
-                        if (flag){
-                            updateCurrentUser();
-                            mProgress.dismiss();
-                            finish();
-                        }else {
-                            flag=true;
+                        // Continue with the task to get the download URL
+                        return filepath.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful())
+                        {
+                            Uri downloadUri = task.getResult();
+                            if (downloadUri == null) {
+                                Log.e(TAG, "onSuccess: error got empty downloadUri");
+                                return;
+                            }
+                            newPost.child("imageURL").setValue(downloadUri.toString());
+                            newContactNumRef.child("imageurl").setValue(downloadUri.toString());
+
+                            if (flag){
+                                updateCurrentUser();
+                                mProgress.dismiss();
+                                finish();
+                            }else {
+                                flag=true;
+                            }
+                        }
+                        else {
+                            // Handle failures
+                            // ...
+                            Snackbar.make(userAboutText, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
-                StorageReference filepathThumb = mStorageRef.child("PhonebookImageSmall").child(mImageUriSmall.getLastPathSegment() + mUser.getUid() + "Thumbnail");
-                filepathThumb.putFile(mImageUriSmall).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                final StorageReference filepathThumb = mStorageRef.child("PhonebookImageSmall").child(mImageUriSmall.getLastPathSegment() + mUser.getUid() + "Thumbnail");
+                UploadTask uploadTaskThumb = filepathThumb.putFile(mImageUriSmall);
+                uploadTaskThumb.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUriThumb = taskSnapshot.getDownloadUrl();
-                        if (downloadUriThumb == null) {
-                            Log.e(TAG, "onSuccess: error got empty downloadUri");
-                            return;
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if(!task.isSuccessful()) {
+                            throw task.getException();
                         }
-                        if (newUser) {
-                            homePush.child("PostedBy").child("ImageThumb").setValue(downloadUriThumb.toString());
-                        }
-                        newPost.child("imageURLThumbnail").setValue(downloadUriThumb.toString());
-                        newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
-                        newContactNumRef.child("thumbnail").setValue(downloadUriThumb.toString());
-                        if (flag){
-                            updateCurrentUser();
-                            mProgress.dismiss();
 
-                            finish();
-                        }else {
-                            flag=true;
+                        // Continue with the task to get the download URL
+                        return filepathThumb.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful())
+                        {
+                            Uri downloadUriThumb = task.getResult();
+                            if (downloadUriThumb == null) {
+                                Log.e(TAG, "onSuccess: error got empty downloadUri");
+                                return;
+                            }
+                            if (newUser) {
+                                homePush.child("PostedBy").child("ImageThumb").setValue(downloadUriThumb.toString());
+                            }
+                            newPost.child("imageURLThumbnail").setValue(downloadUriThumb.toString());
+                            newContactRef.child("thumbnail").setValue(downloadUriThumb.toString());
+                            newContactNumRef.child("thumbnail").setValue(downloadUriThumb.toString());
+                            if (flag){
+                                updateCurrentUser();
+                                mProgress.dismiss();
+
+                                finish();
+                            }else {
+                                flag=true;
+                            }
+                        }
+                        else {
+                            // Handle failures
+                            // ...
+                            Snackbar.make(userAboutText, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
-
             }else{
                 if (newUser) {
                     homePush.child("PostedBy").child("ImageThumb").setValue(mUser.getPhotoUrl().toString());

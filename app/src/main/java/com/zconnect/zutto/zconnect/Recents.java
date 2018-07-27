@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,7 +56,8 @@ public class Recents extends Fragment {
     private ValueEventListener homeListener,userListener;
     @BindView(R.id.recent_progress)
     ProgressBar progressBar;
-
+    @BindView(R.id.scroll_to_top_fab_fragments_recents)
+    Button scrollToTopBtn;
     RecentsItemFormat addStatus = new RecentsItemFormat();
     RecentsItemFormat features = new RecentsItemFormat();
 
@@ -187,11 +189,16 @@ public class Recents extends Fragment {
         };
 
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
+        final LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
 
         recyclerView.setLayoutManager(productLinearLayout);
-
-        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity());
+        scrollToTopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                productLinearLayout.scrollToPositionWithOffset(0,0);
+            }
+        });
+        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn);
         recyclerView.setAdapter(adapter);
         return view;
     }

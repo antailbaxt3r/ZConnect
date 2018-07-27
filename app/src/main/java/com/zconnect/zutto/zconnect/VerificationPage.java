@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -22,7 +23,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -204,24 +208,40 @@ public class VerificationPage extends BaseActivity {
         if(mImageUri != null){
 
             final DatabaseReference newPost =  newUsersDatabaseReference.child(mAuth.getCurrentUser().getUid());
-            StorageReference filepath = mStorage.child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid() + System.currentTimeMillis());
+            final StorageReference filepath = mStorage.child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid() + System.currentTimeMillis());
             final String finalAboutText = aboutText;
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            UploadTask uploadTask = filepath.putFile(mImageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
-                    newPost.child("idImageURL").setValue(downloadUri != null ? downloadUri.toString() : null);
-                    newPost.child("statusCode").setValue(VerificationUtilities.KEY_PENDING);
-                    newPost.child("about").setValue(finalAboutText);
-                    newPost.child("UID").setValue(mAuth.getCurrentUser().getUid());
-                    newPost.child("name").setValue(UserUtilities.currentUser.getUsername());
-                    userReference.child(mAuth.getCurrentUser().getUid()).child("userType").setValue(UsersTypeUtilities.KEY_PENDING);
-                    UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_PENDING);
-                    progressDialog.dismiss();
-                    finish();
-
-                    Toast.makeText(VerificationPage.this, "Your details are submitted, you will be notified once verification is done.", Toast.LENGTH_LONG).show();
-
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if(!task.isSuccessful())
+                    {
+                        throw task.getException();
+                    }
+                    return filepath.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful())
+                    {
+                        Uri downloadUri = task.getResult();
+                        newPost.child("idImageURL").setValue(downloadUri != null ? downloadUri.toString() : null);
+                        newPost.child("statusCode").setValue(VerificationUtilities.KEY_PENDING);
+                        newPost.child("about").setValue(finalAboutText);
+                        newPost.child("UID").setValue(mAuth.getCurrentUser().getUid());
+                        newPost.child("name").setValue(UserUtilities.currentUser.getUsername());
+                        userReference.child(mAuth.getCurrentUser().getUid()).child("userType").setValue(UsersTypeUtilities.KEY_PENDING);
+                        UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_PENDING);
+                        progressDialog.dismiss();
+                        Toast.makeText(VerificationPage.this, "Your details are submitted, you will be notified once verification is done.", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                    else {
+                        // Handle failures
+                        // ...
+                        Snackbar.make(statusTextView, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             });
 

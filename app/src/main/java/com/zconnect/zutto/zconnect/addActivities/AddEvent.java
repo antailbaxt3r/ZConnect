@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -35,7 +36,10 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -318,230 +322,249 @@ public class AddEvent extends BaseActivity {
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmm");
                 String formattedDate = df.format(c.getTime());
                 final StorageReference filepath = mStorage.child("EventImage").child(formattedDate + mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
-                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                UploadTask uploadTask = filepath.putFile(mImageUri);
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUri = taskSnapshot.getDownloadUrl();
-                        if (downloadUri == null)
-                            downloadUri = Uri.parse("");
-                        if (flag) {
-                            DatabaseReference newPost = mDatabaseVerified.push();
-                            final DatabaseReference postedByDetails = newPost.child("PostedBy");
-                            postedByDetails.setValue(null);
-                            postedByDetails.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                                    mPostedByDetails.child("Username").setValue(user.getUsername());
-                                    mPostedByDetails.child("ImageThumb").setValue(user.getImageURLThumbnail());
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-                            postTimeMillis = System.currentTimeMillis();
-                            String key = newPost.getKey();
-                            newPost.child("Key").setValue(key);
-                            newPost.child("EventName").setValue(eventNameValue);
-                            newPost.child("EventDescription").setValue(eventDescriptionValue);
-                            newPost.child("EventImage").setValue(downloadUri.toString());
-                            newPost.child("EventDate").setValue(eventDate);
-                            newPost.child("FormatDate").setValue(dateString);
-                            newPost.child("Venue").setValue(eventVenue);
-                            LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
-                            newPost.child("Key").setValue(newPost.getKey());
-                            newPost.child("log").setValue(latLng.longitude);
-                            newPost.child("lat").setValue(latLng.latitude);
-                            newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
-                            newPost.child("Verified").setValue("true");
-                            newPost.child("BoostCount").setValue(0);
-
-                            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-                            Log.d("Event Date", eventDate);
-                            try {
-                                eventTimeMillis = sdf.parse(eventDate).getTime();
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if(!task.isSuccessful())
+                        {
+                            throw task.getException();
+                        }
+                        return filepath.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful())
+                        {
+                            Uri downloadUri = task.getResult();
+                            if (downloadUri == null) {
+                                downloadUri = Uri.parse("");
                             }
+                            if (flag) {
+                                DatabaseReference newPost = mDatabaseVerified.push();
+                                final DatabaseReference postedByDetails = newPost.child("PostedBy");
+                                postedByDetails.setValue(null);
+                                postedByDetails.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                                        mPostedByDetails.child("Username").setValue(user.getUsername());
+                                        mPostedByDetails.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                                    }
 
-                            newPost.child("EventTimeMillis").setValue(eventTimeMillis);
-                            newPost.child("PostTimeMillis").setValue(postTimeMillis);
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                            //For Recents
-                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
-                            final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
-                            newPost2PostedBy.setValue(null);
-                            newPost2.child("name").setValue(eventNameValue);
-                            newPost2.child("desc").setValue(eventDescriptionValue);
-                            newPost2.child("imageurl").setValue(downloadUri.toString());
-                            newPost2.child("feature").setValue("Event");
-                            newPost2.child("id").setValue(key);
-                            newPost2.child("desc2").setValue(eventDate);
-                            newPost2.child("PostTimeMillis").setValue(postTimeMillis);
-                            //posted by in home
-                            newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    newPost2PostedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
-                                    //needs to be changed after image thumbnail is put
-                                    newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                    }
+                                });
+                                postTimeMillis = System.currentTimeMillis();
+                                String key = newPost.getKey();
+                                newPost.child("Key").setValue(key);
+                                newPost.child("EventName").setValue(eventNameValue);
+                                newPost.child("EventDescription").setValue(eventDescriptionValue);
+                                newPost.child("EventImage").setValue(downloadUri.toString());
+                                newPost.child("EventDate").setValue(eventDate);
+                                newPost.child("FormatDate").setValue(dateString);
+                                newPost.child("Venue").setValue(eventVenue);
+                                LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
+                                newPost.child("Key").setValue(newPost.getKey());
+                                newPost.child("log").setValue(latLng.longitude);
+                                newPost.child("lat").setValue(latLng.latitude);
+                                newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
+                                newPost.child("Verified").setValue("true");
+                                newPost.child("BoostCount").setValue(0);
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                                Log.d("Event Date", eventDate);
+                                try {
+                                    eventTimeMillis = sdf.parse(eventDate).getTime();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
                                 }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                newPost.child("EventTimeMillis").setValue(eventTimeMillis);
+                                newPost.child("PostTimeMillis").setValue(postTimeMillis);
 
-                                }
-                            });
+                                //For Recents
+                                DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
+                                final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
+                                newPost2PostedBy.setValue(null);
+                                newPost2.child("name").setValue(eventNameValue);
+                                newPost2.child("desc").setValue(eventDescriptionValue);
+                                newPost2.child("imageurl").setValue(downloadUri.toString());
+                                newPost2.child("feature").setValue("Event");
+                                newPost2.child("id").setValue(key);
+                                newPost2.child("desc2").setValue(eventDate);
+                                newPost2.child("PostTimeMillis").setValue(postTimeMillis);
+                                //posted by in home
+                                newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        newPost2PostedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
+                                        //needs to be changed after image thumbnail is put
+                                        newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
+                                    }
 
-                            // Adding stats
-                            CounterManager.addEventVerified(key, eventNameValue);
-                            mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    Object o = dataSnapshot.child("TotalEvents").getValue();
-                                    if (o == null)
-                                        o = "0";
-                                    Integer TotalEvents = Integer.parseInt(o.toString());
-                                    TotalEvents = TotalEvents + 1;
-                                    DatabaseReference newPost = mFeaturesStats;
-                                    Map<String, Object> taskMap = new HashMap<>();
-                                    taskMap.put("TotalEvents", TotalEvents);
-                                    newPost.updateChildren(taskMap);
-                                }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                // Adding stats
+                                CounterManager.addEventVerified(key, eventNameValue);
+                                mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Object o = dataSnapshot.child("TotalEvents").getValue();
+                                        if (o == null)
+                                            o = "0";
+                                        Integer TotalEvents = Integer.parseInt(o.toString());
+                                        TotalEvents = TotalEvents + 1;
+                                        DatabaseReference newPost = mFeaturesStats;
+                                        Map<String, Object> taskMap = new HashMap<>();
+                                        taskMap.put("TotalEvents", TotalEvents);
+                                        newPost.updateChildren(taskMap);
+                                    }
 
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                }
-                            });
+                                    }
+                                });
 
-                            //Sending Notifications
-                            //Sending Notifications
+                                //Sending Notifications
+                                //Sending Notifications
 //                            FirebaseMessaging.getInstance().subscribeToTopic(key);
 //                            NotificationSender notificationSender=new NotificationSender(key,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
 //                            notificationSender.execute();
 
-                            NotificationSender notificationSender = new NotificationSender(AddEvent.this, UserUtilities.currentUser.getUserUID());
-                            NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,UserUtilities.currentUser.getUserUID());
-                            addEventNotification.setCommunityName(UserUtilities.CommunityName);
-                            addEventNotification.setItemKey(key);
-                            addEventNotification.setItemImage(downloadUri.toString());
-                            addEventNotification.setItemName(eventNameValue);
-                            addEventNotification.setItemLocation(eventVenue);
+                                NotificationSender notificationSender = new NotificationSender(AddEvent.this, UserUtilities.currentUser.getUserUID());
+                                NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,UserUtilities.currentUser.getUserUID());
+                                addEventNotification.setCommunityName(UserUtilities.CommunityName);
+                                addEventNotification.setItemKey(key);
+                                addEventNotification.setItemImage(downloadUri.toString());
+                                addEventNotification.setItemName(eventNameValue);
+                                addEventNotification.setItemLocation(eventVenue);
 
-                            notificationSender.execute(addEventNotification);
+                                notificationSender.execute(addEventNotification);
 
-                            FirebaseMessaging.getInstance().subscribeToTopic(key);
+                                FirebaseMessaging.getInstance().subscribeToTopic(key);
 
-                        } else {
-                            DatabaseReference newPost = mDatabaseVerified.push();
-                            final DatabaseReference postedByDetails = newPost.child("PostedBy");
-                            postedByDetails.setValue(null);
-                            postedByDetails.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            } else {
+                                DatabaseReference newPost = mDatabaseVerified.push();
+                                final DatabaseReference postedByDetails = newPost.child("PostedBy");
+                                postedByDetails.setValue(null);
+                                postedByDetails.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                            mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                                    postedByDetails.child("Username").setValue(user.getUsername());
-                                    postedByDetails.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                                        postedByDetails.child("Username").setValue(user.getUsername());
+                                        postedByDetails.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                postTimeMillis = System.currentTimeMillis();
+                                String key = newPost.getKey();
+                                newPost.child("Key").setValue(key);
+                                newPost.child("EventName").setValue(eventNameValue);
+                                newPost.child("EventDescription").setValue(eventDescriptionValue);
+                                newPost.child("EventImage").setValue(downloadUri.toString());
+                                newPost.child("EventDate").setValue(eventDate);
+                                newPost.child("FormatDate").setValue(dateString);
+                                newPost.child("Venue").setValue(eventVenue);
+                                LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
+                                newPost.child("Key").setValue(newPost.getKey());
+                                newPost.child("log").setValue(latLng.longitude);
+                                newPost.child("lat").setValue(latLng.latitude);
+                                newPost.child("Verified").setValue("false");
+                                newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
+                                newPost.child("BoostCount").setValue(0);
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                                Log.d("Event Date", eventDate);
+                                try {
+                                    eventTimeMillis = sdf.parse(eventDate).getTime();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
                                 }
+                                newPost.child("EventTimeMillis").setValue(eventTimeMillis);
+                                newPost.child("PostTimeMillis").setValue(postTimeMillis);
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                CounterManager.addEventUnVerified(key, eventNameValue);
 
-                                }
-                            });
-                            postTimeMillis = System.currentTimeMillis();
-                            String key = newPost.getKey();
-                            newPost.child("Key").setValue(key);
-                            newPost.child("EventName").setValue(eventNameValue);
-                            newPost.child("EventDescription").setValue(eventDescriptionValue);
-                            newPost.child("EventImage").setValue(downloadUri.toString());
-                            newPost.child("EventDate").setValue(eventDate);
-                            newPost.child("FormatDate").setValue(dateString);
-                            newPost.child("Venue").setValue(eventVenue);
-                            LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
-                            newPost.child("Key").setValue(newPost.getKey());
-                            newPost.child("log").setValue(latLng.longitude);
-                            newPost.child("lat").setValue(latLng.latitude);
-                            newPost.child("Verified").setValue("false");
-                            newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
-                            newPost.child("BoostCount").setValue(0);
+                                //For Everything
+                                DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
+                                final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
+                                newPost2PostedBy.setValue(null);
+                                newPost2.child("name").setValue(eventNameValue);
+                                newPost2.child("desc").setValue(eventDescriptionValue);
+                                newPost2.child("imageurl").setValue(downloadUri.toString());
+                                newPost2.child("feature").setValue("Event");
+                                newPost2.child("id").setValue(key);
+                                newPost2.child("desc2").setValue(eventDate);
+                                newPost2.child("PostTimeMillis").setValue(postTimeMillis);
+                                //posted by in home
+                                newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                                        newPost2PostedBy.child("Username").setValue(user.getUsername());
+                                        newPost2PostedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                                    }
 
-                            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-                            Log.d("Event Date", eventDate);
-                            try {
-                                eventTimeMillis = sdf.parse(eventDate).getTime();
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                //Sending Notifications
+                                FirebaseMessaging.getInstance().subscribeToTopic(key);
+
+                                NotificationSender notificationSender = new NotificationSender(AddEvent.this, UserUtilities.currentUser.getUserUID());
+                                NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,UserUtilities.currentUser.getUserUID());
+                                addEventNotification.setCommunityName(UserUtilities.CommunityName);
+                                addEventNotification.setItemKey(key);
+                                addEventNotification.setItemImage(downloadUri.toString());
+                                addEventNotification.setItemName(eventNameValue);
+                                addEventNotification.setItemLocation(eventVenue);
+
+
+                                notificationSender.execute(addEventNotification);
+
                             }
-                            newPost.child("EventTimeMillis").setValue(eventTimeMillis);
-                            newPost.child("PostTimeMillis").setValue(postTimeMillis);
 
-                            CounterManager.addEventUnVerified(key, eventNameValue);
-
-                            //For Everything
-                            DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
-                            final DatabaseReference newPost2PostedBy = newPost2.child("PostedBy");
-                            newPost2PostedBy.setValue(null);
-                            newPost2.child("name").setValue(eventNameValue);
-                            newPost2.child("desc").setValue(eventDescriptionValue);
-                            newPost2.child("imageurl").setValue(downloadUri.toString());
-                            newPost2.child("feature").setValue("Event");
-                            newPost2.child("id").setValue(key);
-                            newPost2.child("desc2").setValue(eventDate);
-                            newPost2.child("PostTimeMillis").setValue(postTimeMillis);
-                            //posted by in home
-                            newPost2PostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                                    newPost2PostedBy.child("Username").setValue(user.getUsername());
-                                    newPost2PostedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-                            //Sending Notifications
-                            FirebaseMessaging.getInstance().subscribeToTopic(key);
-
-                            NotificationSender notificationSender = new NotificationSender(AddEvent.this, UserUtilities.currentUser.getUserUID());
-                            NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,UserUtilities.currentUser.getUserUID());
-                            addEventNotification.setCommunityName(UserUtilities.CommunityName);
-                            addEventNotification.setItemKey(key);
-                            addEventNotification.setItemImage(downloadUri.toString());
-                            addEventNotification.setItemName(eventNameValue);
-                            addEventNotification.setItemLocation(eventVenue);
-
-
-                            notificationSender.execute(addEventNotification);
-
-                        }
-
-                        mProgress.dismiss();
-                        if (!flag) {
-                            Snackbar snack = Snackbar.make(mEventDescription, "Event sent for verification !!", Snackbar.LENGTH_LONG);
-                            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                            snackBarText.setTextColor(Color.WHITE);
-                            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
-                            snack.show();
-                        }
+                            mProgress.dismiss();
+                            if (!flag) {
+                                Snackbar snack = Snackbar.make(mEventDescription, "Event sent for verification !!", Snackbar.LENGTH_LONG);
+                                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                snackBarText.setTextColor(Color.WHITE);
+                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal800));
+                                snack.show();
+                            }
 //                        Intent intent = new Intent(AddEvent.this, TabbedEvents.class);
 //                        if (!flag) {
 //                            intent.putExtra("snackbar", "true");
 //                        }
 //                        startActivity(intent);
-                        finish();
+                            finish();
+                        }
+                        else {
+                            // Handle failures
+                            // ...
+                            Snackbar.make(mEventDescription, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                        }
                     }
                 });
             } else {
@@ -560,40 +583,58 @@ public class AddEvent extends BaseActivity {
                     SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
                     String formattedDate = df.format(c.getTime());
                     final StorageReference filepath = mStorage.child("EventImage").child(formattedDate + mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
-                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    UploadTask uploadTask = filepath.putFile(mImageUri);
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Uri downloadUri = taskSnapshot.getDownloadUrl();
-                            if (downloadUri == null)
-                                downloadUri = Uri.parse("");
-
-                            DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(EventID);
-                            Map<String, Object> taskMap = new HashMap<String, Object>();
-
-                            taskMap.put("EventName", eventNameValue);
-                            taskMap.put("EventDescription", eventDescriptionValue);
-                            taskMap.put("EventImage", downloadUri.toString());
-                            taskMap.put("EventDate", eventDate);
-                            taskMap.put("FormatDate", dateString);
-                            taskMap.put("Venue", eventVenue);
-                            LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
-                            taskMap.put("log", latLng.longitude);
-                            taskMap.put("lat", latLng.latitude);
-
-                            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-                            try {
-                                eventTimeMillis = sdf.parse(eventDate).getTime();
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if(!task.isSuccessful())
+                            {
+                                throw task.getException();
                             }
-                            taskMap.put("EventTimeMillis", eventTimeMillis);
+                            return filepath.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if(task.isSuccessful())
+                            {
+                                Uri downloadUri = task.getResult();
+                                if (downloadUri == null)
+                                    downloadUri = Uri.parse("");
 
-                            //Sending Notifications
-                            NotificationSender notificationSender=new NotificationSender(EventID,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
-                            notificationSender.execute();
+                                DatabaseReference mEventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(EventID);
+                                Map<String, Object> taskMap = new HashMap<String, Object>();
 
-                            mEventDatabase.updateChildren(taskMap);
-                            mProgress.dismiss();
+                                taskMap.put("EventName", eventNameValue);
+                                taskMap.put("EventDescription", eventDescriptionValue);
+                                taskMap.put("EventImage", downloadUri.toString());
+                                taskMap.put("EventDate", eventDate);
+                                taskMap.put("FormatDate", dateString);
+                                taskMap.put("Venue", eventVenue);
+                                LatLng latLng = selectedFromMap ? Venue.getLatLng() : new LatLng(0, 0);
+                                taskMap.put("log", latLng.longitude);
+                                taskMap.put("lat", latLng.latitude);
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                                try {
+                                    eventTimeMillis = sdf.parse(eventDate).getTime();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                taskMap.put("EventTimeMillis", eventTimeMillis);
+
+                                //Sending Notifications
+                                NotificationSender notificationSender=new NotificationSender(EventID,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
+                                notificationSender.execute();
+
+                                mEventDatabase.updateChildren(taskMap);
+                                mProgress.dismiss();
+                            }
+                            else {
+                                // Handle failures
+                                // ...
+                                Snackbar.make(mEventDescription, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 } else {

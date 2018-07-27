@@ -204,4 +204,14 @@
     <!--<string name="native_ad_unit_id">ca-app-pub-3940256099942544/2177258514</string>-->
 
 
+    <!--invites related strings-->
+    <string name="invitation_title">Welcome to ZConnect</string>
+    <string name="invitation_message">invitation message</string>
+    <string name="invitation_deep_link">https://zconnect.page.link/Tbeh</string>
+    <string name="invitation_custom_image"></string>
+    <string name="invitation_cta">Call to action</string>
+
+
+
+
 </resources>

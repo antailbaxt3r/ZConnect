@@ -7,14 +7,20 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -34,7 +40,6 @@ import com.zconnect.zutto.zconnect.AdminHome;
 import com.zconnect.zutto.zconnect.CabPoolAll;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.ChatActivity;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
 import com.zconnect.zutto.zconnect.LoginActivity;
@@ -52,7 +57,7 @@ import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
-import com.zconnect.zutto.zconnect.utilities.TimeAgo;
+import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.addActivities.AddStatus;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -64,7 +69,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import static com.google.android.gms.internal.zzagz.runOnUiThread;
+//import static com.google.android.gms.internal.zzagz.runOnUiThread;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -75,11 +80,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     DatabaseReference mRef;
     View.OnClickListener openUserProfileListener;
     boolean flag;
+    Button scrollToTopBtn;
 
-    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity) {
+    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, Button scrollToTopBtn) {
         this.context = context;
         this.recentsItemFormats = recentsItemFormats;
         this.mHomeActivity = HomeActivity;
+        this.scrollToTopBtn = scrollToTopBtn;
     }
 //
     @Override
@@ -134,6 +141,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder2, final int position) {
         final RecentsItemFormat recentItem = recentsItemFormats.get(position);
+        if(position>30)
+        {
+            scrollToTopBtn.setVisibility(View.VISIBLE);
+        }
+        else
+            scrollToTopBtn.setVisibility(View.GONE);
         switch (holder2.getItemViewType())
         {
             case 0:
@@ -159,16 +172,40 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     }
                 };
+                String name = "Somebody", posted = " posted a ", post = " post ";
+                ClickableSpan clickableSpanPostedBy = null, clickableSpanFeature = null;
                 try {
                     if (recentsItemFormats.get(position).getPostTimeMillis() > 0) {
-                        TimeAgo ta = new TimeAgo(recentsItemFormats.get(position).getPostTimeMillis(), System.currentTimeMillis());
+                        TimeUtilities ta = new TimeUtilities(recentsItemFormats.get(position).getPostTimeMillis(), System.currentTimeMillis());
                         holder.postTime.setText(ta.calculateTimeAgo());
                     }
                     if (recentsItemFormats.get(position).getPostedBy().getUsername() != null) {
                         holder.postedBy.setText(recentsItemFormats.get(position).getPostedBy().getUsername());
                         holder.postedBy.setOnClickListener(openUserProfileListener);
+                        name = recentsItemFormats.get(position).getPostedBy().getUsername();
+                        clickableSpanPostedBy = new ClickableSpan() {
+                            @Override
+                            public void onClick(View widget) {
+                                if(UserUtilities.currentUser.getUserUID().equals(recentsItemFormats.get(position).getPostedBy().getUID()))
+                                {
+                                    mHomeActivity.changeFragment(4);
+                                }
+                                else
+                                {
+                                    Intent i = new Intent(context,OpenUserDetail.class);
+                                    i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
+                                    context.startActivity(i);
+                                }
+                            }
+
+                            @Override
+                            public void updateDrawState(TextPaint ds) {
+                                ds.setUnderlineText(false);
+                            }
+                        };
                         if(recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y")) {
                             holder.postedBy.setOnClickListener(null);
+                            clickableSpanPostedBy = null;
                         }
                     }
                     if (recentsItemFormats.get(position).getPostedBy().getImageThumb() != null) {
@@ -179,6 +216,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 catch (Exception e) {
                     Log.d("Error Message", e.getMessage());
                 }
+                holder.post.setTextColor(context.getResources().getColor(R.color.link));
+
                 if(recentsItemFormats.get(position).getFeature().equals("Banner"))
                 {
                     holder.prePostDetails.setVisibility(View.GONE);
@@ -214,7 +253,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                         Log.d("Interrupted Error", ie.getMessage());
                                     }
 
-                                    runOnUiThread(new Runnable() {
+                                    mHomeActivity.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             // Do some stuff
@@ -253,6 +292,20 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.infoneContactName.setText(recentsItemFormats.get(position).getInfoneContactName());
                     holder.infoneContactCategory.setText(recentsItemFormats.get(position).getInfoneContactCategoryName());
 
+                    posted = " added a ";
+                    post = "Contact";
+                    clickableSpanFeature = new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            mHomeActivity.changeFragment(3);
+                        }
+
+                        @Override
+                        public void updateDrawState(TextPaint ds) {
+                            ds.setUnderlineText(false);
+                        }
+                    };
+
                 }
                 else if(recentsItemFormats.get(position).getFeature().equals("Users"))
                 {
@@ -265,10 +318,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.users), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_home_white_18dp));
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_home_white_18));
                     holder.layoutFeatureIcon.setOnClickListener(null);
                     holder.postConjunction.setText(" just joined your community ");
                     holder.post.setVisibility(View.GONE);
+
+                    posted = " just joined your community ";
+                    post = "";
+                    clickableSpanFeature = null;
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("Event"))
                 {
@@ -310,6 +367,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
                     holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.eventImage);
+
+                    posted = " created an ";
+                    post = recentsItemFormats.get(position).getFeature();
+                    clickableSpanFeature = new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            Intent intent = new Intent(context, TabbedEvents.class);
+                            context.startActivity(intent);
+                        }
+
+                        @Override
+                        public void updateDrawState(TextPaint ds) {
+                            ds.setUnderlineText(false);
+                        }
+                    };
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
                 {
@@ -351,6 +423,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.productDesc.setText(recentsItemFormats.get(position).getDesc());
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
                     holder.productPrice.setText(recentsItemFormats.get(position).getProductPrice());
+
+                    posted = " added a ";
+                    post = "Product";
+                    clickableSpanFeature = new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            Intent intent = new Intent(context, TabStoreRoom.class);
+                            context.startActivity(intent);
+                        }
+
+                        @Override
+                        public void updateDrawState(TextPaint ds) {
+                            ds.setUnderlineText(false);
+                        }
+                    };
                     //set product price
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("CabPool"))
@@ -393,6 +480,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             context.startActivity(intent);
                         }
                     });
+
+                    posted = " started a ";
+                    post = recentsItemFormats.get(position).getFeature();
+                    clickableSpanFeature = new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            Intent intent = new Intent(context, CabPoolAll.class);
+                            context.startActivity(intent);
+                        }
+
+                        @Override
+                        public void updateDrawState(TextPaint ds) {
+                            ds.setUnderlineText(false);
+                        }
+                    };
                     //set text for source and destination...
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("Shop"))
@@ -417,6 +519,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.postConjunction.setText(" put an ");
                     holder.post.setText("Offer");
                     holder.layoutFeatureIcon.setOnClickListener(null);
+
+                    posted = " put an ";
+                    post = "Offer";
+                    clickableSpanFeature = null;
                 }else if(recentsItemFormats.get(position).getFeature().equals("Message")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
@@ -467,6 +573,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         //Message is not anonymous
                         holder.name.setText(recentsItemFormats.get(position).getName());
                     }
+
+                    posted = "  wrote a ";
+                    post = "status";
+                    clickableSpanFeature = null;
+
                 }else if(recentsItemFormats.get(position).getFeature().equals("Forums")){
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
@@ -490,7 +601,40 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
                     holder.forumsName.setText(recentsItemFormats.get(position).getName());
                     holder.forumCategory.setText(recentsItemFormats.get(position).getDesc());
+
+                    posted = " created a ";
+                    post = recentsItemFormats.get(position).getFeature();
+                    clickableSpanFeature = new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            mHomeActivity.changeFragment(1);
+                        }
+
+                        @Override
+                        public void updateDrawState(TextPaint ds) {
+                            ds.setUnderlineText(false);
+                        }
+                    };
                 }
+                String sentence = name + posted + post;
+                SpannableString spannableString = new SpannableString(sentence);
+
+                spannableString.setSpan(clickableSpanPostedBy, sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                spannableString.setSpan(clickableSpanFeature, sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.link));
+                spannableString.setSpan(foregroundColorSpan, sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                if(post.equals("status"))
+                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.secondaryText));
+                else
+                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.link));
+                spannableString.setSpan(foregroundColorSpan, sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.secondaryText));
+                spannableString.setSpan(foregroundColorSpan, sentence.indexOf(posted), sentence.indexOf(posted) + posted.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                holder.sentence.setText(spannableString);
+                holder.sentence.setMovementMethod(LinkMovementMethod.getInstance());
                 break;
             default:
                 BlankViewHolder blankViewHolder = (BlankViewHolder)holder2;
@@ -518,7 +662,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 eventName, eventDate, eventDesc,
                 productName, productPrice, productDesc,
                 messagesMessage,
-                forumsName, forumCategory;
+                forumsName, forumCategory,
+                sentence;
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
                 postImage,
@@ -577,6 +722,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             bannerImage = (SimpleDraweeView) itemView.findViewById(R.id.bannerRecentItem_image);
             bannerLinkLayout = (FrameLayout) itemView.findViewById(R.id.bannerRecentItem_link_layout);
             prePostDetails = (LinearLayout) itemView.findViewById(R.id.prePostDetails);
+            sentence = (TextView) itemView.findViewById(R.id.sentence_recents_item_format);
             //
 
             itemView.setOnClickListener(new View.OnClickListener() {

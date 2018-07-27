@@ -451,7 +451,7 @@ public class TrendingEvents extends Fragment {
 //        private void setEventTimestamp(long postTimeMillis) {
 //            if(postTimeMillis > 0) {
 //                TextView timestamp = (TextView) mView.findViewById(R.id.evTrendTimestamp);
-//                TimeAgo ta = new TimeAgo(postTimeMillis, System.currentTimeMillis());
+//                TimeUtilities ta = new TimeUtilities(postTimeMillis, System.currentTimeMillis());
 //                timestamp.setText(ta.calculateTimeAgo());
 //            }
 //        }
