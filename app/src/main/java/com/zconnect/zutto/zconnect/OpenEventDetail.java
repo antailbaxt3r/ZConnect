@@ -125,6 +125,8 @@ public class  OpenEventDetail extends BaseActivity{
         chatEditText = (EditText) findViewById(R.id.typer);
         chatEditText.setShowSoftInputOnFocus(false);
 
+        Bundle extras = getIntent().getExtras();
+        eventId = (String) extras.get("id");
 
         chatLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,8 +178,7 @@ public class  OpenEventDetail extends BaseActivity{
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        Bundle extras = getIntent().getExtras();
-        eventId = (String) extras.get("id");
+
         try {
             viaDynamicLinkFlag = (boolean) extras.get("flag");
         }

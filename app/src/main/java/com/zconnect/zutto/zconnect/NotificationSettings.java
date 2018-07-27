@@ -110,7 +110,6 @@ public class NotificationSettings extends BaseActivity {
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
                     }
 
-
                     if (data.getAddForum()) {
                         FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
                     } else {

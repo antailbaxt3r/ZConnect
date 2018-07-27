@@ -20,6 +20,7 @@ import android.graphics.RectF;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.renderscript.RenderScript;
 import android.support.annotation.RequiresApi;
 
 import android.support.v4.app.NotificationCompat;
@@ -241,6 +242,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setStyle(style)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
                 .setContentText("Your profile is rejected, please again add your details.");
@@ -279,6 +281,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setStyle(style)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
                 .setContentText("Your profile is approved, you can enjoy access to all features.");
@@ -334,6 +337,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setStyle(style)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(title)
@@ -370,6 +374,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setStyle(style)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(title)
@@ -416,6 +421,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setStyle(style)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
                 .setContentText(userName + " tried contacting you, call him now! ");
@@ -462,6 +468,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setStyle(style)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
                 .setSubText(userName + ": "+ postMessage)
@@ -511,6 +518,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setStyle(style)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
                 .setSubText(userName + ": "+ eventMessage)
@@ -562,6 +570,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setStyle(style)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
                 .setSubText(userName + ": "+ cabMessage)
@@ -611,6 +620,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setStyle(style)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
                 .setSubText(userName + ": "+ productMessage)
@@ -663,6 +673,7 @@ public class NotificationService extends FirebaseMessagingService {
                     .setStyle(style)
                     .setAutoCancel(true)
                     .setSound(defaultSoundUri)
+                    .setPriority(Notification.PRIORITY_DEFAULT)
                     .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                     .setContentTitle(communityName)
                     .setSubText(userName + ": "+ forumMessage)
@@ -709,6 +720,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setStyle(style)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
                 .setContentText("Hey! " + userName + " loved your profile");
@@ -749,6 +761,7 @@ public class NotificationService extends FirebaseMessagingService {
         mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
                 .setStyle(style)
                 .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(defaultSoundUri)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
@@ -792,6 +805,7 @@ public class NotificationService extends FirebaseMessagingService {
         mBuilder.setSmallIcon(R.drawable.ic_phone)
                 .setSound(defaultSoundUri)
                 .setStyle(style)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setAutoCancel(true)
                 .setContentTitle(communityName)
@@ -848,6 +862,7 @@ public class NotificationService extends FirebaseMessagingService {
         mBuilder.setSmallIcon(R.drawable.ic_forum_white_18dp)
                 .setSound(defaultSoundUri)
                 .setStyle(style)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setAutoCancel(true)
                 .setContentTitle(communityName)
@@ -912,6 +927,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setSound(defaultSoundUri)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_DEFAULT)
                 .setContentTitle(communityName)
                 .setContentText(userName + " is selling " + productName + " for ₹" + productPrice);
 
@@ -951,6 +967,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         mBuilder.setSmallIcon(R.drawable.ic_event_white_24dp)
                 .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setAutoCancel(true)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
@@ -977,6 +994,7 @@ public class NotificationService extends FirebaseMessagingService {
         android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_directions_car_white_24dp)
                         .setStyle(style)
+                        .setPriority(Notification.PRIORITY_MAX)
                         .setSound(defaultSoundUri)
                         .setAutoCancel(true)
                         .setColor(ContextCompat.getColor(NotificationService.this,R.color.colorPrimary))
@@ -1023,6 +1041,7 @@ public class NotificationService extends FirebaseMessagingService {
         mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_18dp)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setStyle(style)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentTitle(communityName)
@@ -1052,6 +1071,7 @@ public class NotificationService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_directions_car_white_24dp)
                         .setStyle(style)
+                        .setPriority(Notification.PRIORITY_HIGH)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
@@ -1096,6 +1116,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         mBuilder.setSmallIcon(R.drawable.ic_directions_car_white_24dp)
                 .setStyle(style)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
@@ -1137,6 +1158,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
                 .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_LOW)
                 .setSound(defaultSoundUri)
                 .setContentText(userName + " boosted your event " + eventName);
 

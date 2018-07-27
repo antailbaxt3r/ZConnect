@@ -254,7 +254,7 @@ public class ChatActivity extends BaseActivity {
                                 public void onClick(View v) {
                                     final UsersListItemFormat userDetails = new UsersListItemFormat();
                                     DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                    FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
+
                                     user.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot2) {
@@ -267,6 +267,7 @@ public class ChatActivity extends BaseActivity {
                                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                             CounterManager.forumsJoinCategory(tab,key);
+                                            FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 //
 //                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
 //                                            notificationSender.execute();

@@ -243,7 +243,6 @@ public class CabPoolListOfPeople extends BaseActivity {
                         notificationSender.execute(cabPoolLeaveNotification);
 
                         CounterManager.openCabPoolLeave(getIntent().getStringExtra("key"));
-                        Toast.makeText(getApplicationContext(), "Left CabPool", Toast.LENGTH_SHORT).show();
 
                     } else {
                         final UsersListItemFormat userDetails = new UsersListItemFormat();
