@@ -213,7 +213,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
             }
 
         }else {
-            databaseReferenceList.addListenerForSingleValueEvent(listener);
+            databaseReferenceList.addValueEventListener(listener);
         }
 
     }
