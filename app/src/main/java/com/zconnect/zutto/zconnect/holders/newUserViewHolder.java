@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.holders;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -7,19 +8,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
 public class newUserViewHolder extends RecyclerView.ViewHolder{
 
@@ -47,24 +53,40 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
                 DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(UID).child("userType");
                 userReference.setValue(UsersTypeUtilities.KEY_VERIFIED);
 
-                DatabaseReference newUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers").child(UID);
+                final DatabaseReference newUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers").child(UID);
                 newUserReference.child("statusCode").setValue(VerificationUtilities.KEY_APPROVED);
 
-                PostedByDetails currentAdmin = new PostedByDetails();
 
-                currentAdmin.setUsername(UserUtilities.currentUser.getUsername());
-                currentAdmin.setImageThumb(UserUtilities.currentUser.getImageURL());
-                currentAdmin.setUID(UserUtilities.currentUser.getUserUID());
 
-                newUserReference.child("approvedRejectedBy").setValue(currentAdmin);
+                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                user.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
 
-                NotificationSender notificationSender = new NotificationSender(itemView.getContext(),UserUtilities.currentUser.getUserUID());
+                        PostedByDetails currentAdmin = new PostedByDetails();
+                        currentAdmin.setUsername(userItemFormat.getUsername());
+                        currentAdmin.setImageThumb(userItemFormat.getImageURL());
+                        currentAdmin.setUID(userItemFormat.getUserUID());
 
-                NotificationItemFormat newUserAcceptNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT,UserUtilities.currentUser.getUserUID());
-                newUserAcceptNotification.setCommunityName(UserUtilities.CommunityName);
-                newUserAcceptNotification.setItemKey(UID);
+                        newUserReference.child("approvedRejectedBy").setValue(currentAdmin);
 
-                notificationSender.execute(newUserAcceptNotification);
+                        NotificationSender notificationSender = new NotificationSender(itemView.getContext(),userItemFormat.getUserUID());
+
+                        NotificationItemFormat newUserAcceptNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT,userItemFormat.getUserUID());
+                        newUserAcceptNotification.setCommunityName(communityTitle);
+                        newUserAcceptNotification.setItemKey(UID);
+
+                        notificationSender.execute(newUserAcceptNotification);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
             }
 
         });
@@ -76,25 +98,39 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
                 DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(UID).child("userType");
                 userReference.setValue(UsersTypeUtilities.KEY_NOT_VERIFIED);
 
-                DatabaseReference newUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers").child(UID);
+                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                user.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
 
-                newUserReference.child("statusCode").setValue(VerificationUtilities.KEY_NOT_APPROVED);
 
-                PostedByDetails currentAdmin = new PostedByDetails();
+                        DatabaseReference newUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers").child(UID);
 
-                currentAdmin.setUsername(UserUtilities.currentUser.getUsername());
-                currentAdmin.setImageThumb(UserUtilities.currentUser.getImageURL());
-                currentAdmin.setUID(UserUtilities.currentUser.getUserUID());
+                        newUserReference.child("statusCode").setValue(VerificationUtilities.KEY_NOT_APPROVED);
 
-                newUserReference.child("approvedRejectedBy").setValue(currentAdmin);
+                        PostedByDetails currentAdmin = new PostedByDetails();
 
-                NotificationSender notificationSender = new NotificationSender(itemView.getContext(),UserUtilities.currentUser.getUserUID());
+                        currentAdmin.setUsername(userItemFormat.getUsername());
+                        currentAdmin.setImageThumb(userItemFormat.getImageURL());
+                        currentAdmin.setUID(userItemFormat.getUserUID());
 
-                NotificationItemFormat newUserRejectNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT,UserUtilities.currentUser.getUserUID());
-                newUserRejectNotification.setCommunityName(UserUtilities.CommunityName);
-                newUserRejectNotification.setItemKey(UID);
+                        newUserReference.child("approvedRejectedBy").setValue(currentAdmin);
 
-                notificationSender.execute(newUserRejectNotification);
+                        NotificationSender notificationSender = new NotificationSender(itemView.getContext(), userItemFormat.getUserUID());
+
+                        NotificationItemFormat newUserRejectNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT, userItemFormat.getUserUID());
+                        newUserRejectNotification.setCommunityName(communityTitle);
+                        newUserRejectNotification.setItemKey(UID);
+
+                        notificationSender.execute(newUserRejectNotification);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 

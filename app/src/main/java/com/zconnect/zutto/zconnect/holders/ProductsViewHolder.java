@@ -27,9 +27,9 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT;
 
 /**
@@ -139,13 +139,13 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                         userDetails.setUserUID(userItemFormat.getUserUID());
                                         StoreRoom.child(key).child("UsersReserved").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                                        NotificationSender notificationSender = new NotificationSender(itemView.getContext(),UserUtilities.currentUser.getUserUID());
-                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,UserUtilities.currentUser.getUserUID());
-                                        productShortlistNotification.setCommunityName(UserUtilities.CommunityName);
+                                        NotificationSender notificationSender = new NotificationSender(itemView.getContext(),userItemFormat.getUserUID());
+                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,userItemFormat.getUserUID());
+                                        productShortlistNotification.setCommunityName(communityTitle);
                                         productShortlistNotification.setItemKey(key);
                                         productShortlistNotification.setItemName(dataSnapshot.child(key).child("ProductName").getValue().toString());
                                         productShortlistNotification.setUserName(userItemFormat.getUsername());
-                                        productShortlistNotification.setUserMobileNumber(UserUtilities.currentUser.getMobileNumber());
+                                        productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
 
                                         notificationSender.execute(productShortlistNotification);
 

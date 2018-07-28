@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.provider.CalendarContract;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -29,15 +30,16 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
 /**
  * Created by Lokesh Garg on 23-04-2018.
@@ -367,19 +369,34 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
                         CounterManager.eventBoost(key, "Trending-Out");
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
 
-                        NotificationSender notificationSender = new NotificationSender(itemView.getContext(),UserUtilities.currentUser.getUserUID());
 
-                        NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,UserUtilities.currentUser.getUserUID());
-                        eventBoostNotification.setItemKey(key);
-                        eventBoostNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
-                        eventBoostNotification.setItemName(name);
-                        eventBoostNotification.setUserName(user.getDisplayName());
-                        eventBoostNotification.setCommunityName(UserUtilities.CommunityName);
 
-                        notificationSender.execute(eventBoostNotification);
+                        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        user.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+
+                                NotificationSender notificationSender = new NotificationSender(itemView.getContext(),FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                eventBoostNotification.setItemKey(key);
+                                eventBoostNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                                eventBoostNotification.setItemName(name);
+                                eventBoostNotification.setUserName(userItemFormat.getUsername());
+                                eventBoostNotification.setCommunityName(communityTitle);
+
+                                notificationSender.execute(eventBoostNotification);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+
+                        });
 
                     }else {
-                        eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
+                        eventDatabase.child("BoostersUids").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
 
                     }
                 }
