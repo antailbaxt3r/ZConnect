@@ -171,8 +171,6 @@ public class CreateForum extends AppCompatActivity {
                     newPush.child("UID").setValue(newPush.getKey());
                     newPush.child("tab").setValue(uid);
 
-
-
                     UsersListItemFormat userDetails = new UsersListItemFormat();
 
                     userDetails.setImageThumb(UserUtilities.currentUser.getImageURLThumbnail());
@@ -227,6 +225,8 @@ public class CreateForum extends AppCompatActivity {
                     message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                     newPush.child("Chat").push().setValue(message);
 
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid).child(newPush.getKey()).child("lastMessage").setValue(message);
+
                     NotificationSender notificationSender = new NotificationSender(CreateForum.this, UserUtilities.currentUser.getUserUID());
                     NotificationItemFormat addForumNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,UserUtilities.currentUser.getUserUID());
                     addForumNotification.setCommunityName(UserUtilities.CommunityName);
@@ -263,25 +263,20 @@ public class CreateForum extends AppCompatActivity {
                                     newPush.child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
                                     databaseReferenceTabsCategories.child(newPush.getKey()).child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
                                     databaseReferenceHome.child(newPush.getKey()).child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
-                                    if(flag)
-                                    {
+                                    if(flag) {
                                         Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-//                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
                                         intent.putExtra("type", "forums");
                                         intent.putExtra("name", catName);
                                         intent.putExtra("tab", uid);
                                         intent.putExtra("key", newPush.getKey());
                                         startActivity(intent);
                                         finish();
-                                    }
-                                    else flag = true;
+                                    } else{ flag = true;}
                                 } else {
-                                    // Handle failures
-                                    // ...
                                     Snackbar snackbar = Snackbar.make(addForumName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
                                     snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
                                     snackbar.show();
-
                                 }
                             }
                         });
