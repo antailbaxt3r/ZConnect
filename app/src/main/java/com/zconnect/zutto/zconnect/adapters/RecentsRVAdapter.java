@@ -930,7 +930,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 Intent intent = new Intent(context, AddStatus.class);
                                 context.startActivity(intent);
                             }else {
-                                newUserVerificationAlert.buildAlertCheckNewUser("Add Status",context);
+                                newUserVerificationAlert.buildAlertCheckNewUser(user.getUserType(),"Add Status",context);
                             }
                         }
                     });
@@ -1001,7 +1001,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 CounterManager.eventOpenClick();
                             }else {
-                                newUserVerificationAlert.buildAlertCheckNewUser("Events",context);
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),"Events",context);
                             }
                         }
                     });
@@ -1014,7 +1014,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 context.startActivity(intent);
                                 CounterManager.StoreRoomOpen();
                             }else {
-                                newUserVerificationAlert.buildAlertCheckNewUser("Storeroom",context);
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),"Storeroom",context);
                             }
 
                         }
@@ -1028,7 +1028,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 context.startActivity(intent);
                                 CounterManager.openCabPool();
                             }else {
-                                newUserVerificationAlert.buildAlertCheckNewUser("Cab Pool",context);
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),"Cab Pool",context);
                             }
 
                         }
@@ -1056,7 +1056,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                 Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").getValue().toString()));
                                                 context.startActivity(urlIntent);
                                             }else {
-                                                newUserVerificationAlert.buildAlertCheckNewUser(shot.child("name").getValue(String.class),context);
+                                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),shot.child("name").getValue(String.class),context);
                                             }
 
                                         }
