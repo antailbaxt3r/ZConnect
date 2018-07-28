@@ -126,7 +126,7 @@ public class MyProfileFragment extends Fragment {
         mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                final UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
                 Uid = userItem.getUserUID();
 
                 //Like and Love data reader
@@ -143,9 +143,9 @@ public class MyProfileFragment extends Fragment {
                         userProfile = dataSnapshot.getValue(UserItemFormat.class);
                         if(!dataSnapshot.hasChild("contactHidden")){
                             userProfile.setContactHidden(false);
-                            UserUtilities.currentUser.setContactHidden(false);
+                            userItem.setContactHidden(false);
                         }else {
-                            UserUtilities.currentUser.setContactHidden(userProfile.getContactHidden());
+                            userItem.setContactHidden(userProfile.getContactHidden());
                         }
                         setUserDetails();
                         progressBar.setVisibility(View.GONE);
@@ -161,7 +161,7 @@ public class MyProfileFragment extends Fragment {
                 });
 
                 usersReference = db.child("contactHidden");
-                infoneContact = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories").child(UserUtilities.currentUser.getInfoneType()).child(UserUtilities.currentUser.getUserUID()).child("contactHidden");
+                infoneContact = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories").child(userItem.getInfoneType()).child(userItem.getUserUID()).child("contactHidden");
                 showContact.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -474,27 +474,36 @@ public class MyProfileFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_my_profile, menu);
         this.menu = menu;
         menu.findItem(R.id.action_edit_profile).setVisible(true);
 
-
-        if(UserUtilities.currentUser.getContactHidden()!=null){
-            if(UserUtilities.currentUser.getContactHidden()){
-                menu.findItem(R.id.action_privacy).setTitle("Show Contact");
+        mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                if(userItemFormat.getContactHidden()!=null){
+                    if(userItemFormat.getContactHidden()){
+                        menu.findItem(R.id.action_privacy).setTitle("Show Contact");
+                    }
+                    else {
+                        menu.findItem(R.id.action_privacy).setTitle("Hide Contact");
+                    }
+                }
             }
-            else {
-                menu.findItem(R.id.action_privacy).setTitle("Hide Contact");
-            }
-        }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         int id = item.getItemId();
 
        if(id==R.id.action_edit_profile) {
@@ -502,22 +511,32 @@ public class MyProfileFragment extends Fragment {
             intent.putExtra("newUser",false);
             startActivity(intent);
        }else if(id== R.id.action_privacy){
+           mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+               @Override
+               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                   UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                   if(userItemFormat.getContactHidden()!=null) {
+                       if (userItemFormat.getContactHidden()) {
 
-           if(UserUtilities.currentUser.getContactHidden()!=null) {
-               if (UserUtilities.currentUser.getContactHidden()) {
+                           usersReference.setValue(false);
+                           infoneContact.setValue(false);
+                           item.setTitle("Hide Contact");
+                           Toast.makeText(getContext(), "Your contact is visible now!", Toast.LENGTH_SHORT).show();
 
-                   usersReference.setValue(false);
-                   infoneContact.setValue(false);
-                   item.setTitle("Hide Contact");
-                   Toast.makeText(getContext(), "Your contact is visible now!", Toast.LENGTH_SHORT).show();
+                       } else {
+                           hideContactAlert(item);
 
-               } else {
-                   hideContactAlert(item);
+                       }
+                   }else {
+                       hideContactAlert(item);
+                   }
+               }
+
+               @Override
+               public void onCancelled(@NonNull DatabaseError databaseError) {
 
                }
-           }else {
-               hideContactAlert(item);
-           }
+           });
 
        }
         return super.onOptionsItemSelected(item);
