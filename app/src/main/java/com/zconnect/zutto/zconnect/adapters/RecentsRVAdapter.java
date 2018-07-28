@@ -61,7 +61,6 @@ import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.addActivities.AddStatus;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.Date;
@@ -73,6 +72,7 @@ import java.util.Vector;
 
 //import static com.google.android.gms.internal.zzagz.runOnUiThread;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
 public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -162,7 +162,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 openUserProfileListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(UserUtilities.currentUser.getUserUID().equals(recentsItemFormats.get(position).getPostedBy().getUID()))
+                        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(recentsItemFormats.get(position).getPostedBy().getUID()))
                         {
                             mHomeActivity.changeFragment(4);
                         }
@@ -188,7 +188,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         clickableSpanPostedBy = new ClickableSpan() {
                             @Override
                             public void onClick(View widget) {
-                                if(UserUtilities.currentUser.getUserUID().equals(recentsItemFormats.get(position).getPostedBy().getUID()))
+                                if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(recentsItemFormats.get(position).getPostedBy().getUID()))
                                 {
                                     mHomeActivity.changeFragment(4);
                                 }
@@ -677,6 +677,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         //
         long statusLikeCount;
         boolean statusLikeFlag;
+        DatabaseReference mUserDetails;
 
 
 
@@ -723,6 +724,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             bannerLinkLayout = (FrameLayout) itemView.findViewById(R.id.bannerRecentItem_link_layout);
             prePostDetails = (LinearLayout) itemView.findViewById(R.id.prePostDetails);
             sentence = (TextView) itemView.findViewById(R.id.sentence_recents_item_format);
+            mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             //
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -839,8 +841,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
 
-
-
             if (user != null) {
                 likeLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -850,14 +850,25 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             taskMap.put(user.getUid(), user.getUid());
 //                            CounterManager.eventBoost(key, "Trending-Out");
                             statusDatabase.child("likeUids").updateChildren(taskMap);
-                            NotificationSender notificationSender = new NotificationSender(itemView.getContext(),UserUtilities.currentUser.getUserUID());
-                            NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED,UserUtilities.currentUser.getUserUID());
+                            NotificationSender notificationSender = new NotificationSender(itemView.getContext(),FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            final NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED,FirebaseAuth.getInstance().getCurrentUser().getUid());
                             statusLikeNotification.setItemKey(key);
-                            statusLikeNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                            mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                                    statusLikeNotification.setUserImage(userItem.getImageURLThumbnail());
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
 //                            statusLikeNotification.setItemName(statusText);
 //                            statusLikeNotification.setItemImage(statusImage);
                             statusLikeNotification.setUserName(user.getDisplayName());
-                            statusLikeNotification.setCommunityName(UserUtilities.CommunityName);
+                            statusLikeNotification.setCommunityName(communityTitle);
                             statusLikeNotification.setItemLikeCount(statusLikeCount);
 
                             notificationSender.execute(statusLikeNotification);
@@ -969,8 +980,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     final UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
-                    if(UserUtilities.currentUser.getUsername()!=null) {
-                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
+                    if(userItem.getUsername()!=null) {
+                        if(userItem.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
                             admin.setVisibility(View.VISIBLE);
                             admin.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -980,94 +991,94 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             });
                         }
                     }
+
+                    events.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                Intent intent = new Intent(context, TabbedEvents.class);
+                                context.startActivity(intent);
+
+                                CounterManager.eventOpenClick();
+                            }else {
+                                newUserVerificationAlert.buildAlertCheckNewUser("Events",context);
+                            }
+                        }
+                    });
+
+                    storeroom.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                Intent intent = new Intent(context, TabStoreRoom.class);
+                                context.startActivity(intent);
+                                CounterManager.StoreRoomOpen();
+                            }else {
+                                newUserVerificationAlert.buildAlertCheckNewUser("Storeroom",context);
+                            }
+
+                        }
+                    });
+
+                    cabpool.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                Intent intent = new Intent(context, CabPoolAll.class);
+                                context.startActivity(intent);
+                                CounterManager.openCabPool();
+                            }else {
+                                newUserVerificationAlert.buildAlertCheckNewUser("Cab Pool",context);
+                            }
+
+                        }
+                    });
+
+                    mOtherFeatures.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(flag) {
+
+                                for (final DataSnapshot shot : dataSnapshot.getChildren()) {
+
+                                    if (Integer.parseInt(shot.child("show").getValue().toString()) == 0)
+                                        continue;
+
+                                    otherFeatureItemLayout = (LinearLayout) View.inflate(context, R.layout.recents_features_view_item, null);
+                                    featureName = (TextView) otherFeatureItemLayout.findViewById(R.id.name_recents_features_view_item);
+                                    otherFeatureIcon = (SimpleDraweeView) otherFeatureItemLayout.findViewById(R.id.icon_recents_features_view_item);
+                                    otherFeatureIcon.setImageURI(shot.child("image").getValue().toString());
+                                    featureName.setText(shot.child("name").getValue(String.class));
+                                    otherFeatureItemLayout.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                                Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").getValue().toString()));
+                                                context.startActivity(urlIntent);
+                                            }else {
+                                                newUserVerificationAlert.buildAlertCheckNewUser(shot.child("name").getValue(String.class),context);
+                                            }
+
+                                        }
+                                    });
+                                    linearLayout.addView(otherFeatureItemLayout);
+                                }
+                                flag = false;
+                            }
+                            linearLayout.setVerticalScrollbarPosition(0);
+                            linearLayout.setHorizontalGravity(0);
+                        }
+
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-            events.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
-                        Intent intent = new Intent(context, TabbedEvents.class);
-                        context.startActivity(intent);
-
-                        CounterManager.eventOpenClick();
-                    }else {
-                        newUserVerificationAlert.buildAlertCheckNewUser("Events",context);
-                    }
-                }
-            });
-
-            storeroom.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
-                        Intent intent = new Intent(context, TabStoreRoom.class);
-                        context.startActivity(intent);
-                        CounterManager.StoreRoomOpen();
-                    }else {
-                        newUserVerificationAlert.buildAlertCheckNewUser("Storeroom",context);
-                    }
-
-                }
-            });
-
-            cabpool.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
-                        Intent intent = new Intent(context, CabPoolAll.class);
-                        context.startActivity(intent);
-                        CounterManager.openCabPool();
-                    }else {
-                        newUserVerificationAlert.buildAlertCheckNewUser("Cab Pool",context);
-                    }
-
-                }
-            });
-
-            mOtherFeatures.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(flag) {
-
-                        for (final DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                            if (Integer.parseInt(shot.child("show").getValue().toString()) == 0)
-                                continue;
-
-                            otherFeatureItemLayout = (LinearLayout) View.inflate(context, R.layout.recents_features_view_item, null);
-                            featureName = (TextView) otherFeatureItemLayout.findViewById(R.id.name_recents_features_view_item);
-                            otherFeatureIcon = (SimpleDraweeView) otherFeatureItemLayout.findViewById(R.id.icon_recents_features_view_item);
-                            otherFeatureIcon.setImageURI(shot.child("image").getValue().toString());
-                            featureName.setText(shot.child("name").getValue(String.class));
-                            otherFeatureItemLayout.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
-                                        Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").getValue().toString()));
-                                        context.startActivity(urlIntent);
-                                    }else {
-                                        newUserVerificationAlert.buildAlertCheckNewUser(shot.child("name").getValue(String.class),context);
-                                    }
-
-                                }
-                            });
-                            linearLayout.addView(otherFeatureItemLayout);
-                        }
-                        flag = false;
-                    }
-                    linearLayout.setVerticalScrollbarPosition(0);
-                    linearLayout.setHorizontalGravity(0);
-                }
-
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
 
                 }
             });
