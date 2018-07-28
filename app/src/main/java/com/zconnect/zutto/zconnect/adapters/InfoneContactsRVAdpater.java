@@ -75,7 +75,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                 profileIntent.putExtra("infoneUserId", infoneContactsRVItems.get(position).getInfoneUserId());
                 profileIntent.putExtra("catId", catId);
                 context.startActivity(profileIntent);
-                CounterManager.infoneOpenContact(catId, infoneContactsRVItems.get(position).getName());
+                CounterManager.infoneOpenContact(catId, infoneContactsRVItems.get(position).getInfoneUserId());
             }
         });
 
