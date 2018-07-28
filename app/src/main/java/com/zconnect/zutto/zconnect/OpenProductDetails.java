@@ -53,8 +53,6 @@ import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -164,7 +162,6 @@ public class OpenProductDetails extends BaseActivity {
                 overridePendingTransition(0, 0);
             }
         });
-
         mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
         Intent intent = getIntent();
         productKey = intent.getStringExtra("key");
@@ -474,13 +471,13 @@ public class OpenProductDetails extends BaseActivity {
 //                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.child("PostedBy").child("UID").getValue().toString(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,true,getApplicationContext());
 //                                        notificationSender.execute();
 
-                                        NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this,UserUtilities.currentUser.getUserUID());
-                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,UserUtilities.currentUser.getUserUID());
-                                        productShortlistNotification.setCommunityName(UserUtilities.CommunityName);
+                                        NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this,userItemFormat.getUserUID());
+                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,userItemFormat.getUserUID());
+                                        productShortlistNotification.setCommunityName(communityTitle);
                                         productShortlistNotification.setItemKey(productKey);
                                         productShortlistNotification.setItemName(dataSnapshot.child("ProductName").getValue().toString());
                                         productShortlistNotification.setUserName(userItemFormat.getUsername());
-                                        productShortlistNotification.setUserMobileNumber(UserUtilities.currentUser.getMobileNumber());
+                                        productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
 
 
                                         notificationSender.execute(productShortlistNotification);

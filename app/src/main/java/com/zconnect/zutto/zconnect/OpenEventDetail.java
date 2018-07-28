@@ -57,9 +57,8 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
 import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -83,7 +82,7 @@ public class  OpenEventDetail extends BaseActivity{
     String tag;
     String eventId;
     Toolbar mActionBarToolbar;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference, mUserDetails;
     Button boostBtn;
     Boolean flag = false;
 
@@ -188,6 +187,7 @@ public class  OpenEventDetail extends BaseActivity{
         {
             viaDynamicLinkFlag = false;
         }
+        mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -614,16 +614,27 @@ public class  OpenEventDetail extends BaseActivity{
 
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
 
-                        NotificationSender notificationSender = new NotificationSender(OpenEventDetail.this,UserUtilities.currentUser.getUserUID());
+                        mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                                NotificationSender notificationSender = new NotificationSender(OpenEventDetail.this,userItemFormat.getUserUID());
 
-                        NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,UserUtilities.currentUser.getUserUID());
-                        eventBoostNotification.setItemKey(event.getKey());
-                        eventBoostNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
-                        eventBoostNotification.setItemName(event.getEventName());
-                        eventBoostNotification.setUserName(user.getDisplayName());
-                        eventBoostNotification.setCommunityName(UserUtilities.CommunityName);
+                                NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,userItemFormat.getUserUID());
+                                eventBoostNotification.setItemKey(event.getKey());
+                                eventBoostNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                                eventBoostNotification.setItemName(event.getEventName());
+                                eventBoostNotification.setUserName(user.getDisplayName());
+                                eventBoostNotification.setCommunityName(communityTitle);
 
-                        notificationSender.execute(eventBoostNotification);
+                                notificationSender.execute(eventBoostNotification);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }else {
                         eventDatabase.child("BoostersUids").child(user.getUid()).removeValue();
 

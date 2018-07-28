@@ -45,7 +45,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.Drawables;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 
@@ -60,7 +60,7 @@ public class VerificationPage extends BaseActivity {
     private ImageButton idImageButton;
     private EditText aboutNewUserEditText;
     private Button submitUserIDButton;
-    private DatabaseReference newUsersDatabaseReference,userReference;
+    private DatabaseReference newUsersDatabaseReference,userReference, currentUser;
     private FirebaseAuth mAuth;
 
     private IntentHandle intentHandle;
@@ -119,6 +119,7 @@ public class VerificationPage extends BaseActivity {
         mStorage = FirebaseStorage.getInstance().getReference().child("verificationID").child(communityReference);
         userReference  =FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
         newUsersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers");
+        currentUser = userReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         imageClickListener = new View.OnClickListener() {
             @Override
@@ -257,20 +258,31 @@ public class VerificationPage extends BaseActivity {
                 }
             }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
-                public void onComplete(@NonNull Task<Uri> task) {
+                public void onComplete(@NonNull final Task<Uri> task) {
                     if(task.isSuccessful())
                     {
-                        Uri downloadUri = task.getResult();
-                        newPost.child("idImageURL").setValue(downloadUri != null ? downloadUri.toString() : null);
-                        newPost.child("statusCode").setValue(VerificationUtilities.KEY_PENDING);
-                        newPost.child("about").setValue(finalAboutText);
-                        newPost.child("UID").setValue(mAuth.getCurrentUser().getUid());
-                        newPost.child("name").setValue(UserUtilities.currentUser.getUsername());
-                        userReference.child(mAuth.getCurrentUser().getUid()).child("userType").setValue(UsersTypeUtilities.KEY_PENDING);
-                        UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_PENDING);
-                        progressDialog.dismiss();
-                        Toast.makeText(VerificationPage.this, "Your details are submitted, you will be notified once verification is done.", Toast.LENGTH_LONG).show();
-                        finish();
+                        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                                Uri downloadUri = task.getResult();
+                                newPost.child("idImageURL").setValue(downloadUri != null ? downloadUri.toString() : null);
+                                newPost.child("statusCode").setValue(VerificationUtilities.KEY_PENDING);
+                                newPost.child("about").setValue(finalAboutText);
+                                newPost.child("UID").setValue(mAuth.getCurrentUser().getUid());
+                                newPost.child("name").setValue(userItemFormat.getUsername());
+                                userReference.child(mAuth.getCurrentUser().getUid()).child("userType").setValue(UsersTypeUtilities.KEY_PENDING);
+                                userItemFormat.setUserType(UsersTypeUtilities.KEY_PENDING);
+                                progressDialog.dismiss();
+                                Toast.makeText(VerificationPage.this, "Your details are submitted, you will be notified once verification is done.", Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                     else {
                         // Handle failures

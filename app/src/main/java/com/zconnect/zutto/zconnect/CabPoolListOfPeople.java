@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +39,6 @@ import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -233,17 +233,27 @@ public class CabPoolListOfPeople extends BaseActivity {
                     if (flag) {
                         databaseReference.child(key).child("usersListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
+                        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        user.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                                NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,userItemFormat.getUserUID());
+                                NotificationItemFormat cabPoolLeaveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE,userItemFormat.getUserUID());
+                                cabPoolLeaveNotification.setCommunityName(communityTitle);
+                                cabPoolLeaveNotification.setItemKey(getIntent().getStringExtra("key"));
+                                cabPoolLeaveNotification.setUserName(userItemFormat.getUsername());
+                                cabPoolLeaveNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                                notificationSender.execute(cabPoolLeaveNotification);
 
-                        NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,UserUtilities.currentUser.getUserUID());
-                        NotificationItemFormat cabPoolLeaveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE,UserUtilities.currentUser.getUserUID());
-                        cabPoolLeaveNotification.setCommunityName(UserUtilities.CommunityName);
-                        cabPoolLeaveNotification.setItemKey(getIntent().getStringExtra("key"));
-                        cabPoolLeaveNotification.setUserName(UserUtilities.currentUser.getUsername());
-                        cabPoolLeaveNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
-                        notificationSender.execute(cabPoolLeaveNotification);
+                                CounterManager.openCabPoolLeave(getIntent().getStringExtra("key"));
+                            }
 
-                        CounterManager.openCabPoolLeave(getIntent().getStringExtra("key"));
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                            }
+                        });
                     } else {
                         final UsersListItemFormat userDetails = new UsersListItemFormat();
                         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -258,10 +268,10 @@ public class CabPoolListOfPeople extends BaseActivity {
                                 databaseReference.child(key).child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                // NotificationSender notificationSender = new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_CABPOOL_JOIN,false,true,CabPoolListOfPeople.this);
-                                NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,UserUtilities.currentUser.getUserUID());
-                                NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,UserUtilities.currentUser.getUserUID());
-                                cabPoolJoinNotification.setCommunityName(UserUtilities.CommunityName);
-                                cabPoolJoinNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
+                                NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,userItemFormat.getUserUID());
+                                NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,userItemFormat.getUserUID());
+                                cabPoolJoinNotification.setCommunityName(communityTitle);
+                                cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                                 cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
                                 cabPoolJoinNotification.setUserName(userItemFormat.getUsername());
                                 notificationSender.execute(cabPoolJoinNotification);

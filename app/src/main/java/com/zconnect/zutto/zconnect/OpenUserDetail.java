@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -39,7 +40,6 @@ import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.Calendar;
@@ -149,10 +149,10 @@ public class OpenUserDetail extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
                     userProfile = dataSnapshot.getValue(UserItemFormat.class);
-                    setUserDetails();
+                    setUserDetails(currentUser);
                     progressBar.setVisibility(View.GONE);
                     content.setVisibility(View.VISIBLE);
-                    if(userProfile.getUserUID().equals(UserUtilities.currentUser.getUserUID()));
+                    if(userProfile.getUserUID().equals(myUID));
                     {
                         menu.findItem(R.id.action_edit_profile).setVisible(true);
                     }
@@ -237,6 +237,17 @@ public class OpenUserDetail extends BaseActivity {
                             if (dataSnapshot.hasChild(Uid)){
                                 Toast.makeText(OpenUserDetail.this, "Congrats, now you both like each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
+                            UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                            NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, userItemFormat.getUserUID());
+
+                            NotificationItemFormat infoneLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LIKE,userItemFormat.getUserUID());
+
+                            infoneLikeNotification.setItemKey(userProfile.getUserUID());
+                            infoneLikeNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                            infoneLikeNotification.setUserName(userItemFormat.getUsername());
+                            infoneLikeNotification.setCommunityName(communityTitle);
+
+                            notificationSender.execute(infoneLikeNotification);
                         }
 
                         @Override
@@ -244,16 +255,6 @@ public class OpenUserDetail extends BaseActivity {
 
                         }
                     });
-                    NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, UserUtilities.currentUser.getUserUID());
-
-                    NotificationItemFormat infoneLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LIKE,UserUtilities.currentUser.getUserUID());
-
-                    infoneLikeNotification.setItemKey(userProfile.getUserUID());
-                    infoneLikeNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
-                    infoneLikeNotification.setUserName(UserUtilities.currentUser.getUsername());
-                    infoneLikeNotification.setCommunityName(UserUtilities.CommunityName);
-
-                    notificationSender.execute(infoneLikeNotification);
                 }
             }
         });
@@ -273,6 +274,17 @@ public class OpenUserDetail extends BaseActivity {
                             if (dataSnapshot.hasChild(Uid)){
                                 Toast.makeText(OpenUserDetail.this, "WOW, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
+                            UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                            NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, userItemFormat.getUserUID());
+
+                            NotificationItemFormat infoneLoveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LOVE,userItemFormat.getUserUID());
+
+                            infoneLoveNotification.setItemKey(userProfile.getUserUID());
+                            infoneLoveNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                            infoneLoveNotification.setUserName(userItemFormat.getUsername());
+                            infoneLoveNotification.setCommunityName(communityTitle);
+
+                            notificationSender.execute(infoneLoveNotification);
                         }
 
                         @Override
@@ -280,16 +292,6 @@ public class OpenUserDetail extends BaseActivity {
 
                         }
                     });
-                    NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, UserUtilities.currentUser.getUserUID());
-
-                    NotificationItemFormat infoneLoveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_LOVE,UserUtilities.currentUser.getUserUID());
-
-                    infoneLoveNotification.setItemKey(userProfile.getUserUID());
-                    infoneLoveNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
-                    infoneLoveNotification.setUserName(UserUtilities.currentUser.getUsername());
-                    infoneLoveNotification.setCommunityName(UserUtilities.CommunityName);
-
-                    notificationSender.execute(infoneLoveNotification);
                 }
             }
         });
@@ -367,7 +369,7 @@ public class OpenUserDetail extends BaseActivity {
 
     }
 
-    public void setUserDetails(){
+    public void setUserDetails(final DatabaseReference currentUser){
         //        name = getIntent().getStringExtra("name");
 //        desc = getIntent().getStringExtra("desc");
 //        mobileNumber = getIntent().getStringExtra("contactDescTv");
@@ -386,7 +388,7 @@ public class OpenUserDetail extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Log.d("SHOTGUN", "RISE");
-                requestCallFunction(userProfile.getUserUID());
+                requestCallFunction(userProfile.getUserUID(), currentUser);
                 String shortname = name;
                 if(name.indexOf(' ')>0)
                     shortname = name.substring(0, name.indexOf(' '));
@@ -561,20 +563,30 @@ public class OpenUserDetail extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void requestCallFunction(String itemUID){
+    public void requestCallFunction(final String itemUID, DatabaseReference currentUser){
 
+            currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                    NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this,userItemFormat.getUserUID());
 
-            NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this,UserUtilities.currentUser.getUserUID());
+                    NotificationItemFormat requestCallNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL,userItemFormat.getUserUID());
+                    requestCallNotification.setItemKey(itemUID);
 
-            NotificationItemFormat requestCallNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL,UserUtilities.currentUser.getUserUID());
-            requestCallNotification.setItemKey(itemUID);
+                    requestCallNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
+                    requestCallNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                    requestCallNotification.setUserName(userItemFormat.getUsername());
+                    requestCallNotification.setCommunityName(communityTitle);
 
-            requestCallNotification.setUserMobileNumber(UserUtilities.currentUser.getMobileNumber());
-            requestCallNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
-            requestCallNotification.setUserName(UserUtilities.currentUser.getUsername());
-            requestCallNotification.setCommunityName(UserUtilities.CommunityName);
+                    notificationSender.execute(requestCallNotification);
+                }
 
-            notificationSender.execute(requestCallNotification);
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
 
 }
