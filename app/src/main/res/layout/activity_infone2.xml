@@ -38,8 +38,9 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="@dimen/fab_margin"
             android:visibility="visible"
-            android:backgroundTint="@color/colorHighlight"
+            app:backgroundTint="@color/colorHighlight"
             app:srcCompat="@drawable/ic_add_white_36dp" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cat_infone"
             android:layout_width="match_parent"

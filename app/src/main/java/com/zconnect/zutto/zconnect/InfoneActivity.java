@@ -136,8 +136,18 @@ public class InfoneActivity extends Fragment {
         fabCatAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.e("tt", "data fab");
+
+                SharedPreferences sharedPref = getActivity().getSharedPreferences("guestMode", MODE_PRIVATE);
+                Boolean status = sharedPref.getBoolean("mode", false);
+
+                if (!status) {
                     Intent addCatIntent = new Intent(getContext(),AddInfoneCat.class);
                     startActivity(addCatIntent);
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "Log in to use this function", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
