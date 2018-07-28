@@ -97,17 +97,17 @@ public class CounterManager extends BaseActivity {
         });
     }
 
-    public static void infoneOpenContact(final String categoryID, final String contact) {
+    public static void infoneOpenContact(final String categoryID, final String contactID) {
         ref.keepSynced(true);
         ref.child("Infone").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Long count = dataSnapshot.child(categoryID).child(contact).child("Open").getValue(Long.class);
+                Long count = dataSnapshot.child(categoryID).child(contactID).child("Open").getValue(Long.class);
                 if(count == null) {
                     count = (long) 0;
                 }
                 count = count + 1;
-                dataSnapshot.child(categoryID).child(contact).child("Open").getRef().setValue(count);
+                dataSnapshot.child(categoryID).child(contactID).child("Open").getRef().setValue(count);
             }
 
             @Override
