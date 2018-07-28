@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -908,8 +909,20 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                    final UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
                     userAvatar.setImageURI(user.getImageURLThumbnail());
+
+                    textArea.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(!(user.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || user.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                Intent intent = new Intent(context, AddStatus.class);
+                                context.startActivity(intent);
+                            }else {
+                                newUserVerificationAlert.buildAlertCheckNewUser("Add Status",context);
+                            }
+                        }
+                    });
                 }
 
                 @Override
@@ -917,18 +930,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                 }
             });
-            textArea.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
-                        Intent intent = new Intent(context, AddStatus.class);
-                        context.startActivity(intent);
-                    }else {
-                        newUserVerificationAlert.buildAlertCheckNewUser("Add Status",context);
-                    }
-                }
-            });
-
         }
     }
 
@@ -951,6 +952,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         SimpleDraweeView otherFeatureIcon;
         TextView featureName;
         LinearLayout otherFeatureItemLayout;
+        DatabaseReference mUserDetails;
         public FeaturesViewHolder(final View itemView) {
             super(itemView);
             flag = true;
@@ -961,17 +963,30 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             cabpool = (RelativeLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
             admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
             mOtherFeatures = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("otherFeatures").orderByChild("pos");
-            if(UserUtilities.currentUser.getUsername()!=null) {
-                if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
-                    admin.setVisibility(View.VISIBLE);
-                    admin.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            context.startActivity(new Intent(context, AdminHome.class));
+            mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    final UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                    if(UserUtilities.currentUser.getUsername()!=null) {
+                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
+                            admin.setVisibility(View.VISIBLE);
+                            admin.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    context.startActivity(new Intent(context, AdminHome.class));
+                                }
+                            });
                         }
-                    });
+                    }
                 }
-            }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
 
             events.setOnClickListener(new View.OnClickListener() {
                 @Override
