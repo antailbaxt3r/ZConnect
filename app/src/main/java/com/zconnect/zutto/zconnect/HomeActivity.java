@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -824,6 +825,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         preferences.edit().remove("communityReference").commit();
 
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
         Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
         startActivity(loginIntent);
         finish();

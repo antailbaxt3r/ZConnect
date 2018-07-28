@@ -441,7 +441,7 @@ public class OpenUserDetail extends BaseActivity {
             call.setOnClickListener(null);
         }
         else {
-            editTextName.setText(mobileNumber);
+            editTextNumber.setText(mobileNumber);
             whatsAppNumberText.setText(whatsAppNumber);
             requestContact.setVisibility(View.GONE);
             call.setVisibility(View.VISIBLE);

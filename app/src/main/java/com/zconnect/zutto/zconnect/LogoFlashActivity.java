@@ -67,10 +67,10 @@ public class LogoFlashActivity extends BaseActivity {
         if (communityReference != null) {
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
-            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            mDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.child("bgUrl").getValue() != null) {
+                    if (dataSnapshot.hasChild("bgUrl")) {
                         bgImage.setImageURI(Uri.parse(dataSnapshot.child("bgUrl").getValue(String.class)));
                     } else {
                         bgColor.setVisibility(View.GONE);

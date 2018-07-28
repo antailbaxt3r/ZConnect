@@ -304,7 +304,7 @@ public class CabPoolAll extends BaseActivity {
             });
         }
 
-
+        databaseReference.addValueEventListener(allPools);
 
     }
 
@@ -382,16 +382,12 @@ public class CabPoolAll extends BaseActivity {
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
 
-        databaseReference.addValueEventListener(allPools);
-    }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         databaseReference.removeEventListener(allPools);
     }
+
 }
