@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -23,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,7 +34,7 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.adapters.InfoneCategoriesRVAdapter;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneCat;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.ArrayList;
@@ -40,13 +42,14 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class InfoneActivity extends Fragment {
 
     RecyclerView recyclerViewCat;
     FloatingActionButton fabCatAdd;
     ArrayList<InfoneCategoryModel> categoriesList = new ArrayList();
-    DatabaseReference databaseReferenceCat;
+    DatabaseReference databaseReferenceCat, mUserDetails;
     ValueEventListener listener;
     InfoneCategoriesRVAdapter infoneCategoriesRVAdapter;
     private static final int REQUEST_PHONE_CALL = 1;
@@ -82,7 +85,7 @@ public class InfoneActivity extends Fragment {
 
         databaseReferenceCat = FirebaseDatabase.getInstance().getReference().child("communities")
                 .child(communityReference).child("infone").child("categoriesInfo");
-
+        mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         recyclerViewCat.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         listener = new ValueEventListener() {
@@ -130,9 +133,20 @@ public class InfoneActivity extends Fragment {
         };
         databaseReferenceCat.addValueEventListener(listener);
 
-        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
-            fabCatAdd.setVisibility(View.VISIBLE);
-        }
+        mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                if(userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
+                    fabCatAdd.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         fabCatAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
