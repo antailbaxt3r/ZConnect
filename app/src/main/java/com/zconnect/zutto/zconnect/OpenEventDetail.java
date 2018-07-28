@@ -371,6 +371,7 @@ public class  OpenEventDetail extends BaseActivity{
 //            https://your_subdomain.page.link/?link=your_deep_link&apn=package_name[&amv=minimum_version][&afl=fallback_link]
 //            https://example.page.link/?link=https://www.example.com/invitation?gameid%3D1234%26referrer%3D555&apn=com.example.android&ibi=com.example.ios&isi=12345
                     .setLongLink(Uri.parse("https://zconnect.page.link/?link="+encodedUri+"&apn=com.zconnect.zutto.zconnect&amv=11" ))
+                    .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setMinimumVersion(12).build())
                     .buildShortDynamicLink()
                     .addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
                         @Override
