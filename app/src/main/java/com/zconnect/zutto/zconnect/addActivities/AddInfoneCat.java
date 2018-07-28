@@ -38,15 +38,16 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class AddInfoneCat extends AppCompatActivity {
+public class AddInfoneCat extends BaseActivity {
 
 
     private SharedPreferences communitySP;
@@ -265,14 +266,14 @@ public class AddInfoneCat extends AppCompatActivity {
     public void addContact(){
         if(flag1&&flag2){
 
-            NotificationSender notificationSender = new NotificationSender(AddInfoneCat.this, UserUtilities.currentUser.getUserUID());
-            NotificationItemFormat addInfoneCategoryNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_CATEGORY_ADD,UserUtilities.currentUser.getUserUID());
-            addInfoneCategoryNotification.setCommunityName(UserUtilities.CommunityName);
+            NotificationSender notificationSender = new NotificationSender(AddInfoneCat.this, FirebaseAuth.getInstance().getCurrentUser().getUid());
+            NotificationItemFormat addInfoneCategoryNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_CATEGORY_ADD,FirebaseAuth.getInstance().getCurrentUser().getUid());
+            addInfoneCategoryNotification.setCommunityName(communityTitle);
 
             addInfoneCategoryNotification.setItemKey(catId);
             addInfoneCategoryNotification.setItemImage(catImageurl);
             addInfoneCategoryNotification.setItemName(nameEt.getText().toString());
-            addInfoneCategoryNotification.setItemCategoryAdmin(UserUtilities.currentUser.getUserUID());
+            addInfoneCategoryNotification.setItemCategoryAdmin(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             notificationSender.execute(addInfoneCategoryNotification);
 

@@ -38,7 +38,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private networkStatereceiver receiver;
 
 
-    public static String communityReference;
+    public static String communityReference,communityTitle;
 
     public static DatabaseReference ref;
     private static LocalDate dateTime = new LocalDate();
@@ -62,6 +62,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         registerReceiver(receiver, filter);
         SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
+
+        SharedPreferences communityTitleSP = getSharedPreferences("communityTitle", MODE_PRIVATE);
+        communityTitle = communityTitleSP.getString("communityTitleValue", null);
         //CounterManager.communityCode = communityReference;
     }
 
