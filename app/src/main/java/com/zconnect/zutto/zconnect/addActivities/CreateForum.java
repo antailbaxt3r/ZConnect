@@ -45,7 +45,6 @@ import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
@@ -59,6 +58,7 @@ import java.util.Calendar;
 
 import javax.xml.datatype.Duration;
 
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST;
 
 public class CreateForum extends AppCompatActivity {
@@ -171,19 +171,13 @@ public class CreateForum extends AppCompatActivity {
                     newPush.child("UID").setValue(newPush.getKey());
                     newPush.child("tab").setValue(uid);
 
-                    UsersListItemFormat userDetails = new UsersListItemFormat();
 
-                    userDetails.setImageThumb(UserUtilities.currentUser.getImageURLThumbnail());
-                    userDetails.setName(UserUtilities.currentUser.getUsername());
-                    userDetails.setPhonenumber(UserUtilities.currentUser.getMobileNumber());
-                    userDetails.setUserUID(UserUtilities.currentUser.getUserUID());
-                    userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
 
 
                     databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
                     databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
                     databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(uid);
-                    databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(UserUtilities.currentUser.getUserUID()).setValue(userDetails);
+
 
                     CounterManager.forumsAddCategory(uid);
 
@@ -202,11 +196,50 @@ public class CreateForum extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            newPush.child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
-                            newPush.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
+                            UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
 
-                            databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
-                            databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
+                            UsersListItemFormat userDetails = new UsersListItemFormat();
+
+                            userDetails.setImageThumb(userItem.getImageURLThumbnail());
+                            userDetails.setName(userItem.getUsername());
+                            userDetails.setPhonenumber(userItem.getMobileNumber());
+                            userDetails.setUserUID(userItem.getUserUID());
+                            userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
+
+                            databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(userItem.getUserUID()).setValue(userDetails);
+
+                            newPush.child("PostedBy").child("Username").setValue(userItem.getUsername());
+                            newPush.child("PostedBy").child("ImageThumb").setValue(userItem.getImageURLThumbnail());
+
+                            databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("Username").setValue(userItem.getUsername());
+                            databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("ImageThumb").setValue(userItem.getImageURLThumbnail());
+
+                            ChatItemFormats message = new ChatItemFormats();
+                            message.setTimeDate(calendar.getTimeInMillis());
+
+//                    UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                            message.setUuid(userItem.getUserUID());
+                            message.setName(userItem.getUsername());
+                            message.setImageThumb(userItem.getImageURLThumbnail());
+                            message.setMessage("\""+firstMessage.getText()+"\"");
+                            message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                            newPush.child("Chat").push().setValue(message);
+
+                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid).child(newPush.getKey()).child("lastMessage").setValue(message);
+
+                            NotificationSender notificationSender = new NotificationSender(CreateForum.this,userItem.getUserUID());
+                            NotificationItemFormat addForumNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,userItem.getUserUID());
+                            addForumNotification.setCommunityName(communityTitle);
+                            addForumNotification.setItemKey(newPush.getKey());
+                            addForumNotification.setItemCategoryUID(uid);
+                            addForumNotification.setItemCategory(mtabName);
+                            addForumNotification.setItemName(catName);
+                            addForumNotification.setUserImage(userItem.getImageURLThumbnail());
+                            addForumNotification.setUserName(userItem.getUsername());
+
+                            notificationSender.execute(addForumNotification);
+
+
                         }
 
                         @Override
@@ -214,30 +247,6 @@ public class CreateForum extends AppCompatActivity {
 
                         }
                     });
-                    ChatItemFormats message = new ChatItemFormats();
-                    message.setTimeDate(calendar.getTimeInMillis());
-                    final UserItemFormat userItem = UserUtilities.currentUser;
-//                    UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
-                    message.setUuid(userItem.getUserUID());
-                    message.setName(userItem.getUsername());
-                    message.setImageThumb(userItem.getImageURLThumbnail());
-                    message.setMessage("\""+firstMessage.getText()+"\"");
-                    message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
-                    newPush.child("Chat").push().setValue(message);
-
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid).child(newPush.getKey()).child("lastMessage").setValue(message);
-
-                    NotificationSender notificationSender = new NotificationSender(CreateForum.this, UserUtilities.currentUser.getUserUID());
-                    NotificationItemFormat addForumNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,UserUtilities.currentUser.getUserUID());
-                    addForumNotification.setCommunityName(UserUtilities.CommunityName);
-                    addForumNotification.setItemKey(newPush.getKey());
-                    addForumNotification.setItemCategoryUID(uid);
-                    addForumNotification.setItemCategory(mtabName);
-                    addForumNotification.setItemName(catName);
-                    addForumNotification.setUserImage(UserUtilities.currentUser.getImageURLThumbnail());
-                    addForumNotification.setUserName(UserUtilities.currentUser.getUsername());
-
-                    notificationSender.execute(addForumNotification);
 
 
                     if(mImageUri!=null && mImageUriThumb!=null)

@@ -254,7 +254,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                     case 1: {
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                            newUserVerificationAlert.buildAlertCheckNewUser("Forums",HomeActivity.this);
+                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Forums",HomeActivity.this);
                             tabs.getTabAt(prePos);
                         }else{
                             setActionBarTitle("Forums");
@@ -265,7 +265,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                     case 2: {
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                            newUserVerificationAlert.buildAlertCheckNewUser("Add",HomeActivity.this);
+                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Add",HomeActivity.this);
                             tabs.getTabAt(prePos);
                         }else {
                             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
@@ -274,7 +274,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                     case 3: {
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                            newUserVerificationAlert.buildAlertCheckNewUser("Infone",HomeActivity.this);
+                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Infone",HomeActivity.this);
                             tabs.getTabAt(prePos);
                         }
                         else {
@@ -306,7 +306,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 switch (pos) {
                     case 2: {
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                            newUserVerificationAlert.buildAlertCheckNewUser("Add",HomeActivity.this);
+                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Add",HomeActivity.this);
                             tabs.getTabAt(prePos);
                         }else {
                             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());

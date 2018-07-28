@@ -313,7 +313,7 @@ public class ChatActivity extends BaseActivity {
                         UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
                         if(dataSnapshot.hasChild("userType")) {
                             if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                                newUserVerificationAlert.buildAlertCheckNewUser("Chat", ChatActivity.this);
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(),"Chat", ChatActivity.this);
                             } else {
                                 postMessage();
                             }

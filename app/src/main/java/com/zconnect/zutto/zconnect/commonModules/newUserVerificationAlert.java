@@ -14,9 +14,10 @@ import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 public class newUserVerificationAlert {
 
 
-    public static void buildAlertCheckNewUser(String featureName, final Context ctx)
+    public static void buildAlertCheckNewUser(String userType, String featureName, final Context ctx)
     {
-        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)){
+
+        if(userType.equals(UsersTypeUtilities.KEY_PENDING)){
 
             final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ctx);
             builder.setMessage("Your profile will be verified soon to access " + featureName +", do you want to change proof ID?")
@@ -40,7 +41,7 @@ public class newUserVerificationAlert {
             final android.app.AlertDialog alert = builder.create();
             alert.show();
 
-        }else if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
+        }else if(userType.equals(UsersTypeUtilities.KEY_NOT_VERIFIED)) {
             final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ctx);
             builder.setMessage("You need to verify to access " + featureName)
                     .setCancelable(false)
