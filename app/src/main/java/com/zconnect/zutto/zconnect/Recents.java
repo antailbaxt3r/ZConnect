@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.VISIBLE;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class Recents extends Fragment {
 

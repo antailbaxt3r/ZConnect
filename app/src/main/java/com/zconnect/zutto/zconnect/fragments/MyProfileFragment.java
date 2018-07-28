@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TextInputEditText;
@@ -38,7 +39,6 @@ import com.zconnect.zutto.zconnect.EditProfileActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.VerificationPage;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import mabbas007.tagsedittext.TagsEditText;
@@ -71,7 +71,7 @@ public class MyProfileFragment extends Fragment {
     private android.support.design.widget.AppBarLayout appBarLayout;
     private Button userTypeText, showContact;
 
-    private DatabaseReference infoneContact,usersReference;
+    private DatabaseReference infoneContact,usersReference, mUserDetails;
     public MyProfileFragment() {
         // Required empty public constructor
     }
@@ -121,106 +121,111 @@ public class MyProfileFragment extends Fragment {
         call = (ImageView) view.findViewById(R.id.ib_call_contact_item);
         mail = (ImageView) view.findViewById(R.id.mailbutton);
         mAuth = FirebaseAuth.getInstance();
+        mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        Uid = UserUtilities.currentUser.getUserUID();
-        Log.d("EDITTT", Uid);
-
-        //Like and Love data reader
-        final DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid);
-        final String myUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(myUID);
-        //Value fill listener
-
-        db.addValueEventListener(new ValueEventListener() {
+        mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+                Uid = userItem.getUserUID();
 
-                userProfile = dataSnapshot.getValue(UserItemFormat.class);
-                if(!dataSnapshot.hasChild("contactHidden")){
-                    userProfile.setContactHidden(false);
-                    UserUtilities.currentUser.setContactHidden(false);
+                //Like and Love data reader
+                final DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid);
+                final String myUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                //        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(myUID);
+                //Value fill listener
+                Log.d("EDITTT", Uid);
+                db.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        userProfile = dataSnapshot.getValue(UserItemFormat.class);
+                        if(!dataSnapshot.hasChild("contactHidden")){
+                            userProfile.setContactHidden(false);
+                            userItem.setContactHidden(false);
+                        }else {
+                            userItem.setContactHidden(userProfile.getContactHidden());
+                        }
+                        setUserDetails();
+                        progressBar.setVisibility(View.GONE);
+                        content.setVisibility(View.VISIBLE);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        progressBar.setVisibility(View.GONE);
+                        content.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                usersReference = db.child("contactHidden");
+                infoneContact = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories").child(userItem.getInfoneType()).child(userItem.getUserUID()).child("contactHidden");
+                showContact.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        usersReference.setValue(false);
+                        infoneContact.setValue(false);
+                        menu.findItem(R.id.action_privacy).setTitle("Hide Contact");
+                    }
+                });
+
+                final DatabaseReference db_like = db.child("Likes");
+                final DatabaseReference db_love = db.child("Loves");
+
+                if(db_love != null){
+                    db_love.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            long loves = dataSnapshot.getChildrenCount();
+                            love_text.setText(loves+" Loves");
+                            if (dataSnapshot.hasChild(myUID)){
+                                //I already liked him
+                                btn_love.setImageResource(R.drawable.heart_red);
+                                love_status = true;
+                            }else {
+                                love_status= false;
+                                btn_love.setImageResource(R.drawable.heart);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }else {
-                    UserUtilities.currentUser.setContactHidden(userProfile.getContactHidden());
-                }
-                setUserDetails();
-                progressBar.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-            }
-        });
-
-        usersReference = db.child("contactHidden");
-        infoneContact = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories").child(UserUtilities.currentUser.getInfoneType()).child(UserUtilities.currentUser.getUserUID()).child("contactHidden");
-        showContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                usersReference.setValue(false);
-                infoneContact.setValue(false);
-                menu.findItem(R.id.action_privacy).setTitle("Hide Contact");
-            }
-        });
-
-        final DatabaseReference db_like = db.child("Likes");
-        final DatabaseReference db_love = db.child("Loves");
-
-        if(db_love != null){
-            db_love.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    long loves = dataSnapshot.getChildrenCount();
-                    love_text.setText(loves+" Loves");
-                    if (dataSnapshot.hasChild(myUID)){
-                        //I already liked him
-                        btn_love.setImageResource(R.drawable.heart_red);
-                        love_status = true;
-                    }else {
-                        love_status= false;
-                        btn_love.setImageResource(R.drawable.heart);
-                    }
+                    //no one loves him
+                    love_text.setText("0 Loves");
                 }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                if(db_like != null){
+                    db_like.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            long like = dataSnapshot.getChildrenCount();
+                            like_text.setText(like+" Likes");
+                            if (dataSnapshot.hasChild(myUID)){
+                                //I already liked him
+                                btn_like.setImageResource(R.drawable.like_blue);
+                                like_status = true;
+                            }else {
+                                like_status = false;
+                                btn_like.setImageResource(R.drawable.like);
+                            }
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }else {
+                    //no one likes him
+                    like_text.setText("0 Likes");
                 }
-            });
-        }else {
-            //no one loves him
-            love_text.setText("0 Loves");
-        }
-
-        if(db_like != null){
-            db_like.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    long like = dataSnapshot.getChildrenCount();
-                    like_text.setText(like+" Likes");
-                    if (dataSnapshot.hasChild(myUID)){
-                        //I already liked him
-                        btn_like.setImageResource(R.drawable.like_blue);
-                        like_status = true;
-                    }else {
-                        like_status = false;
-                        btn_like.setImageResource(R.drawable.like);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }else {
-            //no one likes him
-            like_text.setText("0 Likes");
-        }
-        //seting onclickListener for togelling the likes and loves
+                //seting onclickListener for togelling the likes and loves
 
 //        btn_like.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -279,11 +284,11 @@ public class MyProfileFragment extends Fragment {
 //        });
 
 
-        if (Uid.equals("null"))
-        {
+                if (Uid.equals("null"))
+                {
 //            anonymMessageLayout.setVisibility(View.GONE);
-            flagforNull=true;
-        }
+                    flagforNull=true;
+                }
 
 //        sendButton.setOnClickListener(new View.OnClickListener() {
 //
@@ -325,14 +330,21 @@ public class MyProfileFragment extends Fragment {
 //            }
 //        });
 
-        //changing fonts
-        Typeface ralewayRegular = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Raleway-Regular.ttf");
-        Typeface ralewaySemiBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Raleway-SemiBold.ttf");
-        editTextName.setTypeface(ralewaySemiBold);
-        editTextDetails.setTypeface(ralewayRegular);
-        editTextNumber.setTypeface(ralewayRegular);
-        editTextSkills.setTypeface(ralewayRegular);
-        editTextEmail.setTypeface(ralewayRegular);
+                //changing fonts
+                Typeface ralewayRegular = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Raleway-Regular.ttf");
+                Typeface ralewaySemiBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Raleway-SemiBold.ttf");
+                editTextName.setTypeface(ralewaySemiBold);
+                editTextDetails.setTypeface(ralewayRegular);
+                editTextNumber.setTypeface(ralewayRegular);
+                editTextSkills.setTypeface(ralewayRegular);
+                editTextEmail.setTypeface(ralewayRegular);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         return view;
     }
@@ -462,27 +474,36 @@ public class MyProfileFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_my_profile, menu);
         this.menu = menu;
         menu.findItem(R.id.action_edit_profile).setVisible(true);
 
-
-        if(UserUtilities.currentUser.getContactHidden()!=null){
-            if(UserUtilities.currentUser.getContactHidden()){
-                menu.findItem(R.id.action_privacy).setTitle("Show Contact");
+        mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                if(userItemFormat.getContactHidden()!=null){
+                    if(userItemFormat.getContactHidden()){
+                        menu.findItem(R.id.action_privacy).setTitle("Show Contact");
+                    }
+                    else {
+                        menu.findItem(R.id.action_privacy).setTitle("Hide Contact");
+                    }
+                }
             }
-            else {
-                menu.findItem(R.id.action_privacy).setTitle("Hide Contact");
-            }
-        }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         int id = item.getItemId();
 
        if(id==R.id.action_edit_profile) {
@@ -490,22 +511,32 @@ public class MyProfileFragment extends Fragment {
             intent.putExtra("newUser",false);
             startActivity(intent);
        }else if(id== R.id.action_privacy){
+           mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+               @Override
+               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                   UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                   if(userItemFormat.getContactHidden()!=null) {
+                       if (userItemFormat.getContactHidden()) {
 
-           if(UserUtilities.currentUser.getContactHidden()!=null) {
-               if (UserUtilities.currentUser.getContactHidden()) {
+                           usersReference.setValue(false);
+                           infoneContact.setValue(false);
+                           item.setTitle("Hide Contact");
+                           Toast.makeText(getContext(), "Your contact is visible now!", Toast.LENGTH_SHORT).show();
 
-                   usersReference.setValue(false);
-                   infoneContact.setValue(false);
-                   item.setTitle("Hide Contact");
-                   Toast.makeText(getContext(), "Your contact is visible now!", Toast.LENGTH_SHORT).show();
+                       } else {
+                           hideContactAlert(item);
 
-               } else {
-                   hideContactAlert(item);
+                       }
+                   }else {
+                       hideContactAlert(item);
+                   }
+               }
+
+               @Override
+               public void onCancelled(@NonNull DatabaseError databaseError) {
 
                }
-           }else {
-               hideContactAlert(item);
-           }
+           });
 
        }
         return super.onOptionsItemSelected(item);
