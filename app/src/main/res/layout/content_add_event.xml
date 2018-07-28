@@ -78,7 +78,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:text="Event date and time"
-                android:textColor="@color/teal500" />
+                android:textColor="@color/primaryText" />
         </LinearLayout>
 
 
