@@ -63,7 +63,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -341,6 +341,8 @@ public class AddEvent extends BaseActivity {
                             if (downloadUri == null) {
                                 downloadUri = Uri.parse("");
                             }
+
+                            final Uri finalDownloadURI = downloadUri;
                             if (flag) {
                                 DatabaseReference newPost = mDatabaseVerified.push();
                                 final DatabaseReference postedByDetails = newPost.child("PostedBy");
@@ -360,7 +362,7 @@ public class AddEvent extends BaseActivity {
                                     }
                                 });
                                 postTimeMillis = System.currentTimeMillis();
-                                String key = newPost.getKey();
+                                final String key = newPost.getKey();
                                 newPost.child("Key").setValue(key);
                                 newPost.child("EventName").setValue(eventNameValue);
                                 newPost.child("EventDescription").setValue(eventDescriptionValue);
@@ -403,6 +405,19 @@ public class AddEvent extends BaseActivity {
                                 mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                        NotificationSender notificationSender = new NotificationSender(AddEvent.this, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        addEventNotification.setCommunityName(communityTitle);
+                                        addEventNotification.setItemKey(key);
+                                        addEventNotification.setItemImage(finalDownloadURI.toString());
+                                        addEventNotification.setItemName(eventNameValue);
+                                        addEventNotification.setItemLocation(eventVenue);
+
+                                        notificationSender.execute(addEventNotification);
+
+
+
                                         newPost2PostedBy.child("Username").setValue(dataSnapshot.child("Username").getValue().toString());
                                         //needs to be changed after image thumbnail is put
                                         newPost2PostedBy.child("ImageThumb").setValue(dataSnapshot.child("Image").getValue().toString());
@@ -443,15 +458,21 @@ public class AddEvent extends BaseActivity {
 //                            NotificationSender notificationSender=new NotificationSender(key,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
 //                            notificationSender.execute();
 
-                                NotificationSender notificationSender = new NotificationSender(AddEvent.this, UserUtilities.currentUser.getUserUID());
-                                NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,UserUtilities.currentUser.getUserUID());
-                                addEventNotification.setCommunityName(UserUtilities.CommunityName);
-                                addEventNotification.setItemKey(key);
-                                addEventNotification.setItemImage(downloadUri.toString());
-                                addEventNotification.setItemName(eventNameValue);
-                                addEventNotification.setItemLocation(eventVenue);
+                                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                notificationSender.execute(addEventNotification);
+
+
+                                    }
+
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
 
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
 
@@ -475,7 +496,7 @@ public class AddEvent extends BaseActivity {
                                     }
                                 });
                                 postTimeMillis = System.currentTimeMillis();
-                                String key = newPost.getKey();
+                                final String key = newPost.getKey();
                                 newPost.child("Key").setValue(key);
                                 newPost.child("EventName").setValue(eventNameValue);
                                 newPost.child("EventDescription").setValue(eventDescriptionValue);
@@ -522,6 +543,17 @@ public class AddEvent extends BaseActivity {
                                         UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
                                         newPost2PostedBy.child("Username").setValue(user.getUsername());
                                         newPost2PostedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+
+                                        NotificationSender notificationSender = new NotificationSender(AddEvent.this, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        addEventNotification.setCommunityName(communityTitle);
+                                        addEventNotification.setItemKey(key);
+                                        addEventNotification.setItemImage(finalDownloadURI.toString());
+                                        addEventNotification.setItemName(eventNameValue);
+                                        addEventNotification.setItemLocation(eventVenue);
+
+
+                                        notificationSender.execute(addEventNotification);
                                     }
 
                                     @Override
@@ -532,16 +564,7 @@ public class AddEvent extends BaseActivity {
                                 //Sending Notifications
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
 
-                                NotificationSender notificationSender = new NotificationSender(AddEvent.this, UserUtilities.currentUser.getUserUID());
-                                NotificationItemFormat addEventNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,UserUtilities.currentUser.getUserUID());
-                                addEventNotification.setCommunityName(UserUtilities.CommunityName);
-                                addEventNotification.setItemKey(key);
-                                addEventNotification.setItemImage(downloadUri.toString());
-                                addEventNotification.setItemName(eventNameValue);
-                                addEventNotification.setItemLocation(eventVenue);
 
-
-                                notificationSender.execute(addEventNotification);
 
                             }
 

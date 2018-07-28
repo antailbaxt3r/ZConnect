@@ -55,7 +55,6 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -289,7 +288,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                 public void onComplete(@NonNull Task<Uri> task) {
                     if(task.isSuccessful())
                     {
-                        Uri downloadUri = task.getResult();
+                        final Uri downloadUri = task.getResult();
                         final DatabaseReference newPost = mDatabase.push();
                         final DatabaseReference postedBy = newPost.child("PostedBy");
                         key = newPost.getKey();
@@ -345,6 +344,19 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                                 UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
                                 newPost2Postedby.child("Username").setValue(user.getUsername());
                                 newPost2Postedby.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                                NotificationSender notificationSender = new NotificationSender(AddProduct.this, user.getUserUID());
+                                NotificationItemFormat addProductNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,user.getUserUID());
+                                addProductNotification.setCommunityName(communityTitle);
+
+                                addProductNotification.setItemKey(key);
+                                addProductNotification.setItemImage(downloadUri.toString());
+                                addProductNotification.setItemName(productNameValue);
+                                addProductNotification.setItemPrice(productPriceValue);
+
+                                addProductNotification.setUserName(user.getUsername());
+                                addProductNotification.setUserImage(user.getImageURLThumbnail());
+
+                                notificationSender.execute(addProductNotification);
                             }
 
                             @Override
@@ -354,19 +366,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                         });
 
 
-                        NotificationSender notificationSender = new NotificationSender(AddProduct.this, UserUtilities.currentUser.getUserUID());
-                        NotificationItemFormat addProductNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,UserUtilities.currentUser.getUserUID());
-                        addProductNotification.setCommunityName(UserUtilities.CommunityName);
 
-                        addProductNotification.setItemKey(key);
-                        addProductNotification.setItemImage(downloadUri.toString());
-                        addProductNotification.setItemName(productNameValue);
-                        addProductNotification.setItemPrice(productPriceValue);
-
-                        addProductNotification.setUserName(UserUtilities.currentUser.getUsername());
-                        addProductNotification.setUserImage(UserUtilities.currentUser.getImageURL());
-
-                        notificationSender.execute(addProductNotification);
 
 
                         // Adding stats

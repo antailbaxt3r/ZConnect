@@ -679,6 +679,10 @@ public class NotificationService extends FirebaseMessagingService {
                     .setSubText(userName + ": "+ forumMessage)
                     .setContentText(userName + " posted in " + forumName);
 
+            Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+            intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+
             Intent intent = new Intent(NotificationService.this, ChatActivity.class);
             intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(forumKey).toString());
             intent.putExtra("type","forums");
@@ -686,7 +690,11 @@ public class NotificationService extends FirebaseMessagingService {
             intent.putExtra("tab",forumCategoryUID);
             intent.putExtra("key",forumKey);
 
-            PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Intent[] intents = new Intent[]{intent0,intent};
+
+
+            PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
             mBuilder.setContentIntent(intent1);
 
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

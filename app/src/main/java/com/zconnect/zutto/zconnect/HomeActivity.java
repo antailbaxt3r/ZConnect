@@ -191,6 +191,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         initListeners();
 
         tabs();
+
+        Toast.makeText(this, "On create", Toast.LENGTH_SHORT).show();
+        mUser = mAuth.getCurrentUser();
+
+        launchRelevantActivitiesIfNeeded();
+
+        if(communityReference!=null) {
+            uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
+
+            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
+            mDatabasePopUps.keepSynced(true);
+
+            mDatabasePopUps.addValueEventListener(popupsListener);
+        }
     }
 
     //Circular notification in the bottom navigation
@@ -538,6 +552,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             if(!dataSnapshot.hasChild("userType")){
                                 UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_VERIFIED);
                             }
+
                             if(communityReference!=null && !flag) {
                                 recent = new Recents();
                                 forums = new ForumsActivity();
@@ -623,9 +638,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 Title = dataSnapshot.child("name").getValue().toString() + " Connect";
                                 setToolbarTitle(Title);
                                 UserUtilities.CommunityName = Title;
+
+                                SharedPreferences sharedPref2 = getSharedPreferences("communityTitle", MODE_PRIVATE);
+                                SharedPreferences.Editor editInfo2 = sharedPref2.edit();
+                                editInfo2.putString("communityTitleValue", Title);
+                                editInfo2.commit();
+
                             } else {
                                 Title = "Community Connect";
                                 setToolbarTitle(Title);
+
+                                SharedPreferences sharedPref2 = getSharedPreferences("communityTitle", MODE_PRIVATE);
+                                SharedPreferences.Editor editInfo2 = sharedPref2.edit();
+                                editInfo2.putString("communityTitleValue", Title);
+                                editInfo2.commit();
                             }
                             setTitleFlag = false;
                         }
@@ -769,24 +795,24 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStart() {
         super.onStart();
-        mUser = mAuth.getCurrentUser();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mUser = mAuth.getCurrentUser();
-
-        launchRelevantActivitiesIfNeeded();
-
-        if(communityReference!=null) {
-            uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
-
-            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
-            mDatabasePopUps.keepSynced(true);
-
-            mDatabasePopUps.addValueEventListener(popupsListener);
-        }
+//        mUser = mAuth.getCurrentUser();
+//
+//        launchRelevantActivitiesIfNeeded();
+//
+//        if(communityReference!=null) {
+//            uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
+//
+//            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
+//            mDatabasePopUps.keepSynced(true);
+//
+//            mDatabasePopUps.addValueEventListener(popupsListener);
+//        }
     }
 
     @Override

@@ -37,7 +37,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -342,10 +342,10 @@ public class AddCabPool extends BaseActivity {
 //                                        NotificationSender notificationSender=new NotificationSender(null,null,null,null,null,null,null,KEY_CABPOOL,true,false,getApplicationContext());
 //                                        notificationSender.execute();
                                         FirebaseMessaging.getInstance().subscribeToTopic(key);
-                                        NotificationSender notificationSender = new NotificationSender(AddCabPool.this,UserUtilities.currentUser.getUserUID());
+                                        NotificationSender notificationSender = new NotificationSender(AddCabPool.this,FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                                         NotificationItemFormat cabAddNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD,FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                        cabAddNotification.setCommunityName(UserUtilities.CommunityName);
+                                        cabAddNotification.setCommunityName(communityTitle);
                                         notificationSender.execute(cabAddNotification);
 
 
