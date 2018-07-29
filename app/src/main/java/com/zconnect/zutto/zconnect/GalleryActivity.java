@@ -26,6 +26,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 
 import junit.framework.Assert;
@@ -137,6 +138,8 @@ public class GalleryActivity extends BaseActivity {
                     (SubsamplingScaleImageView) itemView.findViewById(R.id.image);
 
             // Asynchronously load the image and set the thumbnail and pager view
+//            Picasso.with(_context).load(_images.get(position)).into(itemView);
+//            Picasso.with(_context).load(_images.get(position)).into(thumbView);
             Glide.with(_context)
                     .load(_images.get(position))
                     .asBitmap()

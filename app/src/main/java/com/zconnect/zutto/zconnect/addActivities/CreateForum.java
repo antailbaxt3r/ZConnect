@@ -365,7 +365,7 @@ public class CreateForum extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         IntentHandle intentHandle = new IntentHandle();
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            Uri imageUri = intentHandle.getPickImageResultUri(data); //Get data
+            Uri imageUri = intentHandle.getPickImageResultUri(data, CreateForum.this); //Get data
             CropImage.activity(imageUri).setAspectRatio(1,1)
                     .setCropShape(CropImageView.CropShape.RECTANGLE)
                     .setGuidelines(CropImageView.Guidelines.ON)

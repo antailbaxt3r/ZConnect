@@ -173,7 +173,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            Uri imageUri = intentHandle.getPickImageResultUri(data); //Get data
+            Uri imageUri = intentHandle.getPickImageResultUri(data, AddProduct.this); //Get data
             CropImage.activity(imageUri)
                     .setCropShape(CropImageView.CropShape.RECTANGLE)
                     .setGuidelines(CropImageView.Guidelines.ON)

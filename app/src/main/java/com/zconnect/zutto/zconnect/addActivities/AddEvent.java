@@ -727,7 +727,7 @@ public class AddEvent extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-            Uri imageUri = intentHandle.getPickImageResultUri(data);
+            Uri imageUri = intentHandle.getPickImageResultUri(data, AddEvent.this);
             CropImage.activity(imageUri)
                     .setCropShape(CropImageView.CropShape.RECTANGLE)
                     .setGuidelines(CropImageView.Guidelines.ON)

@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.v4.BuildConfig;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class IntentHandle {
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // takePhotoIntent.putExtra("return-data", true);
-        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getCaptureImageOutputUri());
+        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getCaptureImageOutputUri(context));
         intentList = addIntentsToList(context, intentList, pickIntent);
         intentList = addIntentsToList(context, intentList, takePhotoIntent);
 
@@ -52,7 +54,7 @@ public class IntentHandle {
         return chooserIntent;
     }
 
-    public Uri getPickImageResultUri(Intent data) {
+    public Uri getPickImageResultUri(Intent data, Context context) {
         boolean isCamera = true;
         if (data != null) {
             String action = data.getAction();
@@ -60,15 +62,14 @@ public class IntentHandle {
         }
 
 
-        return isCamera ? getCaptureImageOutputUri() : data.getData();
+        return isCamera ? getCaptureImageOutputUri(context) : data.getData();
     }
 
-    private Uri getCaptureImageOutputUri() {
-        Uri outputFileUri;
+    private Uri getCaptureImageOutputUri(Context context) {
         // File getImage = getExternalCacheDir();
         // if (getImage != null) {
-        outputFileUri = Uri.fromFile(new File(
-                Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp.jpg"));
+        Uri outputFileUri = FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID + ".provider",
+                new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp.jpg"));
         // }
         return outputFileUri;
     }
