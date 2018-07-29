@@ -6,26 +6,46 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,6 +74,23 @@ public class CommunitiesAround extends BaseActivity {
     private TextView noCommunitiesTextView;
 
     private double lon,lat;
+
+    private static final String TAG = CommunitiesAround.class.getSimpleName();
+
+    private static final int REQUEST_PERMISSIONS_LOCATION_SETTINGS_REQUEST_CODE = 33;
+    private static final int REQUEST_PERMISSIONS_LAST_LOCATION_REQUEST_CODE = 34;
+    private static final int REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE = 35;
+
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    protected static long MIN_UPDATE_INTERVAL = 30 * 1000; // 1  minute is the minimum Android recommends, but we use 30 seconds
+
+    protected Location mLastLocation;
+
+//    private TextView resultTextView;
+    LocationRequest locationRequest;
+    Location lastLocation = null;
+    Location currentLocation = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,80 +137,278 @@ public class CommunitiesAround extends BaseActivity {
                 startActivity(i);
             }
         });
+        // TODO: Consider calling
+        // ActivityCompat#requestPermissions
+        // here to request the missing permissions, and then overriding
+        // public void onRequestPermissionsResult(int requestCode, String[] permissions,
+        // int[] grantResults)
+        // to handle the case where the user grants the permission. See the documentation
+        // for ActivityCompat#requestPermissions for more details.
 
         adapter = new CommunitiesAroundAdapter(this, communitiesList);
         communitiesRecycler.setAdapter(adapter);
         communitiesReference.keepSynced(true);
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-                lon = location.getLongitude();
-                lat = location.getLatitude();
+        checkForLocationRequest();
+        checkForLocationSettings();
 
-                Toast.makeText(CommunitiesAround.this, lon + " " + lat, Toast.LENGTH_SHORT).show();
+//        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+//        locationListener = new LocationListener() {
+//            @Override
+//            public void onLocationChanged(Location location) {
+//
+//                lon = location.getLongitude();
+//                lat = location.getLatitude();
+//
+//                Toast.makeText(CommunitiesAround.this, lon + " " + lat, Toast.LENGTH_SHORT).show();
 
-                loadCommunities(lon,lat);
-                locationManager.removeUpdates(this);
-            }
+//                loadCommunities(lon,lat);
+//                locationManager.removeUpdates(this);
+//            }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-                Toast.makeText(CommunitiesAround.this, "GPS Enabled", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                if(provider.equals(LocationManager.GPS_PROVIDER)) {
-                    buildAlertMessageNoGps(CommunitiesAround.this);
-                }
-            }
-        };
-
-        requestPermission();
+//            @Override
+//            public void onStatusChanged(String provider, int status, Bundle extras) {
+//
+//            }
+//
+//            @Override
+//            public void onProviderEnabled(String provider) {
+//                Toast.makeText(CommunitiesAround.this, "GPS Enabled", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onProviderDisabled(String provider) {
+//                if(provider.equals(LocationManager.GPS_PROVIDER)) {
+//                    buildAlertMessageNoGps(CommunitiesAround.this);
+//                }
+//            }
+//        };
+//
+//        requestPermission();
 
     }
 
-    public void requestPermission() {
+//    public void requestPermission() {
+//
+//        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 10);
+//            return;
+//        } else {
+//            progressDialog.setMessage("Searching Communities");
+//            progressDialog.show();
+//
+//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+//        }
+//    }
 
-        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 10);
-            return;
-        } else {
-            progressDialog.setMessage("Searching Communities");
-            progressDialog.show();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int result = googleApiAvailability.isGooglePlayServicesAvailable(this);
 
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        if (result != ConnectionResult.SUCCESS && result != ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
+            Toast.makeText(this, "Are you running in Emulator ? try a real device.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 10:
-                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    requestPermission();
-                } else {
-                    if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        return;
-                    }
-                    progressDialog.setMessage("Searching Communities");
-                    progressDialog.show();
+//    public void callLastKnownLocation(View view) {
+//        try {
+//            if (
+//                    ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+//                            ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+//                    ) {
+//                // TODO: Consider calling
+//                //    ActivityCompat#requestPermissions
+//                // here to request the missing permissions, and then overriding
+//                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                //                                          int[] grantResults)
+//                // to handle the case where the user grants the permission. See the documentation
+//                // for ActivityCompat#requestPermissions for more details.
+//                requestPermissions(REQUEST_PERMISSIONS_LAST_LOCATION_REQUEST_CODE);
+//                return;
+//            }
+//
+//            getLastLocation();
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    public void callCurrentLocation(View view) {
+        try {
+            if (
+                    ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                            ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                requestPermissions(REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE);
+                return;
+            }
 
+            mFusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+
+                    currentLocation = (Location) locationResult.getLastLocation();
+
+//                    String result = "Current Location Latitude is " +
+//                            currentLocation.getLatitude() + "\n" +
+//                            "Current location Longitude is " + currentLocation.getLongitude();
+                    loadCommunities(currentLocation.getLongitude(), currentLocation.getLatitude());
+//                    resultTextView.setText(result);
                 }
-                break;
-       }
+            }, Looper.myLooper());
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void getLastLocation() {
+
+        mFusedLocationClient.getLastLocation()
+                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            mLastLocation = task.getResult();
+
+                            String result = "Last known Location Latitude is " +
+                                    mLastLocation.getLatitude() + "\n" +
+                                    "Last known longitude Longitude is " + mLastLocation.getLongitude();
+
+//                            resultTextView.setText(result);
+                        } else {
+                            showSnackbar("No Last known location found. Try current location..!");
+                        }
+                    }
+                });
+    }
+
+    private void showSnackbar(final String text) {
+        View container = findViewById(R.id.container);
+        if (container != null) {
+            Snackbar.make(container, text, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void showSnackbar(final String mainTextString, final String actionString,
+                              View.OnClickListener listener) {
+        Snackbar.make(findViewById(android.R.id.content),
+                mainTextString,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(actionString, listener).show();
+    }
+
+    private void startLocationPermissionRequest(int requestCode) {
+        ActivityCompat.requestPermissions(CommunitiesAround.this, new String[]{ACCESS_COARSE_LOCATION}, requestCode);
+    }
+
+    private void requestPermissions(final int requestCode) {
+        boolean shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION);
+
+        // Provide an additional rationale to the user. This would happen if the user denied the
+        // request previously, but didn't check the "Don't ask again" checkbox.
+        if (shouldProvideRationale) {
+            showSnackbar("Permission is must to find the location", "Ok",
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Request permission
+                            startLocationPermissionRequest(requestCode);
+                        }
+                    });
+
+        } else {
+            startLocationPermissionRequest(requestCode);
+        }
+    }
+
+    public void checkForLocationRequest(){
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(MIN_UPDATE_INTERVAL);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+    }
+
+    public void checkForLocationSettings() {
+        try {
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
+            builder.addLocationRequest(locationRequest);
+            SettingsClient settingsClient = LocationServices.getSettingsClient(CommunitiesAround.this);
+
+            settingsClient.checkLocationSettings(builder.build())
+                    .addOnSuccessListener(CommunitiesAround.this, new OnSuccessListener<LocationSettingsResponse>() {
+                        @Override
+                        public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                            //Setting is success...
+                            Toast.makeText(CommunitiesAround.this, "Enabled the Location successfully. Now you can press the buttons..", Toast.LENGTH_SHORT).show();
+                            progressDialog.setMessage("Searching Communities");
+                            progressDialog.show();
+                        }
+                    })
+                    .addOnFailureListener(CommunitiesAround.this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+
+                            int statusCode = ((ApiException) e).getStatusCode();
+                            switch (statusCode) {
+                                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+
+                                    try {
+                                        // Show the dialog by calling startResolutionForResult(), and check the
+                                        // result in onActivityResult().
+                                        ResolvableApiException rae = (ResolvableApiException) e;
+                                        rae.startResolutionForResult(CommunitiesAround.this, REQUEST_PERMISSIONS_LOCATION_SETTINGS_REQUEST_CODE);
+                                    } catch (IntentSender.SendIntentException sie) {
+                                        sie.printStackTrace();
+                                    }
+                                    break;
+                                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                                    Toast.makeText(CommunitiesAround.this, "Setting change is not available.Try in another device.", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    });
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSIONS_LAST_LOCATION_REQUEST_CODE) {
+            if (grantResults.length <= 0) {
+                // If user interaction was interrupted, the permission request is cancelled and you
+                // receive empty arrays.
+                Log.i(TAG, "User interaction was cancelled.");
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted.
+                getLastLocation();
+            }
+        }
+
+        if (requestCode == REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                callCurrentLocation(null);
+            }
+        }
     }
 
     @Override
@@ -275,5 +510,4 @@ public class CommunitiesAround extends BaseActivity {
 
         return distance;
     }
-
 }
