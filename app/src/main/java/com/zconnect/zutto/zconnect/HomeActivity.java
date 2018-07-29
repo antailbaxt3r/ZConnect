@@ -192,18 +192,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabs();
 
-        mUser = mAuth.getCurrentUser();
-
-        launchRelevantActivitiesIfNeeded();
-
-        if(communityReference!=null) {
-            uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
-
-            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
-            mDatabasePopUps.keepSynced(true);
-
-            mDatabasePopUps.addValueEventListener(popupsListener);
-        }
     }
 
     //Circular notification in the bottom navigation
@@ -800,18 +788,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
-//        mUser = mAuth.getCurrentUser();
-//
-//        launchRelevantActivitiesIfNeeded();
-//
-//        if(communityReference!=null) {
-//            uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
-//
-//            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
-//            mDatabasePopUps.keepSynced(true);
-//
-//            mDatabasePopUps.addValueEventListener(popupsListener);
-//        }
+        mUser = mAuth.getCurrentUser();
+
+        launchRelevantActivitiesIfNeeded();
+
+        if(communityReference!=null) {
+            uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
+
+            mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
+            mDatabasePopUps.keepSynced(true);
+
+            mDatabasePopUps.addValueEventListener(popupsListener);
+        }
     }
 
     @Override
