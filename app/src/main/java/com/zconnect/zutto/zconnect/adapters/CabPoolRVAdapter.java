@@ -146,7 +146,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                     intent.putExtra("key", array.get(getAdapterPosition()).getKey());
                     intent.putExtra("date", (array.get(getAdapterPosition()).getDT()).substring(0,8));
                     context.startActivity(intent);
-                    CounterManager.openCabPoolList(array.get(getAdapterPosition()).getKey());
+                    //CounterManager.openCabPoolList(array.get(getAdapterPosition()).getKey());
                 }
 
                 if(i==1) {
@@ -154,7 +154,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                         intent.putExtra("key", cabItemFormat.get(getAdapterPosition()).getKey());
                         intent.putExtra("date", (cabItemFormat.get(getAdapterPosition()).getDT()).substring(0,8));
                         context.startActivity(intent);
-                        CounterManager.openCabPoolList(cabItemFormat.get(getAdapterPosition()).getKey());
+                        //CounterManager.openCabPoolList(cabItemFormat.get(getAdapterPosition()).getKey());
                     }}
             });
             share.setOnClickListener(new View.OnClickListener() {
@@ -173,7 +173,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                         e.printStackTrace();
                     }
                   if(i==0) {
-                      CounterManager.searchPool(array.get(getAdapterPosition()).getKey());
+                      //CounterManager.searchPool(array.get(getAdapterPosition()).getKey());
                       Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
                               .setLongLink(Uri.parse("https://zconnect.page.link/?link=" + encodedUri + "&apn=com.zconnect.zutto.zconnect&amv=11"))
                               .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setMinimumVersion(12).build())
