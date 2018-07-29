@@ -231,12 +231,14 @@ public class OpenUserDetail extends BaseActivity {
                 }else {
                     db_like.child(myUID).setValue(true);
                     like_status = true;
-                    currentUser.child("Likes").addValueEventListener(new ValueEventListener() {
+                    currentUser.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.hasChild(Uid)){
+                            if (dataSnapshot.child("Likes").hasChild(Uid)){
                                 Toast.makeText(OpenUserDetail.this, "Congrats, now you both like each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
+
+
                             UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
                             NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, userItemFormat.getUserUID());
 
@@ -268,10 +270,10 @@ public class OpenUserDetail extends BaseActivity {
                 } else{
                     db_love.child(myUID).setValue(true);
                     love_status = true;
-                    currentUser.child("Loves").addValueEventListener(new ValueEventListener() {
+                    currentUser.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.hasChild(Uid)){
+                            if (dataSnapshot.child("Loves").hasChild(Uid)){
                                 Toast.makeText(OpenUserDetail.this, "WOW, now you both love each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
                             UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);

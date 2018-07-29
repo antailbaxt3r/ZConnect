@@ -192,7 +192,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabs();
 
-        Toast.makeText(this, "On create", Toast.LENGTH_SHORT).show();
         mUser = mAuth.getCurrentUser();
 
         launchRelevantActivitiesIfNeeded();

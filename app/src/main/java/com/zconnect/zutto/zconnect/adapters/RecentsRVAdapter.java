@@ -850,7 +850,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             taskMap.put(user.getUid(), user.getUid());
 //                            CounterManager.eventBoost(key, "Trending-Out");
                             statusDatabase.child("likeUids").updateChildren(taskMap);
-                            NotificationSender notificationSender = new NotificationSender(itemView.getContext(),FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            final NotificationSender notificationSender = new NotificationSender(itemView.getContext(),FirebaseAuth.getInstance().getCurrentUser().getUid());
                             final NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED,FirebaseAuth.getInstance().getCurrentUser().getUid());
                             statusLikeNotification.setItemKey(key);
                             mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -858,6 +858,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
                                     statusLikeNotification.setUserImage(userItem.getImageURLThumbnail());
+                                    statusLikeNotification.setUserName(userItem.getUsername());
+
+                                    statusLikeNotification.setCommunityName(communityTitle);
+                                    statusLikeNotification.setItemLikeCount(statusLikeCount);
+
+                                    notificationSender.execute(statusLikeNotification);
                                 }
 
                                 @Override
@@ -867,11 +873,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             });
 //                            statusLikeNotification.setItemName(statusText);
 //                            statusLikeNotification.setItemImage(statusImage);
-                            statusLikeNotification.setUserName(user.getDisplayName());
-                            statusLikeNotification.setCommunityName(communityTitle);
-                            statusLikeNotification.setItemLikeCount(statusLikeCount);
 
-                            notificationSender.execute(statusLikeNotification);
                             Log.d("LIKESSSS", "1");
 
                         }else {

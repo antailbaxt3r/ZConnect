@@ -449,12 +449,10 @@ public class OpenProductDetails extends BaseActivity {
                                 userReservedReference.child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
                                 productShortlist.setText("Shortlist");
                                 flag = false;
-                                CounterManager.StoroomShortListDelete(category, dataSnapshot.getKey());
                                 productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.primaryText));
                                 productShortlist.setTypeface(ralewayBold);
 
                             } else {
-                                CounterManager.StoroomShortList(category, dataSnapshot.getKey());
                                 productShortlist.setText("Shortlisted");
                                 final UsersListItemFormat userDetails = new UsersListItemFormat();
                                 DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -478,6 +476,7 @@ public class OpenProductDetails extends BaseActivity {
                                         productShortlistNotification.setItemName(dataSnapshot.child("ProductName").getValue().toString());
                                         productShortlistNotification.setUserName(userItemFormat.getUsername());
                                         productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
+                                        productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
 
 
                                         notificationSender.execute(productShortlistNotification);

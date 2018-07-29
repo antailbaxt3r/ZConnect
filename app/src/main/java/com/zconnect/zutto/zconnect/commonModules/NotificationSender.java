@@ -224,6 +224,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("communityName", communityName);
         creator.addData("userName", userName);
         creator.addData("userImage", userImage);
+
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED);
         creator.addData("userKey",userKey);
 

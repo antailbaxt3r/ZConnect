@@ -213,11 +213,11 @@ public class NotificationService extends FirebaseMessagingService {
         if(likeCount.length()>0)
             mBuilder.setContentText(userName + " and " + likeCount + " others " + " like your status");
 
-//        Intent intent = new Intent(NotificationService.this, HomeActivity.class);
-////        intent.putExtra("id",eventKey);
-//
-//        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        mBuilder.setContentIntent(pendingIntent);
+        Intent intent = new Intent(NotificationService.this, HomeActivity.class);
+//        intent.putExtra("id",eventKey);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(19, mBuilder.build());
@@ -250,7 +250,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         Intent intent = new Intent(NotificationService.this, VerificationPage.class);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1169,6 +1169,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setPriority(Notification.PRIORITY_LOW)
                 .setSound(defaultSoundUri)
                 .setContentText(userName + " boosted your event " + eventName);
+
 
         Intent intent = new Intent(NotificationService.this, OpenEventDetail.class);
         intent.putExtra("id",eventKey);

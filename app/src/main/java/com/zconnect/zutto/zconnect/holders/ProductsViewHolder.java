@@ -146,6 +146,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                         productShortlistNotification.setItemName(dataSnapshot.child(key).child("ProductName").getValue().toString());
                                         productShortlistNotification.setUserName(userItemFormat.getUsername());
                                         productShortlistNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
+                                        productShortlistNotification.setUserImage(userItemFormat.getImageURLThumbnail());
 
                                         notificationSender.execute(productShortlistNotification);
 

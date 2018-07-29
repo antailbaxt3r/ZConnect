@@ -136,7 +136,7 @@ public class  OpenEventDetail extends BaseActivity{
                 intent.putExtra("type","events");
                 intent.putExtra("key",eventId);
                 intent.putExtra("name",getSupportActionBar().getTitle());
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).toString());
                 startActivity(intent);
                 overridePendingTransition(0, 0);
             }
@@ -150,7 +150,7 @@ public class  OpenEventDetail extends BaseActivity{
                 intent.putExtra("type","events");
                 intent.putExtra("key",eventId);
                 intent.putExtra("name",getSupportActionBar().getTitle());
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).toString());
                 startActivity(intent);
                 overridePendingTransition(0, 0);
 
@@ -187,6 +187,7 @@ public class  OpenEventDetail extends BaseActivity{
         {
             viaDynamicLinkFlag = false;
         }
+
         mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -459,49 +460,6 @@ public class  OpenEventDetail extends BaseActivity{
 
     }
 
-    //this function will update the views of people who have visited this activity
-//    private void updateViews() {
-//
-//        SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
-//        Boolean status = sharedPref.getBoolean("mode", false);
-//
-//        if (!status) {
-//            mAuth = FirebaseAuth.getInstance();
-//            user = mAuth.getCurrentUser();
-//
-//            listener = new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                    boolean userExists = false;
-//                    for (DataSnapshot childSnapshot :
-//                            dataSnapshot.getChildren()) {
-//                        if (childSnapshot.getKey().equals(user.getUid()) && childSnapshot.exists() &&
-//                                childSnapshot.getValue(Integer.class) != null) {
-//                            userExists = true;
-//                            int originalViews = childSnapshot.getValue(Integer.class);
-//                            mDatabaseViews.child(user.getUid()).setValue(originalViews + 1);
-//                            break;
-//                        } else {
-//                            userExists = false;
-//                        }
-//                    }
-//                    if (!userExists) {
-//                        mDatabaseViews.child(user.getUid()).setValue(1);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//
-//                }
-//            };
-//
-//            mDatabaseViews.addListenerForSingleValueEvent(listener);
-//        }
-//
-//    }
-
     public Bitmap mergeBitmap(Bitmap bitmap2, Bitmap bitmap1, Context context) {
         Bitmap mergedBitmap = null;
 
@@ -556,15 +514,6 @@ public class  OpenEventDetail extends BaseActivity{
         intent.putExtra("title", title);
         intent.putExtra("contactDescTv", desc);
         startActivity(intent);
-
-        // Display event id.
-        //Toast.makeText(getApplicationContext(), "Event added :: ID :: " + event.getLastPathSegment(), Toast.LENGTH_SHORT).show();
-
-        /** Adding reminder for event added. *
-         }
-         /** Returns Calendar Base URI, supports both new and old OS. */
-
-
     }
 
 
@@ -610,7 +559,8 @@ public class  OpenEventDetail extends BaseActivity{
                     if (!flag) {
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
-                        CounterManager.eventBoost(event.getKey(), "Details");
+
+                        Bundle extras = getIntent().getExtras();
 
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
 
