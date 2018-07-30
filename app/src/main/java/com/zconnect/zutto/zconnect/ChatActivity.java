@@ -397,7 +397,7 @@ public class ChatActivity extends BaseActivity {
     private void postMessage(){
 
         final EditText typer = ((EditText) findViewById(R.id.typer));
-        final String text = typer.getText().toString();
+        final String text = typer.getText().toString().trim();
         if (TextUtils.isEmpty(text)) {
             showToast("Message is empty.");
             return;
