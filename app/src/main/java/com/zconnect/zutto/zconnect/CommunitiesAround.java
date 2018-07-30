@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,7 @@ public class CommunitiesAround extends BaseActivity {
     LocationListener locationListener;
     private ProgressDialog progressDialog;
     private TextView noCommunitiesTextView;
+    private Button turnOnGPS;
 
     private double lon,lat;
 
@@ -100,7 +102,7 @@ public class CommunitiesAround extends BaseActivity {
         setSupportActionBar(toolbar);
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -127,6 +129,16 @@ public class CommunitiesAround extends BaseActivity {
         communitiesRecycler = (RecyclerView) findViewById(R.id.all_communities);
         communitiesRecycler.setLayoutManager(new LinearLayoutManager(this));
         noCommunitiesTextView = (TextView) findViewById(R.id.no_community);
+        turnOnGPS = (Button) findViewById(R.id.turn_on_gps);
+
+
+        turnOnGPS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_activity_communities_around);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +165,8 @@ public class CommunitiesAround extends BaseActivity {
 
         checkForLocationRequest();
         checkForLocationSettings();
+
+
 
 //        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 //        locationListener = new LocationListener() {
@@ -207,6 +221,9 @@ public class CommunitiesAround extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        callCurrentLocation();
+
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         int result = googleApiAvailability.isGooglePlayServicesAvailable(this);
 
@@ -239,7 +256,7 @@ public class CommunitiesAround extends BaseActivity {
 //        }
 //    }
 
-    public void callCurrentLocation(View view) {
+    public void callCurrentLocation() {
         try {
             if (
                     ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -288,6 +305,7 @@ public class CommunitiesAround extends BaseActivity {
                                     mLastLocation.getLatitude() + "\n" +
                                     "Last known longitude Longitude is " + mLastLocation.getLongitude();
 
+                            loadCommunities(mLastLocation.getLongitude(),mLastLocation.getLatitude());
 //                            resultTextView.setText(result);
                         } else {
                             showSnackbar("No Last known location found. Try current location..!");
@@ -351,10 +369,11 @@ public class CommunitiesAround extends BaseActivity {
                     .addOnSuccessListener(CommunitiesAround.this, new OnSuccessListener<LocationSettingsResponse>() {
                         @Override
                         public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                            //Setting is success...
-                            Toast.makeText(CommunitiesAround.this, "Enabled the Location successfully. Now you can press the buttons..", Toast.LENGTH_SHORT).show();
                             progressDialog.setMessage("Searching Communities");
                             progressDialog.show();
+
+                            //Setting is success...
+                            //Toast.makeText(CommunitiesAround.this, "Enabled the Location successfully. Now you can press the buttons..", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(CommunitiesAround.this, new OnFailureListener() {
@@ -406,7 +425,7 @@ public class CommunitiesAround extends BaseActivity {
 
         if (requestCode == REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                callCurrentLocation(null);
+                callCurrentLocation();
             }
         }
     }
