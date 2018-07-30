@@ -86,7 +86,6 @@ public class CommunitiesAroundAdapter extends RecyclerView.Adapter<CommunitiesAr
                     SharedPreferences sharedPref2 = context.getSharedPreferences("communityName", MODE_PRIVATE);
                     SharedPreferences.Editor editInfo2 = sharedPref2.edit();
                     editInfo2.putString("communityReference", communityCode);
-                    Toast.makeText(itemView.getContext(), communityCode +" community code shared preferance ", Toast.LENGTH_SHORT).show();
                     editInfo2.commit();
                     Intent i = new Intent(context,HomeActivity.class);
                     context.startActivity(i);
