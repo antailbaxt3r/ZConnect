@@ -7,8 +7,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v4.BuildConfig;
 import android.support.v4.content.FileProvider;
+
+import com.zconnect.zutto.zconnect.BuildConfig;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class IntentHandle {
     private Uri getCaptureImageOutputUri(Context context) {
         // File getImage = getExternalCacheDir();
         // if (getImage != null) {
-        Uri outputFileUri = FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID + ".provider",
+        Uri outputFileUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider",
                 new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp.jpg"));
         // }
         return outputFileUri;

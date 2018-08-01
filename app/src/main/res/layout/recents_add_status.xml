@@ -25,10 +25,10 @@
             android:layout_marginLeft="5dp"
             android:background="@drawable/recents_status">
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reach out to your people here"
-                android:textAlignment="center"/>
+                android:text="Let your community know what's up with you?">
+            </TextView>
         </LinearLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

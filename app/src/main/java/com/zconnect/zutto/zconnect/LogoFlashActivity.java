@@ -186,25 +186,26 @@ public class LogoFlashActivity extends BaseActivity {
             }
         }, 2000);
 
-//                   temp = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("Users1");
-//            t = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Users1");
-//
-//            t.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    for(DataSnapshot shot: dataSnapshot.getChildren()) {
-//                        t.child(shot.getKey()).child("memberType").setValue(null);
-//                        t.child(shot.getKey()).child("userType").setValue(UsersTypeUtilities.KEY_VERIFIED);
-////                        temp2 = temp.child(shot.getKey());
-////                        temp2.setValue(UsersTypeUtilities.KEY_VERIFIED);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//
-//                }
-//            });
+
+
+        temp = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("features").child("forums").child("tabs");
+
+
+           temp.addListenerForSingleValueEvent(new ValueEventListener() {
+               @Override
+               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                   FirebaseDatabase.getInstance().getReference().child("communities").child("gmc").child("features").child("forums").child("tabs").setValue(dataSnapshot.getValue());
+
+               }
+
+               @Override
+               public void onCancelled(@NonNull DatabaseError databaseError) {
+
+               }
+           });
+
+
 
     }
 
