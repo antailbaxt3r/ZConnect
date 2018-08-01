@@ -14,7 +14,8 @@
     <color name="messages">#00BCD4</color>
     <!--orange 400-->
     <color name="forums">#FFA726</color>
-    <color name="primaryText">#000</color>
+    <!--<color name="primaryText">#000</color>-->
+    <color name="primartText">#212121</color>
     <color name="secondaryText">#BBB</color>
     <color name="secondaryText2">#AAA</color>
     <color name="transparent">#00000000</color>
