@@ -76,14 +76,17 @@
                         style="@style/autoscroll"
                         android:maxLines="1"
                         android:textSize="14sp" />
-                    <ImageButton
+                    <Button
                         android:id="@+id/joinCategory"
                         android:layout_width="0dp"
                         android:layout_weight="0.15"
-                        android:layout_height="wrap_content"
+                        android:layout_height="20dp"
                         android:src="@drawable/outline_add_circle_outline_white_36"
-                        android:background="@color/transparent"
-                        android:tint="@color/secondaryText2"
+                        android:background="@drawable/round_button_simple"
+                        android:text="Join"
+                        android:textSize="12sp"
+                        android:textColor="@color/colorPrimary"
+                        style="?android:attr/borderlessButtonStyle"
                         android:layout_gravity="center" />
                 </LinearLayout>
             </LinearLayout>
