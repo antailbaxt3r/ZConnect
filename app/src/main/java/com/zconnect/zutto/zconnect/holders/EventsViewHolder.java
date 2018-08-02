@@ -479,7 +479,7 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
             spannableString.setSpan(clickableSpan, 0, descWithMore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(mView.getContext().getResources().getColor(R.color.link));
             spannableString.setSpan(foregroundColorSpan, descWithMore.indexOf("more..."), descWithMore.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            foregroundColorSpan = new ForegroundColorSpan(mView.getContext().getResources().getColor(R.color.secondaryText));
+            foregroundColorSpan = new ForegroundColorSpan(mView.getContext().getResources().getColor(R.color.primaryText));
             spannableString.setSpan(foregroundColorSpan,0, descWithMore.indexOf("more..."), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             desc.setText(spannableString);
             desc.setMovementMethod(LinkMovementMethod.getInstance());
