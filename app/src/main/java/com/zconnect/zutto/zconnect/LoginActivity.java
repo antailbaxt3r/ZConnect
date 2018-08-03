@@ -97,10 +97,10 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Typeface ralewayLight = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
-        Typeface ralewayMedium = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        Typeface ralewayBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Bold.ttf");
 //        mGoogleSignInBtn.setTypeface(ralewayMedium);
-        mGoogleSignInText.setTypeface(ralewayMedium);
-        mGuestLogInBtn.setTypeface(ralewayMedium);
+        mGoogleSignInText.setTypeface(ralewayBold);
+//        mGuestLogInBtn.setTypeface(ralewayBold);
 
     }
 
