@@ -20,6 +20,7 @@
     <color name="secondaryText2">#AAA</color>
     <color name="transparent">#00000000</color>
     <color name="lit">#ffb000</color>
+    <color name="icon_color">#78909C</color>
 
     <color name="horizontalLine">#DDD</color>
 </resources>

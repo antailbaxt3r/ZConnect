@@ -235,7 +235,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:textSize="16sp"
-                            android:textColor="@color/primaryText"/>
+                            android:textColor="@color/icon_color"/>
                         <ImageView
                             android:layout_centerVertical="true"
                             android:layout_marginStart="@dimen/margin_x_small"
@@ -244,7 +244,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/outline_thumb_up_alt_white_24"
-                            android:tint="@color/primaryText"/>
+                            android:tint="@color/icon_color"/>
                     </RelativeLayout>
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -259,7 +259,7 @@
                             android:layout_centerVertical="true"
                             android:textSize="16sp"
                             android:text="123"
-                            android:textColor="@color/primaryText"
+                            android:textColor="@color/icon_color"
                             android:visibility="gone"/>
                         <ImageView
                             android:layout_centerVertical="true"
@@ -269,7 +269,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/outline_mode_comment_white_24"
-                            android:tint="@color/primaryText"/>
+                            android:tint="@color/icon_color"/>
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>

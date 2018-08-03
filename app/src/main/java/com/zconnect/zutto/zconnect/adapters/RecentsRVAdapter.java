@@ -830,7 +830,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             likeText.setText("");
                         likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
 //                        likeIcon.setBackground(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_24));
-                        likeIcon.setColorFilter(itemView.getContext().getResources().getColor(R.color.primaryText));
+                        likeIcon.setColorFilter(itemView.getContext().getResources().getColor(R.color.icon_color));
                         statusLikeFlag=false;
                     }
                 }
