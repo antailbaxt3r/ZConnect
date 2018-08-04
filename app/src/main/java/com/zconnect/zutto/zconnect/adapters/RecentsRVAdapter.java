@@ -583,7 +583,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         if(recentsItemFormats.get(position).getMsgComments()!=0){
 
                             holder.totalComments.setVisibility(View.VISIBLE);
-                            holder.totalComments.setText(recentsItemFormats.get(position).getMsgComments());
+                            holder.totalComments.setText("" + recentsItemFormats.get(position).getMsgComments());
 
                         }
 
@@ -1000,7 +1000,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     final UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
 
                     if(!dataSnapshot.hasChild("userType")){
-                       userItem.setUserType(UsersTypeUtilities.KEY_VERIFIED);
+                       userItem.setUserType(UsersTypeUtilities.KEY_NOT_VERIFIED);
                     }
 
                     if(userItem.getUsername()!=null) {

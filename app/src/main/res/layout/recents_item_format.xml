@@ -265,7 +265,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginStart="@dimen/margin_x_small"
                             android:id="@+id/comment_image_status"
-                            android:layout_toRightOf="@+id/comment_text_status"
+                            android:layout_toEndOf="@+id/comment_text_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/outline_mode_comment_white_24"
