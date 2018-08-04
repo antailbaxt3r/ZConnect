@@ -23,6 +23,9 @@ import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.itemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.R;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -43,6 +46,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     TreeMap<Double,CabItemFormat> treeMap_double;
     TreeMap<String,CabItemFormat> treeMap_string;
 
+    Typeface regular, light, semiBold;
 
     ArrayList<CabItemFormat> array;
     String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
@@ -77,6 +81,9 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     public CabPoolRVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View contactView = inflater.inflate(R.layout.cabpool_item_format, parent, false);
+        regular = Typeface.createFromAsset(context.getAssets(), "fonts/Raleway-Regular.ttf");
+        light = Typeface.createFromAsset(context.getAssets(), "fonts/Raleway-Light.ttf");
+        semiBold = Typeface.createFromAsset(context.getAssets(), "fonts/Raleway-SemiBold.ttf");
 
         return new CabPoolRVAdapter.ViewHolder(contactView);
 
@@ -86,12 +93,13 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     public void onBindViewHolder(CabPoolRVAdapter.ViewHolder holder, int position) {
 
        if(i==0){
-           Date date=null;
+//           Date date=null;
+           DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
+           DateTime date = null;
            try {
-               date=(new SimpleDateFormat("yyyyMMdd").parse(array.get(position).getDT().substring(0,8)));
+               date = new DateTime(array.get(position).getPostTimeMillis(), indianZone);
            }catch (Exception e){}
-           SimpleDateFormat Outputformat=new SimpleDateFormat("dd/M/yyyy");
-           holder.date.setText(Outputformat.format(date));
+           holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
            holder.destination.setText(array.get(position).getDestination());
         holder.source.setText(array.get(position).getSource());
        if(array.get(position).getFrom()!=0){ holder.time.setText(array.get(position).getFrom()+":00 to "+array.get(position).getTo()+":00");}
@@ -99,12 +107,13 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
            Log.e("RV","array");
        }
         if(i==1){
-            Date date=null;
+//            Date date=null;
+            DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
+            DateTime date = null;
             try {
-                date=(new SimpleDateFormat("yyyyMMdd").parse(cabItemFormat.get(position).getDT().substring(0,8)));
+                date = new DateTime(cabItemFormat.get(position).getPostTimeMillis(), indianZone);
             }catch (Exception e){}
-            SimpleDateFormat Outputformat=new SimpleDateFormat("dd/M/yyyy");
-            holder.date.setText(Outputformat.format(date));
+            holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
             holder.destination.setText(cabItemFormat.get(position).getDestination());
             holder.source.setText(cabItemFormat.get(position).getSource());
       if(cabItemFormat.get(position).getFrom()!=0)  {
@@ -233,16 +242,13 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                     }
                 }
             });
-            Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
-            Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-            Typeface customFont3 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
-            source.setTypeface(customFont2);
-            destination.setTypeface(customFont2);
+            source.setTypeface(semiBold);
+            destination.setTypeface(semiBold);
 //            details.setTypeface(customFont2);
-            time.setTypeface(customFont2);
-            date.setTypeface(customFont2);
-            list_people.setTypeface(customFont3);
-            share.setTypeface(customFont3);
+            time.setTypeface(regular);
+            date.setTypeface(regular);
+            list_people.setTypeface(semiBold);
+            share.setTypeface(semiBold);
 
 //            TextView source_head = (TextView)itemView.findViewById(R.id.source_head);
 //            TextView destination_head = (TextView)itemView.findViewById(R.id.destination_head);

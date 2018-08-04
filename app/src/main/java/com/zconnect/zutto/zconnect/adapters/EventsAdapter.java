@@ -61,6 +61,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsViewHolder> {
             holder.setEventTimestamp(eventsVector.get(position).getPostTimeMillis());
             holder.setBoost(eventsVector.get(position).getKey(), eventsVector.get(position).getEventName());
             holder.setEventDate(eventsVector.get(position).getEventDate());
+            holder.setEventDesc(eventsVector.get(position).getEventDescription(), eventsVector.get(position).getKey());
         }
     }
 

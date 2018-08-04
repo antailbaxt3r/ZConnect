@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -307,7 +308,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
     private class notJoinedViewHolder extends RecyclerView.ViewHolder{
         TextView catName, lastMessageTime, lastMessageWithName;
         View mView;
-        ImageButton joinButton;
+        Button joinButton;
         ImageView defaultForumIcon;
         SimpleDraweeView forumIcon;
         LinearLayout forumRowItem;
@@ -318,7 +319,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             catName = (TextView) itemView.findViewById(R.id.cat_name);
             lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
             lastMessageWithName = (TextView) itemView.findViewById(R.id.forums_cat_not_joined_last_message_with_username);
-            joinButton = (ImageButton) itemView.findViewById(R.id.joinCategory);
+            joinButton = (Button) itemView.findViewById(R.id.joinCategory);
             forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_categories_not_joined);
             defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_categories_not_joined);
 
