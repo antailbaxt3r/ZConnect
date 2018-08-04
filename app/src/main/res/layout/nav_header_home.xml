@@ -11,16 +11,18 @@
         android:id="@+id/iv_nav_header_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/gray_holo_dark"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/gray_holo_dark"
+        app:layout_constraintVertical_bias="0.0"
         app:placeholderImageScaleType="centerCrop" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="bottom"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
@@ -45,14 +47,6 @@
             android:textSize="15sp"
             android:textStyle="bold"
             tools:text="Name Surname" />
-
-        <TextView
-            android:id="@+id/tv_email_nav_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:textStyle="bold"
-            tools:text="f20171024@goa.bits-pilani.ac.in" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

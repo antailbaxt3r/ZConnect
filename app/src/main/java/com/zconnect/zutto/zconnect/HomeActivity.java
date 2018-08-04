@@ -85,7 +85,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private ValueEventListener popupsListener;
     private ValueEventListener uiDbListener;
     private TextView navHeaderUserNameTv;
-    private TextView navHeaderEmailTv;
     private SimpleDraweeView navHeaderBackground;
     private MenuItem editProfileItem;
     private ActionBarDrawerToggle toggle;
@@ -161,7 +160,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         // Navigation Drawer initialization
         navHeaderUserNameTv = (TextView) navHeader.findViewById(R.id.tv_name_nav_header);
-        navHeaderEmailTv = (TextView) navHeader.findViewById(R.id.tv_email_nav_header);
         navHeaderBackground = (SimpleDraweeView) navHeader.findViewById(R.id.iv_nav_header_background);
 
 
@@ -594,7 +592,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             editProfileItem.setVisible(true);
 
             navHeaderUserNameTv.setText(username != null ? username : "ZConnect");
-            navHeaderEmailTv.setText(userEmail != null ? userEmail : "The way to connect!");
 
             if (!defaultPrefs.getBoolean("isReturningUser", false)) {
                 Intent tutIntent = new Intent(HomeActivity.this, TutorialActivity.class);

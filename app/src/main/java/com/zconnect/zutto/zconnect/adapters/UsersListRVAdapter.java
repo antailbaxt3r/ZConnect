@@ -59,16 +59,21 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
     @Override
     public UsersListRVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View contactView = inflater.inflate(R.layout.cab_people_item_format, parent, false);
+        View contactView = inflater.inflate(R.layout.people_item_format, parent, false);
         return new UsersListRVAdapter.ViewHolder(contactView);
     }
 
     @Override
     public void onBindViewHolder(UsersListRVAdapter.ViewHolder holder, int position) {
+
         holder.name.setText(usersListItemFormats.get(position).getName());
         holder.number.setText(usersListItemFormats.get(position).getPhonenumber());
         holder.avatarCircle.setImageURI(usersListItemFormats.get(position).getImageThumb());
         holder.openOptions(featureType, userType);
+
+        if(featureType.equals(FeatureNamesUtilities.KEY_FORUMS)){
+            holder.setUserType(usersListItemFormats.get(position).getUserType());
+        }
 
     }
 
@@ -78,7 +83,7 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name, number;
+        TextView name, number,forumType;
         ImageView call;
         View rv_item;
         Intent intent;
@@ -94,6 +99,7 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
             name = (TextView) itemView.findViewById(R.id.cab_name);
             number = (TextView) itemView.findViewById(R.id.cab_number);
             avatarCircle = (SimpleDraweeView) itemView.findViewById(R.id.cab_people_avatarCircle);
+            forumType = (TextView) itemView.findViewById(R.id.forum_user_type);
 
             rv_item=itemView.findViewById(R.id.rv_item);
             Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
@@ -109,6 +115,16 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                 }
             });
 
+        }
+
+        public void setUserType(final String forumUserType){
+
+            if(forumUserType.equals(ForumsUserTypeUtilities.KEY_ADMIN)){
+
+                forumType.setVisibility(View.VISIBLE);
+                forumType.setText("(Forum Admin)");
+
+            }
         }
 
         public void openOptions(String featureType, final String forumUserType){

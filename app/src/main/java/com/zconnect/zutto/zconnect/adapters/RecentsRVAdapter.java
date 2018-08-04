@@ -61,6 +61,7 @@ import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.addActivities.AddStatus;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.Date;
@@ -561,6 +562,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.post.setTypeface(Typeface.DEFAULT);
                     holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
                     holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
+
                     if(recentsItemFormats.get(position).getDesc().length()<20)
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
                     else if(recentsItemFormats.get(position).getDesc().length()<70)
@@ -575,6 +577,18 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     } else {
                         //Message is not anonymous
                         holder.name.setText(recentsItemFormats.get(position).getName());
+                    }
+                    holder.totalComments.setVisibility(View.GONE);
+                    try {
+                        if(recentsItemFormats.get(position).getMsgComments()!=0){
+
+                            holder.totalComments.setVisibility(View.VISIBLE);
+                            holder.totalComments.setText(recentsItemFormats.get(position).getMsgComments());
+
+                        }
+
+                    }catch (Exception e){
+
                     }
 
                     posted = "  wrote a ";
@@ -665,7 +679,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 productName, productPrice, productDesc,
                 messagesMessage,
                 forumNameCategorySentence,
-                sentence;
+                sentence,totalComments;
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
                 postImage,
@@ -725,7 +739,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             prePostDetails = (LinearLayout) itemView.findViewById(R.id.prePostDetails);
             sentence = (TextView) itemView.findViewById(R.id.sentence_recents_item_format);
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            //
+
+            totalComments = (TextView) itemView.findViewById(R.id.comment_text_status);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -969,6 +984,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public FeaturesViewHolder(final View itemView) {
             super(itemView);
             flag = true;
+
             hsv = (HorizontalScrollView) itemView.findViewById(R.id.hsv_recents_features_view);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.linearLayout_recents_features_view);
             events = (RelativeLayout) itemView.findViewById(R.id.events_recents_features_view);
@@ -982,6 +998,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     final UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+
+                    if(!dataSnapshot.hasChild("userType")){
+                       userItem.setUserType(UsersTypeUtilities.KEY_VERIFIED);
+                    }
+
                     if(userItem.getUsername()!=null) {
                         if(userItem.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
                             admin.setVisibility(View.VISIBLE);
