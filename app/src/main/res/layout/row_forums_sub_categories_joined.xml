@@ -50,10 +50,11 @@
                     <TextView
                         android:id="@+id/cat_name"
                         android:layout_width="0dp"
-                        android:layout_weight="0.72"
+                        android:layout_weight="0.75"
                         android:layout_height="wrap_content"
                         android:text="Cat Name"
                         android:maxLines="1"
+                        android:ellipsize="end"
                         android:textColor="@color/primaryText"
                         android:textSize="18sp"/>
                     <TextView

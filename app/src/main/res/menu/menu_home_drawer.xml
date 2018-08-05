@@ -5,8 +5,7 @@
         <item
             android:title="Edit Profile"
             android:id="@+id/edit_profile"
-            android:icon="@drawable/ic_person_brown"
-            android:iconTint="@color/secondaryText"
+            android:icon="@drawable/ic_person_grey_24dp"
             android:name="Edit Profile" />
     </group>
 
@@ -15,14 +14,12 @@
         <item
             android:title="My Products"
             android:id="@+id/MyProducts"
-            android:icon="@drawable/ic_local_mall_black_24dp"
-            android:iconTint="@color/secondaryText"
+            android:icon="@drawable/ic_local_mall_grey_24dp"
             android:name="My Products" />
         <item
             android:title="My Rides"
             android:id="@+id/MyRides"
-            android:icon="@drawable/ic_local_taxi_orange"
-            android:iconTint="@color/secondaryText"
+            android:icon="@drawable/ic_local_taxi_grey_24dp"
             android:name="My Rides" />
         <!--<item-->
             <!--android:title="My Community Map"-->
@@ -32,8 +29,7 @@
         <item
             android:title="My Notifications"
             android:id="@+id/Noti_Settings"
-            android:icon="@drawable/ic_notifications_black_24dp"
-            android:iconTint="@color/secondaryText"
+            android:icon="@drawable/ic_notifications_grey_24dp"
             android:name="Notifications"/>
     </group>
     <group
@@ -48,13 +44,11 @@
             android:title="About Us"
             android:id="@+id/about"
             android:icon="@drawable/aboutus"
-            android:iconTint="@color/secondaryText"
             android:name="About Us" />
         <item
             android:title="Invite friends"
             android:id="@+id/share"
-            android:icon="@drawable/ic_menu_share"
-            android:iconTint="@color/secondaryText"
+            android:icon="@drawable/ic_share_grey_24dp"
             android:name="Share" />
     </group>
     <group
@@ -63,14 +57,12 @@
         <item
             android:title="Sign Out"
             android:id="@+id/signOut"
-            android:icon="@drawable/ic_power_settings_new_black_24dp"
-            android:iconTint="@color/secondaryText"
+            android:icon="@drawable/ic_power_settings_new_grey_24dp"
             android:name="Sign Out" />
         <item
             android:title="Report Bug"
             android:id="@+id/bugReport"
-            android:icon="@drawable/ic_bug_report_black_24dp"
-            android:iconTint="@color/secondaryText"
+            android:icon="@drawable/ic_bug_report_grey_24dp"
             android:name="Report Bug / Feedback" />
     </group>
 </menu>

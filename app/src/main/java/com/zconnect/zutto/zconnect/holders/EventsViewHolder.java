@@ -8,6 +8,12 @@ import android.graphics.Typeface;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -445,6 +451,38 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
             TextView timestamp = (TextView) mView.findViewById(R.id.evTrendTimestamp);
             TimeUtilities ta = new TimeUtilities(postTimeMillis, System.currentTimeMillis());
             timestamp.setText(ta.calculateTimeAgo());
+        }
+    }
+
+    public void setEventDesc(String eventDesc, final String key) {
+        TextView desc = (TextView) mView.findViewById(R.id.evTrendDesc);
+        if(eventDesc.length() < 55) {
+            desc.setText(eventDesc);
+        }
+        else if(eventDesc.length() > 55) {
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View view) {
+                    CounterManager.eventOpenCounter(key);
+                    Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
+                    i.putExtra("id", key);
+                    mView.getContext().startActivity(i);
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    ds.setUnderlineText(false); // set to false to remove underline
+                }
+            };
+            String descWithMore = eventDesc.substring(0, 55) + " more...";
+            SpannableString spannableString = new SpannableString(descWithMore);
+            spannableString.setSpan(clickableSpan, 0, descWithMore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(mView.getContext().getResources().getColor(R.color.link));
+            spannableString.setSpan(foregroundColorSpan, descWithMore.indexOf("more..."), descWithMore.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            foregroundColorSpan = new ForegroundColorSpan(mView.getContext().getResources().getColor(R.color.primaryText));
+            spannableString.setSpan(foregroundColorSpan,0, descWithMore.indexOf("more..."), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            desc.setText(spannableString);
+            desc.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 

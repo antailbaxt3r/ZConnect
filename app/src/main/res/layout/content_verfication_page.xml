@@ -23,8 +23,7 @@
         android:id="@+id/verication_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@drawable/dashed_border"
-        tools:src="@drawable/addimage"/>
+        android:background="@drawable/dashed_border" />
 
     <EditText
         android:id="@+id/about_new_user"

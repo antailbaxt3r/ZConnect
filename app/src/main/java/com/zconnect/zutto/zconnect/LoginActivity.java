@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,10 +55,14 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     private DatabaseReference usersDbRef;
     private DatabaseReference CommunitiesDatabaseReference;
     private ProgressDialog mProgress;
-    @BindView(R.id.btn_google_sign_in)
-    Button mGoogleSignInBtn;
+//    @BindView(R.id.btn_google_sign_in)
+//    Button mGoogleSignInBtn;
     @BindView(R.id.btn_guest_login)
     Button mGuestLogInBtn;
+    @BindView(R.id.layout_google_sign_in)
+    LinearLayout mGoogleSignInLayout;
+    @BindView(R.id.text_google_sign_in)
+    TextView mGoogleSignInText;
     private int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseUser mUser;
@@ -87,14 +92,15 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
         mGuestLogInBtn.setOnClickListener(this);
         mGuestLogInBtn.setVisibility(View.GONE);
-        mGoogleSignInBtn.setOnClickListener(this);
-
+//        mGoogleSignInBtn.setOnClickListener(this);
+        mGoogleSignInLayout.setOnClickListener(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Typeface ralewayLight = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
-        Typeface ralewayMedium = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
-        mGoogleSignInBtn.setTypeface(ralewayMedium);
-        mGuestLogInBtn.setTypeface(ralewayMedium);
+        Typeface ralewayBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Bold.ttf");
+//        mGoogleSignInBtn.setTypeface(ralewayMedium);
+        mGoogleSignInText.setTypeface(ralewayBold);
+//        mGuestLogInBtn.setTypeface(ralewayBold);
 
     }
 
@@ -139,7 +145,8 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 // Google Sign In failed, update UI appropriately
                 Log.e(TAG, "onActivityResult: not success" + result.getStatus().getStatusMessage());
                 mProgress.dismiss();
-                Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Login failed", Snackbar.LENGTH_LONG);
+//                Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Login failed", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(mGoogleSignInLayout, "Login failed", Snackbar.LENGTH_LONG);
                 TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackBarText.setTextColor(Color.WHITE);
                 snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
@@ -164,7 +171,8 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Authentication failed.", Snackbar.LENGTH_LONG);
+//                            Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Authentication failed.", Snackbar.LENGTH_LONG);
+                            Snackbar snackbar = Snackbar.make(mGoogleSignInLayout, "Authentication failed.", Snackbar.LENGTH_LONG);
                             TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                             snackBarText.setTextColor(Color.WHITE);
                             snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
@@ -283,9 +291,11 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_google_sign_in: {
+//            case R.id.btn_google_sign_in: {
+            case R.id.layout_google_sign_in: {
                 if (!isNetworkAvailable(getApplicationContext())) {
-                    Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+//                    Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
+                    Snackbar snackbar = Snackbar.make(mGoogleSignInLayout, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
                     snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));

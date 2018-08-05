@@ -365,8 +365,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabTitle[4] = (TextView) vProfile.findViewById(R.id.tabTitle);
         tabTitle[4].setText("Profile");
-
         tabImage[4] = (SimpleDraweeView) vProfile.findViewById(R.id.tabImage);
+        tabImage[4].setImageResource(R.drawable.ic_person_white_24dp);
         tabImage[4].setImageResource(R.drawable.avatar_circle_36dp);
 
         tabNotificationCircle[4] = (ImageView) vProfile.findViewById(R.id.notification_circle);

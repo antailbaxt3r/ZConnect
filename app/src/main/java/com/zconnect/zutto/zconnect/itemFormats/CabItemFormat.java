@@ -14,9 +14,10 @@ public class CabItemFormat {
     private String DT;
     private int from;
     private int to;
+    private long PostTimeMillis;
 
 
-    public CabItemFormat(String source, String destination, String date, String details, String time, String key,String DT,int from,int to) {
+    public CabItemFormat(String source, String destination, String date, String details, String time, String key,String DT,int from,int to, long PostTimeMillis) {
         this.source = source;
         this.destination = destination;
         this.date = date;
@@ -26,6 +27,7 @@ public class CabItemFormat {
         this.DT=DT;
         this.from=from;
         this.to=to;
+        this.PostTimeMillis = PostTimeMillis;
     }
 
     public CabItemFormat() {
@@ -98,6 +100,10 @@ public class CabItemFormat {
     public void setKey(String key) {
         this.key = key;
     }
+
+    public long getPostTimeMillis() { return this.PostTimeMillis; }
+
+    public void setPostTimeMillis(long PostTimeMillis) { this.PostTimeMillis = PostTimeMillis; }
 //
 //    public Vector<UsersListItemFormat> getCabListItemFormats() {
 //        return cabListItemFormats;
