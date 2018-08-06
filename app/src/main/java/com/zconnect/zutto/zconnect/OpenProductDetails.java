@@ -118,6 +118,9 @@ public class OpenProductDetails extends BaseActivity {
         ralewayBold = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Bold.ttf");
         ralewayLight = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Light.ttf");
 
+        Intent intent = getIntent();
+        productKey = intent.getStringExtra("key");
+
         productImage = (ImageView) findViewById(R.id.product_image);
         productName = (TextView) findViewById(R.id.product_name);
         productPrice = (TextView) findViewById(R.id.product_price);
@@ -163,8 +166,7 @@ public class OpenProductDetails extends BaseActivity {
             }
         });
         mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
-        Intent intent = getIntent();
-        productKey = intent.getStringExtra("key");
+
 
         progressBar.setVisibility(VISIBLE);
         productContent.setVisibility(INVISIBLE);
@@ -208,46 +210,6 @@ public class OpenProductDetails extends BaseActivity {
 //
 //            mDatabaseViews.addListenerForSingleValueEvent(listener);
 //        }
-        mDatabaseProduct.child(productKey).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-
-                productName.setText(dataSnapshot.child("ProductName").getValue().toString());
-                productPrice.setText(dataSnapshot.child("Price").getValue().toString());
-                productDescription.setText(dataSnapshot.child("ProductDescription").getValue().toString());
-                productCategory = dataSnapshot.child("Category").getValue().toString();
-                productCall.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        CounterManager.StoroomCall(dataSnapshot.child("Category").getValue().toString());
-                        startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(dataSnapshot.child("Phone_no").getValue().toString().trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                    }
-                });
-
-                try{
-                    productSellerName.setText("by " + dataSnapshot.child("PostedBy").child("Username").getValue().toString());
-                } catch (Exception e){
-
-                }
-                mImageUri = dataSnapshot.child("Image").getValue().toString();
-                setImage(OpenProductDetails.this, dataSnapshot.child("ProductName").getValue().toString(), dataSnapshot.child("Image").getValue().toString(), productImage);
-
-                if (dataSnapshot.hasChild("negotiable")) {
-                    setProductPrice(productPrice, productPriceType, dataSnapshot.child("Price").getValue().toString(), dataSnapshot.child("negotiable").getValue().toString());
-                } else {
-                    setProductPrice(productPrice, productPriceType, dataSnapshot.child("Price").getValue().toString(), null);
-                }
-
-                defaultSwitch(productKey, productCategory, productShortlist);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-                progressBar.setVisibility(View.GONE);
-                productContent.setVisibility(VISIBLE);
-            }
-        });
 
 
     }
@@ -425,20 +387,53 @@ public class OpenProductDetails extends BaseActivity {
 
 
         mAuth = FirebaseAuth.getInstance();
-        Intent intent = getIntent();
-        try {
-            final String productKey = intent.getStringExtra("key");
-        }
-        catch (NullPointerException e)
-        {
-            e.printStackTrace();
-        }
+
+        mDatabaseProduct.child(productKey).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+
+                productName.setText(dataSnapshot.child("ProductName").getValue().toString());
+                productPrice.setText(dataSnapshot.child("Price").getValue().toString());
+                productDescription.setText(dataSnapshot.child("ProductDescription").getValue().toString());
+                productCategory = dataSnapshot.child("Category").getValue().toString();
+                productCall.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        CounterManager.StoroomCall(dataSnapshot.child("Category").getValue().toString());
+                        startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(dataSnapshot.child("Phone_no").getValue().toString().trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    }
+                });
+
+                try{
+                    productSellerName.setText("by " + dataSnapshot.child("PostedBy").child("Username").getValue().toString());
+                } catch (Exception e){
+
+                }
+                mImageUri = dataSnapshot.child("Image").getValue().toString();
+                setImage(OpenProductDetails.this, dataSnapshot.child("ProductName").getValue().toString(), dataSnapshot.child("Image").getValue().toString(), productImage);
+
+                if (dataSnapshot.hasChild("negotiable")) {
+                    setProductPrice(productPrice, productPriceType, dataSnapshot.child("Price").getValue().toString(), dataSnapshot.child("negotiable").getValue().toString());
+                } else {
+                    setProductPrice(productPrice, productPriceType, dataSnapshot.child("Price").getValue().toString(), null);
+                }
+
+                defaultSwitch(productKey, productCategory, productShortlist);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+                progressBar.setVisibility(View.GONE);
+                productContent.setVisibility(VISIBLE);
+            }
+        });
+
 
         mListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 flag = true;
-                final String category = productCategory;
                 final DatabaseReference userReservedReference = mDatabaseProduct.child(productKey);
                 userReservedReference.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -506,6 +501,8 @@ public class OpenProductDetails extends BaseActivity {
         };
 
         productShortlist.setOnClickListener(mListener);
+
+
 
     }
 
