@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.zconnect.zutto.zconnect.OpenUserDetail">
+    <item
+        android:title="Sign Out"
+        android:id="@+id/menu_sign_out"
+        android:name="Sign Out"
+        app:showAsAction="collapseActionView"
+        android:icon="@drawable/ic_power_settings_new_black_24dp"
+        />
+</menu>

@@ -35,6 +35,7 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationService;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.lang.reflect.Method;
 import java.util.Timer;
@@ -187,23 +188,38 @@ public class LogoFlashActivity extends BaseActivity {
         }, 2000);
 
 
-
-        temp = FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("features").child("forums").child("tabs");
-
-
-           temp.addListenerForSingleValueEvent(new ValueEventListener() {
-               @Override
-               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                   FirebaseDatabase.getInstance().getReference().child("communities").child("gmc").child("features").child("forums").child("tabs").setValue(dataSnapshot.getValue());
-
-               }
-
-               @Override
-               public void onCancelled(@NonNull DatabaseError databaseError) {
-
-               }
-           });
+//
+//        temp = FirebaseDatabase.getInstance().getReference().child("communities").child("gmc");
+//
+//
+//        temp.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                FirebaseDatabase.getInstance().getReference().child("communities").child("gim").setValue(dataSnapshot.getValue());
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//        temp2 = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("gmc");
+//
+//        temp2.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("gim").setValue(dataSnapshot.getValue());
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
 
 
 

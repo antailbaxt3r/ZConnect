@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,15 +26,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -47,11 +54,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.adapters.CommunitiesAroundAdapter;
 import com.zconnect.zutto.zconnect.addActivities.CreateCommunity;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
@@ -63,7 +72,7 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class CommunitiesAround extends BaseActivity {
-
+//implements GoogleApiClient.OnConnectionFailedListener
     private FusedLocationProviderClient userLocationClient;
     CommunitiesAroundAdapter adapter;
     Vector<CommunitiesItemFormat> communitiesList = new Vector<>();
@@ -74,6 +83,8 @@ public class CommunitiesAround extends BaseActivity {
     private ProgressDialog progressDialog;
     private TextView noCommunitiesTextView;
     private Button turnOnGPS;
+    private FirebaseAuth mAuth;
+    private GoogleApiClient mGoogleApiClient;
 
     private double lon,lat;
 
@@ -124,6 +135,16 @@ public class CommunitiesAround extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this,this)
+//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+//                .build();
 
         communitiesReference = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
         communitiesRecycler = (RecyclerView) findViewById(R.id.all_communities);
@@ -529,4 +550,60 @@ public class CommunitiesAround extends BaseActivity {
 
         return distance;
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_communities_around, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.menu_sign_out){
+            if (!isNetworkAvailable(getApplicationContext())) {
+                Snackbar snack = Snackbar.make(communitiesRecycler, "No Internet. Can't Log Out.", Snackbar.LENGTH_LONG);
+                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                snackBarText.setTextColor(Color.WHITE);
+                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                snack.show();
+            } else {
+                logoutAndSendToLogin();
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void logoutAndSendToLogin(){
+
+        mAuth = FirebaseAuth.getInstance();
+
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid());
+        try {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(communityReference);
+        }catch (Exception e){}
+        mAuth.signOut();
+        SharedPreferences preferences = getSharedPreferences("communityName", 0);
+        preferences.edit().remove("communityReference").commit();
+
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
+        Intent loginIntent = new Intent(CommunitiesAround.this, LoginActivity.class);
+        startActivity(loginIntent);
+        finish();
+
+    }
+
+
+//    @Override
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//
+//    }
+//
+//    @Override
+//    public void onPointerCaptureChanged(boolean hasCapture) {
+//
+//    }
 }

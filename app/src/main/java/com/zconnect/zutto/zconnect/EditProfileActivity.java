@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -92,6 +93,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     Boolean flag = false;
     private Long postTimeMillis;
 
+    private CheckBox hideContactCB;
+
     private Uri mImageUri=null;
     private Uri mImageUriSmall=null;
     private StorageReference mStorageRef;
@@ -130,7 +133,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         userImageView = (SimpleDraweeView) findViewById(R.id.user_image_view);
         userInfoneTypeSpinner = (MaterialBetterSpinner) findViewById(R.id.user_infone_type);
         userSkillTagsText = (TagsEditText) findViewById(R.id.user_skill_tags);
-
+        hideContactCB = (CheckBox) findViewById(R.id.hide_contact_check_box);
 
         Typeface ralewayRegular = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
         Typeface ralewaySemiBold = Typeface.createFromAsset(getAssets(), "fonts/Raleway-SemiBold.ttf");
@@ -216,6 +219,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             userEmailText.setText(mUser.getEmail());
             userTypeText.setVisibility(View.GONE);
 
+            hideContactCB.setChecked(false);
+
             userEmailText.setFocusable(false);
             if (mImageUri==null) {
                 if (mUser.getPhotoUrl() != null) {
@@ -229,8 +234,10 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     userDetails=dataSnapshot.getValue(UserItemFormat.class);
+                    if(!dataSnapshot.hasChild("contactHidden")){
+                        userDetails.setContactHidden(false);
+                    }
                     updateViewDetails();
-
                 }
 
                 @Override
@@ -262,6 +269,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         userWhatsappNumberText.setText(userDetails.getWhatsAppNumber());
         userMobileNumberText.setText(userDetails.getMobileNumber());
         userAboutText.setText(userDetails.getAbout());
+
+        hideContactCB.setChecked(userDetails.getContactHidden());
 
         for(int i=0;i<infoneCategories.size();i++){
             if(infoneCategories.get(i).getCatId().equals(userDetails.getInfoneType())){
@@ -369,6 +378,9 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         userMobile = userMobileNumberText.getText().toString();
         userSkillTags = userSkillTagsText.getTags().toString();
 
+        Boolean contactHidden = false;
+        contactHidden = hideContactCB.isChecked();
+
         for (int i=0;i<infoneCategories.size();i++){
             if(infoneCategoriesName.get(i).equals(userInfoneTypeSpinner.getText().toString())){
                 userInfoneType = infoneCategories.get(i).getCatId();
@@ -413,7 +425,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newPost.child("skillTags").setValue(userSkillTags);
             newPost.child("userUID").setValue(mUser.getUid().toString());
             newPost.child("infoneType").setValue(userInfoneType);
-            newPost.child("contactHidden").setValue(false);
+            newPost.child("contactHidden").setValue(contactHidden);
 
             if(!newUser) {
                 databaseReferenceInfone.child("categories").child(userDetails.getInfoneType()).child(mUser.getUid()).removeValue();
@@ -442,7 +454,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
             newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
             newContactNumRef.child("UID").setValue(mUser.getUid());
-            newContactNumRef.child("contactHidden").setValue(false);
+            newContactNumRef.child("contactHidden").setValue(contactHidden);
 
             if(newUser){
 

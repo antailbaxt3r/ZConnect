@@ -131,3 +131,6 @@ fabric.properties
 .idea/codeStyles/
 /.idea/modules.xml
 .idea/inspectionProfiles/
+/.idea/caches/
+/.idea/misc.xml
+/.idea/gradle.xml

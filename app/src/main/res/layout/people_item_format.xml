@@ -31,7 +31,6 @@
             android:layout_weight=".8"
             android:orientation="vertical">
 
-
             <TextView
                 android:id="@+id/cab_name"
                 android:layout_width="match_parent"
@@ -44,16 +43,36 @@
                 android:text="Akhil Kamath"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/cab_number"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_name_contact_item"
-                android:layout_toRightOf="@+id/colon2"
-                android:paddingLeft="15dp"
-                android:paddingRight="5dp"
-                android:text="7506005138"
-                android:textColor="@color/primaryText"/>
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/cab_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_name_contact_item"
+                    android:layout_toRightOf="@+id/colon2"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="5dp"
+                    android:text="7506005138"
+                    android:textColor="@color/primaryText"/>
+
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/forum_user_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:text="(userType)"/>
+
+            </LinearLayout>
+
+
+
+
 
         </LinearLayout>
 

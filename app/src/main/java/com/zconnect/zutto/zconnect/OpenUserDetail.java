@@ -510,8 +510,10 @@ public class OpenUserDetail extends BaseActivity {
                 userTypeText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(getApplicationContext(), VerificationPage.class);
-                        startActivity(i);
+                        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userProfile.getUserUID())) {
+                            Intent i = new Intent(getApplicationContext(), VerificationPage.class);
+                            startActivity(i);
+                        }
                     }
                 });
             }
