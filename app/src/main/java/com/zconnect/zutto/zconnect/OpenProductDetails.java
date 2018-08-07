@@ -388,6 +388,8 @@ public class OpenProductDetails extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        Intent intent = getIntent();
+        productKey = intent.getStringExtra("key");
         mDatabaseProduct.child(productKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
