@@ -43,7 +43,7 @@
         <item
             android:title="About Us"
             android:id="@+id/about"
-            android:icon="@drawable/aboutus"
+            android:icon="@mipmap/ic_zc_material_icon"
             android:name="About Us" />
         <item
             android:title="Invite friends"
