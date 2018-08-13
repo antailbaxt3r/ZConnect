@@ -1,88 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.zconnect.zutto.zconnect.addActivities.AddStatus"
-    tools:showIn="@layout/activity_new_message"
-    android:paddingStart="15dp"
-    android:paddingEnd="15dp">
+    tools:showIn="@layout/activity_new_message">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp">
-        <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/avatarCircle_new_message"
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/avatar_circle"
-            fresco:actualImageScaleType="centerCrop"
-            fresco:roundAsCircle="true" />
-        <TextView
-            android:id="@+id/username_new_message"
-            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp">
+            <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/avatarCircle_new_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/avatar_circle"
+                fresco:actualImageScaleType="centerCrop"
+                fresco:roundAsCircle="true" />
+            <TextView
+                android:id="@+id/username_new_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/link"
+                android:textStyle="bold"
+                android:text="Somebody"
+                android:layout_marginStart="10dp"/>
+        </LinearLayout>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/link"
-            android:textStyle="bold"
-            android:text="Somebody"
-            android:layout_marginStart="10dp"/>
-    </LinearLayout>
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/edittext_newmessage_input"
-        android:hint="@string/status_hint"
-        android:textSize="25dp"
-        app:met_textColor="@color/primaryText"
-        app:met_textColorHint="@color/secondaryText"
-        android:layout_marginTop="10dp" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageButton
-            android:id="@+id/add_image_new_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_insert_photo_white_36"
-            android:background="@color/transparent"
-            android:tint="@color/colorPrimary"/>
+            android:id="@+id/edittext_newmessage_input"
+            android:hint="@string/status_hint"
+            android:textSize="25dp"
+            app:met_textColor="@color/primaryText"
+            app:met_textColorHint="@color/secondaryText"
+            android:layout_marginTop="10dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/add_image_new_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_insert_photo_white_36"
+                android:background="@color/transparent"
+                android:tint="@color/colorPrimary"/>
 
-        <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:contentDescription="Status Image"
-            fresco:viewAspectRatio="1.33"
-            android:id="@+id/post_image_view"
-            fresco:roundingBorderPadding="5dp"
-            fresco:overlayImage="@drawable/border"
-            android:visibility="gone"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="10dp">
-        <CheckBox
-            android:layout_width="wrap_content"
+            <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:contentDescription="Status Image"
+                fresco:viewAspectRatio="1.33"
+                android:id="@+id/post_image_view"
+                fresco:roundingBorderPadding="5dp"
+                fresco:overlayImage="@drawable/border"
+                android:visibility="gone"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/checkbox_newmessage_anonymous"
-            android:layout_gravity="center_horizontal"
-            android:checked="false"
-            android:layout_weight="5"
-            android:textColor="@color/primaryText"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Anonymous?"
-            android:layout_weight="95"
-            android:textColor="@color/primaryText"/>
-    </LinearLayout>
-    <!--<Button-->
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp">
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkbox_newmessage_anonymous"
+                android:layout_gravity="center_horizontal"
+                android:checked="false"
+                android:layout_weight="5"
+                android:textColor="@color/primaryText"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Anonymous?"
+                android:layout_weight="95"
+                android:textColor="@color/primaryText"/>
+        </LinearLayout>
+        <!--<Button-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->
         <!--android:id="@+id/done_content_new_message"-->
@@ -91,120 +94,121 @@
         <!--android:background="@color/messages"-->
         <!--android:layout_marginTop="10dp"-->
         <!--android:textAllCaps="false"/>-->
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <View
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/secondaryText"
-            android:layout_gravity="center"
-            />
         <FrameLayout
-            android:id="@+id/done_content_new_message"
-            android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/forum_circle"
-                android:backgroundTint="@color/colorHighlight"
-                app:actualImageScaleType="centerCrop"
-                app:roundAsCircle="true" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/secondaryText"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_check_white_24dp"
-                android:tint="@color/white"/>
+                />
+            <FrameLayout
+                android:id="@+id/done_content_new_message"
+                android:layout_gravity="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/forum_circle"
+                    android:backgroundTint="@color/colorHighlight"
+                    app:actualImageScaleType="centerCrop"
+                    app:roundAsCircle="true" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_check_white_24dp"
+                    android:tint="@color/white"/>
+            </FrameLayout>
         </FrameLayout>
-    </FrameLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/status_hint_ask_questions"
-        android:textSize="22sp"
-        android:textColor="@color/secondaryText"
-        android:padding="5dp"/>
-    <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:flexWrap="wrap"
-        app:alignItems="stretch"
-        app:alignContent="stretch"
-        android:padding="5dp">
         <TextView
-            android:id="@+id/status_hint_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/status_hint_1"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:background="@drawable/message_box_self"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:textColor="@color/white"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:id="@+id/status_hint_2"
-            android:layout_width="wrap_content"
+            android:text="@string/status_hint_ask_questions"
+            android:textSize="22sp"
+            android:textColor="@color/secondaryText"
+            android:padding="5dp"/>
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/status_hint_2"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:background="@drawable/message_box_self"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:textColor="@color/white"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp" />
-        <TextView
-            android:id="@+id/status_hint_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/status_hint_3"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:background="@drawable/message_box_self"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:textColor="@color/white"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:id="@+id/status_hint_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/status_hint_4"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:background="@drawable/message_box_self"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:textColor="@color/white"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:id="@+id/status_hint_5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/status_hint_5"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:background="@drawable/message_box_self"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:textColor="@color/white"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"/>
-    </com.google.android.flexbox.FlexboxLayout>
+            app:flexWrap="wrap"
+            app:alignItems="stretch"
+            app:alignContent="stretch"
+            android:padding="5dp">
+            <TextView
+                android:id="@+id/status_hint_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_hint_1"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:background="@drawable/message_box_self"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:textColor="@color/white"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/status_hint_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_hint_2"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:background="@drawable/message_box_self"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:textColor="@color/white"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp" />
+            <TextView
+                android:id="@+id/status_hint_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_hint_3"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:background="@drawable/message_box_self"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:textColor="@color/white"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/status_hint_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_hint_4"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:background="@drawable/message_box_self"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:textColor="@color/white"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/status_hint_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_hint_5"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:background="@drawable/message_box_self"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:textColor="@color/white"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"/>
+        </com.google.android.flexbox.FlexboxLayout>
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
