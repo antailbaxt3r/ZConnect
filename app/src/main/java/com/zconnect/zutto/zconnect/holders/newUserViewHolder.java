@@ -1,9 +1,15 @@
 package com.zconnect.zutto.zconnect.holders;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.commonModules.viewImage;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
@@ -134,6 +141,30 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
             }
         });
 
+    }
+
+    public void openImage(final Context context, final String name, final String imageUrl){
+
+       idImageSDV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProgressDialog mProgress = new ProgressDialog(context);
+                mProgress.setMessage("Loading...");
+                mProgress.show();
+                animate((Activity) context, name, imageUrl, idImageSDV);
+                mProgress.dismiss();
+            }
+        });
+    }
+
+    public void animate(final Activity activity, final String name, String url, ImageView productImage) {
+        final Intent i = new Intent(itemView.getContext(), viewImage.class);
+        i.putExtra("currentEvent", name);
+        i.putExtra("eventImage", url);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, productImage, itemView.getContext().getResources().getString(R.string.transition_string));
+
+        itemView.getContext().startActivity(i, optionsCompat.toBundle());
     }
 
 

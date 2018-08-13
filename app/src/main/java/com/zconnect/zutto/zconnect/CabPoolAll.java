@@ -325,8 +325,10 @@ public class CabPoolAll extends BaseActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_storeroom) {
+        if (id == R.id.action_add_location) {
             startActivity(new Intent(getApplicationContext(), CabPoolLocations.class));
+        }else if (id ==R.id.action_my_rides){
+            startActivity(new Intent(getApplicationContext(), MyRides.class));
         }
         return super.onOptionsItemSelected(item);
     }

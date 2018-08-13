@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -153,9 +155,29 @@ public class ForumsPeopleList extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (flag) {
-                    forumMembersList.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
-                    CounterManager.forumsLeaveCategory(tab,key);
+
+                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ForumsPeopleList.this);
+                    builder.setMessage("Please confirm to leave group.")
+                            .setCancelable(false)
+                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    forumMembersList.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                                    FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
+                                    CounterManager.forumsLeaveCategory(tab,key);
+
+                                }
+                            })
+                            .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+
+                    final android.app.AlertDialog alert = builder.create();
+                    alert.show();
                 } else {
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
                     final UsersListItemFormat userDetails = new UsersListItemFormat();
