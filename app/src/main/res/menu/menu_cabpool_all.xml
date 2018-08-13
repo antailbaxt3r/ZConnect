@@ -3,9 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:title="Add Location"
-        android:id="@+id/action_storeroom"
+        android:id="@+id/action_add_location"
         android:orderInCategory="1"
         android:name="Add Location"
         android:icon="@drawable/ic_add_location_white_24dp"
+        app:showAsAction="collapseActionView|ifRoom"/>
+    <item
+        android:title="My Rides"
+        android:id="@+id/action_my_rides"
+        android:orderInCategory="2"
+        android:name="My Rides"
         app:showAsAction="collapseActionView|ifRoom"/>
 </menu>

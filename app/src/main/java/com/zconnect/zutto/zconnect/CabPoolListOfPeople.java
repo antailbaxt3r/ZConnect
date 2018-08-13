@@ -231,29 +231,50 @@ public class CabPoolListOfPeople extends BaseActivity {
             public void onClick(View v) {
                 if (!status) {
                     if (flag) {
-                        databaseReference.child(key).child("usersListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
-                        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        user.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
-                                NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,userItemFormat.getUserUID());
-                                NotificationItemFormat cabPoolLeaveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE,userItemFormat.getUserUID());
-                                cabPoolLeaveNotification.setCommunityName(communityTitle);
-                                cabPoolLeaveNotification.setItemKey(getIntent().getStringExtra("key"));
-                                cabPoolLeaveNotification.setUserName(userItemFormat.getUsername());
-                                cabPoolLeaveNotification.setUserImage(userItemFormat.getImageURLThumbnail());
-                                notificationSender.execute(cabPoolLeaveNotification);
 
-                                CounterManager.openCabPoolLeave(getIntent().getStringExtra("key"));
-                            }
+                        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(CabPoolListOfPeople.this);
+                        builder.setMessage("Please confirm to leave this pool.")
+                                .setCancelable(false)
+                                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        databaseReference.child(key).child("usersListItemFormats").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                                        FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
+                                        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        user.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                                                NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,userItemFormat.getUserUID());
+                                                NotificationItemFormat cabPoolLeaveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE,userItemFormat.getUserUID());
+                                                cabPoolLeaveNotification.setCommunityName(communityTitle);
+                                                cabPoolLeaveNotification.setItemKey(getIntent().getStringExtra("key"));
+                                                cabPoolLeaveNotification.setUserName(userItemFormat.getUsername());
+                                                cabPoolLeaveNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                                                notificationSender.execute(cabPoolLeaveNotification);
 
-                            }
-                        });
+                                                CounterManager.openCabPoolLeave(getIntent().getStringExtra("key"));
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+                                    }
+                                })
+                                .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+
+                        final android.app.AlertDialog alert = builder.create();
+                        alert.show();
+
                     } else {
                         final UsersListItemFormat userDetails = new UsersListItemFormat();
                         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());

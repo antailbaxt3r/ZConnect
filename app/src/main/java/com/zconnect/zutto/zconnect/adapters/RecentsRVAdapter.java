@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -177,6 +178,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 };
                 String name = "Somebody", posted = " posted a ", post = " post ";
                 ClickableSpan clickableSpanPostedBy = null, clickableSpanFeature = null;
+
+                holder.deleteButton.setVisibility(View.GONE);
+
                 try {
                     if (recentsItemFormats.get(position).getPostTimeMillis() > 0) {
                         TimeUtilities ta = new TimeUtilities(recentsItemFormats.get(position).getPostTimeMillis(), System.currentTimeMillis());
@@ -214,6 +218,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     if (recentsItemFormats.get(position).getPostedBy().getImageThumb() != null) {
                         holder.avatarCircle.setImageURI(recentsItemFormats.get(position).getPostedBy().getImageThumb());
                         holder.avatarCircle.setOnClickListener(openUserProfileListener);
+                    }
+
+                    if(recentsItemFormats.get(position).getPostedBy().getUID().equals(FirebaseAuth.getInstance().getUid())){
+                        holder.deleteButton.setVisibility(View.VISIBLE);
+                        holder.deletePost(recentsItemFormats.get(position).getPostID());
                     }
                 }
                 catch (Exception e) {
@@ -686,6 +695,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 productImage,
                 bannerImage;
         ImageView featureIcon;
+
+        ImageButton deleteButton;
+
         LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails;
         FrameLayout layoutFeatureIcon, bannerLinkLayout;
         //
@@ -739,6 +751,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             prePostDetails = (LinearLayout) itemView.findViewById(R.id.prePostDetails);
             sentence = (TextView) itemView.findViewById(R.id.sentence_recents_item_format);
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            deleteButton = (ImageButton) itemView.findViewById(R.id.delete_button);
+
 
             totalComments = (TextView) itemView.findViewById(R.id.comment_text_status);
 
@@ -812,6 +827,34 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             name.setTypeface(quicksandMedium);
             feature.setTypeface(quicksandBold);
             desc.setTypeface(quicksandLight);
+        }
+
+        public void deletePost(final String postID){
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+                    builder.setMessage("Please confirm to delete.")
+                            .setCancelable(false)
+                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(postID).removeValue();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+
+                    final android.app.AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
+
         }
 
         public void setLike(final String key) {

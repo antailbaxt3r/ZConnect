@@ -1,13 +1,20 @@
 package com.zconnect.zutto.zconnect.adapters;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.zconnect.zutto.zconnect.OpenProductDetails;
+import com.zconnect.zutto.zconnect.commonModules.viewImage;
 import com.zconnect.zutto.zconnect.itemFormats.NewUserItemFormat;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.holders.newUserViewHolder;
@@ -39,6 +46,7 @@ public class NewUserRVAdapter extends RecyclerView.Adapter<newUserViewHolder> {
     @Override
     public void onBindViewHolder(newUserViewHolder holder, int position) {
         holder.idImageSDV.setImageURI(Uri.parse(newUserItemFormats.get(position).getIdImageURL()));
+        holder.openImage(context,newUserItemFormats.get(position).getName(),newUserItemFormats.get(position).getIdImageURL());
         holder.aboutTextView.setText(newUserItemFormats.get(position).getAbout());
         holder.newUserName.setText(newUserItemFormats.get(position).getName());
         try {
@@ -58,4 +66,6 @@ public class NewUserRVAdapter extends RecyclerView.Adapter<newUserViewHolder> {
     public int getItemCount() {
         return newUserItemFormats.size();
     }
+
+
 }

@@ -132,6 +132,8 @@ public class AdminHome extends AppCompatActivity {
         private NewUserRVAdapter adapter;
         private Vector<NewUserItemFormat> newUserItemFormats = new Vector<NewUserItemFormat>();
         private DatabaseReference newUsersDataReference;
+        private Boolean flag;
+        private TextView noUserMessage;
         public PlaceholderFragment() {
         }
 
@@ -153,6 +155,7 @@ public class AdminHome extends AppCompatActivity {
             newUsersRV = (RecyclerView) rootView.findViewById(R.id.new_users_recycler);
             linearLayoutManager = new LinearLayoutManager(getContext());
             newUsersRV.setLayoutManager(linearLayoutManager);
+            noUserMessage = (TextView) rootView.findViewById(R.id.section_label);
 
             String tabType = null;
             if (getArguments().getInt(ARG_SECTION_NUMBER)==1){
@@ -170,7 +173,7 @@ public class AdminHome extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     newUserItemFormats.clear();
-
+                    flag = false;
 
                     for (DataSnapshot shot: dataSnapshot.getChildren()) {
                         try {
@@ -186,8 +189,15 @@ public class AdminHome extends AppCompatActivity {
                             }
                             if (newUser.getStatusCode().equals(finalTabType)) {
                                 newUserItemFormats.add(newUser);
+                                flag = true;
                             }
                         }catch (Exception e){}
+                    }
+
+                    if(flag){
+                        noUserMessage.setVisibility(View.GONE);
+                    }else {
+                        noUserMessage.setVisibility(View.VISIBLE    );
                     }
                     adapter.notifyDataSetChanged();
 

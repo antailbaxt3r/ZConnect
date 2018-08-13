@@ -16,6 +16,10 @@ public class RecentsItemFormat {
 
     String recentType;
 
+
+
+    String postID;
+
     //new ui
     private long PostTimeMillis;
     //for infone
@@ -205,6 +209,12 @@ public class RecentsItemFormat {
         this.msgComments = msgComments;
     }
 
+    public String getPostID() {
+        return postID;
+    }
 
+    public void setPostID(String postID) {
+        this.postID = postID;
+    }
 }
 
