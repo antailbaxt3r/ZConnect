@@ -87,7 +87,6 @@ public class OpenUserDetail extends BaseActivity {
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_details_email_editText);
         editTextName = (MaterialEditText) findViewById(R.id.contact_details_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_details_number_editText);
-        //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
         whatsAppNumberText = (TextView) findViewById(R.id.whatsapp_number);
 
@@ -497,8 +496,14 @@ public class OpenUserDetail extends BaseActivity {
                 }
             });
         }
-        if (!skills.equals(""))
+        if (!skills.equals("")) {
             skillsArray = skills.split(",");
+            editTextSkills.setTags(skillsArray);
+            editTextSkills.setVisibility(View.VISIBLE);
+            editTextSkills.setClickable(false);
+        }else {
+            editTextSkills.setVisibility(View.GONE);
+        }
         if(userProfile.getUserType()!=null)
         {
             if(userProfile.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
@@ -519,7 +524,7 @@ public class OpenUserDetail extends BaseActivity {
             }
         }
 
-        editTextSkills.setTags(skillsArray);
+
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
