@@ -342,14 +342,14 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
 
                 if(dataSnapshot.hasChild(user.getUid())){
 //                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                    eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x lit");
+                    eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount()));
                     boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.lit));
 //                        boostBtn.getBackground().setTint(mView.getContext().getResources().getColor(R.color.lit));
 //                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
                     flag=true;
                 }else {
 //                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                    eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount())+"x lit");
+                    eventNumLit.setText(String.valueOf(dataSnapshot.getChildrenCount()));
                     boostBtn.setColorFilter(mView.getContext().getResources().getColor(R.color.primaryText));
 //                        boostBtn.getBackground().setTint(mView.getContext().getResources().getColor(R.color.primaryText));
 //                        boostBtn.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton_sr));
