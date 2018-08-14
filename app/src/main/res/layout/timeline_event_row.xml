@@ -83,7 +83,6 @@
                 android:id="@+id/eventsNumLit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="lit"
                 android:textColor="@color/primaryText"/>
         </LinearLayout>
     </LinearLayout>
