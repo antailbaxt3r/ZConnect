@@ -7,11 +7,11 @@
         android:orderInCategory="1"
         android:name="Add Location"
         android:icon="@drawable/ic_add_location_white_24dp"
-        app:showAsAction="collapseActionView|ifRoom"/>
+        app:showAsAction="collapseActionView"/>
     <item
         android:title="My Rides"
         android:id="@+id/action_my_rides"
         android:orderInCategory="2"
         android:name="My Rides"
-        app:showAsAction="collapseActionView|ifRoom"/>
+        app:showAsAction="collapseActionView"/>
 </menu>

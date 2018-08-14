@@ -321,13 +321,13 @@
                         android:hint="Skills"
                         android:inputType="text"
                         android:text=""
-                        android:textColor="@android:color/black"
+                        android:textColor="@android:color/white"
                         android:visibility="gone"
                         TagsEditText:allowSpaceInTag="true"
                         TagsEditText:tagsBackground="@drawable/square"
                         TagsEditText:tagsCloseImageLeft="@drawable/dot"
                         TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
-                        TagsEditText:tagsTextColor="@color/black"
+                        TagsEditText:tagsTextColor="@color/white"
                         TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
                 </android.support.design.widget.TextInputLayout>
             </RelativeLayout>

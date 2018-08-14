@@ -87,7 +87,6 @@ public class OpenUserDetail extends BaseActivity {
         editTextEmail = (TextInputEditText) findViewById(R.id.contact_details_email_editText);
         editTextName = (MaterialEditText) findViewById(R.id.contact_details_name_editText);
         editTextNumber = (TextInputEditText) findViewById(R.id.contact_details_number_editText);
-        //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
         whatsAppNumberText = (TextView) findViewById(R.id.whatsapp_number);
 
@@ -127,7 +126,7 @@ public class OpenUserDetail extends BaseActivity {
             getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-//
+
 //        name = getIntent().getStringExtra("name");
 //        desc = getIntent().getStringExtra("desc");
 //        mobileNumber = getIntent().getStringExtra("contactDescTv");
@@ -404,15 +403,24 @@ public class OpenUserDetail extends BaseActivity {
         if(skills==null)
             skills="";
 
-        if(skills.length()>1)
-            skills=skills.substring(1,skills.length()-1);
+        if (!skills.equals("") || skills.indexOf(',') > 0) {
+            editTextSkills.setVisibility(View.VISIBLE);
+            String[] skillsArray = skills.split(",");
+            skillsArray[0] = skillsArray[0].substring(1);
+            skillsArray[skillsArray.length - 1] = skillsArray[skillsArray.length - 1]
+                    .substring(0, skillsArray[skillsArray.length - 1].length() - 1);
+            editTextSkills.setTags(skillsArray);
+        } else {
+            editTextSkills.setVisibility(View.GONE);
+        }
 
-        String[] skillsArray = {""};
         if (name != null) {
             editTextName.setText(name);
         }
         if (desc != null) {
             editTextDetails.setText(desc);
+        }else{
+            editTextDetails.setVisibility(View.GONE);
         }
         if (mobileNumber != null) {
             editTextNumber.setText(mobileNumber);
@@ -497,8 +505,7 @@ public class OpenUserDetail extends BaseActivity {
                 }
             });
         }
-        if (!skills.equals(""))
-            skillsArray = skills.split(",");
+
         if(userProfile.getUserType()!=null)
         {
             if(userProfile.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
@@ -518,8 +525,6 @@ public class OpenUserDetail extends BaseActivity {
                 });
             }
         }
-
-        editTextSkills.setTags(skillsArray);
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 

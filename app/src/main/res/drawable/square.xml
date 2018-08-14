@@ -8,7 +8,7 @@
         android:right="10dp"
         android:top="5dp" />
 
-    <solid android:color="@color/secondaryText" />
+    <solid android:color="@color/colorPrimaryDark" />
     <corners
         android:bottomLeftRadius="15dp"
         android:bottomRightRadius="15dp"
