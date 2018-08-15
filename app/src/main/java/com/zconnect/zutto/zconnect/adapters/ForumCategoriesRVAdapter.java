@@ -224,6 +224,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 public void onClick(View v) {
                     final Intent intent = new Intent(context, CreateForum.class);
                     intent.putExtra("uid", uid);
+                    intent.putExtra("flag", "false");
                     context.startActivity(intent);
                 }
             });
