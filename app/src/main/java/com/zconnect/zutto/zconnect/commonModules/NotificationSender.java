@@ -125,22 +125,26 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE:
                 cabLeaveNotification(ND.getItemKey(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage());
                 break;
+            //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST:
                 productShortlistNotification(ND.getItemKey(), ND.getUserName(), ND.getUserMobileNumber(), ND.getItemName(), ND.getCommunityName(), ND.getUserImage());
                 break;
+                //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD:
                 cabAddNotification(ND.getCommunityName());
                 break;
+                //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD:
                 eventAddNotification(ND.getCommunityName(),ND.getItemName(),ND.getItemLocation(),ND.getItemKey(),ND.getItemImage());
                 break;
+                //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD:
                 productAddNotification(ND.getCommunityName(),ND.getItemName(),ND.getItemPrice(),ND.getItemKey(),ND.getItemImage(),ND.getUserName(),ND.getUserImage());
                 break;
+                //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD:
                 forumAddNotification(ND.getCommunityName(), ND.getItemName(),ND.getItemCategory(),ND.getItemCategoryUID(),ND.getItemKey(),ND.getUserName(),ND.getUserImage());
                 break;
-
                 //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_INFONE_CATEGORY_ADD:
                 infoneCategoryAddNotification(ND.getCommunityName(),ND.getItemName(),ND.getItemKey(),ND.getItemImage(),ND.getItemCategoryAdmin());
@@ -168,18 +172,23 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_CAB:
                 cabChatNotification(ND.getCommunityName(),ND.getUserName(), ND.getUserImage(), ND.getItemMessage(), ND.getItemKey());
                 break;
+                //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_EVENT:
                 eventChatNotification(ND.getCommunityName(),ND.getUserName(), ND.getUserImage(),ND.getItemMessage(), ND.getItemKey(), ND.getItemName());
                 break;
+                //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST:
                 postChatNotification(ND.getCommunityName(), ND.getUserName(), ND.getUserImage(), ND.getItemMessage(), ND.getItemKey());
                 break;
+                //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL:
                 requestCallNotification(ND.getCommunityName(),ND.getUserName(),ND.getUserImage(),ND.getUserMobileNumber(),ND.getItemKey());
                 break;
+                //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT:
                 newUserAcceptNotification(ND.getCommunityName(),ND.getItemKey());
                 break;
+                //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT:
                 newUserRejectNotification(ND.getCommunityName(),ND.getItemKey());
                 break;
