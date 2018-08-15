@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -14,13 +15,28 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.CounterManager;
+import com.zconnect.zutto.zconnect.OpenUserDetail;
+import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.holders.InfoneContactsRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneContactsRVItem;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 import java.util.ArrayList;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+
 
 /**
  * Created by tanmay on 24/3/18.
@@ -31,6 +47,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
     Context context;
     ArrayList<InfoneContactsRVItem> infoneContactsRVItems;
     String catId;
+    final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
     public InfoneContactsRVAdpater(Context context, ArrayList<InfoneContactsRVItem> infoneContactsRVItems, String catId) {
         this.context = context;
@@ -61,9 +78,12 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
         holder.callImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CounterManager.infoneCallContact();
-                callOptionsDialog(phoneNums);
-
+                if(infoneContactsRVItems.get(position).getContactHidden()){
+                    createAlertForRequest(infoneContactsRVItems.get(position).getInfoneUserId(),currentUser);
+                }else {
+                    CounterManager.infoneCallContact();
+                    callOptionsDialog(phoneNums);
+                }
             }
         });
 
@@ -71,14 +91,17 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
             @Override
             public void onClick(View v) {
 
-                Intent profileIntent = new Intent(context, InfoneProfileActivity.class);
-                profileIntent.putExtra("infoneUserId", infoneContactsRVItems.get(position).getInfoneUserId());
-                profileIntent.putExtra("catId", catId);
-                context.startActivity(profileIntent);
-                CounterManager.infoneOpenContact(catId, infoneContactsRVItems.get(position).getInfoneUserId());
+                if(infoneContactsRVItems.get(position).getContactHidden()){
+                    createAlertForRequest(infoneContactsRVItems.get(position).getInfoneUserId(),currentUser);
+                }else {
+                    Intent profileIntent = new Intent(context, InfoneProfileActivity.class);
+                    profileIntent.putExtra("infoneUserId", infoneContactsRVItems.get(position).getInfoneUserId());
+                    profileIntent.putExtra("catId", catId);
+                    context.startActivity(profileIntent);
+                    CounterManager.infoneOpenContact(catId, infoneContactsRVItems.get(position).getInfoneUserId());
+                }
             }
         });
-
     }
 
     private void callOptionsDialog(final ArrayList<String> phoneArrayList) {
@@ -127,8 +150,59 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
 
     }
 
+
     @Override
     public int getItemCount() {
         return infoneContactsRVItems.size();
     }
+
+    void createAlertForRequest(final String itemUID, final DatabaseReference currentUser){
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        builder.setMessage("Contact is hidden! Want to request a call?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                       requestCallFunction(itemUID,currentUser);
+
+                    }
+                })
+                .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+        final android.app.AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void requestCallFunction(final String itemUID, DatabaseReference currentUser){
+
+        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                NotificationSender notificationSender = new NotificationSender(context,userItemFormat.getUserUID());
+
+                NotificationItemFormat requestCallNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_REQUEST_CALL,userItemFormat.getUserUID());
+                requestCallNotification.setItemKey(itemUID);
+
+                requestCallNotification.setUserMobileNumber(userItemFormat.getMobileNumber());
+                requestCallNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                requestCallNotification.setUserName(userItemFormat.getUsername());
+                requestCallNotification.setCommunityName(communityTitle);
+
+                notificationSender.execute(requestCallNotification);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

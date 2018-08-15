@@ -120,7 +120,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
                 contactsRVItems = new ArrayList<>();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
 
-                    try {
+//                    try {
                         InfoneContactsRVItem temp = new InfoneContactsRVItem();
 
                         String name = childSnapshot.child("name").getValue(String.class);
@@ -157,12 +157,10 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
                         temp.setContactHidden(contactHidden);
 
-                        if(!contactHidden) {
-                            contactsRVItems.add(temp);
-                        }
+                        contactsRVItems.add(temp);
 
                         totalContacts = contactsRVItems.size();
-                    }catch (Exception e){}
+//                    }catch (Exception e){}
                 }
 
                 Collections.sort(contactsRVItems, new Comparator<InfoneContactsRVItem>() {
@@ -193,7 +191,7 @@ public class InfoneContactListActivity extends AppCompatActivity {
                 contactsRVSearchItems = new ArrayList<>();
                 for (int i = 0; i < contactsRVItems.size(); i++) {
 
-                    if (contactsRVItems.get(i).getName().toLowerCase().trim().contains(queryString.toLowerCase()) && !contactsRVItems.get(i).getContactHidden()) {
+                    if (contactsRVItems.get(i).getName().toLowerCase().trim().contains(queryString.toLowerCase())) {
                         contactsRVSearchItems.add(contactsRVItems.get(i));
                     }
                     if (contactsRVSearchItems.size() > 7) {
