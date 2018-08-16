@@ -56,6 +56,7 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -606,6 +607,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             } else if(communityReference!=null) {
 
+                initialiseNotifications();
                 FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
                 LocalDate dateTime = new LocalDate();
                 CounterManager.ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(dateTime.toString());
@@ -673,6 +675,67 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return toggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
+
+
+
+    public void initialiseNotifications(){
+
+        DatabaseReference databaseReference;
+        String Uid;
+
+        Uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        databaseReference=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid).child("NotificationChannels");
+
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                try {
+
+                    Setting data = dataSnapshot.getValue(Setting.class);
+
+                    if (data.getAddCabPool()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
+                    }
+
+                    if (data.getAddEvent()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
+                    }
+
+                    if (data.getOffers()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
+                    }
+
+                    if (data.getStoreRoom()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
+                    }
+
+                    if (data.getAddForum()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
+                    }
+                }catch (Exception e){
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //Navigation Bar

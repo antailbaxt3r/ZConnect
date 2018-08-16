@@ -26,12 +26,14 @@ import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_OFFERS
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_STOREROOM;
 
 public class NotificationSettings extends BaseActivity {
+
     Switch switch_events;
     Switch switch_cabPool;
     Switch switch_storeroom;
     Switch switch_offers;
     Switch switch_forums;
-
+    DatabaseReference databaseReference;
+    String Uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,64 +70,10 @@ public class NotificationSettings extends BaseActivity {
         switch_offers=(Switch) findViewById(R.id.switch_offers);
         switch_forums=(Switch) findViewById(R.id.switch_forums);
 
-        String Uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid).child("NotificationChannels");
+        Uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        databaseReference=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid).child("NotificationChannels");
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                try {
-
-                    Setting data = dataSnapshot.getValue(Setting.class);
-
-                    switch_cabPool.setChecked(data.getAddCabPool());
-                    switch_events.setChecked(data.getAddEvent());
-                    switch_offers.setChecked(data.getOffers());
-                    switch_storeroom.setChecked(data.getStoreRoom());
-                    switch_forums.setChecked(data.getAddForum());
-
-
-                    if (data.getAddCabPool()) {
-                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
-                    } else {
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
-                    }
-
-                    if (data.getAddEvent()) {
-                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
-                    } else {
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
-                    }
-
-                    if (data.getOffers()) {
-                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
-                    } else {
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
-                    }
-
-                    if (data.getStoreRoom()) {
-                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
-                    } else {
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
-                    }
-
-                    if (data.getAddForum()) {
-                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
-                    } else {
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
-                    }
-                }catch (Exception e){
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        initialiseNotifications();
 
         switch_events.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -137,7 +85,6 @@ public class NotificationSettings extends BaseActivity {
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
                 }
                 databaseReference.child(KEY_EVENT).setValue(isChecked);
-
             }
         });
 
@@ -196,7 +143,67 @@ public class NotificationSettings extends BaseActivity {
             }
         });
     }
+
+    public void initialiseNotifications(){
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                try {
+
+                    Setting data = dataSnapshot.getValue(Setting.class);
+
+                    switch_cabPool.setChecked(data.getAddCabPool());
+                    switch_events.setChecked(data.getAddEvent());
+                    switch_offers.setChecked(data.getOffers());
+                    switch_storeroom.setChecked(data.getStoreRoom());
+                    switch_forums.setChecked(data.getAddForum());
+
+
+                    if (data.getAddCabPool()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD + communityReference);
+                    }
+
+                    if (data.getAddEvent()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD + communityReference);
+                    }
+
+                    if (data.getOffers()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_OFFERS_ADD + communityReference);
+                    }
+
+                    if (data.getStoreRoom()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD + communityReference);
+                    }
+
+                    if (data.getAddForum()) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
+                    }
+                }catch (Exception e){
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
+
 
 
  class Setting{
@@ -212,7 +219,7 @@ public class NotificationSettings extends BaseActivity {
     }
 
 
-    public Setting(Boolean AddCabPool,Boolean AddEvent,Boolean EventBoosted,Boolean StoreRoom,Boolean Offers,Boolean AddForum ){
+    public Setting(Boolean AddCabPool,Boolean AddEvent,Boolean StoreRoom,Boolean Offers,Boolean AddForum ){
         this.AddCabPool=AddCabPool;
         this.AddEvent=AddEvent;
         this.StoreRoom=StoreRoom;
