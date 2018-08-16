@@ -65,6 +65,7 @@ import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -183,7 +184,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
 
         initListeners();

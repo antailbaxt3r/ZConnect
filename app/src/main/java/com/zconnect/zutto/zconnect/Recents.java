@@ -158,6 +158,7 @@ public class Recents extends Fragment {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     tempUser = new RecentsItemFormat();
                     tempUser = shot.getValue(RecentsItemFormat.class);
+                    tempUser.setPostID(shot.getKey());
                     if(shot.hasChild("recentType")){
                         normalPostsHome.add(tempUser);
                     }else {

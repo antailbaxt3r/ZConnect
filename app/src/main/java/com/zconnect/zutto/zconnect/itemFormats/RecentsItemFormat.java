@@ -15,10 +15,7 @@ public class RecentsItemFormat {
     private String DT;
 
     String recentType;
-
-
-
-    String postID;
+    private String postID;
 
     //new ui
     private long PostTimeMillis;

@@ -183,6 +183,11 @@ public class NotificationService extends FirebaseMessagingService {
 
     }
 
+    @Override
+    public void onNewToken(String s) {
+        super.onNewToken(s);
+    }
+
     private void statusLikeNotification() {
         final String statusKey = data.get("statusKey").toString();
         final String userName = data.get("userName").toString();
