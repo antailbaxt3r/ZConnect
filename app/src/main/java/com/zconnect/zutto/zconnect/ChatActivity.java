@@ -45,6 +45,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
@@ -684,6 +685,17 @@ public class ChatActivity extends BaseActivity {
         startActivity(i);
     }
 
+    public void launchEditForum() {
+        String tab = getIntent().getStringExtra("tab");
+        String key = getIntent().getStringExtra("key");
+        Intent i = new Intent(this, CreateForum.class);
+        i.putExtra("uid", tab);
+        i.putExtra("catUID", key);
+        i.putExtra("flag", "true");
+        startActivity(i);
+        finish();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu=menu;
@@ -697,6 +709,10 @@ public class ChatActivity extends BaseActivity {
 
         if (item.getItemId() == R.id.action_list_people) {
             launchPeopleList();
+        }
+
+        if(item.getItemId() == R.id.action_edit_forum) {
+            launchEditForum();
         }
 
         return super.onOptionsItemSelected(item);

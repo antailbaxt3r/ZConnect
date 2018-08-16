@@ -212,6 +212,9 @@
     <string name="invitation_cta">Call to action</string>
 
 
+    <!--menu related-->
+    <string name="edit_forum">Edit Forum</string>
+
 
 
 </resources>

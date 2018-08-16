@@ -49,10 +49,10 @@ import mabbas007.tagsedittext.TagsEditText;
 public class OpenUserDetail extends BaseActivity {
     String name, mobileNumber,whatsAppNumber, email, desc, imagelink ,skills ,category, Uid;
     Boolean contactHidden = false;
-    private MaterialEditText editTextName;
-    private android.support.design.widget.TextInputEditText editTextEmail;
-    private android.support.design.widget.TextInputEditText editTextDetails;
-    private android.support.design.widget.TextInputEditText editTextNumber;
+    private TextView editTextName;
+    private TextView editTextEmail;
+    private TextView editTextDetails;
+    private TextView editTextNumber;
 
     TextView whatsAppNumberText;
     //private android.support.design.widget.TextInputEditText editTextSkills;
@@ -83,10 +83,10 @@ public class OpenUserDetail extends BaseActivity {
         progressBar.setVisibility(View.VISIBLE);
         content.setVisibility(View.INVISIBLE);
         image = (SimpleDraweeView) findViewById(R.id.contact_details_display_image);
-        editTextDetails = (TextInputEditText) findViewById(R.id.contact_details_editText_1);
-        editTextEmail = (TextInputEditText) findViewById(R.id.contact_details_email_editText);
-        editTextName = (MaterialEditText) findViewById(R.id.contact_details_name_editText);
-        editTextNumber = (TextInputEditText) findViewById(R.id.contact_details_number_editText);
+        editTextDetails = (TextView) findViewById(R.id.contact_details_editText_1);
+        editTextEmail = (TextView) findViewById(R.id.contact_details_email_editText);
+        editTextName = (TextView) findViewById(R.id.contact_details_name_editText);
+        editTextNumber = (TextView) findViewById(R.id.contact_details_number_editText);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
         whatsAppNumberText = (TextView) findViewById(R.id.whatsapp_number);
 

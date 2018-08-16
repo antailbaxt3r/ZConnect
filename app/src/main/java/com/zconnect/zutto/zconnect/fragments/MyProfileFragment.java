@@ -46,10 +46,10 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 
 public class MyProfileFragment extends Fragment {
     String name, mobileNumber,whatsAppNumber, email, desc, imagelink ,skills ,category, Uid;
-    private MaterialEditText editTextName;
-    private android.support.design.widget.TextInputEditText editTextEmail;
-    private android.support.design.widget.TextInputEditText editTextDetails;
-    private android.support.design.widget.TextInputEditText editTextNumber;
+    private TextView editTextName;
+    private TextView editTextEmail;
+    private TextView editTextDetails;
+    private TextView editTextNumber;
     Boolean contactHidden = false;
     TextView whatsAppNumberText;
     //private android.support.design.widget.TextInputEditText editTextSkills;
@@ -96,10 +96,10 @@ public class MyProfileFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         content.setVisibility(View.INVISIBLE);
         image = (SimpleDraweeView) view.findViewById(R.id.contact_details_display_image);
-        editTextDetails = (TextInputEditText) view.findViewById(R.id.contact_details_editText_1);
-        editTextEmail = (TextInputEditText) view.findViewById(R.id.contact_details_email_editText);
-        editTextName = (MaterialEditText) view.findViewById(R.id.contact_details_name_editText);
-        editTextNumber = (TextInputEditText) view.findViewById(R.id.contact_details_number_editText);
+        editTextDetails = (TextView) view.findViewById(R.id.contact_details_editText_1);
+        editTextEmail = (TextView) view.findViewById(R.id.contact_details_email_editText);
+        editTextName = (TextView) view.findViewById(R.id.contact_details_name_editText);
+        editTextNumber = (TextView) view.findViewById(R.id.contact_details_number_editText);
         //editTextSkills = (TextInputEditText) findViewById(R.id.contact_details_editText_skills);
         editTextSkills = (TagsEditText) view.findViewById(R.id.contact_details_editText_skills);
         whatsAppNumberText = (TextView) view.findViewById(R.id.whatsapp_number);
