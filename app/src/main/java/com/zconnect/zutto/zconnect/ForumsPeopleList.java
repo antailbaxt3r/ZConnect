@@ -51,6 +51,7 @@ public class ForumsPeopleList extends BaseActivity {
     private View.OnClickListener onClickListener;
     Vector<UsersListItemFormat> usersListItemFormatVector = new Vector<>();
     private String userType = ForumsUserTypeUtilities.KEY_USER;
+    private String currentUserType = ForumsUserTypeUtilities.KEY_USER;
 
 
     @Override
@@ -119,17 +120,24 @@ public class ForumsPeopleList extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 usersListItemFormatVector.clear();
                 flag = false;
-                userType = ForumsUserTypeUtilities.KEY_USER;
+                currentUserType = ForumsUserTypeUtilities.KEY_USER;
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
+                    userType = ForumsUserTypeUtilities.KEY_USER;
                     UsersListItemFormat usersListItemFormat;
                     try {
                         usersListItemFormat = shot.getValue(UsersListItemFormat.class);
                         if (usersListItemFormat.getUserUID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             flag = true;
                             if(shot.hasChild("userType")){
-                                userType = usersListItemFormat.getUserType();
+                                currentUserType = usersListItemFormat.getUserType();
                             }
                         }
+
+                        if(shot.hasChild("userType")){
+                            userType = usersListItemFormat.getUserType();
+                        }
+
+                        usersListItemFormat.setUserType(userType);
                         usersListItemFormatVector.add(usersListItemFormat);
                     }catch (Exception e){}
 
@@ -143,7 +151,7 @@ public class ForumsPeopleList extends BaseActivity {
                     joinLeaveButton.setText("Join");
                 }
 
-                adapter = new UsersListRVAdapter(ForumsPeopleList.this, usersListItemFormatVector, FeatureNamesUtilities.KEY_FORUMS,userType,tab,key);
+                adapter = new UsersListRVAdapter(ForumsPeopleList.this, usersListItemFormatVector, FeatureNamesUtilities.KEY_FORUMS,currentUserType,tab,key);
                 forumsPeopleRV.setAdapter(adapter);
             }
 

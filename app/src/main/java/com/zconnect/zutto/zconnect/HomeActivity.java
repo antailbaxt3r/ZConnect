@@ -813,7 +813,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                 });
                 android.app.AlertDialog dialog = builder.create();
-                dialog.setCancelable(false);
                 dialog.show();
                 dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
                 dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));

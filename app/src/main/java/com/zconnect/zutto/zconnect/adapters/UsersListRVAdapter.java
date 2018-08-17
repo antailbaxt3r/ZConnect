@@ -73,6 +73,8 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
 
         if(featureType.equals(FeatureNamesUtilities.KEY_FORUMS)){
             holder.setUserType(usersListItemFormats.get(position).getUserType());
+        }else {
+            holder.forumType.setVisibility(View.GONE);
         }
 
     }
@@ -164,7 +166,6 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                             });
 
                             AlertDialog dialog = builder.create();
-                            dialog.setCancelable(false);
                             dialog.show();
 
                             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));;
@@ -195,7 +196,6 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                             });
 
                             AlertDialog dialog = builder.create();
-                            dialog.setCancelable(false);
                             dialog.show();
                             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));
                         }else {

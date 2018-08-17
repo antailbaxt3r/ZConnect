@@ -247,31 +247,9 @@ public class Advertisement extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-        /*databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                progressBar.setVisibility(VISIBLE);
-                adItemFormats.clear();
-                for (DataSnapshot shot : dataSnapshot.getChildren()) {
-
-                    adItemFormats.add(shot.getValue(AdItemFormat.class));
-                }
-                adapter.notifyDataSetChanged();
-                progressBar.setVisibility(INVISIBLE);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(INVISIBLE);
-            }
-        });*/
-
     }
 
-    /**
-     * Adds Native Express ads to the items list.
-     */
+
     private void addNativeExpressAds() {
 
         // Loop through the items array and place a new Native Express ad in every ith position in
@@ -284,9 +262,7 @@ public class Advertisement extends BaseActivity {
         }
     }
 
-    /**
-     * Sets up and loads the Native Express ads.
-     */
+
     private void setUpAndLoadNativeExpressAds() {
         // Use a Runnable to ensure that the RecyclerView has been laid out before setting the
         // ad size for the Native Express ad. This allows us to set the Native Express ad's
