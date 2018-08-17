@@ -890,6 +890,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             likeText.setText(String.valueOf(dataSnapshot.getChildrenCount()));
                         else
                             likeText.setText("");
+                        likeText.setTextColor(context.getResources().getColor(R.color.icon_color));
                         likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
 //                        likeIcon.setBackground(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_24));
                         likeIcon.setColorFilter(itemView.getContext().getResources().getColor(R.color.icon_color));

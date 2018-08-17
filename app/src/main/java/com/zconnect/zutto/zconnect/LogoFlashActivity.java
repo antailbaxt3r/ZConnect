@@ -35,9 +35,12 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.NotificationService;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -224,6 +227,48 @@ public class LogoFlashActivity extends BaseActivity {
 
 
     }
+
+    ///////////script of adding forumAdmin node/////////
+//    public void addForumAdminNode() {
+//        Log.d("FORUUUUUM", "YEAAA");
+//        final DatabaseReference tabsCategoriesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories");
+//
+//        tabsCategoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                Log.d("FORUUUUUM DS", dataSnapshot.getKey());
+//                for(DataSnapshot snapshot: dataSnapshot.getChildren())
+//                {
+//                    Log.d("FORUUUUUM SS", snapshot.getKey());
+//                    for (DataSnapshot snapshot1: snapshot.getChildren())
+//                    {
+//                        Log.d("FORUUUUUM SS1", snapshot1.getKey());
+//                        Map<String, Object> forumAdminMap = new HashMap<String, Object>();
+//                        for(DataSnapshot snapshot2: snapshot1.child("users").getChildren())
+//                        {
+//                            Log.d("FORUUUUUM SS2", snapshot2.getKey());
+//                            if(!snapshot2.hasChild("userType"))
+//                                continue;
+//                            if(snapshot2.child("userType").getValue().equals(ForumsUserTypeUtilities.KEY_ADMIN))
+//                            {
+//                                Map<String, Object> childMap = new HashMap<String, Object>();
+//                                childMap.put("userUID", snapshot2.getKey());
+//                                forumAdminMap.put(snapshot2.getKey(), childMap);
+//                            }
+//                        }
+//                        Log.d("FORUUUUUM SS1", "Before posting");
+//                        snapshot1.getRef().child("forumAdmins").setValue(forumAdminMap);
+//                        Log.d("FORUUUUUM SS1", "After posting");
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 //    public static void showDebugDBAddressLogToast(Context context) {
 //        if (BuildConfig.DEBUG) {

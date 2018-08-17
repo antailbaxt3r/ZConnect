@@ -24,6 +24,8 @@ import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -125,7 +127,7 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
 
                 forumType.setVisibility(View.VISIBLE);
                 forumType.setText("(Forum Admin)");
-
+                forumType.setTextColor(context.getResources().getColor(R.color.colorHighlight));
             }
         }
 
@@ -178,18 +180,28 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key).child("users").child(usersListItemFormats.get(getAdapterPosition()).getUserUID());
+                                    DatabaseReference forumAdminsNodeRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key).child("forumAdmins");
+                                    String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
                                     switch (which) {
-                                        case 0: String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
+                                        case 0:
                                             intent=new Intent(context, OpenUserDetail.class);
                                             intent.putExtra("Uid",userUID);
                                             context.startActivity(intent);
                                             break;
-                                        case 1: userReference.child("userType").setValue(ForumsUserTypeUtilities.KEY_ADMIN);
+                                        case 1:
+                                            userReference.child("userType").setValue(ForumsUserTypeUtilities.KEY_ADMIN);
+                                            Map<String, Object> newAdmin = new HashMap<String, Object>();
+                                            newAdmin.put("userUID", userUID);
+                                            forumAdminsNodeRef.child(userUID).setValue(newAdmin);
                                             break;
-                                        case 2: userReference.removeValue();
+                                        case 2:
+                                            userReference.removeValue();
+                                            forumAdminsNodeRef.child(userUID).removeValue();
                                             Toast.makeText(context, usersListItemFormats.get(getAdapterPosition()).getName() + " is removed from ", Toast.LENGTH_SHORT).show();
                                             break;
-                                        case 3: userReference.child("userType").setValue(ForumsUserTypeUtilities.KEY_BLOCKED);
+                                        case 3:
+                                            userReference.child("userType").setValue(ForumsUserTypeUtilities.KEY_BLOCKED);
+                                            forumAdminsNodeRef.child(userUID).removeValue();
                                             break;
                                     }
                                 }
