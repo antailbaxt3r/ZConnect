@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -836,7 +837,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onClick(View v) {
                     final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
-                    builder.setMessage("Please confirm to delete.")
+                    builder.setMessage("Please confirm to delete this post!")
                             .setCancelable(false)
                             .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                                 @Override
@@ -851,8 +852,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 }
                             });
 
-                    final android.app.AlertDialog alert = builder.create();
-                    alert.show();
+                    final android.app.AlertDialog dialog = builder.create();
+                    dialog.setCancelable(false);
+                    dialog.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));
                 }
             });
 

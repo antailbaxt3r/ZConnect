@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -545,7 +546,7 @@ public class MyProfileFragment extends Fragment {
     private  void hideContactAlert(final MenuItem item)
     {
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
-        builder.setMessage("Please confirm to hide your contact!")
+        builder.setMessage("Please confirm to hide your contact number!")
                 .setCancelable(false)
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
@@ -561,12 +562,14 @@ public class MyProfileFragment extends Fragment {
                     }
                 });
 
-        final android.app.AlertDialog alert = builder.create();
+        final android.app.AlertDialog dialog = builder.create();
 
         if(!(getActivity()).isFinishing())
         {
-            if(!alert.isShowing()) {
-                alert.show();
+            if(!dialog.isShowing()) {
+                dialog.setCancelable(false);
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
             }
         }
 

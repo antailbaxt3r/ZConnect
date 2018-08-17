@@ -21,6 +21,7 @@ import com.zconnect.zutto.zconnect.R;
 import java.util.Calendar;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
 /**
  * Created by tanmay on 25/3/18.
@@ -75,8 +76,10 @@ public class MessageTabRVViewHolder extends RecyclerView.ViewHolder {
                             }
                         });
 
-                 AlertDialog alert11 = builder1.create();
-                alert11.show();
+                AlertDialog dialog = builder1.create();
+                dialog.setCancelable(false);
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(itemView.getResources().getColor(R.color.colorHighlight));
             }
         });
     }

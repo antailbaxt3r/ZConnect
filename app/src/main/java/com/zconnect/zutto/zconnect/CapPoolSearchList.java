@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -247,8 +248,7 @@ public class CapPoolSearchList extends BaseActivity {
                     progressBar.setVisibility(View.INVISIBLE);
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(CapPoolSearchList.this);
                     // 2. Chain together various setter methods to set the dialog characteristics
-                    builder.setMessage("No CabPools found . \n Would you like to add one ?")
-                            .setTitle("Alert");
+                    builder.setMessage("No Cab pools found. \n Would you like to add one ?");
 
                     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -270,12 +270,12 @@ public class CapPoolSearchList extends BaseActivity {
                                     finish();
 
                                 }else{
-                                Snackbar snack = Snackbar.make(fab, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
-                                TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-                                snackBarText.setTextColor(Color.WHITE);
-                                snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
-                                snack.show();
-                            }} else {
+                                    Snackbar snack = Snackbar.make(fab, "Please add your contact to Infone before adding a pool.", Snackbar.LENGTH_LONG);
+                                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                    snackBarText.setTextColor(Color.WHITE);
+                                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                                    snack.show(); }
+                            } else {
                                 Snackbar snack = Snackbar.make(fab, "No internet. Please try again later.", Snackbar.LENGTH_LONG);
                                 TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
                                 snackBarText.setTextColor(Color.WHITE);
@@ -290,7 +290,9 @@ public class CapPoolSearchList extends BaseActivity {
                         }
                     });
                     android.app.AlertDialog dialog = builder.create();
+                    dialog.setCancelable(false);
                     dialog.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
 
                 } else {
                     progressBar.setVisibility(View.INVISIBLE);

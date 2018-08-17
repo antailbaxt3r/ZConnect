@@ -164,7 +164,10 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                             });
 
                             AlertDialog dialog = builder.create();
+                            dialog.setCancelable(false);
                             dialog.show();
+
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));;
 
                         }else if(forumUserType.equals(ForumsUserTypeUtilities.KEY_ADMIN)){
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -192,7 +195,9 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                             });
 
                             AlertDialog dialog = builder.create();
+                            dialog.setCancelable(false);
                             dialog.show();
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));
                         }else {
                             String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
                             intent=new Intent(context, OpenUserDetail.class);

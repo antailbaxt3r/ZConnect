@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -157,8 +158,7 @@ public class ForumsPeopleList extends BaseActivity {
                 if (flag) {
 
                     final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ForumsPeopleList.this);
-                    builder.setMessage("Please confirm to leave group.")
-                            .setCancelable(false)
+                    builder.setMessage("Please confirm to leave forum!")
                             .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -176,8 +176,10 @@ public class ForumsPeopleList extends BaseActivity {
                                 }
                             });
 
-                    final android.app.AlertDialog alert = builder.create();
-                    alert.show();
+                    final android.app.AlertDialog dialog = builder.create();
+                    dialog.setCancelable(false);
+                    dialog.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
                 } else {
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
                     final UsersListItemFormat userDetails = new UsersListItemFormat();

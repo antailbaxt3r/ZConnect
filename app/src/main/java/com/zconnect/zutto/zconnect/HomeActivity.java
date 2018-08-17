@@ -792,8 +792,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.bugReport: {
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(HomeActivity.this);
                 // 2. Chain together various setter methods to set the dialog characteristics
-                builder.setMessage("Send a Bug Report or a Feedback to \nzconnectinc@gmail.com")
-                        .setTitle("Alert");
+                builder.setMessage("Send a bug report or a feedback to: \nzconnectinc@gmail.com");
 
                 builder.setPositiveButton("Bug Report", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -814,7 +813,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                 });
                 android.app.AlertDialog dialog = builder.create();
+                dialog.setCancelable(false);
                 dialog.show();
+                dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
                 break;
             }
             case R.id.share: {

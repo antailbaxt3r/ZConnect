@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.VideoOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.collection.LLRBNode;
 import com.zconnect.zutto.zconnect.adapters.RecyclerViewAdapterAdvertisement;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.AdItemFormat;
@@ -217,15 +219,14 @@ public class Advertisement extends BaseActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(Advertisement.this);
 
             // 2. Chain together various setter methods to set the dialog characteristics
-            builder.setMessage("To post Advertisements on the ZConnect \nContact : zconnectinc@gmail.com")
-                    .setTitle("Alert");
+            builder.setMessage("To post Advertisements on the ZConnect \nContact : zconnectinc@gmail.com");
 
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                 }
             });
-            builder.setNegativeButton("Contact", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Contact", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                             "mailto", "zconnectinc@gmail.com", null));
@@ -235,7 +236,9 @@ public class Advertisement extends BaseActivity {
                 }
             });
             AlertDialog dialog = builder.create();
+            dialog.setCancelable(false);
             dialog.show();
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
             return true;
         }
         return super.onOptionsItemSelected(item);

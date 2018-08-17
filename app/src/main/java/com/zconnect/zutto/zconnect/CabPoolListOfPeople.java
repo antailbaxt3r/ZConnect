@@ -272,8 +272,10 @@ public class CabPoolListOfPeople extends BaseActivity {
                                     }
                                 });
 
-                        final android.app.AlertDialog alert = builder.create();
-                        alert.show();
+                        final android.app.AlertDialog dialog = builder.create();
+                        dialog.setCancelable(false);
+                        dialog.show();
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
 
                     } else {
                         final UsersListItemFormat userDetails = new UsersListItemFormat();
@@ -311,9 +313,9 @@ public class CabPoolListOfPeople extends BaseActivity {
 
                 } else {
 
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(CabPoolListOfPeople.this);
-                    dialog.setNegativeButton("Lite", null)
-                            .setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(CabPoolListOfPeople.this);
+                    alert.setNegativeButton("Skip", null)
+                            .setPositiveButton("Login Now", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent loginIntent = new Intent(CabPoolListOfPeople.this, LoginActivity.class);
@@ -322,8 +324,12 @@ public class CabPoolListOfPeople extends BaseActivity {
                                     finish();
                                 }
                             })
-                            .setTitle("Please login to join.")
-                            .create().show();
+                            .setMessage("Please login to join.");
+
+                    AlertDialog dialog = alert.create();
+                    dialog.setCancelable(false);
+                    dialog.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
                 }
             }
         });

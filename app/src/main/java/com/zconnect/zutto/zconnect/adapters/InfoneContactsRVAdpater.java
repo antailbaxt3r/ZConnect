@@ -158,7 +158,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
 
     void createAlertForRequest(final String itemUID, final DatabaseReference currentUser){
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
-        builder.setMessage("Contact is hidden! Want to request a call?")
+        builder.setMessage("Contact is hidden. Do you want to request a call?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -175,8 +175,10 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                     }
                 });
 
-        final android.app.AlertDialog alert = builder.create();
-        alert.show();
+        final android.app.AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));
     }
 
     public void requestCallFunction(final String itemUID, DatabaseReference currentUser){

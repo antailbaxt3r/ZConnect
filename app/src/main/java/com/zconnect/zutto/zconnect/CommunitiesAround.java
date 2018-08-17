@@ -521,13 +521,14 @@ public class CommunitiesAround extends BaseActivity {
                     }
                 });
 
-        final AlertDialog alert = builder.create();
+        final AlertDialog dialog = builder.create();
 
         if(!((Activity)this).isFinishing())
         {
-            if(!alert.isShowing()) {
-                alert.show();
-                //show dialog
+            if(!dialog.isShowing()) {
+                dialog.setCancelable(false);
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
             }
         }
 
