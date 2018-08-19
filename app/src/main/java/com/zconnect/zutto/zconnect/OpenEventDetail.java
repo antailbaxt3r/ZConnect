@@ -319,10 +319,12 @@ public class  OpenEventDetail extends BaseActivity{
 //        }
         //changing fonts
         Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
+        Typeface customFontBold =  Typeface.createFromAsset(getAssets(), "fonts/Raleway-Bold.ttf");
         Typeface customFont2 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
         EventDate.setTypeface(customFont);
-        EventDescription.setTypeface(customFont2);
-        EventVenue.setTypeface(customFont);
+
+        EventDescription.setTypeface(customFontBold);
+        EventVenue.setTypeface(customFontBold);
 
         SharedPreferences sharedPref = getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
