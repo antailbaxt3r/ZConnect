@@ -125,10 +125,10 @@
                 android:layout_height="wrap_content">
 
                 <ImageButton
-                    android:id="@+id/delete_button"
+                    android:id="@+id/recents_post_options"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_delete_forever_black_24dp"
+                    android:src="@drawable/ic_more_vert_black_24dp"
                     android:background="@color/transparent"
                     android:tint="@color/colorPrimaryDark"
                     android:visibility="gone"/>
@@ -266,6 +266,7 @@
                             android:tint="@color/icon_color"/>
                     </RelativeLayout>
                     <RelativeLayout
+                        android:id="@+id/messagesRecentItem_comment_layout"
                         android:layout_width="0dp"
                         android:layout_weight="0.5"
                         android:layout_height="wrap_content"

@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect.adapters;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -28,7 +31,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,6 +58,7 @@ import com.zconnect.zutto.zconnect.Shop_detail;
 import com.zconnect.zutto.zconnect.TabStoreRoom;
 import com.zconnect.zutto.zconnect.TabbedEvents;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.commonModules.viewImage;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
@@ -64,7 +67,6 @@ import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.addActivities.AddStatus;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.Date;
@@ -226,8 +228,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         holder.deleteButton.setVisibility(View.VISIBLE);
                         holder.deletePost(recentsItemFormats.get(position).getPostID());
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     Log.d("Error Message", e.getMessage());
                 }
                 holder.post.setTextColor(context.getResources().getColor(R.color.link));
@@ -558,6 +559,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             if(!recentsItemFormats.get(position).getImageurl().equals("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png")) {
                                 holder.postImage.setVisibility(View.VISIBLE);
                                 holder.postImage.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
+                                holder.setOpenStatusImage(recentsItemFormats.get(position).getPostedBy().getUsername(),recentsItemFormats.get(position).getImageurl());
                             }
                         }
                         else
@@ -589,6 +591,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         //Message is not anonymous
                         holder.name.setText(recentsItemFormats.get(position).getName());
                     }
+                    holder.setOpenComments();
                     holder.totalComments.setVisibility(View.GONE);
                     try {
                         if(recentsItemFormats.get(position).getMsgComments()!=0){
@@ -601,6 +604,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }catch (Exception e){
 
                     }
+
 
                     posted = "  wrote a ";
                     post = "status";
@@ -754,7 +758,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             sentence = (TextView) itemView.findViewById(R.id.sentence_recents_item_format);
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            deleteButton = (ImageButton) itemView.findViewById(R.id.delete_button);
+            deleteButton = (ImageButton) itemView.findViewById(R.id.recents_post_options);
 
 
             totalComments = (TextView) itemView.findViewById(R.id.comment_text_status);
@@ -799,14 +803,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getId());
                         i.putExtra("date",recentsItemFormats.get(getAdapterPosition()).getDT());
                         context.startActivity(i);
-                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Message")) {
-                        i=new Intent(context,ChatActivity.class);
-
-                        mRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/"+recentsItemFormats.get(getAdapterPosition()).getKey());
-                        i.putExtra("ref",mRef.toString());
-                        i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getKey());
-                        i.putExtra("type","post");
-                        context.startActivity(i);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){
                         i = new Intent(context,InfoneProfileActivity.class);
                         i.putExtra("infoneUserId",recentsItemFormats.get(getAdapterPosition()).getId());
@@ -833,11 +829,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public void deletePost(final String postID){
 
+
+
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
-                    builder.setMessage("Please confirm to delete this post!")
+
+                    final android.app.AlertDialog.Builder builder2 = new android.app.AlertDialog.Builder(context);
+                    builder2.setMessage("Please confirm to delete this post!")
                             .setCancelable(false)
                             .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                                 @Override
@@ -852,13 +851,77 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 }
                             });
 
-                    final android.app.AlertDialog dialog = builder.create();
-                    dialog.setCancelable(false);
+                    final android.app.AlertDialog dialog2 = builder2.create();
+                    dialog2.setCancelable(false);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                    String[] options = {"Delete Post"};
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                             switch (which) {
+                                case 0:
+                                    dialog2.show();
+                                    dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));
+                            }
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
                     dialog.show();
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));
                 }
             });
 
+        }
+
+        public void setOpenComments() {
+
+            final RelativeLayout commentLayout = (RelativeLayout) itemView.findViewById(R.id.messagesRecentItem_comment_layout);
+
+            commentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    i = new Intent(context, ChatActivity.class);
+
+                    mRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + recentsItemFormats.get(getAdapterPosition()).getKey());
+                    i.putExtra("ref", mRef.toString());
+                    i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
+                    i.putExtra("type", "post");
+
+                    context.startActivity(i);
+                }
+
+            });
+
+        }
+
+        public void setOpenStatusImage(final String name, final String imageURL){
+
+            postImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    ProgressDialog mProgress = new ProgressDialog(context);
+                    mProgress.setMessage("Loading...");
+                    mProgress.show();
+                    animate((Activity) context, name, imageURL, postImage);
+                    mProgress.dismiss();
+
+                }
+            });
+
+        }
+
+        public void animate(final Activity activity, final String name, String url, ImageView productImage) {
+
+            final Intent i = new Intent(context, viewImage.class);
+            i.putExtra("currentEvent", name);
+            i.putExtra("eventImage", url);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, productImage, context.getResources().getString(R.string.transition_string));
+            context.startActivity(i, optionsCompat.toBundle());
         }
 
         public void setLike(final String key) {

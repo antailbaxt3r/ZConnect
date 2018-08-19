@@ -545,7 +545,7 @@ public class OpenProductDetails extends BaseActivity {
             public void onClick(View v) {
 
                 ProgressDialog mProgress = new ProgressDialog(OpenProductDetails.this);
-                mProgress.setMessage("Loading.....");
+                mProgress.setMessage("Loading...");
                 mProgress.show();
                 animate(activity, productName, imageUrl, productImage);
                 mProgress.dismiss();
