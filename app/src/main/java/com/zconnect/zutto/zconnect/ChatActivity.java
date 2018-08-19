@@ -725,6 +725,10 @@ public class ChatActivity extends BaseActivity {
         if(!getIntent().getStringExtra("type").equals("forums")) {
             menu.findItem(R.id.action_list_people).setVisible(false);
         }
+
+        if(!getIntent().getStringExtra("type").equals("forums")){
+            menu.findItem(R.id.action_edit_forum).setVisible(false);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 

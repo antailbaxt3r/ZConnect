@@ -34,10 +34,10 @@ public class TutorialActivity extends BaseActivity {
         //Get the data to be swiped through
         //pageData=getResources().getStringArray(R.array.desserts);
         showProgressDialog();
-        pageData[0] = ContextCompat.getDrawable(this, R.drawable.features_tut_new_res);
-        pageData[1] = ContextCompat.getDrawable(this, R.drawable.forums_tut_new_res);
-        pageData[2] = ContextCompat.getDrawable(this, R.drawable.status_tut_new_res);
-        pageData[3] = ContextCompat.getDrawable(this, R.drawable.welcome_tut_new_res);
+        pageData[0] = ContextCompat.getDrawable(this, R.drawable.features_tut);
+        pageData[1] = ContextCompat.getDrawable(this, R.drawable.forums_tut);
+        pageData[2] = ContextCompat.getDrawable(this, R.drawable.status_tut);
+        pageData[3] = ContextCompat.getDrawable(this, R.drawable.welcome_tut);
 
         tabLayout = (TabLayout) findViewById(R.id.tabDots);
 
