@@ -65,6 +65,12 @@ import com.zconnect.zutto.zconnect.addActivities.AddStatus;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.text.DateFormat;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -373,10 +379,19 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     try {
                         Date date = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(recentsItemFormats.get(position).getDesc2());
                         holder.eventDate.setText(new SimpleDateFormat("EEE, dd MMM yyyy").format(date));
+                        DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
+                        DateTime dt = new DateTime(date, indianZone);
+                        String minOfHr ="";
+                        minOfHr = dt.getMinuteOfHour() < 10 ? "0" + String.valueOf(dt.getMinuteOfHour()) : String.valueOf(dt.getMinuteOfHour());
+                        if(dt.getHourOfDay() <=12)
+                            holder.eventTime.setText(dt.getHourOfDay() + ":" + minOfHr + " AM");
+                        else
+                            holder.eventTime.setText((dt.getHourOfDay() - 12) + ":" + minOfHr + " PM");
                     }
                     catch (ParseException pe) {
                         Log.d("Error Alert ", pe.getMessage());
                         holder.eventDate.setText(recentsItemFormats.get(position).getDesc2());
+                        holder.eventTime.setText("");
                     }
                     holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.eventImage);
@@ -684,7 +699,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         TextView postedBy, postConjunction, post, postTime,
                 infoneNameCategorySentence,
                 cabpoolSource, cabpoolDestination, cabpoolDate, cabpoolTime,
-                eventName, eventDate, eventDesc,
+                eventName, eventDate, eventTime, eventDesc,
                 productName, productPrice, productDesc,
                 messagesMessage,
                 forumNameCategorySentence,
@@ -733,6 +748,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             eventsRecentItem = (LinearLayout) itemView.findViewById(R.id.eventsRecentItem);
             eventName = (TextView) itemView.findViewById(R.id.eventsRecentItem_name);
             eventDate = (TextView) itemView.findViewById(R.id.eventsRecentItem_date);
+            eventTime = (TextView) itemView.findViewById(R.id.eventsRecentItem_time);
             eventDesc = (TextView) itemView.findViewById(R.id.eventsRecentItem_description);
             eventImage = (SimpleDraweeView) itemView.findViewById(R.id.eventsRecentItem_image);
             storeroomRecentItem = (LinearLayout) itemView.findViewById(R.id.storeroomRecentItem);

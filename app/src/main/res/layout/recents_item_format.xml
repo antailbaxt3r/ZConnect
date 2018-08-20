@@ -439,14 +439,26 @@
                         android:text="Event name"
                         android:textSize="16sp"
                         android:textColor="@color/primaryText"/>
-                    <TextView
-                        android:id="@+id/eventsRecentItem_date"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Event Date"
-                        android:textSize="16sp"
-                        android:layout_marginTop="@dimen/margin_top_between_similar_views"
-                        android:textColor="@color/primaryText"/>
+                        android:layout_marginTop="@dimen/margin_top_between_similar_views">
+                        <TextView
+                            android:id="@+id/eventsRecentItem_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Event Date"
+                            android:textSize="16sp"
+                            android:textColor="@color/primaryText"/>
+                        <TextView
+                            android:id="@+id/eventsRecentItem_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_small"
+                            android:textSize="16sp"
+                            android:text="Event Time"
+                            android:textColor="@color/primaryText" />
+                    </LinearLayout>
                 </LinearLayout>
                 <TextView
                     android:id="@+id/eventsRecentItem_description"
