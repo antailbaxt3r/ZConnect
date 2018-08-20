@@ -119,7 +119,6 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                     return;
                 }
                 context.startActivity(intent);
-
                 Toast.makeText(context, "call being made to " + strName, Toast.LENGTH_SHORT).show();
             }
         });

@@ -628,41 +628,4 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
     }
 
-
-    private void sendNotification(){
-
-            try {
-                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-
-                Map<String, Object> data = new HashMap<String, Object>();
-                if (sendToKey)
-                    data.put("to", "/topics/" + key);
-                else
-                    data.put("to", "/topics/" + type);
-
-                data.put("data", creator.build().getData());
-
-                JSONObject object = new JSONObject(data);
-                Log.e("noti", "o:" + object.toString());
-                String s2 = object.toString().replace("\\", "");
-                os.writeBytes(s2);
-                os.close();
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
-
-//            //recieving response
-//            InputStream is = connection.getInputStream();
-//            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-//            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-//            String line;
-//            while ((line = rd.readLine()) != null) {
-//                response.append(line);
-//            }
-//            rd.close();
-
-
-
-    }
-
 }

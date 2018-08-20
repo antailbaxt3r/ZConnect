@@ -38,10 +38,6 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
-import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
