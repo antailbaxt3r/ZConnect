@@ -321,9 +321,9 @@ public class  OpenEventDetail extends BaseActivity{
         Typeface customFont = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
         Typeface customFontBold =  Typeface.createFromAsset(getAssets(), "fonts/Raleway-Bold.ttf");
         Typeface customFont2 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Light.ttf");
-        EventDate.setTypeface(customFont);
+        EventDate.setTypeface(customFontBold);
 
-        EventDescription.setTypeface(customFontBold);
+        EventDescription.setTypeface(customFont);
         EventVenue.setTypeface(customFontBold);
 
         SharedPreferences sharedPref = getSharedPreferences("guestMode", Context.MODE_PRIVATE);
