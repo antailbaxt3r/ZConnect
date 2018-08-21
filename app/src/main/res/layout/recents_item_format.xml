@@ -130,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_more_vert_black_24dp"
                     android:background="@color/transparent"
-                    android:tint="@color/colorPrimaryDark"
+                    android:tint="@color/icon_color"
                     android:visibility="gone"/>
             </LinearLayout>
 

@@ -872,7 +872,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                    String[] options = {"Delete Post"};
+                    String[] options = {"Delete this Post"};
                     builder.setItems(options, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
