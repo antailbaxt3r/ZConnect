@@ -19,6 +19,7 @@ public class CommunitiesItemFormat {
 
     public CommunitiesItemFormat() {
 
+
     }
 
     public String getCode() {

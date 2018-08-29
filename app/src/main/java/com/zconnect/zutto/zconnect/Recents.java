@@ -3,8 +3,10 @@ package com.zconnect.zutto.zconnect;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,6 +30,8 @@ import com.zconnect.zutto.zconnect.adapters.RecentsRVAdapter;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,6 +54,8 @@ public class Recents extends Fragment {
     List<String> storeroomProductList = new ArrayList<String>();
     private SharedPreferences communitySP;
     public String communityReference;
+
+    private SwipeRefreshLayout swipeContainer; //TODO
 
 
     private DatabaseReference homeDbRef,userReference;
@@ -97,8 +103,27 @@ public class Recents extends Fragment {
         queryRef = homeDbRef;
         queryRef.keepSynced(true);
 
-        progressBar.setVisibility(VISIBLE);
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshContainer);
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary,
 
+                R.color.colorHighlight);
+
+        progressBar.setVisibility(VISIBLE);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // implement Handler to wait for 3 seconds and then update UI means update value of TextView
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // cancle the Visual indication of a refresh
+                        swipeContainer.setRefreshing(false);
+                        queryRef.addListenerForSingleValueEvent(homeListener);
+                        userReference.addListenerForSingleValueEvent(userListener);
+                    }
+                }, 3000);
+            }
+        });
         userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -210,8 +235,8 @@ public class Recents extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        queryRef.addValueEventListener(homeListener);
-        userReference.addValueEventListener(userListener);
+        queryRef.addListenerForSingleValueEvent(homeListener);
+        userReference.addListenerForSingleValueEvent(userListener);
 
 
     }
@@ -233,4 +258,5 @@ public class Recents extends Fragment {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }
+
 }

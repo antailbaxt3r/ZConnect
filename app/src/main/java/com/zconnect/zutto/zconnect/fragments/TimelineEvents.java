@@ -122,7 +122,7 @@ public class TimelineEvents extends Fragment {
                     try {
                         singleEvent = shot.getValue(Event.class);
                         if(!singleEvent.getKey().equals(null) && !singleEvent.getEventName().equals(null)) {
-                            Long currentDate = System.currentTimeMillis() - 86400000;
+                            Long currentDate = System.currentTimeMillis() - 3600000;
                             Long dateMillis = singleEvent.getEventTimeMillis();
                             if (currentDate<dateMillis){
                                 eventsVector.add(singleEvent);
