@@ -536,11 +536,8 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
     public void sendNotification(Boolean isTopic, String condition){
 
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
-
 
         try {
             url = new URL("https://fcm.googleapis.com/fcm/send");
