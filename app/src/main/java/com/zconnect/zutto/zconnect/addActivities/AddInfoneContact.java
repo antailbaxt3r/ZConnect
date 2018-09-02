@@ -77,6 +77,7 @@ public class AddInfoneContact extends AppCompatActivity {
     private DatabaseReference mPostedByDetails;
     private DatabaseReference categoryInfo;
     private ProgressDialog mProgress;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +126,7 @@ public class AddInfoneContact extends AppCompatActivity {
 
         databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone");
         mStorageRef = FirebaseStorage.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
 
         databaseRecents = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());

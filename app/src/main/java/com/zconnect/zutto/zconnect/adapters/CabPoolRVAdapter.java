@@ -25,6 +25,8 @@ import com.zconnect.zutto.zconnect.R;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -93,11 +95,11 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     public void onBindViewHolder(CabPoolRVAdapter.ViewHolder holder, int position) {
 
        if(i==0){
-//           Date date=null;
            DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
            DateTime date = null;
            try {
-               date = new DateTime(array.get(position).getPostTimeMillis(), indianZone);
+               DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
+               date = dtf.parseDateTime(array.get(position).getDate());
            }catch (Exception e){}
            holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
            holder.destination.setText(array.get(position).getDestination());
@@ -107,11 +109,11 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
            Log.e("RV","array");
        }
         if(i==1){
-//            Date date=null;
             DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
             DateTime date = null;
             try {
-                date = new DateTime(cabItemFormat.get(position).getPostTimeMillis(), indianZone);
+                DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
+                date = dtf.parseDateTime(cabItemFormat.get(position).getDate());
             }catch (Exception e){}
             holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
             holder.destination.setText(cabItemFormat.get(position).getDestination());
