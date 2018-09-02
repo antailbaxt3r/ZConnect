@@ -305,15 +305,16 @@
                         android:inputType="text"
                         android:text=""
                         android:textSize="16sp"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/colorPrimaryDark"
                         android:visibility="gone"
                         TagsEditText:allowSpaceInTag="true"
                         TagsEditText:tagsBackground="@drawable/square"
                         TagsEditText:tagsCloseImageLeft="@drawable/dot"
                         TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
-                        TagsEditText:tagsTextColor="@color/white"
+                        TagsEditText:tagsTextColor="@color/colorPrimaryDark"
                         TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize"
-                        android:layout_marginTop="@dimen/margin_top_between_similar_views"/>
+                        android:layout_marginTop="@dimen/margin_top_between_similar_views"
+                        />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
