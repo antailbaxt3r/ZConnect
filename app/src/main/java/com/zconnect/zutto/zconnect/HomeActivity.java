@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -613,10 +614,24 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
         else if(getIntent().getBooleanExtra("isReferred", false) && mUser != null)
         {
+            String sharedPrefKey = getResources().getString(R.string.referredAnonymousUser);
+            SharedPreferences sharedPref = getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("referredUserID", mUser.getUid());
+            editor.putString("referredBy", getIntent().getStringExtra("referredBy"));
+            editor.commit();
             Log.d("RRRRR","IS INVITED");
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
             intent.putExtra("isReferred", true);
             intent.putExtra("referredBy", getIntent().getStringExtra("referredBy"));
+            startActivity(intent);
+        }
+        else if(getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE).getString("referredUserID", null) != null && mUser != null)
+        {
+            Log.d("RRRRR","IS INVITED PLUS SHARED PREF");
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            intent.putExtra("isReferred", true);
+            intent.putExtra("referredBy", getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE).getString("referredBy", null));
             startActivity(intent);
         }
         else if (mUser != null) {

@@ -73,7 +73,8 @@ public class ReferralCode extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
         referralCodeImage = findViewById(R.id.image_referral_code);
-        Picasso.with(this).load(R.drawable.referral_temp).into(referralCodeImage);
+        referralCodeImage.setImageResource(R.drawable.referral_code_bg_img);
+//        Picasso.with(this).load(R.drawable.referral_code_bg_img).into(referralCodeImage);
 
         inviteButton = findViewById(R.id.invite_btn_referral_code);
 

@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -166,22 +167,32 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
             FirebaseAuth.getInstance().getCurrentUser()
                     .linkWithCredential(credential)
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onSuccess(AuthResult authResult) {
-                            // Complete any post sign-up tasks here.
-                            mUser = authResult.getUser();
-                            if (mUser != null) {
-                                String userCommunity;
-                                userEmail = mUser.getEmail();
-                                userCommunity = userEmail.substring(userEmail.lastIndexOf('@'));
-                                Log.d("RRRRR mUser", mUser.toString());
-                                Log.d("RRRRR email", userEmail);
-                                Log.d("RRRRR comm", userCommunity);
-                                setCommunity(userCommunity);
-                            }else {
-                                logout();
-                                mProgress.dismiss();
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "linkWithCredential:success");
+                                // Complete any post sign-up tasks here.
+                                mUser = task.getResult().getUser();
+                                if (mUser != null) {
+                                    String userCommunity;
+                                    userEmail = mUser.getEmail();
+                                    userCommunity = userEmail.substring(userEmail.lastIndexOf('@'));
+                                    Log.d("RRRRR mUser", mUser.toString());
+                                    Log.d("RRRRR email", userEmail);
+                                    Log.d("RRRRR comm", userCommunity);
+                                    setCommunity(userCommunity);
+                                    SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE);
+                                    sharedPreferences.edit().remove("referredUserID").apply();
+                                    sharedPreferences.edit().remove("referredBy").apply();
+                                }else {
+                                    logout();
+                                    mProgress.dismiss();
+                                }
+                            } else {
+                                Log.w(TAG, "linkWithCredential:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

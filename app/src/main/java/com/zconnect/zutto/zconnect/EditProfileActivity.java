@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -218,6 +219,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         flag =false;
         if(newUser) {
             userNameText.setText(mUser.getDisplayName());
+            if(mUser.getDisplayName()==null) {
+                for(UserInfo userInfo : mUser.getProviderData())
+                {
+                    userNameText.setText(userInfo.getDisplayName());
+                }
+            }
             userEmailText.setText(mUser.getEmail());
             userTypeText.setVisibility(View.GONE);
 
@@ -228,7 +235,13 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 if (mUser.getPhotoUrl() != null) {
                     userImageView.setImageURI(mUser.getPhotoUrl());
                 } else {
-                    userImageView.setImageURI(DEFAULT_PHOTO_URL);
+                    for(UserInfo userInfo : mUser.getProviderData())
+                    {
+                        if(userInfo.getPhotoUrl() != null)
+                            userImageView.setImageURI(userInfo.getPhotoUrl());
+                        else
+                            userImageView.setImageURI(DEFAULT_PHOTO_URL);
+                    }
                 }
             }
         }else {
@@ -389,10 +402,14 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             }
         }
 
-
+        Uri photoUri = null;
+        for(UserInfo userInfo : mUser.getProviderData())
+        {
+            photoUri = userInfo.getPhotoUrl();
+        }
         if (userName == null
                 || userEmail == null
-                || userMobile.length() != 10 || userWhatsapp.length() != 10 || userInfoneType ==null || ((mUser.getPhotoUrl() == null)&&(mImageUri.equals(null)))) {
+                || userMobile.length() != 10 || userWhatsapp.length() != 10 || userInfoneType ==null || ((photoUri == null)&& mImageUri==null)) {
 
             if(userMobile.length()!=10 || userWhatsapp.length() != 10)
             {
@@ -415,6 +432,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             {
                 Log.d("RRRR", "is referred");
                 DatabaseReference referredUserRef = FirebaseDatabase.getInstance().getReference().child("referredUsers").child(mUser.getUid());
+                referredUserRef.child("status").setValue("converted");
+                referredUserRef.child("meta").child("communityCode").setValue(communityReference);
                 referredUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -605,12 +624,17 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 });
             }else{
                 if (newUser) {
-                    homePush.child("PostedBy").child("ImageThumb").setValue(mUser.getPhotoUrl().toString());
-                    newPost.child("imageURLThumbnail").setValue(mUser.getPhotoUrl().toString());
-                    newPost.child("imageURL").setValue(mUser.getPhotoUrl().toString());
-                    newContactNumRef.child("imageurl").setValue(mUser.getPhotoUrl().toString());
-                    newContactRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
-                    newContactNumRef.child("thumbnail").setValue(mUser.getPhotoUrl().toString());
+                    Uri photoUri2 = null;
+                    for(UserInfo userInfo : mUser.getProviderData())
+                    {
+                        photoUri2 = userInfo.getPhotoUrl();
+                    }
+                    homePush.child("PostedBy").child("ImageThumb").setValue(photoUri2.toString());
+                    newPost.child("imageURLThumbnail").setValue(photoUri2.toString());
+                    newPost.child("imageURL").setValue(photoUri2.toString());
+                    newContactNumRef.child("imageurl").setValue(photoUri2.toString());
+                    newContactRef.child("thumbnail").setValue(photoUri2.toString());
+                    newContactNumRef.child("thumbnail").setValue(photoUri2.toString());
 
                 }
                 updateCurrentUser();

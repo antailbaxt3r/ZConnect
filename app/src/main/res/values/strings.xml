@@ -217,7 +217,10 @@
 
     <!--referral code related-->
     <string name="referral_code_invite_btn">Invite Friends</string>
-    <string name="referral_code_desc">Earn points by bringing your community folks on board!</string>
-    <string name="referral_code_desc_2">Send them your referral code: </string>
+    <string name="referral_code_desc">Earn points by bringing your community folks on board! You and your friend both get 50 points each after your friend enters your community!</string>
+    <string name="referral_code_desc_2">Send them your referral link now!</string>
 
+
+    <!--shared preferences-->
+    <string name="referredAnonymousUser">referredAnonymousUser</string>
 </resources>
