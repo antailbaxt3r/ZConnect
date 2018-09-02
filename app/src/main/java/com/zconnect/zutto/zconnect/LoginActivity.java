@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -158,41 +159,74 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-//                            Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Authentication failed.", Snackbar.LENGTH_LONG);
-                            Snackbar snackbar = Snackbar.make(mGoogleSignInLayout, "Authentication failed.", Snackbar.LENGTH_LONG);
-                            TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                            snackBarText.setTextColor(Color.WHITE);
-                            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
-                            snackbar.show();
-                            mProgress.dismiss();
-                        } else {
-                            mUser = mAuth.getCurrentUser();
+        if(getIntent().getBooleanExtra("isReferred", false))
+        {
+            Log.d("RRRRRR", "IS REFERRED");
+            AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+            FirebaseAuth.getInstance().getCurrentUser()
+                    .linkWithCredential(credential)
+                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult authResult) {
+                            // Complete any post sign-up tasks here.
+                            mUser = authResult.getUser();
                             if (mUser != null) {
                                 String userCommunity;
                                 userEmail = mUser.getEmail();
                                 userCommunity = userEmail.substring(userEmail.lastIndexOf('@'));
-
+                                Log.d("RRRRR mUser", mUser.toString());
+                                Log.d("RRRRR email", userEmail);
+                                Log.d("RRRRR comm", userCommunity);
                                 setCommunity(userCommunity);
                             }else {
                                 logout();
                                 mProgress.dismiss();
                             }
                         }
-                    }
-                });
+                    });
+            Log.d("RRRRRR", "DID SOMETHING HAPPEN?");
+
+        }
+
+        else {
+            Log.d("RRRRRR", "IS NOT REFERRED");
+            Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+            AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                            // If sign in fails, display a message to the user. If sign in succeeds
+                            // the auth state listener will be notified and logic to handle the
+                            // signed in user can be handled in the listener.
+                            if (!task.isSuccessful()) {
+                                Log.w(TAG, "signInWithCredential", task.getException());
+//                            Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Authentication failed.", Snackbar.LENGTH_LONG);
+                                Snackbar snackbar = Snackbar.make(mGoogleSignInLayout, "Authentication failed.", Snackbar.LENGTH_LONG);
+                                TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                snackBarText.setTextColor(Color.WHITE);
+                                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                                snackbar.show();
+                                mProgress.dismiss();
+                            } else {
+                                mUser = mAuth.getCurrentUser();
+                                if (mUser != null) {
+                                    String userCommunity;
+                                    userEmail = mUser.getEmail();
+                                    userCommunity = userEmail.substring(userEmail.lastIndexOf('@'));
+
+                                    setCommunity(userCommunity);
+                                }else {
+                                    logout();
+                                    mProgress.dismiss();
+                                }
+                            }
+                        }
+                    });
+        }
     }
 
     @SuppressLint("ApplySharedPref")

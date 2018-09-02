@@ -97,7 +97,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
            DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
            DateTime date = null;
            try {
-               date = new DateTime(array.get(position).getPostTimeMillis(), indianZone);
+               date = new DateTime(array.get(position).getDate(), indianZone);
            }catch (Exception e){}
            holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
            holder.destination.setText(array.get(position).getDestination());
@@ -111,7 +111,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
             DateTime date = null;
             try {
-                date = new DateTime(cabItemFormat.get(position).getPostTimeMillis(), indianZone);
+                date = new DateTime(cabItemFormat.get(position).getDate(), indianZone);
             }catch (Exception e){}
             holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
             holder.destination.setText(cabItemFormat.get(position).getDestination());

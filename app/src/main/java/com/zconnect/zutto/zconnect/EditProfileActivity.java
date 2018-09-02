@@ -86,6 +86,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
     private TagsEditText userSkillTagsText;
     private MaterialBetterSpinner userInfoneTypeSpinner;
     private Boolean newUser = false;
+    private Boolean isReferred = false;
     private Vector<InfoneCategoryModel> infoneCategories = new Vector<InfoneCategoryModel>();
     private Vector<String> infoneCategoriesName = new Vector<String>();
     private ArrayAdapter<String> infoneAdapter;
@@ -174,7 +175,8 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
         Bundle bundle = getIntent().getExtras();
         newUser = bundle.getBoolean("newUser");
-
+        isReferred = bundle.getBoolean("isReferred");
+        Log.d("RRRR", "Bundle is referred" + String.valueOf(isReferred));
         if (getSupportActionBar() != null) {
             if (newUser) getSupportActionBar().setTitle("Add Contact");
             else getSupportActionBar().setTitle("Edit Profile");
@@ -409,6 +411,23 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             mProgress.dismiss();
         } else {
             final DatabaseReference newPost = mUserReference;
+            if(isReferred)
+            {
+                Log.d("RRRR", "is referred");
+                DatabaseReference referredUserRef = FirebaseDatabase.getInstance().getReference().child("referredUsers").child(mUser.getUid());
+                referredUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d("RRRR", "Adding referredBy node in user in Users1");
+                        newPost.child("referredBy").setValue(dataSnapshot.child("referredBy").getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("RRRR", "Adding referredBy node in user in Users1 failed.");
+                    }
+                });
+            }
             newPost.child("username").setValue(userName);
             newPost.child("email").setValue(userEmail);
             newPost.child("mobileNumber").setValue(userMobile);

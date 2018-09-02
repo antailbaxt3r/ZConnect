@@ -215,6 +215,9 @@
     <!--menu related-->
     <string name="edit_forum">Edit Forum</string>
 
-
+    <!--referral code related-->
+    <string name="referral_code_invite_btn">Invite Friends</string>
+    <string name="referral_code_desc">Earn points by bringing your community folks on board!</string>
+    <string name="referral_code_desc_2">Send them your referral code: </string>
 
 </resources>
