@@ -53,8 +53,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RequestCodes;
@@ -65,6 +67,7 @@ import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 
 import butterknife.BindView;
@@ -192,6 +195,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabs();
 
+
     }
 
     //Circular notification in the bottom navigation
@@ -256,6 +260,19 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             tabs.getTabAt(prePos);
                         }else {
                             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("newCounter");
+                            CounterItemFormat counterItemFormat = new CounterItemFormat(); //TODO : Change from test to required
+                            Vector<Vector <String> > metaData = new Vector<>();
+                            for(int i=0; i<2; i++){
+                                metaData.add(new Vector<String>());
+                                metaData.get(i).add("Name");
+                                metaData.get(i).add("ZC" + i);
+                            }
+                            counterItemFormat.setUserID(mAuth.getUid());
+                            counterItemFormat.setUniqueID("fjdbfgkjbdggb");
+                            counterItemFormat.setTimestamp(System.currentTimeMillis()/1000);
+                            counterItemFormat.setMeta(metaData);
+                            CounterPush counterPush = new CounterPush(counterItemFormat, databaseReference.toString());
                         }
                         break;
                     }

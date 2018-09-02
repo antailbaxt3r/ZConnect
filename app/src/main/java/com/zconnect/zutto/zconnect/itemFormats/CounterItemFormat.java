@@ -7,6 +7,10 @@ public class CounterItemFormat {
     long timestamp;
     Vector<Vector<String>> meta = new Vector<>();
 
+    public CounterItemFormat() {
+
+    }
+
     public CounterItemFormat(String userID, String uniqueID, long timestamp, Vector<Vector<String>> meta) {
         this.userID = userID;
         this.uniqueID = uniqueID;
