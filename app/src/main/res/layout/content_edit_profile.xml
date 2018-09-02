@@ -153,13 +153,13 @@
                     android:hint="Skills"
                     android:inputType="text"
                     android:text=""
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/colorPrimaryDark"
                     TagsEditText:allowSpaceInTag="true"
                     TagsEditText:tagsBackground="@drawable/square"
                     TagsEditText:tagsCloseImageLeft="@drawable/dot"
                     TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
-                    TagsEditText:tagsCloseImageRight="@drawable/tag_close"
-                    TagsEditText:tagsTextColor="@color/black"
+                    TagsEditText:tagsCloseImageRight="@drawable/ic_close_primary_dark_24dp"
+                    TagsEditText:tagsTextColor="@color/colorPrimaryDark"
                     TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize" />
                 <TextView
                     android:layout_width="match_parent"

@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="Add Location"
+        android:title="Locations"
         android:id="@+id/action_add_location"
         android:orderInCategory="1"
-        android:name="Add Location"
+        android:name="Locations"
         android:icon="@drawable/ic_add_location_white_24dp"
         app:showAsAction="collapseActionView"/>
     <item

@@ -367,10 +367,17 @@ public class MyProfileFragment extends Fragment {
         if(skills==null)
             skills="";
 
-        if(skills.length()>1)
-            skills=skills.substring(1,skills.length()-1);
+        if (!skills.equals("") || skills.indexOf(',') > 0) {
+            editTextSkills.setVisibility(View.VISIBLE);
+            String[] skillsArray = skills.split(",");
+            skillsArray[0] = skillsArray[0].substring(1);
+            skillsArray[skillsArray.length - 1] = skillsArray[skillsArray.length - 1]
+                    .substring(0, skillsArray[skillsArray.length - 1].length() - 1);
+            editTextSkills.setTags(skillsArray);
+        } else {
+            editTextSkills.setVisibility(View.GONE);
+        }
 
-        String[] skillsArray = {""};
         if (name != null) {
             editTextName.setText(name);
         }
@@ -451,8 +458,7 @@ public class MyProfileFragment extends Fragment {
 //                }
 //            });
         }
-        if (!skills.equals(""))
-            skillsArray = skills.split(",");
+
         if(userProfile.getUserType()!=null)
         {
             if(userProfile.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
@@ -471,7 +477,7 @@ public class MyProfileFragment extends Fragment {
             }
         }
 
-        editTextSkills.setTags(skillsArray);
+
     }
 
     @Override

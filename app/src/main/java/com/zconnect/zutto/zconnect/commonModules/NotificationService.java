@@ -299,8 +299,6 @@ public class NotificationService extends FirebaseMessagingService {
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(18, mBuilder.build());
-
-
     }
 
     private void cacheDeleteNotification() {

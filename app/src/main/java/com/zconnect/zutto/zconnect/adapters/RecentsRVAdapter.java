@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -79,10 +81,10 @@ import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-//import static com.google.android.gms.internal.zzagz.runOnUiThread;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
@@ -155,7 +157,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder2, final int position) {
         final RecentsItemFormat recentItem = recentsItemFormats.get(position);
-        if(position>10)
+        if(position>5)
         {
             scrollToTopBtn.setVisibility(View.VISIBLE);
         }
@@ -588,7 +590,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.post.setText("status");
                     holder.post.setTextColor(context.getResources().getColor(R.color.secondaryText));
                     holder.post.setTypeface(Typeface.DEFAULT);
+
                     holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
+                    Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
+                    holder.messagesMessage.setLinkTextColor(Color.BLUE);
                     holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
 
                     if(recentsItemFormats.get(position).getDesc().length()<20)
