@@ -15,13 +15,17 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.CounterManager;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -33,6 +37,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -152,10 +157,21 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             list_people.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+                    meta.put("type","fromFeature");
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN_LIST_OF_PEOPLE);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
                 if(i==0) {
                     Intent intent = new Intent(context, CabPoolListOfPeople.class);
                     intent.putExtra("key", array.get(getAdapterPosition()).getKey());
                     intent.putExtra("date", (array.get(getAdapterPosition()).getDT()).substring(0,8));
+
                     context.startActivity(intent);
                     //CounterManager.openCabPoolList(array.get(getAdapterPosition()).getKey());
                 }
