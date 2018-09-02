@@ -1,28 +1,29 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 public class CounterItemFormat {
     String userID, uniqueID;
     long timestamp;
-    Vector<Vector<String>> meta = new Vector<>();
+    HashMap<String, String> meta = new HashMap<>();
 
     public CounterItemFormat() {
 
     }
 
-    public CounterItemFormat(String userID, String uniqueID, long timestamp, Vector<Vector<String>> meta) {
+    public CounterItemFormat(String userID, String uniqueID, long timestamp, HashMap<String, String> meta) {
         this.userID = userID;
         this.uniqueID = uniqueID;
         this.timestamp = timestamp;
         this.meta = meta;
     }
 
-    public Vector<Vector<String>> getMeta() {
+    public HashMap<String, String> getMeta() {
         return meta;
     }
 
-    public void setMeta(Vector<Vector<String>> meta) {
+    public void setMeta(HashMap<String, String> meta) {
         this.meta = meta;
     }
 

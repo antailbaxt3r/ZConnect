@@ -67,6 +67,7 @@ import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 
@@ -260,19 +261,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             tabs.getTabAt(prePos);
                         }else {
                             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("newCounter");
-                            CounterItemFormat counterItemFormat = new CounterItemFormat(); //TODO : Change from test to required
-                            Vector<Vector <String> > metaData = new Vector<>();
-                            for(int i=0; i<2; i++){
-                                metaData.add(new Vector<String>());
-                                metaData.get(i).add("Name");
-                                metaData.get(i).add("ZC" + i);
-                            }
+
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+
+                            meta.put("name","Lokesh");
+                            meta.put("age","18");
+
                             counterItemFormat.setUserID(mAuth.getUid());
                             counterItemFormat.setUniqueID("fjdbfgkjbdggb");
                             counterItemFormat.setTimestamp(System.currentTimeMillis()/1000);
-                            counterItemFormat.setMeta(metaData);
-                            CounterPush counterPush = new CounterPush(counterItemFormat, databaseReference.toString());
+                            counterItemFormat.setMeta(meta);
+
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
                         }
                         break;
                     }

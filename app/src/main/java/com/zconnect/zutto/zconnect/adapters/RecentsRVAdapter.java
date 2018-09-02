@@ -85,9 +85,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-//import static com.google.android.gms.internal.zzagz.runOnUiThread;
-import me.saket.bettermovementmethod.BetterLinkMovementMethod;
-
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
@@ -100,8 +97,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     View.OnClickListener openUserProfileListener;
     boolean flag;
     Button scrollToTopBtn;
-
-
 
     public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, Button scrollToTopBtn) {
         this.context = context;
@@ -162,7 +157,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder2, final int position) {
         final RecentsItemFormat recentItem = recentsItemFormats.get(position);
-        if(position>10)
+        if(position>5)
         {
             scrollToTopBtn.setVisibility(View.VISIBLE);
         }
@@ -597,7 +592,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.post.setTypeface(Typeface.DEFAULT);
 
                     holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
-                    holder.messagesMessage.setMovementMethod(BetterLinkMovementMethod.newInstance());
                     Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
                     holder.messagesMessage.setLinkTextColor(Color.BLUE);
                     holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
