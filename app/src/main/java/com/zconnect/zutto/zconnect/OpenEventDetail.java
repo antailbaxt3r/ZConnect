@@ -59,6 +59,12 @@ import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -225,8 +231,13 @@ public class  OpenEventDetail extends BaseActivity{
                         boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
                         boostBtn.setTypeface(ralewayBold);
                     }
-                    Date date = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(event.getEventDate());
-                    EventDate.setText(new SimpleDateFormat("EEE, MMM dd yyyy HH:mm").format(date));
+                    Date evdate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(event.getEventDate());
+                    DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
+                    DateTime date = new DateTime(evdate, indianZone);
+                    String minute = String.valueOf(date.getMinuteOfHour());
+                    if(date.getMinuteOfHour() < 10)
+                        minute = "0" + minute;
+                    EventDate.setText(date.toString("MMM") + " " + date.getDayOfMonth() + ", " + (date.getHourOfDay() < 12 ? date.getHourOfDay() : date.getHourOfDay() - 12) + ":" + minute + " " + (date.getHourOfDay() < 12 ? "AM" : "PM"));
                     EventDescription.setText(event.getEventDescription());
                     EventVenue.setText(event.getVenue());
                     getSupportActionBar().setTitle(event.getEventName());
