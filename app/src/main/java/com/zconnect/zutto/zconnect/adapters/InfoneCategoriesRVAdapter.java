@@ -8,13 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.zconnect.zutto.zconnect.CounterManager;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.holders.InfoneCategoriesRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneCategoryModel;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by tanmay on 24/3/18.
@@ -65,11 +72,21 @@ public class InfoneCategoriesRVAdapter extends RecyclerView.Adapter<InfoneCatego
                 intentInfoneList.putExtra("catImageurl",categoriesList.get(position).getImageurl());
                 intentInfoneList.putExtra("catAdmin",categoriesList.get(position).getAdmin());
                 context.startActivity(intentInfoneList);
-                CounterManager.infoneOpenCategory(categoriesList.get(position).getCatId());
 
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("category",categoriesList.get(position).getCatId());
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CATEGORY_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
             }
         });
-
     }
 
     @Override

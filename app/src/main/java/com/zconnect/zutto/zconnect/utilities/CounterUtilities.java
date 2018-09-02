@@ -2,12 +2,6 @@ package com.zconnect.zutto.zconnect.utilities;
 
 public class CounterUtilities {
 
-    //add
-    public static final String KEY_ADD_EVENT = "addEvent";
-    public static final String KEY_ADD_PRODUCT = "addProduct";
-    public static final String KEY_ADD_FORUM = "addForum";
-    public static final String KEY_ADD_POST = "addPost";
-
     //infone
     public static final String KEY_INFONE_ADD_CONTACT_OPEN = "infoneAddContactOpen";
     public static final String KEY_INFONE_ADD_CATEGORY_OPEN = "infoneAddCategoryOpen";
@@ -39,7 +33,6 @@ public class CounterUtilities {
     public static final String KEY_CABPOOL_SHARE = "cabpoolShare";
     public static final String KEY_CABPOOL_CHAT_OPEN = "cabpoolChatOpen";
 
-
     //events
     public static final String KEY_EVENTS_OPEN = "eventsOpen";
     public static final String KEY_EVENTS_TIMELINE_OPEN = "eventsTimelineOpen";
@@ -64,7 +57,6 @@ public class CounterUtilities {
     public static final String KEY_STOREROOM_CALL = "storeroomCall";
     public static final String KEY_STOREROOM_SHORTLIST = "storeroomShortlist";
     public static final String KEY_STOREROOM_SHARE = "storeroomShare";
-
 
     //forums
     public static final String KEY_FORUMS_TAB_OPEN = "forumsTabOpen";
