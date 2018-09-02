@@ -197,6 +197,7 @@ public class InfoneProfileActivity extends BaseActivity {
                         public void onClick(View v) {
                             Intent i = new Intent(InfoneProfileActivity.this,OpenUserDetail.class);
                             i.putExtra("Uid",dataSnapshot.child("UID").getValue().toString());
+                            Log.d("AAKKHHIILL", dataSnapshot.child("UID").getValue().toString());
                             startActivity(i);
                         }
                     });

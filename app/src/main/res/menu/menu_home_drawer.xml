@@ -50,6 +50,11 @@
             android:id="@+id/share"
             android:icon="@drawable/ic_share_grey_24dp"
             android:name="Share" />
+        <item
+            android:title="Referral Code"
+            android:id="@+id/referral_code"
+            android:icon="@drawable/ic_share_grey_24dp"
+            android:name="Referral Code" />
     </group>
     <group
         android:id="@+id/group2"

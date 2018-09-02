@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -27,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -158,41 +160,84 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-//                            Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Authentication failed.", Snackbar.LENGTH_LONG);
-                            Snackbar snackbar = Snackbar.make(mGoogleSignInLayout, "Authentication failed.", Snackbar.LENGTH_LONG);
-                            TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-                            snackBarText.setTextColor(Color.WHITE);
-                            snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
-                            snackbar.show();
-                            mProgress.dismiss();
-                        } else {
-                            mUser = mAuth.getCurrentUser();
-                            if (mUser != null) {
-                                String userCommunity;
-                                userEmail = mUser.getEmail();
-                                userCommunity = userEmail.substring(userEmail.lastIndexOf('@'));
-
-                                setCommunity(userCommunity);
-                            }else {
-                                logout();
-                                mProgress.dismiss();
+        if(getIntent().getBooleanExtra("isReferred", false))
+        {
+            Log.d("RRRRRR", "IS REFERRED");
+            AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+            FirebaseAuth.getInstance().getCurrentUser()
+                    .linkWithCredential(credential)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "linkWithCredential:success");
+                                // Complete any post sign-up tasks here.
+                                mUser = task.getResult().getUser();
+                                if (mUser != null) {
+                                    String userCommunity;
+                                    userEmail = mUser.getEmail();
+                                    userCommunity = userEmail.substring(userEmail.lastIndexOf('@'));
+                                    Log.d("RRRRR mUser", mUser.toString());
+                                    Log.d("RRRRR email", userEmail);
+                                    Log.d("RRRRR comm", userCommunity);
+                                    setCommunity(userCommunity);
+                                    SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE);
+                                    sharedPreferences.edit().remove("referredUserID").apply();
+                                    sharedPreferences.edit().remove("referredBy").apply();
+                                }else {
+                                    logout();
+                                    mProgress.dismiss();
+                                }
+                            } else {
+                                Log.w(TAG, "linkWithCredential:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         }
-                    }
-                });
+                    });
+            Log.d("RRRRRR", "DID SOMETHING HAPPEN?");
+
+        }
+
+        else {
+            Log.d("RRRRRR", "IS NOT REFERRED");
+            Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+            AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                            // If sign in fails, display a message to the user. If sign in succeeds
+                            // the auth state listener will be notified and logic to handle the
+                            // signed in user can be handled in the listener.
+                            if (!task.isSuccessful()) {
+                                Log.w(TAG, "signInWithCredential", task.getException());
+//                            Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "Authentication failed.", Snackbar.LENGTH_LONG);
+                                Snackbar snackbar = Snackbar.make(mGoogleSignInLayout, "Authentication failed.", Snackbar.LENGTH_LONG);
+                                TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                snackBarText.setTextColor(Color.WHITE);
+                                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                                snackbar.show();
+                                mProgress.dismiss();
+                            } else {
+                                mUser = mAuth.getCurrentUser();
+                                if (mUser != null) {
+                                    String userCommunity;
+                                    userEmail = mUser.getEmail();
+                                    userCommunity = userEmail.substring(userEmail.lastIndexOf('@'));
+
+                                    setCommunity(userCommunity);
+                                }else {
+                                    logout();
+                                    mProgress.dismiss();
+                                }
+                            }
+                        }
+                    });
+        }
     }
 
     @SuppressLint("ApplySharedPref")

@@ -20,7 +20,6 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -28,7 +27,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
 
         <!--
@@ -69,11 +68,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:host="www.zconnect.com" android:scheme="http"/>
-                <data android:host="www.zconnect.com" android:scheme="https"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.zconnect.com"
+                    android:scheme="http" />
+                <data
+                    android:host="www.zconnect.com"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
@@ -96,8 +101,7 @@
             android:label="Events"
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".ShopList"
             android:label="@string/title_activity_shop_list"
@@ -173,8 +177,8 @@
             android:name=".commonModules.viewImage"
             android:label="@string/title_activity_view_image"
             android:parentActivityName=".HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.HomeActivity" />
@@ -280,8 +284,8 @@
         <activity
             android:name=".addActivities.AddCabPool"
             android:label="@string/title_activity_add_cab_pool"
-            android:screenOrientation="portrait"
             android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TutorialActivity"
@@ -292,28 +296,29 @@
         <activity
             android:name=".MyRides"
             android:label="@string/title_activity_my_rides"
-            android:screenOrientation="portrait"
             android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".commonModules.NotificationService"
+        <service
+            android:name=".commonModules.NotificationService"
             android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".commonModules.instantIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-        <meta-data android:name="firebase_messaging_auto_init_enabled"
+        <meta-data
+            android:name="firebase_messaging_auto_init_enabled"
             android:value="false" />
-        <meta-data android:name="firebase_analytics_collection_enabled"
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
             android:value="false" />
-
 
         <activity
             android:name=".ShortlistedPeopleList"
@@ -353,7 +358,6 @@
             android:label="@string/title_activity_nitification_settings"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".InfoneContactListActivity"
             android:label="@string/infone_search"
@@ -373,28 +377,28 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".addActivities.AddInfoneContact"
+            android:label="Add Contact"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="Add Contact"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".addActivities.AddInfoneCat"
+            android:label="Create Category"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="Create Category"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".CabPoolLocations"
             android:label="@string/title_activity_cab_pool_locations"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".ForumsPeopleList"
             android:label="@string/title_activity_forums_people_list"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".Shortlist"
             android:label="@string/title_storeroom_shortlist"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TabbedEvents"
@@ -424,11 +428,17 @@
             android:label="@string/title_activity_admin_home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".addActivities.CreateForum"
+        <activity
+            android:name=".addActivities.CreateForum"
             android:label="Create Forum"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ReferralCode"
+            android:label="Referral Code"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
+
         </activity>
     </application>
 

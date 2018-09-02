@@ -23,9 +23,13 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.database.DataSnapshot;
@@ -57,6 +61,7 @@ public class LogoFlashActivity extends BaseActivity {
     private DatabaseReference mDatabase,temp,temp2,t,t2;
     private View bgColor;
     boolean flag = false;
+    private String mReferrerUid;
 
 
     @Override
@@ -103,6 +108,12 @@ public class LogoFlashActivity extends BaseActivity {
                                 deepLink = pendingDynamicLinkData.getLink();
                             }
 
+                            // Handle the deep link. For example, open the linked
+                            // content, or apply promotional credit to the user's
+                            // account.
+                            // ...
+
+                            // ...
                             if(deepLink!=null)
                             {
                                 String path = deepLink.getPath();
@@ -141,12 +152,6 @@ public class LogoFlashActivity extends BaseActivity {
                                     }
                                 }
                             }
-                            // Handle the deep link. For example, open the linked
-                            // content, or apply promotional credit to the user's
-                            // account.
-                            // ...
-
-                            // ...
                         }
                     })
                     .addOnFailureListener(this, new OnFailureListener() {
@@ -156,6 +161,33 @@ public class LogoFlashActivity extends BaseActivity {
                         }
                     });
         } else {
+
+            Log.d("RRRR", "no communityref");
+            FirebaseDynamicLinks.getInstance()
+                    .getDynamicLink(getIntent())
+                    .addOnSuccessListener(new OnSuccessListener<PendingDynamicLinkData>() {
+                        @Override
+                        public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                            // Get deep link from result (may be null if no link is found)
+                            Uri deepLink = null;
+                            if (pendingDynamicLinkData != null) {
+                                deepLink = pendingDynamicLinkData.getLink();
+                            }
+                            Log.d("RRRR", "inside dynamic link receiver");
+                            //
+                            // If the user isn't signed in and the pending Dynamic Link is
+                            // an invitation, sign in the user anonymously, and record the
+                            // referrer's UID.
+                            //
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            if (user == null && deepLink!=null && deepLink.getBooleanQueryParameter("referredBy", false))
+                            {
+                                mReferrerUid = deepLink.getQueryParameter("referredBy");
+                                Log.d("RRRR", "deep link not null");
+                                createAnonymousAccountWithReferrerInfo(mReferrerUid);
+                            }
+                        }
+                    });
             mDatabase = FirebaseDatabase.getInstance().getReference().child("ui/logoFlash");
 
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -187,8 +219,13 @@ public class LogoFlashActivity extends BaseActivity {
 
                 if (checkPermission()) {
                     // Do not wait so that user doesn't realise this is a new launch.
+                    Log.d("RRRR goint to home act", "1");
+                    Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                    intent.putExtra("isReferred", mReferrerUid!=null);
+                    intent.putExtra("referredBy", mReferrerUid);
+                    Log.d("RRRR goint to home act", "1 " + mReferrerUid);
                     if(!flag)
-                        startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
+                        startActivity(intent);
                     finish();
                 }
 
@@ -231,6 +268,51 @@ public class LogoFlashActivity extends BaseActivity {
 
 
 
+    }
+
+    private void createAnonymousAccountWithReferrerInfo(final String referrerUid) {
+        Log.d("RRRR", "inside create anonymous");
+        if(FirebaseAuth.getInstance().getCurrentUser()==null)
+        {
+            FirebaseAuth.getInstance()
+                    .signInAnonymously()
+//                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+//                    @Override
+//                    public void onSuccess(AuthResult authResult) {
+//                        // Keep track of the referrer in the RTDB. Database calls
+//                        // will depend on the structure of your app's RTDB.
+//                        Log.d("RRRR", "anonymoous user adding");
+//                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//                        DatabaseReference userRecord =
+//                                FirebaseDatabase.getInstance().getReference()
+//                                        .child("referredUsers")
+//                                        .child(user.getUid());
+//                        userRecord.child("referredBy").setValue(referrerUid);
+//                        Log.d("RRRR", "anonymoous user added");
+//                    }
+//                });
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful())
+                            {
+                                AuthResult authResult = task.getResult();
+                                Log.d("RRRR", "anonymoous user adding");
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                DatabaseReference userRecord =
+                                        FirebaseDatabase.getInstance().getReference()
+                                                .child("referredUsers")
+                                                .child(user.getUid());
+                                userRecord.child("referredBy").setValue(referrerUid);
+                                Log.d("RRRR", "anonymoous user added");
+
+                            }
+                            else {
+                                Log.d("RRRR", "anonymoous user failed to added");
+                            }
+                        }
+                    });
+        }
     }
 
     ///////////script of adding forumAdmin node/////////
@@ -396,7 +478,11 @@ public class LogoFlashActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == RC_PERM_REQ_EXT_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivity(new Intent(LogoFlashActivity.this, HomeActivity.class));
+                Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
+                Log.d("RRRR goint to home act", "2");
+                intent.putExtra("isReferred", mReferrerUid!=null);
+                intent.putExtra("referredBy", mReferrerUid);
+                startActivity(intent);
                 finish();
             } else {
                 Toast.makeText(this, "Permission Denied !, Retrying.", Toast.LENGTH_SHORT).show();
