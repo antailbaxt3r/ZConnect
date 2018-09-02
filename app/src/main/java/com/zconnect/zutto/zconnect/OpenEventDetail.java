@@ -234,12 +234,10 @@ public class  OpenEventDetail extends BaseActivity{
                     Date evdate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(event.getEventDate());
                     DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
                     DateTime date = new DateTime(evdate, indianZone);
-                    String minute = "", ampm = "AM";
+                    String minute = String.valueOf(date.getMinuteOfHour());
                     if(date.getMinuteOfHour() < 10)
-                        minute = "0" + date.getMinuteOfHour();
-                    if(date.getHourOfDay() >= 12)
-                        ampm = "PM";
-                    EventDate.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getHourOfDay() + ":" + minute + " " + ampm);
+                        minute = "0" + minute;
+                    EventDate.setText(date.toString("MMM") + " " + date.getDayOfMonth() + ", " + (date.getHourOfDay() < 12 ? date.getHourOfDay() : date.getHourOfDay() - 12) + ":" + minute + " " + (date.getHourOfDay() < 12 ? "AM" : "PM"));
                     EventDescription.setText(event.getEventDescription());
                     EventVenue.setText(event.getVenue());
                     getSupportActionBar().setTitle(event.getEventName());
