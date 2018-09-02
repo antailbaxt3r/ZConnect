@@ -99,6 +99,8 @@ public class ReferralCode extends AppCompatActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
         Task<ShortDynamicLink> referLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
                 .setLongLink(Uri.parse("https://zconnect.page.link/?link="+encodedUri+"&apn=com.zconnect.zutto.zconnect&amv=11" ))
                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setMinimumVersion(12).build())
@@ -107,8 +109,6 @@ public class ReferralCode extends AppCompatActivity {
                     @Override
                     public void onSuccess(ShortDynamicLink shortDynamicLink) {
                         mInvitationUrl = shortDynamicLink.getShortLink();
-                        progressDialog.setMessage("Loading...");
-                        progressDialog.show();
 
                         Thread thread = new Thread(new Runnable() {
                             @Override
@@ -155,5 +155,6 @@ public class ReferralCode extends AppCompatActivity {
                         thread.start();
                     }
                 });
+//        progressDialog.dismiss();
     }
 }
