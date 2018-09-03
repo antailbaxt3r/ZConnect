@@ -187,6 +187,23 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+
+                    try {
+                        meta.put("source", String.valueOf(cabItemFormat.get(getAdapterPosition()).getSource()));
+                        meta.put("destination", String.valueOf(cabItemFormat.get(getAdapterPosition()).getDestination()));
+                    }catch (Exception e){}
+
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_SHARE);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+
                     Uri BASE_URI = Uri.parse("http://www.zconnect.com/cabpooling/");
 
                     Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("key", cabItemFormat.get(getAdapterPosition()).getKey())
@@ -200,7 +217,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                         e.printStackTrace();
                     }
                   if(i==0) {
-                      //CounterManager.searchPool(array.get(getAdapterPosition()).getKey());
+
                       Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
                               .setLongLink(Uri.parse("https://zconnect.page.link/?link=" + encodedUri + "&apn=com.zconnect.zutto.zconnect&amv=11"))
                               .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setMinimumVersion(12).build())
@@ -230,7 +247,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                               });
                   }
                     if(i==1) {
-                        CounterManager.searchPool(cabItemFormat.get(getAdapterPosition()).getKey());
+
                         Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
                                 .setLongLink(Uri.parse("https://zconnect.page.link/?link=" + encodedUri + "&apn=com.zconnect.zutto.zconnect&amv=11"))
                                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setMinimumVersion(12).build())

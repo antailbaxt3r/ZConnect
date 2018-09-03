@@ -232,27 +232,29 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void openEvent(final String key, String type) {
+    public void openEvent(final String key, final String type) {
 
-        CounterItemFormat counterItemFormat = new CounterItemFormat();
-        HashMap<String, String> meta= new HashMap<>();
 
-        meta.put("type",type);
-
-        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-        counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_OPEN_EVENT);
-        counterItemFormat.setTimestamp(System.currentTimeMillis());
-        counterItemFormat.setMeta(meta);
-
-        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-        counterPush.pushValues();
 
         mView.setOnClickListener(new View.OnClickListener()
 
         {
             @Override
             public void onClick(View view) {
-                CounterManager.eventOpenCounter(key);
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("type",type);
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_OPEN_EVENT);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
                 Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
                 i.putExtra("id", key);
                 mView.getContext().startActivity(i);

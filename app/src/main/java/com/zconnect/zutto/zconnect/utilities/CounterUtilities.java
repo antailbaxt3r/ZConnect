@@ -27,7 +27,6 @@ public class CounterUtilities {
     public static final String KEY_CABPOOL_OPEN_LIST_OF_PEOPLE = "cabpoolOpenListOfPeople";
     public static final String KEY_CABPOOL_JOIN = "cabpoolJoin";
     public static final String KEY_CABPOOL_LEAVE = "cabpoolLeave";
-    public static final String KEY_CABPOOL_OPEN_PROFILE = "cabpoolOpenProfile";
     public static final String KEY_CABPOOL_CALL = "cabpoolCall";
     public static final String KEY_CABPOOL_SHARE = "cabpoolShare";
     public static final String KEY_CABPOOL_CHAT_OPEN = "cabpoolChatOpen";
@@ -54,6 +53,7 @@ public class CounterUtilities {
     public static final String KEY_STOREROOM_OPEN_INDIVIDUAL_CATEGORY = "storeroomIndividualCategory";
     public static final String KEY_STOREROOM_OPEN_CHAT = "storeroomOpenChat";
     public static final String KEY_STOREROOM_CALL = "storeroomCall";
+    public static final String KEY_STOREROOM_SHORTLISTED_CALL = "storeroomShortlistedCall";
     public static final String KEY_STOREROOM_SHORTLIST = "storeroomShortlist";
     public static final String KEY_STOREROOM_SHARE = "storeroomShare";
 
@@ -66,6 +66,7 @@ public class CounterUtilities {
     public static final String KEY_FORUMS_JOINED = "forumsJoined";
     public static final String KEY_FORUMS_LEAVE = "forumsLeave";
     public static final String KEY_FORUMS_LIST_MEMBERS = "forumsListMembers";
+    public static final String KEY_FORUMS_CALL = "forumsCall";
     public static final String KEY_FORUMS_EDIT_FORUM = "forumsEditForum";
 
     //profile

@@ -231,7 +231,12 @@ public class OpenProductDetails extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        Intent productKeyIntent = getIntent();
+        productKey = productKeyIntent.getStringExtra("key");
+
         switch (item.getItemId()) {
+
             case R.id.share:
 
                 CounterManager.eventShare(productKey);
