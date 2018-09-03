@@ -23,9 +23,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CabPoolLocationFormat;
 import com.zconnect.zutto.zconnect.adapters.CabPoolLocationRVAdapter;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 public class CabPoolLocations extends BaseActivity {
@@ -93,7 +97,15 @@ public class CabPoolLocations extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADD_LOCATION_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
 
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
                 final EditText input = new EditText(view.getContext());
 
                 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
@@ -104,6 +116,15 @@ public class CabPoolLocations extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         addLocation(input.getText().toString());
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADDED_LOCATION);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+
 
                     }
                 });
@@ -117,6 +138,8 @@ public class CabPoolLocations extends BaseActivity {
 
 
                 builder.show();
+
+
             }
         });
 

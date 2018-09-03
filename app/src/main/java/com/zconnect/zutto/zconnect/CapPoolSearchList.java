@@ -28,14 +28,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CabItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.adapters.CabPoolRVAdapter;
 import com.zconnect.zutto.zconnect.addActivities.AddCabPool;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -116,6 +120,19 @@ public class CapPoolSearchList extends BaseActivity {
             }catch (Exception e){
                 Log.e("TAG","Intent not successfull");
             }
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("type","fromFab");
+
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADD_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
             startActivity(intent);
             finish();
             }
@@ -265,6 +282,19 @@ public class CapPoolSearchList extends BaseActivity {
                                     }catch (Exception e){
                                         Log.e("TAG","Intent not successfull");
                                     }
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    HashMap<String, String> meta= new HashMap<>();
+
+                                    meta.put("type","fromAlertBox");
+
+
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADD_OPEN);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    counterItemFormat.setMeta(meta);
+
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
 
                                     startActivity(intent);
                                     finish();

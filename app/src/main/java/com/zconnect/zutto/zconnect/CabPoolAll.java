@@ -29,9 +29,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.adapters.CabPoolRVAdapter;
 import com.zconnect.zutto.zconnect.addActivities.AddCabPool;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -170,7 +173,21 @@ public class CabPoolAll extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("type","fromFeature");
+
+
+                counterItemFormat.setUserID(mAuth.getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_SEARCH_POOL_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis()/1000);
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
                 CabPoolAll.this.startActivity(new Intent(CabPoolAll.this, CabPooling.class));
+
             }
         });
 
@@ -305,6 +322,18 @@ public class CabPoolAll extends BaseActivity {
         }
 
         databaseReference.addValueEventListener(allPools);
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta= new HashMap<>();
+
+
+
+        counterItemFormat.setUserID(mAuth.getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        counterItemFormat.setMeta(meta);
+
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
 
     }
 
@@ -326,8 +355,26 @@ public class CabPoolAll extends BaseActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_add_location) {
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_LOCATIONS_OPEN);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
             startActivity(new Intent(getApplicationContext(), CabPoolLocations.class));
         }else if (id ==R.id.action_my_rides){
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
+            meta.put("type","fromFeature");
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_MY_RIDES_OPEN);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
             startActivity(new Intent(getApplicationContext(), MyRides.class));
         }
         return super.onOptionsItemSelected(item);
