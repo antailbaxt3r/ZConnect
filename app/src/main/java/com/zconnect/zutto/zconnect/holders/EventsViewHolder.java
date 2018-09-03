@@ -33,11 +33,14 @@ import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.LoginActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
@@ -46,6 +49,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
 /**
@@ -228,8 +232,20 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void openEvent(final String key) {
+    public void openEvent(final String key, String type) {
 
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta= new HashMap<>();
+
+        meta.put("type",type);
+
+        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_OPEN_EVENT);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        counterItemFormat.setMeta(meta);
+
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
 
         mView.setOnClickListener(new View.OnClickListener()
 

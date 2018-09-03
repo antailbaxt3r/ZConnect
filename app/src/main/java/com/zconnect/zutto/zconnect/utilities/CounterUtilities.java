@@ -13,7 +13,6 @@ public class CounterUtilities {
     public static final String KEY_INFONE_SEARCH = "infoneSearch";
     public static final String KEY_INFONE_CALL = "infoneCall";
     public static final String KEY_INFONE_VALIDATE = "infoneValidate";
-    public static final String KEY_INFONE_OPEN_PROFILE = "infoneOpenProfile";
 
     //cabPool
     public static final String KEY_CABPOOL_OPEN = "cabpoolOpen";
@@ -83,7 +82,6 @@ public class CounterUtilities {
     public static final String KEY_RECENTS_LIKE = "recentsLike";
     public static final String KEY_RECENTS_COMMENT = "recentsComment";
     public static final String KEY_RECENTS_OPEN_IMAGE = "recentsOpenImage";
-    public static final String KEY_RECENTS_OPEN_EVENT = "recentsOpenEvent";
     public static final String KEY_RECENTS_OPEN_FORUM = "recentsOpenForun";
     public static final String KEY_RECENTS_OPEN_INFONE_CONTACT = "recentsOpenInfoneContact";
     public static final String KEY_RECENTS_OPEN_INFONE_CATEGORY = "recentsOpenInfoneCategory";
