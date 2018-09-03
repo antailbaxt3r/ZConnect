@@ -123,7 +123,19 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                     throwable.printStackTrace();
                 }
 
-                CounterManager.eventAddClick();
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("type","fromHome");
+
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_SEARCH_POOL_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
                 Intent intent;
                 intent = new Intent(getContext(), CabPooling.class);
                 startActivity(intent);

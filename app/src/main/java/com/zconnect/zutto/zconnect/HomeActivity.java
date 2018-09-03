@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,6 +59,7 @@ import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
@@ -137,6 +139,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        TODO check for loopholes in referral system
 
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
@@ -545,9 +548,32 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.hasChild("mobileNumber")){
-                    Intent i = new Intent(HomeActivity.this,EditProfileActivity.class);
-                    i.putExtra("newUser",true);
-                    startActivity(i);
+                    DatabaseReference referredUsersRef = FirebaseDatabase.getInstance().getReference().child("referredUsers");
+                    referredUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.hasChild(mUser.getUid()))
+                            {
+                                Log.d("RRR", "TO EDIT PROFILE - IS REFERRED");
+                                Intent i = new Intent(HomeActivity.this,EditProfileActivity.class);
+                                i.putExtra("newUser",true);
+                                i.putExtra("isReferred", true);
+                                startActivity(i);
+                            }
+                            else
+                            {
+                                Log.d("RRR", "TO EDIT PROFILE - IS NOT REFERRED");
+                                Intent i = new Intent(HomeActivity.this,EditProfileActivity.class);
+                                i.putExtra("newUser",true);
+                                startActivity(i);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }else {
                     DatabaseReference userReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid());
                     userReference.addValueEventListener(new ValueEventListener() {
@@ -601,8 +627,34 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         if (mUser == null) {
             editProfileItem.setVisible(false);
             editProfileItem.setEnabled(false);
+
+            Log.d("RRRRR","IS NOT INVITED");
             startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-        } else if (mUser != null) {
+
+        }
+        else if(getIntent().getBooleanExtra("isReferred", false) && mUser != null)
+        {
+            String sharedPrefKey = getResources().getString(R.string.referredAnonymousUser);
+            SharedPreferences sharedPref = getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("referredUserID", mUser.getUid());
+            editor.putString("referredBy", getIntent().getStringExtra("referredBy"));
+            editor.commit();
+            Log.d("RRRRR","IS INVITED");
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            intent.putExtra("isReferred", true);
+            intent.putExtra("referredBy", getIntent().getStringExtra("referredBy"));
+            startActivity(intent);
+        }
+        else if(getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE).getString("referredUserID", null) != null && mUser != null)
+        {
+            Log.d("RRRRR","IS INVITED PLUS SHARED PREF");
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            intent.putExtra("isReferred", true);
+            intent.putExtra("referredBy", getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE).getString("referredBy", null));
+            startActivity(intent);
+        }
+        else if (mUser != null) {
 
             FirebaseMessaging.getInstance().subscribeToTopic(mUser.getUid());
 
@@ -625,7 +677,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
 
             } else if(communityReference!=null) {
-
+                Log.d("RRRRR","COMM REF NOT NULL");
                 initialiseNotifications();
                 FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
                 LocalDate dateTime = new LocalDate();
@@ -683,6 +735,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 currentUserReference.keepSynced(true);
                 currentUserReference.addListenerForSingleValueEvent(editProfileValueEventListener);
             } else if (communityReference == null){
+                Log.d("RRRRR","COMM REF IS NULL");
                 Intent i = new Intent(this,CommunitiesAround.class);
                 startActivity(i);
                 finish();
@@ -768,11 +821,23 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             }
             case R.id.MyProducts: {
+
                 Intent MyProductsIntent = new Intent(HomeActivity.this,MyProducts.class);
                 startActivity(MyProductsIntent);
                 break;
             }
             case R.id.MyRides: {
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+                meta.put("type","fromNavigationDrawer");
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_MY_RIDES_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
                 Intent intent = new Intent(HomeActivity.this, MyRides.class);
                 startActivity(intent);
                 break;
@@ -852,6 +917,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //                intent.setType("text/plain");
 //                startActivity(Intent.createChooser(intent, "Share app url via ... "));
             }
+            case R.id.referral_code:
+                Intent intent = new Intent(this, ReferralCode.class);
+                startActivity(intent);
+                break;
             default: {
                 return false;
             }
