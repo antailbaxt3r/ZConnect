@@ -138,87 +138,13 @@ public class OpenProductDetails extends BaseActivity {
 
         progressDialog = new ProgressDialog(this);
 
-        chatLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //char room clicked
-                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-                intent.putExtra("type","storeroom");
-                intent.putExtra("key",productKey);
-                intent.putExtra("name",productName.getText());
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            }
-        });
-
-        chatEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //char room clicked
-                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-                intent.putExtra("type","storeroom");
-                intent.putExtra("key",productKey);
-                intent.putExtra("name",productName.getText());
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            }
-        });
         mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
 
 
         progressBar.setVisibility(VISIBLE);
         productContent.setVisibility(INVISIBLE);
 
-        SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
-        Boolean status = sharedPref.getBoolean("mode", false);
 
-       // mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).child("views");
-
-//        if (!status) {
-//            mAuth = FirebaseAuth.getInstance();
-//            user = mAuth.getCurrentUser();
-//
-//            listener = new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                    boolean userExists = false;
-//                    for (DataSnapshot childSnapshot :
-//                            dataSnapshot.getChildren()) {
-//                        if (childSnapshot.getKey().equals(user.getUid()) && childSnapshot.exists() && childSnapshot.getValue(Integer.class) != null) {
-//                            userExists = true;
-//                            int originalViews = childSnapshot.getValue(Integer.class);
-//                            mDatabaseViews.child(user.getUid()).setValue(originalViews + 1);
-//
-//                            break;
-//                        } else {
-//                            userExists = false;
-//                        }
-//                    }
-//                    if (!userExists) {
-//                        mDatabaseViews.child(user.getUid()).setValue(1);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//
-//                }
-//            };
-//
-//            mDatabaseViews.addListenerForSingleValueEvent(listener);
-//        }
-
-
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        mDatabaseViews.removeEventListener(listener);
     }
 
     //Menu Overwrite
@@ -243,7 +169,7 @@ public class OpenProductDetails extends BaseActivity {
                 shareProduct(mImageUri, this.getApplicationContext(), productKey);
                 break;
             case R.id.menu_chat_room:
-                //char room clicked
+                //chat room clicked
                 Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
                 intent.putExtra("type","storeroom");
                 intent.putExtra("key",productKey);
@@ -426,6 +352,34 @@ public class OpenProductDetails extends BaseActivity {
                 }
 
                 defaultSwitch(productKey, productCategory, productShortlist);
+
+                chatLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //char room clicked
+                        Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+                        intent.putExtra("type","storeroom");
+                        intent.putExtra("key",productKey);
+                        intent.putExtra("name",productName.getText());
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    }
+                });
+
+                chatEditText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //char room clicked
+                        Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+                        intent.putExtra("type","storeroom");
+                        intent.putExtra("key",productKey);
+                        intent.putExtra("name",productName.getText());
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    }
+                });
             }
 
             @Override
