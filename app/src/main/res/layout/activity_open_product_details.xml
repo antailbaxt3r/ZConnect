@@ -183,6 +183,10 @@
                 android:orientation="horizontal"
                 android:background="@drawable/message_box"
                 android:gravity="center"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
                 android:layout_margin="5dp">
                 <ImageButton
                     android:id="@+id/chat_photo_button"
