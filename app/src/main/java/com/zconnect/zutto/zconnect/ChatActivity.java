@@ -70,6 +70,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+
 public class ChatActivity extends BaseActivity {
 
     private static final int GALLERY_REQUEST = 7;
@@ -265,6 +267,15 @@ public class ChatActivity extends BaseActivity {
                             joinButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    HashMap<String, String> meta= new HashMap<>();
+                                    meta.put("type","fromChat");
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_JOINED);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    counterItemFormat.setMeta(meta);
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
                                     final UsersListItemFormat userDetails = new UsersListItemFormat();
                                     DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -724,10 +735,27 @@ public class ChatActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_list_people) {
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
+            meta.put("type","fromFeature");
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_LIST_MEMBERS);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
             launchPeopleList();
         }
 
         if(item.getItemId() == R.id.action_edit_forum) {
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDIT_FORUM);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
             launchEditForum();
         }
 
