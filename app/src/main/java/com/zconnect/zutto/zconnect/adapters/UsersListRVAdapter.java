@@ -16,11 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 
@@ -72,6 +76,7 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
         holder.number.setText(usersListItemFormats.get(position).getPhonenumber());
         holder.avatarCircle.setImageURI(usersListItemFormats.get(position).getImageThumb());
         holder.openOptions(featureType, userType);
+        holder.setCall(featureType,usersListItemFormats.get(position).getUserUID());
 
         if(featureType.equals(FeatureNamesUtilities.KEY_FORUMS)){
             holder.setUserType(usersListItemFormats.get(position).getUserType());
@@ -111,9 +116,36 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
 
             Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
             number.setTypeface(customFont2);
+
+        }
+
+        public void setCall(final String featureType, final String userUID){
+
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+
+
+                    meta.put("type", "fromUserList");
+                    meta.put("userID",userUID);
+
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    if(featureType.equals(FeatureNamesUtilities.KEY_CABPOOL)) {
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_CALL);
+                    }else if(featureType.equals(FeatureNamesUtilities.KEY_STOREROOM)) {
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_SHORTLISTED_CALL);
+                    }else if(featureType.equals(FeatureNamesUtilities.KEY_FORUMS)){
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CALL);
+                    }
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+
                     context.startActivity(new Intent(Intent.ACTION_DIAL,
                             Uri.parse("tel:" + Long.parseLong(number.getText().toString().trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
@@ -131,14 +163,36 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
             }
         }
 
-        public void openOptions(String featureType, final String forumUserType){
+        public void openOptions(final String featureType, final String forumUserType){
 
             if(featureType.equals(FeatureNamesUtilities.KEY_CABPOOL) || featureType.equals(FeatureNamesUtilities.KEY_STOREROOM)){
 
                 rv_item.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
+
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+
+
+                        if(featureType.equals(FeatureNamesUtilities.KEY_CABPOOL)) {
+                            meta.put("type", "fromCabpoolList");
+                        }else {
+                            meta.put("type","fromProductShortlist");
+                        }
+
+                        meta.put("userID",userUID);
+
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+
                         intent=new Intent(context, OpenUserDetail.class);
                         intent.putExtra("Uid",userUID);
                         context.startActivity(intent);
@@ -159,6 +213,22 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                                 public void onClick(DialogInterface dialog, int which) {
                                     switch (which) {
                                         case 0: String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
+
+                                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                            HashMap<String, String> meta= new HashMap<>();
+
+
+                                            meta.put("type", "fromForumsList");
+                                            meta.put("userID",userUID);
+
+                                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                            counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
+                                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                            counterItemFormat.setMeta(meta);
+
+                                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                            counterPush.pushValues();
+
                                             intent=new Intent(context, OpenUserDetail.class);
                                             intent.putExtra("Uid",userUID);
                                             context.startActivity(intent);
@@ -184,6 +254,21 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                                     String userUID = usersListItemFormats.get(getAdapterPosition()).getUserUID();
                                     switch (which) {
                                         case 0:
+                                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                            HashMap<String, String> meta= new HashMap<>();
+
+
+                                            meta.put("type", "fromForumsList");
+                                            meta.put("userID",userUID);
+
+                                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                            counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
+                                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                            counterItemFormat.setMeta(meta);
+
+                                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                            counterPush.pushValues();
+
                                             intent=new Intent(context, OpenUserDetail.class);
                                             intent.putExtra("Uid",userUID);
                                             context.startActivity(intent);

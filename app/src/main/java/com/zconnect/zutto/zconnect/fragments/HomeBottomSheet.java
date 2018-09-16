@@ -23,6 +23,7 @@ import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
 import java.util.HashMap;
+
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class HomeBottomSheet extends BottomSheetDialogFragment{
@@ -59,7 +60,19 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                     throwable.printStackTrace();
                 }
 
-                CounterManager.eventAddClick();
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("type","fromRecents");
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_ADD_EVENT_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
                 Intent intent;
                 intent = new Intent(getContext(), AddEvent.class);
                 startActivity(intent);

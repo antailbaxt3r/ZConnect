@@ -213,7 +213,19 @@ public class ChatActivity extends BaseActivity {
                                             cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                                             notificationSender.execute(cabPoolJoinNotification);
 
-                                            CounterManager.openCabPoolJoin(getIntent().getStringExtra("key"));
+                                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                            HashMap<String, String> meta= new HashMap<>();
+
+                                            meta.put("type","fromChat");
+                                            meta.put("key",getIntent().getStringExtra("key"));
+
+                                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                            counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_JOIN);
+                                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                            counterItemFormat.setMeta(meta);
+                                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                            counterPush.pushValues();
+
                                             FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 
                                         }
@@ -693,7 +705,6 @@ public class ChatActivity extends BaseActivity {
     }
 
     public void launchPeopleList(){
-
         Intent i = new Intent(this,ForumsPeopleList.class);
         i.putExtra("key",getIntent().getStringExtra("key"));
         i.putExtra("tab",getIntent().getStringExtra("tab"));

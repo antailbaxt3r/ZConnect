@@ -43,11 +43,17 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class InfoneProfileActivity extends BaseActivity {
 
@@ -195,6 +201,22 @@ public class InfoneProfileActivity extends BaseActivity {
                     viewProfileButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+
+                            meta.put("type","fromInfone");
+                            meta.put("userID",dataSnapshot.child("UID").getValue().toString());
+                            meta.put("catID",catId);
+
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
+
                             Intent i = new Intent(InfoneProfileActivity.this,OpenUserDetail.class);
                             i.putExtra("Uid",dataSnapshot.child("UID").getValue().toString());
                             Log.d("AAKKHHIILL", dataSnapshot.child("UID").getValue().toString());
@@ -251,14 +273,18 @@ public class InfoneProfileActivity extends BaseActivity {
         phone1Et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!phone1Et.getText().toString().isEmpty())
+                if (!phone1Et.getText().toString().isEmpty()) {
+                    callCounter();
                     makeCall(phone1Et.getText().toString());
+                }
             }
         });
         phone1EtCallbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CounterManager.infoneCallContact();
+
+                callCounter();
+
                 Intent intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse("tel:" + phone1Et.getText().toString()));
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -281,8 +307,10 @@ public class InfoneProfileActivity extends BaseActivity {
         phone2Et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!phone2Et.getText().toString().isEmpty())
+                if (!phone2Et.getText().toString().isEmpty()) {
                     makeCall(phone2Et.getText().toString());
+                    callCounter();
+                }
             }
         });
 
@@ -321,9 +349,36 @@ public class InfoneProfileActivity extends BaseActivity {
                 postTimeMillis = System.currentTimeMillis();
                 databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
 
-                CounterManager.infoneVerifyContact();
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("catID",catId);
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_VALIDATE);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
             }
         });
+    }
+
+    public void callCounter(){
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta= new HashMap<>();
+
+        meta.put("type","fromInfoneProfile");
+        meta.put("catID",catId);
+
+        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CALL);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        counterItemFormat.setMeta(meta);
+
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
     }
 
 
