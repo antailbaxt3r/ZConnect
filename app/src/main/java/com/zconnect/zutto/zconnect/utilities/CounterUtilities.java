@@ -77,6 +77,8 @@ public class CounterUtilities {
     public static final String KEY_PROFILE_EMAIL = "profileEmail";
     public static final String KEY_PROFILE_SHARE = "profileShare";
     public static final String KEY_PROFILE_REPORT = "profileReport";
+    public static final String KEY_PROFILE_EDIT_OPEN = "profileReport";
+
 
     //recents
     public static final String KEY_RECENTS_ADD_STATUS = "recentsAddStatus";
