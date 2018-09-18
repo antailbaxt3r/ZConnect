@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.R;
@@ -42,6 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public static DatabaseReference ref;
     private static LocalDate dateTime = new LocalDate();
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
@@ -66,6 +68,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         SharedPreferences communityTitleSP = getSharedPreferences("communityTitle", MODE_PRIVATE);
         communityTitle = communityTitleSP.getString("communityTitleValue", null);
         //CounterManager.communityCode = communityReference;
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     public void setColour(int colour) {
