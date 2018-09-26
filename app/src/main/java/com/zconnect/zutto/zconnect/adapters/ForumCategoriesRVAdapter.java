@@ -276,7 +276,21 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ChatActivity.class);
 
-                    CounterManager.forumsOpenCategory(tabId,uid);
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+                    meta.put("type","fromFeature");
+                    meta.put("channelType","joined");
+                    meta.put("channelID",uid);
+                    meta.put("catID",tabId);
+
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CHANNEL_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+
                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
                     intent.putExtra("type","forums");
                     intent.putExtra("name", name);
@@ -347,12 +361,18 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta= new HashMap<>();
                     meta.put("type","fromFeature");
+                    meta.put("channelType","notJoined");
+                    meta.put("channelID",uid);
+                    meta.put("catID",tabId);
+
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                     counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CHANNEL_OPEN);
                     counterItemFormat.setTimestamp(System.currentTimeMillis());
                     counterItemFormat.setMeta(meta);
+
                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                     counterPush.pushValues();
+
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
                     intent.putExtra("type","forums");

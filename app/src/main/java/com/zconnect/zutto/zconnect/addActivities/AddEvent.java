@@ -534,7 +534,16 @@ public class AddEvent extends BaseActivity {
                                 newPost.child("EventTimeMillis").setValue(eventTimeMillis);
                                 newPost.child("PostTimeMillis").setValue(postTimeMillis);
 
-                                CounterManager.addEventUnVerified(key, eventNameValue);
+                                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                HashMap<String, String> meta= new HashMap<>();
+
+                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_EVENT_ADDED);
+                                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                counterItemFormat.setMeta(meta);
+
+                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                counterPush.pushValues();
 
                                 //For Everything
                                 DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());

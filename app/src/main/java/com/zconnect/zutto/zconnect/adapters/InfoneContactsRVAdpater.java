@@ -100,13 +100,14 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                 }else {
                     Intent profileIntent = new Intent(context, InfoneProfileActivity.class);
                     profileIntent.putExtra("infoneUserId", infoneContactsRVItems.get(position).getInfoneUserId());
-                    profileIntent.putExtra("catId", catId);
+                    profileIntent.putExtra("catID", catId);
                     context.startActivity(profileIntent);
 
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta= new HashMap<>();
 
                     meta.put("catID",catId);
+                    meta.put("type","fromFeature");
 
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                     counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CONTACT_OPEN);

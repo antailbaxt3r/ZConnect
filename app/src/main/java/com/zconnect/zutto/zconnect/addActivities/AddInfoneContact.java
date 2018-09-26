@@ -189,6 +189,7 @@ public class AddInfoneContact extends AppCompatActivity {
                 recentsPost.child("infoneContactCategoryName").setValue(catName);
                 recentsPost.child("id").setValue(key);
                 recentsPost.child("feature").setValue("Infone");
+                recentsPost.child("desc").setValue(catId);
                 recentsPost.child("PostTimeMillis").setValue(postTimeMillis);
                 recentsPostPostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -210,7 +211,7 @@ public class AddInfoneContact extends AppCompatActivity {
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
 
-                meta.put("category",catId);
+                meta.put("catID",catId);
 
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_ADDED_CONTACT);

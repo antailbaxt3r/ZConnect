@@ -128,8 +128,6 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta= new HashMap<>();
 
-
-                    meta.put("type", "fromUserList");
                     meta.put("userID",userUID);
 
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());

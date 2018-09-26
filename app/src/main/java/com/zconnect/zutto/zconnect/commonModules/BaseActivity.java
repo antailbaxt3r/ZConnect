@@ -70,6 +70,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         //CounterManager.communityCode = communityReference;
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
     }
 
     public void setColour(int colour) {

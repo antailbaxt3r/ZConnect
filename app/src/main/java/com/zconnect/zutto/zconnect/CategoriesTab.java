@@ -15,9 +15,16 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.zconnect.zutto.zconnect.addActivities.AddProduct;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 
 public class CategoriesTab extends Fragment {
@@ -119,7 +126,17 @@ class CategoryAdapter extends BaseAdapter {
         row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CounterManager.StoroomCategory(temp.categoryName);
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("catName",temp.categoryName);
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_INDIVIDUAL_CATEGORY);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
                 Intent intent = new Intent(view.getContext(), StoreroomIndividualCategory.class);
                 intent.putExtra("Category", temp.categoryName);
                 context.startActivity(intent);

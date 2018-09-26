@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,7 +28,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.adapters.RecentsRVAdapter;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 
 import org.json.JSONArray;
@@ -35,6 +39,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -55,7 +60,7 @@ public class Recents extends Fragment {
     private SharedPreferences communitySP;
     public String communityReference;
 
-    private SwipeRefreshLayout swipeContainer; //TODO
+    private SwipeRefreshLayout swipeContainer;
 
 
     private DatabaseReference homeDbRef,userReference;
@@ -73,6 +78,8 @@ public class Recents extends Fragment {
     Vector<RecentsItemFormat> normalPostsHome = new Vector<RecentsItemFormat>();
     Vector<RecentsItemFormat> normalPostsUsers = new Vector<RecentsItemFormat>();
     Vector<RecentsItemFormat> normalPosts = new Vector<RecentsItemFormat>();
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public Recents() {
         // Required empty public constructor
@@ -92,6 +99,15 @@ public class Recents extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recents, container, false);
         ButterKnife.bind(this, view);
 
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Yolo");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
@@ -104,9 +120,7 @@ public class Recents extends Fragment {
         queryRef.keepSynced(true);
 
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshContainer);
-        swipeContainer.setColorSchemeResources(R.color.colorPrimary,
-
-                R.color.colorHighlight);
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary, R.color.colorHighlight);
 
         progressBar.setVisibility(VISIBLE);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -224,6 +238,15 @@ public class Recents extends Fragment {
         scrollToTopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_SCROLL_TOP);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
                 productLinearLayout.scrollToPositionWithOffset(0,0);
             }
         });

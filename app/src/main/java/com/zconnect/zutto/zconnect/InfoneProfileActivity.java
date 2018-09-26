@@ -81,7 +81,7 @@ public class InfoneProfileActivity extends BaseActivity {
 
     ArrayList<String> phoneNums;
     /*user id of the current infone contact in /infone/numbers */
-    String infoneUserId;
+    String infoneUserId,catID;
 
     /*DB elements*/
     DatabaseReference databaseReferenceContact;
@@ -103,7 +103,7 @@ public class InfoneProfileActivity extends BaseActivity {
     private Button viewProfileButton;
 
     private final String TAG = getClass().getSimpleName();
-    private String catId,name;
+    private String name;
     LinearLayout linearLayout;
     ProgressBar progressBar;
 
@@ -158,7 +158,7 @@ public class InfoneProfileActivity extends BaseActivity {
         saveEditBtn.setVisibility(View.GONE);
 
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
-
+        catID = getIntent().getExtras().getString("catID");
         Log.e(InfoneProfileActivity.class.getName(), "data :" + infoneUserId);
 
         communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
@@ -187,7 +187,6 @@ public class InfoneProfileActivity extends BaseActivity {
 
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);
-                catId = dataSnapshot.child("catId").getValue(String.class);
                 validButton.setText(dataSnapshot.child("validCount").getValue().toString() + " validations");
 
                 userType = dataSnapshot.child("type").getValue(String.class);
@@ -207,7 +206,7 @@ public class InfoneProfileActivity extends BaseActivity {
 
                             meta.put("type","fromInfone");
                             meta.put("userID",dataSnapshot.child("UID").getValue().toString());
-                            meta.put("catID",catId);
+                            meta.put("catID",catID);
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
@@ -352,7 +351,7 @@ public class InfoneProfileActivity extends BaseActivity {
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
 
-                meta.put("catID",catId);
+                meta.put("catID",catID);
 
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_VALIDATE);
@@ -370,7 +369,7 @@ public class InfoneProfileActivity extends BaseActivity {
         HashMap<String, String> meta= new HashMap<>();
 
         meta.put("type","fromInfoneProfile");
-        meta.put("catID",catId);
+        meta.put("catID",catID);
 
         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
         counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CALL);
@@ -397,7 +396,7 @@ public class InfoneProfileActivity extends BaseActivity {
 
     private void saveEdits() {
 
-        databaseRefEdit=databaseReferenceInfone.child("categories").child(catId).child(infoneUserId);
+        databaseRefEdit=databaseReferenceInfone.child("categories").child(catID).child(infoneUserId);
         databaseRefEditNum=databaseReferenceContact;
 
         String name=nameEt.getText().toString();
@@ -416,7 +415,7 @@ public class InfoneProfileActivity extends BaseActivity {
             databaseRefEdit.child("name").setValue(name);
             databaseRefEdit.child("phone").child("0").setValue(phone1);
             databaseRefEdit.child("phone").child("1").setValue(phone2);
-            databaseRefEditNum.child("category").setValue(catId);
+            databaseRefEditNum.child("category").setValue(catID);
             uploadImage();
 
         }

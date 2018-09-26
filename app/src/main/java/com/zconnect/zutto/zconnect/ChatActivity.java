@@ -254,6 +254,7 @@ public class ChatActivity extends BaseActivity {
                 key = getIntent().getStringExtra("key");
                 tab = getIntent().getStringExtra("tab");
                 final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
+
                 forumCategory.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -751,7 +752,7 @@ public class ChatActivity extends BaseActivity {
             CounterItemFormat counterItemFormat = new CounterItemFormat();
             HashMap<String, String> meta= new HashMap<>();
             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDIT_FORUM);
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDIT_FORUM_OPEN);
             counterItemFormat.setTimestamp(System.currentTimeMillis());
             counterItemFormat.setMeta(meta);
             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);

@@ -86,17 +86,6 @@ public class InfoneActivity extends Fragment {
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        CounterItemFormat counterItemFormat = new CounterItemFormat();
-        HashMap<String, String> meta= new HashMap<>();
-
-        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-        counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_TAB_OPEN);
-        counterItemFormat.setTimestamp(System.currentTimeMillis());
-        counterItemFormat.setMeta(meta);
-
-        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-        counterPush.pushValues();
-
         databaseReferenceCat = FirebaseDatabase.getInstance().getReference().child("communities")
                 .child(communityReference).child("infone").child("categoriesInfo");
         mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());

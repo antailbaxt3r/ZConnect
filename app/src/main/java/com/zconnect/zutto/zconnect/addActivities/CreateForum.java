@@ -39,9 +39,12 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
@@ -149,6 +152,7 @@ public class CreateForum extends AppCompatActivity {
 
         if(!editForumFlag)
         {
+
             titleFirstMessage.setVisibility(View.VISIBLE);
             firstMessage.setVisibility(View.VISIBLE);
 
@@ -177,18 +181,21 @@ public class CreateForum extends AppCompatActivity {
                         newPush.child("UID").setValue(newPush.getKey());
                         newPush.child("tab").setValue(uid);
 
-
-
-
                         databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
                         databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
                         databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(uid);
 
-
-                        CounterManager.forumsAddCategory(uid);
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+                        meta.put("catID",uid);
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_FORUM_CREATED);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
 
                         //Home
-
                         databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
                         databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
                         databaseReferenceHome.child(newPush.getKey()).child("id").setValue(uid);
@@ -222,8 +229,6 @@ public class CreateForum extends AppCompatActivity {
 
                                 ChatItemFormats message = new ChatItemFormats();
                                 message.setTimeDate(calendar.getTimeInMillis());
-
-//                    UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
                                 message.setUuid(userItem.getUserUID());
                                 message.setName(userItem.getUsername());
                                 message.setImageThumb(userItem.getImageURLThumbnail());
@@ -244,8 +249,6 @@ public class CreateForum extends AppCompatActivity {
                                 addForumNotification.setUserName(userItem.getUsername());
 
                                 notificationSender.execute(addForumNotification);
-
-
                             }
 
                             @Override
@@ -363,13 +366,14 @@ public class CreateForum extends AppCompatActivity {
                     }
                 }
             });
-        }
+        } else {
 
-        else {
             getSupportActionBar().setTitle("Edit forum info");
             titleFirstMessage.setVisibility(View.GONE);
             firstMessage.setVisibility(View.GONE);
             final String catUid = getIntent().getStringExtra("catUID");
+
+
             //use this only for writing new data
             final DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(catUid);
             //use for both retrieving data and writing new data
@@ -434,6 +438,17 @@ public class CreateForum extends AppCompatActivity {
                                         categoriesRef.updateChildren(taskMap);
                                         tabsCategoriesRef.updateChildren(taskMap);
                                         if(flag) {
+
+                                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                            HashMap<String, String> meta= new HashMap<>();
+                                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDITED_FORUM);
+                                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                            meta.put("catUID",catUid);
+                                            counterItemFormat.setMeta(meta);
+                                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                            counterPush.pushValues();
+
                                             Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                                             intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(catUid).toString());
                                             intent.putExtra("type", "forums");
@@ -470,7 +485,19 @@ public class CreateForum extends AppCompatActivity {
                                         taskMap.put("imageThumb", downloadUri != null ? downloadUri.toString() : null);
                                         categoriesRef.updateChildren(taskMap);
                                         tabsCategoriesRef.updateChildren(taskMap);
+
                                         if (flag) {
+
+                                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                            HashMap<String, String> meta= new HashMap<>();
+                                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDITED_FORUM);
+                                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                            meta.put("catUID",catUid);
+                                            counterItemFormat.setMeta(meta);
+                                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                            counterPush.pushValues();
+
                                             Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                                             intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(catUid).toString());
                                             intent.putExtra("type", "forums");
@@ -494,6 +521,17 @@ public class CreateForum extends AppCompatActivity {
                             });
                         }
                         else {
+
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDITED_FORUM);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            meta.put("catUID",catUid);
+                            counterItemFormat.setMeta(meta);
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
+
                             categoriesRef.updateChildren(taskMap);
                             tabsCategoriesRef.updateChildren(taskMap);
                             Intent intent = new Intent(getApplicationContext(), ChatActivity.class);

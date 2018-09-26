@@ -253,7 +253,15 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             tabs.getTabAt(prePos);
                         }else{
                             setActionBarTitle("Forums");
-                            CounterManager.forumsOpen();
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+
+                            counterItemFormat.setUserID(mAuth.getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_TAB_OPEN);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
                         }
                         break;
@@ -264,20 +272,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             tabs.getTabAt(prePos);
                         }else {
                             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
-
-                            CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
-
-                            meta.put("name","Lokesh");
-                            meta.put("age","18");
-
-                            counterItemFormat.setUserID(mAuth.getUid());
-                            counterItemFormat.setUniqueID("fjdbfgkjbdggb");
-                            counterItemFormat.setTimestamp(System.currentTimeMillis()/1000);
-                            counterItemFormat.setMeta(meta);
-
-                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                            counterPush.pushValues();
                         }
                         break;
                     }
@@ -288,12 +282,37 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         }
                         else {
                             setActionBarTitle("Infone");
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_TAB_OPEN);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         }
                         break;
                     }
                     case 4: {
                         setActionBarTitle("You");
+
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+                        meta.put("type","fromRecents");
+                        meta.put("userType","myProfile");
+                        meta.put("userUID",FirebaseAuth.getInstance().getUid());
+
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
                         break;
                     }

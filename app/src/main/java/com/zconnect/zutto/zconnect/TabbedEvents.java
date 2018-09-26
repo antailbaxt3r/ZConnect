@@ -112,7 +112,7 @@ public class TabbedEvents extends BaseActivity {
                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                     counterPush.pushValues();
                 }
-                else {
+                else if (tab.getPosition() == 1){
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                     counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_TIMELINE_OPEN);
                     counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -162,17 +162,6 @@ public class TabbedEvents extends BaseActivity {
                 }
             });
         }
-
-        CounterItemFormat counterItemFormat = new CounterItemFormat();
-        HashMap<String, String> meta= new HashMap<>();
-
-        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-        counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_OPEN);
-        counterItemFormat.setTimestamp(System.currentTimeMillis());
-        counterItemFormat.setMeta(meta);
-
-        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-        counterPush.pushValues();
     }
 
     public void onStart() {

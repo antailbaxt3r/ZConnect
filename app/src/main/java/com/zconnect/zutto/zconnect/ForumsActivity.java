@@ -75,14 +75,7 @@ public class ForumsActivity extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CounterItemFormat counterItemFormat = new CounterItemFormat();
-        HashMap<String, String> meta= new HashMap<>();
-        counterItemFormat.setUserID(mAuth.getUid());
-        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_TAB_OPEN);
-        counterItemFormat.setTimestamp(System.currentTimeMillis());
-        counterItemFormat.setMeta(meta);
-        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-        counterPush.pushValues();
+
         Fresco.initialize(getContext());
         View v = inflater.inflate(R.layout.activity_infone, container, false);
         ButterKnife.bind(this, v);
@@ -91,6 +84,8 @@ public class ForumsActivity extends Fragment{
         adapter = new ViewPagerAdapter(getChildFragmentManager());
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
+
+        mAuth = FirebaseAuth.getInstance();
 
         tabDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabs");
       
@@ -170,7 +165,7 @@ public class ForumsActivity extends Fragment{
 //        return super.onOptionsItemSelected(item);
 //    }
 
-    public void setupViewPager(ViewPager viewPager) {
+    public void setupViewPager(final ViewPager viewPager) {
 
         for (int i = 0; i < infoneTabItemFormats.size(); i++) {
             Fragment fragment = new ForumsFragment();
@@ -181,8 +176,7 @@ public class ForumsActivity extends Fragment{
         }
 
         viewPager.setAdapter(adapter);
-        CounterManager.forumsOpenTab(infoneTabItemFormats.get(viewPager.getCurrentItem()).getUID());
-//        increaseCount(guestMode, viewPager.getCurrentItem());
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -192,6 +186,9 @@ public class ForumsActivity extends Fragment{
             public void onPageSelected(int position) {
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("catID",infoneTabItemFormats.get(viewPager.getCurrentItem()).getUID());
+
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CATEGORY_OPEN);
                 counterItemFormat.setTimestamp(System.currentTimeMillis());

@@ -59,13 +59,9 @@ public class OpenUserDetail extends BaseActivity {
     private TextView editTextNumber;
 
     TextView whatsAppNumberText;
-    //private android.support.design.widget.TextInputEditText editTextSkills;
     private TagsEditText editTextSkills;
     private SimpleDraweeView image;
     private ImageView mail, call;
-//    private EditText textMessage;
-//    private LinearLayout anonymMessageLayout;
-//    private ImageButton sendButton;
     private ImageButton btn_love,btn_like;
     private Boolean flagforNull=false;
     private TextView like_text,love_text;
@@ -595,6 +591,16 @@ public class OpenUserDetail extends BaseActivity {
 
             return true;
         }else if (id==R.id.menu_share_conatct) {
+
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_SHARE);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
+
             String send = "";
             String format1 = "%1$-20s %2$-20s\n";
             String format2 = "%1$-40s\n";
@@ -609,6 +615,15 @@ public class OpenUserDetail extends BaseActivity {
 
         }
         else if(id==R.id.action_edit_profile) {
+
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_EDIT_OPEN);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
 
             Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
             intent.putExtra("newUser",false);

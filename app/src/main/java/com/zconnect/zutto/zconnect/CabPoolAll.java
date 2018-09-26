@@ -322,18 +322,7 @@ public class CabPoolAll extends BaseActivity {
         }
 
         databaseReference.addValueEventListener(allPools);
-        CounterItemFormat counterItemFormat = new CounterItemFormat();
-        HashMap<String, String> meta= new HashMap<>();
 
-
-
-        counterItemFormat.setUserID(mAuth.getUid());
-        counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN);
-        counterItemFormat.setTimestamp(System.currentTimeMillis());
-        counterItemFormat.setMeta(meta);
-
-        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-        counterPush.pushValues();
 
     }
 
