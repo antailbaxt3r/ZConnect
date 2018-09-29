@@ -149,14 +149,15 @@ public class Recents extends Fragment {
                     tempUser = new RecentsItemFormat();
                     tempUser = shot.getValue(RecentsItemFormat.class);
                     tempUser.setPostID(shot.getKey());
-                    if(shot.hasChild("recentType")){
-                        normalPostsUsers.add(tempUser);
-                    }else {
+                    if(shot.hasChild("feature")) {
+                        if (shot.hasChild("recentType")) {
+                            normalPostsUsers.add(tempUser);
+                        } else {
 
-                        tempUser.setRecentType(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
-                        normalPostsUsers.add(tempUser);
+                            tempUser.setRecentType(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+                            normalPostsUsers.add(tempUser);
+                        }
                     }
-
                 }
 
                 recentsItemFormats.add(features);
@@ -198,11 +199,13 @@ public class Recents extends Fragment {
                     tempUser = new RecentsItemFormat();
                     tempUser = shot.getValue(RecentsItemFormat.class);
                     tempUser.setPostID(shot.getKey());
-                    if(shot.hasChild("recentType")){
-                        normalPostsHome.add(tempUser);
-                    }else {
-                        tempUser.setRecentType(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
-                        normalPostsHome.add(tempUser);
+                    if(shot.hasChild("feature")) {
+                        if (shot.hasChild("recentType")) {
+                            normalPostsHome.add(tempUser);
+                        } else {
+                            tempUser.setRecentType(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+                            normalPostsHome.add(tempUser);
+                        }
                     }
                 }
 

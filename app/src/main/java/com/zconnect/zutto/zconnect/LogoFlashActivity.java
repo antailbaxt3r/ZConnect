@@ -233,7 +233,7 @@ public class LogoFlashActivity extends BaseActivity {
         }, 2000);
 
 
-//
+
 //        temp = FirebaseDatabase.getInstance().getReference().child("communities").child("gmc");
 //
 //
@@ -241,7 +241,7 @@ public class LogoFlashActivity extends BaseActivity {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //
-//                FirebaseDatabase.getInstance().getReference().child("communities").child("gim").setValue(dataSnapshot.getValue());
+//                FirebaseDatabase.getInstance().getReference().child("communities").child("bitsPilani").setValue(dataSnapshot.getValue());
 //            }
 //
 //            @Override

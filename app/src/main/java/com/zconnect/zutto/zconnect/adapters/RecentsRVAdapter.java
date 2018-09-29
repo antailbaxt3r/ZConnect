@@ -682,7 +682,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         if(!recentsItemFormats.get(position).getImageurl().equals(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS) && recentsItemFormats.get(position).getImageurl()!=null){
                             if(!recentsItemFormats.get(position).getImageurl().equals("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png")) {
                                 holder.postImage.setVisibility(View.VISIBLE);
-                                holder.postImage.setImageURI(Uri.parse(recentsItemFormats.get(position).getImageurl()));
+                                Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.postImage);
                                 holder.setOpenStatusImage(recentsItemFormats.get(position).getPostedBy().getUsername(),recentsItemFormats.get(position).getImageurl());
                             }
                         }

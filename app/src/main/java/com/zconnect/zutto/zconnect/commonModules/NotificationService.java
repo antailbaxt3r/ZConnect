@@ -90,7 +90,6 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
 
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             forumChannel = new NotificationChannel(FORUMS_CHANNEL_ID, getString(R.string.noti_channel_forums), NotificationManager.IMPORTANCE_DEFAULT);
             forumChannel.setLightColor(Color.GREEN);
@@ -117,14 +116,14 @@ public class NotificationService extends FirebaseMessagingService {
             if (data.containsKey("Type")) {
                 final String type = data.get("Type").toString();
 
-                if (data.containsKey("userKey")) {
-                    final String userKey = data.get("userKey").toString();
-                    if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)) {
-                        handleNotifications(type);
-                    }
-                } else {
+//                if (data.containsKey("userKey")) {
+//                    final String userKey = data.get("userKey").toString();
+//                    if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)) {
+//                        handleNotifications(type);
+//                    }
+//                } else {
                     handleNotifications(type);
-                }
+//                }
             }
         }catch (Exception e){}
 
