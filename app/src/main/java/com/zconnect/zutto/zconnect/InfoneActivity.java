@@ -83,9 +83,6 @@ public class InfoneActivity extends Fragment {
         recyclerViewCat.setVisibility(View.GONE);
         fabCatAdd = (FloatingActionButton) view.findViewById(R.id.fab_cat_infone);
 
-        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
-        communityReference = communitySP.getString("communityReference", null);
-
         CounterItemFormat counterItemFormat = new CounterItemFormat();
         HashMap<String, String> meta= new HashMap<>();
 
@@ -96,6 +93,9 @@ public class InfoneActivity extends Fragment {
 
         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
         counterPush.pushValues();
+
+        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        communityReference = communitySP.getString("communityReference", null);
 
         databaseReferenceCat = FirebaseDatabase.getInstance().getReference().child("communities")
                 .child(communityReference).child("infone").child("categoriesInfo");

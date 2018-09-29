@@ -47,17 +47,14 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
-import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
@@ -68,9 +65,6 @@ import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class ChatActivity extends BaseActivity {
 
@@ -213,19 +207,7 @@ public class ChatActivity extends BaseActivity {
                                             cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                                             notificationSender.execute(cabPoolJoinNotification);
 
-                                            CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                            HashMap<String, String> meta= new HashMap<>();
-
-                                            meta.put("type","fromChat");
-                                            meta.put("key",getIntent().getStringExtra("key"));
-
-                                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                            counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_JOIN);
-                                            counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                            counterItemFormat.setMeta(meta);
-                                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                            counterPush.pushValues();
-
+                                            CounterManager.openCabPoolJoin(getIntent().getStringExtra("key"));
                                             FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 
                                         }
@@ -267,15 +249,6 @@ public class ChatActivity extends BaseActivity {
                             joinButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta= new HashMap<>();
-                                    meta.put("type","fromChat");
-                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_JOINED);
-                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                    counterItemFormat.setMeta(meta);
-                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                    counterPush.pushValues();
                                     final UsersListItemFormat userDetails = new UsersListItemFormat();
                                     DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -735,27 +708,10 @@ public class ChatActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_list_people) {
-            CounterItemFormat counterItemFormat = new CounterItemFormat();
-            HashMap<String, String> meta= new HashMap<>();
-            meta.put("type","fromFeature");
-            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_LIST_MEMBERS);
-            counterItemFormat.setTimestamp(System.currentTimeMillis());
-            counterItemFormat.setMeta(meta);
-            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-            counterPush.pushValues();
             launchPeopleList();
         }
 
         if(item.getItemId() == R.id.action_edit_forum) {
-            CounterItemFormat counterItemFormat = new CounterItemFormat();
-            HashMap<String, String> meta= new HashMap<>();
-            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDIT_FORUM);
-            counterItemFormat.setTimestamp(System.currentTimeMillis());
-            counterItemFormat.setMeta(meta);
-            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-            counterPush.pushValues();
             launchEditForum();
         }
 

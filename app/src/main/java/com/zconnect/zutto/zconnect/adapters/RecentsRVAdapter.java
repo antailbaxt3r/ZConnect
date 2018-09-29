@@ -160,7 +160,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder2, final int position) {
         final RecentsItemFormat recentItem = recentsItemFormats.get(position);
-        if(position>10)
+        if(position>5)
         {
             scrollToTopBtn.setVisibility(View.VISIBLE);
         }
@@ -179,15 +179,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 openUserProfileListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CounterItemFormat counterItemFormat = new CounterItemFormat();
-                        HashMap<String, String> meta= new HashMap<>();
-                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
-                        counterItemFormat.setTimestamp(System.currentTimeMillis());
-                        counterItemFormat.setMeta(meta);
-                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                        counterPush.pushValues();
-
                         if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(recentsItemFormats.get(position).getPostedBy().getUID()))
                         {
                             mHomeActivity.changeFragment(4);
@@ -418,19 +409,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     clickableSpanFeature = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
-                            CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
-
-                            meta.put("type","fromRecents");
-
-                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                            counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CONTACT_OPEN);
-                            counterItemFormat.setTimestamp(System.currentTimeMillis());
-                            counterItemFormat.setMeta(meta);
-
-                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                            counterPush.pushValues();
-
                             Intent intent = new Intent(context, TabbedEvents.class);
                             context.startActivity(intent);
                         }
@@ -473,8 +451,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.post.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
-
                             Intent intent = new Intent(context, TabStoreRoom.class);
                             context.startActivity(intent);
                         }
@@ -1163,7 +1139,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mOtherFeatures = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("otherFeatures").orderByChild("pos");
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            mUserDetails.addValueEventListener(new ValueEventListener() {
+            mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     final UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);

@@ -35,18 +35,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
-import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.Calendar;
-import java.util.HashMap;
 
 import mabbas007.tagsedittext.TagsEditText;
 
@@ -228,14 +224,6 @@ public class OpenUserDetail extends BaseActivity {
         btn_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_LIKE);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
                 if(like_status){
                     db_like.child(myUID).setValue(null);
                     like_status = false;
@@ -275,14 +263,6 @@ public class OpenUserDetail extends BaseActivity {
         btn_love.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_LOVE);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
                 if(love_status) {
                     db_love.child(myUID).setValue(null);
                     love_status = false;
@@ -486,14 +466,6 @@ public class OpenUserDetail extends BaseActivity {
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_CALL);
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
 //                    CounterManager.InfoneCallAfterProfile(mobileNumber);
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mobileNumber)));
                 }
@@ -516,14 +488,6 @@ public class OpenUserDetail extends BaseActivity {
             mail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_EMAIL);
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
                     CounterManager.email(mobileNumber);
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
                     startActivity(Intent.createChooser(emailIntent, "Send Email ..."));
@@ -577,14 +541,6 @@ public class OpenUserDetail extends BaseActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_report) {
-            CounterItemFormat counterItemFormat = new CounterItemFormat();
-            HashMap<String, String> meta= new HashMap<>();
-            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-            counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_REPORT);
-            counterItemFormat.setTimestamp(System.currentTimeMillis());
-            counterItemFormat.setMeta(meta);
-            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-            counterPush.pushValues();
 
             CounterManager.report(mobileNumber);
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
@@ -609,7 +565,6 @@ public class OpenUserDetail extends BaseActivity {
 
         }
         else if(id==R.id.action_edit_profile) {
-
             Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
             intent.putExtra("newUser",false);
             startActivity(intent);

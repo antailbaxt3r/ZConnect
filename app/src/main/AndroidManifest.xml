@@ -101,7 +101,7 @@
             android:label="Events"
             android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ShopList"
             android:label="@string/title_activity_shop_list"
@@ -432,14 +432,15 @@
             android:name=".addActivities.CreateForum"
             android:label="Create Forum"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ReferralCode"
             android:label="Referral Code"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NotificationNoImage" />
+        <activity android:name=".NotificationImage" />
+        <activity android:name=".Links"></activity>
     </application>
 
 </manifest>

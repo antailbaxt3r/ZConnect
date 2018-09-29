@@ -29,12 +29,9 @@ import com.google.firebase.storage.StorageReference;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.addActivities.CreateForum;
-import com.zconnect.zutto.zconnect.commonModules.CounterPush;
-import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.forumCategoriesItemFormat;
-import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
@@ -43,7 +40,6 @@ import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -222,14 +218,6 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CREATE_FORUM_OPEN);
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
                     final Intent intent = new Intent(context, CreateForum.class);
                     intent.putExtra("uid", uid);
                     intent.putExtra("flag", "false");
@@ -270,7 +258,6 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         void openChat(final String uid, final String tabId, final String  name){
-
             mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -344,15 +331,6 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
-                    meta.put("type","fromFeature");
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CHANNEL_OPEN);
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
                     intent.putExtra("type","forums");
@@ -373,17 +351,6 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             joinButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
-
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    meta.put("type","fromFeature");
-                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_JOINED);
-
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
                     final UsersListItemFormat userDetails = new UsersListItemFormat();
                     DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 

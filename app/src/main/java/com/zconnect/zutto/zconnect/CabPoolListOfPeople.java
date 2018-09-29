@@ -124,20 +124,6 @@ public class CabPoolListOfPeople extends BaseActivity {
         findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-
-                meta.put("key",key);
-
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_CHAT_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-
                 Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
                 intent.putExtra("type","cabPool");
                 intent.putExtra("key",key);
@@ -274,10 +260,6 @@ public class CabPoolListOfPeople extends BaseActivity {
 
                                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                                                 HashMap<String, String> meta= new HashMap<>();
-
-                                                meta.put("type","fromList");
-                                                meta.put("key",getIntent().getStringExtra("key"));
-
                                                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                                 counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_LEAVE);
                                                 counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -328,18 +310,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                                 cabPoolJoinNotification.setUserName(userItemFormat.getUsername());
                                 notificationSender.execute(cabPoolJoinNotification);
 
-                                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta= new HashMap<>();
-
-                                meta.put("type","fromList");
-                                meta.put("key",getIntent().getStringExtra("key"));
-
-                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_JOIN);
-                                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                counterItemFormat.setMeta(meta);
-                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                counterPush.pushValues();
+                                CounterManager.openCabPoolJoin(getIntent().getStringExtra("key"));
 
                                 FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
                             }
