@@ -76,7 +76,18 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                     throwable.printStackTrace();
                 }
 
-                CounterManager.StoreRoomAddClick();
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("type","fromRecents");
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADD_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
                 Intent intent;
                 intent = new Intent(getContext(), AddProduct.class);
                 startActivity(intent);
@@ -93,7 +104,16 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                     throwable.printStackTrace();
                 }
 
-                CounterManager.publicStatusAddClick();
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+                meta.put("type","fromRecents");
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADD_STATUS);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
                 Intent intent;
                 intent = new Intent(getContext(), AddStatus.class);
                 startActivity(intent);
@@ -113,7 +133,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
 
-                meta.put("type","fromHome");
+                meta.put("type","fromRecents");
 
 
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());

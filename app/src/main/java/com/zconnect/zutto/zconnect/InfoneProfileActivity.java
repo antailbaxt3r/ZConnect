@@ -43,11 +43,17 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class InfoneProfileActivity extends BaseActivity {
 
@@ -75,7 +81,7 @@ public class InfoneProfileActivity extends BaseActivity {
 
     ArrayList<String> phoneNums;
     /*user id of the current infone contact in /infone/numbers */
-    String infoneUserId;
+    String infoneUserId,catID;
 
     /*DB elements*/
     DatabaseReference databaseReferenceContact;
@@ -97,7 +103,7 @@ public class InfoneProfileActivity extends BaseActivity {
     private Button viewProfileButton;
 
     private final String TAG = getClass().getSimpleName();
-    private String catId,name;
+    private String name;
     LinearLayout linearLayout;
     ProgressBar progressBar;
 
@@ -152,7 +158,7 @@ public class InfoneProfileActivity extends BaseActivity {
         saveEditBtn.setVisibility(View.GONE);
 
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
-
+        catID = getIntent().getExtras().getString("catID");
         Log.e(InfoneProfileActivity.class.getName(), "data :" + infoneUserId);
 
         communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
@@ -181,7 +187,6 @@ public class InfoneProfileActivity extends BaseActivity {
 
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);
-                catId = dataSnapshot.child("catId").getValue(String.class);
                 validButton.setText(dataSnapshot.child("validCount").getValue().toString() + " validations");
 
                 userType = dataSnapshot.child("type").getValue(String.class);
@@ -195,6 +200,22 @@ public class InfoneProfileActivity extends BaseActivity {
                     viewProfileButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+
+                            meta.put("type","fromInfone");
+                            meta.put("userID",dataSnapshot.child("UID").getValue().toString());
+                            meta.put("catID",catID);
+
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
+
                             Intent i = new Intent(InfoneProfileActivity.this,OpenUserDetail.class);
                             i.putExtra("Uid",dataSnapshot.child("UID").getValue().toString());
                             Log.d("AAKKHHIILL", dataSnapshot.child("UID").getValue().toString());
@@ -251,14 +272,18 @@ public class InfoneProfileActivity extends BaseActivity {
         phone1Et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!phone1Et.getText().toString().isEmpty())
+                if (!phone1Et.getText().toString().isEmpty()) {
+                    callCounter();
                     makeCall(phone1Et.getText().toString());
+                }
             }
         });
         phone1EtCallbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CounterManager.infoneCallContact();
+
+                callCounter();
+
                 Intent intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse("tel:" + phone1Et.getText().toString()));
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -281,8 +306,10 @@ public class InfoneProfileActivity extends BaseActivity {
         phone2Et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!phone2Et.getText().toString().isEmpty())
+                if (!phone2Et.getText().toString().isEmpty()) {
                     makeCall(phone2Et.getText().toString());
+                    callCounter();
+                }
             }
         });
 
@@ -321,9 +348,36 @@ public class InfoneProfileActivity extends BaseActivity {
                 postTimeMillis = System.currentTimeMillis();
                 databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
 
-                CounterManager.infoneVerifyContact();
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("catID",catID);
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_VALIDATE);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
             }
         });
+    }
+
+    public void callCounter(){
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta= new HashMap<>();
+
+        meta.put("type","fromInfoneProfile");
+        meta.put("catID",catID);
+
+        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CALL);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        counterItemFormat.setMeta(meta);
+
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
     }
 
 
@@ -342,7 +396,7 @@ public class InfoneProfileActivity extends BaseActivity {
 
     private void saveEdits() {
 
-        databaseRefEdit=databaseReferenceInfone.child("categories").child(catId).child(infoneUserId);
+        databaseRefEdit=databaseReferenceInfone.child("categories").child(catID).child(infoneUserId);
         databaseRefEditNum=databaseReferenceContact;
 
         String name=nameEt.getText().toString();
@@ -361,7 +415,7 @@ public class InfoneProfileActivity extends BaseActivity {
             databaseRefEdit.child("name").setValue(name);
             databaseRefEdit.child("phone").child("0").setValue(phone1);
             databaseRefEdit.child("phone").child("1").setValue(phone2);
-            databaseRefEditNum.child("category").setValue(catId);
+            databaseRefEditNum.child("category").setValue(catID);
             uploadImage();
 
         }

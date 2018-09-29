@@ -20,6 +20,11 @@ import android.view.WindowManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+
+import java.util.HashMap;
 
 public class TabStoreRoom extends BaseActivity {
 
@@ -68,17 +73,30 @@ public class TabStoreRoom extends BaseActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_app_bar_home);
         tabLayout.setupWithViewPager(mViewPager);
-
+        final CounterItemFormat counterItemFormat = new CounterItemFormat();
+        final HashMap<String, String> meta= new HashMap<>();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
-                if (pos == 0)
-                    CounterManager.StoreroomOpenTab("ProductsTab");
-                else if (pos == 1)
-                    CounterManager.StoreroomOpenTab("Shortlist");
-                else
-                    CounterManager.StoreroomOpenTab("CategoriesTab");
+                if (pos == 0) {
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCTS_TAB_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+                } else if (pos == 1) {
+
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_CATEGORIES_TAB_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+                }
             }
 
             @Override
@@ -111,8 +129,29 @@ public class TabStoreRoom extends BaseActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_storeroom) {
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
+
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_MY_PRODUCTS_OPEN);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
             startActivity(new Intent(getApplicationContext(), MyProducts.class));
+
         } else if (id == R.id.action_storeroom_shortlist){
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
+
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_SHORTLIST_OPEN);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
             startActivity(new Intent(getApplicationContext(), Shortlist.class));
         }
         //noinspection SimplifiableIfStatement

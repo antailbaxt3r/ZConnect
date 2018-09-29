@@ -83,17 +83,6 @@ public class InfoneActivity extends Fragment {
         recyclerViewCat.setVisibility(View.GONE);
         fabCatAdd = (FloatingActionButton) view.findViewById(R.id.fab_cat_infone);
 
-        CounterItemFormat counterItemFormat = new CounterItemFormat();
-        HashMap<String, String> meta= new HashMap<>();
-
-        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-        counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_TAB_OPEN);
-        counterItemFormat.setTimestamp(System.currentTimeMillis());
-        counterItemFormat.setMeta(meta);
-
-        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-        counterPush.pushValues();
-
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 

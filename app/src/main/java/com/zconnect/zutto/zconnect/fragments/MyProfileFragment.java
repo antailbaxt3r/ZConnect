@@ -39,8 +39,13 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.EditProfileActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.VerificationPage;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
+
+import java.util.HashMap;
 
 import mabbas007.tagsedittext.TagsEditText;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
@@ -514,6 +519,16 @@ public class MyProfileFragment extends Fragment {
         int id = item.getItemId();
 
        if(id==R.id.action_edit_profile) {
+
+           CounterItemFormat counterItemFormat = new CounterItemFormat();
+           HashMap<String, String> meta= new HashMap<>();
+           counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+           counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_EDIT_OPEN);
+           counterItemFormat.setTimestamp(System.currentTimeMillis());
+           counterItemFormat.setMeta(meta);
+           CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+           counterPush.pushValues();
+
             Intent intent = new Intent(getActivity().getApplicationContext(), EditProfileActivity.class);
             intent.putExtra("newUser",false);
             startActivity(intent);

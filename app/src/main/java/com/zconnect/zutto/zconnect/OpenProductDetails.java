@@ -47,15 +47,19 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -134,7 +138,9 @@ public class OpenProductDetails extends BaseActivity {
         productCall.setTypeface(ralewayBold);
         chatLayout= (LinearLayout) findViewById(R.id.chatLayout);
         chatEditText = (EditText) findViewById(R.id.typer);
-        chatEditText.setShowSoftInputOnFocus(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            chatEditText.setShowSoftInputOnFocus(false);
+        }
 
         progressDialog = new ProgressDialog(this);
 
@@ -231,14 +237,39 @@ public class OpenProductDetails extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.share:
 
-                CounterManager.eventShare(productKey);
+        Intent productKeyIntent = getIntent();
+        productKey = productKeyIntent.getStringExtra("key");
+
+
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta= new HashMap<>();
+
+        switch (item.getItemId()) {
+
+            case R.id.share:
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_SHARE);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
                 shareProduct(mImageUri, this.getApplicationContext(), productKey);
                 break;
             case R.id.menu_chat_room:
-                //char room clicked
+
+                meta.put("type","fromMenu");
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_CHAT);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+
+                CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
+                counterPush2.pushValues();
+
                 Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
                 intent.putExtra("type","storeroom");
                 intent.putExtra("key",productKey);
@@ -388,8 +419,7 @@ public class OpenProductDetails extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        Intent intent = getIntent();
-        productKey = intent.getStringExtra("key");
+        productKey =  getIntent().getExtras().getString("key");
         mDatabaseProduct.child(productKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -401,7 +431,16 @@ public class OpenProductDetails extends BaseActivity {
                 productCall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        CounterManager.StoroomCall(dataSnapshot.child("Category").getValue().toString());
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_CALL);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
                         startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(dataSnapshot.child("Phone_no").getValue().toString().trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 });
@@ -421,6 +460,60 @@ public class OpenProductDetails extends BaseActivity {
                 }
 
                 defaultSwitch(productKey, productCategory, productShortlist);
+
+                chatLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+                        meta.put("type","fromTextBox");
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_CHAT);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+
+
+                        CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
+                        counterPush2.pushValues();
+
+                        //char room clicked
+                        Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+                        intent.putExtra("type","storeroom");
+                        intent.putExtra("key",productKey);
+                        intent.putExtra("name",productName.getText());
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    }
+                });
+
+                chatEditText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //char room clicked
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+                        meta.put("type","fromTextBox");
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_CHAT);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+
+
+                        CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
+                        counterPush2.pushValues();
+
+
+                        Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+                        intent.putExtra("type","storeroom");
+                        intent.putExtra("key",productKey);
+                        intent.putExtra("name",productName.getText());
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    }
+                });
             }
 
             @Override
@@ -435,6 +528,17 @@ public class OpenProductDetails extends BaseActivity {
         mListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+                meta.put("type","fromRV");
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_SHORTLIST);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
                 flag = true;
                 final DatabaseReference userReservedReference = mDatabaseProduct.child(productKey);
                 userReservedReference.addValueEventListener(new ValueEventListener() {

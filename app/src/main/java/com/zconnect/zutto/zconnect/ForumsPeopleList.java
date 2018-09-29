@@ -24,11 +24,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.adapters.UsersListRVAdapter;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureNamesUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import static android.view.View.INVISIBLE;
@@ -173,7 +177,17 @@ public class ForumsPeopleList extends BaseActivity {
 
                                     forumMembersList.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                                     FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
-                                    CounterManager.forumsLeaveCategory(tab,key);
+
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    HashMap<String, String> meta= new HashMap<>();
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_LEAVE);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    meta.put("catUID",tab);
+                                    meta.put("channelID",key);
+                                    counterItemFormat.setMeta(meta);
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
 
                                 }
                             })
@@ -203,7 +217,16 @@ public class ForumsPeopleList extends BaseActivity {
                             userDetails.setUserType(userType);
                             forumMembersList.child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                            CounterManager.forumsJoinCategory(tab,key);
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_JOINED);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            meta.put("catUID",tab);
+                            meta.put("channelID",key);
+                            counterItemFormat.setMeta(meta);
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
 
                         }
 

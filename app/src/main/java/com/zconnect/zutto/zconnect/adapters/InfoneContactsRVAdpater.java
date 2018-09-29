@@ -23,16 +23,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.holders.InfoneContactsRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneContactsRVItem;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
@@ -96,9 +100,22 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                 }else {
                     Intent profileIntent = new Intent(context, InfoneProfileActivity.class);
                     profileIntent.putExtra("infoneUserId", infoneContactsRVItems.get(position).getInfoneUserId());
-                    profileIntent.putExtra("catId", catId);
+                    profileIntent.putExtra("catID", catId);
                     context.startActivity(profileIntent);
-                    CounterManager.infoneOpenContact(catId, infoneContactsRVItems.get(position).getInfoneUserId());
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+
+                    meta.put("catID",catId);
+                    meta.put("type","fromFeature");
+
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CONTACT_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
                 }
             }
         });
@@ -106,6 +123,19 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
 
     private void callOptionsDialog(final ArrayList<String> phoneArrayList) {
 
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta= new HashMap<>();
+
+        meta.put("type","fromContactList");
+        meta.put("catID",catId);
+
+        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CALL);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        counterItemFormat.setMeta(meta);
+
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
 
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
         builderSingle.setIcon(android.R.drawable.ic_menu_call);
