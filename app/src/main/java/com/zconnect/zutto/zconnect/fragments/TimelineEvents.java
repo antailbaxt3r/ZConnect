@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,14 +19,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
-import com.zconnect.zutto.zconnect.commonModules.CounterPush;
-import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.adapters.EventsAdapter;
-import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
-import java.util.HashMap;
 import java.util.Vector;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
@@ -113,19 +108,6 @@ public class TimelineEvents extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-
-                meta.put("type","fromTimeline");
-
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_ADD_EVENT_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
                 getContext().startActivity(new Intent(getContext(), AddEvent.class));
             }
         });

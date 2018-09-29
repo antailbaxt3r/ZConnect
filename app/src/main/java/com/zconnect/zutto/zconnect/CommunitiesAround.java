@@ -468,15 +468,13 @@ public class CommunitiesAround extends BaseActivity {
                     CommunitiesItemFormat communitiesItemFormat = shot.getValue(CommunitiesItemFormat.class);
                    try {
                        double comLat, comLon,totalDistance;
-                       Integer radius;
 
-                       radius = communitiesItemFormat.getRadius();
 
                        comLat = shot.child("location").child("lat").getValue(Double.class);
                        comLon = shot.child("location").child("lon").getValue(Double.class);
 
                        totalDistance = distance(lat,comLat,lon,comLon);
-                       if(totalDistance<radius){
+                       if(totalDistance<2){
                            //Toast.makeText(CommunitiesAround.this, " " + totalDistance, Toast.LENGTH_SHORT).show();
                            communitiesList.add(communitiesItemFormat);
                            flagNoCommunity = false;
@@ -489,10 +487,8 @@ public class CommunitiesAround extends BaseActivity {
 
                 if(flagNoCommunity){
                     noCommunitiesTextView.setVisibility(View.VISIBLE);
-                }else{
-                    noCommunitiesTextView.setVisibility(View.GONE);
                 }
-                    progressDialog.dismiss();
+                progressDialog.dismiss();
                 adapter.notifyDataSetChanged();
             }
 

@@ -432,17 +432,8 @@ public class AddEvent extends BaseActivity {
                                     }
                                 });
 
-                                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta= new HashMap<>();
-
-                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_EVENT_ADDED);
-                                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                counterItemFormat.setMeta(meta);
-
-                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                counterPush.pushValues();
-
+                                // Adding stats
+                                CounterManager.addEventVerified(key, eventNameValue);
                                 mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {

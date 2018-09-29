@@ -53,7 +53,7 @@
         <item
             android:title="Referral Code"
             android:id="@+id/referral_code"
-            android:icon="@drawable/ic_group_add_black_24dp"
+            android:icon="@drawable/ic_share_grey_24dp"
             android:name="Referral Code" />
     </group>
     <group

@@ -59,9 +59,13 @@ public class OpenUserDetail extends BaseActivity {
     private TextView editTextNumber;
 
     TextView whatsAppNumberText;
+    //private android.support.design.widget.TextInputEditText editTextSkills;
     private TagsEditText editTextSkills;
     private SimpleDraweeView image;
     private ImageView mail, call;
+//    private EditText textMessage;
+//    private LinearLayout anonymMessageLayout;
+//    private ImageButton sendButton;
     private ImageButton btn_love,btn_like;
     private Boolean flagforNull=false;
     private TextView like_text,love_text;

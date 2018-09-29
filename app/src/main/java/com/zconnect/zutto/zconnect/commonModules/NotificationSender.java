@@ -197,6 +197,12 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
                 statusLikeNotification(ND.getItemKey(), ND.getCommunityName(), ND.getUserName(), ND.getUserImage(), ND.getItemLikeCount());
                 Log.d("LIKESSSS", "2");
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL:
+                notificationWithImage(ND.getItemImage(), ND.getItemURL(), ND.getItemTitle(), ND.getItemMessage());
+                break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT_URL:
+                notificationWithoutImage(ND.getItemURL(), ND.getItemTitle(), ND.getItemMessage());
+                break;
         }
 
         return null;
@@ -579,6 +585,23 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             e.printStackTrace();
         }
 
+    }
+
+    private void notificationWithImage(String notificationImage, String notificationURL, String notificationTitle, String notificationMessage){
+        creator=new RemoteMessage.Builder("data");
+        creator.addData("imageURL",notificationImage);
+        creator.addData("URL",notificationURL);
+        creator.addData("title",notificationTitle);
+        creator.addData("message",notificationMessage);
+        sendNotification(true,communityReference);
+    }
+
+    private void notificationWithoutImage(String noticationURL, String notificationTitle, String notificationMessage){
+        creator=new RemoteMessage.Builder("data");
+        creator.addData("URL",noticationURL);
+        creator.addData("title",notificationTitle);
+        creator.addData("message",notificationMessage);
+        sendNotification(true,communityReference);
     }
 
 
