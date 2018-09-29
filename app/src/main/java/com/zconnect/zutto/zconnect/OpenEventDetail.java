@@ -53,11 +53,14 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 import org.joda.time.DateTime;
@@ -152,7 +155,21 @@ public class  OpenEventDetail extends BaseActivity{
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("type","fromTextBox");
+                meta.put("eventID",eventId);
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_CHAT_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
+               Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
                 intent.putExtra("type","events");
                 intent.putExtra("key",eventId);
                 intent.putExtra("name",getSupportActionBar().getTitle());
@@ -352,12 +369,38 @@ public class  OpenEventDetail extends BaseActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.share) {
+             CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
 
-            CounterManager.eventShare(event.getKey());
+            meta.put("eventID",eventId);
+
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_SHARE);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
+
             shareEvent(event.getEventImage(), this.getApplicationContext(), eventId);
 
         } else if (id == R.id.menu_chat_room) {
-            //chat room clicked;
+
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
+
+            meta.put("type","fromMenu");
+            meta.put("eventID",eventId);
+
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_CHAT_OPEN);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
+
+      //chat room clicked;
             Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
             intent.putExtra("type","events");
             intent.putExtra("key",eventId);
