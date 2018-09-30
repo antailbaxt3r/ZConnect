@@ -90,7 +90,6 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
 
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             forumChannel = new NotificationChannel(FORUMS_CHANNEL_ID, getString(R.string.noti_channel_forums), NotificationManager.IMPORTANCE_DEFAULT);
             forumChannel.setLightColor(Color.GREEN);

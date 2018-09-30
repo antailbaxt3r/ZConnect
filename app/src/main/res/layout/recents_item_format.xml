@@ -208,27 +208,29 @@
                 android:id="@+id/messagesRecentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:visibility="gone"
-                android:clipToPadding="false">
-                <TextView
-                    android:textSize="16sp"
-                    android:id="@+id/messagesRecentItem_message"
+                android:orientation="vertical">
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Message goes here"
-                    android:textColor="@color/primaryText"
-                    android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_small"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+                    <TextView
+                        android:textSize="16sp"
+                        android:id="@+id/messagesRecentItem_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Message goes here"
+                        android:textColor="@color/primaryText"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small"/>
+                </LinearLayout>
 
                 <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="Post Image"
                     fresco:viewAspectRatio="1.33"
-                    android:visibility="gone"
                     android:id="@+id/messagesRecentItem_image"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"/>
