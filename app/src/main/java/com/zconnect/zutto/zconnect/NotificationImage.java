@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -16,9 +17,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,11 +30,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -60,22 +65,52 @@ public class NotificationImage extends BaseActivity{
     private DatabaseReference mUsername;
     private ProgressDialog mProgress;
     private FirebaseAuth mAuth;
-    EditText notificationDescription=(EditText)findViewById(R.id.notif_description);
-    EditText notificationTitle=(EditText)findViewById(R.id.notif_title);
-    EditText nottificationURL=(EditText)findViewById(R.id.notif_url);
-
-
-
-    Button submit=(Button)findViewById(R.id.button2);
-    ImageButton mAddImage=(ImageButton)findViewById(R.id.imageButton);
-
+    private EditText notificationDescription;
+    private EditText notificationTitle;
+    private EditText nottificationURL;
+    private Button submit;
+    private ImageButton mAddImage;
+    private Toolbar mActionBarToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notif_image);
-        Button submit=(Button)findViewById(R.id.button2);
-        ImageButton mAddImage=(ImageButton)findViewById(R.id.imageButton);
+
+        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(mActionBarToolbar);
+
+        if (mActionBarToolbar != null) {
+            mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+
+        mProgress = new ProgressDialog(this);
+        intentHandle = new IntentHandle();
+
+        notificationDescription =(EditText)findViewById(R.id.notif_description);
+        notificationTitle =(EditText)findViewById(R.id.notif_title);
+        nottificationURL =(EditText)findViewById(R.id.notif_url);
+
+        submit=(Button)findViewById(R.id.button2);
+        mAddImage=(ImageButton)findViewById(R.id.imageButton);
+
+        mStorage = FirebaseStorage.getInstance().getReference();
 
 
         mAddImage.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +146,7 @@ public class NotificationImage extends BaseActivity{
             }
         });
 
-        mProgress.cancel();
+
 
     }
 
@@ -123,6 +158,7 @@ public class NotificationImage extends BaseActivity{
         if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
             Uri imageUri = intentHandle.getPickImageResultUri(data, NotificationImage.this); //Get data
             CropImage.activity(imageUri)
+                    .setAspectRatio(3,2)
                     .setCropShape(CropImageView.CropShape.RECTANGLE)
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .start(this);
@@ -168,7 +204,7 @@ public class NotificationImage extends BaseActivity{
 
     private void startPosting(){
 
-        mProgress.setMessage("Posting Notification..");
+        mProgress.setMessage("Sending Notification..");
         mProgress.show();
 
         mAuth = FirebaseAuth.getInstance();
@@ -194,20 +230,36 @@ public class NotificationImage extends BaseActivity{
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         final Uri downloadUri = task.getResult();
-                        final DatabaseReference newPost = mDatabase.push();
+
                         NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
                         NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL, userId);
                         addImageNotification.setItemMessage(notificationDescription.getText().toString());
                         addImageNotification.setItemTitle(notificationTitle.getText().toString());
-                        addImageNotification.setItemImage(mImageUri.toString());
+                        addImageNotification.setItemImage(downloadUri.toString());
                         addImageNotification.setItemURL(nottificationURL.getText().toString());
 
                         notificationSender.execute(addImageNotification);
+                        Toast.makeText(NotificationImage.this, "Notification Sent", Toast.LENGTH_SHORT).show();
+                        mProgress.dismiss();
+                        finish();
                     }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mProgress.dismiss();
+                    finish();
+                    Toast.makeText(NotificationImage.this, "Notication Failed, try again", Toast.LENGTH_SHORT).show();
                 }
             });
 
 
+        }else {
+            Snackbar snack = Snackbar.make(mAddImage, "Fields are empty", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+            snack.show();
         }
     }
 

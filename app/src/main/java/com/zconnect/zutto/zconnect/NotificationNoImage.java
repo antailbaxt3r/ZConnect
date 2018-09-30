@@ -5,11 +5,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -36,10 +40,11 @@ public class NotificationNoImage extends BaseActivity {
     private ProgressDialog mProgress;
     private FirebaseAuth mAuth;
 
-    EditText notificationDescription=(EditText)findViewById(R.id.notif_description);
-    EditText notificationTitle=(EditText)findViewById(R.id.notif_title);
-    EditText nottificationURL=(EditText)findViewById(R.id.notif_url);
-
+    private EditText notificationDescription;
+    private EditText notificationTitle;
+    private EditText nottificationURL;
+    private Button sendNotification;
+    private Toolbar mActionBarToolbar;
 
 
 
@@ -48,8 +53,35 @@ public class NotificationNoImage extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notif_no_image);
 
-        EditText notification=(EditText)findViewById(R.id.notif_description);
-        Button sendNotification=(Button)findViewById(R.id.submit);
+        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(mActionBarToolbar);
+
+        if (mActionBarToolbar != null) {
+            mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+
+        mProgress = new ProgressDialog(this);
+
+        notificationDescription =(EditText)findViewById(R.id.notif_description);
+        notificationTitle =(EditText)findViewById(R.id.notif_title);
+        nottificationURL =(EditText)findViewById(R.id.notif_url);
+        sendNotification =(Button)findViewById(R.id.submit);
 
         sendNotification.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +126,7 @@ public class NotificationNoImage extends BaseActivity {
 
             notificationSender.execute(addImageNotification);
 
-
+            mProgress.dismiss();
         }
     }
 

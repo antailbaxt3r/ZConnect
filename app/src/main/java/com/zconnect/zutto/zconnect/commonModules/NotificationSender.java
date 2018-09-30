@@ -593,6 +593,9 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("URL",notificationURL);
         creator.addData("title",notificationTitle);
         creator.addData("message",notificationMessage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_IMAGE_URL);
+        creator.addData("userKey",userKey);
         sendNotification(true,communityReference);
     }
 
@@ -601,6 +604,10 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("URL",noticationURL);
         creator.addData("title",notificationTitle);
         creator.addData("message",notificationMessage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT_URL);
+        creator.addData("userKey",userKey);
+
         sendNotification(true,communityReference);
     }
 

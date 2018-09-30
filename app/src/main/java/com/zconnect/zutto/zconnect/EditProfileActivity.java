@@ -428,8 +428,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             mProgress.dismiss();
         } else {
             final DatabaseReference newPost = mUserReference;
-            if(isReferred)
-            {
+            if(isReferred) {
                 Log.d("RRRR", "is referred");
                 DatabaseReference referredUserRef = FirebaseDatabase.getInstance().getReference().child("referredUsers").child(mUser.getUid());
                 referredUserRef.child("status").setValue("converted");
@@ -480,6 +479,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newContactRef.child("phone").child("0").setValue(userMobile);
             newContactRef.child("phone").child("1").setValue(userWhatsapp);
             newContactRef.child("key").child(mUser.getUid());
+            newContactRef.child("contactHidden").setValue(contactHidden);
 
             //Inside Contacts
             newContactNumRef.child("category").setValue(userInfoneType);
@@ -492,7 +492,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
             newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
             newContactNumRef.child("UID").setValue(mUser.getUid());
-            newContactNumRef.child("contactHidden").setValue(contactHidden);
+
 
             if(newUser){
 

@@ -373,7 +373,6 @@ public class ChatActivity extends BaseActivity {
                     if (!snapshot.hasChild("messageType")) {
                         temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                     }
-
                     messages.add(temp);
                 }
 
@@ -579,7 +578,7 @@ public class ChatActivity extends BaseActivity {
                                 message.setName(userItem.getUsername());
                                 message.setPhotoURL(downloadUri != null ? downloadUri.toString() : null);
                                 message.setImageThumb(userItem.getImageURLThumbnail());
-                                message.setMessage("Image");
+                                message.setMessage(" \uD83D\uDCF7 Image ");
                                 message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
 
                                 databaseReference.child("Chat").push().setValue(message);
@@ -588,7 +587,7 @@ public class ChatActivity extends BaseActivity {
 
                                     NotificationItemFormat forumChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_FORUM,userItem.getUserUID());
 
-                                    forumChatNotification.setItemMessage("Image");
+                                    forumChatNotification.setItemMessage(" \uD83D\uDCF7 Image ");
                                     forumChatNotification.setItemCategoryUID(getIntent().getStringExtra("tab"));
                                     forumChatNotification.setItemName(getIntent().getStringExtra("name"));
                                     forumChatNotification.setItemKey(getIntent().getStringExtra("key"));

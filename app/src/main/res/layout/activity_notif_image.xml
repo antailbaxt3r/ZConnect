@@ -6,66 +6,82 @@
     android:layout_height="match_parent"
     tools:context=".NotificationImage">
 
-    <EditText
-        android:id="@+id/notif_description"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:hint="Enter notification"
-        android:textColor="@color/secondaryText"
-        android:textColorHint="@color/secondaryText"
-        app:layout_constraintBottom_toTopOf="@+id/notif_url"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="49dp"
-        android:background="@color/colorPrimary"
-        android:text="Submit"
-        android:textColor="#ffff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-    <EditText
-        android:id="@+id/notif_url"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="17dp"
-        android:hint="Enter notification URL"
-        android:textColor="@color/secondaryText"
-        android:textColorHint="@color/secondaryText"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_app_bar_home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/notif_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:hint="Enter notification title"
-        android:textColor="@color/secondaryText"
-        android:textColorHint="@color/secondaryText"
-        app:layout_constraintBottom_toTopOf="@+id/notif_description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginBottom="23dp"
-        android:background="@drawable/dashed_border"
-        android:contentDescription="Product image"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/notif_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/addimage" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
 
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="180dp"
+                android:maxHeight="200dp"
+                android:background="@drawable/dashed_border"
+                android:contentDescription="Product image"
+                android:scaleType="fitCenter"
+                android:layout_margin="7dp"/>
+
+            <EditText
+                android:id="@+id/notif_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp"
+                android:textSize="18dp"
+                android:hint="Notification title"
+                android:textColor="@color/secondaryText"
+                android:textColorHint="@color/secondaryText" />
+
+
+            <EditText
+                android:id="@+id/notif_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp"
+                android:textSize="18dp"
+                android:hint="Notification message"
+                android:textColor="@color/secondaryText"
+                android:textColorHint="@color/secondaryText" />
+
+            <EditText
+                android:id="@+id/notif_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp"
+                android:hint="Notification URL"
+                android:textSize="18dp"
+                android:textColor="@color/secondaryText"
+                android:textColorHint="@color/secondaryText" />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin ="35dp"
+                android:background="@drawable/round_button_primary"
+                android:text="Send"
+                android:textColor="#ffff" />
+
+        </LinearLayout>
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

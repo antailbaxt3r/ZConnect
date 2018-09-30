@@ -438,8 +438,22 @@
             android:label="Referral Code"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NotificationNoImage" />
-        <activity android:name=".NotificationImage" />
+        <activity android:name=".NotificationNoImage"
+            android:label="Text Notification"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".NotificationImage"
+            android:label="Image Notification"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".NotificationAdmin"
+            android:label="Send Notifications"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity android:name=".Links"></activity>
     </application>
 
