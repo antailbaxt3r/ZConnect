@@ -49,14 +49,16 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsViewHolder> {
 
     @Override
     public void onBindViewHolder(EventsViewHolder holder, int position) {
+
+
         if(type.equals("trending")) {
-            holder.openEvent(eventsVector.get(position).getKey());
+            holder.openEvent(eventsVector.get(position).getKey(),"fromTrending");
             holder.setEventName(eventsVector.get(position).getEventName());
             holder.setEventImage(ctx, eventsVector.get(position).getEventImage());
             holder.setEventTimestamp(eventsVector.get(position).getPostTimeMillis());
             holder.setBoost(eventsVector.get(position).getKey(), eventsVector.get(position).getEventName());
         }else if(type.equals("timeline")){
-            holder.openEvent(eventsVector.get(position).getKey());
+            holder.openEvent(eventsVector.get(position).getKey(),"fromTimeline");
             holder.setEventName(eventsVector.get(position).getEventName());
             holder.setEventTimestamp(eventsVector.get(position).getPostTimeMillis());
             holder.setBoost(eventsVector.get(position).getKey(), eventsVector.get(position).getEventName());

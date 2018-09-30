@@ -107,7 +107,6 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                     HashMap<String, String> meta= new HashMap<>();
 
                     meta.put("catID",catId);
-                    meta.put("type","fromFeature");
 
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                     counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_CONTACT_OPEN);

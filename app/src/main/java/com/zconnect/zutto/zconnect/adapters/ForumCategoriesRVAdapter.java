@@ -372,8 +372,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                     counterPush.pushValues();
-                    Intent intent = new Intent(context, ChatActivity.class);
 
+                    Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
                     intent.putExtra("type","forums");
                     intent.putExtra("name", name);

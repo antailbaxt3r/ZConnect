@@ -141,19 +141,6 @@ public class  OpenEventDetail extends BaseActivity{
         chatLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
-                intent.putExtra("type","events");
-                intent.putExtra("key",eventId);
-                intent.putExtra("name",getSupportActionBar().getTitle());
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).toString());
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            }
-        });
-
-        chatEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
@@ -169,7 +156,36 @@ public class  OpenEventDetail extends BaseActivity{
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
 
-               Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                intent.putExtra("type","events");
+                intent.putExtra("key",eventId);
+                intent.putExtra("name",getSupportActionBar().getTitle());
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).toString());
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            }
+        });
+
+        chatEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("type","fromTextBox");
+                meta.put("eventID",eventId);
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_CHAT_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
+                Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
                 intent.putExtra("type","events");
                 intent.putExtra("key",eventId);
                 intent.putExtra("name",getSupportActionBar().getTitle());
@@ -369,7 +385,8 @@ public class  OpenEventDetail extends BaseActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.share) {
-             CounterItemFormat counterItemFormat = new CounterItemFormat();
+
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
             HashMap<String, String> meta= new HashMap<>();
 
             meta.put("eventID",eventId);
@@ -400,7 +417,7 @@ public class  OpenEventDetail extends BaseActivity{
             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
             counterPush.pushValues();
 
-      //chat room clicked;
+            //chat room clicked;
             Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
             intent.putExtra("type","events");
             intent.putExtra("key",eventId);
@@ -547,7 +564,20 @@ public class  OpenEventDetail extends BaseActivity{
         Reminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CounterManager.eventReminderCounter(event.getKey());
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("eventID",eventId);
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_SET_REMINDER);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
                 if (!TextUtils.isEmpty(time))
                     addReminderInCalendar(eventName, eventDescription, Long.parseLong(String.valueOf(time)));
                 else

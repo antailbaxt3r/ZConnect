@@ -28,14 +28,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneContactsRVItem;
 import com.zconnect.zutto.zconnect.adapters.InfoneContactsRVAdpater;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneCat;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneContact;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class InfoneContactListActivity extends AppCompatActivity {
 
@@ -291,10 +297,24 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
 
         MenuItem menuItem = menu.findItem(R.id.search);
+
         MenuItemCompat.setOnActionExpandListener(menuItem,new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                //Toast.makeText(InfoneContactListActivity.this, "Expanded", Toast.LENGTH_SHORT).show();
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("catID",catId);
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_SEARCH);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
                 return true;
             }
 
