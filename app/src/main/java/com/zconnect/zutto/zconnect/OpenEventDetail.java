@@ -95,7 +95,7 @@ public class  OpenEventDetail extends BaseActivity{
     Button boostBtn;
     Boolean flag = false;
 
-    ProgressDialog progressDialog;
+    ProgressDialog progressDialog,progressDialogMain;
 
     private LinearLayout chatLayout;
     private EditText chatEditText;
@@ -120,6 +120,9 @@ public class  OpenEventDetail extends BaseActivity{
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
+
+        SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
+        final String communityReference = communitySP.getString("communityReference", null);
 
         boostBtn = (Button) findViewById(R.id.boostBtn);
         EventImage = (SimpleDraweeView) findViewById(R.id.od_EventImage);
@@ -197,6 +200,9 @@ public class  OpenEventDetail extends BaseActivity{
         });
 
         progressDialog = new ProgressDialog(this);
+        progressDialogMain = new ProgressDialog(this);
+        progressDialogMain.setMessage("Loading..");
+        progressDialogMain.show();
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -299,6 +305,8 @@ public class  OpenEventDetail extends BaseActivity{
                         startActivity(i, optionsCompat.toBundle());
                     }
                 });
+
+                progressDialogMain.dismiss();
             }
 
             @Override
