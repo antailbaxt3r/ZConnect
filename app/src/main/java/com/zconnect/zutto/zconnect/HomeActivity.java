@@ -928,7 +928,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         .setCallToActionText(getString(R.string.invitation_cta))
                         .build();
                 startActivityForResult(intent, RequestCodes.REQUEST_INVITE);
-
+                break;
 //                Intent intent = new Intent();
 //                intent.setAction(Intent.ACTION_SEND);
 //                intent.putExtra(Intent.EXTRA_TEXT, "Download the ZConnect app on \n"
