@@ -3,10 +3,12 @@ package com.zconnect.zutto.zconnect;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
@@ -96,7 +99,6 @@ public class NotificationNoImage extends BaseActivity {
                 }
             }
         });
-        mProgress.cancel();
 
     }
 
@@ -127,6 +129,13 @@ public class NotificationNoImage extends BaseActivity {
             notificationSender.execute(addImageNotification);
 
             mProgress.dismiss();
+            finish();
+        }else {
+            Snackbar snack = Snackbar.make(notificationDescription, "Fields are empty", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+            snack.show();
         }
     }
 
