@@ -41,7 +41,7 @@ public class ActiveFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_active, container, false);
         recyclerView = view.findViewById(R.id.active_pool_rv);
-        adapter = new ActivePoolAdapter();
+        adapter = new ActivePoolAdapter(getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         for (int i = 0; i < DUMMYS_NUMBER; i++) {

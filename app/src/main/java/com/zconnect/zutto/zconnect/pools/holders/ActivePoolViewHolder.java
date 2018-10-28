@@ -1,11 +1,14 @@
 package com.zconnect.zutto.zconnect.pools.holders;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.pools.PoolDetailsActivity;
 import com.zconnect.zutto.zconnect.pools.models.ActivePool;
 
 public class ActivePoolViewHolder extends RecyclerView.ViewHolder {
@@ -13,8 +16,11 @@ public class ActivePoolViewHolder extends RecyclerView.ViewHolder {
     private TextView poolName,deliveryTime,joinedPeoples,offers;
     private SimpleDraweeView logo;
 
-    public ActivePoolViewHolder(View itemView) {
+    private Context context;
+
+    public ActivePoolViewHolder(View itemView, Context context) {
         super(itemView);
+        this.context = context;
 
         attachID();
     }
@@ -33,6 +39,19 @@ public class ActivePoolViewHolder extends RecyclerView.ViewHolder {
         offers.setText(pool.getOffer());
         joinedPeoples.setText(pool.getJoined());
         deliveryTime.setText(pool.getDeliveryTime());
+        onclick();
+    }
+
+    private void onclick() {
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO set pool details parameter in intent bundles
+                Intent intent = new Intent(context, PoolDetailsActivity.class);
+                context.startActivity(intent);
+
+            }
+        });
     }
 
 }

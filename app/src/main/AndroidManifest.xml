@@ -454,8 +454,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Links" />
-        <activity android:name=".pools.PoolActivity"
-            android:exported="true"></activity>
+        <activity
+            android:name=".pools.PoolActivity"
+            android:exported="true" />
+        <activity android:name=".pools.PoolDetailsActivity"></activity>
     </application>
 
 </manifest>
