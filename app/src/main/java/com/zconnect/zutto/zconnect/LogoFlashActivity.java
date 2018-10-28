@@ -41,6 +41,7 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationService;
+import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -58,7 +59,7 @@ public class LogoFlashActivity extends BaseActivity {
     //Request code permission request external storage
     private final int RC_PERM_REQ_EXT_STORAGE = 7;
     private ImageView bgImage;
-    private DatabaseReference mDatabase,temp,temp2,t,t2;
+    private DatabaseReference mDatabase,temp,temp2,temp3,temp4,temp5,t,t2;
     private View bgColor;
     boolean flag = false;
     private String mReferrerUid;
@@ -234,7 +235,25 @@ public class LogoFlashActivity extends BaseActivity {
 
 
 
-//        temp = FirebaseDatabase.getInstance().getReference().child("communities").child("gmc");
+//        temp = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("Users1");
+//
+//
+//        temp.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot shot: dataSnapshot.getChildren()){
+//                    try {
+//                        temp.child(shot.getKey()).child("points").setValue("0");
+//                    }catch (Exception e){}
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
 //
 //
 //        temp.addListenerForSingleValueEvent(new ValueEventListener() {

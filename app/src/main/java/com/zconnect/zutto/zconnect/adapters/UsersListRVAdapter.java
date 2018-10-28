@@ -73,10 +73,9 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
     public void onBindViewHolder(UsersListRVAdapter.ViewHolder holder, int position) {
 
         holder.name.setText(usersListItemFormats.get(position).getName());
-        holder.number.setText(usersListItemFormats.get(position).getPhonenumber());
+        //holder.number.setText(usersListItemFormats.get(position).getPhonenumber());
         holder.avatarCircle.setImageURI(usersListItemFormats.get(position).getImageThumb());
         holder.openOptions(featureType, userType);
-        holder.setCall(featureType,usersListItemFormats.get(position).getUserUID());
 
         if(featureType.equals(FeatureNamesUtilities.KEY_FORUMS)){
             holder.setUserType(usersListItemFormats.get(position).getUserType());
@@ -93,7 +92,6 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView name, number,forumType;
-        ImageView call;
         View rv_item;
         Intent intent;
         SimpleDraweeView avatarCircle;
@@ -104,9 +102,9 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
             communitySP = context.getSharedPreferences("communityName", MODE_PRIVATE);
             communityReference = communitySP.getString("communityReference", null);
 
-            call = (ImageView) itemView.findViewById(R.id.ib_call_contact_item);
+//            call = (ImageView) itemView.findViewById(R.id.ib_call_contact_item);
             name = (TextView) itemView.findViewById(R.id.cab_name);
-            number = (TextView) itemView.findViewById(R.id.cab_number);
+           // number = (TextView) itemView.findViewById(R.id.cab_number);
             avatarCircle = (SimpleDraweeView) itemView.findViewById(R.id.cab_people_avatarCircle);
             forumType = (TextView) itemView.findViewById(R.id.forum_user_type);
 
@@ -114,42 +112,42 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
             Typeface customFont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
             name.setTypeface(customFont);
 
-            Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
-            number.setTypeface(customFont2);
+//            Typeface customFont2 = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
+//            number.setTypeface(customFont2);
 
         }
 
-        public void setCall(final String featureType, final String userUID){
-
-            call.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
-
-                    meta.put("userID",userUID);
-
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    if(featureType.equals(FeatureNamesUtilities.KEY_CABPOOL)) {
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_CALL);
-                    }else if(featureType.equals(FeatureNamesUtilities.KEY_STOREROOM)) {
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_SHORTLISTED_CALL);
-                    }else if(featureType.equals(FeatureNamesUtilities.KEY_FORUMS)){
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CALL);
-                    }
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
-
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
-
-                    context.startActivity(new Intent(Intent.ACTION_DIAL,
-                            Uri.parse("tel:" + Long.parseLong(number.getText().toString().trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                }
-            });
-
-        }
+//        public void setCall(final String featureType, final String userUID){
+//
+//            call.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+//                    HashMap<String, String> meta= new HashMap<>();
+//
+//                    meta.put("userID",userUID);
+//
+//                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+//                    if(featureType.equals(FeatureNamesUtilities.KEY_CABPOOL)) {
+//                        counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_CALL);
+//                    }else if(featureType.equals(FeatureNamesUtilities.KEY_STOREROOM)) {
+//                        counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_SHORTLISTED_CALL);
+//                    }else if(featureType.equals(FeatureNamesUtilities.KEY_FORUMS)){
+//                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CALL);
+//                    }
+//                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+//                    counterItemFormat.setMeta(meta);
+//
+//                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+//                    counterPush.pushValues();
+//
+//                    context.startActivity(new Intent(Intent.ACTION_DIAL,
+//                            Uri.parse("tel:" + Long.parseLong(number.getText().toString().trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+//                }
+//            });
+//
+//        }
 
         public void setUserType(final String forumUserType){
 

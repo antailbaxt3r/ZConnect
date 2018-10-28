@@ -205,7 +205,7 @@
 
 
     <!--invites related strings-->
-    <string name="invitation_title">Welcome to ZConnect</string>
+    <string name="invitation_title">Invite Friends</string>
     <string name="invitation_message">Hey, check out this amazing app! ZConnect is a social network exclusively for our community.</string>
     <string name="invitation_deep_link">https://zconnect.page.link/Tbeh</string>
     <string name="invitation_custom_image"></string>
@@ -223,4 +223,5 @@
 
     <!--shared preferences-->
     <string name="referredAnonymousUser">referredAnonymousUser</string>
+    <string name="title_activity_leader_board">Community Leader</string>
 </resources>

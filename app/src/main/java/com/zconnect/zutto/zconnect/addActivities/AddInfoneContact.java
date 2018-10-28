@@ -42,6 +42,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.R;
@@ -223,7 +224,7 @@ public class AddInfoneContact extends AppCompatActivity {
 
             }else {
                 if(phoneNum1.length()<10) {
-                    Snackbar snackbar = Snackbar.make(nameEt, "10 digit number required", Snackbar.LENGTH_LONG);
+                    Snackbar snackbar = Snackbar.make(nameEt, "Please check the contact details", Snackbar.LENGTH_LONG);
                     snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
                     snackbar.show();
                 }else {
@@ -353,6 +354,7 @@ public class AddInfoneContact extends AppCompatActivity {
 
     public void customFinish(){
         if(flag1&&flag2){
+            GlobalFunctions.addPoints(10);
             mProgress.dismiss();
             finish();
         }

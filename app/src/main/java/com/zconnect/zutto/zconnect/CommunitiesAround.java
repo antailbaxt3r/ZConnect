@@ -71,7 +71,7 @@ import java.util.Vector;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class CommunitiesAround extends BaseActivity {
+public class CommunitiesAround extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener  {
 //implements GoogleApiClient.OnConnectionFailedListener
     private FusedLocationProviderClient userLocationClient;
     CommunitiesAroundAdapter adapter;
@@ -141,10 +141,10 @@ public class CommunitiesAround extends BaseActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .enableAutoManage(this,this)
-//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-//                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this,this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
         communitiesReference = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
         communitiesRecycler = (RecyclerView) findViewById(R.id.all_communities);
@@ -594,6 +594,16 @@ public class CommunitiesAround extends BaseActivity {
         Intent loginIntent = new Intent(CommunitiesAround.this, LoginActivity.class);
         startActivity(loginIntent);
         finish();
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 

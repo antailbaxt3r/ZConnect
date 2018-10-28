@@ -40,6 +40,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -288,6 +289,7 @@ public class CreateForum extends AppCompatActivity {
                                             intent.putExtra("name", catName);
                                             intent.putExtra("tab", uid);
                                             intent.putExtra("key", newPush.getKey());
+                                            GlobalFunctions.addPoints(10);
                                             startActivity(intent);
                                             finish();
                                         } else{ flag = true;}
@@ -325,6 +327,7 @@ public class CreateForum extends AppCompatActivity {
                                             intent.putExtra("name", catName);
                                             intent.putExtra("tab", uid);
                                             intent.putExtra("key", newPush.getKey());
+                                            GlobalFunctions.addPoints(10);
                                             startActivity(intent);
                                             finish();
                                         } else {
@@ -355,7 +358,7 @@ public class CreateForum extends AppCompatActivity {
                             intent.putExtra("tab",uid);
                             intent.putExtra("key",newPush.getKey());
                             startActivity(intent);
-
+                            GlobalFunctions.addPoints(10);
                             finish();
                         }
                     }

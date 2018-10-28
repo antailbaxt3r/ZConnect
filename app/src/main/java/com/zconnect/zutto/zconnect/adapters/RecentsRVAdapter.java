@@ -33,9 +33,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.analytics.ExceptionReporter;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -52,17 +54,20 @@ import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
+import com.zconnect.zutto.zconnect.LeaderBoard;
 import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.ReferralCode;
 import com.zconnect.zutto.zconnect.Shop_detail;
 import com.zconnect.zutto.zconnect.TabStoreRoom;
 import com.zconnect.zutto.zconnect.TabbedEvents;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
@@ -71,6 +76,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.addActivities.AddStatus;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -100,13 +106,15 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     DatabaseReference mRef;
     View.OnClickListener openUserProfileListener;
     boolean flag;
+    private CommunityFeatures communityFeatures;
     Button scrollToTopBtn;
 
-    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, Button scrollToTopBtn) {
+    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, Button scrollToTopBtn, CommunityFeatures communityFeatures) {
         this.context = context;
         this.recentsItemFormats = recentsItemFormats;
         this.mHomeActivity = HomeActivity;
         this.scrollToTopBtn = scrollToTopBtn;
+        this.communityFeatures = communityFeatures;
     }
 //
     @Override
@@ -174,6 +182,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 break;
             case 1:
                 FeaturesViewHolder featuresViewHolder = (FeaturesViewHolder) holder2;
+                featuresViewHolder.setFeatureVisibility(communityFeatures);
                 break;
             case 2:
                 final Viewholder holder = (Viewholder)holder2;
@@ -1276,11 +1285,18 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         LinearLayout textArea;
         SimpleDraweeView userAvatar;
         DatabaseReference mUserDetails;
-        public ViewHolderStatus(View itemView) {
+        DatabaseReference totalMembersRef;
+        TextView leaderBoardText;
+        TextView totalMembers;
+
+        public ViewHolderStatus(final View itemView) {
             super(itemView);
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            totalMembersRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference).child("size");
             userAvatar = (SimpleDraweeView) itemView.findViewById(R.id.avatarCircle_recents_status_add);
             textArea = (LinearLayout) itemView.findViewById(R.id.text_area_recents_status_add);
+            totalMembers = itemView.findViewById(R.id.total_members);
+            leaderBoardText = itemView.findViewById(R.id.leader_board_text);
 
             mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -1317,6 +1333,39 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                 }
             });
+
+            leaderBoardText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(itemView.getContext(), LeaderBoard.class);
+                    itemView.getContext().startActivity(intent);
+                }
+            });
+
+            totalMembers.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "Top the leader board by inviting your friends", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, ReferralCode.class);
+                    context.startActivity(intent);
+                }
+            });
+
+            totalMembersRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    try {
+                        totalMembers.setText(dataSnapshot.getValue().toString() + "+ members");
+                    }catch (Exception e){}
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
         }
     }
 
@@ -1494,6 +1543,47 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                 }
             });
+
+        }
+
+        public void setFeatureVisibility(CommunityFeatures communityFeatures){
+            try {
+
+                if (communityFeatures.getCabpool().equals("true")){
+                    cabpool.setVisibility(View.VISIBLE);
+                }else {
+                    cabpool.setVisibility(View.GONE);
+                }
+
+
+                if (communityFeatures.getEvents().equals("true")){
+                    events.setVisibility(View.VISIBLE);
+                }else {
+                    events.setVisibility(View.GONE);
+                }
+
+                if (communityFeatures.getGallery().equals("true")){
+
+                }else {
+
+                }
+
+                if (communityFeatures.getLinks().equals("true")){
+
+                }else {
+
+                }
+
+                if (communityFeatures.getStoreroom().equals("true")){
+                    storeroom.setVisibility(View.VISIBLE);
+                }else {
+                    storeroom.setVisibility(View.GONE);
+                }
+
+
+            }catch (Exception e){
+
+            }
 
         }
     }

@@ -9,13 +9,7 @@
         android:gravity="center"
         android:padding="10dp"
         android:background="@color/colorPrimaryDark">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@string/title_recents_feature_view"
-            android:layout_gravity="start"
-            android:textStyle="bold"/>
+
         <HorizontalScrollView
             android:id="@+id/hsv_recents_features_view"
             android:layout_width="match_parent"
@@ -71,6 +65,7 @@
                     android:orientation="vertical">
                     <RelativeLayout
                         android:id="@+id/storeroom_recents_features_view"
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="15dp">
@@ -103,6 +98,7 @@
                     android:orientation="vertical">
                     <RelativeLayout
                         android:id="@+id/events_recents_features_view"
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="15dp">
@@ -135,6 +131,7 @@
                     android:orientation="vertical">
                     <RelativeLayout
                         android:id="@+id/cabpool_recents_features_view"
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="15dp">

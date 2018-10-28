@@ -32,6 +32,7 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
@@ -363,7 +364,7 @@ public class AddCabPool extends BaseActivity {
                                         cabAddNotification.setCommunityName(communityTitle);
                                         notificationSender.execute(cabAddNotification);
 
-
+                                        GlobalFunctions.addPoints(10);
                                         finish();
 
                                     } else {
