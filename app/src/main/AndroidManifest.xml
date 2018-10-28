@@ -438,23 +438,26 @@
             android:label="Referral Code"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NotificationNoImage"
+        <activity
+            android:name=".NotificationNoImage"
             android:label="Text Notification"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".NotificationImage"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".NotificationImage"
             android:label="Image Notification"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NotificationAdmin"
             android:label="Send Notifications"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".Links"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Links" />
+        <activity
+            android:name=".pools.PoolActivity"
+            android:exported="true" />
+        <activity android:name=".pools.PoolDetailsActivity"></activity>
     </application>
 
 </manifest>
