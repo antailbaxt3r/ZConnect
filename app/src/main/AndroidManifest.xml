@@ -455,6 +455,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Links" />
         <activity
+            android:name=".pools.PoolActivity"
+            android:exported="true" />
+        <activity android:name=".pools.PoolDetailsActivity"></activity>
+
+        <activity
             android:name=".LeaderBoard"
             android:label="@string/title_activity_leader_board"
             android:screenOrientation="portrait"
