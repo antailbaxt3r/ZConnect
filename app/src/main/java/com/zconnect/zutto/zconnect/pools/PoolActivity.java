@@ -1,10 +1,10 @@
 package com.zconnect.zutto.zconnect.pools;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolViewPagerAdapter;
@@ -41,7 +41,7 @@ public class PoolActivity extends AppCompatActivity {
         fragmentsList.add(UpcomingFragment.newInstance());
 
         //setting view pager
-        viewPagerAdapter = new PoolViewPagerAdapter(getSupportFragmentManager(),fragmentsList);
+        viewPagerAdapter = new PoolViewPagerAdapter(getSupportFragmentManager(), fragmentsList);
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setOffscreenPageLimit(fragmentsList.size());

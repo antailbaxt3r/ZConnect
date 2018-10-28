@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class  PoolViewPagerAdapter  extends FragmentPagerAdapter {
+public class PoolViewPagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> mFragmentList = new ArrayList<>();
 
-    public  PoolViewPagerAdapter (FragmentManager manager, List<Fragment> mFragmentList ) {
+    public PoolViewPagerAdapter(FragmentManager manager, List<Fragment> mFragmentList) {
         super(manager);
         this.mFragmentList = mFragmentList;
     }
@@ -29,12 +29,12 @@ public class  PoolViewPagerAdapter  extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        if(position==0){
+        if (position == 0) {
             return "Active";
 
-        }else if(position==1){
+        } else if (position == 1) {
             return "Upcoming";
-        }else return "NA";
+        } else return "NA";
 
     }
 }
