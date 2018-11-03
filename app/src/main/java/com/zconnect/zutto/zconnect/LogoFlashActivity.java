@@ -44,6 +44,7 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationService;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.lang.reflect.Method;
@@ -80,6 +81,9 @@ public class LogoFlashActivity extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
+//            removeJustJoinedNotifFromHome();
+//            countCommunityMembers();
+//            countInfoneCatMembers();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
             mDatabase.addValueEventListener(new ValueEventListener() {
@@ -333,6 +337,69 @@ public class LogoFlashActivity extends BaseActivity {
                     });
         }
     }
+
+    //script to remove just joined community notificatin
+//    public static void removeJustJoinedNotifFromHome() {
+//        Log.d("QQQQ ENTERED ", "FUNC");
+//        final DatabaseReference homeRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
+//        homeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot shot : dataSnapshot.getChildren())
+//                {
+//                    if(shot.hasChild("feature") && shot.child("feature").getValue().toString().equals("Users"))
+//                    {
+//                        shot.getRef().removeValue();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+    //script to fix count of infone categories
+//    public static void countInfoneCatMembers() {
+//        Log.d("QQQQQ STARTED", "1");
+//        final DatabaseReference infoneRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories");
+//        final DatabaseReference infoneCatInfoRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categoriesInfo");
+//        infoneRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot shot : dataSnapshot.getChildren())
+//                {
+//                    Log.d("QQQQQ INFONE" + shot.getKey(), String.valueOf(shot.getChildrenCount()));
+//                    infoneCatInfoRef.child(shot.getKey()).child("totalContacts").setValue(shot.getChildrenCount());
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+    //script to fix count of community members
+//    public static void countCommunityMembers() {
+//        Log.d("QQQQQ STARTED", "2");
+//        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+//        final DatabaseReference communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference).child("size");
+//        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                Log.d("QQQQQ COMM INFO" + dataSnapshot.getKey(), String.valueOf(dataSnapshot.getChildrenCount()));
+//                communityInfoRef.setValue(dataSnapshot.getChildrenCount());
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     ///////////script of adding forumAdmin node/////////
 //    public void addForumAdminNode() {

@@ -6,13 +6,16 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="10dp"
+    android:paddingBottom="@dimen/padding_small"
     tools:context="com.zconnect.zutto.zconnect.addActivities.CreateForum"
-    tools:showIn="@layout/activity_create_forum">
+    tools:showIn="@layout/activity_create_forum"
+    android:background="@color/colorPrimaryLightest">
     <RelativeLayout
         android:id="@+id/create_forum"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/padding_small">
         <FrameLayout
             android:id="@+id/layout_add_icon_activity_create_forum"
             android:layout_width="wrap_content"
@@ -45,24 +48,33 @@
             android:layout_centerVertical="true"
             android:maxLength="20"/>
     </RelativeLayout>
-    <TextView
-        android:id="@+id/title_first_msg_create_forum_alert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/forum_first_msg_label"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:textColor="@color/primaryText"/>
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/edit_first_msg_create_forum_alert"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/forum_first_msg_hint"/>
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small"
+        android:background="@color/white">
+        <TextView
+            android:id="@+id/title_first_msg_create_forum_alert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/forum_first_msg_label"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/primaryText"/>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edit_first_msg_create_forum_alert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/forum_first_msg_hint"/>
+    </LinearLayout>
     <FrameLayout
-        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingStart="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small">
         <View
             android:id="@+id/line"
             android:layout_width="match_parent"
@@ -90,6 +102,34 @@
                 android:tint="@color/white"/>
         </FrameLayout>
     </FrameLayout>
+    <LinearLayout
+        android:id="@+id/delete_foruml_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_med"
+        android:background="@color/white"
+        android:padding="@dimen/padding_small"
+        android:orientation="vertical"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorHighlight"
+            android:text="Delete Forum"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:padding="@dimen/padding_small"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/excl_forum_admin"
+            android:textColor="@color/primaryText"
+            android:textSize="14sp"
+            android:gravity="center"/>
+    </LinearLayout>
     <ProgressBar
         android:id="@+id/progrss_bar_content_create_forum"
         android:layout_width="wrap_content"

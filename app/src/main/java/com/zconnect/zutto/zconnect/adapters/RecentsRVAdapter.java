@@ -19,6 +19,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.util.TypedValue;
@@ -95,6 +96,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import static android.graphics.Typeface.BOLD;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
@@ -401,26 +403,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     };
 
                 }
-                else if(recentsItemFormats.get(position).getFeature().equals("Users"))
-                {
-                    holder.prePostDetails.setVisibility(View.VISIBLE);
-                    holder.infoneRecentItem.setVisibility(View.GONE);
-                    holder.storeroomRecentItem.setVisibility(View.GONE);
-                    holder.cabpoolRecentItem.setVisibility(View.GONE);
-                    holder.eventsRecentItem.setVisibility(View.GONE);
-                    holder.messagesRecentItem.setVisibility(View.GONE);
-                    holder.forumsRecentItem.setVisibility(View.GONE);
-                    holder.bannerRecentItem.setVisibility(View.GONE);
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.users), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_home_white_18));
-                    holder.layoutFeatureIcon.setOnClickListener(null);
-                    holder.postConjunction.setText(" just joined your community ");
-                    holder.post.setVisibility(View.GONE);
-
-                    posted = " just joined your community ";
-                    post = "";
-                    clickableSpanFeature = null;
-                }
                 else if (recentsItemFormats.get(position).getFeature().equals("Event"))
                 {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
@@ -468,7 +450,32 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         holder.eventDate.setText(recentsItemFormats.get(position).getDesc2());
                         holder.eventTime.setText("");
                     }
-                    holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());
+                    final String eventDescString = recentsItemFormats.get(position).getDesc();
+                    if(eventDescString.length() < 55)
+                        holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());
+                    else
+                    {
+                        ClickableSpan clickableSpan = new ClickableSpan() {
+                            @Override
+                            public void onClick(@NonNull View widget) {
+                                holder.eventDesc.setMaxLines(Integer.MAX_VALUE);
+                                holder.eventDesc.setText(eventDescString);
+                            }
+
+                            @Override
+                            public void updateDrawState(@NonNull TextPaint ds) {
+                                ds.setUnderlineText(false);
+                            }
+                        };
+                        String withMore = eventDescString.substring(0, 54) + " more...";
+                        SpannableString spannableString = new SpannableString(withMore);
+                        spannableString.setSpan(clickableSpan, withMore.lastIndexOf("more..."), withMore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        StyleSpan styleSpan = new StyleSpan(BOLD);
+                        spannableString.setSpan(styleSpan, withMore.lastIndexOf("more..."), withMore.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        holder.eventDesc.setText(spannableString);
+                        holder.eventDesc.setMovementMethod(LinkMovementMethod.getInstance());
+
+                    }
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.eventImage);
 
                     posted = " created an ";
@@ -538,7 +545,32 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
                     holder.productName.setText(recentsItemFormats.get(position).getName());
-                    holder.productDesc.setText(recentsItemFormats.get(position).getDesc());
+                    final String productDescString = recentsItemFormats.get(position).getDesc();
+                    if(productDescString.length() < 55)
+                        holder.productDesc.setText(productDescString);
+                    else
+                    {
+                        ClickableSpan clickableSpan = new ClickableSpan() {
+                            @Override
+                            public void onClick(@NonNull View widget) {
+                                holder.productDesc.setMaxLines(Integer.MAX_VALUE);
+                                holder.productDesc.setText(productDescString);
+                            }
+
+                            @Override
+                            public void updateDrawState(@NonNull TextPaint ds) {
+                                ds.setUnderlineText(false);
+                            }
+                        };
+
+                        String withMore = productDescString.substring(0, 54) + " more...";
+                        SpannableString spannableString = new SpannableString(withMore);
+                        spannableString.setSpan(clickableSpan, withMore.lastIndexOf("more..."), withMore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        StyleSpan styleSpan = new StyleSpan(BOLD);
+                        spannableString.setSpan(styleSpan, withMore.lastIndexOf("more..."), withMore.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        holder.productDesc.setText(spannableString);
+                        holder.productDesc.setMovementMethod(LinkMovementMethod.getInstance());
+                    }
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
                     holder.productPrice.setText("₹" + recentsItemFormats.get(position).getProductPrice());
 
@@ -706,18 +738,39 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.post.setText("status");
                     holder.post.setTextColor(context.getResources().getColor(R.color.secondaryText));
                     holder.post.setTypeface(Typeface.DEFAULT);
-
-                    holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
-                    Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
-                    holder.messagesMessage.setLinkTextColor(Color.BLUE);
-                    holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
-
-                    if(recentsItemFormats.get(position).getDesc().length()<20)
+                    final String statusMsg = recentsItemFormats.get(position).getDesc();
+                    if(statusMsg.length()<20)
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
-                    else if(recentsItemFormats.get(position).getDesc().length()<70)
+                    else if(statusMsg.length()<70)
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
                     else
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                    if(statusMsg.length() < 180)
+                        holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
+                    else
+                    {
+                        ClickableSpan clickableSpan = new ClickableSpan() {
+                            @Override
+                            public void onClick(@NonNull View widget) {
+                                holder.messagesMessage.setMaxLines(Integer.MAX_VALUE);
+                                holder.messagesMessage.setText(statusMsg);
+                            }
+                            @Override
+                            public void updateDrawState(TextPaint ds) {
+                                ds.setUnderlineText(false); // set to false to remove underline
+                            }
+                        };
+                        String withMore = statusMsg.substring(0, 179) + " more...";
+                        SpannableString spannableString = new SpannableString(withMore);
+                        spannableString.setSpan(clickableSpan, withMore.lastIndexOf("more..."), withMore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        StyleSpan styleSpan = new StyleSpan(BOLD);
+                        spannableString.setSpan(styleSpan, withMore.lastIndexOf("more..."), withMore.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        holder.messagesMessage.setText(spannableString);
+                        holder.messagesMessage.setMovementMethod(LinkMovementMethod.getInstance());
+                    }
+                    Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
+                    holder.messagesMessage.setLinkTextColor(Color.BLUE);
+                    holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
                     if(recentsItemFormats.get(position).getDesc2().equals("y")) {
                         holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
                         holder.avatarCircle.setImageResource(R.drawable.question_mark_icon);
