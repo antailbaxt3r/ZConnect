@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:id="@+id/leader_board_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:layout_weight="1">
+
+    <RelativeLayout
+        android:layout_weight=".15"
+        android:layout_width="0dp"
+        android:padding="5dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/user_rank"
+            android:text="#1"
+            android:textColor="@color/secondaryText"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:weightSum="1"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:padding="5dp"
+        android:layout_weight=".55"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/user_photo"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            fresco:actualImageScaleType="centerCrop"
+            android:background="@drawable/defaultprofile"
+            app:roundAsCircle="true"/>
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:paddingLeft="10dp"
+            android:maxHeight="36dp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/user_name"
+                android:text="Username"
+                android:textColor="@color/secondaryText"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_weight=".3"
+        android:layout_width="0dp"
+        android:padding="5dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/user_points"
+            android:text="20pt"
+            android:textColor="@color/secondaryText"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</LinearLayout>

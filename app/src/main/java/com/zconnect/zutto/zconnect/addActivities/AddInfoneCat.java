@@ -40,6 +40,7 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
@@ -301,12 +302,15 @@ public class AddInfoneCat extends BaseActivity {
 
             notificationSender.execute(addInfoneCategoryNotification);
 
+            GlobalFunctions.addPoints(10);
+
             Toast.makeText(AddInfoneCat.this, "Add a contact in your new category",
                     Toast.LENGTH_SHORT).show();
             final Intent addContactIntent = new Intent(AddInfoneCat.this,
                     AddInfoneContact.class);
             addContactIntent.putExtra("catId", catId);
             startActivity(addContactIntent);
+
             progressDialog.dismiss();
             finish();
         }

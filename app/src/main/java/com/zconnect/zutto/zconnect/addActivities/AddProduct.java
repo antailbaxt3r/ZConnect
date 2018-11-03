@@ -50,6 +50,7 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
@@ -405,7 +406,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 
                             }
                         });
-                        CounterManager.StoroomAddProduct(category);
+                        GlobalFunctions.addPoints(10);
                         mProgress.dismiss();
                         finish();
                     }

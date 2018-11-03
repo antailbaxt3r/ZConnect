@@ -188,6 +188,8 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                 @Override
                 public void onClick(View v) {
 
+
+
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta= new HashMap<>();
 
@@ -238,7 +240,9 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                                                   + shortLink);
 
                                           intent.setType("text/plain");
-                                          context.startActivity(Intent.createChooser(intent, "Share content url via ... "));
+                                          intent.setPackage("com.whatsapp");
+                                          context.startActivity(intent);
+
                                       }
                                       else {
                                           Log.d("CabPoolRVAdapter", task.getException().getMessage());
@@ -267,7 +271,8 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                                                     "\n Use the ZConnect app to join the pool \n"
                                                     + shortLink);
                                             intent.setType("text/plain");
-                                            context.startActivity(Intent.createChooser(intent, "Share app url via ... "));
+                                            intent.setPackage("com.whatsapp");
+                                            context.startActivity(intent);
                                         }
                                         else {
                                             Log.d("CabPoolRVAdapter", task.getException().getMessage());

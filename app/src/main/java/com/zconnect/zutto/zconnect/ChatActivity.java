@@ -49,6 +49,7 @@ import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
@@ -442,6 +443,7 @@ public class ChatActivity extends BaseActivity {
                 message.setImageThumb(userItem.getImageURLThumbnail());
                 message.setMessage("\""+text+"\"");
                 message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                GlobalFunctions.addPoints(2);
                 databaseReference.child("Chat").push().setValue(message);
                 if (type.equals("forums")){
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this,userItem.getUserUID());
@@ -580,7 +582,7 @@ public class ChatActivity extends BaseActivity {
                                 message.setImageThumb(userItem.getImageURLThumbnail());
                                 message.setMessage(" \uD83D\uDCF7 Image ");
                                 message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
-
+                                GlobalFunctions.addPoints(5);
                                 databaseReference.child("Chat").push().setValue(message);
                                 if (type.equals("forums")){
                                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());

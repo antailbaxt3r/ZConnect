@@ -58,6 +58,7 @@ import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
@@ -463,29 +464,6 @@ public class AddEvent extends BaseActivity {
 
                                     }
                                 });
-
-                                //Sending Notifications
-                                //Sending Notifications
-//                            FirebaseMessaging.getInstance().subscribeToTopic(key);
-//                            NotificationSender notificationSender=new NotificationSender(key,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
-//                            notificationSender.execute();
-
-                                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-
-                                    }
-
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-
-
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
 
                             } else {
@@ -602,6 +580,7 @@ public class AddEvent extends BaseActivity {
 //                            intent.putExtra("snackbar", "true");
 //                        }
 //                        startActivity(intent);
+                            GlobalFunctions.addPoints(10);
                             finish();
                         }
                         else {

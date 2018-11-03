@@ -171,7 +171,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:background="@drawable/round_button_simple"
-                android:text="Share"
+                android:text="WhatsApp"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
                 style="?android:attr/borderlessButtonStyle"

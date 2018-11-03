@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -29,6 +30,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.adapters.RecentsRVAdapter;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
@@ -48,7 +50,7 @@ import butterknife.ButterKnife;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.VISIBLE;
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+
 
 public class Recents extends Fragment {
 
@@ -59,13 +61,14 @@ public class Recents extends Fragment {
     List<String> storeroomProductList = new ArrayList<String>();
     private SharedPreferences communitySP;
     public String communityReference;
+    private CommunityFeatures communityFeatures;
 
     private SwipeRefreshLayout swipeContainer;
 
 
-    private DatabaseReference homeDbRef,userReference;
+    private DatabaseReference homeDbRef,userReference,communityFeaturesRef;
     Query queryRef;
-    private ValueEventListener homeListener,userListener;
+    private ValueEventListener homeListener,userListener,communityFeaturesListener;
     @BindView(R.id.recent_progress)
     ProgressBar progressBar;
     @BindView(R.id.scroll_to_top_fab_fragments_recents)
@@ -111,12 +114,13 @@ public class Recents extends Fragment {
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
+        communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
         homeDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
         userReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("personalHome");
         userReference.keepSynced(true);
         //Keep databaseReference in sync even without needing to call valueEventListener
         homeDbRef.keepSynced(true);
-        queryRef = homeDbRef;
+        queryRef = homeDbRef.limitToLast(100);
         queryRef.keepSynced(true);
 
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshContainer);
@@ -187,6 +191,22 @@ public class Recents extends Fragment {
             }
         };
 
+        communityFeaturesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
+
+                adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn,communityFeatures);
+                recyclerView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
 
         homeListener = new ValueEventListener() {
             @Override
@@ -253,8 +273,11 @@ public class Recents extends Fragment {
                 productLinearLayout.scrollToPositionWithOffset(0,0);
             }
         });
-        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn);
+        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn,communityFeatures);
         recyclerView.setAdapter(adapter);
+
+
+        communityFeaturesRef.addValueEventListener(communityFeaturesListener);
         return view;
     }
 
@@ -263,8 +286,6 @@ public class Recents extends Fragment {
         super.onResume();
         queryRef.addListenerForSingleValueEvent(homeListener);
         userReference.addListenerForSingleValueEvent(userListener);
-
-
     }
 
     @Override
@@ -272,11 +293,18 @@ public class Recents extends Fragment {
         super.onPause();
         queryRef.removeEventListener(homeListener);
         userReference.removeEventListener(userListener);
+
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_recents, menu);
+    }
+
+    @Override
+    public void onDestroy() {
+        communityFeaturesRef.removeEventListener(communityFeaturesListener);
+        super.onDestroy();
     }
 
     @Override

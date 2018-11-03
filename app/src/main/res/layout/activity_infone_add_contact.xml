@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:hint="Phone Number"
             android:inputType="number"
-            android:maxLength="10"
+            android:maxLength="12"
             app:met_textColor="@color/primaryText"
             app:met_textColorHint="@color/secondaryText"
             android:layout_marginTop="10dp"/>
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:hint="Whatsapp Number (optional)"
             android:inputType="number"
-            android:maxLength="10"
+            android:maxLength="12"
             app:met_textColor="@color/primaryText"
             app:met_textColorHint="@color/secondaryText"
             android:layout_marginTop="10dp"/>

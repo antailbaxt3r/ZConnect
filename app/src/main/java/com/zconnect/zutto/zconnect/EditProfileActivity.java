@@ -409,11 +409,11 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         }
         if (userName == null
                 || userEmail == null
-                || userMobile.length() != 10 || userWhatsapp.length() != 10 || userInfoneType ==null || ((photoUri == null)&& mImageUri==null)) {
+                || userMobile.length() <10 || userWhatsapp.length() <10 || userInfoneType ==null || ((photoUri == null)&& mImageUri==null)) {
 
-            if(userMobile.length()!=10 || userWhatsapp.length() != 10)
+            if(userMobile.length()<10 || userWhatsapp.length() <10)
             {
-                Snackbar snackbar = Snackbar.make(userAboutText, "10 digit number required", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(userAboutText, "Please check your contact details", Snackbar.LENGTH_LONG);
                 snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
                 snackbar.show();
             }
