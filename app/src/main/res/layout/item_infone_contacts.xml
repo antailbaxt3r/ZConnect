@@ -3,7 +3,6 @@
     android:id="@+id/ll_hori_infone_contacts"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:padding="10dp">
 
     <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
@@ -17,7 +16,7 @@
     <LinearLayout
         android:id="@+id/ll_ver_infone_contacts"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="0.9"
         android:orientation="vertical"
         android:layout_marginStart="10dp">
@@ -26,8 +25,13 @@
             android:id="@+id/tv_name_infone_contacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/primaryText"/>
-
+            android:textColor="@color/primaryText"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/tv_desc_infone_contacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primaryText" />
         <TextView
             android:id="@+id/tv_views_infone_contacts"
             android:layout_width="match_parent"
@@ -38,6 +42,8 @@
 
     <ImageButton
         android:id="@+id/image_btn_call_infone_contacts"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.1"

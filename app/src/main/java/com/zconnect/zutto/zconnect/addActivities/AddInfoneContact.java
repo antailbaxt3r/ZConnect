@@ -61,7 +61,7 @@ public class AddInfoneContact extends AppCompatActivity {
     DatabaseReference databaseRecents;
     DatabaseReference newContactRef;
     MaterialEditText nameEt;
-    MaterialEditText phone1Et, phone2Et;
+    MaterialEditText phone1Et, phone2Et, descEt;
     Button saveButton;
     SimpleDraweeView addImage;
     String key;
@@ -113,11 +113,10 @@ public class AddInfoneContact extends AppCompatActivity {
         catImageURL = getIntent().getExtras().getString("catImageURL");
         totalContacts = getIntent().getIntExtra("totalContacts",0);
 
-
-
         nameEt = (MaterialEditText) findViewById(R.id.name_et_infone_add);
         phone1Et = (MaterialEditText) findViewById(R.id.phone_et_infone_add);
         phone2Et = (MaterialEditText) findViewById(R.id.phone2_et_infone_add);
+        descEt = (MaterialEditText) findViewById(R.id.desc_et_infone_add);
         saveButton = (Button) findViewById(R.id.btn_save_infone_add);
         addImage = (SimpleDraweeView) findViewById(R.id.image_add_infone_add);
 
@@ -138,7 +137,8 @@ public class AddInfoneContact extends AppCompatActivity {
             String name = nameEt.getText().toString();
             String phoneNum1 = phone1Et.getText().toString();
             String phoneNum2 = phone2Et.getText().toString();
-
+            String desc = descEt.getText().toString();
+            desc = desc.isEmpty() ? "" : desc;
             if (phoneNum1.isEmpty() && !phoneNum2.isEmpty()) {
                 phoneNum1 = phoneNum2;
                 phoneNum2 = "";
@@ -165,6 +165,7 @@ public class AddInfoneContact extends AppCompatActivity {
                 newContactRef.child("name").setValue(name);
                 newContactRef.child("phone").child("0").setValue(phoneNum1);
                 newContactRef.child("phone").child("1").setValue(phoneNum2);
+                newContactRef.child("desc").setValue(desc);
                 newContactRef.child("key").child(key);
 
                 //Inside Contacts
@@ -177,6 +178,7 @@ public class AddInfoneContact extends AppCompatActivity {
                 newContactNumRef.child("validCount").setValue(0);
                 newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
                 newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
+                newContactNumRef.child("desc").setValue(desc);
                 newContactNumRef.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 uploadImage();
 
