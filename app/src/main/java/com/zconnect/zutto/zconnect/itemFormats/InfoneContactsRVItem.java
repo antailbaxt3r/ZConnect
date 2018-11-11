@@ -14,20 +14,25 @@ public class InfoneContactsRVItem {
     private Boolean contactHidden;
     private ArrayList<String> phoneNums;
     private String infoneUserId;
+    private String desc;
 
-
-    public InfoneContactsRVItem(String name, String views, String imageThumb, ArrayList<String> phoneNums, String infoneUserId, Boolean contactHidden) {
+    public InfoneContactsRVItem(String name, String views, String imageThumb, ArrayList<String> phoneNums, String infoneUserId, Boolean contactHidden, String desc) {
         this.name = name;
         this.views = views;
         this.imageThumb = imageThumb;
         this.phoneNums = phoneNums;
         this.infoneUserId = infoneUserId;
         this.contactHidden = contactHidden;
+        this.desc = desc;
     }
 
     public InfoneContactsRVItem(){
 
     }
+
+    public String getDesc() { return desc; }
+
+    public void setDesc(String desc) { this.desc = desc; }
 
     public String getName() {
         return name;

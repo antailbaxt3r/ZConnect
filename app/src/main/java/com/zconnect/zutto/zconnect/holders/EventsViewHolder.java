@@ -480,7 +480,7 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
         if(eventDesc.length() < 55) {
             desc.setText(eventDesc);
         }
-        else if(eventDesc.length() > 55) {
+        else {
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(View view) {

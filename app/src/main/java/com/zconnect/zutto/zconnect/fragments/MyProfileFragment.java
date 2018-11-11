@@ -67,7 +67,7 @@ public class MyProfileFragment extends Fragment {
 //    private ImageButton sendButton;
     private ImageButton btn_love,btn_like;
     private Boolean flagforNull=false;
-    private TextView like_text,love_text;
+    private TextView points_num, like_text, like_num, love_text, love_num;
     private boolean love_status = false,like_status=false;
     private FirebaseAuth mAuth;
     private UserItemFormat userProfile;
@@ -114,8 +114,11 @@ public class MyProfileFragment extends Fragment {
         btn_love = (ImageButton) view.findViewById(R.id.btn_love);
         //btn_love.setEnabled(false);
         //btn_like.setEnabled(false);
+        points_num = (TextView) view.findViewById(R.id.point_num);
         like_text = (TextView) view.findViewById(R.id.like_text);
+        like_num = (TextView) view.findViewById(R.id.like_num);
         love_text = (TextView) view.findViewById(R.id.love_text);
+        love_num = (TextView) view.findViewById(R.id.love_num);
         userTypeText = (Button) view.findViewById(R.id.user_type_content_phonebook_details);
         showContact = (Button) view.findViewById(R.id.show_cum_request_contact_button);
 
@@ -179,13 +182,34 @@ public class MyProfileFragment extends Fragment {
 
                 final DatabaseReference db_like = db.child("Likes");
                 final DatabaseReference db_love = db.child("Loves");
+                final DatabaseReference db_point = db.child("points");
+                if(db_point != null)
+                {
+                    db_point.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String points = dataSnapshot.getValue().toString();
+                            points = points==null ? "0" : points;
+                            points_num.setText(points);
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                else
+                {
+                    points_num.setText("0");
+                }
                 if(db_love != null){
-                    db_love.addValueEventListener(new ValueEventListener() {
+                    db_love.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             long loves = dataSnapshot.getChildrenCount();
-                            love_text.setText(loves+" Loves");
+                            love_text.setText("Loves");
+                            love_num.setText(String.valueOf(loves));
                             if (dataSnapshot.hasChild(myUID)){
                                 //I already liked him
                                 btn_love.setImageResource(R.drawable.heart_red);
@@ -203,7 +227,8 @@ public class MyProfileFragment extends Fragment {
                     });
                 }else {
                     //no one loves him
-                    love_text.setText("0 Loves");
+                    love_text.setText("Loves");
+                    love_num.setText("0");
                 }
 
                 if(db_like != null){
@@ -211,7 +236,8 @@ public class MyProfileFragment extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             long like = dataSnapshot.getChildrenCount();
-                            like_text.setText(like+" Likes");
+                            like_text.setText("Likes");
+                            like_num.setText(String.valueOf(like));
                             if (dataSnapshot.hasChild(myUID)){
                                 //I already liked him
                                 btn_like.setImageResource(R.drawable.like_blue);
@@ -229,7 +255,8 @@ public class MyProfileFragment extends Fragment {
                     });
                 }else {
                     //no one likes him
-                    like_text.setText("0 Likes");
+                    like_text.setText("Likes");
+                    like_num.setText("0");
                 }
                 //seting onclickListener for togelling the likes and loves
 
