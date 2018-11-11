@@ -2,16 +2,12 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,17 +23,14 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.zconnect.zutto.zconnect.ChatActivity;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
-import com.zconnect.zutto.zconnect.itemFormats.forumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
-import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
-import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
@@ -52,15 +45,17 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
-    Vector<forumCategoriesItemFormat> forumCategoriesItemFormats;
+    Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats;
     String tabUID;
+    Boolean newUser;
 
     StorageReference mStorage;
 
-    public ForumCategoriesRVAdapter(Vector<forumCategoriesItemFormat> forumCategoriesItemFormats, Context context, String tabUID) {
+    public ForumCategoriesRVAdapter(Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats, Context context, String tabUID, Boolean newUser) {
         this.forumCategoriesItemFormats = forumCategoriesItemFormats;
         this.context = context;
         this.tabUID = tabUID;
+        this.newUser = newUser;
     }
 
 
@@ -103,12 +98,12 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        final forumCategoriesItemFormat forumCategory = forumCategoriesItemFormats.get(position);
+        final ForumCategoriesItemFormat forumCategory = forumCategoriesItemFormats.get(position);
 
         if(forumCategory.getForumType().equals(ForumTypeUtilities.KEY_CREATE_FORUM_STR)){
 
             createViewHolder holderMain = (createViewHolder) holder;
-            holderMain.createForum(tabUID);
+            holderMain.createForum(tabUID,newUser);
 //            holderMain.createForumText.setTextColor(context.getResources().getColor(R.color.secondaryText));
 
         }else if(forumCategory.getForumType().equals(ForumTypeUtilities.KEY_JOINED_STR)){
@@ -118,8 +113,11 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             joinedViewHolder holderMain = (joinedViewHolder) holder;
             holderMain.catName.setText(forumCategoriesItemFormats.get(position).getName());
 
-            holderMain.setUnSeenMessages(forumCategoriesItemFormats.get(position).getTotalMessages(),forumCategoriesItemFormats.get(position).getSeenMessages());
-
+            if(!newUser) {
+                holderMain.setUnSeenMessages(forumCategoriesItemFormats.get(position).getTotalMessages(), forumCategoriesItemFormats.get(position).getSeenMessages());
+            }else {
+                holderMain.layoutUnseenMessages.setVisibility(View.GONE);
+            }
             if(forumCategoriesItemFormats.get(position).getImageThumb()!=null)
             {
                 holderMain.defaultForumIcon.setVisibility(View.GONE);
@@ -151,7 +149,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
             }
 
-            holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
+            holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName(),newUser);
             holderMain.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
 
         }else if(forumCategory.getForumType().equals(ForumTypeUtilities.KEY_NOT_JOINED_TITLE_STR)){
@@ -194,7 +192,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 holderMain.lastMessageWithName.setVisibility(View.INVISIBLE);
                 holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
             }
-            holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
+            holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName(),newUser);
             holderMain.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
             holderMain.joinForum(forumCategoriesItemFormats.get(position).getCatUID(),forumCategoriesItemFormats.get(position).getName());
 
@@ -218,7 +216,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             mStorage = FirebaseStorage.getInstance().getReference();
         }
 
-        public void createForum(final String uid){
+        public void createForum(final String uid,Boolean newUser){
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -236,6 +234,11 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                     context.startActivity(intent);
                 }
             });
+
+            if(newUser){
+                itemView.setVisibility(View.GONE);
+                itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+            }
         }
     }
 
@@ -269,37 +272,39 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 //            lastMessageWithName.setTypeface(ralewayRegular);
         }
 
-        void openChat(final String uid, final String tabId, final String  name){
+        void openChat(final String uid, final String tabId, final String  name, Boolean newUser){
 
-            mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, ChatActivity.class);
+            if(!newUser) {
+                mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, ChatActivity.class);
 
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
-                    meta.put("type","fromFeature");
-                    meta.put("channelType","joined");
-                    meta.put("channelID",uid);
-                    meta.put("catID",tabId);
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta = new HashMap<>();
+                        meta.put("type", "fromFeature");
+                        meta.put("channelType", "joined");
+                        meta.put("channelID", uid);
+                        meta.put("catID", tabId);
 
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CHANNEL_OPEN);
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CHANNEL_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
 
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
 
-                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
-                    intent.putExtra("type","forums");
-                    intent.putExtra("name", name);
-                    intent.putExtra("tab",tabUID);
-                    intent.putExtra("key",uid);
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                        intent.putExtra("type", "forums");
+                        intent.putExtra("name", name);
+                        intent.putExtra("tab", tabUID);
+                        intent.putExtra("key", uid);
 
-                    context.startActivity(intent);
-                }
-            });
+                        context.startActivity(intent);
+                    }
+                });
+            }
 
         }
 
@@ -354,36 +359,38 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 //            lastMessageTime.setTypeface(ralewayRegular);
         }
 
-        void openChat(final String uid, final String tabId, final String  name){
-            mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
-                    meta.put("type","fromFeature");
-                    meta.put("channelType","notJoined");
-                    meta.put("channelID",uid);
-                    meta.put("catID",tabId);
+        void openChat(final String uid, final String tabId, final String  name,Boolean newUser){
 
-                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CHANNEL_OPEN);
-                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                    counterItemFormat.setMeta(meta);
+            if(!newUser) {
+                mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta = new HashMap<>();
+                        meta.put("type", "fromFeature");
+                        meta.put("channelType", "notJoined");
+                        meta.put("channelID", uid);
+                        meta.put("catID", tabId);
 
-                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                    counterPush.pushValues();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CHANNEL_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
 
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
-                    intent.putExtra("type","forums");
-                    intent.putExtra("name", name);
-                    intent.putExtra("tab",tabUID);
-                    intent.putExtra("key",uid);
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
 
-                    context.startActivity(intent);
-                }
-            });
+                        Intent intent = new Intent(context, ChatActivity.class);
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                        intent.putExtra("type", "forums");
+                        intent.putExtra("name", name);
+                        intent.putExtra("tab", tabUID);
+                        intent.putExtra("key", uid);
 
+                        context.startActivity(intent);
+                    }
+                });
+            }
         }
 
         public void joinForum(final String key,final String name){
@@ -419,14 +426,13 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                            CounterManager.forumsJoinCategory(tabUID,key);
-                            Intent intent = new Intent(context, ChatActivity.class);
-                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                            intent.putExtra("type", "forums");
-                            intent.putExtra("name", name);
-                            intent.putExtra("tab", tabUID);
-                            intent.putExtra("key", key);
-                            context.startActivity(intent);
+//                            Intent intent = new Intent(context, ChatActivity.class);
+//                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+//                            intent.putExtra("type", "forums");
+//                            intent.putExtra("name", name);
+//                            intent.putExtra("tab", tabUID);
+//                            intent.putExtra("key", key);
+//                            context.startActivity(intent);
                         }
 
                         @Override

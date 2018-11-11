@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.zconnect.zutto.zconnect.ExploreForumsActivity">
     <item
-        android:title="Search Contact"
-        android:id="@+id/action_search_menu_phonebook"
-        android:icon="@drawable/ic_action_action_search"
+        android:title="Done"
+        android:id="@+id/action_done"
+        android:icon="@drawable/ic_done_white_24dp"
         android:orderInCategory="2"
-        android:name="Search Contact"
+        android:name="Done"
         app:showAsAction="ifRoom" />
 </menu>

@@ -304,7 +304,6 @@ public class CabPooling extends BaseActivity {
         int id = item.getItemId();
 
         if (id == R.id.rides) {
-            CounterManager.openMyRides();
             startActivity(new Intent(CabPooling.this, MyRides.class));
         }
 

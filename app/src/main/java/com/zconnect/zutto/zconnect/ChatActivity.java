@@ -292,7 +292,6 @@ public class ChatActivity extends BaseActivity {
                                             userDetails.setUserType(ForumsUserTypeUtilities.KEY_USER);
                                             forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                                            CounterManager.forumsJoinCategory(tab,key);
                                             FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 //
 //                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,ChatActivity.this);

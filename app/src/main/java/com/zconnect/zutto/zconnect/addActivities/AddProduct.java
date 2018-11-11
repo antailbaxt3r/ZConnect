@@ -47,7 +47,6 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
@@ -263,17 +262,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
         final String category = spinner1.getSelectedItem().toString();
-        mUsername.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                sellerName = (String) dataSnapshot.child(userId).child("Username").getValue();
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
 
         if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue) || negotiable.equals("2")) && mImageUri != null && category != null && !negotiable.equals("") && negotiableCheckBox!=null) {
             final StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
@@ -303,7 +291,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                         newPost.child("ProductDescription").setValue(productDescriptionValue);
                         newPost.child("Image").setValue(downloadUri != null ? downloadUri.toString() : null);
                         newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
-                        newPost.child("SellerUsername").setValue(sellerName);
+
                         newPost.child("userID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         newPost.child("Price").setValue(productPriceValue);
                         newPost.child("negotiable").setValue(negotiable);
@@ -317,6 +305,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                                 postedBy.child("Username").setValue(user.getUsername());
                                 postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
                                 newPost.child("Phone_no").setValue(user.getMobileNumber());
+                                newPost.child("SellerUsername").setValue(user.getUsername());
                             }
 
                             @Override
@@ -379,9 +368,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 
                             }
                         });
-
-
-
 
 
                         // Adding stats

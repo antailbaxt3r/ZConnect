@@ -54,7 +54,6 @@ public class MyProducts extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CounterManager.StoreRoomMyProductOpen();
         setContentView(R.layout.activity_my_products);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
@@ -184,7 +183,6 @@ public class MyProducts extends BaseActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if(!flag) {
-                                CounterManager.StoreRoomMyProductDelete();
                                 FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("archiveProducts").child(product_key).setValue(dataSnapshot.getValue());
                                 flag= true;
                                 ReserveReference.removeValue();

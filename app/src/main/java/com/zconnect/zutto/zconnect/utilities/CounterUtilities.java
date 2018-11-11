@@ -116,6 +116,8 @@ public class CounterUtilities {
     public static final String KEY_FORUMS_CHANNEL_OPEN = "forumsChannelOpen";
     //checked
     public static final String KEY_FORUMS_CREATE_FORUM_OPEN = "forumsCreateForumOpen";
+
+    public static final String KEY_FORUMS_EXPLORE_FORUM_OPEN = "forumsExploreForumOpen";
     //checked
     public static final String KEY_FORUMS_FORUM_CREATED = "forumsCreated";
     //checked
@@ -149,6 +151,10 @@ public class CounterUtilities {
     //checked
     public static final String KEY_PROFILE_EDIT_OPEN = "profileEdit";
 
+
+    //Notices
+    public static final String KEY_NOTICES_OPEN = "noticesOpen";
+    public static final String KEY_NOTICES_ADD_NOTICES = "addNotices";
 
     //recents
     //checked

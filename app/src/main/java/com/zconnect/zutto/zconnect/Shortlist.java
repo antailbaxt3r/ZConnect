@@ -172,7 +172,6 @@ public class Shortlist extends BaseActivity {
 //                viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View view) {
-//                        CounterManager.StoroomShortListDelete(model.getCategory(), model.getKey());
 //                        viewHolder.ReserveReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(product_key + "/UsersReserved");
 //
 //                        mAuth = FirebaseAuth.getInstance();
@@ -312,7 +311,6 @@ public class Shortlist extends BaseActivity {
 ////            post_seller_number.setOnClickListener(new View.OnClickListener() {
 ////                @Override
 ////                public void onClick(View view) {
-////                    CounterManager.StoroomCall(category);
 ////                    ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 ////                }
 ////            });

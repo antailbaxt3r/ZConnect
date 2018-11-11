@@ -224,4 +224,5 @@
     <!--shared preferences-->
     <string name="referredAnonymousUser">referredAnonymousUser</string>
     <string name="title_activity_leader_board">Community Leader</string>
+    <string name="explorer_forum">Explore Forums</string>
 </resources>

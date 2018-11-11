@@ -374,7 +374,7 @@ public class OpenUserDetail extends BaseActivity {
 //
 //                textMessage.setText(null);
 //                Toast.makeText(OpenUserDetail.this, "Encrypted message sent", Toast.LENGTH_SHORT).show();
-//                CounterManager.anonymousMessageSend();
+//
 //            }
 //            }
 //        });
@@ -453,7 +453,7 @@ public class OpenUserDetail extends BaseActivity {
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    CounterManager.InfoneCallAfterProfile(mobileNumber);
+//
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mobileNumber)));
                 }
             });
@@ -494,7 +494,6 @@ public class OpenUserDetail extends BaseActivity {
                     counterItemFormat.setMeta(meta);
                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                     counterPush.pushValues();
-//                    CounterManager.InfoneCallAfterProfile(mobileNumber);
                     startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mobileNumber)));
                 }
             });
@@ -524,7 +523,7 @@ public class OpenUserDetail extends BaseActivity {
                     counterItemFormat.setMeta(meta);
                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                     counterPush.pushValues();
-                    CounterManager.email(mobileNumber);
+
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
                     startActivity(Intent.createChooser(emailIntent, "Send Email ..."));
                 }
@@ -586,7 +585,6 @@ public class OpenUserDetail extends BaseActivity {
             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
             counterPush.pushValues();
 
-            CounterManager.report(mobileNumber);
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                     "mailto", "zconnectinc@gmail.com", null));
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Problem with the content displayed");

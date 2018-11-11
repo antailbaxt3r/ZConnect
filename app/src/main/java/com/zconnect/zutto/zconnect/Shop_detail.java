@@ -101,8 +101,8 @@ public class Shop_detail extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 1)
-                    CounterManager.shopOffers(name);
+                if (position == 1){}
+
             }
 
             @Override

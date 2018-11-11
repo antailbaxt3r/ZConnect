@@ -203,9 +203,30 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT_URL:
                 notificationWithoutImage(ND.getItemURL(), ND.getItemTitle(), ND.getItemMessage());
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD:
+                noticeAddNotification( ND.getCommunityName(),ND.getItemName(),ND.getItemKey(),ND.getItemImage(), ND.getUserName(), ND.getUserImage());
+                break;
         }
 
         return null;
+    }
+
+    private void noticeAddNotification(String communityName, String noticeName,String noticeKey,String noticeImage,String userName,String userImage) {
+
+        creator = new RemoteMessage.Builder("data");
+
+        creator.addData("communityName",communityName);
+        creator.addData("noticeName",noticeName);
+        creator.addData("noticeKey",noticeKey);
+        creator.addData("noticeImage",noticeImage);
+
+        creator.addData("userName", userName);
+        creator.addData("userImage", userImage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD);
+        creator.addData("userKey",userKey);
+
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD_FREQUENCY_STR);
     }
 
     private void newUserRejectNotification(String communityName,String receiverKey) {
