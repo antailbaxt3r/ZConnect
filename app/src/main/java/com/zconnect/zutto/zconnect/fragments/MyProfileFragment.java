@@ -358,7 +358,6 @@ public class MyProfileFragment extends Fragment {
 //
 //                    textMessage.setText(null);
 //                    Toast.makeText(getActivity().getApplicationContext(), "Encrypted message sent", Toast.LENGTH_SHORT).show();
-//                    CounterManager.anonymousMessageSend();
 //                }
 //            }
 //        });
@@ -427,7 +426,6 @@ public class MyProfileFragment extends Fragment {
 //            call.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
-////                    CounterManager.InfoneCallAfterProfile(mobileNumber);
 //                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mobileNumber)));
 //                }
 //            });
@@ -473,7 +471,6 @@ public class MyProfileFragment extends Fragment {
 //            mail.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
-//                    CounterManager.email(mobileNumber);
 //                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
 //                    startActivity(Intent.createChooser(emailIntent, "Send Email ..."));
 //                }

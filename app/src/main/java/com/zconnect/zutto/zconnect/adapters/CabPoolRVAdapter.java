@@ -20,7 +20,6 @@ import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CabItemFormat;
 import com.zconnect.zutto.zconnect.R;
@@ -173,7 +172,6 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                     intent.putExtra("date", (array.get(getAdapterPosition()).getDT()).substring(0,8));
 
                     context.startActivity(intent);
-                    //CounterManager.openCabPoolList(array.get(getAdapterPosition()).getKey());
                 }
 
                 if(i==1) {
@@ -181,7 +179,6 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                         intent.putExtra("key", cabItemFormat.get(getAdapterPosition()).getKey());
                         intent.putExtra("date", (cabItemFormat.get(getAdapterPosition()).getDT()).substring(0,8));
                         context.startActivity(intent);
-                        //CounterManager.openCabPoolList(cabItemFormat.get(getAdapterPosition()).getKey());
                     }}
             });
             share.setOnClickListener(new View.OnClickListener() {

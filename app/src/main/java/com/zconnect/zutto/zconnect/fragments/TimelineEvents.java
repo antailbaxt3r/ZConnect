@@ -246,7 +246,6 @@ public class TimelineEvents extends Fragment {
 //            {
 //                @Override
 //                public void onClick(View view) {
-//                    CounterManager.eventOpenCounter(key, "Timeline");
 //                    Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
 //                    i.putExtra("id", event.getKey());
 //                    mView.getContext().startActivity(i);
@@ -349,7 +348,6 @@ public class TimelineEvents extends Fragment {
 //                DateTime.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View view) {
-//                        CounterManager.eventReminderCounter(key);
 //                        addReminderInCalendar(eventName, eventDescription, time, mView.getContext());
 //
 //                    }
@@ -471,7 +469,6 @@ public class TimelineEvents extends Fragment {
 //                        if(!flag){
 //                            Map<String, Object> taskMap = new HashMap<String, Object>();
 //                            taskMap.put(user.getUid(), user.getUid());
-//                            CounterManager.eventBoost(event.getKey(), "Trending-Out");
 //                            eventDatabase.child("BoostersUids").updateChildren(taskMap);
 //
 //                            //Sending Notifications

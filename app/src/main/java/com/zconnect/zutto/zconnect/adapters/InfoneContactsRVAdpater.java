@@ -22,7 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
@@ -92,7 +91,6 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                 if(infoneContactsRVItems.get(position).getContactHidden()){
                     createAlertForRequest(infoneContactsRVItems.get(position).getInfoneUserId(),currentUser);
                 }else {
-                    CounterManager.infoneCallContact();
                     callOptionsDialog(phoneNums);
                 }
             }

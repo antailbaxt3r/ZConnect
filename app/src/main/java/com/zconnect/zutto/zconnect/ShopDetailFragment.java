@@ -116,7 +116,7 @@ public class ShopDetailFragment extends Fragment {
                     direction.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            CounterManager.shopDirections(nam);
+
                             Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
@@ -125,7 +125,7 @@ public class ShopDetailFragment extends Fragment {
                     call.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            CounterManager.shopCall(nam);
+
                             startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num)));
                         }
                     });
@@ -142,13 +142,13 @@ public class ShopDetailFragment extends Fragment {
         galleryRecycler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CounterManager.shopGallery(nam);
+
             }
         });
         menuRecycler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CounterManager.shopProducts(nam);
+
             }
         });
 

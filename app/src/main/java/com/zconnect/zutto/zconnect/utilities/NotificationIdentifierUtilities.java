@@ -15,6 +15,8 @@ public class NotificationIdentifierUtilities {
     public static final String KEY_NOTIFICATION_FORUM_ADD = "ForumAdd";
     public static final String KEY_NOTIFICATION_INFONE_CATEGORY_ADD = "InfoneAdd";
     public static final String KEY_NOTIFICATION_OFFERS_ADD = "OffersAdd";
+    public static final String KEY_NOTIFICATION_NOTICES_ADD = "NoticeAdd";
+    public static final String KEY_NOTIFICATION_LINKS_ADD = "LinksAdd";
 
     public static final String KEY_NOTIFICATION_CHAT_FORUM = "ForumChat";
     public static final String KEY_NOTIFICATION_CHAT_EVENT = "EventChat";
@@ -34,6 +36,8 @@ public class NotificationIdentifierUtilities {
     public static final String KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR = "AddEvent";
     public static final String KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR = "StoreRoom";
     public static final String KEY_NOTIFICATION_CAB_ADD_FREQUENCY_STR = "AddCabPool";
+    public static final String KEY_NOTIFICATION_NOTICES_ADD_FREQUENCY_STR = "AddNotice";
+    public static final String KEY_NOTIFICATION_LINKS_ADD_FREQUENCY_STR = "AddLinks";
 
     public static final String KEY_NOTIFICATION_STATUS_LIKED = "StatusLiked";
 

@@ -16,6 +16,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -25,7 +27,6 @@ import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.R;
 
 import org.joda.time.LocalDate;
@@ -67,7 +68,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         SharedPreferences communityTitleSP = getSharedPreferences("communityTitle", MODE_PRIVATE);
         communityTitle = communityTitleSP.getString("communityTitleValue", null);
-        //CounterManager.communityCode = communityReference;
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);

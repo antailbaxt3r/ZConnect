@@ -23,10 +23,13 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,7 +62,7 @@ public class LogoFlashActivity extends BaseActivity {
     /*private final String TAG = getClass().getSimpleName();*/
     //Request code permission request external storage
     private final int RC_PERM_REQ_EXT_STORAGE = 7;
-    private ImageView bgImage;
+    private SimpleDraweeView bgImage;
     private DatabaseReference mDatabase,temp,temp2,temp3,temp4,temp5,t,t2;
     private View bgColor;
     boolean flag = false;
@@ -73,8 +76,10 @@ public class LogoFlashActivity extends BaseActivity {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         } catch (Exception ignore) {
         }
+        Fresco.initialize(this);
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_logo_flash);
-        bgImage = (ImageView) findViewById(R.id.bgImage);
+        bgImage =  findViewById(R.id.bgImage);
         bgColor = findViewById(R.id.bgColor);
 
         SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);

@@ -279,7 +279,6 @@ public class TrendingEvents extends Fragment {
 //            {
 //                @Override
 //                public void onClick(View view) {
-//                    CounterManager.eventOpenCounter(key, "Trending");
 //                    Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
 //                    i.putExtra("id", event.getKey());
 //                    mView.getContext().startActivity(i);
@@ -356,7 +355,6 @@ public class TrendingEvents extends Fragment {
 //                    public void onClick(View v) {
 //                        Intent editIntent = new Intent(mView.getContext(), AddEvent.class);
 //                        editIntent.putExtra("eventID", EventID);
-//                        CounterManager.eventEdit(EventID, "Trending");
 //                        mView.getContext().startActivity(editIntent);
 //                    }
 //                });
@@ -414,7 +412,6 @@ public class TrendingEvents extends Fragment {
 //                        if(!flag){
 //                            Map<String, Object> taskMap = new HashMap<String, Object>();
 //                            taskMap.put(user.getUid(), user.getUid());
-//                            CounterManager.eventBoost(event.getKey(), "Trending-Out");
 //                            eventDatabase.child("BoostersUids").updateChildren(taskMap);
 //
 //                            //Sending Notifications

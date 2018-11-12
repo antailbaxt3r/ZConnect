@@ -3,13 +3,13 @@ package com.zconnect.zutto.zconnect.commonModules;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.zconnect.zutto.zconnect.itemFormats.forumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -71,17 +71,33 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Vector<forumCategoriesItemFormat> getAllForums(String tabUID) {
-        Vector<forumCategoriesItemFormat> forums_list = new Vector<forumCategoriesItemFormat>();
+    public Map getAllForums(){
+        Map<String,Integer> map = new HashMap();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from ForumsCardNotifications",null );
+        res.moveToFirst();
+
+        while(!res.isAfterLast()){
+            map.put(res.getString(res.getColumnIndex(FORUMS_COLUMN_FORUM_ID)),res.getInt(res.getColumnIndex(FORUMS_COLUMN_FORUM_TOTAL_MESSAGES)));
+            res.moveToNext();
+        }
+
+        map.put("key1",2);
+        map.get("key1");
+        return map;
+    }
+    public Vector<ForumCategoriesItemFormat> getTabForums(String tabUID) {
+        Vector<ForumCategoriesItemFormat> forums_list = new Vector<ForumCategoriesItemFormat>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from ForumsCardNotifications where forumCategory = '" + tabUID + "'",null );
         res.moveToFirst();
 
-        forumCategoriesItemFormat temp;
+        ForumCategoriesItemFormat temp;
 
         while(res.isAfterLast() == false){
-            temp = new forumCategoriesItemFormat();
+            temp = new ForumCategoriesItemFormat();
 
             temp.setTabUID(res.getString(res.getColumnIndex(FORUMS_COLUMN_FORUM_CATEGORY)));
             temp.setCatUID(res.getString(res.getColumnIndex(FORUMS_COLUMN_FORUM_ID)));
@@ -93,4 +109,6 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return forums_list;
     }
+
+
 }

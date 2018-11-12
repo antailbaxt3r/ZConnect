@@ -19,9 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
+import com.zconnect.zutto.zconnect.addActivities.AddNotices;
 import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.CabPooling;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.addActivities.AddStatus;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
@@ -55,6 +55,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         final LinearLayout bottomSheetAddProduct = (LinearLayout) bottomSheetView.findViewById(R.id.addProduct_bottomSheet);
         LinearLayout bottomSheetAddMessage = (LinearLayout) bottomSheetView.findViewById(R.id.addMessage_bottomSheet);
         final LinearLayout bottomSheetSearchPool = (LinearLayout) bottomSheetView.findViewById(R.id.searchPool_bottomSheet);
+        final LinearLayout bottomSheetAddNotices = bottomSheetView.findViewById(R.id.add_notices_bottomSheet);
 
         communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
 
@@ -83,6 +84,13 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                     }else {
 
                     }
+
+                    if (communityFeatures.getNotices().equals("true")){
+                        bottomSheetAddNotices.setVisibility(View.VISIBLE);
+                    }else {
+                        bottomSheetAddNotices.setVisibility(View.GONE);
+                    }
+
 
                     if (communityFeatures.getLinks().equals("true")){
 
@@ -119,7 +127,6 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                     throwable.printStackTrace();
                 }
 
-                CounterManager.eventAddClick();
                 Intent intent;
                 intent = new Intent(getContext(), AddEvent.class);
                 startActivity(intent);
@@ -205,6 +212,31 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 counterPush.pushValues();
                 Intent intent;
                 intent = new Intent(getContext(), CabPooling.class);
+                startActivity(intent);
+            }
+        };
+
+        View.OnClickListener noticesListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    HomeBottomSheet.this.dismiss();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+                meta.put("type","fromRecents");
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_ADD_NOTICES);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
+                Intent intent;
+                intent = new Intent(getContext(), AddNotices.class);
                 startActivity(intent);
             }
         };

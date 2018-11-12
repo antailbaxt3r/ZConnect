@@ -6,7 +6,7 @@ import java.util.Vector;
  * Created by shubhamk on 9/2/17.
  */
 
-public class forumCategoriesItemFormat {
+public class ForumCategoriesItemFormat {
     private String name;
     private String tabUID;
     private String catUID;
@@ -19,7 +19,7 @@ public class forumCategoriesItemFormat {
     private Integer totalMessages;
     private Integer seenMessages;
 
-    public forumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats, PostedByDetails PostedBy, String imageThumb, String image, Integer totalMessages ) {
+    public ForumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats, PostedByDetails PostedBy, String imageThumb, String image, Integer totalMessages ) {
 
         this.name = name;
         this.tabUID = tabUID;
@@ -32,7 +32,7 @@ public class forumCategoriesItemFormat {
         this.totalMessages = totalMessages;
     }
 
-    public forumCategoriesItemFormat() {
+    public ForumCategoriesItemFormat() {
 
     }
 

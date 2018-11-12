@@ -562,6 +562,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                             if (flag){
                                 updateCurrentUser();
                                 mProgress.dismiss();
+
+                                if (newUser) {
+                                    Intent intent = new Intent(getApplicationContext(), ExploreForumsActivity.class);
+                                    intent.putExtra("newUser", true);
+                                    startActivity(intent);
+                                }
                                 finish();
                             }else {
                                 flag=true;
@@ -608,6 +614,11 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                                 updateCurrentUser();
                                 mProgress.dismiss();
 
+                                if (newUser) {
+                                    Intent intent = new Intent(getApplicationContext(), ExploreForumsActivity.class);
+                                    intent.putExtra("newUser", true);
+                                    startActivity(intent);
+                                }
                                 finish();
                             }else {
                                 flag=true;
@@ -635,6 +646,10 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                     newContactNumRef.child("imageurl").setValue(photoUri2.toString());
                     newContactRef.child("thumbnail").setValue(photoUri2.toString());
                     newContactNumRef.child("thumbnail").setValue(photoUri2.toString());
+
+                    Intent intent = new Intent(this, ExploreForumsActivity.class);
+                    intent.putExtra("newUser", true);
+                    startActivity(intent);
 
                 }
                 updateCurrentUser();

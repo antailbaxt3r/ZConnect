@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect.fragments;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
-import com.zconnect.zutto.zconnect.itemFormats.forumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.adapters.ForumCategoriesRVAdapter;
 import com.zconnect.zutto.zconnect.R;
@@ -39,16 +38,17 @@ public class ForumsFragment extends Fragment {
     String currenttab;
     private ForumCategoriesRVAdapter adapter;
     DatabaseReference tabsCategories;
-    Vector<forumCategoriesItemFormat> forumCategories = new Vector<forumCategoriesItemFormat>();
-    Vector<forumCategoriesItemFormat> joinedForumCategories = new Vector<forumCategoriesItemFormat>();
-    Vector<forumCategoriesItemFormat> notJoinedForumCategories = new Vector<forumCategoriesItemFormat>();
-    forumCategoriesItemFormat addCategoryButton = new forumCategoriesItemFormat();
-    forumCategoriesItemFormat titleNotJoined = new forumCategoriesItemFormat();
+    Vector<ForumCategoriesItemFormat> forumCategories = new Vector<ForumCategoriesItemFormat>();
+    Vector<ForumCategoriesItemFormat> joinedForumCategories = new Vector<ForumCategoriesItemFormat>();
+    Vector<ForumCategoriesItemFormat> notJoinedForumCategories = new Vector<ForumCategoriesItemFormat>();
+    ForumCategoriesItemFormat addCategoryButton = new ForumCategoriesItemFormat();
+    ForumCategoriesItemFormat titleNotJoined = new ForumCategoriesItemFormat();
     ProgressBar progressBar;
     FirebaseAuth mAuth;
     DBHelper mydb;
+    Boolean newUser =false;
 
-    Vector<forumCategoriesItemFormat> forumCategoriesItemFormats = new Vector<forumCategoriesItemFormat>();
+    Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats = new Vector<ForumCategoriesItemFormat>();
 
     Uri mImageUri;
 
@@ -63,6 +63,8 @@ public class ForumsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_infone, container, false);
         Bundle bundle = getArguments();
         currenttab = bundle.getString("UID");
+        newUser = bundle.getBoolean("newUser",false);
+
         Log.v("TASDF", String.valueOf(currenttab));
 
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_infone_progress_circle);
@@ -74,7 +76,7 @@ public class ForumsFragment extends Fragment {
 
         tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(currenttab);
 
-        adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab);
+        adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab,newUser);
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -85,7 +87,7 @@ public class ForumsFragment extends Fragment {
         super.onResume();
         mydb = new DBHelper(getContext());
 
-        forumCategoriesItemFormats = mydb.getAllForums(currenttab);
+        forumCategoriesItemFormats = mydb.getTabForums(currenttab);
 
         tabsCategories.addValueEventListener(new ValueEventListener() {
             @Override
@@ -102,13 +104,12 @@ public class ForumsFragment extends Fragment {
                 titleNotJoined.setForumType(ForumTypeUtilities.KEY_NOT_JOINED_TITLE_STR);
 
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
-                    forumCategoriesItemFormat temp = new forumCategoriesItemFormat();
+                    ForumCategoriesItemFormat temp = new ForumCategoriesItemFormat();
 
                     if(shot.child("users").hasChild(mAuth.getCurrentUser().getUid())) {
-                        temp = shot.getValue(forumCategoriesItemFormat.class);
+                        temp = shot.getValue(ForumCategoriesItemFormat.class);
                         temp.setSeenMessages(totalSeenNumber(temp.getCatUID()));
 
-                        //Toast.makeText(getContext(), totalSeenNumber(temp.getCatUID())+"", Toast.LENGTH_SHORT).show();
                         if(!shot.hasChild("totalMessages")){
                             temp.setTotalMessages(0);
                         }
@@ -152,7 +153,7 @@ public class ForumsFragment extends Fragment {
 
                     }else {
 
-                        temp=shot.getValue(forumCategoriesItemFormat.class);
+                        temp=shot.getValue(ForumCategoriesItemFormat.class);
                         try {
                             if(temp.getName()!=null) {
                                 temp.setForumType(ForumTypeUtilities.KEY_NOT_JOINED_STR);
@@ -164,9 +165,9 @@ public class ForumsFragment extends Fragment {
 
                 forumCategories.add(addCategoryButton);
 
-                Collections.sort(joinedForumCategories, new Comparator<forumCategoriesItemFormat>() {
+                Collections.sort(joinedForumCategories, new Comparator<ForumCategoriesItemFormat>() {
                     @Override
-                    public int compare(forumCategoriesItemFormat o1, forumCategoriesItemFormat o2) {
+                    public int compare(ForumCategoriesItemFormat o1, ForumCategoriesItemFormat o2) {
 
                         return Long.valueOf((Long) o2.getLastMessage().getTimeDate()).compareTo((Long) o1.getLastMessage().getTimeDate()) ;
                     }
@@ -176,9 +177,9 @@ public class ForumsFragment extends Fragment {
                 forumCategories.addAll(joinedForumCategories);
                 forumCategories.add(titleNotJoined);
 
-                Collections.sort(notJoinedForumCategories, new Comparator<forumCategoriesItemFormat>() {
+                Collections.sort(notJoinedForumCategories, new Comparator<ForumCategoriesItemFormat>() {
                     @Override
-                    public int compare(forumCategoriesItemFormat o1, forumCategoriesItemFormat o2) {
+                    public int compare(ForumCategoriesItemFormat o1, ForumCategoriesItemFormat o2) {
                         return o1.getName().compareToIgnoreCase(o2.getName());
                     }
                 });
