@@ -32,6 +32,7 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
+import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
@@ -39,6 +40,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 
@@ -275,6 +277,11 @@ public class AddCabPool extends BaseActivity {
 
                                             }
                                         });
+
+                                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_CABPOOL);
+                                        numberNotificationForFeatures.setCount();
+                                        Log.d("NumberNoti setting for ", FeatureDBName.KEY_CABPOOL);
+
 
                                         CounterItemFormat counterItemFormat = new CounterItemFormat();
                                         HashMap<String, String> meta= new HashMap<>();

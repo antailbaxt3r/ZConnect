@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -141,12 +142,20 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 {
                     holderMain.lastMessageTime.setText(timeStamp);
                 }
+                if(forumCategoriesItemFormats.get(position).getVerified())
+                {
+                    holderMain.verifiedForumIconLayout.setVisibility(View.VISIBLE);
+                }
+                else {
+                    holderMain.verifiedForumIconLayout.setVisibility(View.GONE);
+                }
 
             }
             catch (Exception e) {
                 Log.d("Error alert ", e.getMessage());
                 holderMain.lastMessageWithName.setVisibility(View.INVISIBLE);
                 holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
+                holderMain.verifiedForumIconLayout.setVisibility(View.GONE);
             }
 
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName(),newUser);
@@ -186,11 +195,20 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                     holderMain.lastMessageTime.setText(timeStamp);
                 }
                 holderMain.lastMessageWithName.setText(shortName + ": " + forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
+
+                if(forumCategoriesItemFormats.get(position).getVerified())
+                {
+                    holderMain.verifiedForumIconLayout.setVisibility(View.VISIBLE);
+                }
+                else {
+                    holderMain.verifiedForumIconLayout.setVisibility(View.GONE);
+                }
             }
             catch (Exception e) {
                 Log.d("Error alert ", e.getMessage());
                 holderMain.lastMessageWithName.setVisibility(View.INVISIBLE);
                 holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
+                holderMain.verifiedForumIconLayout.setVisibility(View.GONE);
             }
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName(),newUser);
             holderMain.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
@@ -250,6 +268,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         LinearLayout forumRowItem, layoutUnseenMessages;
         SimpleDraweeView forumIcon;
         ImageView defaultForumIcon;
+        FrameLayout verifiedForumIconLayout;
 
         public joinedViewHolder(View itemView) {
             super(itemView);
@@ -263,6 +282,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 
             forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_sub_categories_joined);
             defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_sub_categories_joined);
+            verifiedForumIconLayout = (FrameLayout) itemView.findViewById(R.id.verified_forum_icon_layout);
 
             //changing fonts
 //            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");
@@ -341,6 +361,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
         ImageView defaultForumIcon;
         SimpleDraweeView forumIcon;
         LinearLayout forumRowItem;
+        FrameLayout verifiedForumIconLayout;
 
         public notJoinedViewHolder(View itemView) {
             super(itemView);
@@ -351,6 +372,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             joinButton = (Button) itemView.findViewById(R.id.joinCategory);
             forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_categories_not_joined);
             defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_categories_not_joined);
+            verifiedForumIconLayout = (FrameLayout) itemView.findViewById(R.id.verified_forum_icon_layout);
 
             //changing fonts
 //            Typeface ralewayMedium = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Medium.ttf");

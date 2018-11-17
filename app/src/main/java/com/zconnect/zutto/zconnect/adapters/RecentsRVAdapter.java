@@ -46,6 +46,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.AdminHome;
@@ -67,6 +68,7 @@ import com.zconnect.zutto.zconnect.TabStoreRoom;
 import com.zconnect.zutto.zconnect.TabbedEvents;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -75,6 +77,7 @@ import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.RequestCodes;
@@ -1432,9 +1435,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private class FeaturesViewHolder extends RecyclerView.ViewHolder {
 
+        private String TAG = FeaturesViewHolder.class.getSimpleName();
+
         HorizontalScrollView hsv;
         LinearLayout linearLayout;
         RelativeLayout notices, events, cabpool, storeroom, admin;
+        FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL;
+        TextView unreadCountStoreroomTV, unreadCountEventsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV;
         Query mOtherFeatures;
 
         //for other features
@@ -1453,35 +1460,169 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             storeroom = (RelativeLayout) itemView.findViewById(R.id.storeroom_recents_features_view);
             cabpool = (RelativeLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
             admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
+
+            unreadCountStoreroomFL = (FrameLayout) itemView.findViewById(R.id.storeroom_unread_count_fl_recents_feature_item);
+            unreadCountStoreroomTV = (TextView) itemView.findViewById(R.id.storeroom_unread_count_text_recents_feature_item);
+
+            unreadCountEventsFL = (FrameLayout) itemView.findViewById(R.id.events_unread_count_fl_recents_feature_item);
+            unreadCountEventsTV = (TextView) itemView.findViewById(R.id.events_unread_count_text_recents_feature_item);
+
+            unreadCountCabpoolFL = (FrameLayout) itemView.findViewById(R.id.cabpool_unread_count_fl_recents_feature_item);
+            unreadCountCabpoolTV = (TextView) itemView.findViewById(R.id.cabpool_unread_count_text_recents_feature_item);
+
+            unreadCountAdminPanelFL = (FrameLayout) itemView.findViewById(R.id.admin_unread_count_fl_recents_feature_item);
+            unreadCountAdminPanelTV = (TextView) itemView.findViewById(R.id.admin_unread_count_text_recents_feature_item);
+
             mOtherFeatures = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("otherFeatures").orderByChild("pos");
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
             mUserDetails.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                     final UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
 
                     if(!dataSnapshot.hasChild("userType")){
                        userItem.setUserType(UsersTypeUtilities.KEY_NOT_VERIFIED);
                     }
-
+                    if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
+                    {
+                        if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_ADMIN_PANEL))
+                        {
+                            final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_ADMIN_PANEL).getValue(Long.class);
+                            NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_ADMIN_PANEL);
+                            numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                                @Override
+                                public void onCallBack(long value) {
+                                    if(value - current > 0)
+                                    {
+                                        Log.d(TAG, String.valueOf(value - current));
+                                        unreadCountAdminPanelTV.setText(String.valueOf(value - current));
+                                        unreadCountAdminPanelFL.setVisibility(View.VISIBLE);
+                                    }
+                                    else
+                                    {
+                                        unreadCountAdminPanelFL.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+                        }
+                        else
+                        {
+                            NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_ADMIN_PANEL);
+                            numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                                @Override
+                                public void onCallBack(long value) {
+                                    mUserDetails.child("featuresUnreadCount").child(FeatureDBName.KEY_ADMIN_PANEL).setValue(value);
+                                }
+                            });
+                        }
+                    }
+                    //for storeroom
+                    if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_STOREROOM))
+                    {
+                        final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_STOREROOM).getValue(Long.class);
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_STOREROOM);
+                        numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                            @Override
+                            public void onCallBack(long value) {
+                                if(value - current > 0)
+                                {
+                                    unreadCountStoreroomTV.setText(String.valueOf(value - current));
+                                    unreadCountStoreroomFL.setVisibility(View.VISIBLE);
+                                }
+                                else
+                                {
+                                    unreadCountStoreroomFL.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_STOREROOM);
+                        numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                            @Override
+                            public void onCallBack(long value) {
+                                mUserDetails.child("featuresUnreadCount").child(FeatureDBName.KEY_STOREROOM).setValue(value);
+                            }
+                        });
+                    }
+                    if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_EVENTS))
+                    {
+                        final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_EVENTS).getValue(Long.class);
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_EVENTS);
+                        numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                            @Override
+                            public void onCallBack(long value) {
+                                if(value - current > 0)
+                                {
+                                    unreadCountEventsTV.setText(String.valueOf(value - current));
+                                    unreadCountEventsFL.setVisibility(View.VISIBLE);
+                                }
+                                else
+                                {
+                                    unreadCountEventsFL.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_EVENTS);
+                        numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                            @Override
+                            public void onCallBack(long value) {
+                                mUserDetails.child("featuresUnreadCount").child(FeatureDBName.KEY_EVENTS).setValue(value);
+                            }
+                        });
+                    }
+                    if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_CABPOOL))
+                    {
+                        final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_CABPOOL).getValue(Long.class);
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_CABPOOL);
+                        numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                            @Override
+                            public void onCallBack(long value) {
+                                if(value - current > 0)
+                                {
+                                    unreadCountCabpoolTV.setText(String.valueOf(value - current));
+                                    unreadCountCabpoolFL.setVisibility(View.VISIBLE);
+                                }
+                                else
+                                {
+                                    unreadCountCabpoolFL.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_CABPOOL);
+                        numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                            @Override
+                            public void onCallBack(long value) {
+                                mUserDetails.child("featuresUnreadCount").child(FeatureDBName.KEY_CABPOOL).setValue(value);
+                            }
+                        });
+                    }
                     if(userItem.getUsername()!=null) {
                         if(userItem.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
                             admin.setVisibility(View.VISIBLE);
                             admin.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    resetFeaturesUnreadCount(FeatureDBName.KEY_ADMIN_PANEL, dataSnapshot);
                                     context.startActivity(new Intent(context, AdminHome.class));
                                 }
                             });
                         }
                     }
-
                     events.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                resetFeaturesUnreadCount(FeatureDBName.KEY_EVENTS, dataSnapshot);
                                 Intent intent = new Intent(context, TabbedEvents.class);
                                 context.startActivity(intent);
 
@@ -1505,6 +1646,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         @Override
                         public void onClick(View v) {
                             if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                resetFeaturesUnreadCount(FeatureDBName.KEY_STOREROOM, dataSnapshot);
                                 Intent intent = new Intent(context, TabStoreRoom.class);
                                 context.startActivity(intent);
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -1530,6 +1672,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         @Override
                         public void onClick(View v) {
                             if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                resetFeaturesUnreadCount(FeatureDBName.KEY_CABPOOL, dataSnapshot);
                                 Intent intent = new Intent(context, CabPoolAll.class);
                                 context.startActivity(intent);
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -1660,6 +1803,22 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             }catch (Exception e){
 
+            }
+
+        }
+
+        public void resetFeaturesUnreadCount(final String featureDBName, DataSnapshot dataSnapshot)
+        {
+            if(dataSnapshot.child("featuresUnreadCount").hasChild(featureDBName) && dataSnapshot.child("featuresUnreadCount").child(featureDBName).getValue(Long.class) >= 0)
+            {
+                NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(featureDBName);
+                numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                    @Override
+                    public void onCallBack(long value) {
+                        Log.d(TAG, String.valueOf(value));
+                        mUserDetails.child("featuresUnreadCount").child(featureDBName).setValue(value);
+                    }
+                });
             }
 
         }
