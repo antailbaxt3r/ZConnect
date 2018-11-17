@@ -195,7 +195,7 @@ public class OpenUserDetail extends BaseActivity {
             });
         }else {
             //no one loves him
-            love_text.setText("0 Loves");
+            love_text.setText("Loves");
         }
 
         if(db_like != null){
@@ -221,7 +221,7 @@ public class OpenUserDetail extends BaseActivity {
             });
         }else {
             //no one likes him
-            like_text.setText("0 Likes");
+            like_text.setText("Likes");
         }
         //seting onclickListener for togelling the likes and loves
 

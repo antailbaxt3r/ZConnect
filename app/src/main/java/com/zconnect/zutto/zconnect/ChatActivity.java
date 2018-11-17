@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,6 +19,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,6 +77,8 @@ import java.util.HashMap;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class ChatActivity extends BaseActivity {
+
+    private String TAG = ChatActivity.class.getSimpleName();
 
     private static final int GALLERY_REQUEST = 7;
     private String ref  = "Misc";
@@ -749,15 +754,76 @@ public class ChatActivity extends BaseActivity {
         }
 
         if(item.getItemId() == R.id.action_edit_forum) {
-            CounterItemFormat counterItemFormat = new CounterItemFormat();
-            HashMap<String, String> meta= new HashMap<>();
-            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDIT_FORUM_OPEN);
-            counterItemFormat.setTimestamp(System.currentTimeMillis());
-            counterItemFormat.setMeta(meta);
-            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-            counterPush.pushValues();
-            launchEditForum();
+            final String tabuid = getIntent().getStringExtra("tab");
+            final String catuid = getIntent().getStringExtra("key");
+            final DatabaseReference userRefInCat = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tabuid).child(catuid).child("users").child(user.getUid());
+            mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
+                    {
+                        Log.d(TAG, "Community Admin");
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDIT_FORUM_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+                        launchEditForum();
+                    }
+                    else
+                    {
+                        userRefInCat.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Log.d(TAG, dataSnapshot.getRef().toString());
+                                if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(ForumsUserTypeUtilities.KEY_ADMIN))
+                                {
+                                    Log.d(TAG, "Forum Admin");
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    HashMap<String, String> meta= new HashMap<>();
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDIT_FORUM_OPEN);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    counterItemFormat.setMeta(meta);
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
+                                    launchEditForum();
+                                }
+                                else
+                                {
+                                    Log.d(TAG, "Normal User");
+                                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ChatActivity.this);
+                                    builder.setMessage("Only Forum Admins and Community Admins can edit a forum")
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Log.d(TAG, "Clicked Ok");
+                                                }
+                                            });
+                                    final android.app.AlertDialog dialog = builder.create();
+                                    dialog.setCancelable(true);
+                                    dialog.show();
+//                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
         }
 
         return super.onOptionsItemSelected(item);

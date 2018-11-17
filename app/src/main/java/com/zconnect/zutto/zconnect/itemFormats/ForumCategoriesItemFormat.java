@@ -18,8 +18,9 @@ public class ForumCategoriesItemFormat {
     private String imageThumb;
     private Integer totalMessages;
     private Integer seenMessages;
+    private Boolean verified;
 
-    public ForumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats, PostedByDetails PostedBy, String imageThumb, String image, Integer totalMessages ) {
+    public ForumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats, PostedByDetails PostedBy, String imageThumb, String image, Integer totalMessages, Boolean verified ) {
 
         this.name = name;
         this.tabUID = tabUID;
@@ -30,11 +31,15 @@ public class ForumCategoriesItemFormat {
         this.imageThumb = imageThumb;
         this.PostedBy = PostedBy;
         this.totalMessages = totalMessages;
+        this.verified = verified;
     }
 
     public ForumCategoriesItemFormat() {
 
     }
+
+    public Boolean getVerified() { return  verified; }
+    public void setVerified(Boolean verified) { this.verified = verified; }
 
     public String getName() {
         return name;
