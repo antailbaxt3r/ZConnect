@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +31,7 @@ public class NumberNotificationForFeatures {
 
     public void setCount() {
         ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child(featureName).child("count");
+        final DatabaseReference userFeaturesUnreadCountRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("featuresUnreadCount").child(featureName);
         if(featureName.equals(FeatureDBName.KEY_ADMIN_PANEL))
         {
             ref = ref.getParent().getParent().getParent().child("newUsersCount");
@@ -59,6 +62,15 @@ public class NumberNotificationForFeatures {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Log.d(TAG, "node does not exist. Value of count is " + dataSnapshot.getChildrenCount());
                             ref.setValue(dataSnapshot.getChildrenCount());
+                            if(!featureName.equals(FeatureDBName.KEY_ADMIN_PANEL))
+                            {
+                                Log.d(TAG, "updating self");
+                                userFeaturesUnreadCountRef.setValue(dataSnapshot.getChildrenCount());
+                            }
+                            else
+                            {
+                                Log.d(TAG, "not updating self");
+                            }
                         }
 
                         @Override
@@ -70,6 +82,15 @@ public class NumberNotificationForFeatures {
                 else
                 {
                     mutableData.setValue(count + 1);
+                    if(!featureName.equals(FeatureDBName.KEY_ADMIN_PANEL))
+                    {
+                        Log.d(TAG, "updating self");
+                        userFeaturesUnreadCountRef.setValue(count + 1);
+                    }
+                    else
+                    {
+                        Log.d(TAG, "not updating self");
+                    }
                 }
                 return Transaction.success(mutableData);
             }

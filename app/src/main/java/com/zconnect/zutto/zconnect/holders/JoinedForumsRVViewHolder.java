@@ -83,6 +83,13 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
                 lastMessageTime.setText(timeStamp);
             }
 
+        } catch (Exception e) {
+            Log.d("Error alert ", e.getMessage());
+            lastMessageWithName.setVisibility(View.INVISIBLE);
+            lastMessageTime.setVisibility(View.INVISIBLE);
+        }
+        try
+        {
             if(forumCategoriesItemFormat.getVerified())
             {
                 Log.d(TAG, forumCategoriesItemFormat.getCatUID());
@@ -92,13 +99,10 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
             else {
                 verifiedForumIconLayout.setVisibility(View.GONE);
             }
-
-        } catch (Exception e) {
-            Log.d("Error alert ", e.getMessage());
-            lastMessageWithName.setVisibility(View.INVISIBLE);
-            lastMessageTime.setVisibility(View.INVISIBLE);
+        }
+        catch (Exception e)
+        {
             verifiedForumIconLayout.setVisibility(View.GONE);
-
         }
 
         catName.setTextColor(mView.getContext().getResources().getColor(R.color.primaryText));

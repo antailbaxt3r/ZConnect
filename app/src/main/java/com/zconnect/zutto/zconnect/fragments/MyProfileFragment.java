@@ -182,15 +182,22 @@ public class MyProfileFragment extends Fragment {
 
                 final DatabaseReference db_like = db.child("Likes");
                 final DatabaseReference db_love = db.child("Loves");
-                final DatabaseReference db_point = db.child("points");
+                final DatabaseReference db_point = db.child("userPoints");
                 if(db_point != null)
                 {
                     db_point.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String points = dataSnapshot.getValue().toString();
-                            points = points==null ? "0" : points;
-                            points_num.setText(points);
+                            if(dataSnapshot.exists())
+                            {
+                                String points = dataSnapshot.getValue().toString();
+                                points = points==null ? "0" : points;
+                                points_num.setText(points);
+                            }
+                            else
+                            {
+                                points_num.setText("0");
+                            }
                         }
 
                         @Override

@@ -61,6 +61,7 @@ import java.util.TimerTask;
 public class LogoFlashActivity extends BaseActivity {
     /*private final String TAG = getClass().getSimpleName();*/
     //Request code permission request external storage
+    private String TAG = LogoFlashActivity.class.getSimpleName();
     private final int RC_PERM_REQ_EXT_STORAGE = 7;
     private SimpleDraweeView bgImage;
     private DatabaseReference mDatabase,temp,temp2,temp3,temp4,temp5,t,t2;
@@ -137,7 +138,7 @@ public class LogoFlashActivity extends BaseActivity {
                                 {
                                     if(path.equals("/openevent/"))
                                     {
-                                        Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("eventID"));
+                                        Log.d(TAG,"abc1 " + deepLink.getQueryParameter("eventID"));
                                         Intent intent = new Intent(LogoFlashActivity.this, OpenEventDetail.class);
                                         intent.putExtra("id", deepLink.getQueryParameter("eventID"));
                                         intent.putExtra("flag", true);
@@ -146,7 +147,7 @@ public class LogoFlashActivity extends BaseActivity {
                                     }
                                     else if(path.equals("/cabpooling/"))
                                     {
-                                        Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
+                                        Log.d(TAG,"abc1 " + deepLink.getQueryParameter("key"));
                                         Intent intent = new Intent(LogoFlashActivity.this, CabPoolAll.class);
                                         intent.putExtra("key", deepLink.getQueryParameter("key"));
                                         startActivity(intent);
@@ -154,7 +155,7 @@ public class LogoFlashActivity extends BaseActivity {
                                     }
                                     else if(path.equals("/openproduct/"))
                                     {
-                                        Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
+                                        Log.d(TAG,"abc1 " + deepLink.getQueryParameter("key"));
                                         Intent intent = new Intent(LogoFlashActivity.this, OpenProductDetails.class);
                                         intent.putExtra("key", deepLink.getQueryParameter("key"));
                                         startActivity(intent);
@@ -167,12 +168,12 @@ public class LogoFlashActivity extends BaseActivity {
                     .addOnFailureListener(this, new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.d("AAAAAA", "getDynamicLink:onFailure " + e);
+                            Log.d(TAG,"getDynamicLink:onFailure " + e);
                         }
                     });
         } else {
 
-            Log.d("RRRR", "no communityref");
+            Log.d(TAG, "no communityref");
             FirebaseDynamicLinks.getInstance()
                     .getDynamicLink(getIntent())
                     .addOnSuccessListener(new OnSuccessListener<PendingDynamicLinkData>() {
@@ -183,7 +184,7 @@ public class LogoFlashActivity extends BaseActivity {
                             if (pendingDynamicLinkData != null) {
                                 deepLink = pendingDynamicLinkData.getLink();
                             }
-                            Log.d("RRRR", "inside dynamic link receiver");
+                            Log.d(TAG, "inside dynamic link receiver");
                             //
                             // If the user isn't signed in and the pending Dynamic Link is
                             // an invitation, sign in the user anonymously, and record the
@@ -193,7 +194,7 @@ public class LogoFlashActivity extends BaseActivity {
                             if (user == null && deepLink!=null && deepLink.getBooleanQueryParameter("referredBy", false))
                             {
                                 mReferrerUid = deepLink.getQueryParameter("referredBy");
-                                Log.d("RRRR", "deep link not null");
+                                Log.d(TAG, "deep link not null");
                                 createAnonymousAccountWithReferrerInfo(mReferrerUid);
                             }
                         }
@@ -229,11 +230,11 @@ public class LogoFlashActivity extends BaseActivity {
 
                 if (checkPermission()) {
                     // Do not wait so that user doesn't realise this is a new launch.
-                    Log.d("RRRR goint to home act", "1");
+                    Log.d(TAG, " goint to home act 1");
                     Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
                     intent.putExtra("isReferred", mReferrerUid!=null);
                     intent.putExtra("referredBy", mReferrerUid);
-                    Log.d("RRRR goint to home act", "1 " + mReferrerUid);
+                    Log.d(TAG,"goint to home act 1 " + mReferrerUid);
                     if(!flag)
                         startActivity(intent);
                     finish();
@@ -299,7 +300,7 @@ public class LogoFlashActivity extends BaseActivity {
     }
 
     private void createAnonymousAccountWithReferrerInfo(final String referrerUid) {
-        Log.d("RRRR", "inside create anonymous");
+        Log.d(TAG, "inside create anonymous");
         if(FirebaseAuth.getInstance().getCurrentUser()==null)
         {
             FirebaseAuth.getInstance()
@@ -325,18 +326,18 @@ public class LogoFlashActivity extends BaseActivity {
                             if(task.isSuccessful())
                             {
                                 AuthResult authResult = task.getResult();
-                                Log.d("RRRR", "anonymoous user adding");
+                                Log.d(TAG,"anonymoous user adding");
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 DatabaseReference userRecord =
                                         FirebaseDatabase.getInstance().getReference()
                                                 .child("referredUsers")
                                                 .child(user.getUid());
                                 userRecord.child("referredBy").setValue(referrerUid);
-                                Log.d("RRRR", "anonymoous user added");
+                                Log.d(TAG,"anonymoous user added");
 
                             }
                             else {
-                                Log.d("RRRR", "anonymoous user failed to added");
+                                Log.d(TAG,"anonymoous user failed to added");
                             }
                         }
                     });
@@ -570,7 +571,7 @@ public class LogoFlashActivity extends BaseActivity {
         if (requestCode == RC_PERM_REQ_EXT_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
-                Log.d("RRRR goint to home act", "2");
+                Log.d(TAG,"goint to home act 2");
                 intent.putExtra("isReferred", mReferrerUid!=null);
                 intent.putExtra("referredBy", mReferrerUid);
                 startActivity(intent);

@@ -51,6 +51,7 @@ import java.util.HashMap;
 import mabbas007.tagsedittext.TagsEditText;
 
 public class OpenUserDetail extends BaseActivity {
+    private String TAG = OpenUserDetail.class.getSimpleName();
     String name, mobileNumber,whatsAppNumber, email, desc, imagelink ,skills ,category, Uid;
     Boolean contactHidden = false;
     private TextView editTextName;
@@ -68,7 +69,7 @@ public class OpenUserDetail extends BaseActivity {
 //    private ImageButton sendButton;
     private ImageButton btn_love,btn_like;
     private Boolean flagforNull=false;
-    private TextView like_text,love_text;
+    private TextView points_num, like_text, like_num, love_text, love_num;
     private boolean love_status = false,like_status=false;
     private FirebaseAuth mAuth;
     private UserItemFormat userProfile;
@@ -98,8 +99,11 @@ public class OpenUserDetail extends BaseActivity {
         btn_love = (ImageButton) findViewById(R.id.btn_love);
         //btn_love.setEnabled(false);
         //btn_like.setEnabled(false);
+        points_num = (TextView) findViewById(R.id.point_num);
         like_text = (TextView) findViewById(R.id.like_text);
+        like_num = (TextView) findViewById(R.id.like_num);
         love_text = (TextView) findViewById(R.id.love_text);
+        love_num = (TextView) findViewById(R.id.love_num);
 
 //        textMessage = (EditText) findViewById(R.id.textInput);
 //        anonymMessageLayout = (LinearLayout) findViewById(R.id.anonymTextInput);
@@ -171,13 +175,41 @@ public class OpenUserDetail extends BaseActivity {
 
         final DatabaseReference db_like = db.child("Likes");
         final DatabaseReference db_love = db.child("Loves");
+        final DatabaseReference db_point = db.child("userPoints");
+        if(db_point != null)
+        {
+            db_point.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists())
+                    {
+                        String points = dataSnapshot.getValue().toString();
+                        points = points==null ? "0" : points;
+                        points_num.setText(points);
+                    }
+                    else
+                    {
+                        points_num.setText("0");
+                    }
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        else
+        {
+            points_num.setText("0");
+        }
         if(db_love != null){
             db_love.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     long loves = dataSnapshot.getChildrenCount();
-                    love_text.setText(loves+" Loves");
+                    love_text.setText("Loves");
+                    love_num.setText(String.valueOf(loves));
                     if (dataSnapshot.hasChild(myUID)){
                         //I already liked him
                         btn_love.setImageResource(R.drawable.heart_red);
@@ -196,6 +228,7 @@ public class OpenUserDetail extends BaseActivity {
         }else {
             //no one loves him
             love_text.setText("Loves");
+            love_num.setText("0");
         }
 
         if(db_like != null){
@@ -203,7 +236,8 @@ public class OpenUserDetail extends BaseActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     long like = dataSnapshot.getChildrenCount();
-                    like_text.setText(like+" Likes");
+                    like_text.setText("Likes");
+                    like_num.setText(String.valueOf(like));
                     if (dataSnapshot.hasChild(myUID)){
                         //I already liked him
                         btn_like.setImageResource(R.drawable.like_blue);
@@ -222,6 +256,7 @@ public class OpenUserDetail extends BaseActivity {
         }else {
             //no one likes him
             like_text.setText("Likes");
+            like_num.setText("0");
         }
         //seting onclickListener for togelling the likes and loves
 
