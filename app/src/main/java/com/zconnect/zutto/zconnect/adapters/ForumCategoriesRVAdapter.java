@@ -142,6 +142,15 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 {
                     holderMain.lastMessageTime.setText(timeStamp);
                 }
+
+            }
+            catch (Exception e) {
+                Log.d("Error alert ", e.getMessage());
+                holderMain.lastMessageWithName.setVisibility(View.INVISIBLE);
+                holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
+            }
+
+            try {
                 if(forumCategoriesItemFormats.get(position).getVerified())
                 {
                     holderMain.verifiedForumIconLayout.setVisibility(View.VISIBLE);
@@ -149,12 +158,9 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 else {
                     holderMain.verifiedForumIconLayout.setVisibility(View.GONE);
                 }
-
             }
-            catch (Exception e) {
-                Log.d("Error alert ", e.getMessage());
-                holderMain.lastMessageWithName.setVisibility(View.INVISIBLE);
-                holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
+            catch (Exception e)
+            {
                 holderMain.verifiedForumIconLayout.setVisibility(View.GONE);
             }
 
@@ -195,7 +201,13 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                     holderMain.lastMessageTime.setText(timeStamp);
                 }
                 holderMain.lastMessageWithName.setText(shortName + ": " + forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
-
+            }
+            catch (Exception e) {
+                Log.d("Error alert ", e.getMessage());
+                holderMain.lastMessageWithName.setVisibility(View.INVISIBLE);
+                holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
+            }
+            try {
                 if(forumCategoriesItemFormats.get(position).getVerified())
                 {
                     holderMain.verifiedForumIconLayout.setVisibility(View.VISIBLE);
@@ -204,10 +216,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                     holderMain.verifiedForumIconLayout.setVisibility(View.GONE);
                 }
             }
-            catch (Exception e) {
-                Log.d("Error alert ", e.getMessage());
-                holderMain.lastMessageWithName.setVisibility(View.INVISIBLE);
-                holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
+            catch (Exception e)
+            {
                 holderMain.verifiedForumIconLayout.setVisibility(View.GONE);
             }
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName(),newUser);
