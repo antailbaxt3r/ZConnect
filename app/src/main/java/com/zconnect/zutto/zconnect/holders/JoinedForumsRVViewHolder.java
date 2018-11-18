@@ -1,9 +1,11 @@
 package com.zconnect.zutto.zconnect.holders;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,13 +28,14 @@ import java.util.Locale;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
+    private String TAG = JoinedForumsRVViewHolder.class.getSimpleName();
     TextView catName, lastMessageTime, lastMessageWithName;
     TextView unSeenMessages;
     View mView;
     LinearLayout forumRowItem, layoutUnseenMessages;
     SimpleDraweeView forumIcon;
     ImageView defaultForumIcon;
-
+    FrameLayout verifiedForumIconLayout;
     public JoinedForumsRVViewHolder(View itemView) {
         super(itemView);
         mView = itemView;
@@ -45,6 +48,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
 
         forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_sub_categories_joined);
         defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_sub_categories_joined);
+        verifiedForumIconLayout = (FrameLayout) itemView.findViewById(R.id.verified_forum_icon_layout);
     }
 
     public void setDetails(ForumCategoriesItemFormat forumCategoriesItemFormat){
@@ -79,10 +83,22 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
                 lastMessageTime.setText(timeStamp);
             }
 
+            if(forumCategoriesItemFormat.getVerified())
+            {
+                Log.d(TAG, forumCategoriesItemFormat.getCatUID());
+                Log.d(TAG, forumCategoriesItemFormat.getVerified().toString());
+                verifiedForumIconLayout.setVisibility(View.VISIBLE);
+            }
+            else {
+                verifiedForumIconLayout.setVisibility(View.GONE);
+            }
+
         } catch (Exception e) {
             Log.d("Error alert ", e.getMessage());
             lastMessageWithName.setVisibility(View.INVISIBLE);
             lastMessageTime.setVisibility(View.INVISIBLE);
+            verifiedForumIconLayout.setVisibility(View.GONE);
+
         }
 
         catName.setTextColor(mView.getContext().getResources().getColor(R.color.primaryText));

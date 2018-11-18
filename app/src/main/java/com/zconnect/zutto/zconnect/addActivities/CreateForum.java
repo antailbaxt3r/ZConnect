@@ -189,6 +189,25 @@ public class CreateForum extends AppCompatActivity {
                         newPush.child("UID").setValue(newPush.getKey());
                         newPush.child("tab").setValue(uid);
 
+                        final DatabaseReference userDataRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        userDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
+                                {
+                                    newPush.child("verified").setValue(true);
+                                    databaseReferenceTabsCategories.child(newPush.getKey()).child("verified").setValue(true);
+                                    databaseReferenceHome.child(newPush.getKey()).child("verified").setValue(true);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
                         databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
                         databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
                         databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(uid);

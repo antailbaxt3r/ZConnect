@@ -7,7 +7,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="10dp"
+        android:padding="5dp"
         android:background="@color/colorPrimaryDark">
 
         <HorizontalScrollView
@@ -36,22 +36,47 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="15dp">
-                        <ImageView
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/circle_recents_feature_item"
+                        <FrameLayout
+                            android:id="@+id/admin_circle_recents_feature_item_fl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:duplicateParentState="true"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/outline_settings_applications_white_36"
-                            android:layout_centerHorizontal="true"
-                            android:tint="@color/white"/>
+                            android:layout_centerHorizontal="true">
+                            <ImageView
+                                android:id="@+id/admin_circle_recents_feature_item"
+                                android:duplicateParentState="true"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:src="@drawable/outline_settings_applications_white_36"
+                                android:tint="@color/white"/>
+                            <FrameLayout
+                                android:id="@+id/admin_unread_count_fl_recents_feature_item"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_gravity="end"
+                                android:visibility="gone">
+                                <com.facebook.drawee.view.SimpleDraweeView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/avatar_circle_24dp"
+                                    android:backgroundTint="@color/colorHighlight"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:id="@+id/admin_unread_count_text_recents_feature_item"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="8sp"
+                                    android:textColor="@color/white"
+                                    android:layout_gravity="center"/>
+                            </FrameLayout>
+                        </FrameLayout>
                         <TextView
-                            android:id="@+id/text_recents_feature_item"
+                            android:id="@+id/admin_text_recents_feature_item"
                             android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Admin"
-                            android:layout_below="@+id/circle_recents_feature_item"
+                            android:layout_below="@+id/admin_circle_recents_feature_item_fl"
                             android:layout_centerHorizontal="true"
                             android:textColor="@color/white"
                             android:layout_marginTop="5dp"
@@ -69,22 +94,48 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="15dp">
-                        <ImageView
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/circle1_recents_feature_item"
+                        <FrameLayout
+                            android:id="@+id/storeroom_circle_recents_feature_item_fl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:duplicateParentState="true"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/outline_local_mall_white_36"
-                            android:layout_centerHorizontal="true"
-                            android:tint="@color/white"/>
+                            android:layout_centerHorizontal="true">
+                            <ImageView
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/storeroom_circle_recents_feature_item"
+                                android:duplicateParentState="true"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:src="@drawable/outline_local_mall_white_36"
+                                android:tint="@color/white"/>
+                            <FrameLayout
+                                android:id="@+id/storeroom_unread_count_fl_recents_feature_item"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_gravity="end"
+                                android:visibility="gone">
+                                <com.facebook.drawee.view.SimpleDraweeView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/avatar_circle_24dp"
+                                    android:backgroundTint="@color/colorHighlight"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:id="@+id/storeroom_unread_count_text_recents_feature_item"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="8sp"
+                                    android:textColor="@color/white"
+                                    android:layout_gravity="center"/>
+                            </FrameLayout>
+                        </FrameLayout>
                         <TextView
-                            android:id="@+id/text1_recents_feature_item"
+                            android:id="@+id/storeroom_text_recents_feature_item"
                             android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Storeroom"
-                            android:layout_below="@+id/circle1_recents_feature_item"
+                            android:layout_below="@+id/storeroom_circle_recents_feature_item_fl"
                             android:layout_centerHorizontal="true"
                             android:textColor="@color/white"
                             android:layout_marginTop="5dp"
@@ -102,22 +153,48 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="15dp">
-                        <ImageView
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/circle2_recents_feature_item"
+                        <FrameLayout
+                            android:id="@+id/events_circle_recents_feature_item_fl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:duplicateParentState="true"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/outline_event_white_36"
-                            android:layout_centerHorizontal="true"
-                            android:tint="@color/white" />
+                            android:layout_centerHorizontal="true">
+                            <ImageView
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/events_circle_recents_feature_item"
+                                android:duplicateParentState="true"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:src="@drawable/outline_event_white_36"
+                                android:tint="@color/white" />
+                            <FrameLayout
+                                android:id="@+id/events_unread_count_fl_recents_feature_item"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_gravity="end"
+                                android:visibility="gone">
+                                <com.facebook.drawee.view.SimpleDraweeView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/avatar_circle_24dp"
+                                    android:backgroundTint="@color/colorHighlight"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:id="@+id/events_unread_count_text_recents_feature_item"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="8sp"
+                                    android:textColor="@color/white"
+                                    android:layout_gravity="center"/>
+                            </FrameLayout>
+                        </FrameLayout>
                         <TextView
-                            android:id="@+id/text2_recents_feature_item"
+                            android:id="@+id/events_text_recents_feature_item"
                             android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Events"
-                            android:layout_below="@+id/circle2_recents_feature_item"
+                            android:layout_below="@+id/events_circle_recents_feature_item_fl"
                             android:layout_centerHorizontal="true"
                             android:textColor="@color/white"
                             android:layout_marginTop="5dp"
@@ -135,22 +212,48 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="15dp">
-                        <ImageView
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:duplicateParentState="true"
-                            android:id="@+id/circle3_recents_feature_item"
+                        <FrameLayout
+                            android:id="@+id/cabpool_circle_recents_feature_item_fl"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/outline_local_taxi_white_36"
-                            android:layout_centerHorizontal="true"
-                            android:tint="@color/white" />
+                            android:duplicateParentState="true"
+                            android:layout_centerHorizontal="true">
+                            <ImageView
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:duplicateParentState="true"
+                                android:id="@+id/cabpool_circle_recents_feature_item"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/outline_local_taxi_white_36"
+                                android:tint="@color/white" />
+                            <FrameLayout
+                                android:id="@+id/cabpool_unread_count_fl_recents_feature_item"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_gravity="end"
+                                android:visibility="gone">
+                                <com.facebook.drawee.view.SimpleDraweeView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/avatar_circle_24dp"
+                                    android:backgroundTint="@color/colorHighlight"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:id="@+id/cabpool_unread_count_text_recents_feature_item"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="8sp"
+                                    android:textColor="@color/white"
+                                    android:layout_gravity="center"/>
+                            </FrameLayout>
+                        </FrameLayout>
                         <TextView
-                            android:id="@+id/text3_recents_feature_item"
+                            android:id="@+id/cabpool_text_recents_feature_item"
                             android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Cabpool"
-                            android:layout_below="@+id/circle3_recents_feature_item"
+                            android:layout_below="@+id/cabpool_circle_recents_feature_item_fl"
                             android:layout_centerHorizontal="true"
                             android:textColor="@color/white"
                             android:layout_marginTop="5dp"
@@ -168,22 +271,48 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="15dp">
-                        <ImageView
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:duplicateParentState="true"
-                            android:id="@+id/circle4_recents_feature_item"
+                        <FrameLayout
+                            android:id="@+id/notices_circle_recents_feature_item_fl"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_photo_white_36dp"
-                            android:layout_centerHorizontal="true"
-                            android:tint="@color/white" />
+                            android:duplicateParentState="true"
+                            android:layout_centerHorizontal="true">
+                            <ImageView
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:duplicateParentState="true"
+                                android:id="@+id/notices_circle_recents_feature_item"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_photo_white_36dp"
+                                android:tint="@color/white" />
+                            <FrameLayout
+                                android:id="@+id/notices_unread_count_fl_recents_feature_item"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_gravity="end"
+                                android:visibility="gone">
+                                <com.facebook.drawee.view.SimpleDraweeView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/avatar_circle_24dp"
+                                    android:backgroundTint="@color/colorHighlight"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:id="@+id/notices_unread_count_text_recents_feature_item"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="8sp"
+                                    android:textColor="@color/white"
+                                    android:layout_gravity="center"/>
+                            </FrameLayout>
+                        </FrameLayout>
                         <TextView
-                            android:id="@+id/text4_recents_feature_item"
+                            android:id="@+id/notices_text_recents_feature_item"
                             android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Notices"
-                            android:layout_below="@+id/circle4_recents_feature_item"
+                            android:layout_below="@+id/notices_circle_recents_feature_item_fl"
                             android:layout_centerHorizontal="true"
                             android:textColor="@color/white"
                             android:layout_marginTop="5dp"
