@@ -185,7 +185,6 @@ public class JoinedForums extends Fragment {
         super.onResume();
         mydb = new DBHelper(getContext());
         allForumsSeenMessages = mydb.getAllForums();
-        Toast.makeText(getContext(), allForumsSeenMessages.toString(), Toast.LENGTH_SHORT).show();
         forumsCategoriesRef.addValueEventListener(joinedForumsListener);
 
     }

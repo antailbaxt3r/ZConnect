@@ -276,7 +276,8 @@ public class Recents extends Fragment {
         adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn,communityFeatures);
         recyclerView.setAdapter(adapter);
 
-
+        queryRef.addListenerForSingleValueEvent(homeListener);
+        userReference.addListenerForSingleValueEvent(userListener);
         communityFeaturesRef.addValueEventListener(communityFeaturesListener);
         return view;
     }
@@ -284,15 +285,12 @@ public class Recents extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        queryRef.addListenerForSingleValueEvent(homeListener);
-        userReference.addListenerForSingleValueEvent(userListener);
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        queryRef.removeEventListener(homeListener);
-        userReference.removeEventListener(userListener);
 
     }
 
@@ -303,6 +301,8 @@ public class Recents extends Fragment {
 
     @Override
     public void onDestroy() {
+        queryRef.removeEventListener(homeListener);
+        userReference.removeEventListener(userListener);
         communityFeaturesRef.removeEventListener(communityFeaturesListener);
         super.onDestroy();
     }
