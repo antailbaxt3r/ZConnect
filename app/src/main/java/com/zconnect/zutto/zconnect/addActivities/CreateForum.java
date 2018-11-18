@@ -163,6 +163,7 @@ public class CreateForum extends AppCompatActivity {
 
             titleFirstMessage.setVisibility(View.VISIBLE);
             firstMessage.setVisibility(View.VISIBLE);
+            deleteForumLL.setVisibility(View.GONE);
 
             done.setOnClickListener(new View.OnClickListener() {
 
@@ -408,6 +409,45 @@ public class CreateForum extends AppCompatActivity {
             //use for both retrieving data and writing new data
             final DatabaseReference tabsCategoriesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid).child(catUid);
 
+            tabsCategoriesRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                    {
+                        if(snapshot.hasChild("userType") && snapshot.child("userType").getValue().toString().equals(ForumsUserTypeUtilities.KEY_ADMIN))
+                            deleteForumLL.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            final DatabaseReference userDataRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            userDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
+                        deleteForumLL.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            deleteForumLL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "Removing forum started...");
+                    categoriesRef.removeValue();
+                    tabsCategoriesRef.removeValue();
+                    Toast.makeText(CreateForum.this, "Forum successfully deleted", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            });
+
             tabsCategoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -548,8 +588,7 @@ public class CreateForum extends AppCompatActivity {
 
                                 }
                             });
-                        }
-                        else {
+                        } else {
 
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta= new HashMap<>();

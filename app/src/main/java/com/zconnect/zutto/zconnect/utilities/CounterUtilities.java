@@ -154,7 +154,12 @@ public class CounterUtilities {
 
     //Notices
     public static final String KEY_NOTICES_OPEN = "noticesOpen";
-    public static final String KEY_NOTICES_ADD_NOTICES = "addNotices";
+
+    public static final String KEY_NOTICES_ADD_NOTICES = "addNotice";
+
+    public static final String KEY_NOTICES_OPEN_NOTICE = "openEachNotice";
+
+    public static final String KEY_NOTICES_DELETE_NOTICE = "deleteNotice";
 
     //recents
     //checked

@@ -153,7 +153,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Notices"
+            android:text="Add Notice"
             android:textColor="@color/primaryText"
             android:textSize="20sp"/>
 

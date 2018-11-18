@@ -267,7 +267,7 @@ public class AddNotices extends BaseActivity {
                         HashMap<String, String> meta = new HashMap<>();
 
                         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADDED);
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_ADD_NOTICES);
                         counterItemFormat.setTimestamp(System.currentTimeMillis());
                         counterItemFormat.setMeta(meta);
 
@@ -320,7 +320,7 @@ public class AddNotices extends BaseActivity {
                                             NotificationItemFormat addNoticeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD, user.getUserUID());
                                             addNoticeNotification.setCommunityName(communityTitle);
                                             addNoticeNotification.setItemKey(key);
-                                            addNoticeNotification.setItemImage(downloadUri.toString());
+                                            addNoticeNotification.setItemImage(downloadSmallUri.toString());
                                             addNoticeNotification.setItemName(noticeNameValue);
 
                                             addNoticeNotification.setUserName(user.getUsername());

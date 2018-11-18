@@ -240,6 +240,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         bottomSheetAddProduct.setOnClickListener(addProductListener);
         bottomSheetAddMessage.setOnClickListener(addMessageListener);
         bottomSheetSearchPool.setOnClickListener(searchPoolListener);
+        bottomSheetAddNotices.setOnClickListener(noticesListener);
 
         return bottomSheetView;
     }

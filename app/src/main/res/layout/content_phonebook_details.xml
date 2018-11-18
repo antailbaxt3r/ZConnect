@@ -393,7 +393,5 @@
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
-
-        <!--name -->
 </LinearLayout>
 </ScrollView>

@@ -25,9 +25,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NoticeItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
+
+import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -69,6 +74,20 @@ public class NoticesRVViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta = new HashMap<>();
+
+                meta.put("openFrom","fromFeature");
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN_NOTICE);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
                 ProgressDialog mProgress = new ProgressDialog(itemView.getContext());
                 mProgress.setMessage("Loading...");
                 mProgress.show();
@@ -88,6 +107,18 @@ public class NoticesRVViewHolder extends RecyclerView.ViewHolder {
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta = new HashMap<>();
+
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_DELETE_NOTICE);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+
                     deleteDialog(key);
                 }
             });

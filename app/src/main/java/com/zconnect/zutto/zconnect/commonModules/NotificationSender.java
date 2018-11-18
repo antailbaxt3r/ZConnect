@@ -641,34 +641,25 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         DB_NORMAL.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
 
                     normal_frequency = dataSnapshot.getValue(Long.class);
 
                     DB_CURRENT.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            current_frequency = dataSnapshot.getValue(Long.class);
+                            try {
+                                current_frequency = dataSnapshot.getValue(Long.class);
 
-                            if(current_frequency == normal_frequency){
+                                if(current_frequency == normal_frequency){
 
-                                DB_CURRENT.setValue(Long.valueOf(0));
+                                    DB_CURRENT.setValue(Long.valueOf(0));
 
-                                sendNotification(true,notificationIdentifier + communityReference);
+                                    sendNotification(true,notificationIdentifier + communityReference);
 
-//                            if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD)){
-//                                cabAddNotiication();
-//                            }else if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD)){
-//                                eventAddNotification();
-//                            }else if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD)){
-//                                productAddNotification();
-//                            }else if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD)){
-//                                forumAddNotification();
-//                            }
-
-                            }else{
-                                DB_CURRENT.setValue(current_frequency + 1);
-                            }
+                                }else{
+                                    DB_CURRENT.setValue(current_frequency + 1);
+                                }
+                            }catch (Exception e){}
                         }
 
                         @Override
@@ -677,8 +668,6 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
                         }
                     });
 
-
-                }catch (Exception e){}
 
             }
 

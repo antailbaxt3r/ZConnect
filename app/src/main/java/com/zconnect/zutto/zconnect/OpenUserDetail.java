@@ -249,7 +249,6 @@ public class OpenUserDetail extends BaseActivity {
                                 Toast.makeText(OpenUserDetail.this, "Congrats, now you both like each other, we recommend you to start a conversation", Toast.LENGTH_LONG).show();
                             }
 
-
                             UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
                             NotificationSender notificationSender = new NotificationSender(OpenUserDetail.this, userItemFormat.getUserUID());
 
