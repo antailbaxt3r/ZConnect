@@ -78,7 +78,7 @@ public class NoticesRVViewHolder extends RecyclerView.ViewHolder {
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta = new HashMap<>();
 
-                meta.put("openFrom","fromFeature");
+                meta.put("type","fromFeature");
 
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN_NOTICE);

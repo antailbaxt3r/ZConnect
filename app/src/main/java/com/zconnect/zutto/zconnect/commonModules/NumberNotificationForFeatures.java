@@ -47,7 +47,15 @@ public class NumberNotificationForFeatures {
         }
         else if(featureName.equals(FeatureDBName.KEY_EVENTS))
         {
-            nodeForAllItemsOfTheFeature = ("activeEvents");
+            nodeForAllItemsOfTheFeature = "activeEvents";
+        }
+        else if(featureName.equals(FeatureDBName.KEY_NOTICES))
+        {
+            nodeForAllItemsOfTheFeature = "activeNotices";
+        }
+        else
+        {
+            return;
         }
         ref.runTransaction(new Transaction.Handler() {
             @NonNull
