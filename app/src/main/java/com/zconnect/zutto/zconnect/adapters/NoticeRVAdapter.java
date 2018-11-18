@@ -16,12 +16,14 @@ import java.util.Vector;
 
 public class NoticeRVAdapter extends RecyclerView.Adapter<NoticesRVViewHolder>{
 
-    Vector<NoticeItemFormat> photos;
+    Vector<NoticeItemFormat> notices;
+    String userType;
     Context context;
 
-    public NoticeRVAdapter(Vector<NoticeItemFormat> photos, Context context) {
-        this.photos=photos;
+    public NoticeRVAdapter(Vector<NoticeItemFormat> notices, Context context, String userType) {
+        this.notices=notices;
         this.context = context;
+        this.userType = userType;
     }
 
 
@@ -34,13 +36,14 @@ public class NoticeRVAdapter extends RecyclerView.Adapter<NoticesRVViewHolder>{
 
     @Override
     public void onBindViewHolder(NoticesRVViewHolder holder, int position) {
-        holder.setImage(photos.get(position).getImageurl());
-        holder.setText(photos.get(position).getName());
+        holder.setImage(notices.get(position).getImageThumbURL(),notices.get(position).getImageURL(),notices.get(position).getTitle());
+        holder.setText(notices.get(position).getTitle());
+        holder.setDeleteButton(userType,notices.get(position).getKey());
     }
 
 
     @Override
     public int getItemCount() {
-        return photos.size();
+        return notices.size();
     }
 }

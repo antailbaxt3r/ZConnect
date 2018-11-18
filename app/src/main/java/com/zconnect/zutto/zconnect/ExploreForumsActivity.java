@@ -126,7 +126,6 @@ public class ExploreForumsActivity extends BaseActivity{
                     infoneTabItemFormats.add(shot.getValue(InfoneTabsItemFormat.class));
                 }
                 adapter.notifyDataSetChanged();
-
                 setupViewPager(viewPager);
             }
 
@@ -162,7 +161,6 @@ public class ExploreForumsActivity extends BaseActivity{
                 Log.e(TAG, "onCancelled: ", databaseError.toException());
             }
         });
-
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 

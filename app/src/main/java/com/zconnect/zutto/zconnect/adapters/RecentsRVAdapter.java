@@ -1639,10 +1639,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     events.setVisibility(View.GONE);
                 }
 
-                if (communityFeatures.getGallery().equals("true")){
-
+                if (communityFeatures.getNotices().equals("true")){
+                    notices.setVisibility(View.VISIBLE);
                 }else {
-
+                    notices.setVisibility(View.GONE);
                 }
 
                 if (communityFeatures.getLinks().equals("true")){

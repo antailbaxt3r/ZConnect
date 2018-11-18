@@ -59,8 +59,8 @@ public class UserListHolder extends RecyclerView.ViewHolder {
 //                spannableString.setSpan(foregroundColorSpan, typerText.length() - 1, typerText.indexOf(username) + username.length() - 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 //                spannableString.setSpan(styleSpan, typerText.length() - 1, typerText.indexOf(username) + username.length() - 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 //                mTyper.setText(spannableString);
-                ChatActivity.tag_flag = true;
-                ChatActivity.text_with_tag = text;
+//                ChatActivity.tag_flag = true;
+//                ChatActivity.text_with_tag = text;
                 mTyper.setText(visibleText);
                 mTyper.setSelection(mTyper.getText().toString().length());
                 usersListRV.setVisibility(View.GONE);

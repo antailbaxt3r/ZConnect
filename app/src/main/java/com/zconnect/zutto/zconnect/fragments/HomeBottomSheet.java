@@ -79,11 +79,6 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                         bottomSheetAddEvent.setVisibility(View.GONE);
                     }
 
-                    if (communityFeatures.getGallery().equals("true")){
-
-                    }else {
-
-                    }
 
                     if (communityFeatures.getNotices().equals("true")){
                         bottomSheetAddNotices.setVisibility(View.VISIBLE);

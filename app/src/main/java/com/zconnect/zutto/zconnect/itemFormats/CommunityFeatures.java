@@ -1,13 +1,13 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
 public class CommunityFeatures {
-    private String storeroom,events,links,gallery,cabpool,notices;
 
-    public CommunityFeatures(String storeroom, String events, String links, String gallery, String cabpool, String notices) {
+    private String storeroom,events,links,cabpool,notices;
+
+    public CommunityFeatures(String storeroom, String events, String links, String cabpool, String notices) {
         this.storeroom = storeroom;
         this.events = events;
         this.links = links;
-        this.gallery = gallery;
         this.cabpool = cabpool;
         this.notices = notices;
     }
@@ -37,14 +37,6 @@ public class CommunityFeatures {
 
     public void setLinks(String links) {
         this.links = links;
-    }
-
-    public String getGallery() {
-        return gallery;
-    }
-
-    public void setGallery(String gallery) {
-        this.gallery = gallery;
     }
 
     public String getCabpool() {

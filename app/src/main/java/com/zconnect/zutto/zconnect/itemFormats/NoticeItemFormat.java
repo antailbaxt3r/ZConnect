@@ -5,35 +5,71 @@ import android.net.Uri;
 import java.net.URL;
 
 public class NoticeItemFormat {
-    private Uri imageurl;
-    private String name;
+    private String key;
+    private String imageURL;
+    private String imageThumbURL;
+    private String title;
+    private PostedByDetails postedByDetails;
+    private long postTimeMillis;
 
     public NoticeItemFormat(){
 
     }
 
-    public android.net.Uri getImageurl() {
-        return imageurl;
+    public NoticeItemFormat(String key, String imageURL, String imageThumbURL, String title, PostedByDetails postedByDetails, long postTimeMillis) {
+        this.key = key;
+        this.imageURL = imageURL;
+        this.imageThumbURL = imageThumbURL;
+        this.title = title;
+        this.postedByDetails = postedByDetails;
+        this.postTimeMillis = postTimeMillis;
     }
 
-    public void setImageurl(Uri imageurl) {
-        this.imageurl = imageurl;
+    public String getKey() {
+        return key;
     }
 
-    public String getName() {
-        return name;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public NoticeItemFormat(Uri imageurl, String name) {
-
-        this.imageurl=imageurl;
-        this.name=name;
-
-
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
+    public String getImageThumbURL() {
+        return imageThumbURL;
+    }
+
+    public void setImageThumbURL(String imageThumbURL) {
+        this.imageThumbURL = imageThumbURL;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public PostedByDetails getPostedByDetails() {
+        return postedByDetails;
+    }
+
+    public void setPostedByDetails(PostedByDetails postedByDetails) {
+        this.postedByDetails = postedByDetails;
+    }
+
+    public long getPostTimeMillis() {
+        return postTimeMillis;
+    }
+
+    public void setPostTimeMillis(long postTimeMillis) {
+        postTimeMillis = postTimeMillis;
+    }
 }

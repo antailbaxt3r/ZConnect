@@ -641,18 +641,20 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         DB_NORMAL.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                normal_frequency = dataSnapshot.getValue(Long.class);
+                try {
 
-                DB_CURRENT.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        current_frequency = dataSnapshot.getValue(Long.class);
+                    normal_frequency = dataSnapshot.getValue(Long.class);
 
-                        if(current_frequency == normal_frequency){
+                    DB_CURRENT.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            current_frequency = dataSnapshot.getValue(Long.class);
 
-                            DB_CURRENT.setValue(Long.valueOf(0));
+                            if(current_frequency == normal_frequency){
 
-                            sendNotification(true,notificationIdentifier + communityReference);
+                                DB_CURRENT.setValue(Long.valueOf(0));
+
+                                sendNotification(true,notificationIdentifier + communityReference);
 
 //                            if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD)){
 //                                cabAddNotiication();
@@ -664,16 +666,19 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 //                                forumAddNotification();
 //                            }
 
-                        }else{
-                            DB_CURRENT.setValue(current_frequency + 1);
+                            }else{
+                                DB_CURRENT.setValue(current_frequency + 1);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+
+
+                }catch (Exception e){}
 
             }
 

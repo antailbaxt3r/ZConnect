@@ -8,13 +8,16 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -66,16 +69,43 @@ public class AddNotices extends BaseActivity {
     private Long postTimeMillis;
     private DatabaseReference mUsername;
     private FirebaseAuth mAuth;
-    private Uri mImageUri=null;
+    private Uri mImageUri=null, mImageUriSmall = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notice);
 
+        mProgress = new ProgressDialog(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(toolbar);
+
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+
         mAddPhoto = (ImageButton)findViewById(R.id.imageButton);
         mName=(TextView)findViewById(R.id.name);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("notices");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("notices").child("activeNotices");
         submit=(Button)findViewById(R.id.submit);
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
@@ -109,13 +139,13 @@ public class AddNotices extends BaseActivity {
                     toast.show();
                 }
                 else{
-                    ;
+
+                    startPosting();
                 }
 
             }
         });
 
-        mProgress.cancel();
     }
 
     @Override
@@ -137,15 +167,25 @@ public class AddNotices extends BaseActivity {
                 try {
                     mImageUri = result.getUri();
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+                    Bitmap bitmapSmall = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), mImageUri);
+
                     Double ratio = ((double) bitmap.getWidth()) / bitmap.getHeight();
 
-                    if (bitmap.getByteCount() > 350000) {
+                    if (bitmap.getByteCount() > 550000) {
 
-                        bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), false);
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 1200, (int) (1200 / ratio), false);
                     }
+
+                    if (bitmapSmall.getByteCount() > 150000) {
+
+                        bitmapSmall = Bitmap.createScaledBitmap(bitmapSmall, 400, (int) (400 / ratio), false);
+                    }
+
                     String path = MediaStore.Images.Media.insertImage(AddNotices.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
+                    String pathSmall =  MediaStore.Images.Media.insertImage(AddNotices.this.getContentResolver(), bitmapSmall, mImageUri.getLastPathSegment() + "small", null);
 
                     mImageUri = Uri.parse(path);
+                    mImageUriSmall = Uri.parse(pathSmall);
                     mAddPhoto.setImageURI(mImageUri);
 
                 } catch (IOException e) {
@@ -181,7 +221,7 @@ public class AddNotices extends BaseActivity {
         final String userId = user.getUid();
         mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
 
-        if ( !TextUtils.isEmpty(noticeNameValue) &&  mImageUri != null ) {
+        if ( !TextUtils.isEmpty(noticeNameValue) &&  mImageUri != null && mImageUriSmall !=null) {
             final StorageReference filepath = mStorage.child("NoticesImages").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             UploadTask uploadTask = filepath.putFile(mImageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -203,13 +243,10 @@ public class AddNotices extends BaseActivity {
                         final DatabaseReference postedBy = newPost.child("PostedBy");
                         key = newPost.getKey();
                         postTimeMillis = System.currentTimeMillis();
-    //                    newPost.child("Key").setValue(key);
-                        newPost.child("name").setValue(noticeNameValue);
-                        newPost.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
-    //                    newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
-    //                    newPost.child("userID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                        newPost.child("PostTimeMillis").setValue(postTimeMillis);
+                        newPost.child("key").setValue(key);
+                        newPost.child("title").setValue(noticeNameValue);
+                        newPost.child("imageURL").setValue(downloadUri != null ? downloadUri.toString() : null);
+                        newPost.child("postTimeMillis").setValue(postTimeMillis);
                         postedBy.setValue(null);
                         postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -218,7 +255,6 @@ public class AddNotices extends BaseActivity {
                                 UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
                                 postedBy.child("Username").setValue(user.getUsername());
                                 postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
-                                newPost.child("Phone_no").setValue(user.getMobileNumber());
                             }
 
                             @Override
@@ -240,44 +276,71 @@ public class AddNotices extends BaseActivity {
 
                         FirebaseMessaging.getInstance().subscribeToTopic(key);
 
-
+                        // For Recents
                         DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
                         final DatabaseReference newPost2Postedby = newPost2.child("PostedBy");
                         newPost2.child("name").setValue(noticeNameValue);
                         newPost2.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
-    //                    newPost2.child("feature").setValue("StoreRoom");
-    //                    newPost2.child("id").setValue(key);
+                        newPost2.child("feature").setValue("StoreRoom");
+//                        newPost2.child("id").setValue(key);
     //                    newPost2.child("Key").setValue(newPost2.getKey());
     //                    newPost2.child("PostTimeMillis").setValue(postTimeMillis);
 
                         newPost2Postedby.setValue(null);
                         newPost2Postedby.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+                        final StorageReference filepathSmall = mStorage.child("NoticesImages").child((mImageUriSmall.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
+                        UploadTask uploadTask = filepathSmall.putFile(mImageUriSmall);
+                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                             @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                                newPost2Postedby.child("Username").setValue(user.getUsername());
-                                newPost2Postedby.child("ImageThumb").setValue(user.getImageURLThumbnail());
-                                NotificationSender notificationSender = new NotificationSender(AddNotices.this, user.getUserUID());
-                                NotificationItemFormat addNoticeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD, user.getUserUID());
-                                addNoticeNotification.setCommunityName(communityTitle);
-                                addNoticeNotification.setItemKey(key);
-                                addNoticeNotification.setItemImage(downloadUri.toString());
-                                addNoticeNotification.setItemName(noticeNameValue);
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if(!task.isSuccessful())
+                                {
+                                    throw task.getException();
+                                }
+                                return filepath.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>()
+                        {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task2) {
+                                if (task2.isSuccessful()) {
+                                    final Uri downloadSmallUri = task2.getResult();
+                                    newPost.child("imageThumbURL").setValue(downloadSmallUri != null ? downloadSmallUri.toString() : null);
+                                    mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                                            newPost2Postedby.child("Username").setValue(user.getUsername());
+                                            newPost2Postedby.child("ImageThumb").setValue(user.getImageURLThumbnail());
 
-                                addNoticeNotification.setUserName(user.getUsername());
-                                addNoticeNotification.setUserImage(user.getImageURLThumbnail());
+                                            //Notification
+                                            NotificationSender notificationSender = new NotificationSender(AddNotices.this, user.getUserUID());
+                                            NotificationItemFormat addNoticeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD, user.getUserUID());
+                                            addNoticeNotification.setCommunityName(communityTitle);
+                                            addNoticeNotification.setItemKey(key);
+                                            addNoticeNotification.setItemImage(downloadUri.toString());
+                                            addNoticeNotification.setItemName(noticeNameValue);
 
-                                notificationSender.execute(addNoticeNotification);
+                                            addNoticeNotification.setUserName(user.getUsername());
+                                            addNoticeNotification.setUserImage(user.getImageURLThumbnail());
+
+                                            notificationSender.execute(addNoticeNotification);
+                                            mProgress.dismiss();
+                                            finish();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
                             }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
                         });
                     }
-
                 }
             });
         }
