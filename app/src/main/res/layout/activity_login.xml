@@ -99,6 +99,7 @@
                         <CheckBox
                             android:id="@+id/check_accept"
                             android:allowUndo="true"
+                            android:textColorHighlight="@color/colorHighlight"
                             android:text="I accept all the"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
