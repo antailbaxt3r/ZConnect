@@ -120,8 +120,9 @@ public class LeaderBoard extends BaseActivity {
                     try {
                         i++;
                         LeaderBoardItemFormat tempLeaderBoardItemFormat = new LeaderBoardItemFormat();
-                        if (shot.hasChild("userUID") && shot.hasChild("points")) {
-                            tempLeaderBoardItemFormat.setPoints(shot.child("points").getValue().toString());
+                        if (shot.hasChild("userUID") && shot.hasChild("userPoints")) {
+                            tempLeaderBoardItemFormat.setUserPoints(shot.child("userPoints").getValue().toString());
+                            tempLeaderBoardItemFormat.setPoints(Integer.parseInt(shot.child("userPoints").getValue().toString()));
                             tempLeaderBoardItemFormat.setUserUID(shot.child("userUID").getValue().toString());
                             tempLeaderBoardItemFormat.setName(shot.child("username").getValue().toString());
                             tempLeaderBoardItemFormat.setImage(shot.child("imageURLThumbnail").getValue().toString());
@@ -136,12 +137,19 @@ public class LeaderBoard extends BaseActivity {
 
                 }
 
-                Collections.reverse(leaderBoardItemFormats);
+                Collections.sort(leaderBoardItemFormats, new Comparator<LeaderBoardItemFormat>() {
+                    @Override
+                    public int compare(LeaderBoardItemFormat o1, LeaderBoardItemFormat o2) {
+                        return Integer.valueOf((Integer) o2.getPoints()).compareTo((Integer) o1.getPoints()) ;
+                    }
+                });
+
+//                Collections.reverse(leaderBoardItemFormats);
                 for (int j=0;j<leaderBoardItemFormats.size();j++){
                     leaderBoardItemFormats.get(j).setRank("#"+(j+1));
                     if(leaderBoardItemFormats.get(j).getUserUID().equals(FirebaseAuth.getInstance().getUid())){
                         currentUserName.setText(leaderBoardItemFormats.get(j).getName());
-                        currentUserPoints.setText(leaderBoardItemFormats.get(j).getPoints());
+                        currentUserPoints.setText(leaderBoardItemFormats.get(j).getUserPoints());
                         currentUserRank.setText(leaderBoardItemFormats.get(j).getRank());
                         currentUserImage.setImageURI(leaderBoardItemFormats.get(j).getImage());
                     }
