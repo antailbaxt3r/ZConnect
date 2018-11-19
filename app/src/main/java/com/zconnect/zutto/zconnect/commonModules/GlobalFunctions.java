@@ -26,6 +26,10 @@ public class GlobalFunctions {
         pointsRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
+
+                if(mutableData == null){
+                    mutableData.setValue("0");
+                }
                 String temp = mutableData.getValue(String.class);
                 Integer existingPoints = Integer.parseInt(temp);
                 Integer newPoints;

@@ -138,6 +138,7 @@ public class Recents extends Fragment {
                         swipeContainer.setRefreshing(false);
                         queryRef.addListenerForSingleValueEvent(homeListener);
                         userReference.addListenerForSingleValueEvent(userListener);
+                        communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);
                     }
                 }, 3000);
             }
@@ -275,17 +276,16 @@ public class Recents extends Fragment {
         });
         adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn,communityFeatures);
         recyclerView.setAdapter(adapter);
+        communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);
 
-        queryRef.addListenerForSingleValueEvent(homeListener);
-        userReference.addListenerForSingleValueEvent(userListener);
-        communityFeaturesRef.addValueEventListener(communityFeaturesListener);
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
+        queryRef.addListenerForSingleValueEvent(homeListener);
+        userReference.addListenerForSingleValueEvent(userListener);
     }
 
     @Override
