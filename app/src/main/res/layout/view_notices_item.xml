@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="38dp"
             android:layout_alignParentBottom="true"
-            android:background="#99482880"
+            android:background="#99000000"
             android:gravity="center"
             android:text="Notice Title"
             android:textColor="#fff" />

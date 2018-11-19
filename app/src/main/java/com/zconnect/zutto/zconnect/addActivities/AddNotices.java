@@ -44,10 +44,12 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
+import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 import java.io.IOException;
@@ -263,6 +265,9 @@ public class AddNotices extends BaseActivity {
                             }
                         });
 
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_NOTICES);
+                        numberNotificationForFeatures.setCount();
+
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
                         HashMap<String, String> meta = new HashMap<>();
 
@@ -281,10 +286,10 @@ public class AddNotices extends BaseActivity {
                         final DatabaseReference newPost2Postedby = newPost2.child("PostedBy");
                         newPost2.child("name").setValue(noticeNameValue);
                         newPost2.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
-                        newPost2.child("feature").setValue("StoreRoom");
-//                        newPost2.child("id").setValue(key);
-    //                    newPost2.child("Key").setValue(newPost2.getKey());
-    //                    newPost2.child("PostTimeMillis").setValue(postTimeMillis);
+                        newPost2.child("feature").setValue("Notices");
+                        newPost2.child("id").setValue(key);
+                        newPost2.child("Key").setValue(newPost2.getKey());
+                        newPost2.child("PostTimeMillis").setValue(postTimeMillis);
 
                         newPost2Postedby.setValue(null);
                         newPost2Postedby.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());

@@ -300,6 +300,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.eventsRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.VISIBLE);
 
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.bannerImage);
@@ -364,6 +365,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_18dp));
@@ -417,6 +419,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.eventsRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
+
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_18dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
@@ -520,6 +524,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.storeroomRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
 
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
@@ -617,6 +622,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.cabpoolRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
 
                     holder.postConjunction.setText(" started a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
@@ -698,6 +704,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
+
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_18dp));
                     holder.postConjunction.setText(" put an ");
@@ -717,6 +725,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.messagesRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
+
                     holder.setLike(recentsItemFormats.get(position).getKey());
                     if(recentsItemFormats.get(position).getDesc().length()<=0)
                         holder.messagesMessage.setVisibility(View.GONE);
@@ -802,6 +812,80 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     post = "status";
                     clickableSpanFeature = null;
 
+                }else if(recentsItemFormats.get(position).getFeature().equals("Notices")) {
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
+                    holder.post.setVisibility(View.VISIBLE);
+                    holder.infoneRecentItem.setVisibility(View.GONE);
+                    holder.eventsRecentItem.setVisibility(View.GONE);
+                    holder.storeroomRecentItem.setVisibility(View.GONE);
+                    holder.cabpoolRecentItem.setVisibility(View.GONE);
+                    holder.messagesRecentItem.setVisibility(View.GONE);
+                    holder.forumsRecentItem.setVisibility(View.GONE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.VISIBLE);
+
+                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.notices), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_18));
+                    holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            holder.setOpenNoticeImage(recentsItemFormats.get(position).getName(), recentsItemFormats.get(position).getImageurl());
+                        }
+                    });
+
+                    holder.noticesText.setText(recentsItemFormats.get(position).getName());
+                    Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.noticesImage);
+
+                    holder.postConjunction.setText(" posted a ");
+                    holder.post.setText("Notice");
+                    holder.post.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+                            meta.put("type","fromRecents");
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
+                            Intent intent = new Intent(context, Notices.class);
+                            context.startActivity(intent);
+                        }
+                    });
+
+                    posted = " posted a ";
+                    post = "Notice";
+                    clickableSpanFeature = new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+
+                            meta.put("type","fromRecentsRV");
+
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
+
+                            Intent intent = new Intent(context, Notices.class);
+                            context.startActivity(intent);
+                        }
+
+                        @Override
+                        public void updateDrawState(TextPaint ds) {
+                            ds.setUnderlineText(false);
+                        }
+                    };
+
+
                 }else if(recentsItemFormats.get(position).getFeature().equals("Forums")){
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
@@ -812,6 +896,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.forumsRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.forums), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_18dp));
@@ -899,17 +984,19 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 productName, productPrice, productDesc,
                 messagesMessage,
                 forumNameCategorySentence,
-                sentence,totalComments;
+                sentence,totalComments,
+                noticesText;
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
                 postImage,
                 productImage,
-                bannerImage;
+                bannerImage,
+                noticesImage;
         ImageView featureIcon;
 
         ImageButton deleteButton;
 
-        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails;
+        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem;
         FrameLayout layoutFeatureIcon, bannerLinkLayout;
         //
         long statusLikeCount;
@@ -962,6 +1049,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             bannerLinkLayout = (FrameLayout) itemView.findViewById(R.id.bannerRecentItem_link_layout);
             prePostDetails = (LinearLayout) itemView.findViewById(R.id.prePostDetails);
             sentence = (TextView) itemView.findViewById(R.id.sentence_recents_item_format);
+            noticesRecentItem = (LinearLayout) itemView.findViewById(R.id.noticesRecentItem);
+            noticesImage = (SimpleDraweeView) itemView.findViewById(R.id.noticesRecentItem_image);
+            noticesText = (TextView) itemView.findViewById(R.id.noticesRecentItem_text);
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             deleteButton = (ImageButton) itemView.findViewById(R.id.recents_post_options);
@@ -1206,6 +1296,36 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         }
 
+        public void setOpenNoticeImage(final String title, final String imageURL){
+
+            noticesImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta = new HashMap<>();
+
+                    meta.put("type","fromRecentsRV");
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN_NOTICE);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+
+                    ProgressDialog mProgress = new ProgressDialog(itemView.getContext());
+                    mProgress.setMessage("Loading...");
+                    mProgress.show();
+                    animate((Activity) itemView.getContext(), title, imageURL, noticesImage);
+                    mProgress.dismiss();
+
+                }
+            });
+
+        }
+
+
         public void animate(final Activity activity, final String name, String url, ImageView productImage) {
 
             final Intent i = new Intent(context, viewImage.class);
@@ -1440,8 +1560,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         HorizontalScrollView hsv;
         LinearLayout linearLayout;
         RelativeLayout notices, events, cabpool, storeroom, admin;
-        FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL;
-        TextView unreadCountStoreroomTV, unreadCountEventsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV;
+        FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
+        TextView unreadCountStoreroomTV, unreadCountEventsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
         Query mOtherFeatures;
 
         //for other features
@@ -1473,6 +1593,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             unreadCountAdminPanelFL = (FrameLayout) itemView.findViewById(R.id.admin_unread_count_fl_recents_feature_item);
             unreadCountAdminPanelTV = (TextView) itemView.findViewById(R.id.admin_unread_count_text_recents_feature_item);
 
+            unreadCountNoticesFL = (FrameLayout) itemView.findViewById(R.id.notices_unread_count_fl_recents_feature_item);
+            unreadCountNoticesTV = (TextView) itemView.findViewById(R.id.notices_unread_count_text_recents_feature_item);
+
             mOtherFeatures = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("otherFeatures").orderByChild("pos");
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -1485,6 +1608,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     if(!dataSnapshot.hasChild("userType")){
                        userItem.setUserType(UsersTypeUtilities.KEY_NOT_VERIFIED);
                     }
+                    //for admin
                     if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
                     {
                         if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_ADMIN_PANEL))
@@ -1548,6 +1672,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             }
                         });
                     }
+                    //for events
                     if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_EVENTS))
                     {
                         final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_EVENTS).getValue(Long.class);
@@ -1577,6 +1702,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             }
                         });
                     }
+                    //for cabpool
                     if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_CABPOOL))
                     {
                         final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_CABPOOL).getValue(Long.class);
@@ -1603,6 +1729,35 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             @Override
                             public void onCallBack(long value) {
                                 mUserDetails.child("featuresUnreadCount").child(FeatureDBName.KEY_CABPOOL).setValue(value);
+                            }
+                        });
+                    }
+                    if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_NOTICES))
+                    {
+                        final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_NOTICES).getValue(Long.class);
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_NOTICES);
+                        numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                            @Override
+                            public void onCallBack(long value) {
+                                if(value - current > 0)
+                                {
+                                    unreadCountNoticesTV.setText(String.valueOf(value - current));
+                                    unreadCountNoticesFL.setVisibility(View.VISIBLE);
+                                }
+                                else
+                                {
+                                    unreadCountNoticesFL.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_NOTICES);
+                        numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                            @Override
+                            public void onCallBack(long value) {
+                                mUserDetails.child("featuresUnreadCount").child(FeatureDBName.KEY_NOTICES).setValue(value);
                             }
                         });
                     }
@@ -1696,6 +1851,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         @Override
                         public void onClick(View v) {
                             if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                resetFeaturesUnreadCount(FeatureDBName.KEY_NOTICES, dataSnapshot);
                                 Intent intent = new Intent(context, Notices.class);
                                 context.startActivity(intent);
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
