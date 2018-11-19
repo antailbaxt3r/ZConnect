@@ -90,6 +90,7 @@ public class LogoFlashActivity extends BaseActivity {
 //            removeJustJoinedNotifFromHome();
 //            countCommunityMembers();
 //            countInfoneCatMembers();
+//            setUserPointsInExistingUsers();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
             mDatabase.addValueEventListener(new ValueEventListener() {
@@ -539,6 +540,34 @@ public class LogoFlashActivity extends BaseActivity {
 ////            }
 ////        });
 //
+
+//    public void setUserPointsInExistingUsers() {
+//        Log.d(TAG, "setUserPointsInExistingUsers started");
+//        if(communityReference!=null)
+//        {
+//            DatabaseReference users1Ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+//            users1Ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    for(DataSnapshot snapshot: dataSnapshot.getChildren())
+//                    {
+//                        if(!(snapshot.hasChild("userPoints") && Long.parseLong(snapshot.child("userPoints").getValue().toString()) >=0))
+//                        {
+//                            Log.d(TAG, "this");
+//                            snapshot.getRef().child("userPoints").setValue("0");
+//                        }
+//                        else
+//                            Log.d(TAG, "USER POINTS" + snapshot.child("userPoints").getValue().toString());
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//        }
+//    }
 
 
 
