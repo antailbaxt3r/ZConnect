@@ -46,7 +46,7 @@ public class LeaderBoardRVViewHolder extends RecyclerView.ViewHolder {
     public void setDetails(LeaderBoardItemFormat leaderBoardItemFormat) {
         userUID = leaderBoardItemFormat.getUserUID();
         userName.setText(leaderBoardItemFormat.getName());
-        userPoints.setText(leaderBoardItemFormat.getPoints());
+        userPoints.setText(leaderBoardItemFormat.getUserPoints());
         userRank.setText(leaderBoardItemFormat.getRank());
         userImage.setImageURI(leaderBoardItemFormat.getImage());
 

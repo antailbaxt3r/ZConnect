@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceGroup;
@@ -7,10 +9,14 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.style.LeadingMarginSpan;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -63,7 +69,7 @@ public class LeaderBoard extends BaseActivity {
         Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mActionBarToolbar);
 
-        mActionBarToolbar.setTitle("Community Leaders ");
+        mActionBarToolbar.setTitle("Community Leaders");
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -114,8 +120,9 @@ public class LeaderBoard extends BaseActivity {
                     try {
                         i++;
                         LeaderBoardItemFormat tempLeaderBoardItemFormat = new LeaderBoardItemFormat();
-                        if (shot.hasChild("userUID") && shot.hasChild("points")) {
-                            tempLeaderBoardItemFormat.setPoints(shot.child("points").getValue().toString());
+                        if (shot.hasChild("userUID") && shot.hasChild("userPoints")) {
+                            tempLeaderBoardItemFormat.setUserPoints(shot.child("userPoints").getValue().toString());
+                            tempLeaderBoardItemFormat.setPoints(Integer.parseInt(shot.child("userPoints").getValue().toString()));
                             tempLeaderBoardItemFormat.setUserUID(shot.child("userUID").getValue().toString());
                             tempLeaderBoardItemFormat.setName(shot.child("username").getValue().toString());
                             tempLeaderBoardItemFormat.setImage(shot.child("imageURLThumbnail").getValue().toString());
@@ -130,12 +137,19 @@ public class LeaderBoard extends BaseActivity {
 
                 }
 
-                Collections.reverse(leaderBoardItemFormats);
+                Collections.sort(leaderBoardItemFormats, new Comparator<LeaderBoardItemFormat>() {
+                    @Override
+                    public int compare(LeaderBoardItemFormat o1, LeaderBoardItemFormat o2) {
+                        return Integer.valueOf((Integer) o2.getPoints()).compareTo((Integer) o1.getPoints()) ;
+                    }
+                });
+
+//                Collections.reverse(leaderBoardItemFormats);
                 for (int j=0;j<leaderBoardItemFormats.size();j++){
                     leaderBoardItemFormats.get(j).setRank("#"+(j+1));
                     if(leaderBoardItemFormats.get(j).getUserUID().equals(FirebaseAuth.getInstance().getUid())){
                         currentUserName.setText(leaderBoardItemFormats.get(j).getName());
-                        currentUserPoints.setText(leaderBoardItemFormats.get(j).getPoints());
+                        currentUserPoints.setText(leaderBoardItemFormats.get(j).getUserPoints());
                         currentUserRank.setText(leaderBoardItemFormats.get(j).getRank());
                         currentUserImage.setImageURI(leaderBoardItemFormats.get(j).getImage());
                     }
@@ -156,6 +170,32 @@ public class LeaderBoard extends BaseActivity {
         leaderBoardRVAdapter = new LeaderBoardRVAdapter(leaderBoardItemFormats,currentUserLayout,this);
         leaderBoardRV.setAdapter(leaderBoardRVAdapter);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_leader_board, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_info) {
+
+            AlertDialog alertDialog = new AlertDialog.Builder(LeaderBoard.this).create();
+            alertDialog.setMessage("The more you contribute to your community by adding content, the higher position you get in the leader board");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
