@@ -280,13 +280,29 @@ public class LogoFlashActivity extends BaseActivity {
 //            }
 //        });
 //
-//        temp2 = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("gmc");
+//        temp2 = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("gim");
 //
 //        temp2.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //
-//                FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("gim").setValue(dataSnapshot.getValue());
+//                FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("pggc").setValue(dataSnapshot.getValue());
+//                FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("iitbhu").setValue(dataSnapshot.getValue());
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
+//        temp3 = FirebaseDatabase.getInstance().getReference().child("communities").child("gim");
+//
+//        temp3.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                FirebaseDatabase.getInstance().getReference().child("communities").child("pggc").setValue(dataSnapshot.getValue());
+//                FirebaseDatabase.getInstance().getReference().child("communities").child("iitbhu").setValue(dataSnapshot.getValue());
 //            }
 //
 //            @Override
