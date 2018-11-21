@@ -119,8 +119,6 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     counterPush.pushValues();
                     final Intent intent = new Intent(context, ExploreForumsActivity.class);
                     context.startActivity(intent);
-
-                    Toast.makeText(context, "heho", Toast.LENGTH_SHORT).show();
                 }
             });
         }
