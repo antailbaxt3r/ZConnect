@@ -7,13 +7,15 @@ package com.zconnect.zutto.zconnect.itemFormats;
 public class CommunitiesItemFormat {
 
     String name, image, email,code;
-    Integer size;
-    public CommunitiesItemFormat(String Name, String Image, String email, String code, Integer size) {
+    Integer size,radius;
+
+    public CommunitiesItemFormat(String Name, String Image, String email, String code, Integer size, Integer radius) {
         this.name=Name;
         this.image=Image;
         this.email=email;
         this.code=code;
         this.size = size;
+        this.radius = radius;
 
     }
 
@@ -60,6 +62,14 @@ public class CommunitiesItemFormat {
 
     public void setSize(Integer size) {
         this.size = size;
+    }
+
+    public Integer getRadius() {
+        return radius;
+    }
+
+    public void setRadius(Integer radius) {
+        this.radius = radius;
     }
 
 }

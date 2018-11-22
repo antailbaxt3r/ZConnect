@@ -767,6 +767,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             public void onClick(@NonNull View widget) {
                                 holder.messagesMessage.setMaxLines(Integer.MAX_VALUE);
                                 holder.messagesMessage.setText(statusMsg);
+                                Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
                             }
                             @Override
                             public void updateDrawState(TextPaint ds) {
@@ -780,6 +781,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         spannableString.setSpan(styleSpan, withMore.lastIndexOf("more..."), withMore.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                         holder.messagesMessage.setText(spannableString);
                         holder.messagesMessage.setMovementMethod(LinkMovementMethod.getInstance());
+                        Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
                     }
                     Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
                     holder.messagesMessage.setLinkTextColor(Color.BLUE);

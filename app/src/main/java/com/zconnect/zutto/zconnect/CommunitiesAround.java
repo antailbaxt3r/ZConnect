@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -71,9 +73,8 @@ import java.util.Vector;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class CommunitiesAround extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener  {
-//implements GoogleApiClient.OnConnectionFailedListener
-    private FusedLocationProviderClient userLocationClient;
+public class CommunitiesAround extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
+
     CommunitiesAroundAdapter adapter;
     Vector<CommunitiesItemFormat> communitiesList = new Vector<>();
     RecyclerView communitiesRecycler;
@@ -86,10 +87,12 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
 
-    private double lon,lat;
+    private double lon, lat;
 
     private static final String TAG = CommunitiesAround.class.getSimpleName();
 
+
+    private static final int MY_PERMISSION_REQUEST_FINE_LOCATION = 101;
     private static final int REQUEST_PERMISSIONS_LOCATION_SETTINGS_REQUEST_CODE = 33;
     private static final int REQUEST_PERMISSIONS_LAST_LOCATION_REQUEST_CODE = 34;
     private static final int REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE = 35;
@@ -100,10 +103,11 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
     protected Location mLastLocation;
 
-//    private TextView resultTextView;
+
     LocationRequest locationRequest;
     Location lastLocation = null;
     Location currentLocation = null;
+    private LocationCallback locationCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +118,9 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(true);
+
+        progressDialog.setMessage("Searching Communities");
+        progressDialog.show();
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -142,7 +149,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                 .requestEmail()
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -170,81 +177,76 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                 startActivity(i);
             }
         });
-        // TODO: Consider calling
-        // ActivityCompat#requestPermissions
-        // here to request the missing permissions, and then overriding
-        // public void onRequestPermissionsResult(int requestCode, String[] permissions,
-        // int[] grantResults)
-        // to handle the case where the user grants the permission. See the documentation
-        // for ActivityCompat#requestPermissions for more details.
 
         adapter = new CommunitiesAroundAdapter(this, communitiesList);
         communitiesRecycler.setAdapter(adapter);
         communitiesReference.keepSynced(true);
 
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(7500); //use a value fo about 10 to 15s for a real app
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        //Google services client for location
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        checkForLocationRequest();
-        checkForLocationSettings();
-
-
-
-//        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-//        locationListener = new LocationListener() {
-//            @Override
-//            public void onLocationChanged(Location location) {
-//
-//                lon = location.getLongitude();
-//                lat = location.getLatitude();
-//
-//                Toast.makeText(CommunitiesAround.this, lon + " " + lat, Toast.LENGTH_SHORT).show();
-
-//                loadCommunities(lon,lat);
-//                locationManager.removeUpdates(this);
-//            }
-
-//            @Override
-//            public void onStatusChanged(String provider, int status, Bundle extras) {
-//
-//            }
-//
-//            @Override
-//            public void onProviderEnabled(String provider) {
-//                Toast.makeText(CommunitiesAround.this, "GPS Enabled", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onProviderDisabled(String provider) {
-//                if(provider.equals(LocationManager.GPS_PROVIDER)) {
-//                    buildAlertMessageNoGps(CommunitiesAround.this);
-//                }
-//            }
-//        };
-//
-//        requestPermission();
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                for (Location location : locationResult.getLocations()) {
+                    loadCommunities(location.getLongitude(), location.getLatitude());
+                }
+            }
+        };
 
     }
 
-//    public void requestPermission() {
-//
-//        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, 10);
-//            return;
-//        } else {
-//            progressDialog.setMessage("Searching Communities");
-//            progressDialog.show();
-//
-//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-//        }
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case MY_PERMISSION_REQUEST_FINE_LOCATION:
+
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //permission was granted do nothing and carry on
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "This app requires location permissions to be granted", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
+        }
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            checkForLocationSettings();
+        } else {
+
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        loadCommunities(location.getLongitude(), location.getLatitude());
+                    }
+                }
+            });
+        }
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        callCurrentLocation();
-
+        startLocationUpdates();
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         int result = googleApiAvailability.isGooglePlayServicesAvailable(this);
 
@@ -253,132 +255,34 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
         }
     }
 
-//    public void callLastKnownLocation(View view) {
-//        try {
-//            if (
-//                    ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-//                            ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                    ) {
-//                // TODO: Consider calling
-//                //    ActivityCompat#requestPermissions
-//                // here to request the missing permissions, and then overriding
-//                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                //                                          int[] grantResults)
-//                // to handle the case where the user grants the permission. See the documentation
-//                // for ActivityCompat#requestPermissions for more details.
-//                requestPermissions(REQUEST_PERMISSIONS_LAST_LOCATION_REQUEST_CODE);
-//                return;
-//            }
-//
-//            getLastLocation();
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-
-    public void callCurrentLocation() {
-        try {
-            if (
-                    ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                            ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                requestPermissions(REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE);
-                return;
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_REQUEST_FINE_LOCATION);
             }
-
-            mFusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback() {
-                @Override
-                public void onLocationResult(LocationResult locationResult) {
-
-                    currentLocation = (Location) locationResult.getLastLocation();
-
-//                    String result = "Current Location Latitude is " +
-//                            currentLocation.getLatitude() + "\n" +
-//                            "Current location Longitude is " + currentLocation.getLongitude();
-                    loadCommunities(currentLocation.getLongitude(), currentLocation.getLatitude());
-//                    resultTextView.setText(result);
-                }
-            }, Looper.myLooper());
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
+
     }
 
-    @SuppressWarnings("MissingPermission")
-    private void getLastLocation() {
 
-        mFusedLocationClient.getLastLocation()
-                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            mLastLocation = task.getResult();
 
-                            String result = "Last known Location Latitude is " +
-                                    mLastLocation.getLatitude() + "\n" +
-                                    "Last known longitude Longitude is " + mLastLocation.getLongitude();
-
-                            loadCommunities(mLastLocation.getLongitude(),mLastLocation.getLatitude());
-//                            resultTextView.setText(result);
-                        } else {
-                            showSnackbar("No Last known location found. Try current location..!");
-                        }
-                    }
-                });
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
     }
 
-    private void showSnackbar(final String text) {
-        View container = findViewById(R.id.container);
-        if (container != null) {
-            Snackbar.make(container, text, Snackbar.LENGTH_LONG).show();
-        }
+    private void stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(locationCallback);
     }
 
-    private void showSnackbar(final String mainTextString, final String actionString,
-                              View.OnClickListener listener) {
-        Snackbar.make(findViewById(android.R.id.content),
-                mainTextString,
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(actionString, listener).show();
-    }
 
     private void startLocationPermissionRequest(int requestCode) {
         ActivityCompat.requestPermissions(CommunitiesAround.this, new String[]{ACCESS_COARSE_LOCATION}, requestCode);
     }
 
-    private void requestPermissions(final int requestCode) {
-        boolean shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION);
-
-        // Provide an additional rationale to the user. This would happen if the user denied the
-        // request previously, but didn't check the "Don't ask again" checkbox.
-        if (shouldProvideRationale) {
-            showSnackbar("Permission is must to find the location", "Ok",
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // Request permission
-                            startLocationPermissionRequest(requestCode);
-                        }
-                    });
-
-        } else {
-            startLocationPermissionRequest(requestCode);
-        }
-    }
-
-    public void checkForLocationRequest(){
-        locationRequest = LocationRequest.create();
-        locationRequest.setInterval(MIN_UPDATE_INTERVAL);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-    }
 
     public void checkForLocationSettings() {
         try {
@@ -390,8 +294,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                     .addOnSuccessListener(CommunitiesAround.this, new OnSuccessListener<LocationSettingsResponse>() {
                         @Override
                         public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                            progressDialog.setMessage("Searching Communities");
-                            progressDialog.show();
+
 
                             //Setting is success...
                             //Toast.makeText(CommunitiesAround.this, "Enabled the Location successfully. Now you can press the buttons..", Toast.LENGTH_SHORT).show();
@@ -427,35 +330,6 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
         }
     }
 
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_PERMISSIONS_LAST_LOCATION_REQUEST_CODE) {
-            if (grantResults.length <= 0) {
-                // If user interaction was interrupted, the permission request is cancelled and you
-                // receive empty arrays.
-                Log.i(TAG, "User interaction was cancelled.");
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted.
-                getLastLocation();
-            }
-        }
-
-        if (requestCode == REQUEST_PERMISSIONS_CURRENT_LOCATION_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                callCurrentLocation();
-            }
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
     public void loadCommunities(final double lon,final double lat){
 
         communitiesReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -468,13 +342,15 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                     CommunitiesItemFormat communitiesItemFormat = shot.getValue(CommunitiesItemFormat.class);
                    try {
                        double comLat, comLon,totalDistance;
+                       Integer radius;
 
+                       radius = communitiesItemFormat.getRadius();
 
                        comLat = shot.child("location").child("lat").getValue(Double.class);
                        comLon = shot.child("location").child("lon").getValue(Double.class);
 
                        totalDistance = distance(lat,comLat,lon,comLon);
-                       if(totalDistance<2){
+                       if(totalDistance<radius){
                            //Toast.makeText(CommunitiesAround.this, " " + totalDistance, Toast.LENGTH_SHORT).show();
                            communitiesList.add(communitiesItemFormat);
                            flagNoCommunity = false;
@@ -487,8 +363,10 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
                 if(flagNoCommunity){
                     noCommunitiesTextView.setVisibility(View.VISIBLE);
+                }else{
+                    noCommunitiesTextView.setVisibility(View.GONE);
                 }
-                progressDialog.dismiss();
+                    progressDialog.dismiss();
                 adapter.notifyDataSetChanged();
             }
 
@@ -497,41 +375,6 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
             }
         });
-    }
-
-    private  void buildAlertMessageNoGps(final Context ctx)
-    {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your GPS seems to be disabled, you need to enable it!")
-                .setCancelable(false)
-                .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(intent);
-
-                    }
-                })
-                .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(CommunitiesAround.this, "You need to enable GPS to load communities", Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
-        final AlertDialog dialog = builder.create();
-
-        if(!((Activity)this).isFinishing())
-        {
-            if(!dialog.isShowing()) {
-                dialog.setCancelable(false);
-                dialog.show();
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
-            }
-        }
-
     }
 
     public static double distance(double lat1, double lat2, double lon1,
@@ -607,14 +450,4 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
     }
 
-
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//
-//    }
-//
-//    @Override
-//    public void onPointerCaptureChanged(boolean hasCapture) {
-//
-//    }
 }
