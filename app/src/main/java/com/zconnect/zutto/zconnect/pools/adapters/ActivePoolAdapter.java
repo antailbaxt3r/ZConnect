@@ -42,4 +42,24 @@ public class ActivePoolAdapter extends RecyclerView.Adapter<ActivePoolViewHolder
         poolsList.add(p);
         notifyItemInserted(poolsList.size() - 1);
     }
+
+    public void updatePool(ActivePool newPool) {
+        for(int i = 0 ; i < poolsList.size() ;i++){
+            if(poolsList.get(i).getID().compareTo(newPool.getID())==0){
+                poolsList.set(i,newPool);
+                notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    public void removePool(ActivePool pool) {
+        for(int i = 0 ; i < poolsList.size() ;i++){
+            if(poolsList.get(i).getID().compareTo(pool.getID())==0){
+                poolsList.remove(i);
+                notifyItemRemoved(i);
+                return;
+            }
+        }
+    }
 }

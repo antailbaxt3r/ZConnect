@@ -15,6 +15,8 @@ public class ActivePoolViewHolder extends RecyclerView.ViewHolder {
 
     private TextView poolName,deliveryTime,joinedPeoples,offers;
     private SimpleDraweeView logo;
+    private ActivePool pool;
+
 
     private Context context;
 
@@ -34,6 +36,7 @@ public class ActivePoolViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void populate(ActivePool pool){
+        this.pool = pool;
         poolName.setText(pool.getName());
         logo.setImageURI(pool.getImageURL());
         offers.setText(pool.getOffer());
@@ -46,8 +49,8 @@ public class ActivePoolViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO set pool details parameter in intent bundles
                 Intent intent = new Intent(context, PoolDetailsActivity.class);
+                intent.putExtra("newPool",pool.getBundle());
                 context.startActivity(intent);
 
             }
