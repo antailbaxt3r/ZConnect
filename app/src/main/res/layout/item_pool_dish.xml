@@ -50,41 +50,66 @@
 
             <!-- + - buttons-->
             <RelativeLayout
-                android:id="@+id/user_quantity_details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:id="@+id/rl_btn"
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:textColor="#FFF">
+
+                <!-- + - buttons-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/user_quantity_details">
 
 
+                    <Button
+                        android:id="@+id/increment_button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@android:color/transparent"
+                        android:text="+" />
+
+                    <TextView
+                        android:id="@+id/quantity_display"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/increment_button"
+                        android:gravity="center"
+                        android:text="0" />
+
+                    <Button
+                        android:id="@+id/decrement_button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/quantity_display"
+                        android:background="@android:color/transparent"
+                        android:text="-" />
+
+
+
+                </RelativeLayout>
+
+                <!-- first time add button-->
                 <Button
-                    android:id="@+id/increment_button"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:background="@android:color/transparent"
-                    android:text="+" />
-
-                <TextView
-                    android:id="@+id/quantity_display"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@+id/increment_button"
-                    android:gravity="center"
-                    android:text="0" />
-
-                <Button
-                    android:id="@+id/decrement_button"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@+id/quantity_display"
-                    android:background="@android:color/transparent"
-                    android:text="-" />
-
+                    android:visibility="visible"
+                    android:id="@+id/btn_first_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:layout_centerInParent="true"
+                    android:text="Add" />
 
             </RelativeLayout>
+
+
         </RelativeLayout>
+
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -1,18 +1,28 @@
 package com.zconnect.zutto.zconnect.pools;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolDishAdapter;
@@ -27,12 +37,14 @@ public class PoolDetailsActivity extends AppCompatActivity {
     private Button btn_payment;
     private RecyclerView recyclerView;
     private TextView offers, joined_peoples;
+    private LinearLayout ll_progressBar;
+    private TextView loading_text;
 
     private PoolDishAdapter adapter;
     private ValueEventListener poolItemListener;
 
     private ActivePool pool;
-    private String community_name;
+    private String community_name,userUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +56,29 @@ public class PoolDetailsActivity extends AppCompatActivity {
             if(b.containsKey("newPool")){
 
                 pool = ActivePool.getPool(b.getBundle("newPool"));
-                //TODO set proper datat from the preference
-                community_name = "testCollege";
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user==null){
+                    //TODO start login acitvity
+                    finish();
+                }else {
+                    userUID = user.getUid();
+                    //TODO set proper data from the preference
+                    community_name = "testCollege";
 
-                //activity main block with all valid parameters
+                    //activity main block with all valid parameters
 
-                attachID();
-                setPoolInfo();
-                loadItemView();
+                    attachID();
+                    setPoolInfo();
+                    loadItemView();
+
+                    btn_payment.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            paymentSuccess();
+                        }
+                    });
+                }
+
 
 
 
@@ -66,7 +93,63 @@ public class PoolDetailsActivity extends AppCompatActivity {
 
     }
 
+    private void paymentSuccess() {
+        //load order data
+        setProgressBarView(View.VISIBLE,"Saving order info\n DO NOT press back button.");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolDish.URL_POOL_DISH_ORDER,
+                                                community_name,pool.getID(),userUID));
+        ref.updateChildren(adapter.getMp()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                joinForums();
+                updateJoinedCount();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //TODO on fail to save user data
+            }
+        });
+
+
+    }
+
+    private void updateJoinedCount() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ActivePool.URL_ACTIVE_POOL,
+                community_name)).child(pool.getID()).child(ActivePool.JOINED);
+        ref.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                int p;
+                try {
+                    p = Integer.parseInt(mutableData.getValue(String.class));
+                } catch (NumberFormatException e) {
+                    p = 0;
+                }
+                p++;
+                mutableData.setValue(String.valueOf(p));
+                return Transaction.success(mutableData);
+
+
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+
+            }
+        });
+
+    }
+
+    private void joinForums() {
+        setProgressBarView(View.VISIBLE,"Joining forums");
+        setProgressBarView(View.GONE,"Joined");
+
+    }
+
     private void loadItemView() {
+        setProgressBarView(View.VISIBLE,"Loading list\nplease wait..");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolDish.URL_POOL_DISH,
                             community_name,pool.getShopID(),pool.getID()));
         Log.d(TAG,"loadItemView : ref "+ref.toString());
@@ -84,8 +167,8 @@ public class PoolDetailsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.pool_item_rv);
         offers = findViewById(R.id.pool_offers);
         joined_peoples = findViewById(R.id.joined_peoples);
-
-        //TODO remove dummy value
+        ll_progressBar = findViewById(R.id.ll_progressBar);
+        loading_text = findViewById(R.id.loading_text);
 
         //setup adapter
         adapter = new PoolDishAdapter();
@@ -107,12 +190,20 @@ public class PoolDetailsActivity extends AppCompatActivity {
                     dish.setID(items.getKey());
                     adapter.insertAtEnd(dish);
                 }
+                setProgressBarView(View.GONE,"");
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 //TODO on cancel
+                setProgressBarView(View.GONE,"");
             }
         };
+    }
+
+    private void setProgressBarView(int visibility,String message){
+        ll_progressBar.setVisibility(visibility);
+        loading_text.setText(message);
+
     }
 }

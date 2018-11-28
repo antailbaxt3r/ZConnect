@@ -10,17 +10,19 @@ import com.zconnect.zutto.zconnect.pools.holders.PoolDishViewHolder;
 import com.zconnect.zutto.zconnect.pools.models.PoolDish;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PoolDishAdapter extends RecyclerView.Adapter<PoolDishViewHolder> {
 
     private ArrayList<PoolDish> poolsList = new ArrayList<>();
+    private HashMap<String,Object> mp = new HashMap<>();
 
 
     @Override
     public PoolDishViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View newView = layoutInflater.inflate(R.layout.item_pool_dish, parent, false);
-        return new PoolDishViewHolder(newView);
+        return new PoolDishViewHolder(newView,this);
     }
 
     @Override
@@ -41,5 +43,21 @@ public class PoolDishAdapter extends RecyclerView.Adapter<PoolDishViewHolder> {
     public void clearDataset() {
         poolsList.clear();
         notifyDataSetChanged();
+    }
+
+    public void updateOrderDish(String id, int number) {
+        if(number==0){
+            if(mp.containsKey(id)) mp.remove(id);
+        }else {
+            mp.put(id,String.valueOf(number));
+        }
+    }
+
+    public ArrayList<PoolDish> getPoolsList() {
+        return poolsList;
+    }
+
+    public HashMap<String, Object> getMp() {
+        return mp;
     }
 }

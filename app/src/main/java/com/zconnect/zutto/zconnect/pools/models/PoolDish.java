@@ -7,6 +7,9 @@ public class PoolDish {
     public static final String URL_POOL_DISH = "communities/"+
             "%s/features/shops/shopsOwner/%s/pools/%s";
 
+    public static final String URL_POOL_DISH_ORDER = "communities/"+
+            "%s/features/shops/shopsOwner/orders/%s/%s"; // community id , activePool id , userUID
+
     // nodes name
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
