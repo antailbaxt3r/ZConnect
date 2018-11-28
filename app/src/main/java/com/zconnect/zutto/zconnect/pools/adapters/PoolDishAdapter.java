@@ -37,4 +37,9 @@ public class PoolDishAdapter extends RecyclerView.Adapter<PoolDishViewHolder> {
         poolsList.add(p);
         notifyItemInserted(poolsList.size() - 1);
     }
+
+    public void clearDataset() {
+        poolsList.clear();
+        notifyDataSetChanged();
+    }
 }

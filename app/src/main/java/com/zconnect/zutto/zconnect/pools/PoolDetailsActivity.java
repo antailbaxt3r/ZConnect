@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.pools;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +9,11 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolDishAdapter;
 import com.zconnect.zutto.zconnect.pools.models.ActivePool;
@@ -23,7 +29,10 @@ public class PoolDetailsActivity extends AppCompatActivity {
     private TextView offers, joined_peoples;
 
     private PoolDishAdapter adapter;
+    private ValueEventListener poolItemListener;
+
     private ActivePool pool;
+    private String community_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +42,11 @@ public class PoolDetailsActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         if(b != null) {
             if(b.containsKey("newPool")){
+
                 pool = ActivePool.getPool(b.getBundle("newPool"));
+                //TODO set proper datat from the preference
+                community_name = "testCollege";
+
                 //activity main block with all valid parameters
 
                 attachID();
@@ -54,7 +67,10 @@ public class PoolDetailsActivity extends AppCompatActivity {
     }
 
     private void loadItemView() {
-
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolDish.URL_POOL_DISH,
+                            community_name,pool.getShopID(),pool.getID()));
+        Log.d(TAG,"loadItemView : ref "+ref.toString());
+        ref.addListenerForSingleValueEvent(poolItemListener);
     }
 
     private void setPoolInfo() {
@@ -75,10 +91,28 @@ public class PoolDetailsActivity extends AppCompatActivity {
         adapter = new PoolDishAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        for (int i = 0; i < DUMMYS_NUMBER; i++) {
-            adapter.insertAtEnd(PoolDish.dummyValues());
-        }
+
+        defineListener();
 
 
+    }
+
+    private void defineListener() {
+        poolItemListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                adapter.clearDataset();
+                for(DataSnapshot items : dataSnapshot.getChildren()){
+                    PoolDish dish = items.getValue(PoolDish.class);
+                    dish.setID(items.getKey());
+                    adapter.insertAtEnd(dish);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //TODO on cancel
+            }
+        };
     }
 }
