@@ -31,7 +31,6 @@ import com.zconnect.zutto.zconnect.pools.models.PoolDish;
 public class AddPoolItemActivity extends AppCompatActivity {
 
     public static final String TAG = "PoolDetailsActivity";
-    private int DUMMYS_NUMBER = 5;
 
     private Button btn_payment;
     private RecyclerView recyclerView;

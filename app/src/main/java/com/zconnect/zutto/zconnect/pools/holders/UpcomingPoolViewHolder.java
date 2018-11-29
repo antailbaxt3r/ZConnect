@@ -38,7 +38,7 @@ public class UpcomingPoolViewHolder extends RecyclerView.ViewHolder {
         poolName.setText(pool.getName());
         logo.setImageURI(pool.getImageURL());
         offers.setText(pool.getOffer());
-        joinedPeoples.setText(pool.getJoined());
+        joinedPeoples.setText(pool.getUpVote());
         deliveryTime.setText(pool.getDeliveryTime());
         onclick();
 
@@ -49,7 +49,7 @@ public class UpcomingPoolViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PoolItemDetailActivity.class);
-                //intent.putExtra("newPool",pool.getBundle());
+                intent.putExtra("newPool",pool.getBundle());
                 context.startActivity(intent);
 
             }

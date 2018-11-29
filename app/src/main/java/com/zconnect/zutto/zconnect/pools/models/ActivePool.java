@@ -111,6 +111,7 @@ public class ActivePool {
     public void setCategoryID(String categoryID) {
         this.categoryID = categoryID;
     }
+
     public Bundle getBundle(){
         Bundle b = new Bundle();
         b.putString("poolID",this.ID);
