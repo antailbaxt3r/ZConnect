@@ -9,20 +9,20 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.pools.adapters.PoolDishAdapter;
+import com.zconnect.zutto.zconnect.pools.adapters.PoolAddItemAdapter;
 import com.zconnect.zutto.zconnect.pools.models.PoolDish;
 
-public class PoolDishViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
     private Button increment, decrement,add;
     private RelativeLayout rl_btn;
     private SimpleDraweeView dishImage;
     private TextView name, description, quantity;
-    private PoolDishAdapter adapter;
+    private PoolAddItemAdapter adapter;
     private int number = 0;
     private PoolDish dish;
 
-    public PoolDishViewHolder(View itemView, PoolDishAdapter adapter) {
+    public PoolAddItemViewHolder(View itemView, PoolAddItemAdapter adapter) {
         super(itemView);
         this.adapter = adapter;
 

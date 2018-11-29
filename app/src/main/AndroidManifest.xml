@@ -457,7 +457,8 @@
         <activity
             android:name=".pools.PoolActivity"
             android:exported="true" />
-        <activity android:name=".pools.PoolDetailsActivity"></activity>
+        <activity android:name=".pools.AddPoolItemActivity" />
+        <activity android:name=".pools.PoolItemDetailActivity"></activity>
     </application>
 
 </manifest>

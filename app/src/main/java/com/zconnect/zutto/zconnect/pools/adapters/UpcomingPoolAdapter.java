@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.pools.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,17 @@ import java.util.ArrayList;
 public class UpcomingPoolAdapter extends RecyclerView.Adapter<UpcomingPoolViewHolder> {
 
     private ArrayList<UpcomingPool> poolsList = new ArrayList<>();
+    private Context context;
+
+    public UpcomingPoolAdapter(Context context) {
+        this.context = context;
+    }
 
     @Override
     public UpcomingPoolViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View newView = layoutInflater.inflate(R.layout.item_active_pool, parent, false);
-        return new UpcomingPoolViewHolder(newView);
+        return new UpcomingPoolViewHolder(newView,context);
     }
 
     @Override

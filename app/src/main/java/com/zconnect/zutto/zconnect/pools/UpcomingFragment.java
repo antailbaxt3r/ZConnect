@@ -47,7 +47,7 @@ public class UpcomingFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
         recyclerView = view.findViewById(R.id.upcoming_pool_rv);
-        adapter = new UpcomingPoolAdapter();
+        adapter = new UpcomingPoolAdapter(getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         for(int i = 0 ;i < DUMMYS_NUMBER ; i++){

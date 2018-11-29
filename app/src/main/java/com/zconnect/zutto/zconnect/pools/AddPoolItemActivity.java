@@ -1,6 +1,5 @@
 package com.zconnect.zutto.zconnect.pools;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,11 +24,11 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.pools.adapters.PoolDishAdapter;
+import com.zconnect.zutto.zconnect.pools.adapters.PoolAddItemAdapter;
 import com.zconnect.zutto.zconnect.pools.models.ActivePool;
 import com.zconnect.zutto.zconnect.pools.models.PoolDish;
 
-public class PoolDetailsActivity extends AppCompatActivity {
+public class AddPoolItemActivity extends AppCompatActivity {
 
     public static final String TAG = "PoolDetailsActivity";
     private int DUMMYS_NUMBER = 5;
@@ -40,7 +39,7 @@ public class PoolDetailsActivity extends AppCompatActivity {
     private LinearLayout ll_progressBar;
     private TextView loading_text;
 
-    private PoolDishAdapter adapter;
+    private PoolAddItemAdapter adapter;
     private ValueEventListener poolItemListener;
 
     private ActivePool pool;
@@ -49,7 +48,7 @@ public class PoolDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pool_details);
+        setContentView(R.layout.activity_add_pool_item);
         //base case
         Bundle b = getIntent().getExtras();
         if(b != null) {
@@ -171,7 +170,7 @@ public class PoolDetailsActivity extends AppCompatActivity {
         loading_text = findViewById(R.id.loading_text);
 
         //setup adapter
-        adapter = new PoolDishAdapter();
+        adapter = new PoolAddItemAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
