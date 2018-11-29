@@ -7,26 +7,27 @@ import android.view.ViewGroup;
 
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.holders.PoolAddItemViewHolder;
+import com.zconnect.zutto.zconnect.pools.holders.PoolItemDetailViewHolder;
 import com.zconnect.zutto.zconnect.pools.models.PoolDish;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHolder> {
+public class PoolItemDetailAdapter extends RecyclerView.Adapter<PoolItemDetailViewHolder> {
 
     private ArrayList<PoolDish> poolsList = new ArrayList<>();
-    private HashMap<String,Object> mp = new HashMap<>();
+
 
 
     @Override
-    public PoolAddItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PoolItemDetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View newView = layoutInflater.inflate(R.layout.item_pool_add_item, parent, false);
-        return new PoolAddItemViewHolder(newView,this);
+        View newView = layoutInflater.inflate(R.layout.item_pool_item_details, parent, false);
+        return new PoolItemDetailViewHolder(newView);
     }
 
     @Override
-    public void onBindViewHolder(PoolAddItemViewHolder holder, int position) {
+    public void onBindViewHolder(PoolItemDetailViewHolder holder, int position) {
         holder.populate(poolsList.get(position));
     }
 
@@ -43,21 +44,5 @@ public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHold
     public void clearDataset() {
         poolsList.clear();
         notifyDataSetChanged();
-    }
-
-    public void updateOrderDish(String id, int number) {
-        if(number==0){
-            if(mp.containsKey(id)) mp.remove(id);
-        }else {
-            mp.put(id,String.valueOf(number));
-        }
-    }
-
-    public ArrayList<PoolDish> getPoolsList() {
-        return poolsList;
-    }
-
-    public HashMap<String, Object> getMp() {
-        return mp;
     }
 }
