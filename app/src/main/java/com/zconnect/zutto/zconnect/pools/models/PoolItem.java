@@ -66,6 +66,7 @@ public class PoolItem {
     }
 
     public int getQuantity() {
+        if(quantity==0)return 0;
         return quantity;
     }
 

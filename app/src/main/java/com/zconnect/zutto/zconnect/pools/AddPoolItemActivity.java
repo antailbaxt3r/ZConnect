@@ -50,6 +50,8 @@ public class AddPoolItemActivity extends AppCompatActivity {
 
     private Pool pool;
     private String communityID, userUID;
+    private int discount_percentage,max_amount,min_item;
+    private Boolean offer_flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +136,13 @@ public class AddPoolItemActivity extends AppCompatActivity {
             b.putIntArray(PoolItem.QUANTITY,quantities);
             b.putIntArray(PoolItem.PRICE,prices);
             intent.putExtra("orderList",b);
+            if(offer_flag){
+                b.putInt(PoolInfo.DISCOUNT_PERCENTAGE,discount_percentage);
+                b.putInt(PoolInfo.MAX_DISCOUNT,max_amount);
+                b.putInt(PoolInfo.MIN_QUANTITY,min_item);
+            }else {
+                //prompt user to wait as offer is not loaded
+            }
             startActivity(intent);
         }
 
@@ -256,13 +265,13 @@ public class AddPoolItemActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
-
-                    int disPer = dataSnapshot.child(PoolInfo.DISCOUNT_PERCENTAGE).getValue(Integer.class);
-                    int maxDiscount = dataSnapshot.child(PoolInfo.MAX_DISCOUNT).getValue(Integer.class);
-                    int minQuantity = dataSnapshot.child(PoolInfo.MIN_QUANTITY).getValue(Integer.class);
+                    offer_flag = true;
+                    discount_percentage= dataSnapshot.child(PoolInfo.DISCOUNT_PERCENTAGE).getValue(Integer.class);
+                    max_amount = dataSnapshot.child(PoolInfo.MAX_DISCOUNT).getValue(Integer.class);
+                    min_item = dataSnapshot.child(PoolInfo.MIN_QUANTITY).getValue(Integer.class);
                     // if(disPer != 0 && maxDiscount != 0 && minQuantity !=0)
                     offers.setVisibility(View.VISIBLE);
-                    offers.setText(String.format("Discount Percentage : %d\nMax Discount %d\nMin Quantity : %d", disPer, maxDiscount, minQuantity));
+                    offers.setText(String.format("Discount Percentage : %d\nMax Discount %d\nMin Quantity : %d", discount_percentage, max_amount, min_item));
                 }
             }
 
