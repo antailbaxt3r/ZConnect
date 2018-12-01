@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,11 +18,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.pools.adapters.PoolAddItemAdapter;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemDetailAdapter;
-import com.zconnect.zutto.zconnect.pools.models.ActivePool;
+import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolDish;
-import com.zconnect.zutto.zconnect.pools.models.UpcomingPool;
+import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
 public class PoolItemDetailActivity extends AppCompatActivity {
 
@@ -37,8 +35,8 @@ public class PoolItemDetailActivity extends AppCompatActivity {
     private PoolItemDetailAdapter adapter;
     private ValueEventListener poolItemListener;
 
-    private UpcomingPool pool;
-    private String community_name,userUID;
+    private Pool pool;
+    private String communityID,userUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +47,7 @@ public class PoolItemDetailActivity extends AppCompatActivity {
         if(b != null) {
             if(b.containsKey("newPool")){
 
-                pool = UpcomingPool.getPool(b.getBundle("newPool"));
+                pool = Pool.getPool(b.getBundle("newPool"));
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if(user==null){
                     //TODO start login acitvity
@@ -57,7 +55,7 @@ public class PoolItemDetailActivity extends AppCompatActivity {
                 }else {
                     userUID = user.getUid();
                     //TODO set proper data from the preference
-                    community_name = "testCollege";
+                    communityID = "testCollege";
 
                     //activity main block with all valid parameters
 
@@ -82,16 +80,16 @@ public class PoolItemDetailActivity extends AppCompatActivity {
 
     private void loadItemView() {
         setProgressBarView(View.VISIBLE,"Loading list\nplease wait..");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolDish.URL_POOL_DISH,
-                community_name,pool.getShopID(),pool.getID()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM,
+                communityID,pool.getShopID(),pool.getPoolID()));
         Log.d(TAG,"loadItemView : ref "+ref.toString());
         ref.addListenerForSingleValueEvent(poolItemListener);
     }
 
     private void setPoolInfo() {
         getSupportActionBar().setTitle(pool.getName());
-        offers.setText(pool.getOffer());
-        joined_peoples.setText(pool.getUpVote());
+        offers.setText(pool.getDescription());
+        joined_peoples.setText(String.valueOf(pool.getUpVote()));
     }
 
     private void attachID() {
@@ -118,7 +116,7 @@ public class PoolItemDetailActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 adapter.clearDataset();
                 for(DataSnapshot items : dataSnapshot.getChildren()){
-                    PoolDish dish = items.getValue(PoolDish.class);
+                    PoolItem dish = items.getValue(PoolItem.class);
                     dish.setID(items.getKey());
                     adapter.insertAtEnd(dish);
                 }

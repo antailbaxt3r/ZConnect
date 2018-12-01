@@ -19,7 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.ActivePoolAdapter;
+import com.zconnect.zutto.zconnect.pools.adapters.PoolAdapter;
 import com.zconnect.zutto.zconnect.pools.models.ActivePool;
+import com.zconnect.zutto.zconnect.pools.models.Pool;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,18 +32,19 @@ public class ActiveFragment extends Fragment {
     private int DUMMYS_NUMBER = 5;
 
     private RecyclerView recyclerView;
-    private ActivePoolAdapter adapter;
+    private PoolAdapter adapter;
     private ChildEventListener activePoolListener;
 
-    private String community_name;
+    private String communityID;
 
 
     public ActiveFragment() {
         // Required empty public constructor
     }
 
-    public static ActiveFragment newInstance() {
+    public static ActiveFragment newInstance(String communityID) {
         ActiveFragment frag = new ActiveFragment();
+        frag.communityID = communityID;
         return frag;
     }
 
@@ -52,57 +55,28 @@ public class ActiveFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_active, container, false);
         recyclerView = view.findViewById(R.id.active_pool_rv);
-        adapter = new ActivePoolAdapter(getContext());
+        adapter = new PoolAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-
-        //TODO set proper datat from the preference
-        community_name = "testCollege";
-        defineListener();
-        loadActiveList();
 
         return view;
     }
 
-    private void defineListener() {
-        activePoolListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                ActivePool newPool = dataSnapshot.getValue(ActivePool.class);
-                newPool.setID(dataSnapshot.getKey());
-                adapter.insertAtEnd(newPool);
-            }
+    public void addPool(Pool pool) {
+        adapter.insertAtEnd(pool);
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                ActivePool newPool = dataSnapshot.getValue(ActivePool.class);
-                newPool.setID(dataSnapshot.getKey());
-                adapter.updatePool(newPool);
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                ActivePool newPool = dataSnapshot.getValue(ActivePool.class);
-                newPool.setID(dataSnapshot.getKey());
-                adapter.removePool(newPool);
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                //TODO on cancel
-            }
-        };
     }
 
-    private void loadActiveList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ActivePool.URL_ACTIVE_POOL,community_name));
-        Log.d(TAG,"loadActiveList : ref "+ref.toString());
-        ref.addChildEventListener(activePoolListener);
+    public void updatePool(Pool pool) {
+        adapter.updatePool(pool);
+    }
+
+    public void removePool(Pool pool) {
+        adapter.removePool(pool);
+    }
+
+    public Pool getPool(String id) {
+        return adapter.getPool(id);
     }
 
 }
