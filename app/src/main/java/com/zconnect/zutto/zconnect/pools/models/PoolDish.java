@@ -4,10 +4,10 @@ import com.google.firebase.database.Exclude;
 
 public class PoolDish {
 
-    public static final String URL_POOL_DISH = "communities/"+
+    public static final String URL_POOL_DISH = "communities/" +
             "%s/features/shops/shopsOwner/%s/pools/%s";
 
-    public static final String URL_POOL_DISH_ORDER = "communities/"+
+    public static final String URL_POOL_DISH_ORDER = "communities/" +
             "%s/shopsOwner/orders/%s/%s"; // community id , activePool id , userUID
 
     // nodes name
@@ -61,7 +61,7 @@ public class PoolDish {
     }
 
     public String getQuantity() {
-        if(quantity==null)return "0";
+        if (quantity == null) return "0";
         return quantity;
     }
 

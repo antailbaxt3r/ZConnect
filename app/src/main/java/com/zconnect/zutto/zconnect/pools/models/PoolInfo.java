@@ -52,6 +52,29 @@ public class PoolInfo {
         return p;
     }
 
+    public static PoolInfo getPoolInfo(Bundle b) {
+        PoolInfo poolInfo = new PoolInfo();
+        if (b.containsKey("poolInfoID"))
+            poolInfo.setID(b.getString("poolInfoID"));
+        if (b.containsKey(NAME))
+            poolInfo.setName(b.getString(NAME));
+        if (b.containsKey(DESCRIPTION))
+            poolInfo.setDescription(b.getString(DESCRIPTION));
+        if (b.containsKey(TYPE))
+            poolInfo.setType(b.getString(TYPE));
+        if (b.containsKey(IMAGE_URL))
+            poolInfo.setImageURL(b.getString(IMAGE_URL));
+        Map<String, Integer> offer = new HashMap<>();
+        if (b.containsKey(DISCOUNT_PERCENTAGE))
+            offer.put(DISCOUNT_PERCENTAGE, b.getInt(DISCOUNT_PERCENTAGE));
+        if (b.containsKey(MAX_DISCOUNT))
+            offer.put(MAX_DISCOUNT, b.getInt(MAX_DISCOUNT));
+        if (b.containsKey(DISCOUNT_PERCENTAGE))
+            offer.put(MIN_QUANTITY, b.getInt(MIN_QUANTITY));
+        poolInfo.setOffer(offer);
+        return poolInfo;
+    }
+
     public String getID() {
         return ID;
     }
@@ -144,29 +167,6 @@ public class PoolInfo {
         b.putInt(MIN_QUANTITY, this.getMinQunatity());
 
         return b;
-    }
-
-    public static PoolInfo getPoolInfo(Bundle b) {
-        PoolInfo poolInfo = new PoolInfo();
-        if (b.containsKey("poolInfoID"))
-            poolInfo.setID(b.getString("poolInfoID"));
-        if (b.containsKey(NAME))
-            poolInfo.setName(b.getString(NAME));
-        if (b.containsKey(DESCRIPTION))
-            poolInfo.setDescription(b.getString(DESCRIPTION));
-        if (b.containsKey(TYPE))
-            poolInfo.setType(b.getString(TYPE));
-        if (b.containsKey(IMAGE_URL))
-            poolInfo.setImageURL(b.getString(IMAGE_URL));
-        Map<String, Integer> offer = new HashMap<>();
-        if (b.containsKey(DISCOUNT_PERCENTAGE))
-            offer.put(DISCOUNT_PERCENTAGE, b.getInt(DISCOUNT_PERCENTAGE));
-        if (b.containsKey(MAX_DISCOUNT))
-            offer.put(MAX_DISCOUNT, b.getInt(MAX_DISCOUNT));
-        if (b.containsKey(DISCOUNT_PERCENTAGE))
-            offer.put(MIN_QUANTITY, b.getInt(MIN_QUANTITY));
-        poolInfo.setOffer(offer);
-        return poolInfo;
     }
 
 }

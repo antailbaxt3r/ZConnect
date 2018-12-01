@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.holders.PoolAddItemViewHolder;
-import com.zconnect.zutto.zconnect.pools.models.PoolDish;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
 import java.util.ArrayList;
@@ -16,14 +15,14 @@ import java.util.HashMap;
 public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHolder> {
 
     private ArrayList<PoolItem> poolsList = new ArrayList<>();
-    private HashMap<String,Object> mp = new HashMap<>();
+    private HashMap<String, Object> mp = new HashMap<>();
 
 
     @Override
     public PoolAddItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View newView = layoutInflater.inflate(R.layout.item_pool_add_item, parent, false);
-        return new PoolAddItemViewHolder(newView,this);
+        return new PoolAddItemViewHolder(newView, this);
     }
 
     @Override
@@ -47,10 +46,10 @@ public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHold
     }
 
     public void updateOrderDish(String id, int number) {
-        if(number==0){
-            if(mp.containsKey(id)) mp.remove(id);
-        }else {
-            mp.put(id,String.valueOf(number));
+        if (number == 0) {
+            if (mp.containsKey(id)) mp.remove(id);
+        } else {
+            mp.put(id, String.valueOf(number));
         }
     }
 

@@ -10,12 +10,11 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolAddItemAdapter;
-import com.zconnect.zutto.zconnect.pools.models.PoolDish;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
-public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private Button increment, decrement,add;
+    private Button increment, decrement, add;
     private RelativeLayout rl_btn;
     private SimpleDraweeView dishImage;
     private TextView name, description, quantity;
@@ -60,20 +59,20 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(id==R.id.increment_button){
+        if (id == R.id.increment_button) {
             number++;
-        }else if(id==R.id.decrement_button){
+        } else if (id == R.id.decrement_button) {
             number--;
-            if(number < 0) number = 0;
-        }else if(id==R.id.btn_first_add){
+            if (number < 0) number = 0;
+        } else if (id == R.id.btn_first_add) {
             number++;
         }
         updateUI(number);
-        adapter.updateOrderDish(item.getID(),number);
+        adapter.updateOrderDish(item.getID(), number);
     }
 
     private void updateUI(int p) {
-        Log.d("PoolAdapter","quantity : "+String.valueOf(p));
+        Log.d("PoolAdapter", "quantity : " + String.valueOf(p));
         if (p == 0) {
             add.setEnabled(true);
             add.setVisibility(View.VISIBLE);

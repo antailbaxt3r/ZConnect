@@ -37,15 +37,15 @@ public class AddPoolItemActivity extends AppCompatActivity {
 
     private Button btn_payment;
     private RecyclerView recyclerView;
-    private TextView offers, description,joined_peoples;
+    private TextView offers, description, joined_peoples;
     private LinearLayout ll_progressBar;
     private TextView loading_text;
 
     private PoolAddItemAdapter adapter;
-    private ValueEventListener poolItemListener,poolOfferListener;
+    private ValueEventListener poolItemListener, poolOfferListener;
 
     private Pool pool;
-    private String communityID,userUID;
+    private String communityID, userUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +53,15 @@ public class AddPoolItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_pool_item);
         //base case
         Bundle b = getIntent().getExtras();
-        if(b != null) {
-            if(b.containsKey("newPool")){
+        if (b != null) {
+            if (b.containsKey("newPool")) {
 
                 pool = Pool.getPool(b.getBundle("newPool"));
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if(user==null){
+                if (user == null) {
                     //TODO start login acitvity
                     finish();
-                }else {
+                } else {
                     userUID = user.getUid();
                     //TODO set proper data from the preference
                     communityID = "testCollege";
@@ -81,14 +81,12 @@ public class AddPoolItemActivity extends AppCompatActivity {
                 }
 
 
-
-
-            }else {
-                Log.d(TAG,"onCreate : bundle does not contain newPool key finishing activity");
+            } else {
+                Log.d(TAG, "onCreate : bundle does not contain newPool key finishing activity");
                 finish();
             }
-        }else{
-            Log.d(TAG,"onCreate : null bundle finishing activity");
+        } else {
+            Log.d(TAG, "onCreate : null bundle finishing activity");
             finish();
         }
 
@@ -96,9 +94,9 @@ public class AddPoolItemActivity extends AppCompatActivity {
 
     private void paymentSuccess() {
         //load order data
-        setProgressBarView(View.VISIBLE,"Saving order info\n DO NOT press back button.");
+        setProgressBarView(View.VISIBLE, "Saving order info\n DO NOT press back button.");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolDish.URL_POOL_DISH_ORDER,
-                communityID,pool.getID(),userUID));
+                communityID, pool.getID(), userUID));
         ref.updateChildren(adapter.getMp()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -144,27 +142,27 @@ public class AddPoolItemActivity extends AppCompatActivity {
     }
 
     private void joinForums() {
-        setProgressBarView(View.VISIBLE,"Joining forums");
-        setProgressBarView(View.GONE,"Joined");
+        setProgressBarView(View.VISIBLE, "Joining forums");
+        setProgressBarView(View.GONE, "Joined");
 
     }
 
     private void loadItemView() {
-        setProgressBarView(View.VISIBLE,"Loading list\nplease wait..");
-        setProgressBarView(View.VISIBLE,"Loading list\nplease wait..");
+        setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
+        setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM,
-                communityID,pool.getShopID(),pool.getPoolID()));
-        Log.d(TAG,"loadItemView : ref "+ref.toString());
+                communityID, pool.getShopID(), pool.getPoolID()));
+        Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(poolItemListener);
     }
 
     private void setPoolInfo() {
         getSupportActionBar().setTitle(pool.getName());
         description.setText(pool.getDescription());
-        joined_peoples.setText("Ordered : "+String.valueOf(pool.getTotalOrder()));
+        joined_peoples.setText("Ordered : " + String.valueOf(pool.getTotalOrder()));
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER,
-                communityID,pool.getShopID(),pool.getPoolID()));
-        Log.d(TAG,"setPoolView : ref "+ref.toString());
+                communityID, pool.getShopID(), pool.getPoolID()));
+        Log.d(TAG, "setPoolView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(poolOfferListener);
     }
 
@@ -192,31 +190,31 @@ public class AddPoolItemActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 adapter.clearDataset();
-                for(DataSnapshot items : dataSnapshot.getChildren()){
+                for (DataSnapshot items : dataSnapshot.getChildren()) {
                     PoolItem dish = items.getValue(PoolItem.class);
                     dish.setID(items.getKey());
                     adapter.insertAtEnd(dish);
                 }
-                setProgressBarView(View.GONE,"");
+                setProgressBarView(View.GONE, "");
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 //TODO on cancel
-                setProgressBarView(View.GONE,"");
+                setProgressBarView(View.GONE, "");
             }
         };
         poolOfferListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot !=  null){
+                if (dataSnapshot != null) {
 
                     int disPer = dataSnapshot.child(PoolInfo.DISCOUNT_PERCENTAGE).getValue(Integer.class);
                     int maxDiscount = dataSnapshot.child(PoolInfo.MAX_DISCOUNT).getValue(Integer.class);
                     int minQuantity = dataSnapshot.child(PoolInfo.MIN_QUANTITY).getValue(Integer.class);
                     // if(disPer != 0 && maxDiscount != 0 && minQuantity !=0)
                     offers.setVisibility(View.VISIBLE);
-                    offers.setText(String.format("Discount Percentage : %d\nMax Discount %d\nMin Quantity : %d",disPer,maxDiscount,minQuantity));
+                    offers.setText(String.format("Discount Percentage : %d\nMax Discount %d\nMin Quantity : %d", disPer, maxDiscount, minQuantity));
                 }
             }
 
@@ -227,7 +225,7 @@ public class AddPoolItemActivity extends AppCompatActivity {
         };
     }
 
-    private void setProgressBarView(int visibility,String message){
+    private void setProgressBarView(int visibility, String message) {
         ll_progressBar.setVisibility(visibility);
         loading_text.setText(message);
 

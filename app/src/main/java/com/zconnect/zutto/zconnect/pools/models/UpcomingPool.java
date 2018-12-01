@@ -6,7 +6,7 @@ import com.google.firebase.database.Exclude;
 
 public class UpcomingPool {
 
-    public static final String URL_UPCOMING_POOL = "communities/"+
+    public static final String URL_UPCOMING_POOL = "communities/" +
             "%s/features/pools/upcomingPools";
 
 
@@ -31,6 +31,38 @@ public class UpcomingPool {
     private String shopID;
     private String categoryID;
 
+    public static UpcomingPool dummyValues() {
+        UpcomingPool d = new UpcomingPool();
+        d.setName("Tuesday Treat");
+        d.setDeliveryTime("Tues 8:45 PM");
+
+        d.setUpVote("5");
+        d.setImageURL("https://dummyimage.com/120x120/736573/fff.png&text=Logo");
+        return d;
+    }
+
+    public static UpcomingPool getPool(Bundle b) {
+        UpcomingPool pool = new UpcomingPool();
+        if (b.containsKey("poolID"))
+            pool.setID(b.getString("poolID"));
+        if (b.containsKey(NAME))
+            pool.setName(b.getString(NAME));
+        if (b.containsKey(UP_VOTE))
+            pool.setUpVote(b.getString(UP_VOTE));
+        if (b.containsKey(IMAGE_URL))
+            pool.setImageURL(b.getString(IMAGE_URL));
+        if (b.containsKey(DELIVERY_TIME))
+            pool.setDeliveryTime(b.getString(DELIVERY_TIME));
+        if (b.containsKey(OFFER))
+            pool.setOffer(b.getString(OFFER));
+        if (b.containsKey(SHOP_ID))
+            pool.setShopID(b.getString(SHOP_ID));
+        if (b.containsKey(CATEGORY_ID))
+            pool.setCategoryID(b.getString(CATEGORY_ID));
+
+        return pool;
+    }
+
     public String getID() {
         return ID;
     }
@@ -48,7 +80,7 @@ public class UpcomingPool {
     }
 
     public String getImageURL() {
-        if(imageURL==null)return "";
+        if (imageURL == null) return "";
         return imageURL;
     }
 
@@ -96,37 +128,6 @@ public class UpcomingPool {
         this.categoryID = categoryID;
     }
 
-    public static UpcomingPool dummyValues() {
-        UpcomingPool d = new UpcomingPool();
-        d.setName("Tuesday Treat");
-        d.setDeliveryTime("Tues 8:45 PM");
-
-        d.setUpVote("5");
-        d.setImageURL("https://dummyimage.com/120x120/736573/fff.png&text=Logo");
-        return d;
-    }
-
-    public static UpcomingPool getPool(Bundle b){
-        UpcomingPool pool = new UpcomingPool();
-        if(b.containsKey("poolID"))
-            pool.setID(b.getString("poolID"));
-        if(b.containsKey(NAME))
-            pool.setName(b.getString(NAME));
-        if(b.containsKey(UP_VOTE))
-            pool.setUpVote(b.getString(UP_VOTE));
-        if(b.containsKey(IMAGE_URL))
-            pool.setImageURL(b.getString(IMAGE_URL));
-        if(b.containsKey(DELIVERY_TIME))
-            pool.setDeliveryTime(b.getString(DELIVERY_TIME));
-        if(b.containsKey(OFFER))
-            pool.setOffer(b.getString(OFFER));
-        if(b.containsKey(SHOP_ID))
-            pool.setShopID(b.getString(SHOP_ID));
-        if(b.containsKey(CATEGORY_ID))
-            pool.setCategoryID(b.getString(CATEGORY_ID));
-
-        return pool;
-    }
     public Bundle getBundle() {
         Bundle b = new Bundle();
         b.putString("poolID", this.ID);
@@ -136,7 +137,7 @@ public class UpcomingPool {
         b.putString(UP_VOTE, this.upVote);
         b.putString(DELIVERY_TIME, this.deliveryTime);
         b.putString(SHOP_ID, this.shopID);
-        b.putString(CATEGORY_ID,this.categoryID);
+        b.putString(CATEGORY_ID, this.categoryID);
 
         return b;
     }

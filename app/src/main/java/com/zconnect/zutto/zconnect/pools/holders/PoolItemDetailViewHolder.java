@@ -10,7 +10,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
-public class PoolItemDetailViewHolder extends RecyclerView.ViewHolder{
+public class PoolItemDetailViewHolder extends RecyclerView.ViewHolder {
 
 
     private RelativeLayout rl_btn;

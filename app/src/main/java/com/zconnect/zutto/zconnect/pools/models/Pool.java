@@ -71,6 +71,45 @@ public class Pool {
         this.totalOrder = 0;
     }
 
+    public static Pool getPool(Bundle b) {
+        Pool pool = new Pool();
+        if (b.containsKey("pushID"))
+            pool.setID(b.getString("pushID"));
+
+        if (b.containsKey(STATUS))
+            pool.setStatus(b.getString(STATUS));
+
+        if (b.containsKey(POOL_ID))
+            pool.setPoolID(b.getString(POOL_ID));
+
+        if (b.containsKey(SHOP_ID))
+            pool.setShopID(b.getString(SHOP_ID));
+
+        if (b.containsKey(NAME))
+            pool.setName(b.getString(NAME));
+
+        if (b.containsKey(TYPE))
+            pool.setType(b.getString(TYPE));
+
+        if (b.containsKey(DESCRIPTION))
+            pool.setDescription(b.getString(DESCRIPTION));
+
+        if (b.containsKey(IMAGE_URL))
+            pool.setImageURL(b.getString(IMAGE_URL));
+
+        if (b.containsKey(DELIVERY_TIME))
+            pool.setDeliveryTime(b.getLong(DELIVERY_TIME));
+
+        if (b.containsKey(UP_VOTE))
+            pool.setUpVote(b.getInt(UP_VOTE));
+
+        if (b.containsKey(TOTAL_ORDER))
+            pool.setTotalOrder(b.getInt(TOTAL_ORDER));
+
+
+        return pool;
+    }
+
     public String getID() {
         return ID;
     }
@@ -175,13 +214,14 @@ public class Pool {
 
         return mp;
     }
+
     public Bundle getBundle() {
         Bundle b = new Bundle();
-        if(this.ID != null){
-            b.putString("pushID",this.getID());
+        if (this.ID != null) {
+            b.putString("pushID", this.getID());
         }
-        if(this.status != null){
-            b.putString(STATUS,this.status);
+        if (this.status != null) {
+            b.putString(STATUS, this.status);
         }
         if (this.getPoolID() != null) {
             b.putString(POOL_ID, this.getPoolID());
@@ -203,49 +243,11 @@ public class Pool {
             b.putString(IMAGE_URL, this.getImageURL());
         }
 
-        b.putLong(DELIVERY_TIME,this.deliveryTime);
-        b.putInt(UP_VOTE,this.upVote);
-        b.putInt(TOTAL_ORDER,this.totalOrder);
+        b.putLong(DELIVERY_TIME, this.deliveryTime);
+        b.putInt(UP_VOTE, this.upVote);
+        b.putInt(TOTAL_ORDER, this.totalOrder);
 
         return b;
-    }
-    public static Pool getPool(Bundle b){
-        Pool pool = new Pool();
-        if(b.containsKey("pushID"))
-            pool.setID(b.getString("pushID"));
-
-        if(b.containsKey(STATUS))
-            pool.setStatus(b.getString(STATUS));
-
-        if(b.containsKey(POOL_ID))
-            pool.setPoolID(b.getString(POOL_ID));
-
-        if(b.containsKey(SHOP_ID))
-            pool.setShopID(b.getString(SHOP_ID));
-
-        if(b.containsKey(NAME))
-            pool.setName(b.getString(NAME));
-
-        if(b.containsKey(TYPE))
-            pool.setType(b.getString(TYPE));
-
-        if(b.containsKey(DESCRIPTION))
-            pool.setDescription(b.getString(DESCRIPTION));
-
-        if(b.containsKey(IMAGE_URL))
-            pool.setImageURL(b.getString(IMAGE_URL));
-
-        if(b.containsKey(DELIVERY_TIME))
-            pool.setDeliveryTime(b.getLong(DELIVERY_TIME));
-
-        if(b.containsKey(UP_VOTE))
-            pool.setUpVote(b.getInt(UP_VOTE));
-
-        if(b.containsKey(TOTAL_ORDER))
-            pool.setTotalOrder(b.getInt(TOTAL_ORDER));
-
-
-        return pool;
     }
 
     public boolean isActive() {

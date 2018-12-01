@@ -6,18 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.pools.holders.PoolAddItemViewHolder;
 import com.zconnect.zutto.zconnect.pools.holders.PoolItemDetailViewHolder;
-import com.zconnect.zutto.zconnect.pools.models.PoolDish;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PoolItemDetailAdapter extends RecyclerView.Adapter<PoolItemDetailViewHolder> {
 
     private ArrayList<PoolItem> poolsList = new ArrayList<>();
-
 
 
     @Override
