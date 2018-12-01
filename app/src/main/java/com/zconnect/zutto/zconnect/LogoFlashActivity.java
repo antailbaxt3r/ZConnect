@@ -23,10 +23,13 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,8 +44,10 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationService;
+import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.lang.reflect.Method;
@@ -56,9 +61,10 @@ import java.util.TimerTask;
 public class LogoFlashActivity extends BaseActivity {
     /*private final String TAG = getClass().getSimpleName();*/
     //Request code permission request external storage
+    private String TAG = LogoFlashActivity.class.getSimpleName();
     private final int RC_PERM_REQ_EXT_STORAGE = 7;
-    private ImageView bgImage;
-    private DatabaseReference mDatabase,temp,temp2,t,t2;
+    private SimpleDraweeView bgImage;
+    private DatabaseReference mDatabase,temp,temp2,temp3,temp4,temp5,t,t2;
     private View bgColor;
     boolean flag = false;
     private String mReferrerUid;
@@ -71,14 +77,19 @@ public class LogoFlashActivity extends BaseActivity {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         } catch (Exception ignore) {
         }
+        Fresco.initialize(this);
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_logo_flash);
-        bgImage = (ImageView) findViewById(R.id.bgImage);
+        bgImage =  findViewById(R.id.bgImage);
         bgColor = findViewById(R.id.bgColor);
 
         SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
+//            removeJustJoinedNotifFromHome();
+//            countCommunityMembers();
+//            countInfoneCatMembers();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
             mDatabase.addValueEventListener(new ValueEventListener() {
@@ -127,7 +138,7 @@ public class LogoFlashActivity extends BaseActivity {
                                 {
                                     if(path.equals("/openevent/"))
                                     {
-                                        Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("eventID"));
+                                        Log.d(TAG,"abc1 " + deepLink.getQueryParameter("eventID"));
                                         Intent intent = new Intent(LogoFlashActivity.this, OpenEventDetail.class);
                                         intent.putExtra("id", deepLink.getQueryParameter("eventID"));
                                         intent.putExtra("flag", true);
@@ -136,7 +147,7 @@ public class LogoFlashActivity extends BaseActivity {
                                     }
                                     else if(path.equals("/cabpooling/"))
                                     {
-                                        Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
+                                        Log.d(TAG,"abc1 " + deepLink.getQueryParameter("key"));
                                         Intent intent = new Intent(LogoFlashActivity.this, CabPoolAll.class);
                                         intent.putExtra("key", deepLink.getQueryParameter("key"));
                                         startActivity(intent);
@@ -144,7 +155,7 @@ public class LogoFlashActivity extends BaseActivity {
                                     }
                                     else if(path.equals("/openproduct/"))
                                     {
-                                        Log.d("AAAAAAAA", "abc1 " + deepLink.getQueryParameter("key"));
+                                        Log.d(TAG,"abc1 " + deepLink.getQueryParameter("key"));
                                         Intent intent = new Intent(LogoFlashActivity.this, OpenProductDetails.class);
                                         intent.putExtra("key", deepLink.getQueryParameter("key"));
                                         startActivity(intent);
@@ -157,12 +168,12 @@ public class LogoFlashActivity extends BaseActivity {
                     .addOnFailureListener(this, new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.d("AAAAAA", "getDynamicLink:onFailure " + e);
+                            Log.d(TAG,"getDynamicLink:onFailure " + e);
                         }
                     });
         } else {
 
-            Log.d("RRRR", "no communityref");
+            Log.d(TAG, "no communityref");
             FirebaseDynamicLinks.getInstance()
                     .getDynamicLink(getIntent())
                     .addOnSuccessListener(new OnSuccessListener<PendingDynamicLinkData>() {
@@ -173,7 +184,7 @@ public class LogoFlashActivity extends BaseActivity {
                             if (pendingDynamicLinkData != null) {
                                 deepLink = pendingDynamicLinkData.getLink();
                             }
-                            Log.d("RRRR", "inside dynamic link receiver");
+                            Log.d(TAG, "inside dynamic link receiver");
                             //
                             // If the user isn't signed in and the pending Dynamic Link is
                             // an invitation, sign in the user anonymously, and record the
@@ -183,7 +194,7 @@ public class LogoFlashActivity extends BaseActivity {
                             if (user == null && deepLink!=null && deepLink.getBooleanQueryParameter("referredBy", false))
                             {
                                 mReferrerUid = deepLink.getQueryParameter("referredBy");
-                                Log.d("RRRR", "deep link not null");
+                                Log.d(TAG, "deep link not null");
                                 createAnonymousAccountWithReferrerInfo(mReferrerUid);
                             }
                         }
@@ -219,11 +230,11 @@ public class LogoFlashActivity extends BaseActivity {
 
                 if (checkPermission()) {
                     // Do not wait so that user doesn't realise this is a new launch.
-                    Log.d("RRRR goint to home act", "1");
+                    Log.d(TAG, " goint to home act 1");
                     Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
                     intent.putExtra("isReferred", mReferrerUid!=null);
                     intent.putExtra("referredBy", mReferrerUid);
-                    Log.d("RRRR goint to home act", "1 " + mReferrerUid);
+                    Log.d(TAG,"goint to home act 1 " + mReferrerUid);
                     if(!flag)
                         startActivity(intent);
                     finish();
@@ -234,7 +245,25 @@ public class LogoFlashActivity extends BaseActivity {
 
 
 
-//        temp = FirebaseDatabase.getInstance().getReference().child("communities").child("gmc");
+//        temp = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("Users1");
+//
+//
+//        temp.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot shot: dataSnapshot.getChildren()){
+//                    try {
+//                        temp.child(shot.getKey()).child("points").setValue("0");
+//                    }catch (Exception e){}
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
 //
 //
 //        temp.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -271,7 +300,7 @@ public class LogoFlashActivity extends BaseActivity {
     }
 
     private void createAnonymousAccountWithReferrerInfo(final String referrerUid) {
-        Log.d("RRRR", "inside create anonymous");
+        Log.d(TAG, "inside create anonymous");
         if(FirebaseAuth.getInstance().getCurrentUser()==null)
         {
             FirebaseAuth.getInstance()
@@ -297,23 +326,86 @@ public class LogoFlashActivity extends BaseActivity {
                             if(task.isSuccessful())
                             {
                                 AuthResult authResult = task.getResult();
-                                Log.d("RRRR", "anonymoous user adding");
+                                Log.d(TAG,"anonymoous user adding");
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 DatabaseReference userRecord =
                                         FirebaseDatabase.getInstance().getReference()
                                                 .child("referredUsers")
                                                 .child(user.getUid());
                                 userRecord.child("referredBy").setValue(referrerUid);
-                                Log.d("RRRR", "anonymoous user added");
+                                Log.d(TAG,"anonymoous user added");
 
                             }
                             else {
-                                Log.d("RRRR", "anonymoous user failed to added");
+                                Log.d(TAG,"anonymoous user failed to added");
                             }
                         }
                     });
         }
     }
+
+    //script to remove just joined community notificatin
+//    public static void removeJustJoinedNotifFromHome() {
+//        Log.d("QQQQ ENTERED ", "FUNC");
+//        final DatabaseReference homeRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
+//        homeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot shot : dataSnapshot.getChildren())
+//                {
+//                    if(shot.hasChild("feature") && shot.child("feature").getValue().toString().equals("Users"))
+//                    {
+//                        shot.getRef().removeValue();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+    //script to fix count of infone categories
+//    public static void countInfoneCatMembers() {
+//        Log.d("QQQQQ STARTED", "1");
+//        final DatabaseReference infoneRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories");
+//        final DatabaseReference infoneCatInfoRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categoriesInfo");
+//        infoneRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot shot : dataSnapshot.getChildren())
+//                {
+//                    Log.d("QQQQQ INFONE" + shot.getKey(), String.valueOf(shot.getChildrenCount()));
+//                    infoneCatInfoRef.child(shot.getKey()).child("totalContacts").setValue(shot.getChildrenCount());
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+    //script to fix count of community members
+//    public static void countCommunityMembers() {
+//        Log.d("QQQQQ STARTED", "2");
+//        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+//        final DatabaseReference communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference).child("size");
+//        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                Log.d("QQQQQ COMM INFO" + dataSnapshot.getKey(), String.valueOf(dataSnapshot.getChildrenCount()));
+//                communityInfoRef.setValue(dataSnapshot.getChildrenCount());
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     ///////////script of adding forumAdmin node/////////
 //    public void addForumAdminNode() {
@@ -479,7 +571,7 @@ public class LogoFlashActivity extends BaseActivity {
         if (requestCode == RC_PERM_REQ_EXT_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent(LogoFlashActivity.this, HomeActivity.class);
-                Log.d("RRRR goint to home act", "2");
+                Log.d(TAG,"goint to home act 2");
                 intent.putExtra("isReferred", mReferrerUid!=null);
                 intent.putExtra("referredBy", mReferrerUid);
                 startActivity(intent);

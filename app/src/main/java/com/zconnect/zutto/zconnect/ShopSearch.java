@@ -47,9 +47,7 @@ public class ShopSearch extends BaseActivity {
 
         errorMessage = (TextView) findViewById(R.id.errorMessage);
 
-        CounterManager.shopSearch();
         Intent intent = getIntent();
-
 
         searchShopList = (android.support.v7.widget.RecyclerView) findViewById(R.id.rv_search_activity);
         databaseReference.keepSynced(true);

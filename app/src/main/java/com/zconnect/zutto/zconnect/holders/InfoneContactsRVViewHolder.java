@@ -22,6 +22,7 @@ public class InfoneContactsRVViewHolder extends RecyclerView.ViewHolder {
     public ImageButton callImageBtn;
     public LinearLayout linearLayout;
     public SimpleDraweeView userAvatar;
+    public TextView desctv;
 
     public InfoneContactsRVViewHolder(View itemView) {
         super(itemView);
@@ -31,5 +32,6 @@ public class InfoneContactsRVViewHolder extends RecyclerView.ViewHolder {
         callImageBtn = (ImageButton) itemView.findViewById(R.id.image_btn_call_infone_contacts);
         linearLayout = (LinearLayout) itemView.findViewById(R.id.ll_hori_infone_contacts);
         userAvatar = (SimpleDraweeView) itemView.findViewById(R.id.image_infone_contacts);
+        desctv = (TextView) itemView.findViewById(R.id.tv_desc_infone_contacts);
     }
 }

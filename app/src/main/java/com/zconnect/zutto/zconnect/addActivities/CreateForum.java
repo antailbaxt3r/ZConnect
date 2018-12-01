@@ -19,7 +19,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.Continuation;
@@ -38,8 +40,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.ChatActivity;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -52,6 +54,8 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import java.io.IOException;
@@ -75,6 +79,9 @@ public class CreateForum extends AppCompatActivity {
     Calendar calendar;
     ProgressDialog progressDialog;
     TextView titleFirstMessage;
+    LinearLayout deleteForumLL;
+
+    private String TAG = CreateForum.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +136,7 @@ public class CreateForum extends AppCompatActivity {
         firstMessage = (MaterialEditText) findViewById(R.id.edit_first_msg_create_forum_alert);
         titleFirstMessage = (TextView) findViewById(R.id.title_first_msg_create_forum_alert);
         done = (FrameLayout) findViewById(R.id.layout_done_content_create_forum);
+        deleteForumLL = (LinearLayout) findViewById(R.id.delete_foruml_layout);
         intentHandle = new IntentHandle();
         mStorage = FirebaseStorage.getInstance().getReference();
         addForumIcon.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +163,7 @@ public class CreateForum extends AppCompatActivity {
 
             titleFirstMessage.setVisibility(View.VISIBLE);
             firstMessage.setVisibility(View.VISIBLE);
+            deleteForumLL.setVisibility(View.GONE);
 
             done.setOnClickListener(new View.OnClickListener() {
 
@@ -180,6 +189,25 @@ public class CreateForum extends AppCompatActivity {
                         newPush.child("PostTimeMillis").setValue(postTimeMillis);
                         newPush.child("UID").setValue(newPush.getKey());
                         newPush.child("tab").setValue(uid);
+
+                        final DatabaseReference userDataRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        userDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
+                                {
+                                    newPush.child("verified").setValue(true);
+                                    databaseReferenceTabsCategories.child(newPush.getKey()).child("verified").setValue(true);
+                                    databaseReferenceHome.child(newPush.getKey()).child("verified").setValue(true);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
 
                         databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
                         databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
@@ -288,6 +316,7 @@ public class CreateForum extends AppCompatActivity {
                                             intent.putExtra("name", catName);
                                             intent.putExtra("tab", uid);
                                             intent.putExtra("key", newPush.getKey());
+                                            GlobalFunctions.addPoints(10);
                                             startActivity(intent);
                                             finish();
                                         } else{ flag = true;}
@@ -325,6 +354,7 @@ public class CreateForum extends AppCompatActivity {
                                             intent.putExtra("name", catName);
                                             intent.putExtra("tab", uid);
                                             intent.putExtra("key", newPush.getKey());
+                                            GlobalFunctions.addPoints(10);
                                             startActivity(intent);
                                             finish();
                                         } else {
@@ -355,7 +385,7 @@ public class CreateForum extends AppCompatActivity {
                             intent.putExtra("tab",uid);
                             intent.putExtra("key",newPush.getKey());
                             startActivity(intent);
-
+                            GlobalFunctions.addPoints(10);
                             finish();
                         }
                     }
@@ -378,6 +408,45 @@ public class CreateForum extends AppCompatActivity {
             final DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(catUid);
             //use for both retrieving data and writing new data
             final DatabaseReference tabsCategoriesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid).child(catUid);
+
+            tabsCategoriesRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                    {
+                        if(snapshot.hasChild("userType") && snapshot.child("userType").getValue().toString().equals(ForumsUserTypeUtilities.KEY_ADMIN))
+                            deleteForumLL.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            final DatabaseReference userDataRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            userDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
+                        deleteForumLL.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            deleteForumLL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "Removing forum started...");
+                    categoriesRef.removeValue();
+                    tabsCategoriesRef.removeValue();
+                    Toast.makeText(CreateForum.this, "Forum successfully deleted", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            });
 
             tabsCategoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -519,8 +588,7 @@ public class CreateForum extends AppCompatActivity {
 
                                 }
                             });
-                        }
-                        else {
+                        } else {
 
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta= new HashMap<>();

@@ -56,15 +56,17 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
+import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 
@@ -432,6 +434,10 @@ public class AddEvent extends BaseActivity {
                                     }
                                 });
 
+                                NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_EVENTS);
+                                numberNotificationForFeatures.setCount();
+                                Log.d("NumberNoti setting for ", FeatureDBName.KEY_EVENTS);
+
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                                 HashMap<String, String> meta= new HashMap<>();
 
@@ -463,29 +469,6 @@ public class AddEvent extends BaseActivity {
 
                                     }
                                 });
-
-                                //Sending Notifications
-                                //Sending Notifications
-//                            FirebaseMessaging.getInstance().subscribeToTopic(key);
-//                            NotificationSender notificationSender=new NotificationSender(key,null,null,eventNameValue,String.valueOf(System.currentTimeMillis()),null,null,KEY_EVENT,false,false,getApplicationContext());
-//                            notificationSender.execute();
-
-                                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-
-                                    }
-
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-
-
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
 
                             } else {
@@ -533,6 +516,10 @@ public class AddEvent extends BaseActivity {
                                 }
                                 newPost.child("EventTimeMillis").setValue(eventTimeMillis);
                                 newPost.child("PostTimeMillis").setValue(postTimeMillis);
+
+                                NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_EVENTS);
+                                numberNotificationForFeatures.setCount();
+                                Log.d("NumberNoti setting for ", FeatureDBName.KEY_EVENTS);
 
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                                 HashMap<String, String> meta= new HashMap<>();
@@ -602,6 +589,7 @@ public class AddEvent extends BaseActivity {
 //                            intent.putExtra("snackbar", "true");
 //                        }
 //                        startActivity(intent);
+                            GlobalFunctions.addPoints(10);
                             finish();
                         }
                         else {

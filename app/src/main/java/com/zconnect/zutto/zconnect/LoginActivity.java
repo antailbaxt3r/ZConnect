@@ -17,7 +17,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,6 +72,10 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     private FirebaseUser mUser;
     String communityCode;
     private String userEmail;
+    @BindView(R.id.check_accept)
+    CheckBox termsCheck;
+    @BindView(R.id.terms_of_use)
+    TextView termsOfUseText;
     private Vector<CommunitiesItemFormat> CommunitiesEmails = new Vector<>();;
 
 
@@ -94,6 +100,8 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
         mGuestLogInBtn.setOnClickListener(this);
         mGuestLogInBtn.setVisibility(View.GONE);
+
+        termsOfUseText.setOnClickListener(this);
 //        mGoogleSignInBtn.setOnClickListener(this);
         mGoogleSignInLayout.setOnClickListener(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -304,7 +312,9 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 CommunitiesEmails.clear();
                 for(DataSnapshot shot : dataSnapshot.getChildren()) {
                     try {
-                        CommunitiesEmails.add(shot.getValue(CommunitiesItemFormat.class));
+                        if (shot.hasChild("location")) {
+                            CommunitiesEmails.add(shot.getValue(CommunitiesItemFormat.class));
+                        }
                     }catch (Exception e){
 
                     }
@@ -346,7 +356,11 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                     snackbar.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                     snackbar.show();
                 } else {
-                    launchGoogleSignInIntent();
+                    if(termsCheck.isChecked()) {
+                        launchGoogleSignInIntent();
+                    }else {
+                        Toast.makeText(this, "Please accept terms of use before signing in", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
             }
@@ -355,6 +369,11 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 startActivity(i);
                 setGuestLoginPref(false);// need to work on this
                 finish(); /*Make Sure HomeActivity exists*/
+                break;
+            }
+            case R.id.terms_of_use: {
+                Intent i = new Intent(LoginActivity.this,TermsAndConditions.class);
+                startActivity(i);
                 break;
             }
         }

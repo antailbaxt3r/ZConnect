@@ -409,11 +409,11 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         }
         if (userName == null
                 || userEmail == null
-                || userMobile.length() != 10 || userWhatsapp.length() != 10 || userInfoneType ==null || ((photoUri == null)&& mImageUri==null)) {
+                || userMobile.length() <10 || userWhatsapp.length() <10 || userInfoneType ==null || ((photoUri == null)&& mImageUri==null)) {
 
-            if(userMobile.length()!=10 || userWhatsapp.length() != 10)
+            if(userMobile.length()<10 || userWhatsapp.length() <10)
             {
-                Snackbar snackbar = Snackbar.make(userAboutText, "10 digit number required", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(userAboutText, "Please check your contact details", Snackbar.LENGTH_LONG);
                 snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
                 snackbar.show();
             }
@@ -461,6 +461,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             }
             newPost.child("skillTags").setValue(userSkillTags);
             newPost.child("userUID").setValue(mUser.getUid().toString());
+            newPost.child("userPoints").setValue("0");
             newPost.child("infoneType").setValue(userInfoneType);
             newPost.child("contactHidden").setValue(contactHidden);
 
@@ -562,6 +563,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                             if (flag){
                                 updateCurrentUser();
                                 mProgress.dismiss();
+
+                                if (newUser) {
+                                    Intent intent = new Intent(getApplicationContext(), ExploreForumsActivity.class);
+                                    intent.putExtra("newUser", true);
+                                    startActivity(intent);
+                                }
                                 finish();
                             }else {
                                 flag=true;
@@ -608,6 +615,11 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                                 updateCurrentUser();
                                 mProgress.dismiss();
 
+                                if (newUser) {
+                                    Intent intent = new Intent(getApplicationContext(), ExploreForumsActivity.class);
+                                    intent.putExtra("newUser", true);
+                                    startActivity(intent);
+                                }
                                 finish();
                             }else {
                                 flag=true;
@@ -635,6 +647,10 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                     newContactNumRef.child("imageurl").setValue(photoUri2.toString());
                     newContactRef.child("thumbnail").setValue(photoUri2.toString());
                     newContactNumRef.child("thumbnail").setValue(photoUri2.toString());
+
+                    Intent intent = new Intent(this, ExploreForumsActivity.class);
+                    intent.putExtra("newUser", true);
+                    startActivity(intent);
 
                 }
                 updateCurrentUser();

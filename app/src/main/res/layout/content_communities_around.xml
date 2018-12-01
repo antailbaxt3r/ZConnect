@@ -28,7 +28,7 @@
                 android:textAlignment="center"
                 android:textSize="18sp"
                 android:visibility="gone"
-                android:text="Sorry, no ZConnect communities in your 2km radius | Will be launching soon"/>
+                android:text="Sorry, no ZConnect communities in your area | Will be launching soon"/>
 
         </RelativeLayout>
 

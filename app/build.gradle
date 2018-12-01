@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.zconnect.zutto.zconnect"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 19
-        versionName "6.1"
+        versionCode 23
+        versionName "7.2"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -83,6 +83,7 @@ dependencies {
     api('com.weiwangcn.betterspinner:library-material:1.1.0') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
+    implementation 'com.linkedin.android.spyglass:spyglass:1.4.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

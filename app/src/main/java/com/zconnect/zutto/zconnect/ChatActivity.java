@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,6 +19,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +52,7 @@ import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
@@ -73,6 +77,8 @@ import java.util.HashMap;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class ChatActivity extends BaseActivity {
+
+    private String TAG = ChatActivity.class.getSimpleName();
 
     private static final int GALLERY_REQUEST = 7;
     private String ref  = "Misc";
@@ -227,7 +233,6 @@ public class ChatActivity extends BaseActivity {
                                             counterPush.pushValues();
 
                                             FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
-
                                         }
 
                                         @Override
@@ -258,58 +263,60 @@ public class ChatActivity extends BaseActivity {
                 forumCategory.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
-                        setToolbarTitle(dataSnapshot.child("name").getValue().toString());
+                        try {
+                            setToolbarTitle(dataSnapshot.child("name").getValue().toString());
 
-                        if (!dataSnapshot.child("users").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-                            joinButton.setVisibility(View.VISIBLE);
-                            joinLayout.setVisibility(View.VISIBLE);
-                            chatLayout.setVisibility(View.GONE);
+                            if (!dataSnapshot.child("users").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                joinButton.setVisibility(View.VISIBLE);
+                                joinLayout.setVisibility(View.VISIBLE);
+                                chatLayout.setVisibility(View.GONE);
 
-                            joinButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta= new HashMap<>();
-                                    meta.put("type","fromChat");
-                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_JOINED);
-                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
-                                    counterItemFormat.setMeta(meta);
-                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                                    counterPush.pushValues();
-                                    final UsersListItemFormat userDetails = new UsersListItemFormat();
-                                    DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                joinButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                        HashMap<String, String> meta= new HashMap<>();
+                                        meta.put("type","fromChat");
+                                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_JOINED);
+                                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                        counterItemFormat.setMeta(meta);
+                                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                        counterPush.pushValues();
+                                        final UsersListItemFormat userDetails = new UsersListItemFormat();
+                                        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                    user.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot2) {
-                                            UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
-                                            userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
-                                            userDetails.setName(userItemFormat.getUsername());
-                                            userDetails.setPhonenumber(userItemFormat.getMobileNumber());
-                                            userDetails.setUserUID(userItemFormat.getUserUID());
-                                            userDetails.setUserType(ForumsUserTypeUtilities.KEY_USER);
-                                            forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
+                                        user.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot2) {
+                                                UserItemFormat userItemFormat = dataSnapshot2.getValue(UserItemFormat.class);
+                                                userDetails.setImageThumb(userItemFormat.getImageURLThumbnail());
+                                                userDetails.setName(userItemFormat.getUsername());
+                                                userDetails.setPhonenumber(userItemFormat.getMobileNumber());
+                                                userDetails.setUserUID(userItemFormat.getUserUID());
+                                                userDetails.setUserType(ForumsUserTypeUtilities.KEY_USER);
+                                                forumCategory.child("users").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                                            CounterManager.forumsJoinCategory(tab,key);
-                                            FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
+                                                FirebaseMessaging.getInstance().subscribeToTopic(getIntent().getStringExtra("key"));
 //
 //                                            NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("key"),dataSnapshot.child("name").getValue().toString(),FirebaseAuth.getInstance().getCurrentUser().getUid(),null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_FORUMS_JOIN,false,true,ChatActivity.this);
 //                                            notificationSender.execute();
-                                        }
+                                            }
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
 
-                                        }
-                                    });
-                                }
-                            });
-                        }else {
-                            joinButton.setVisibility(View.GONE);
-                            joinLayout.setVisibility(View.GONE);
-                            chatLayout.setVisibility(View.VISIBLE);
-                        }
+                                            }
+                                        });
+                                    }
+                                });
+                            }else {
+                                joinButton.setVisibility(View.GONE);
+                                joinLayout.setVisibility(View.GONE);
+                                chatLayout.setVisibility(View.VISIBLE);
+                            }
+                        }catch (Exception e){}
+
                     }
 
                     @Override
@@ -442,6 +449,7 @@ public class ChatActivity extends BaseActivity {
                 message.setImageThumb(userItem.getImageURLThumbnail());
                 message.setMessage("\""+text+"\"");
                 message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                GlobalFunctions.addPoints(2);
                 databaseReference.child("Chat").push().setValue(message);
                 if (type.equals("forums")){
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this,userItem.getUserUID());
@@ -580,7 +588,7 @@ public class ChatActivity extends BaseActivity {
                                 message.setImageThumb(userItem.getImageURLThumbnail());
                                 message.setMessage(" \uD83D\uDCF7 Image ");
                                 message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
-
+                                GlobalFunctions.addPoints(5);
                                 databaseReference.child("Chat").push().setValue(message);
                                 if (type.equals("forums")){
                                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
@@ -748,15 +756,76 @@ public class ChatActivity extends BaseActivity {
         }
 
         if(item.getItemId() == R.id.action_edit_forum) {
-            CounterItemFormat counterItemFormat = new CounterItemFormat();
-            HashMap<String, String> meta= new HashMap<>();
-            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDIT_FORUM_OPEN);
-            counterItemFormat.setTimestamp(System.currentTimeMillis());
-            counterItemFormat.setMeta(meta);
-            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-            counterPush.pushValues();
-            launchEditForum();
+            final String tabuid = getIntent().getStringExtra("tab");
+            final String catuid = getIntent().getStringExtra("key");
+            final DatabaseReference userRefInCat = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tabuid).child(catuid).child("users").child(user.getUid());
+            mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
+                    {
+                        Log.d(TAG, "Community Admin");
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDIT_FORUM_OPEN);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+                        launchEditForum();
+                    }
+                    else
+                    {
+                        userRefInCat.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Log.d(TAG, dataSnapshot.getRef().toString());
+                                if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(ForumsUserTypeUtilities.KEY_ADMIN))
+                                {
+                                    Log.d(TAG, "Forum Admin");
+                                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                    HashMap<String, String> meta= new HashMap<>();
+                                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                    counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_EDIT_FORUM_OPEN);
+                                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                    counterItemFormat.setMeta(meta);
+                                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                    counterPush.pushValues();
+                                    launchEditForum();
+                                }
+                                else
+                                {
+                                    Log.d(TAG, "Normal User");
+                                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ChatActivity.this);
+                                    builder.setMessage("Only Forum Admins and Community Admins can edit a forum")
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Log.d(TAG, "Clicked Ok");
+                                                }
+                                            });
+                                    final android.app.AlertDialog dialog = builder.create();
+                                    dialog.setCancelable(true);
+                                    dialog.show();
+//                                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
         }
 
         return super.onOptionsItemSelected(item);

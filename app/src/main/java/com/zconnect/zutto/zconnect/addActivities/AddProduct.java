@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,16 +48,18 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
+import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 import java.io.IOException;
@@ -262,17 +265,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
         final String category = spinner1.getSelectedItem().toString();
-        mUsername.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                sellerName = (String) dataSnapshot.child(userId).child("Username").getValue();
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
 
         if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue) || negotiable.equals("2")) && mImageUri != null && category != null && !negotiable.equals("") && negotiableCheckBox!=null) {
             final StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
@@ -302,7 +294,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                         newPost.child("ProductDescription").setValue(productDescriptionValue);
                         newPost.child("Image").setValue(downloadUri != null ? downloadUri.toString() : null);
                         newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
-                        newPost.child("SellerUsername").setValue(sellerName);
+
                         newPost.child("userID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         newPost.child("Price").setValue(productPriceValue);
                         newPost.child("negotiable").setValue(negotiable);
@@ -316,6 +308,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                                 postedBy.child("Username").setValue(user.getUsername());
                                 postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
                                 newPost.child("Phone_no").setValue(user.getMobileNumber());
+                                newPost.child("SellerUsername").setValue(user.getUsername());
                             }
 
                             @Override
@@ -323,6 +316,10 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 
                             }
                         });
+
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_STOREROOM);
+                        numberNotificationForFeatures.setCount();
+                        Log.d("NumberNoti setting for ", FeatureDBName.KEY_STOREROOM);
 
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
                         HashMap<String, String> meta= new HashMap<>();
@@ -380,9 +377,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                         });
 
 
-
-
-
                         // Adding stats
 
                         mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -405,7 +399,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 
                             }
                         });
-                        CounterManager.StoroomAddProduct(category);
+                        GlobalFunctions.addPoints(10);
                         mProgress.dismiss();
                         finish();
                     }

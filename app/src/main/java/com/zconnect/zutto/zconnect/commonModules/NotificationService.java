@@ -39,6 +39,7 @@ import com.zconnect.zutto.zconnect.CabPoolListOfPeople;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
+import com.zconnect.zutto.zconnect.Notices;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
@@ -178,6 +179,8 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED: statusLikeNotification();
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD: noticeAddNotification();
+                break;
         }
 
     }
@@ -185,6 +188,54 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
+    }
+
+
+    private void noticeAddNotification() {
+        final String communityName = data.get("communityName").toString();
+        final String noticeName = data.get("noticeName").toString();
+        final String noticeKey = data.get("noticeKey").toString();
+        final String noticeImage = data.get("noticeImage").toString();
+        final String userName = data.get("userName").toString();
+        final String userImage = data.get("userImage").toString();
+
+        Bitmap bitmapNotice = null;
+        try {
+            URL url = new URL(noticeImage);
+            bitmapNotice = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+
+        NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
+            style.setBigContentTitle(communityName).bigPicture(bitmapNotice).setBigContentTitle(communityName);
+
+            Bitmap bitmap = null;
+
+            try {
+                bitmap = getRoundedBitmap(userImage);
+            }catch (Exception e){}
+
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID);
+
+            if(bitmap!=null){
+                mBuilder.setLargeIcon(bitmap);
+            }
+            mBuilder.setSmallIcon(R.drawable.baseline_insert_photo_white_36)
+                    .setSound(defaultSoundUri)
+                    .setStyle(style)
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                    .setAutoCancel(true)
+                    .setContentTitle(communityName)
+                    .setContentText("A new notice for " + noticeName + "is added, click to check");
+
+            Intent intentInfoneList = new Intent(NotificationService.this, Notices.class);
+            PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intentInfoneList, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(intent1);
+
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(20, mBuilder.build());
     }
 
     private void statusLikeNotification() {

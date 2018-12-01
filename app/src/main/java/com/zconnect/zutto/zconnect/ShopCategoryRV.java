@@ -77,7 +77,6 @@ public class ShopCategoryRV extends RecyclerView.Adapter<ShopCategoryRV.ViewHold
                 public void onClick(View view) {
                     String cat = shopCategoryItemCategories.get(getAdapterPosition()).getCategory();
                     Intent intent = new Intent(context, ShopList.class);
-                    CounterManager.shopCategoryOpen(cat);
                     intent.putExtra("Category", cat);
                     context.startActivity(intent);
                     if (context instanceof ShopList) {

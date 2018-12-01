@@ -36,107 +36,181 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/colorPrimary"
                 android:paddingTop="10dp"
-                android:paddingBottom="30dp">
+                android:paddingBottom="30dp"
+                android:padding="@dimen/padding_small"
+                android:background="@color/colorPrimary">
                 <TextView
                     android:id="@+id/contact_details_name_editText"
-                    android:gravity="center"
+                    android:gravity="start"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clickable="false"
                     android:ems="10"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
                     android:textColorHint="@color/secondaryText"
-                    android:textSize="20sp"/>
-                <com.facebook.drawee.view.SimpleDraweeView
-                    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/contact_details_display_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/profile_avatar_circle"
-                    fresco:actualImageScaleType="centerCrop"
-                    fresco:roundAsCircle="true"
-                    fresco:roundingBorderPadding="5dp"/>
+                    android:textSize="16sp"/>
                 <LinearLayout
-                    android:id="@+id/ll_love_like"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20dp">
-                    <LinearLayout
+                    android:layout_marginTop="@dimen/margin_small">
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/contact_details_display_image"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-                        <ImageButton
-                            android:id="@+id/btn_like"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@android:color/transparent"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:src="@drawable/like" />
-
-                        <TextView
-                            android:id="@+id/like_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="15dp"
-                            android:layout_weight="1.8"
-                            android:gravity="center_vertical"
-                            android:minWidth="32dp"
-                            android:text="0 Likes"
-                            android:textColor="@color/white"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/profile_avatar_circle"
+                        fresco:actualImageScaleType="centerCrop"
+                        fresco:roundAsCircle="true"
+                        fresco:roundingBorderPadding="5dp"/>
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-                        <ImageButton
-                            android:id="@+id/btn_love"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="15dp"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:src="@drawable/heart" />
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="center"
+                        android:gravity="center">
+                        <LinearLayout
+                            android:id="@+id/ll_love_like"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:weightSum="1">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_weight="0.33"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_gravity="center">
+                                <TextView
+                                    android:id="@+id/point_num"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textSize="18sp"
+                                    android:textColor="@color/white"
+                                    android:textStyle="bold" />
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+                                    <TextView
+                                        android:id="@+id/point_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1.8"
+                                        android:gravity="center_vertical"
+                                        android:minWidth="32dp"
+                                        android:text="Points"
+                                        android:textColor="@color/white"
+                                        android:textSize="14sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_weight="0.33"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_gravity="center">
+                                <TextView
+                                    android:id="@+id/like_num"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textSize="18sp"
+                                    android:textColor="@color/white"
+                                    android:textStyle="bold"/>
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+                                    <ImageButton
+                                        android:id="@+id/btn_like"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:background="@android:color/transparent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:src="@drawable/like" />
+                                    <TextView
+                                        android:id="@+id/like_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginStart="10dp"
+                                        android:layout_weight="1.8"
+                                        android:gravity="center_vertical"
+                                        android:minWidth="32dp"
+                                        android:text="Likes"
+                                        android:textColor="@color/white"
+                                        android:textSize="14sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_weight="0.33"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:foregroundGravity="center">
+                                <TextView
+                                    android:id="@+id/love_num"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textSize="18sp"
+                                    android:textColor="@color/white"
+                                    android:textStyle="bold"/>
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+                                    <ImageButton
+                                        android:id="@+id/btn_love"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:background="@android:color/transparent"
+                                        android:src="@drawable/heart" />
 
-                        <TextView
-                            android:id="@+id/love_text"
+                                    <TextView
+                                        android:id="@+id/love_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginStart="10dp"
+                                        android:layout_weight="1.8"
+                                        android:gravity="center_vertical"
+                                        android:minWidth="32dp"
+                                        android:text="Loves"
+                                        android:textColor="@color/white"
+                                        android:textSize="14sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <Button
+                            android:id="@+id/user_type_content_phonebook_details"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="15dp"
-                            android:layout_weight="1.8"
-                            android:gravity="center_vertical"
-                            android:minWidth="32dp"
-                            android:text="0 Loves"
-                            android:textColor="@color/white"
-                            android:textSize="18sp" />
+                            android:layout_height="25dp"
+                            android:text="User Type"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:textColor="@color/primaryText"
+                            android:background="@drawable/round_button_simple"
+                            android:textSize="12sp"
+                            android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
+                            android:paddingStart="@dimen/button_padding_start_end"
+                            android:paddingEnd="@dimen/button_padding_start_end"
+                            style="?android:attr/borderlessButtonStyle"/>
                     </LinearLayout>
                 </LinearLayout>
-                <Button
-                    android:id="@+id/user_type_content_phonebook_details"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:text="User Type"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:textColor="@color/primaryText"
-                    android:background="@drawable/round_button_simple"
-                    android:backgroundTint="@color/white"
-                    android:textSize="12sp"
-                    android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
-                    android:paddingStart="@dimen/button_padding_start_end"
-                    android:paddingEnd="@dimen/button_padding_start_end"
-                    style="?android:attr/borderlessButtonStyle"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -319,7 +393,5 @@
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
-
-        <!--name -->
 </LinearLayout>
 </ScrollView>

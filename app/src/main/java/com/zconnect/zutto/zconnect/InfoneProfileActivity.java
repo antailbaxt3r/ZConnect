@@ -59,6 +59,7 @@ public class InfoneProfileActivity extends BaseActivity {
 
     /*UI elements*/
     private MaterialEditText nameEt;
+    private TextView descTv;
     private String userType="No";
     //private TextView desc;
     MaterialEditText phone1Et;
@@ -103,7 +104,7 @@ public class InfoneProfileActivity extends BaseActivity {
     private Button viewProfileButton;
 
     private final String TAG = getClass().getSimpleName();
-    private String name;
+    private String name, desc;
     LinearLayout linearLayout;
     ProgressBar progressBar;
 
@@ -141,6 +142,7 @@ public class InfoneProfileActivity extends BaseActivity {
         linearLayout.setVisibility(View.GONE);
 
         nameEt = (MaterialEditText) findViewById(R.id.et_name_infone_profile);
+        descTv = (TextView) findViewById(R.id.tv_desc_infone_profile);
         profileImage = (SimpleDraweeView) findViewById(R.id.image_profile_infone);
         phone1Et = (MaterialEditText) findViewById(R.id.et_phone1_infone_profile);
         phone1EtCallbtn = (ImageButton) findViewById(R.id.infone_profile_callbtn);
@@ -182,8 +184,18 @@ public class InfoneProfileActivity extends BaseActivity {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 name = dataSnapshot.child("name").getValue(String.class);
+                desc = dataSnapshot.child("desc").getValue(String.class);
+
                 nameEt.setText(name);
                 toolbar.setTitle(name);
+
+                if(desc==null)
+                    descTv.setVisibility(View.GONE);
+                else
+                {
+                    descTv.setVisibility(View.VISIBLE);
+                    descTv.setText(desc);
+                }
 
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);

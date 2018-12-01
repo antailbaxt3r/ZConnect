@@ -203,9 +203,30 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT_URL:
                 notificationWithoutImage(ND.getItemURL(), ND.getItemTitle(), ND.getItemMessage());
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD:
+                noticeAddNotification( ND.getCommunityName(),ND.getItemName(),ND.getItemKey(),ND.getItemImage(), ND.getUserName(), ND.getUserImage());
+                break;
         }
 
         return null;
+    }
+
+    private void noticeAddNotification(String communityName, String noticeName,String noticeKey,String noticeImage,String userName,String userImage) {
+
+        creator = new RemoteMessage.Builder("data");
+
+        creator.addData("communityName",communityName);
+        creator.addData("noticeName",noticeName);
+        creator.addData("noticeKey",noticeKey);
+        creator.addData("noticeImage",noticeImage);
+
+        creator.addData("userName", userName);
+        creator.addData("userImage", userImage);
+
+        creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD);
+        creator.addData("userKey",userKey);
+
+        compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD_FREQUENCY_STR);
     }
 
     private void newUserRejectNotification(String communityName,String receiverKey) {
@@ -620,39 +641,33 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         DB_NORMAL.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                normal_frequency = dataSnapshot.getValue(Long.class);
 
-                DB_CURRENT.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        current_frequency = dataSnapshot.getValue(Long.class);
+                    normal_frequency = dataSnapshot.getValue(Long.class);
 
-                        if(current_frequency == normal_frequency){
+                    DB_CURRENT.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            try {
+                                current_frequency = dataSnapshot.getValue(Long.class);
 
-                            DB_CURRENT.setValue(Long.valueOf(0));
+                                if(current_frequency == normal_frequency){
 
-                            sendNotification(true,notificationIdentifier + communityReference);
+                                    DB_CURRENT.setValue(Long.valueOf(0));
 
-//                            if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD)){
-//                                cabAddNotiication();
-//                            }else if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD)){
-//                                eventAddNotification();
-//                            }else if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD)){
-//                                productAddNotification();
-//                            }else if(notificationIdentifier.equals(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD)){
-//                                forumAddNotification();
-//                            }
+                                    sendNotification(true,notificationIdentifier + communityReference);
 
-                        }else{
-                            DB_CURRENT.setValue(current_frequency + 1);
+                                }else{
+                                    DB_CURRENT.setValue(current_frequency + 1);
+                                }
+                            }catch (Exception e){}
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+
 
             }
 

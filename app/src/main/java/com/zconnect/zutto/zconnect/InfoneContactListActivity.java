@@ -132,10 +132,11 @@ public class InfoneContactListActivity extends AppCompatActivity {
                         String name = childSnapshot.child("name").getValue(String.class);
                         String imageThumb = childSnapshot.child("thumbnail").getValue(String.class);
                         String infoneUserId = childSnapshot.getKey();
-
+                        String desc = childSnapshot.child("desc").getValue(String.class);
                         temp.setName(name);
                         temp.setImageThumb(imageThumb);
                         temp.setInfoneUserId(infoneUserId);
+                        temp.setDesc(desc);
 
 
                         Log.e("tt", "data " + name);

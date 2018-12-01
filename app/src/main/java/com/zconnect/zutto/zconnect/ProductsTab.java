@@ -286,7 +286,6 @@ public class ProductsTab extends Fragment {
 //                    if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
 //                        shortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
 //                        shortList.setText("Shortlisted");
-//                        CounterManager.StoroomShortList(category, key);
 //                        Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
 //                        shortList.setTypeface(customfont);
 //                        //ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.teal600));
@@ -300,7 +299,6 @@ public class ProductsTab extends Fragment {
 ////                        mReserve.setChecked(false);
 ////                        mReserve.setText("Shortlist");
 ////                        ReserveStatus.setTextColor(ContextCompat.getColor(ctx, R.color.black));
-//                        CounterManager.StoroomShortListDelete(category, key);
 //                    }
 //                    shortList.setOnClickListener(mListener);
 //
@@ -413,7 +411,6 @@ public class ProductsTab extends Fragment {
 //            post_seller_number.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
-//                    CounterManager.StoroomCall(category);
 //                    ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 //                }
 //            });

@@ -1,14 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/card_background_color"
+    android:orientation="vertical"
     android:layout_marginBottom="@dimen/margin_xx_small">
+
+    <RelativeLayout
+        android:id="@+id/leader_board_layout"
+        android:background="@color/hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/leader_board_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:duplicateParentState="true"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="15dp"
+            android:textSize="14sp"
+            android:text="Community Leader Board"/>
+
+        <TextView
+            android:id="@+id/total_members"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:textSize="14sp"
+            android:text="100+ members"/>
+
+    </RelativeLayout>
+
 
     <LinearLayout
         android:id="@+id/recents_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/leader_board_layout"
         android:gravity="center"
         android:padding="@dimen/padding_small">
         <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
@@ -31,4 +70,4 @@
             </TextView>
         </LinearLayout>
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

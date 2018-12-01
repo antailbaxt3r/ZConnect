@@ -31,7 +31,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
@@ -190,7 +189,7 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
             DateTime.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    CounterManager.eventReminderCounter(key);
+
                     addReminderInCalendar(eventName, eventDescription, time, mView.getContext());
 
                 }
@@ -333,7 +332,7 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
                 public void onClick(View v) {
                     Intent editIntent = new Intent(mView.getContext(), AddEvent.class);
                     editIntent.putExtra("eventID", EventID);
-                    CounterManager.eventEdit(EventID, "Trending");
+
                     mView.getContext().startActivity(editIntent);
                 }
             });
@@ -391,7 +390,6 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
                     if(!flag){
                         Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put(user.getUid(), user.getUid());
-                        CounterManager.eventBoost(key, "Trending-Out");
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
 
 
@@ -482,11 +480,11 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
         if(eventDesc.length() < 55) {
             desc.setText(eventDesc);
         }
-        else if(eventDesc.length() > 55) {
+        else {
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(View view) {
-                    CounterManager.eventOpenCounter(key);
+
                     Intent i = new Intent(mView.getContext(), OpenEventDetail.class);
                     i.putExtra("id", key);
                     mView.getContext().startActivity(i);

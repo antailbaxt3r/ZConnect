@@ -205,7 +205,7 @@
 
 
     <!--invites related strings-->
-    <string name="invitation_title">Welcome to ZConnect</string>
+    <string name="invitation_title">Invite Friends</string>
     <string name="invitation_message">Hey, check out this amazing app! ZConnect is a social network exclusively for our community.</string>
     <string name="invitation_deep_link">https://zconnect.page.link/Tbeh</string>
     <string name="invitation_custom_image"></string>
@@ -223,4 +223,13 @@
 
     <!--shared preferences-->
     <string name="referredAnonymousUser">referredAnonymousUser</string>
+
+    <string name="user_mentions_pattern_uid_start">&amp;//&amp;</string>
+    <string name="user_mentions_pattern_username_start">/&amp;&amp;/</string>
+
+
+    <!--admin related-->
+    <string name="excl_forum_admin">Only community and forum admins can see this.</string>
+    <string name="title_activity_leader_board">Community Leaders</string>
+    <string name="explorer_forum">Explore Forums</string>
 </resources>

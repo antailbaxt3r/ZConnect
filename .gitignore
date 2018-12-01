@@ -134,3 +134,7 @@ fabric.properties
 /.idea/caches/
 /.idea/misc.xml
 /.idea/gradle.xml
+/.idea/runConfigurations.xml
+.idea/runConfigurations.xml
+v5.6/
+v6.0/

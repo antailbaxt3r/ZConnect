@@ -457,8 +457,33 @@
         <activity
             android:name=".pools.PoolActivity"
             android:exported="true" />
+        <activity android:name=".pools.PoolItemDetailActivity" />
         <activity android:name=".pools.AddPoolItemActivity" />
-        <activity android:name=".pools.PoolItemDetailActivity"></activity>
+        <activity
+            android:name=".LeaderBoard"
+            android:label="@string/title_activity_leader_board"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Notices"
+            android:label="Notices"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".addActivities.AddNotices"
+            android:label="Add Notices"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ExploreForumsActivity"
+            android:label="Explore Forums"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".TermsAndConditions"
+            android:label="Terms and Conditions"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

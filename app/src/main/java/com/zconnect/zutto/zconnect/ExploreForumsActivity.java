@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -8,11 +10,17 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneTabsItemFormat;
@@ -40,7 +49,7 @@ import butterknife.ButterKnife;
 import static android.content.Context.MODE_PRIVATE;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
-public class ForumsActivity extends Fragment{
+public class ExploreForumsActivity extends BaseActivity{
 
     public static Vector<InfoneTabsItemFormat> infoneTabItemFormats = new Vector<>();
     private final String TAG = getClass().getSimpleName();
@@ -62,36 +71,52 @@ public class ForumsActivity extends Fragment{
     public String communityReference;
 
     ViewPagerAdapter adapter;
-    private Boolean guestMode;
+    private Boolean newUser = false;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setHasOptionsMenu(true);
-    }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
+        setContentView(R.layout.activity_infone);
 
-        Fresco.initialize(getContext());
-        View v = inflater.inflate(R.layout.activity_infone, container, false);
-        ButterKnife.bind(this, v);
+        ButterKnife.bind(this);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(toolbar);
 
 
-        adapter = new ViewPagerAdapter(getChildFragmentManager());
-        communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            getWindow().setStatusBarColor(colorDarkPrimary);
+            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
+        showBackButton();
+
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
         mAuth = FirebaseAuth.getInstance();
 
         tabDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabs");
-      
+
         mAuth = FirebaseAuth.getInstance();
-        SharedPreferences guestModePref = getContext().getSharedPreferences("guestMode", MODE_PRIVATE);
-        guestMode = guestModePref.getBoolean("mode", false);
 
         tabDbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -101,7 +126,6 @@ public class ForumsActivity extends Fragment{
                     infoneTabItemFormats.add(shot.getValue(InfoneTabsItemFormat.class));
                 }
                 adapter.notifyDataSetChanged();
-
                 setupViewPager(viewPager);
             }
 
@@ -111,59 +135,70 @@ public class ForumsActivity extends Fragment{
             }
         });
 
-        if (!guestMode) {
-            mUser = mAuth.getCurrentUser();
+        mUser = mAuth.getCurrentUser();
 
-            mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid()).child("Stats");
-            mFeaturesStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
-            mPhoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
+        mUserStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid()).child("Stats");
+        mFeaturesStatsDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
+        mPhoneBookDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Phonebook");
 
-            mFeaturesStatsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+        mFeaturesStatsDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    try {
-                        TotalNumbers = dataSnapshot.child("TotalNumbers").getValue(Integer.class);
-                    } catch (Exception e) {
-                        TotalNumbers = 0;
-                    }
-
-                    Map<String, Object> taskMap = new HashMap<>();
-                    taskMap.put("TotalNumbers", TotalNumbers);
-                    mUserStatsDbRef.updateChildren(taskMap);
+                try {
+                    TotalNumbers = dataSnapshot.child("TotalNumbers").getValue(Integer.class);
+                } catch (Exception e) {
+                    TotalNumbers = 0;
                 }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e(TAG, "onCancelled: ", databaseError.toException());
-                }
-            });
-        }
-      
+                Map<String, Object> taskMap = new HashMap<>();
+                taskMap.put("TotalNumbers", TotalNumbers);
+                mUserStatsDbRef.updateChildren(taskMap);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "onCancelled: ", databaseError.toException());
+            }
+        });
+
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         //Setup tabLayout with viewpager
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(1);
-
-        return v;
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu_phonebook, menu);
-//    }
-//
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.action_search_menu_phonebook) {
-//            Intent phoneBookSearchIntent = new Intent(getContext(), PhonebookSearch.class);
-//            startActivity(phoneBookSearchIntent);
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_explore_forums, menu);
+
+        if (getIntent().hasExtra("newUser")) {
+            newUser = getIntent().getBooleanExtra("newUser",false);
+
+            MenuItem item = menu.findItem(R.id.action_done);
+            if(newUser) {
+                item.setVisible(true);
+            }else {
+                item.setVisible(false);
+            }
+        }else {
+            MenuItem item = menu.findItem(R.id.action_done);
+            item.setVisible(false);
+        }
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_done) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     public void setupViewPager(final ViewPager viewPager) {
 
@@ -171,6 +206,7 @@ public class ForumsActivity extends Fragment{
             Fragment fragment = new ForumsFragment();
             Bundle bundle = new Bundle();
             bundle.putString("UID", infoneTabItemFormats.get(i).getUID());
+            bundle.putBoolean("newUser",newUser);
             fragment.setArguments(bundle);
             adapter.addFragment(fragment, infoneTabItemFormats.get(i).getName());
         }
@@ -205,24 +241,6 @@ public class ForumsActivity extends Fragment{
         });
     }
 
-//    public void increaseCount(boolean status, int position) {
-//        if (!status) {
-//            if (position == 0)
-//                CounterManager.infoneOpenTab("Admin");
-//            else if (position == 1)
-//                CounterManager.infoneOpenTab("Students");
-//            else if (position == 2)
-//                CounterManager.infoneOpenTab("others");
-//            else if (position == 3) {
-//                CounterManager.infoneOpenTab("AnonymousMessages");
-//            }
-//        } else {
-//            if (position == 0)
-//                CounterManager.infoneOpenTab("Admin");
-//            else if (position == 1)
-//                CounterManager.infoneOpenTab("others");
-//        }
-//    }
 
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {

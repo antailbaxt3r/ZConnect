@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
@@ -48,6 +48,8 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 
 public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContactsRVViewHolder> {
 
+    private String TAG = InfoneContactsRVAdpater.class.getSimpleName();
+
     Context context;
     ArrayList<InfoneContactsRVItem> infoneContactsRVItems;
     String catId;
@@ -73,6 +75,10 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
 
         holder.nametv.setText(infoneContactsRVItems.get(position).getName());
         holder.viewstv.setText(infoneContactsRVItems.get(position).getViews());
+        if(infoneContactsRVItems.get(position).getDesc() != null)
+        {
+            holder.desctv.setText(infoneContactsRVItems.get(position).getDesc());
+        }
         if (infoneContactsRVItems.get(position).getImageThumb() != null) {
             Uri imageuri = Uri.parse(infoneContactsRVItems.get(position).getImageThumb());
             holder.userAvatar.setImageURI(imageuri);
@@ -85,7 +91,6 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                 if(infoneContactsRVItems.get(position).getContactHidden()){
                     createAlertForRequest(infoneContactsRVItems.get(position).getInfoneUserId(),currentUser);
                 }else {
-                    CounterManager.infoneCallContact();
                     callOptionsDialog(phoneNums);
                 }
             }

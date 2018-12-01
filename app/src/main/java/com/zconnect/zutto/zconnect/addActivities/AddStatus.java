@@ -44,8 +44,8 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.Event;
@@ -226,7 +226,7 @@ public class AddStatus extends BaseActivity {
                             newMessage.child("PostedBy").child("UID").setValue(user.getUserUID());
                             newMessage.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
 //                            FirebaseMessaging.getInstance().subscribeToTopic(key);
-                            CounterManager.publicStatusAdd(anonymousCheck.isChecked());
+
                         }
 
                         @Override
@@ -256,7 +256,7 @@ public class AddStatus extends BaseActivity {
                                 {
                                     Uri downloadUri = task.getResult();
                                     newMessage.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
-
+                                    GlobalFunctions.addPoints(10);
                                     mProgress.dismiss();
 
                                     CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -268,6 +268,7 @@ public class AddStatus extends BaseActivity {
                                     counterItemFormat.setMeta(meta);
                                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                     counterPush.pushValues();
+
                                     finish();
                                 }
                                 else {
@@ -293,6 +294,7 @@ public class AddStatus extends BaseActivity {
                         counterPush.pushValues();
 
                         newMessage.child("imageurl").setValue(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS);
+                        GlobalFunctions.addPoints(5);
                         mProgress.dismiss();
                         finish();
                     }

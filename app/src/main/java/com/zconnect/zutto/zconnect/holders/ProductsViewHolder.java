@@ -19,7 +19,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.zconnect.zutto.zconnect.CounterManager;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
@@ -111,7 +110,6 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                 intent.putExtra("key", key);
                 mView.getContext().startActivity(intent);
 
-                CounterManager.StoroomOpenProduct(key);
 
             }
         });
@@ -147,7 +145,6 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                                 StoreRoom.child(key).child("UsersReserved").child(mAuth.getCurrentUser().getUid()).removeValue();
 //                                productShortList.setText("ShortlistedPeopleList");
                                 flag = false;
-                               // CounterManager.StoroomShortListDelete(category, key);
                                 productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
 //                                productShortList.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.curvedradiusbutton2_sr));
 //                                Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
@@ -155,7 +152,6 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 
 
                             } else {
-                                //CounterManager.StoroomShortList(category, key);
 //                                productShortList.setText("Shortlist");
                                 final UsersListItemFormat userDetails = new UsersListItemFormat();
                                 DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -219,7 +215,6 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                     productShortList.setImageResource(R.drawable.ic_bookmark_white_24dp);
 //                    productShortList.setBackground(ContextCompat.getDrawable(mView.getContext(), R.drawable.curvedradiusbutton2_sr));
 //                    productShortList.setText("ShortlistedPeopleList");
-                    CounterManager.StoroomShortList(category, key);
 //                    Typeface customfont = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
 //                    productShortList.setTypeface(customfont);
                 } else {
@@ -309,7 +304,6 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 //        productSellerContact.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                CounterManager.StoroomCall(category);
 //                ctx.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Long.parseLong(sellerNumber.trim()))).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 //            }
 //        });

@@ -56,6 +56,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
+import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
@@ -606,7 +607,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                             if(communityReference!=null && !flag) {
                                 recent = new Recents();
-                                forums = new ForumsActivity();
+                                forums = new JoinedForums();
                                 myProfile = new MyProfileFragment();
                                 infone = new InfoneActivity();
 
@@ -700,8 +701,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 initialiseNotifications();
                 FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
                 LocalDate dateTime = new LocalDate();
-                CounterManager.ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Counter").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(dateTime.toString());
-
 
                 communityInfoRef = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child(communityReference);
 
@@ -877,21 +876,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(new Intent(HomeActivity.this,NotificationSettings.class));
                 break;
             }
-//            case R.id.ad: {
-//                CounterManager.AdvertisementOpen();
-//                startActivity(new Intent(HomeActivity.this, Advertisement.class));
-//                break;
-//            }
             case R.id.about: {
                 startActivity(new Intent(HomeActivity.this, AboutUs.class));
                 break;
             }
-            //MAP ACTIVITY TEMPORARILY REMOVED
-//            case R.id.mapActivity: {
-//                CounterManager.MapOpen();
-//                startActivity(new Intent(this, Campus_Map.class));
-//                break;
-//            }
             case R.id.bugReport: {
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(HomeActivity.this);
                 // 2. Chain together various setter methods to set the dialog characteristics
