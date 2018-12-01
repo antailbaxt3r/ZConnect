@@ -14,7 +14,7 @@ public class PoolItem {
     private static final String PRICE = "price";
     private static final String DESCRIPTION = "description";
     private static final String IMAGE_URL = "imageURL";
-    private static final String OFFER = "offer";
+    private static final String QUANTITY = "quantity";
 
     @Exclude
     private String ID;
@@ -22,6 +22,7 @@ public class PoolItem {
     private int price;
     private String description;
     private String imageURL;
+    private int quantity;
 
     public String getID() {
         return ID;
@@ -61,5 +62,13 @@ public class PoolItem {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

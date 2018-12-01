@@ -11,6 +11,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolAddItemAdapter;
 import com.zconnect.zutto.zconnect.pools.models.PoolDish;
+import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
 public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -20,7 +21,7 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
     private TextView name, description, quantity;
     private PoolAddItemAdapter adapter;
     private int number = 0;
-    private PoolDish dish;
+    private PoolItem item;
 
     public PoolAddItemViewHolder(View itemView, PoolAddItemAdapter adapter) {
         super(itemView);
@@ -40,14 +41,14 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
         quantity = itemView.findViewById(R.id.quantity_display);
     }
 
-    public void populate(PoolDish dish) {
-        this.dish = dish;
-        Log.d("PoolDishViewHolder", "populate : " + dish.getName());
-        name.setText(dish.getName());
-        quantity.setText(dish.getQuantity());
-        description.setText(dish.getDescription());
-        dishImage.setImageURI(dish.getImageURL());
-        number = Integer.parseInt(dish.getQuantity());
+    public void populate(PoolItem item) {
+        this.item = item;
+        Log.d("PoolDishViewHolder", "populate : " + item.getName());
+        name.setText(item.getName());
+        quantity.setText(String.valueOf(item.getQuantity()));
+        description.setText(item.getDescription());
+        dishImage.setImageURI(item.getImageURL());
+        number = item.getQuantity();
 
         increment.setOnClickListener(this);
         decrement.setOnClickListener(this);
@@ -68,7 +69,7 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
             number++;
         }
         updateUI(number);
-        adapter.updateOrderDish(dish.getID(),number);
+        adapter.updateOrderDish(item.getID(),number);
     }
 
     private void updateUI(int p) {

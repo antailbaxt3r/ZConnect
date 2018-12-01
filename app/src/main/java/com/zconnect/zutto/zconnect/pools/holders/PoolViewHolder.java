@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.pools.AddPoolItemActivity;
 import com.zconnect.zutto.zconnect.pools.PoolItemDetailActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemDetailAdapter;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
@@ -56,6 +57,10 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 if(pool.isUpcoming()){
                     Intent intent = new Intent(itemView.getContext(),PoolItemDetailActivity.class);
+                    intent.putExtra("newPool",pool.getBundle());
+                    itemView.getContext().startActivity(intent);
+                }else if(pool.isActive()){
+                    Intent intent = new Intent(itemView.getContext(),AddPoolItemActivity.class);
                     intent.putExtra("newPool",pool.getBundle());
                     itemView.getContext().startActivity(intent);
                 }

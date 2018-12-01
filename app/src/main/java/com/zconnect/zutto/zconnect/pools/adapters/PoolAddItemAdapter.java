@@ -8,13 +8,14 @@ import android.view.ViewGroup;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.holders.PoolAddItemViewHolder;
 import com.zconnect.zutto.zconnect.pools.models.PoolDish;
+import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHolder> {
 
-    private ArrayList<PoolDish> poolsList = new ArrayList<>();
+    private ArrayList<PoolItem> poolsList = new ArrayList<>();
     private HashMap<String,Object> mp = new HashMap<>();
 
 
@@ -35,7 +36,7 @@ public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHold
         return poolsList.size();
     }
 
-    public void insertAtEnd(PoolDish p) {
+    public void insertAtEnd(PoolItem p) {
         poolsList.add(p);
         notifyItemInserted(poolsList.size() - 1);
     }
@@ -53,7 +54,7 @@ public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHold
         }
     }
 
-    public ArrayList<PoolDish> getPoolsList() {
+    public ArrayList<PoolItem> getPoolsList() {
         return poolsList;
     }
 
