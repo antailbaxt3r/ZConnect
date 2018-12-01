@@ -26,6 +26,8 @@ public class Pool {
     //URLS
     public static final String URL_POOL = "communities/%s/features/shops/pools/active";
     //                                                    communityID
+    public static final String URL_POOL_UP_VOTE = "communities/%s/features/shops/pools/active/%s/upVoteList/%s";
+    //                                                    communityID ,                      poolID,        UID
 
 
     //Node name
@@ -55,6 +57,8 @@ public class Pool {
     private String description;
     private String imageURL;
     private long deliveryTime;
+    private HashMap<String,Integer> upVoteList;
+    @Exclude
     private int upVote;
     private int totalOrder;
 
@@ -67,7 +71,7 @@ public class Pool {
         this.poolID = poolInfo.getID();
         this.description = poolInfo.getDescription();
         this.imageURL = poolInfo.getImageURL();
-        this.upVote = 0;
+        this.upVote = this.getUpVote();
         this.totalOrder = 0;
     }
 
@@ -186,7 +190,8 @@ public class Pool {
     }
 
     public int getUpVote() {
-        return upVote;
+        if(upVoteList==null) return  upVote;
+        return this.getUpVoteList().size();
     }
 
     public void setUpVote(int upVote) {
@@ -220,7 +225,7 @@ public class Pool {
         mp.put(DESCRIPTION, this.description);
         mp.put(IMAGE_URL, this.imageURL);
         mp.put(DELIVERY_TIME, this.deliveryTime);
-        mp.put(UP_VOTE, this.upVote);
+        mp.put(UP_VOTE, this.getUpVote());
         mp.put(TOTAL_ORDER, this.totalOrder);
 
         return mp;
@@ -267,5 +272,14 @@ public class Pool {
 
     public boolean isUpcoming() {
         return status.compareTo(STATUS_UPCOMING) == 0;
+    }
+
+    public HashMap<String, Integer> getUpVoteList() {
+        if(upVoteList ==null) return new HashMap<String,Integer>();
+        return upVoteList;
+    }
+
+    public void setUpVoteList(HashMap<String, Integer> upVoteList) {
+        this.upVoteList = upVoteList;
     }
 }

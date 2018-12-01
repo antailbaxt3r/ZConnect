@@ -26,11 +26,31 @@
             android:layout_weight="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-        <TextView
-            android:id="@+id/pool_count"
-            android:layout_width="24dp"
-            android:layout_height="match_parent"
-            android:gravity="center" />
+        <LinearLayout
+            android:layout_marginStart="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/pool_count"
+                android:text="125"
+                android:layout_width="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:layout_height="match_parent"
+                android:gravity="center" />
+
+
+            <ImageButton
+                android:id="@+id/btn_like"
+                android:padding="4dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_favorite_border_black_24dp"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
