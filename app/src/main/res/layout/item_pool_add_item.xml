@@ -45,6 +45,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="+Rs10 convenience fee" />
+                <TextView
+                    android:id="@+id/item_price"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Biryani" />
 
             </LinearLayout>
 

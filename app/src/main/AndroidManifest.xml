@@ -479,11 +479,12 @@
             android:label="Explore Forums"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".TermsAndConditions"
+        <activity
+            android:name=".TermsAndConditions"
             android:label="Terms and Conditions"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".pools.PoolBillActivity"></activity>
     </application>
 
 </manifest>

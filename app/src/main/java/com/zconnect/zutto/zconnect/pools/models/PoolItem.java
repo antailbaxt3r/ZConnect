@@ -7,14 +7,15 @@ public class PoolItem {
     // URLS
     public static final String URL_POOL_ITEM = "communities/%s/shopOwner/%s/pools/poolDetails/%s";
     //                                                    communityID ,   shopID ,    poolID
+    public static final String ITEM_ID = "itemID";
 
 
     //Node names
-    private static final String NAME = "name";
-    private static final String PRICE = "price";
-    private static final String DESCRIPTION = "description";
-    private static final String IMAGE_URL = "imageURL";
-    private static final String QUANTITY = "quantity";
+    public static final String NAME = "name";
+    public static final String PRICE = "price";
+    public static final String DESCRIPTION = "description";
+    public static final String IMAGE_URL = "imageURL";
+    public static final String QUANTITY = "quantity";
 
     @Exclude
     private String ID;

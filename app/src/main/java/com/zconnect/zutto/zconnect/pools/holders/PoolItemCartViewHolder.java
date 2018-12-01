@@ -1,0 +1,44 @@
+package com.zconnect.zutto.zconnect.pools.holders;
+
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.pools.models.PoolItem;
+
+public class PoolItemCartViewHolder extends RecyclerView.ViewHolder {
+
+
+    private SimpleDraweeView itemImage;
+    private TextView name,price,quantity,amount;
+
+    private PoolItem item;
+
+    public PoolItemCartViewHolder(View itemView) {
+        super(itemView);
+
+
+        attachID();
+    }
+
+    private void attachID() {
+        name = itemView.findViewById(R.id.item_name);
+        itemImage = itemView.findViewById(R.id.item_logo);
+        price = itemView.findViewById(R.id.item_price);
+        quantity = itemView.findViewById(R.id.item_quantity);
+        amount = itemView.findViewById(R.id.item_total);
+    }
+
+    public void populate(PoolItem dish) {
+        this.item = dish;
+        Log.d(this.getClass().getName(), "populate : " + dish.getName());
+        name.setText(dish.getName());
+        itemImage.setImageURI(dish.getImageURL());
+        price.setText(String.format("Price %s%d",itemView.getContext().getResources().getString(R.string.Rs) ,dish.getPrice()));
+        quantity.setText(String.valueOf(dish.getQuantity()));
+        amount.setText(String.format("%s%d",itemView.getContext().getResources().getString(R.string.Rs) ,dish.getPrice()*dish.getQuantity()));
+    }
+}

@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.pools;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +31,9 @@ import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolDish;
 import com.zconnect.zutto.zconnect.pools.models.PoolInfo;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AddPoolItemActivity extends AppCompatActivity {
 
@@ -75,7 +79,8 @@ public class AddPoolItemActivity extends AppCompatActivity {
                     btn_payment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            paymentSuccess();
+                            //paymentSuccess();
+                            openBillView();
                         }
                     });
                 }
@@ -92,12 +97,55 @@ public class AddPoolItemActivity extends AppCompatActivity {
 
     }
 
+    private void openBillView() {
+        Intent intent = new Intent(this,PoolBillActivity.class);
+        ArrayList<PoolItem> items = adapter.getPoolsList();
+        HashMap<String,Integer> mp = adapter.getMp();
+
+        int n = mp.size();
+        if(n==0){
+            //TODO prompt user to order something
+        }else{
+            Log.d(TAG,"openBillView : start with n = " +String.valueOf(n));
+            String[] ids = new String[n];
+            String[] imageURL = new String[n];
+            String[] name = new String[n];
+            int[] quantities = new int[n];
+            int[] prices = new int[n];
+            int i = 0;
+            for(String key : mp.keySet()){
+                ids[i] = key;
+                quantities[i] = mp.get(key);
+                for(int j = 0 ; j < items.size() ; j++){
+                    if(items.get(j).getID().compareTo(key)==0){
+                        name[i] = items.get(j).getName();
+                        imageURL[i] = items.get(j).getImageURL();
+                        prices[i] = items.get(j).getPrice();
+                        break;
+                    }
+                }
+
+                i++;
+            }
+            Bundle b = new Bundle();
+            b.putStringArray(PoolItem.ITEM_ID,ids);
+            b.putStringArray(PoolItem.IMAGE_URL,imageURL);
+            b.putStringArray(PoolItem.NAME,name);
+            b.putIntArray(PoolItem.QUANTITY,quantities);
+            b.putIntArray(PoolItem.PRICE,prices);
+            intent.putExtra("orderList",b);
+            startActivity(intent);
+        }
+
+
+    }
+
     private void paymentSuccess() {
         //load order data
         setProgressBarView(View.VISIBLE, "Saving order info\n DO NOT press back button.");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolDish.URL_POOL_DISH_ORDER,
                 communityID, pool.getID(), userUID));
-        ref.updateChildren(adapter.getMp()).addOnSuccessListener(new OnSuccessListener<Void>() {
+       /* ref.updateChildren(adapter.getMp()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 joinForums();
@@ -108,7 +156,7 @@ public class AddPoolItemActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 //TODO on fail to save user data
             }
-        });
+        });*/
 
 
     }

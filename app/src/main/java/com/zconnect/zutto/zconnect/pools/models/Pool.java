@@ -110,6 +110,17 @@ public class Pool {
         return pool;
     }
 
+    public  PoolInfo getPoolInfo() {
+        PoolInfo pool = new PoolInfo();
+        pool.setID(this.getPoolID());
+        pool.setName(this.getName());
+        pool.setDescription(this.getDescription());
+        pool.setImageURL(this.getImageURL());
+        pool.setType(this.getType());
+
+        return pool;
+    }
+
     public String getID() {
         return ID;
     }

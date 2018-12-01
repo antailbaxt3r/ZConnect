@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHolder> {
 
     private ArrayList<PoolItem> poolsList = new ArrayList<>();
-    private HashMap<String, Object> mp = new HashMap<>();
+    private HashMap<String, Integer> mp = new HashMap<>();
 
 
     @Override
@@ -49,7 +49,7 @@ public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHold
         if (number == 0) {
             if (mp.containsKey(id)) mp.remove(id);
         } else {
-            mp.put(id, String.valueOf(number));
+            mp.put(id, number);
         }
     }
 
@@ -57,7 +57,7 @@ public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHold
         return poolsList;
     }
 
-    public HashMap<String, Object> getMp() {
+    public HashMap<String, Integer> getMp() {
         return mp;
     }
 }

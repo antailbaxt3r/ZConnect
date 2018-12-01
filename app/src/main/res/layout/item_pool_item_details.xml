@@ -18,7 +18,7 @@
         android:padding="8dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/pool_dish_image"
+            android:id="@+id/item_image"
             android:layout_width="match_parent"
             android:layout_height="160dp" />
 
@@ -33,14 +33,20 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/dish_name"
+                    android:id="@+id/item_name"
                     style="@style/TextAppearance.AppCompat.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Biryani" />
 
                 <TextView
-                    android:id="@+id/dish_description"
+                    android:id="@+id/item_description"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="+Rs10 convenience fee" />
+                <TextView
+                    android:id="@+id/item_price"
                     style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
