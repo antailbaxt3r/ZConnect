@@ -25,6 +25,12 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/pool_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:visibility="gone"
                     android:id="@+id/pool_offers"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

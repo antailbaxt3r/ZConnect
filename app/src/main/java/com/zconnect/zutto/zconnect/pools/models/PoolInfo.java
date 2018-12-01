@@ -18,15 +18,17 @@ public class PoolInfo {
     // URLS
     public static final String URL_POOL_INFO = "communities/%s/shopOwner/%s/pools/poolInfo";
     //                                                    communityID ,   shopID
+    public static final String URL_POOL_OFFER = "communities/%s/shopOwner/%s/pools/poolInfo/%s/offer";
+    //                                                    communityID ,   shopID,          poolID
     //Node name
-    private static final String NAME = "name";
-    private static final String TYPE = "type";
-    private static final String DESCRIPTION = "description";
-    private static final String IMAGE_URL = "imageURL";
-    private static final String OFFER = "offer";
-    private static final String DISCOUNT_PERCENTAGE = "discountPercentage";
-    private static final String MAX_DISCOUNT = "maxDiscount";
-    private static final String MIN_QUANTITY = "minQuantity";
+    public static final String NAME = "name";
+    public static final String TYPE = "type";
+    public static final String DESCRIPTION = "description";
+    public static final String IMAGE_URL = "imageURL";
+    public static final String OFFER = "offer";
+    public static final String DISCOUNT_PERCENTAGE = "discountPercentage";
+    public static final String MAX_DISCOUNT = "maxDiscount";
+    public static final String MIN_QUANTITY = "minQuantity";
 
 
     @Exclude

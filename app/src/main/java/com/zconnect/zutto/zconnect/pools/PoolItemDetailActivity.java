@@ -21,6 +21,7 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemDetailAdapter;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolDish;
+import com.zconnect.zutto.zconnect.pools.models.PoolInfo;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
 public class PoolItemDetailActivity extends AppCompatActivity {
@@ -28,12 +29,12 @@ public class PoolItemDetailActivity extends AppCompatActivity {
     public static final String TAG = "PoolItemDetailActivity";
 
     private RecyclerView recyclerView;
-    private TextView offers, joined_peoples;
+    private TextView offers,description, joined_peoples;
     private LinearLayout ll_progressBar;
     private TextView loading_text;
 
     private PoolItemDetailAdapter adapter;
-    private ValueEventListener poolItemListener;
+    private ValueEventListener poolItemListener,poolOfferListener;
 
     private Pool pool;
     private String communityID,userUID;
@@ -88,8 +89,12 @@ public class PoolItemDetailActivity extends AppCompatActivity {
 
     private void setPoolInfo() {
         getSupportActionBar().setTitle(pool.getName());
-        offers.setText(pool.getDescription());
-        joined_peoples.setText(String.valueOf(pool.getUpVote()));
+        description.setText(pool.getDescription());
+        joined_peoples.setText("Votes : "+String.valueOf(pool.getUpVote()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER,
+                communityID,pool.getShopID(),pool.getPoolID()));
+        Log.d(TAG,"setPoolView : ref "+ref.toString());
+        ref.addListenerForSingleValueEvent(poolOfferListener);
     }
 
     private void attachID() {
@@ -97,6 +102,7 @@ public class PoolItemDetailActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.pool_item_rv);
         offers = findViewById(R.id.pool_offers);
         joined_peoples = findViewById(R.id.joined_peoples);
+        description = findViewById(R.id.pool_description);
         ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
 
@@ -127,6 +133,25 @@ public class PoolItemDetailActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 //TODO on cancel
                 setProgressBarView(View.GONE,"");
+            }
+        };
+        poolOfferListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot !=  null){
+
+                        int disPer = dataSnapshot.child(PoolInfo.DISCOUNT_PERCENTAGE).getValue(Integer.class);
+                        int maxDiscount = dataSnapshot.child(PoolInfo.MAX_DISCOUNT).getValue(Integer.class);
+                        int minQuantity = dataSnapshot.child(PoolInfo.MIN_QUANTITY).getValue(Integer.class);
+                       // if(disPer != 0 && maxDiscount != 0 && minQuantity !=0)
+                            offers.setVisibility(View.VISIBLE);
+                        offers.setText(String.format("Discount Percentage : %d\nMax Discount %d\nMin Quantity : %d",disPer,maxDiscount,minQuantity));
+                    }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         };
     }
