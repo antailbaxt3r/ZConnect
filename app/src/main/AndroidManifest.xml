@@ -489,7 +489,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".pools.PoolBillActivity" />
-        <activity android:name=".pools.PaymentCaptureActivity"></activity>
+        <activity android:name=".pools.PaymentCaptureActivity" />
+        <activity android:name=".pools.PoolPreviousOrderActivity"></activity>
     </application>
 
 </manifest>
