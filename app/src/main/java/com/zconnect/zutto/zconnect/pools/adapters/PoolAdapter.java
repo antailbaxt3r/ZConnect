@@ -71,4 +71,9 @@ public class PoolAdapter extends RecyclerView.Adapter<PoolViewHolder> {
         }
         return null;
     }
+
+    public void addAll(ArrayList<Pool> arrayList) {
+        this.poolsList = arrayList;
+        notifyDataSetChanged();
+    }
 }

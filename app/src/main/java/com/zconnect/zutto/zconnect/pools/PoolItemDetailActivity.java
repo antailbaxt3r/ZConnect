@@ -7,9 +7,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +35,7 @@ public class PoolItemDetailActivity extends AppCompatActivity {
     private TextView offers, description, joined_peoples;
     private LinearLayout ll_progressBar;
     private TextView loading_text;
+    private Button btn_activate;
 
     private PoolItemDetailAdapter adapter;
     private ValueEventListener poolItemListener, poolOfferListener;
@@ -62,6 +67,7 @@ public class PoolItemDetailActivity extends AppCompatActivity {
                     attachID();
                     setPoolInfo();
                     loadItemView();
+                    setAdminView();
 
                 }
 
@@ -74,6 +80,56 @@ public class PoolItemDetailActivity extends AppCompatActivity {
             Log.d(TAG, "onCreate : null bundle finishing activity");
             finish();
         }
+    }
+
+    private void setAdminView() {
+        btn_activate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activatePool();
+            }
+        });
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("communities/"+communityID+"/Users1/"+userUID+"/userType");
+        Log.d(TAG,"setAdminView : ref "+ref.toString());
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String type = dataSnapshot.getValue(String.class);
+                if(type==null){
+                    btn_activate.setVisibility(View.GONE);
+                    btn_activate.setEnabled(false);
+                }else if (type.compareToIgnoreCase("admin")==0){
+                    btn_activate.setVisibility(View.VISIBLE);
+                    btn_activate.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void activatePool() {
+        btn_activate.setEnabled(false);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL,communityID)).child(pool.getID());
+        ref.child(Pool.STATUS).setValue(Pool.STATUS_ACTIVE).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                     showToast("Failed to change the state.");
+            }
+        });
+    }
+    private void showToast(String msg){
+        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
     }
 
     private void loadItemView() {
@@ -102,6 +158,7 @@ public class PoolItemDetailActivity extends AppCompatActivity {
         description = findViewById(R.id.pool_description);
         ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
+        btn_activate = findViewById(R.id.btn_activate);
 
         //setup adapter
         adapter = new PoolItemDetailAdapter();

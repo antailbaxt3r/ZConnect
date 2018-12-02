@@ -26,7 +26,6 @@ public class PoolActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private PoolViewPagerAdapter viewPagerAdapter;
-    private ChildEventListener poolListener;
     private ActiveFragment activePoolFragment;
     private UpcomingFragment upcomingPoolFragment;
 
@@ -37,19 +36,15 @@ public class PoolActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pool);
-        // set proper commmunityID from preference
+        //TODO  set proper commmunityID from preference
         communityID = "testCollege";
 
         attachID();
-        loadPoolList();
 
 
     }
 
-    private void loadPoolList() {
-        Query query = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityID));
-        query.addChildEventListener(poolListener);
-    }
+
 
     private void attachID() {
         //TODO set proper title
@@ -69,71 +64,6 @@ public class PoolActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setOffscreenPageLimit(fragmentsList.size());
 
-        defineListener();
-
-    }
-
-    private void defineListener() {
-        poolListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Pool pool = dataSnapshot.getValue(Pool.class);
-                pool.setID(dataSnapshot.getKey());
-                if (pool.isActive()) {
-                    activePoolFragment.addPool(pool);
-                } else if (pool.isUpcoming()) {
-                    upcomingPoolFragment.addPool(pool);
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Pool pool = dataSnapshot.getValue(Pool.class);
-                pool.setID(dataSnapshot.getKey());
-
-                Pool oldPool = activePoolFragment.getPool(pool.getID());
-                if (oldPool == null) {
-                    // upcoming fragment has old version of this pool
-                    if (pool.isActive()) {
-                        upcomingPoolFragment.removePool(pool);
-                        activePoolFragment.addPool(pool);
-                    } else {
-                        upcomingPoolFragment.updatePool(pool);
-                    }
-
-
-                } else {
-                    // active fragment has old version of this pool
-                    if (pool.isUpcoming()) {
-                        activePoolFragment.removePool(pool);
-                        upcomingPoolFragment.addPool(pool);
-                    } else {
-                        activePoolFragment.updatePool(pool);
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Pool pool = dataSnapshot.getValue(Pool.class);
-                pool.setID(dataSnapshot.getKey());
-                if (pool.isActive()) {
-                    activePoolFragment.removePool(pool);
-                } else if (pool.isUpcoming()) {
-                    upcomingPoolFragment.removePool(pool);
-                }
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                //TODO pool archive
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
     }
 
 

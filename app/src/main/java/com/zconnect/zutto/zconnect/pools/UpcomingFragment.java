@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.pools;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,10 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolAdapter;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +31,7 @@ public class UpcomingFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private PoolAdapter adapter;
-    private ChildEventListener activePoolListener;
+    private ValueEventListener upcomingPoolListener;
 
     private String communityID;
 
@@ -46,6 +53,11 @@ public class UpcomingFragment extends Fragment {
 
     }
 
+    private void loadPoolList() {
+        Query query = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityID)).orderByChild(Pool.STATUS).equalTo(Pool.STATUS_UPCOMING);
+        query.addValueEventListener(upcomingPoolListener);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,25 +66,30 @@ public class UpcomingFragment extends Fragment {
         adapter = new PoolAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+        defineListener();
+        loadPoolList();
 
 
         return view;
     }
 
-    public void addPool(Pool pool) {
-        adapter.insertAtEnd(pool);
+    private void defineListener() {
+        upcomingPoolListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<Pool> arrayList = new ArrayList<>();
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    Pool newPool = child.getValue(Pool.class);
+                    newPool.setID(child.getKey());
+                    arrayList.add(newPool);
+                }
+                adapter.addAll(arrayList);
+            }
 
-    }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-    public void updatePool(Pool pool) {
-        adapter.updatePool(pool);
-    }
-
-    public void removePool(Pool pool) {
-        adapter.removePool(pool);
-    }
-
-    public Pool getPool(String id) {
-        return adapter.getPool(id);
+            }
+        };
     }
 }

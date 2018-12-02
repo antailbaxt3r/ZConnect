@@ -50,6 +50,14 @@
             android:layout_height="0dp"
             android:layout_margin="16dp"
             android:layout_weight="1" />
+        <Button
+            android:visibility="gone"
+            android:textAllCaps="false"
+            android:text="Activate this pool"
+            android:id="@+id/btn_activate"
+            android:layout_width="match_parent"
+            style="@style/Base.Widget.AppCompat.ActionButton"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
