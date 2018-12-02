@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.pools;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,16 +9,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.razorpay.Checkout;
+import com.razorpay.PaymentResultListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemCartAdapter;
-import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolInfo;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
-public class PoolBillActivity extends AppCompatActivity {
+import org.json.JSONObject;
+
+public class PoolBillActivity extends AppCompatActivity implements PaymentResultListener {
 
     public static final String TAG = "PoolBillActivity";
 
@@ -28,6 +32,7 @@ public class PoolBillActivity extends AppCompatActivity {
     private Button btn_pay;
     private int subTotal_amount,totol_amount;
     private float discount_amount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,14 @@ public class PoolBillActivity extends AppCompatActivity {
                 } else {
                     attachID();
                     loadCartData(list);
+                    btn_pay.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startPayment();
+                        }
+                    });
+                    showToast("payment is possibly showing");
+
                 }
 
 
@@ -59,6 +72,37 @@ public class PoolBillActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void startPayment() {
+        Checkout checkout = new Checkout();
+
+        checkout.setImage(R.drawable.logo);
+
+        final Activity activity = this;
+        try {
+            JSONObject options = new JSONObject();
+
+            options.put("name", "ZConnect");
+
+            options.put("description", "Order #123456");
+
+            options.put("currency", "INR");
+
+            /**
+             * Amount is always passed in PAISE
+             * Eg: "500" = Rs 5.00
+             */
+            options.put("amount", String.valueOf(totol_amount*100));
+
+            checkout.open(activity, options);
+        } catch(Exception e) {
+            Log.e(TAG, "Error in starting Razorpay Checkout", e);
+            showToast("Error in starting Razorpay Checkout");
+        }
+    }
+    private void showToast(String msg){
+        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
     }
 
     private void loadCartData(Bundle list) {
@@ -116,5 +160,16 @@ public class PoolBillActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new PoolItemCartAdapter();
         recyclerView.setAdapter(adapter);
+        Checkout.preload(getApplicationContext());
+    }
+
+    @Override
+    public void onPaymentSuccess(String s) {
+        showToast("Payment Successufull");
+    }
+
+    @Override
+    public void onPaymentError(int i, String s) {
+        showToast("Payment Error : "+s+ "  i = "+String.valueOf(i));
     }
 }

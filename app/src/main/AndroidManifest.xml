@@ -11,9 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-    <meta-data
-        android:name="com.google.android.gms.wallet.api.enabled"
-        android:value="true" />
+
 
     <application
         android:name=".ZConnect"
@@ -43,6 +41,11 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <!-- Razon pay API-->
+        <meta-data
+            android:name="com.razorpay.ApiKey"
+            android:value="rzp_test_KXsdrhWl1Mp45s"
+            />
 
         <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.
