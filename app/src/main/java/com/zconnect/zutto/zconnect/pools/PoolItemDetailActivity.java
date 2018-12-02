@@ -1,7 +1,9 @@
 package com.zconnect.zutto.zconnect.pools;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -86,7 +88,7 @@ public class PoolItemDetailActivity extends AppCompatActivity {
         btn_activate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activatePool();
+                showDialogForActivePool();
             }
         });
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("communities/"+communityID+"/Users1/"+userUID+"/userType");
@@ -113,7 +115,25 @@ public class PoolItemDetailActivity extends AppCompatActivity {
 
     }
 
+    private void showDialogForActivePool() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Are You Sure ?");
+        builder.setMessage("This action can not be undone\nbe sure before activating "+pool.getName());
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                activatePool();
+            }
+        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               dialog.dismiss();
+            }
+        });
+    }
+
     private void activatePool() {
+        setProgressBarView(View.VISIBLE,"activating pool");
         btn_activate.setEnabled(false);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL,communityID)).child(pool.getID());
         ref.child(Pool.STATUS).setValue(Pool.STATUS_ACTIVE).addOnSuccessListener(new OnSuccessListener<Void>() {
