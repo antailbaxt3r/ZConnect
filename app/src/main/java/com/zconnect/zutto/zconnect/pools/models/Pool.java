@@ -33,6 +33,7 @@ public class Pool {
     //Node name
     public static final String STATUS = "status";
     public static final String POOL_ID = "poolID";
+    public static final String POOL_PUSH_ID = "poolPushID";
     public static final String SHOP_ID = "shopID";
     public static final String NAME = "name";
     public static final String TYPE = "type";

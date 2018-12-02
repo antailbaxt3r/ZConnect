@@ -87,6 +87,10 @@ dependencies {
 
     //razorPay API
     implementation 'com.razorpay:checkout:1.5.1'
+    implementation "com.razorpay:razorpay-java:1.3.8"
+
+    //QR code generator
+    implementation 'com.github.kenglxn.QRGen:javase:2.5.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

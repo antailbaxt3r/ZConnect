@@ -11,8 +11,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-
-
     <application
         android:name=".ZConnect"
         android:allowBackup="true"
@@ -41,11 +39,10 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!-- Razon pay API-->
+        <!-- Razon pay API -->
         <meta-data
             android:name="com.razorpay.ApiKey"
-            android:value="rzp_test_KXsdrhWl1Mp45s"
-            />
+            android:value="rzp_test_KXsdrhWl1Mp45s" />
 
         <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.
@@ -491,7 +488,8 @@
             android:label="Terms and Conditions"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".pools.PoolBillActivity"></activity>
+        <activity android:name=".pools.PoolBillActivity" />
+        <activity android:name=".pools.PaymentCaptureActivity"></activity>
     </application>
 
 </manifest>

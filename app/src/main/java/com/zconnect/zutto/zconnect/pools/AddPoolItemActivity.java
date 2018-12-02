@@ -143,6 +143,10 @@ public class AddPoolItemActivity extends AppCompatActivity {
             }else {
                 //prompt user to wait as offer is not loaded
             }
+            b.putString(Pool.SHOP_ID,pool.getShopID());
+            b.putString(Pool.POOL_ID,pool.getPoolID());
+            b.putString(Pool.POOL_PUSH_ID,pool.getID());
+            b.putString("poolName",pool.getName());
             startActivity(intent);
         }
 

@@ -42,4 +42,8 @@ public class PoolItemCartAdapter extends RecyclerView.Adapter<PoolItemCartViewHo
         poolsList.clear();
         notifyDataSetChanged();
     }
+
+    public ArrayList<PoolItem> getPoolsList() {
+        return poolsList;
+    }
 }
