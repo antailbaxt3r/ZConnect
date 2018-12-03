@@ -490,7 +490,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".pools.PoolBillActivity" />
         <activity android:name=".pools.PaymentCaptureActivity" />
-        <activity android:name=".pools.PoolPreviousOrderActivity"></activity>
+        <activity android:name=".pools.PoolPreviousOrderActivity" />
+        <activity android:name=".pools.OrderDetailActivity"></activity>
     </application>
 
 </manifest>
