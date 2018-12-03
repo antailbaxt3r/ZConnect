@@ -7,7 +7,7 @@ public class ShopOrder {
     //Node names
     public static final String RAZOR_PAY_ID = "razorPayID";
     public static final String AMOUNT = "amount";
-    public static final String ORDER_STATUS ="orderStatus";
+    public static final String ORDER_STATUS = "orderStatus";
     public static final String POOL_ID = "poolID";
     public static final String POOL_NAME = "poolName";
     public static final String POOL_PUSH_ID = "poolPushID";

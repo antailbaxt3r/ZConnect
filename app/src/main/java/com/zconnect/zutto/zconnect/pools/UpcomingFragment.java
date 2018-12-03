@@ -78,7 +78,7 @@ public class UpcomingFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<Pool> arrayList = new ArrayList<>();
-                for(DataSnapshot child : dataSnapshot.getChildren()){
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Pool newPool = child.getValue(Pool.class);
                     newPool.setID(child.getKey());
                     arrayList.add(newPool);

@@ -29,7 +29,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
     private TextView name, description, count, deliveryTime;
     private ImageButton btn_like;
     private Boolean isLiked;
-    private String userUID,communityID;
+    private String userUID, communityID;
 
     private Pool pool;
 
@@ -83,10 +83,10 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        if(pool.isUpcoming()){
-            if(pool.getUpVoteList().containsKey(userUID)){
+        if (pool.isUpcoming()) {
+            if (pool.getUpVoteList().containsKey(userUID)) {
                 isLiked = true;
-            }else {
+            } else {
                 isLiked = false;
             }
             setLikeView();
@@ -96,7 +96,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
                     toggleLike();
                 }
             });
-        }else {
+        } else {
             btn_like.setVisibility(View.GONE);
         }
 
@@ -105,8 +105,8 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
 
     private void toggleLike() {
         btn_like.setEnabled(false);
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL_UP_VOTE,communityID,pool.getID(),userUID));
-        if(isLiked){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL_UP_VOTE, communityID, pool.getID(), userUID));
+        if (isLiked) {
             ref.setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -121,7 +121,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
                     //TODO toast error on like
                 }
             });
-        }else {
+        } else {
             ref.setValue(1).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -140,12 +140,12 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void setLikeView(){
+    private void setLikeView() {
         Drawable red = itemView.getContext().getResources().getDrawable(R.drawable.ic_favorite_red_24dp);
         Drawable black = itemView.getContext().getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp);
-        if(isLiked){
+        if (isLiked) {
             btn_like.setImageDrawable(red);
-        }else{
+        } else {
             btn_like.setImageDrawable(black);
         }
     }

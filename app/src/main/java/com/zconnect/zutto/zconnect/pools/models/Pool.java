@@ -58,7 +58,7 @@ public class Pool {
     private String description;
     private String imageURL;
     private long deliveryTime;
-    private HashMap<String,Integer> upVoteList;
+    private HashMap<String, Integer> upVoteList;
     @Exclude
     private int upVote;
     private int totalOrder;
@@ -115,7 +115,7 @@ public class Pool {
         return pool;
     }
 
-    public  PoolInfo getPoolInfo() {
+    public PoolInfo getPoolInfo() {
         PoolInfo pool = new PoolInfo();
         pool.setID(this.getPoolID());
         pool.setName(this.getName());
@@ -191,7 +191,7 @@ public class Pool {
     }
 
     public int getUpVote() {
-        if(upVoteList==null) return  upVote;
+        if (upVoteList == null) return upVote;
         return this.getUpVoteList().size();
     }
 
@@ -276,7 +276,7 @@ public class Pool {
     }
 
     public HashMap<String, Integer> getUpVoteList() {
-        if(upVoteList ==null) return new HashMap<String,Integer>();
+        if (upVoteList == null) return new HashMap<String, Integer>();
         return upVoteList;
     }
 

@@ -3,7 +3,6 @@ package com.zconnect.zutto.zconnect.pools.holders;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -14,7 +13,7 @@ public class PoolItemDetailViewHolder extends RecyclerView.ViewHolder {
 
 
     private SimpleDraweeView dishImage;
-    private TextView name, description,price;
+    private TextView name, description, price;
 
     private PoolItem item;
 
@@ -38,6 +37,6 @@ public class PoolItemDetailViewHolder extends RecyclerView.ViewHolder {
         name.setText(dish.getName());
         description.setText(dish.getDescription());
         dishImage.setImageURI(dish.getImageURL());
-        price.setText(String.format("Price %s %d",itemView.getContext().getResources().getString(R.string.Rs) ,dish.getPrice()));
+        price.setText(String.format("Price %s %d", itemView.getContext().getResources().getString(R.string.Rs), dish.getPrice()));
     }
 }

@@ -13,8 +13,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,7 +48,7 @@ public class AddPoolItemActivity extends AppCompatActivity {
 
     private Pool pool;
     private String communityID, userUID;
-    private int discount_percentage,max_amount,min_item;
+    private int discount_percentage, max_amount, min_item;
     private Boolean offer_flag = false;
 
     @Override
@@ -100,26 +98,26 @@ public class AddPoolItemActivity extends AppCompatActivity {
     }
 
     private void openBillView() {
-        Intent intent = new Intent(this,PoolBillActivity.class);
+        Intent intent = new Intent(this, PoolBillActivity.class);
         ArrayList<PoolItem> items = adapter.getPoolsList();
-        HashMap<String,Integer> mp = adapter.getMp();
+        HashMap<String, Integer> mp = adapter.getMp();
 
         int n = mp.size();
-        if(n==0){
+        if (n == 0) {
             //TODO prompt user to order something
-        }else{
-            Log.d(TAG,"openBillView : start with n = " +String.valueOf(n));
+        } else {
+            Log.d(TAG, "openBillView : start with n = " + String.valueOf(n));
             String[] ids = new String[n];
             String[] imageURL = new String[n];
             String[] name = new String[n];
             int[] quantities = new int[n];
             int[] prices = new int[n];
             int i = 0;
-            for(String key : mp.keySet()){
+            for (String key : mp.keySet()) {
                 ids[i] = key;
                 quantities[i] = mp.get(key);
-                for(int j = 0 ; j < items.size() ; j++){
-                    if(items.get(j).getID().compareTo(key)==0){
+                for (int j = 0; j < items.size(); j++) {
+                    if (items.get(j).getID().compareTo(key) == 0) {
                         name[i] = items.get(j).getName();
                         imageURL[i] = items.get(j).getImageURL();
                         prices[i] = items.get(j).getPrice();
@@ -130,23 +128,23 @@ public class AddPoolItemActivity extends AppCompatActivity {
                 i++;
             }
             Bundle b = new Bundle();
-            b.putStringArray(PoolItem.ITEM_ID,ids);
-            b.putStringArray(PoolItem.IMAGE_URL,imageURL);
-            b.putStringArray(PoolItem.NAME,name);
-            b.putIntArray(PoolItem.QUANTITY,quantities);
-            b.putIntArray(PoolItem.PRICE,prices);
-            intent.putExtra("orderList",b);
-            if(offer_flag){
-                b.putInt(PoolInfo.DISCOUNT_PERCENTAGE,discount_percentage);
-                b.putInt(PoolInfo.MAX_DISCOUNT,max_amount);
-                b.putInt(PoolInfo.MIN_QUANTITY,min_item);
-            }else {
+            b.putStringArray(PoolItem.ITEM_ID, ids);
+            b.putStringArray(PoolItem.IMAGE_URL, imageURL);
+            b.putStringArray(PoolItem.NAME, name);
+            b.putIntArray(PoolItem.QUANTITY, quantities);
+            b.putIntArray(PoolItem.PRICE, prices);
+            intent.putExtra("orderList", b);
+            if (offer_flag) {
+                b.putInt(PoolInfo.DISCOUNT_PERCENTAGE, discount_percentage);
+                b.putInt(PoolInfo.MAX_DISCOUNT, max_amount);
+                b.putInt(PoolInfo.MIN_QUANTITY, min_item);
+            } else {
                 //prompt user to wait as offer is not loaded
             }
-            b.putString(Pool.SHOP_ID,pool.getShopID());
-            b.putString(Pool.POOL_ID,pool.getPoolID());
-            b.putString(Pool.POOL_PUSH_ID,pool.getID());
-            b.putString("poolName",pool.getName());
+            b.putString(Pool.SHOP_ID, pool.getShopID());
+            b.putString(Pool.POOL_ID, pool.getPoolID());
+            b.putString(Pool.POOL_PUSH_ID, pool.getID());
+            b.putString("poolName", pool.getName());
             startActivity(intent);
         }
 
@@ -270,7 +268,7 @@ public class AddPoolItemActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
                     offer_flag = true;
-                    discount_percentage= dataSnapshot.child(PoolInfo.DISCOUNT_PERCENTAGE).getValue(Integer.class);
+                    discount_percentage = dataSnapshot.child(PoolInfo.DISCOUNT_PERCENTAGE).getValue(Integer.class);
                     max_amount = dataSnapshot.child(PoolInfo.MAX_DISCOUNT).getValue(Integer.class);
                     min_item = dataSnapshot.child(PoolInfo.MIN_QUANTITY).getValue(Integer.class);
                     // if(disPer != 0 && maxDiscount != 0 && minQuantity !=0)

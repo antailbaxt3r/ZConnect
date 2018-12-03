@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.holders.PoolOrderedItemViewHolder;
-import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.ShopOrder;
 
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ public class PoolOrderItemAdapter extends RecyclerView.Adapter<PoolOrderedItemVi
         poolsList.clear();
         notifyDataSetChanged();
     }
-
 
 
     public void addAll(ArrayList<ShopOrder> arrayList) {

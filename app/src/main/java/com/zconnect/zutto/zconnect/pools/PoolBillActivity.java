@@ -43,7 +43,7 @@ public class PoolBillActivity extends AppCompatActivity implements PaymentResult
     private Button btn_pay;
     private int subTotal_amount, totol_amount;
     private float discount_amount;
-    private String shopID,poolPushID,poolID,communityID,userUID,userName,poolName;
+    private String shopID, poolPushID, poolID, communityID, userUID, userName, poolName;
 
 
     @Override
@@ -197,40 +197,40 @@ public class PoolBillActivity extends AppCompatActivity implements PaymentResult
         showToast("Payment Error : " + s + "  i = " + String.valueOf(i));
     }
 
-    private void paymentSuccess(final String paymentID)  {
-        HashMap<String,Object> mp =new HashMap<>();
+    private void paymentSuccess(final String paymentID) {
+        HashMap<String, Object> mp = new HashMap<>();
         //order id is same as payment id that is razor pay id
 
         //hashing info on owners end
-        String shop_base = "shopOwner/"+shopID+"/orders/"+poolPushID+"/"+paymentID+"/items/";
+        String shop_base = "shopOwner/" + shopID + "/orders/" + poolPushID + "/" + paymentID + "/items/";
         ArrayList<PoolItem> items = adapter.getPoolsList();
-        for(PoolItem item : items){
-            mp.put(shop_base+item.getID(),item.getQuantity());
+        for (PoolItem item : items) {
+            mp.put(shop_base + item.getID(), item.getQuantity());
         }
-        shop_base = "shopOwner/"+shopID+"/orders/"+poolPushID+"/"+paymentID+"/paymentInfo/";
-        mp.put(shop_base+"amount",totol_amount);
-        mp.put(shop_base+"razorPayID",paymentID);
-        mp.put(shop_base+"userUID",userUID);
-        mp.put(shop_base+"userName",userName);
-        mp.put(shop_base+"status","processing");
+        shop_base = "shopOwner/" + shopID + "/orders/" + poolPushID + "/" + paymentID + "/paymentInfo/";
+        mp.put(shop_base + "amount", totol_amount);
+        mp.put(shop_base + "razorPayID", paymentID);
+        mp.put(shop_base + "userUID", userUID);
+        mp.put(shop_base + "userName", userName);
+        mp.put(shop_base + "status", "processing");
 
         //hashing info on user end
-        shop_base = "UsersShopOrder/"+userUID+"/"+paymentID+"/";
-        mp.put(shop_base+"amount",totol_amount);
-        mp.put(shop_base+"razorPayID",paymentID);
-        mp.put(shop_base+Pool.SHOP_ID,shopID);
-        mp.put(shop_base+Pool.POOL_ID,poolID);
-        mp.put(shop_base+Pool.POOL_PUSH_ID,poolPushID);
-        mp.put(shop_base+"poolName",poolName);
-        mp.put(shop_base+"orderStatus","Waiting payment confirmation");
+        shop_base = "UsersShopOrder/" + userUID + "/" + paymentID + "/";
+        mp.put(shop_base + "amount", totol_amount);
+        mp.put(shop_base + "razorPayID", paymentID);
+        mp.put(shop_base + Pool.SHOP_ID, shopID);
+        mp.put(shop_base + Pool.POOL_ID, poolID);
+        mp.put(shop_base + Pool.POOL_PUSH_ID, poolPushID);
+        mp.put(shop_base + "poolName", poolName);
+        mp.put(shop_base + "orderStatus", "Waiting payment confirmation");
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("communities").child(communityID).updateChildren(mp).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Intent intent = new Intent(PoolBillActivity.this,PaymentCaptureActivity.class);
-                intent.putExtra("paymentID",paymentID);
-                intent.putExtra("amount",totol_amount);
+                Intent intent = new Intent(PoolBillActivity.this, PaymentCaptureActivity.class);
+                intent.putExtra("paymentID", paymentID);
+                intent.putExtra("amount", totol_amount);
                 startActivity(intent);
                 finish();
             }

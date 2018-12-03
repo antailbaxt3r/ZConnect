@@ -1,8 +1,8 @@
 package com.zconnect.zutto.zconnect.pools;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,7 +17,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.pools.adapters.PoolAddItemAdapter;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolOrderItemAdapter;
 import com.zconnect.zutto.zconnect.pools.models.ShopOrder;
 
@@ -30,7 +29,7 @@ public class PoolPreviousOrderActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private LinearLayout ll_progressBar;
     private TextView loading_text;
-    private String communityID,userUID;
+    private String communityID, userUID;
     private ValueEventListener orderListener;
     private PoolOrderItemAdapter adapter;
 
@@ -46,9 +45,9 @@ public class PoolPreviousOrderActivity extends AppCompatActivity {
     }
 
     private void loadOrderList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("communities/"+communityID);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("communities/" + communityID);
         ref = ref.child("UsersShopOrder").child(userUID);
-        Log.d(TAG,"loadOrderList : ref "+ref.toString());
+        Log.d(TAG, "loadOrderList : ref " + ref.toString());
 
         ref.addValueEventListener(orderListener);
     }
@@ -58,6 +57,7 @@ public class PoolPreviousOrderActivity extends AppCompatActivity {
         loading_text.setText(message);
 
     }
+
     private void attachID() {
         getSupportActionBar().setTitle("Orders list");
         recyclerView = findViewById(R.id.recycleView);
@@ -79,13 +79,13 @@ public class PoolPreviousOrderActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<ShopOrder> list = new ArrayList<>();
-                for(DataSnapshot child : dataSnapshot.getChildren()){
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
                     ShopOrder order = child.getValue(ShopOrder.class);
                     order.setID(child.getKey());
                     list.add(order);
                 }
                 adapter.addAll(list);
-                setProgressBarView(View.GONE,"");
+                setProgressBarView(View.GONE, "");
             }
 
             @Override

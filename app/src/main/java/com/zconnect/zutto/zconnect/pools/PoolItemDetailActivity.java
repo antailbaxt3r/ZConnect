@@ -91,16 +91,16 @@ public class PoolItemDetailActivity extends AppCompatActivity {
                 showDialogForActivePool();
             }
         });
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("communities/"+communityID+"/Users1/"+userUID+"/userType");
-        Log.d(TAG,"setAdminView : ref "+ref.toString());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("communities/" + communityID + "/Users1/" + userUID + "/userType");
+        Log.d(TAG, "setAdminView : ref " + ref.toString());
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String type = dataSnapshot.getValue(String.class);
-                if(type==null){
+                if (type == null) {
                     btn_activate.setVisibility(View.GONE);
                     btn_activate.setEnabled(false);
-                }else if (type.compareToIgnoreCase("admin")==0){
+                } else if (type.compareToIgnoreCase("admin") == 0) {
                     btn_activate.setVisibility(View.VISIBLE);
                     btn_activate.setEnabled(true);
                 }
@@ -118,7 +118,7 @@ public class PoolItemDetailActivity extends AppCompatActivity {
     private void showDialogForActivePool() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Are You Sure ?");
-        builder.setMessage("This action can not be undone\nbe sure before activating "+pool.getName());
+        builder.setMessage("This action can not be undone\nbe sure before activating " + pool.getName());
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -127,15 +127,16 @@ public class PoolItemDetailActivity extends AppCompatActivity {
         }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               dialog.dismiss();
+                dialog.dismiss();
             }
         });
+        builder.show();
     }
 
     private void activatePool() {
-        setProgressBarView(View.VISIBLE,"activating pool");
+        setProgressBarView(View.VISIBLE, "activating pool");
         btn_activate.setEnabled(false);
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL,communityID)).child(pool.getID());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityID)).child(pool.getID());
         ref.child(Pool.STATUS).setValue(Pool.STATUS_ACTIVE).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -144,12 +145,13 @@ public class PoolItemDetailActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                     showToast("Failed to change the state.");
+                showToast("Failed to change the state.");
             }
         });
     }
-    private void showToast(String msg){
-        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
     private void loadItemView() {

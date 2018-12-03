@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -63,15 +62,16 @@ public class ActiveFragment extends Fragment {
         Query query = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityID)).orderByChild(Pool.STATUS).equalTo(Pool.STATUS_ACTIVE);
         query.addValueEventListener(activePoolListener);
     }
+
     private void defineListener() {
         activePoolListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<Pool> arrayList = new ArrayList<>();
-                for(DataSnapshot child : dataSnapshot.getChildren()){
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Pool newPool = child.getValue(Pool.class);
                     newPool.setID(child.getKey());
-                    if(newPool.isActive())
+                    if (newPool.isActive())
                         arrayList.add(newPool);
                 }
                 adapter.addAll(arrayList);

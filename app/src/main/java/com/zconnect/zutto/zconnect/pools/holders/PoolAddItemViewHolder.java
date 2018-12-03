@@ -17,7 +17,7 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
     private Button increment, decrement, add;
     private RelativeLayout rl_btn;
     private SimpleDraweeView dishImage;
-    private TextView name, description, quantity,price;
+    private TextView name, description, quantity, price;
     private PoolAddItemAdapter adapter;
     private int number = 0;
     private PoolItem item;
@@ -49,7 +49,7 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
         description.setText(item.getDescription());
         dishImage.setImageURI(item.getImageURL());
         number = item.getQuantity();
-        price.setText(String.format("Price %s %d",itemView.getContext().getResources().getString(R.string.Rs) ,item.getPrice()));
+        price.setText(String.format("Price %s %d", itemView.getContext().getResources().getString(R.string.Rs), item.getPrice()));
         increment.setOnClickListener(this);
         decrement.setOnClickListener(this);
         add.setOnClickListener(this);

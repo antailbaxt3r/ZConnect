@@ -1,12 +1,9 @@
 package com.zconnect.zutto.zconnect.pools;
 
-import android.app.Activity;
 import android.os.AsyncTask;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,8 +14,6 @@ import com.zconnect.zutto.zconnect.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-
 public class PaymentCaptureActivity extends AppCompatActivity {
 
     public static final String TAG = "PaymentCaptureActivity";
@@ -26,7 +21,7 @@ public class PaymentCaptureActivity extends AppCompatActivity {
     private static final String RAZOR_PAY_SECRET = "RTnQaWurA8LsntSyWHPTrE4t";
 
     private LinearLayout into_view;
-    private TextView transictionID,amount;
+    private TextView transictionID, amount;
 
     private LinearLayout ll_progressBar;
     private TextView loading_text;
@@ -42,11 +37,10 @@ public class PaymentCaptureActivity extends AppCompatActivity {
         attachID();
         Bundle b = getIntent().getExtras();
         tranID = b.getString("paymentID");
-        total_amount =b.getInt("amount");
+        total_amount = b.getInt("amount");
         into_view.setVisibility(View.GONE);
-        setProgressBarView(View.VISIBLE,"Do not Press Back Confirming Payment");
-            capturetransection();
-
+        setProgressBarView(View.VISIBLE, "Do not Press Back Confirming Payment");
+        capturetransection();
 
 
     }
@@ -71,39 +65,43 @@ public class PaymentCaptureActivity extends AppCompatActivity {
         loading_text.setText(message);
 
     }
+
     private class MyAsyncTask extends AsyncTask<String, Void, String> {
 
         Exception exception;
+
         MyAsyncTask() {
             super();
             this.exception = null;
         }
+
         @Override
         protected String doInBackground(String... params) {
             try {
-                RazorpayClient razorpayClient = new RazorpayClient(RAZOR_PAY_KEY,RAZOR_PAY_SECRET);
+                RazorpayClient razorpayClient = new RazorpayClient(RAZOR_PAY_KEY, RAZOR_PAY_SECRET);
                 JSONObject options = new JSONObject();
-                options.put("amount", total_amount*100);
+                options.put("amount", total_amount * 100);
                 razorpayClient.Payments.capture(tranID, options);
-            }catch (RazorpayException e){
+            } catch (RazorpayException e) {
                 this.exception = e;
-            }catch (JSONException e){
+            } catch (JSONException e) {
                 this.exception = e;
 
             }
             return "";
 
         }
+
         @Override
         protected void onPostExecute(String result) {
             if (this.exception != null) {
-                setProgressBarView(View.VISIBLE,"An exception occure");
+                setProgressBarView(View.VISIBLE, "An exception occure");
 
-            } else{
-                transictionID.setText("Transiction ID : "+tranID);
-                amount.setText("Amount : "+String.valueOf(total_amount));
+            } else {
+                transictionID.setText("Transiction ID : " + tranID);
+                amount.setText("Amount : " + String.valueOf(total_amount));
                 into_view.setVisibility(View.VISIBLE);
-                setProgressBarView(View.GONE,"");
+                setProgressBarView(View.GONE, "");
             }
         }
     }

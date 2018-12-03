@@ -13,7 +13,7 @@ public class PoolItemCartViewHolder extends RecyclerView.ViewHolder {
 
 
     private SimpleDraweeView itemImage;
-    private TextView name,price,quantity,amount;
+    private TextView name, price, quantity, amount;
 
     private PoolItem item;
 
@@ -37,8 +37,8 @@ public class PoolItemCartViewHolder extends RecyclerView.ViewHolder {
         Log.d(this.getClass().getName(), "populate : " + dish.getName());
         name.setText(dish.getName());
         itemImage.setImageURI(dish.getImageURL());
-        price.setText(String.format("Price %s%d",itemView.getContext().getResources().getString(R.string.Rs) ,dish.getPrice()));
+        price.setText(String.format("Price %s%d", itemView.getContext().getResources().getString(R.string.Rs), dish.getPrice()));
         quantity.setText(String.valueOf(dish.getQuantity()));
-        amount.setText(String.format("%s%d",itemView.getContext().getResources().getString(R.string.Rs) ,dish.getPrice()*dish.getQuantity()));
+        amount.setText(String.format("%s%d", itemView.getContext().getResources().getString(R.string.Rs), dish.getPrice() * dish.getQuantity()));
     }
 }
