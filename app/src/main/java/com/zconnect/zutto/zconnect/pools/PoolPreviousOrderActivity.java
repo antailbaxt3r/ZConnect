@@ -45,8 +45,7 @@ public class PoolPreviousOrderActivity extends AppCompatActivity {
     }
 
     private void loadOrderList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("communities/" + communityID);
-        ref = ref.child("UsersShopOrder").child(userUID);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ShopOrder.URL_ORDER_BASIC_INFO,communityID,userUID));
         Log.d(TAG, "loadOrderList : ref " + ref.toString());
 
         ref.addValueEventListener(orderListener);

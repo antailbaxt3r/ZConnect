@@ -215,7 +215,7 @@ public class PoolBillActivity extends AppCompatActivity implements PaymentResult
         mp.put(shop_base + "status", "processing");
 
         //hashing info on user end
-        shop_base = "UsersShopOrder/" + userUID + "/" + paymentID + "/";
+        shop_base = "features/shops/orders/" + userUID + "/" + paymentID + "/";
         mp.put(shop_base + "amount", totol_amount);
         mp.put(shop_base + "razorPayID", paymentID);
         mp.put(shop_base + Pool.SHOP_ID, shopID);

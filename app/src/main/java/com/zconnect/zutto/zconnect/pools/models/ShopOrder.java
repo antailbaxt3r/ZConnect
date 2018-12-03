@@ -6,6 +6,12 @@ import com.google.firebase.database.Exclude;
 
 public class ShopOrder {
 
+    //URLS
+    public static final String URL_ORDER_BASIC_INFO = "communities/%s/features/shops/orders/%s";
+    //                                                    communityID               userID
+    public static final String URL_ORDER_ITEM_LIST = "communities/%s/shopOwner/%s/orders/%s/%s/items";
+    //                                                    communityID        shopID     poolID,payID
+
     //Node names
     public static final String RAZOR_PAY_ID = "razorPayID";
     public static final String AMOUNT = "amount";

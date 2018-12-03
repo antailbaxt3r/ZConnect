@@ -1,18 +1,32 @@
 package com.zconnect.zutto.zconnect.pools;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.pools.adapters.PoolItemCartAdapter;
+import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 import com.zconnect.zutto.zconnect.pools.models.ShopOrder;
 
 import net.glxn.qrgen.android.QRCode;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class OrderDetailActivity extends AppCompatActivity {
 
@@ -21,6 +35,11 @@ public class OrderDetailActivity extends AppCompatActivity {
     private ImageView qr_image;
     private String communityID,userUID;
     private ShopOrder order;
+    private RecyclerView recyclerView;
+    private PoolItemCartAdapter adapter;
+    private ValueEventListener poolItemListener,orderItemListener;
+    private ArrayList<PoolItem> poolItems = new ArrayList<>();
+    private TextView orderStatus,userName,userEmail,userAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +62,8 @@ public class OrderDetailActivity extends AppCompatActivity {
                     //activity main block with all valid parameters
 
                     attachID();
-                    //setPoolInfo();
-                    //loadItemView();
+                    setOrderQRView();
+                    loadItemView();
                 }
 
 
@@ -60,10 +79,94 @@ public class OrderDetailActivity extends AppCompatActivity {
 
     }
 
-    private void attachID() {
-        qr_image = findViewById(R.id.qr_image);
-        Bitmap myBitmap = QRCode.from("www.example.org").bitmap();
+    private void loadItemView() {
+        //setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM,
+                communityID, order.getShopID(), order.getPoolID()));
+        Log.d(TAG, "loadItemView : ref " + ref.toString());
+        ref.addListenerForSingleValueEvent(poolItemListener);
+    }
+
+    private void setOrderQRView() {
+
+        Bitmap myBitmap = QRCode.from(order.getRazorPayID()+"-"+userUID).bitmap();
         qr_image.setImageBitmap(myBitmap);
 
+        orderStatus.setText(order.getOrderStatus());
+        userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        userEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        userAmount.setText(String.format("Amount : %s%d",getResources().getString(R.string.Rs),order.getAmount()));
+    }
+
+    private void attachID() {
+        getSupportActionBar().setTitle(order.getPoolName());
+        qr_image = findViewById(R.id.qr_image);
+        orderStatus = findViewById(R.id.order_status);
+        userName = findViewById(R.id.user_name);
+        userEmail = findViewById(R.id.user_email);
+        userAmount = findViewById(R.id.user_amount);
+        recyclerView = findViewById(R.id.recycleView);
+
+        adapter = new PoolItemCartAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
+        defineListener();
+    }
+
+    private void defineListener() {
+        poolItemListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                poolItems.clear();
+                for (DataSnapshot items : dataSnapshot.getChildren()) {
+                    PoolItem dish = items.getValue(PoolItem.class);
+                    dish.setID(items.getKey());
+                    poolItems.add(dish);
+                }
+                loadOrderItemList();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //TODO on cancel
+            }
+        };
+        orderItemListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               if(dataSnapshot != null){
+                  for(DataSnapshot item : dataSnapshot.getChildren()){
+                      PoolItem orderItem =null;
+                      for(int i = 0 ; i < poolItems.size();i++){
+                          if(poolItems.get(i).getID().compareTo(item.getKey())==0){
+                              orderItem = poolItems.get(i);
+                              orderItem.setQuantity(item.getValue(Integer.class));
+                              break;
+                          }
+                      }
+                      if(orderItem != null){
+                          adapter.insertAtEnd(orderItem);
+                      }
+                  }
+
+               } else {
+                   //TODO no such order
+               }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+    }
+
+    private void loadOrderItemList() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ShopOrder.URL_ORDER_ITEM_LIST,
+                communityID, order.getShopID(),order.getPoolPushID() ,order.getRazorPayID()));
+        Log.d(TAG, "loadItemView : ref " + ref.toString());
+        ref.addListenerForSingleValueEvent(orderItemListener);
     }
 }
