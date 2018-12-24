@@ -6,7 +6,7 @@
     tools:context=".pools.UpcomingFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/upcoming_pool_rv"
+        android:id="@+id/recycleView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="16dp" />

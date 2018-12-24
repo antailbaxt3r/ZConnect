@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.zconnect.zutto.zconnect.AddContactActivity">
+    <item
+        android:title="Orders"
+        android:id="@+id/action_orders"
+        android:icon="@drawable/ic_shopping_cart_black_24dp"
+        android:orderInCategory="1"
+        android:name="Orders"
+        app:showAsAction="collapseActionView|ifRoom" />
+</menu>

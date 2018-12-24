@@ -1,10 +1,13 @@
 package com.zconnect.zutto.zconnect.pools;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolViewPagerAdapter;
@@ -18,27 +21,53 @@ public class PoolActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private PoolViewPagerAdapter viewPagerAdapter;
+    private ActiveFragment activePoolFragment;
+    private UpcomingFragment upcomingPoolFragment;
+
+    private String communityID;
+    private ArrayList<Fragment> fragmentsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pool);
+        //TODO  set proper commmunityID from preference
+        communityID = "testCollege";
 
         attachID();
 
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_pool_shop, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.action_orders) {
+            startActivity(new Intent(this, PoolPreviousOrderActivity.class));
+        }
+        return true;
+    }
+
+
     private void attachID() {
         //TODO set proper title
-        getSupportActionBar().setTitle("Pool");
+
         viewPager = findViewById(R.id.pool_view_pager);
         tabLayout = findViewById(R.id.pools_tab);
 
         //setting up fragments
-        ArrayList<Fragment> fragmentsList = new ArrayList<>();
-        fragmentsList.add(ActiveFragment.newInstance());
-        fragmentsList.add(UpcomingFragment.newInstance());
+        activePoolFragment = ActiveFragment.newInstance(communityID);
+        upcomingPoolFragment = UpcomingFragment.newInstance(communityID);
+        fragmentsList.add(activePoolFragment);
+        fragmentsList.add(upcomingPoolFragment);
 
         //setting view pager
         viewPagerAdapter = new PoolViewPagerAdapter(getSupportFragmentManager(), fragmentsList);
