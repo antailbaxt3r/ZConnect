@@ -461,7 +461,6 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             }
             newPost.child("skillTags").setValue(userSkillTags);
             newPost.child("userUID").setValue(mUser.getUid().toString());
-            newPost.child("userPoints").setValue("0");
             newPost.child("infoneType").setValue(userInfoneType);
             newPost.child("contactHidden").setValue(contactHidden);
 
@@ -497,6 +496,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
             if(newUser){
 
+                newPost.child("userPoints").setValue("0");
                 SharedPreferences userVerification = getSharedPreferences("userType", MODE_PRIVATE);
                 Boolean userTypeBoolean = userVerification.getBoolean("userVerification", false);
 
