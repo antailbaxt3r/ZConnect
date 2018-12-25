@@ -39,6 +39,10 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -767,6 +771,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             public void onClick(@NonNull View widget) {
                                 holder.messagesMessage.setMaxLines(Integer.MAX_VALUE);
                                 holder.messagesMessage.setText(statusMsg);
+                                Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
+                                holder.messagesMessage.setLinkTextColor(Color.BLUE);
+                                holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
                             }
                             @Override
                             public void updateDrawState(TextPaint ds) {
@@ -834,7 +841,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
 
                     holder.noticesText.setText(recentsItemFormats.get(position).getName());
-                    Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.noticesImage);
+                    holder.noticesImage.setImageURI(recentsItemFormats.get(position).getImageurl());
+//                    Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.noticesImage);
 
                     holder.postConjunction.setText(" posted a ");
                     holder.post.setText("Notice");
@@ -1767,6 +1775,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             admin.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    Log.d(TAG, "clicked on admin");
                                     resetFeaturesUnreadCount(FeatureDBName.KEY_ADMIN_PANEL, dataSnapshot);
                                     context.startActivity(new Intent(context, AdminHome.class));
                                 }
@@ -1971,8 +1980,27 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                     @Override
                     public void onCallBack(long value) {
-                        Log.d(TAG, String.valueOf(value));
-                        mUserDetails.child("featuresUnreadCount").child(featureDBName).setValue(value);
+                        Log.d(TAG, String.valueOf(value) + " " + featureDBName);
+                        mUserDetails.child("featuresUnreadCount").child(featureDBName).setValue(value).continueWithTask(new Continuation<Void, Task<Long>>() {
+                            @Override
+                            public Task<Long> then(@NonNull Task<Void> task) throws Exception {
+                                if(task.isSuccessful())
+                                {
+                                    Log.d(TAG, "sucessful");
+                                }
+                                else
+                                {
+                                    Log.d(TAG, "unsuccessful");
+                                    task.addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.d(TAG, e.getMessage());
+                                        }
+                                    });
+                                }
+                                return null;
+                            }
+                        });
                     }
                 });
             }

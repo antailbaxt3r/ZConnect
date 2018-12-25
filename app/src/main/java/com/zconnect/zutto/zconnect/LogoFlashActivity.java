@@ -286,8 +286,7 @@ public class LogoFlashActivity extends BaseActivity {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //
-//                FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("pggc").setValue(dataSnapshot.getValue());
-//                FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("iitbhu").setValue(dataSnapshot.getValue());
+//                FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("comm_code").setValue(dataSnapshot.getValue());
 //            }
 //
 //            @Override
@@ -295,14 +294,13 @@ public class LogoFlashActivity extends BaseActivity {
 //
 //            }
 //        });
-
+//
 //        temp3 = FirebaseDatabase.getInstance().getReference().child("communities").child("gim");
 //
 //        temp3.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                FirebaseDatabase.getInstance().getReference().child("communities").child("pggc").setValue(dataSnapshot.getValue());
-//                FirebaseDatabase.getInstance().getReference().child("communities").child("iitbhu").setValue(dataSnapshot.getValue());
+//                FirebaseDatabase.getInstance().getReference().child("communities").child("comm_code").setValue(dataSnapshot.getValue());
 //            }
 //
 //            @Override
