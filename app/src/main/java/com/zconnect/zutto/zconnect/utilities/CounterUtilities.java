@@ -161,6 +161,10 @@ public class CounterUtilities {
 
     public static final String KEY_NOTICES_DELETE_NOTICE = "deleteNotice";
 
+
+    //SHOPS
+    public static final String KEY_SHOPS_OPEN = "shopsOpen";
+
     //recents
     //checked
     public static final String KEY_RECENTS_ADD_STATUS = "recentsAddStatus";

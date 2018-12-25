@@ -2,14 +2,15 @@ package com.zconnect.zutto.zconnect.itemFormats;
 
 public class CommunityFeatures {
 
-    private String storeroom,events,links,cabpool,notices;
+    private String storeroom,events,links,cabpool,notices,shops;
 
-    public CommunityFeatures(String storeroom, String events, String links, String cabpool, String notices) {
+    public CommunityFeatures(String storeroom, String events, String links, String cabpool, String notices, String shops) {
         this.storeroom = storeroom;
         this.events = events;
         this.links = links;
         this.cabpool = cabpool;
         this.notices = notices;
+        this.shops = shops;
     }
 
     public CommunityFeatures() {
@@ -53,5 +54,13 @@ public class CommunityFeatures {
 
     public void setNotices(String notices) {
         this.notices = notices;
+    }
+
+    public String getShops() {
+        return shops;
+    }
+
+    public void setShops(String shops) {
+        this.shops = shops;
     }
 }
