@@ -39,6 +39,10 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <!-- Razon pay API -->
+        <meta-data
+            android:name="com.razorpay.ApiKey"
+            android:value="rzp_test_KXsdrhWl1Mp45s" />
 
         <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.
@@ -457,7 +461,8 @@
         <activity
             android:name=".pools.PoolActivity"
             android:exported="true" />
-        <activity android:name=".pools.PoolDetailsActivity" />
+        <activity android:name=".pools.PoolItemDetailActivity" />
+        <activity android:name=".pools.AddPoolItemActivity" />
         <activity
             android:name=".LeaderBoard"
             android:label="@string/title_activity_leader_board"
@@ -478,11 +483,15 @@
             android:label="Explore Forums"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".TermsAndConditions"
+        <activity
+            android:name=".TermsAndConditions"
             android:label="Terms and Conditions"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".pools.PoolBillActivity" />
+        <activity android:name=".pools.PaymentCaptureActivity" />
+        <activity android:name=".pools.PoolPreviousOrderActivity" />
+        <activity android:name=".pools.OrderDetailActivity"></activity>
     </application>
 
 </manifest>
