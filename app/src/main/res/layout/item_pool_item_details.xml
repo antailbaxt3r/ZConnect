@@ -18,7 +18,7 @@
         android:padding="8dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/pool_dish_image"
+            android:id="@+id/item_image"
             android:layout_width="match_parent"
             android:layout_height="160dp" />
 
@@ -33,14 +33,20 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/dish_name"
+                    android:id="@+id/item_name"
                     style="@style/TextAppearance.AppCompat.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Biryani" />
 
                 <TextView
-                    android:id="@+id/dish_description"
+                    android:id="@+id/item_description"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="+Rs10 convenience fee" />
+                <TextView
+                    android:id="@+id/item_price"
                     style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -48,43 +54,9 @@
 
             </LinearLayout>
 
-            <!-- + - buttons-->
-            <RelativeLayout
-                android:id="@+id/user_quantity_details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-
-                <Button
-                    android:id="@+id/increment_button"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:background="@android:color/transparent"
-                    android:text="+" />
-
-                <TextView
-                    android:id="@+id/quantity_display"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@+id/increment_button"
-                    android:gravity="center"
-                    android:text="0" />
-
-                <Button
-                    android:id="@+id/decrement_button"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@+id/quantity_display"
-                    android:background="@android:color/transparent"
-                    android:text="-" />
-
-
-            </RelativeLayout>
         </RelativeLayout>
+
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

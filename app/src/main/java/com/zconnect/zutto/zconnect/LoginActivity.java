@@ -312,7 +312,9 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 CommunitiesEmails.clear();
                 for(DataSnapshot shot : dataSnapshot.getChildren()) {
                     try {
-                        CommunitiesEmails.add(shot.getValue(CommunitiesItemFormat.class));
+                        if (shot.hasChild("location")) {
+                            CommunitiesEmails.add(shot.getValue(CommunitiesItemFormat.class));
+                        }
                     }catch (Exception e){
 
                     }

@@ -787,6 +787,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         spannableString.setSpan(styleSpan, withMore.lastIndexOf("more..."), withMore.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                         holder.messagesMessage.setText(spannableString);
                         holder.messagesMessage.setMovementMethod(LinkMovementMethod.getInstance());
+                        Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
                     }
                     Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
                     holder.messagesMessage.setLinkTextColor(Color.BLUE);
@@ -833,10 +834,23 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.notices), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_18));
+                    holder.setOpenNoticeImage(recentsItemFormats.get(position).getName(), recentsItemFormats.get(position).getImageurl());
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            holder.setOpenNoticeImage(recentsItemFormats.get(position).getName(), recentsItemFormats.get(position).getImageurl());
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+                            meta.put("type","fromRecents");
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
+                            Intent intent = new Intent(context, Notices.class);
+                            context.startActivity(intent);
+
                         }
                     });
 

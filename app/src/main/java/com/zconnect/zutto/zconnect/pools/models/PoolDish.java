@@ -4,6 +4,19 @@ import com.google.firebase.database.Exclude;
 
 public class PoolDish {
 
+    public static final String URL_POOL_DISH = "communities/" +
+            "%s/features/shops/shopsOwner/%s/pools/%s";
+
+    public static final String URL_POOL_DISH_ORDER = "communities/" +
+            "%s/shopsOwner/orders/%s/%s"; // community id , activePool id , userUID
+
+    // nodes name
+    public static final String NAME = "name";
+    public static final String DESCRIPTION = "description";
+    public static final String IMAGE_URL = "imageURL";
+    public static final String QUANTITY = "quantity";
+    public static final String TYPE = "type";
+
     @Exclude
     private String ID;
     private String name;
@@ -48,6 +61,7 @@ public class PoolDish {
     }
 
     public String getQuantity() {
+        if (quantity == null) return "0";
         return quantity;
     }
 
