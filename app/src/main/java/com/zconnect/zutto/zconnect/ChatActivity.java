@@ -387,15 +387,20 @@ public class ChatActivity extends BaseActivity {
                     DBHelper mydb = new DBHelper(ChatActivity.this);
 
                     String key, tab, name;
+                    int unseen_num;
                     key = getIntent().getStringExtra("key");
                     tab = getIntent().getStringExtra("tab");
                     name = getIntent().getStringExtra("name");
-
+                    if(getIntent().getStringExtra("unseen_num")!=null)
+                        unseen_num = Integer.parseInt(getIntent().getStringExtra("unseen_num"));
+                    else
+                        unseen_num = 0;
                     mydb.replaceForum(name,key,tab,messages.size());
+                    chatView.scrollToPosition(messages.size()-1-unseen_num);
                 }
-
                 adapter.notifyDataSetChanged();
-                chatView.scrollToPosition(messages.size()-1);
+                if(!type.equals("forums"))
+                    chatView.scrollToPosition(messages.size()-1);
                 progressBar.setVisibility(View.GONE);
                 chatView.setVisibility(View.VISIBLE);
             }

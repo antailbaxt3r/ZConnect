@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -117,13 +118,18 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     boolean flag;
     private CommunityFeatures communityFeatures;
     Button scrollToTopBtn;
+    private static int firstVisibleInRV;
+    LinearLayoutManager linearLayoutManager;
+    RecyclerView recyclerView;
 
-    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, Button scrollToTopBtn, CommunityFeatures communityFeatures) {
+    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, Button scrollToTopBtn, CommunityFeatures communityFeatures, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView) {
         this.context = context;
         this.recentsItemFormats = recentsItemFormats;
         this.mHomeActivity = HomeActivity;
         this.scrollToTopBtn = scrollToTopBtn;
         this.communityFeatures = communityFeatures;
+        this.linearLayoutManager = linearLayoutManager;
+        this.recyclerView = recyclerView;
     }
 //
     @Override
@@ -178,12 +184,34 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder2, final int position) {
         final RecentsItemFormat recentItem = recentsItemFormats.get(position);
-        if(position>10)
-        {
-            scrollToTopBtn.setVisibility(View.VISIBLE);
-        }
-        else
-            scrollToTopBtn.setVisibility(View.GONE);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy > 0 && scrollToTopBtn.getVisibility()==View.VISIBLE)
+                {
+                    scrollToTopBtn.setVisibility(View.GONE);
+                    Log.i("AAAAAA", "22222222");
+                }
+                else if(dy < 0 && scrollToTopBtn.getVisibility()!=View.VISIBLE)
+                {
+                    scrollToTopBtn.setVisibility(View.VISIBLE);
+                    Log.i("AAAAAA", "333333333");
+                }
+            }
+        });
+//        if(position < 2)
+//        {
+//            Log.i("AAAAAAAAA", "BBB");
+//             scrollToTopBtn.setVisibility(View.GONE);
+//        }
+//        firstVisibleInRV = linearLayoutManager.findFirstVisibleItemPosition();
+//        if(position>10)
+//        {
+//            scrollToTopBtn.setVisibility(View.VISIBLE);
+//        }
+//        else
+//            scrollToTopBtn.setVisibility(View.GONE);
         switch (holder2.getItemViewType())
         {
             case 0:
@@ -756,9 +784,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.post.setTextColor(context.getResources().getColor(R.color.secondaryText));
                     holder.post.setTypeface(Typeface.DEFAULT);
                     final String statusMsg = recentsItemFormats.get(position).getDesc();
-                    if(statusMsg.length()<20)
-                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
-                    else if(statusMsg.length()<70)
+                    if(statusMsg.length() < 70 && holder.postImage.getVisibility()==View.GONE)
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
                     else
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);

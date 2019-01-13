@@ -1,10 +1,16 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -44,6 +50,8 @@ import java.util.HashMap;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class InfoneContactListActivity extends AppCompatActivity {
+
+    static final int PICK_CONTACT = 1;
 
     Toolbar toolbar;
     String catId;
@@ -108,7 +116,9 @@ public class InfoneContactListActivity extends AppCompatActivity {
         fabAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addContact();
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, PICK_CONTACT);
+                //addContact();
             }
         });
 
@@ -343,6 +353,31 @@ public class InfoneContactListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+            case PICK_CONTACT:
+//                if(resultCode == Activity.RESULT_OK)
+//                {
+//                    Uri contactData = data.getData();
+//                    Cursor c = getContentResolver().query(contactData, null, null, null, null);
+//                    if(c.moveToFirst())
+//                    {
+//                        String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+//                        String hasPhone =  c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+//
+//                        if(hasPhone.equalsIgnoreCase("1"))
+//                        {
+//                            Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,null, null);
+//                            phones.moveToFirst();
+//                            String cNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+//                            Toast.makeText(getApplicationContext(), "Number is "+cNumber, Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//
+//                }
+        }
+    }
 }

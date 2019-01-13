@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
@@ -73,6 +74,7 @@ public class Recents extends Fragment {
     ProgressBar progressBar;
     @BindView(R.id.scroll_to_top_fab_fragments_recents)
     Button scrollToTopBtn;
+
     RecentsItemFormat addStatus = new RecentsItemFormat();
     RecentsItemFormat features = new RecentsItemFormat();
 
@@ -134,7 +136,7 @@ public class Recents extends Fragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        // cancle the Visual indication of a refresh
+                        // cancel the Visual indication of a refresh
                         swipeContainer.setRefreshing(false);
                         queryRef.addListenerForSingleValueEvent(homeListener);
                         userReference.addListenerForSingleValueEvent(userListener);
@@ -143,6 +145,9 @@ public class Recents extends Fragment {
                 }, 3000);
             }
         });
+        recyclerView.setHasFixedSize(true);
+        final LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(productLinearLayout);
         userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -197,7 +202,7 @@ public class Recents extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
 
-                adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn,communityFeatures);
+                adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn,communityFeatures, productLinearLayout, recyclerView);
                 recyclerView.setAdapter(adapter);
 
             }
@@ -255,10 +260,6 @@ public class Recents extends Fragment {
             }
         };
 
-        recyclerView.setHasFixedSize(true);
-        final LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
-
-        recyclerView.setLayoutManager(productLinearLayout);
         scrollToTopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -270,11 +271,11 @@ public class Recents extends Fragment {
                 counterItemFormat.setMeta(meta);
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
-
+                scrollToTopBtn.setVisibility(View.GONE);
                 productLinearLayout.scrollToPositionWithOffset(0,0);
             }
         });
-        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn,communityFeatures);
+        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn,communityFeatures, productLinearLayout, recyclerView);
         recyclerView.setAdapter(adapter);
         communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);
 
