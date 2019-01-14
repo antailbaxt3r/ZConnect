@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -149,15 +150,15 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder {
        TextView source,destination,details,time,date;
         String key;
-        ImageButton list_people, share;
+        LinearLayout list_people, share;
         public ViewHolder(View itemView) {
             super(itemView);
             source =(TextView)itemView.findViewById(R.id.source);
             destination =(TextView)itemView.findViewById(R.id.destination);
             time=(TextView)itemView.findViewById(R.id.time_range);
             date=(TextView)itemView.findViewById(R.id.date);
-            list_people = (ImageButton) itemView.findViewById(R.id.list);
-            share = (ImageButton) itemView.findViewById(R.id.sharecab);
+            list_people = (LinearLayout) itemView.findViewById(R.id.list);
+            share = (LinearLayout) itemView.findViewById(R.id.sharecab);
             list_people.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
