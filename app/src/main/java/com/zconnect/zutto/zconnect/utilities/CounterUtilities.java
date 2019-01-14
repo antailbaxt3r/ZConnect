@@ -165,11 +165,14 @@ public class CounterUtilities {
     //SHOPS
     public static final String KEY_SHOPS_OPEN = "shopsOpen";
 
+    public static final String KEY_SHOPS_MY_ORDERS_OPEN = "shopsMyOrdersOpen";
+
+
     //recents
     //checked
     public static final String KEY_RECENTS_ADD_STATUS = "recentsAddStatus";
     //checked
-    public static final String KEY_RECENTS_ADDED_STATUS = "recentsAddStatus";
+    public static final String KEY_RECENTS_ADDED_STATUS = "recentsAddedStatus";
     //checked
     public static final String KEY_RECENTS_LIKE = "recentsLike";
     //checked

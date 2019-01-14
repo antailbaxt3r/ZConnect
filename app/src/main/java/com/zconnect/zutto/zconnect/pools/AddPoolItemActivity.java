@@ -1,14 +1,17 @@
 package com.zconnect.zutto.zconnect.pools;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +26,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolAddItemAdapter;
 import com.zconnect.zutto.zconnect.pools.models.ActivePool;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
@@ -33,7 +37,7 @@ import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AddPoolItemActivity extends AppCompatActivity {
+public class AddPoolItemActivity extends BaseActivity {
 
     public static final String TAG = "PoolDetailsActivity";
 
@@ -69,8 +73,29 @@ public class AddPoolItemActivity extends AppCompatActivity {
                     userUID = user.getUid();
                     //TODO set proper data from the preference
                     communityID = "testCollege";
+                    setToolbar();
 
-                    //activity main block with all valid parameters
+                    if (toolbar != null) {
+
+                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                onBackPressed();
+                            }
+                        });
+                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    }
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+                        int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+                        getWindow().setStatusBarColor(colorDarkPrimary);
+                        getWindow().setNavigationBarColor(colorPrimary);
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    }
 
                     attachID();
                     setPoolInfo();
@@ -216,7 +241,7 @@ public class AddPoolItemActivity extends AppCompatActivity {
     }
 
     private void setPoolInfo() {
-        getSupportActionBar().setTitle(pool.getName());
+        toolbar.setTitle(pool.getName());
         description.setText(pool.getDescription());
         joined_peoples.setText("Ordered : " + String.valueOf(pool.getTotalOrder()));
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER,
@@ -240,8 +265,6 @@ public class AddPoolItemActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         defineListener();
-
-
     }
 
     private void defineListener() {

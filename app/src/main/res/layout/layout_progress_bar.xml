@@ -4,8 +4,6 @@
     android:id="@+id/ll_progressBar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="0.6"
-    android:background="@android:color/black"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 

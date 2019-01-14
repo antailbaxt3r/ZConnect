@@ -60,6 +60,7 @@ import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.pools.PoolPreviousOrderActivity;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RequestCodes;
@@ -673,8 +674,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             intent.putExtra("isReferred", true);
             intent.putExtra("referredBy", getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE).getString("referredBy", null));
             startActivity(intent);
-        }
-        else if (mUser != null) {
+        } else if (mUser != null) {
 
             FirebaseMessaging.getInstance().subscribeToTopic(mUser.getUid());
 
@@ -842,6 +842,22 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 Intent MyProductsIntent = new Intent(HomeActivity.this,MyProducts.class);
                 startActivity(MyProductsIntent);
+                break;
+            }
+
+            case R.id.MyOrders: {
+
+                Intent MyOrdersIntent = new Intent(HomeActivity.this,PoolPreviousOrderActivity.class);
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+                meta.put("type","fromNavigationDrawer");
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_MY_ORDERS_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+                startActivity(MyOrdersIntent);
                 break;
             }
             case R.id.MyRides: {

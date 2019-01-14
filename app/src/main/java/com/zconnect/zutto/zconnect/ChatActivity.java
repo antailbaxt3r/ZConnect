@@ -140,8 +140,6 @@ public class ChatActivity extends BaseActivity {
         //For Photo Posting
         intentHandle = new IntentHandle();
 
-
-
         SharedPreferences communitySP;
         final String communityReference;
         communitySP = ChatActivity.this.getSharedPreferences("communityName", MODE_PRIVATE);
@@ -840,7 +838,14 @@ public class ChatActivity extends BaseActivity {
         }
 
         if(!getIntent().getStringExtra("type").equals("forums")){
+
             menu.findItem(R.id.action_edit_forum).setVisible(false);
+        }else {
+            final String tabuid = getIntent().getStringExtra("tab");
+            if (tabuid.equals("shopPools") || tabuid.equals("otherChats")){
+
+                menu.findItem(R.id.action_edit_forum).setVisible(false);
+            }
         }
         return super.onPrepareOptionsMenu(menu);
     }

@@ -63,6 +63,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         receiver = new networkStatereceiver();
         registerReceiver(receiver, filter);
+
         SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 

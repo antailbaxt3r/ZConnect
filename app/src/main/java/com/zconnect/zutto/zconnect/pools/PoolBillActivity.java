@@ -2,13 +2,16 @@ package com.zconnect.zutto.zconnect.pools;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemCartAdapter;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolInfo;
@@ -32,7 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PoolBillActivity extends AppCompatActivity implements PaymentResultListener {
+public class PoolBillActivity extends BaseActivity implements PaymentResultListener {
 
     public static final String TAG = "PoolBillActivity";
 
@@ -64,7 +68,29 @@ public class PoolBillActivity extends AppCompatActivity implements PaymentResult
                     communityID = "testCollege";
                     userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                    setToolbar();
                     attachID();
+                    if (toolbar != null) {
+
+                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                onBackPressed();
+                            }
+                        });
+                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    }
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+                        int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+                        getWindow().setStatusBarColor(colorDarkPrimary);
+                        getWindow().setNavigationBarColor(colorPrimary);
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    }
 
                     loadCartData(list);
                     btn_pay.setOnClickListener(new View.OnClickListener() {
@@ -118,10 +144,6 @@ public class PoolBillActivity extends AppCompatActivity implements PaymentResult
         }
     }
 
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-    }
-
     private void loadCartData(Bundle list) {
         String[] ids = list.getStringArray(PoolItem.ITEM_ID);
         String[] imageURL = list.getStringArray(PoolItem.IMAGE_URL);
@@ -170,8 +192,7 @@ public class PoolBillActivity extends AppCompatActivity implements PaymentResult
     }
 
     private void attachID() {
-        //TODO set proper title
-        getSupportActionBar().setTitle("Pool Cart");
+        toolbar.setTitle("Bill");
         recyclerView = findViewById(R.id.recycleView);
         sub_totoal = findViewById(R.id.tv_subTotal);
         discount = findViewById(R.id.tv_discount);

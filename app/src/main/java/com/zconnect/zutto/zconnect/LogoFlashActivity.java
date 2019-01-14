@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -221,6 +222,23 @@ public class LogoFlashActivity extends BaseActivity {
 
 //        showDebugDBAddressLogToast(this);
 
+
+        FirebaseDatabase.getInstance().getReference().child("communities").child("bitsGoa").child("Users1").child("yo").setValue("lo").addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Lokesh",e.toString());
+            }
+        }).addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                Log.d("Lokesh","cancel");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("Lokesh","Success");
+            }
+        });
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         new Timer().schedule(new TimerTask() {
