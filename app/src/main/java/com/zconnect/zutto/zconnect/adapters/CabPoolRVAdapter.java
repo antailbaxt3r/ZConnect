@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -105,11 +106,13 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
                date = dtf.parseDateTime(array.get(position).getDate());
            }catch (Exception e){}
-           holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
+//           holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
+           holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth());
            holder.destination.setText(array.get(position).getDestination());
         holder.source.setText(array.get(position).getSource());
-       if(array.get(position).getFrom()!=0){ holder.time.setText(array.get(position).getFrom()+":00 to "+array.get(position).getTo()+":00");}
-       else{holder.time.setText(array.get(position).getTime());}
+//       if(array.get(position).getFrom()!=0){ holder.time.setText(array.get(position).getFrom()+":00 to "+array.get(position).getTo()+":00");}
+           if(array.get(position).getFrom()!=0){ holder.time.setText(array.get(position).getFrom()+":00 - "+array.get(position).getTo()+":00");}
+           else{holder.time.setText(array.get(position).getTime());}
            Log.e("RV","array");
        }
         if(i==1){
@@ -119,11 +122,13 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                 DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
                 date = dtf.parseDateTime(cabItemFormat.get(position).getDate());
             }catch (Exception e){}
-            holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
+//            holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
+            holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth());
             holder.destination.setText(cabItemFormat.get(position).getDestination());
             holder.source.setText(cabItemFormat.get(position).getSource());
       if(cabItemFormat.get(position).getFrom()!=0)  {
-          holder.time.setText(cabItemFormat.get(position).getFrom()+":00 to "+cabItemFormat.get(position).getTo()+":00");
+//          holder.time.setText(cabItemFormat.get(position).getFrom()+":00 to "+cabItemFormat.get(position).getTo()+":00");
+                holder.time.setText(cabItemFormat.get(position).getFrom()+":00 - "+cabItemFormat.get(position).getTo()+":00");
       } else{
           holder.time.setText(cabItemFormat.get(position).getTime());
        }
@@ -144,15 +149,15 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder {
        TextView source,destination,details,time,date;
         String key;
-        Button list_people, share;
+        ImageButton list_people, share;
         public ViewHolder(View itemView) {
             super(itemView);
             source =(TextView)itemView.findViewById(R.id.source);
             destination =(TextView)itemView.findViewById(R.id.destination);
             time=(TextView)itemView.findViewById(R.id.time_range);
             date=(TextView)itemView.findViewById(R.id.date);
-            list_people = (Button) itemView.findViewById(R.id.list);
-            share = (Button) itemView.findViewById(R.id.sharecab);
+            list_people = (ImageButton) itemView.findViewById(R.id.list);
+            share = (ImageButton) itemView.findViewById(R.id.sharecab);
             list_people.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -279,13 +284,13 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                     }
                 }
             });
-            source.setTypeface(semiBold);
-            destination.setTypeface(semiBold);
+//            source.setTypeface(semiBold);
+//            destination.setTypeface(semiBold);
 //            details.setTypeface(customFont2);
-            time.setTypeface(regular);
-            date.setTypeface(regular);
-            list_people.setTypeface(semiBold);
-            share.setTypeface(semiBold);
+//            time.setTypeface(regular);
+//            date.setTypeface(regular);
+//            list_people.setTypeface(semiBold);
+//            share.setTypeface(semiBold);
 
 //            TextView source_head = (TextView)itemView.findViewById(R.id.source_head);
 //            TextView destination_head = (TextView)itemView.findViewById(R.id.destination_head);
