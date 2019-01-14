@@ -191,18 +191,15 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if(dy > 0 && scrollToTopBtn.getVisibility()==View.VISIBLE)
                 {
                     scrollToTopBtn.setVisibility(View.GONE);
-                    Log.i("AAAAAA", "22222222");
                 }
                 else if(dy < 0 && scrollToTopBtn.getVisibility()!=View.VISIBLE)
                 {
                     scrollToTopBtn.setVisibility(View.VISIBLE);
-                    Log.i("AAAAAA", "333333333");
                 }
             }
         });
 //        if(position < 2)
 //        {
-//            Log.i("AAAAAAAAA", "BBB");
 //             scrollToTopBtn.setVisibility(View.GONE);
 //        }
 //        firstVisibleInRV = linearLayoutManager.findFirstVisibleItemPosition();
