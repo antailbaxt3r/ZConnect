@@ -376,6 +376,9 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                             }
                         });
 
+                        ////writing uid of product to homePosts node in Users1.uid for handling data conistency
+                        mPostedByDetails.child("homePosts").child(key).setValue(true);
+
 
                         // Adding stats
 

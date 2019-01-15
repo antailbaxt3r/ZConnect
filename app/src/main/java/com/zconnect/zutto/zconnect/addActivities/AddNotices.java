@@ -294,6 +294,8 @@ public class AddNotices extends BaseActivity {
                         newPost2Postedby.setValue(null);
                         newPost2Postedby.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+                        ////writing uid of notice to homePosts node in Users1.uid for handling data conistency
+                        mPostedByDetails.child("homePosts").child(key).setValue(true);
 
                         final StorageReference filepathSmall = mStorage.child("NoticesImages").child((mImageUriSmall.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
                         UploadTask uploadTask = filepathSmall.putFile(mImageUriSmall);

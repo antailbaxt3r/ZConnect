@@ -210,6 +210,9 @@ public class AddInfoneContact extends AppCompatActivity {
                     }
                 });
 
+                ////writing uid of post to homePosts node in Users1.uid for handling data conistency
+                mPostedByDetails.child("homePosts").child(recentsPost.getKey()).setValue(true);
+
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
 

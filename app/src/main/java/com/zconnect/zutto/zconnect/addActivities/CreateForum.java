@@ -285,6 +285,9 @@ public class CreateForum extends AppCompatActivity {
                             }
                         });
 
+                        ////writing uid of post to homePosts node in Users1.uid for handling data conistency
+                        mPostedByDetails.child("homePosts").child(newPush.getKey()).setValue(true);
+
 
                         if(mImageUri!=null && mImageUriThumb!=null)
                         {

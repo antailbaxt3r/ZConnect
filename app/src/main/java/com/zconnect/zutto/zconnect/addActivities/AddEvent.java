@@ -434,6 +434,9 @@ public class AddEvent extends BaseActivity {
                                     }
                                 });
 
+                                //writing uid of event to homePosts node in Users1.uid for handling data conistency
+                                mPostedByDetails.child("homePosts").child(key).setValue(true);
+
                                 NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_EVENTS);
                                 numberNotificationForFeatures.setCount();
                                 Log.d("NumberNoti setting for ", FeatureDBName.KEY_EVENTS);
@@ -569,6 +572,10 @@ public class AddEvent extends BaseActivity {
 
                                     }
                                 });
+
+                                ////writing uid of event to homePosts node in Users1.uid for handling data conistency
+                                mPostedByDetails.child("homePosts").child(key).setValue(true);
+
                                 //Sending Notifications
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
 

@@ -331,6 +331,9 @@ public class AddCabPool extends BaseActivity {
                                             }
                                         });
 
+                                        //writing uid of cabpool to homePosts node in Users1.uid for handling data conistency
+                                        mPostedByDetails.child("homePosts").child(key).setValue(true);
+
                                         // Adding stats
                                         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("Stats");
                                         mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
