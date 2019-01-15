@@ -29,6 +29,7 @@ import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import java.util.HashMap;
 
@@ -62,6 +63,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
     private TextView productPrice;
     private TextView productNegotiableText;
 //    private Button productSellerContact;
+    private TextView productDate;
 
     private String sellerName;
     public Boolean flag;
@@ -272,6 +274,14 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         Log.d("PRODUCT PRICE 2", "+" + Price);
         Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
         productPrice.setTypeface(ralewayMedium);
+    }
+
+    public void setProductDate(long postedTime, long currentTime) {
+        productDate = (TextView) mView.findViewById(R.id.product_date);
+        TimeUtilities tu = new TimeUtilities(postedTime, currentTime);
+        String timeAgo = tu.calculateTimeAgoStoreroom();
+        productDate.setText(timeAgo);
+
     }
 
 //    public void setSellerName(String postedBy) {

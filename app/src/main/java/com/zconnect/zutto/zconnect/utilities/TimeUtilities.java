@@ -67,6 +67,23 @@ public class TimeUtilities {
         }
     }
 
+    public String calculateTimeAgoStoreroom() {
+        String timeAgo = calculateTimeAgo();
+        if(!timeAgo.contains("day") && !timeAgo.contains("month") && !timeAgo.contains("year"))
+        {
+            timeAgo = "New";
+        }
+        else
+        {
+            timeAgo = timeAgo.substring(0, timeAgo.indexOf(" ago"));
+            if(timeAgo.contains("month"))
+                timeAgo = timeAgo.replace("month", "mth");
+            else if(timeAgo.contains("year"))
+                timeAgo = timeAgo.replace("year", "yr");
+        }
+        return timeAgo;
+    }
+
     public String getTimeStamp(long ts1)
     {
         DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");

@@ -56,6 +56,8 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -67,7 +69,7 @@ import static android.view.View.VISIBLE;
 public class OpenProductDetails extends BaseActivity {
 
     private ImageView productImage;
-    private TextView productName, productPrice, productPriceType, productDescription, productSellerName;
+    private TextView productName, productPrice, productPriceType, productDescription, productSellerName, productDate;
     private Button productShortlist, productCall;
     private String productCategory;
     private DatabaseReference mDatabaseProduct;
@@ -135,6 +137,7 @@ public class OpenProductDetails extends BaseActivity {
         productPriceType = (TextView) findViewById(R.id.product_price_type);
         productDescription = (TextView) findViewById(R.id.product_description);
         productSellerName = (TextView) findViewById(R.id.product_seller_name);
+        productDate = (TextView) findViewById(R.id.product_date);
         productShortlist = (Button) findViewById(R.id.product_shortlist);
         progressBar = (ProgressBar) findViewById(R.id.product_loading);
         productContent = (LinearLayout) findViewById(R.id.product_content);
@@ -452,6 +455,13 @@ public class OpenProductDetails extends BaseActivity {
                     try {
                         productSellerName.setText("by " + dataSnapshot.child("PostedBy").child("Username").getValue().toString());
                     } catch (Exception e) {
+
+                    }
+                    try {
+                        TimeUtilities tu = new TimeUtilities(dataSnapshot.child("PostTimeMillis").getValue(Long.class), System.currentTimeMillis());
+                        productDate.setText(tu.calculateTimeAgoStoreroom());
+                    }
+                    catch (Exception e) {
 
                     }
                     mImageUri = dataSnapshot.child("Image").getValue().toString();

@@ -7,11 +7,12 @@ package com.zconnect.zutto.zconnect.itemFormats;
 public class Product {
     private String ProductName, ProductDescription, Image, Key, Price, Phone_no, Category, negotiable;
     private PostedByDetails PostedBy;
+    private long PostTimeMillis;
     public Product() {
 
     }
 
-    public Product(String productName, String productDescription, String image, String key, String price, String phone_no, String category ,String negotiable, PostedByDetails postedBy) {
+    public Product(String productName, String productDescription, String image, String key, String price, String phone_no, String category ,String negotiable, PostedByDetails postedBy, long postTimeMillis) {
         ProductName = productName;
         ProductDescription = productDescription;
         Image = image;
@@ -21,6 +22,7 @@ public class Product {
         Category = category;
         this.negotiable= negotiable;
         PostedBy = postedBy;
+        PostTimeMillis = postTimeMillis;
     }
 
     public String getNegotiable() {
@@ -78,4 +80,8 @@ public class Product {
     public void setPostedBy(PostedByDetails postedBy) { PostedBy = postedBy; }
 
     public PostedByDetails getPostedBy() { return PostedBy;}
+
+    public long getPostTimeMillis() {
+        return PostTimeMillis;
+    }
 }
