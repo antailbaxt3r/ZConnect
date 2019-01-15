@@ -97,11 +97,11 @@ public class TimeUtilities {
         {
             if(dt1.getYearOfEra()==dt2.getYearOfEra() && dt1.getMonthOfYear() == dt2.getMonthOfYear() && dt1.getDayOfMonth() == dt2.getDayOfMonth())
             {
-                return "TODAY";
+                return "Today";
             }
             else if(dt1.getYearOfEra()==dt2.getYearOfEra() && dt1.getMonthOfYear() == dt2.getMonthOfYear() && dt1.getDayOfMonth() == dt2.getDayOfMonth()-1)
             {
-                return "YESTERDAY";
+                return "Yesterday";
             }
             else {
                 return dt1.getDayOfMonth() + "/" + dt1.getMonthOfYear() + "/" + dt1.getYearOfCentury();

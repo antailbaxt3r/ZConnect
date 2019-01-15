@@ -206,11 +206,11 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             DateTime date = new DateTime(indianZone);
             if(dt.getYearOfEra()==date.getYearOfEra() && dt.getMonthOfYear() == date.getMonthOfYear() && dt.getDayOfMonth() == date.getDayOfMonth())
             {
-                timeText.setText("TODAY");
+                timeText.setText("Today");
             }
             else if(dt.getYearOfEra()==date.getYearOfEra() && dt.getMonthOfYear() == date.getMonthOfYear() && dt.getDayOfMonth() == date.getDayOfMonth()-1)
             {
-                timeText.setText("YESTERDAY");
+                timeText.setText("Yesterday");
             }
             else {
                 timeText.setText(dt.toString("MMMM") + " " + dt.getDayOfMonth() + " " + dt.getYearOfEra());
@@ -229,11 +229,11 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 DateTime date = new DateTime(indianZone);
                 if(dt.getYearOfEra()==date.getYearOfEra() && dt.getMonthOfYear() == date.getMonthOfYear() && dt.getDayOfMonth() == date.getDayOfMonth())
                 {
-                    timeText.setText("TODAY");
+                    timeText.setText("Today");
                 }
                 else if(dt.getYearOfEra()==date.getYearOfEra() && dt.getMonthOfYear() == date.getMonthOfYear() && dt.getDayOfMonth() == date.getDayOfMonth()-1)
                 {
-                    timeText.setText("YESTERDAY");
+                    timeText.setText("Yesterday");
                 }
                 else {
                     timeText.setText(dt.toString("MMMM") + " " + dt.getDayOfMonth() + " " + dt.getYearOfEra());
