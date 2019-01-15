@@ -457,10 +457,12 @@ public class OpenProductDetails extends BaseActivity {
                     mImageUri = dataSnapshot.child("Image").getValue().toString();
                     setImage(OpenProductDetails.this, dataSnapshot.child("ProductName").getValue().toString(), dataSnapshot.child("Image").getValue().toString(), productImage);
 
-                    if (dataSnapshot.hasChild("negotiable")) {
-                        setProductPrice(productPrice, productPriceType, dataSnapshot.child("Price").getValue().toString(), dataSnapshot.child("negotiable").getValue().toString());
+                    setProductPrice(productPrice,dataSnapshot.child("Price").getValue().toString());
+
+                    if (dataSnapshot.hasChild("isNegotiable")) {
+                        setProductPriceType(productPriceType, dataSnapshot.child("isNegotiable").getValue(Boolean.class));
                     } else {
-                        setProductPrice(productPrice, productPriceType, dataSnapshot.child("Price").getValue().toString(), null);
+                        setProductPriceType(productPriceType,Boolean.FALSE);
                     }
 
                     defaultSwitch(productKey, productCategory, productShortlist);
@@ -617,23 +619,18 @@ public class OpenProductDetails extends BaseActivity {
 
     }
 
-    public void setProductPrice(TextView productPrice, TextView productPriceType, String productPriceValue, String negotiable) {
-        String price = "";
-        if (negotiable != null) {
-            if (negotiable.equals("1")) {
-                price = "₹" + productPriceValue + "/-";
-                productPriceType.setVisibility(View.VISIBLE);
-            } else if (negotiable.equals("2")) {
-                price = "Price Negotiable";
-                productPrice.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            } else
-                price = "₹" + productPriceValue + "/-";
+    public void setProductPrice(TextView productPrice, String productPriceValue) {
 
-            productPrice.setText(price);
-        } else {
             productPrice.setText("₹" + productPriceValue + "/-");
-        }
 
+    }
+
+    public void setProductPriceType(TextView productPriceType,Boolean isNegotiable){
+        if(isNegotiable) {
+            productPriceType.setVisibility(View.VISIBLE);
+        }else {
+            productPriceType.setVisibility(View.GONE);
+        }
     }
 
     public void setImage(final Activity activity, final String productName, final String imageUrl, final ImageView productImage) {

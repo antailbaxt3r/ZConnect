@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,8 +45,8 @@ public class CreateCommunity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST = 7;
     IntentHandle intentHandle;
-    ImageButton communityImage;
-    MaterialEditText communityName,communityEmail,communityCode;
+    SimpleDraweeView communityImage;
+    MaterialEditText communityName;
     Button createCommunity;
     Intent galleryIntent;
     StorageReference mStorage;
@@ -53,6 +54,7 @@ public class CreateCommunity extends AppCompatActivity {
     Uri mImageUri;
     private FirebaseAuth mAuth;
     private ProgressDialog mProgress;
+    private Double lat,lon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +86,16 @@ public class CreateCommunity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        communityEmail= (MaterialEditText) findViewById(com.zconnect.zutto.zconnect.R.id.community_email);
+        try {
+            lat = getIntent().getExtras().getDouble("lat");
+            lon = getIntent().getExtras().getDouble("lon");
+        }catch (Exception e){
+            lat = 0.0;
+            lon = 0.0;
+        }
+
         communityName= (MaterialEditText) findViewById(com.zconnect.zutto.zconnect.R.id.community_name);
-        communityCode = (MaterialEditText) findViewById(com.zconnect.zutto.zconnect.R.id.community_code);
-        communityImage = (ImageButton) findViewById(com.zconnect.zutto.zconnect.R.id.community_image);
+        communityImage = (SimpleDraweeView) findViewById(com.zconnect.zutto.zconnect.R.id.community_image);
         createCommunity = (Button) findViewById(com.zconnect.zutto.zconnect.R.id.create_community);
         mProgress = new ProgressDialog(this);
 
@@ -168,24 +176,25 @@ public class CreateCommunity extends AppCompatActivity {
 
     private void startPosting(){
 
-        mProgress.setMessage("Posting Product..");
-        mProgress.show();
+        mProgress.setMessage("Posting Request..");
 
         final String communityNameString,communityEmailString,communityImageString,communityCodeString;
 
-
-        communityEmailString= communityEmail.getText().toString().trim();
-        communityImageString= mImageUri.toString();
-        communityNameString= communityName.getText().toString().trim();
-        communityCodeString= communityCode.getText().toString().trim();
+        if(mImageUri!=null) {
+            communityImageString = mImageUri.toString();
+        }else {
+            communityImageString = null;
+        }
+        communityNameString = communityName.getText().toString().trim();
 
 
 
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("newRequestCommunities");
 
-        if(!TextUtils.isEmpty(communityEmailString)&&!TextUtils.isEmpty(communityImageString)&&!TextUtils.isEmpty(communityNameString)){
+        if(!TextUtils.isEmpty(communityImageString)&&!TextUtils.isEmpty(communityNameString)){
+            mProgress.show();
             final StorageReference filepath = mStorage.child("CommunityImages").child((mImageUri.getLastPathSegment()));
             UploadTask uploadTask = filepath.putFile(mImageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -207,22 +216,30 @@ public class CreateCommunity extends AppCompatActivity {
                         String key = newPost.getKey();
                         newPost.child("name").setValue(communityNameString);
                         newPost.child("key").setValue(key);
-                        newPost.child("uid").setValue(communityEmailString);
+                        newPost.child("email").setValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                         newPost.child("image").setValue(downloadUri.toString());
+                        newPost.child("location").child("lat").setValue(lat);
+                        newPost.child("location").child("lon").setValue(lon);
                         mProgress.dismiss();
+                        finish();
                     }
                     else {
                         // Handle failures
                         // ...
+
+                        mProgress.dismiss();
                         Snackbar snackbar = Snackbar.make(communityName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
                         snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
                         snackbar.show();
                     }
                 }
             });
-            Toast.makeText(this, "Posted", Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(this, "Some fields are empty", Toast.LENGTH_SHORT).show();
+            if(mImageUri!=null) {
+                Toast.makeText(this, "Some fields are empty", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(this, "Please select a community image", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

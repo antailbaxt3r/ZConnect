@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -127,10 +130,10 @@ public class MyProducts extends BaseActivity {
                 final String product_key = getRef(position).getKey();
                 holder.setProductName(model.getProductName());
                 holder.setProductDesc(model.getProductDescription());
-                holder.setPrice(model.getPrice(),model.getNegotiable());
+                holder.setPrice(model.getPrice());
                 holder.setIntent(model.getKey());
                 holder.setImage(getApplicationContext(), model.getImage());
-                holder.setArchiveButton(product_key);
+                holder.setArchiveButton(product_key, model.getProductName());
             }
         };
 
@@ -171,7 +174,7 @@ public class MyProducts extends BaseActivity {
             archiveButton = (Button) mView.findViewById(R.id.archive);
         }
 
-        public void setArchiveButton(final String product_key){
+        public void setArchiveButton(final String product_key, final String productName){
 
             FirebaseMessaging.getInstance().unsubscribeFromTopic(product_key);
             ReserveReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(product_key);
@@ -179,23 +182,47 @@ public class MyProducts extends BaseActivity {
             archiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ReserveReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(!flag) {
-                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("archiveProducts").child(product_key).setValue(dataSnapshot.getValue());
-                                flag= true;
-                                ReserveReference.removeValue();
-                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(product_key).removeValue();
-                            }
 
-                        }
+                    final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(itemView.getContext());
+                    builder.setMessage("Are you sure you want to delete " + productName)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                                    flag=false;
+                                    ReserveReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        }
-                    });
+                                            if(!flag) {
+                                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("archiveProducts").child(product_key).setValue(dataSnapshot.getValue());
+                                                flag= true;
+                                                ReserveReference.removeValue();
+                                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(product_key).removeValue();
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            })
+                            .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+
+                    final android.app.AlertDialog dialog = builder.create();
+
+                    dialog.setCancelable(false);
+                    dialog.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(itemView.getContext().getResources().getColor(R.color.colorHighlight));
+
                 }
             });
         }
@@ -236,25 +263,11 @@ public class MyProducts extends BaseActivity {
         }
 
         //Set Product Price
-        public void setPrice(String productPrice,String negotiable) {
+        public void setPrice(String productPrice) {
             TextView post_price = (TextView) mView.findViewById(R.id.price);
-            String price="";
-            if(negotiable!=null) {
-                if (negotiable.equals("1")) {
-                    price = "₹" + productPrice + "/-";
-                } else if (negotiable.equals("2")) {
-                    price = "Price Negotiable";
-                    post_price.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                }
-                else
-                    price = "₹" + productPrice + "/-";
 
-                post_price.setText(price);
-            }
-            else
-            {
                 post_price.setText("₹" + productPrice + "/-");
-            }
+
             //"₹" + productPrice + "/-"
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
             post_price.setTypeface(ralewayMedium);

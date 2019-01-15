@@ -37,9 +37,9 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
     @Override
     public void onBindViewHolder(ProductsViewHolder holder, int position) {
         holder.setImage(ctx,productVector.get(position).getImage());
-        holder.setPrice(productVector.get(position).getPrice(),productVector.get(position).getNegotiable());
+        holder.setPrice(productVector.get(position).getPrice());
+        holder.setNegotiable(productVector.get(position).getIsNegotiable());
         holder.setProductName(productVector.get(position).getProductName());
-//        holder.setSellerNumber(productVector.get(position).getCategory(),productVector.get(position).getPhone_no(),ctx);
         holder.defaultSwitch(productVector.get(position).getKey(),ctx,productVector.get(position).getCategory(),productVector.get(position).getProductName());
         holder.openProduct(productVector.get(position).getKey());
     }

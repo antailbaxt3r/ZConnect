@@ -99,6 +99,18 @@ public class StoreroomIndividualCategory extends BaseActivity {
                     try{
                         singleProduct = shot.getValue(Product.class);
                         if(!singleProduct.getKey().equals(null)&& !singleProduct.getProductName().equals(null)) {
+
+                            if (!shot.hasChild("isNegotiable")){
+                                if(shot.hasChild("negotiable")){
+                                    if(shot.child("negotiable").getValue(Integer.class)==1){
+                                        singleProduct.setIsNegotiable(Boolean.TRUE);
+                                    }else {
+                                        singleProduct.setIsNegotiable(Boolean.FALSE);
+                                    }
+                                }else {
+                                    singleProduct.setIsNegotiable(Boolean.FALSE);
+                                }
+                            }
                             productVector.add(singleProduct);
                             flagNoProductsAvailable=false;
                         }

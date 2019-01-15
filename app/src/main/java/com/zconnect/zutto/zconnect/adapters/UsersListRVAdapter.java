@@ -156,6 +156,8 @@ public class UsersListRVAdapter extends RecyclerView.Adapter<UsersListRVAdapter.
                 forumType.setVisibility(View.VISIBLE);
                 forumType.setText("(Forum Admin)");
                 forumType.setTextColor(context.getResources().getColor(R.color.colorHighlight));
+            }else {
+                forumType.setVisibility(View.GONE);
             }
         }
 
