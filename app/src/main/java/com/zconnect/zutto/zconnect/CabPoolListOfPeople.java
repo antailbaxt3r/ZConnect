@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -68,7 +69,8 @@ public class CabPoolListOfPeople extends BaseActivity {
     String reference, reference_old = "archives", reference_default = "allCabs";
     Long default_frequency;
     Long current_frequency;
-
+    private Button joinButton;
+    private LinearLayout joinLayout,chatLayout;
     String formatted_date, Date;
     private FirebaseAuth mAuth;
     private DatabaseReference ref;
@@ -116,6 +118,14 @@ public class CabPoolListOfPeople extends BaseActivity {
             finish();
         }
 
+        joinButton = (Button) findViewById(R.id.join);
+        joinLayout = (LinearLayout) findViewById(R.id.joinLayout);
+        chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
+
+        joinLayout.setVisibility(View.GONE);
+        chatLayout.setVisibility(View.VISIBLE);
+
+
         flag = false;
         mAuth = FirebaseAuth.getInstance();
 
@@ -129,6 +139,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                 HashMap<String, String> meta= new HashMap<>();
 
                 meta.put("key",key);
+                meta.put("type","fromMenu");
 
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_CHAT_OPEN);
@@ -218,8 +229,14 @@ public class CabPoolListOfPeople extends BaseActivity {
 
                 if (flag) {
                     join.setText("Leave");
+                    joinButton.setVisibility(View.VISIBLE);
+                    joinLayout.setVisibility(View.VISIBLE);
+                    chatLayout.setVisibility(View.GONE);
                 } else {
                     join.setText("Join");
+                    joinButton.setVisibility(View.GONE);
+                    joinLayout.setVisibility(View.GONE);
+                    chatLayout.setVisibility(View.VISIBLE);
                 }
 
                 adapter.notifyDataSetChanged();
@@ -239,6 +256,33 @@ public class CabPoolListOfPeople extends BaseActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(adapter);
         pool.keepSynced(true);
+
+
+        chatLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                meta.put("type","fromTextBox");
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_CHAT_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
+                Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
+                intent.putExtra("type","cabPool");
+                intent.putExtra("key",key);
+                intent.putExtra("ref", databaseReference.child(key).toString());
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            }
+        });
 
         SharedPreferences sharedPref = getSharedPreferences("guestMode", Context.MODE_PRIVATE);
         final Boolean status = sharedPref.getBoolean("mode", false);

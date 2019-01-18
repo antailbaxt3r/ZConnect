@@ -188,25 +188,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
                 holderMain.forumIcon.setBackground(context.getResources().getDrawable(R.drawable.forum_circle));
             }
 
-            try {
-                holderMain.lastMessageWithName.setVisibility(View.VISIBLE);
-                holderMain.lastMessageTime.setVisibility(View.VISIBLE);
-                String shortName = forumCategoriesItemFormats.get(position).getLastMessage().getName();
-                if(shortName.indexOf(' ')>0)
-                    shortName = shortName.substring(0, shortName.indexOf(' '));
-                holderMain.lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate()));
-                String timeStamp = new TimeUtilities().getTimeStamp(forumCategoriesItemFormats.get(position).getLastMessage().getTimeDate());
-                if(timeStamp.length()!=0)
-                {
-                    holderMain.lastMessageTime.setText(timeStamp);
-                }
-                holderMain.lastMessageWithName.setText(shortName + ": " + forumCategoriesItemFormats.get(position).getLastMessage().getMessage().substring(1, forumCategoriesItemFormats.get(position).getLastMessage().getMessage().length() - 1));
-            }
-            catch (Exception e) {
-                Log.d("Error alert ", e.getMessage());
-                holderMain.lastMessageWithName.setVisibility(View.INVISIBLE);
-                holderMain.lastMessageTime.setVisibility(View.INVISIBLE);
-            }
+
             try {
                 if(forumCategoriesItemFormats.get(position).getVerified())
                 {
@@ -224,6 +206,13 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             holderMain.catName.setTextColor(context.getResources().getColor(R.color.primaryText));
             holderMain.joinForum(forumCategoriesItemFormats.get(position).getCatUID(),forumCategoriesItemFormats.get(position).getName());
 
+            try {
+                if(forumCategoriesItemFormats.get(position).getTotalMembers()!=null) {
+                    holderMain.setTotalMembers(forumCategoriesItemFormats.get(position).getTotalMembers().toString() + " members");
+                }else {
+                    holderMain.setTotalMembers("");
+                }
+            }catch (Exception e){}
         }else {
             blankViewHolder holderMain = (blankViewHolder) holder;
 
@@ -365,7 +354,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     private class notJoinedViewHolder extends RecyclerView.ViewHolder{
-        TextView catName, lastMessageTime, lastMessageWithName;
+        TextView catName,totalMembers;
         View mView;
         Button joinButton;
         ImageView defaultForumIcon;
@@ -377,9 +366,8 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             super(itemView);
             mView = itemView;
             catName = (TextView) itemView.findViewById(R.id.cat_name);
-            lastMessageTime = (TextView) itemView.findViewById(R.id.forums_cat_last_message_timestamp);
-            lastMessageWithName = (TextView) itemView.findViewById(R.id.forums_cat_not_joined_last_message_with_username);
             joinButton = (Button) itemView.findViewById(R.id.joinCategory);
+            totalMembers = (TextView) itemView.findViewById(R.id.total_members);
             forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_categories_not_joined);
             defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_categories_not_joined);
             verifiedForumIconLayout = (FrameLayout) itemView.findViewById(R.id.verified_forum_icon_layout);
@@ -389,6 +377,10 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
 //            Typeface ralewayRegular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Regular.ttf");
 //            catName.setTypeface(ralewayMedium);
 //            lastMessageTime.setTypeface(ralewayRegular);
+        }
+
+        void setTotalMembers(String totalMembersInteger){
+            totalMembers.setText(totalMembersInteger + " members");
         }
 
         void openChat(final String uid, final String tabId, final String  name,Boolean newUser){

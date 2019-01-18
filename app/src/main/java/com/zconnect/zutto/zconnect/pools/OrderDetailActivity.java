@@ -37,7 +37,7 @@ public class OrderDetailActivity extends BaseActivity {
     public static final String TAG = "OrderDetailActivity";
 
     private ImageView qr_image;
-    private String communityID,userUID;
+    private String userUID;
     private ShopOrder order;
     private RecyclerView recyclerView;
     private PoolItemCartAdapter adapter;
@@ -62,7 +62,6 @@ public class OrderDetailActivity extends BaseActivity {
                 } else {
                     userUID = user.getUid();
                     //TODO set proper data from the preference
-                    communityID = "testCollege";
 
                     setToolbar();
                     //activity main block with all valid parameters
@@ -108,8 +107,7 @@ public class OrderDetailActivity extends BaseActivity {
 
     private void loadItemView() {
         //setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM,
-                communityID, order.getShopID(), order.getPoolID()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM, order.getShopID(), order.getPoolID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(poolItemListener);
     }
@@ -192,7 +190,7 @@ public class OrderDetailActivity extends BaseActivity {
 
     private void loadOrderItemList() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ShopOrder.URL_ORDER_ITEM_LIST,
-                communityID, order.getShopID(),order.getPoolPushID() ,order.getRazorPayID()));
+                communityReference, order.getShopID(),order.getPoolPushID() ,order.getRazorPayID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(orderItemListener);
     }

@@ -51,7 +51,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
     private String TAG = InfoneContactsRVAdpater.class.getSimpleName();
 
     Context context;
-    ArrayList<InfoneContactsRVItem> infoneContactsRVItems;
+    ArrayList<InfoneContactsRVItem> infoneContactsRVItems = new ArrayList<InfoneContactsRVItem>();
     String catId;
     final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 

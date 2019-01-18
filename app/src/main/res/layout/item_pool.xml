@@ -17,6 +17,7 @@
             android:id="@+id/pool_logo"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:contentDescription="Image"
             app:roundAsCircle="true" />
 
         <TextView
@@ -64,4 +65,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp" />
+
+    <Button
+        android:id="@+id/activate_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:padding="15dp"
+        android:text="Activate"/>
 </LinearLayout>

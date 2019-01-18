@@ -10,8 +10,7 @@ public class ActivePool {
     // static variables
     public static final String ACTIVE_POOLS = "activePools";
     public static final String ACTIVE_POOL = "activePool";
-    public static final String URL_ACTIVE_POOL = "communities/" +
-            "%s/features/pools/activePools";
+    public static final String URL_ACTIVE_POOL = "communities/%s/features/shops/pools/current";
 
 
     // nodes name

@@ -137,6 +137,7 @@ public class ChatActivity extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+
         //For Photo Posting
         intentHandle = new IntentHandle();
 
@@ -328,6 +329,7 @@ public class ChatActivity extends BaseActivity {
         chatView = (RecyclerView) findViewById(R.id.chatList);
         adapter = new ChatRVAdapter(messages,this);
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -368,7 +370,6 @@ public class ChatActivity extends BaseActivity {
         loadMessagesListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                progressBar.setVisibility(View.VISIBLE);
                 messages.clear();
                 for (DataSnapshot snapshot:dataSnapshot.getChildren()) {
                     ChatItemFormats temp = new ChatItemFormats();
@@ -726,7 +727,7 @@ public class ChatActivity extends BaseActivity {
         i.putExtra("catUID", key);
         i.putExtra("flag", "true");
         startActivity(i);
-        finish();
+//        finish();
     }
 
     @Override

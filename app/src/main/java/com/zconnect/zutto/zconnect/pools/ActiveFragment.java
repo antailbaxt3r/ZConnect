@@ -21,6 +21,8 @@ import com.zconnect.zutto.zconnect.pools.models.Pool;
 
 import java.util.ArrayList;
 
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+
 public class ActiveFragment extends Fragment {
 
     public static final String TAG = "ActiveFragment";
@@ -29,16 +31,12 @@ public class ActiveFragment extends Fragment {
     private PoolAdapter adapter;
     private ValueEventListener activePoolListener;
 
-    private String communityID;
-
-
     public ActiveFragment() {
         // Required empty public constructor
     }
 
-    public static ActiveFragment newInstance(String communityID) {
+    public static ActiveFragment newInstance() {
         ActiveFragment frag = new ActiveFragment();
-        frag.communityID = communityID;
         return frag;
     }
 
@@ -59,7 +57,7 @@ public class ActiveFragment extends Fragment {
     }
 
     private void loadPoolList() {
-        Query query = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityID)).orderByChild(Pool.STATUS).equalTo(Pool.STATUS_ACTIVE);
+        Query query = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityReference)).orderByChild(Pool.STATUS).equalTo(Pool.STATUS_ACTIVE);
         query.addValueEventListener(activePoolListener);
     }
 

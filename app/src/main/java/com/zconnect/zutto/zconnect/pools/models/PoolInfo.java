@@ -16,10 +16,10 @@ import java.util.Map;
 public class PoolInfo {
 
     // URLS
-    public static final String URL_POOL_INFO = "communities/%s/shopOwner/%s/pools/poolInfo";
-    //                                                    communityID ,   shopID
-    public static final String URL_POOL_OFFER = "communities/%s/shopOwner/%s/pools/poolInfo/%s/offer";
-    //                                                    communityID ,   shopID,          poolID
+    public static final String URL_POOL_INFO = "shops/shopDetails/%s/pools/poolInfo";
+    //                                                         shopID
+    public static final String URL_POOL_OFFER = "shops/shopDetails/%s/pools/poolInfo/%s/offer";
+    //                                                          shopID             poolID
     //Node name
     public static final String NAME = "name";
     public static final String TYPE = "type";

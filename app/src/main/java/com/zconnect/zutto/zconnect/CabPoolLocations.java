@@ -99,9 +99,14 @@ public class CabPoolLocations extends BaseActivity {
         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
-                {
-                    fab.setVisibility(View.VISIBLE);
+                if(dataSnapshot.hasChild("userType")){
+                    if (dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN)){
+                        fab.setVisibility(View.VISIBLE);
+                    }else {
+                        fab.setVisibility(View.INVISIBLE);
+                    }
+                }else{
+                    fab.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -165,8 +170,11 @@ public class CabPoolLocations extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 locationsVector.clear();
                 for (DataSnapshot shot: dataSnapshot.getChildren()) {
+                    CabPoolLocationFormat cabPoolLocationFormat = new CabPoolLocationFormat();
                     try {
-                        locationsVector.add(shot.getValue(CabPoolLocationFormat.class));
+                        cabPoolLocationFormat = shot.getValue(CabPoolLocationFormat.class);
+                        cabPoolLocationFormat.setLocationUID(shot.getKey());
+                        locationsVector.add(cabPoolLocationFormat);
                     }catch (Exception e){}
 
                 }

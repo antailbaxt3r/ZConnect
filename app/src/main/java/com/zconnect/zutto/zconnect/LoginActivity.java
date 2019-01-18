@@ -248,14 +248,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         }
     }
 
-    @SuppressLint("ApplySharedPref")
-    public void setGuestLoginPref(Boolean mode) {
-        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
-        SharedPreferences.Editor editInfo = sharedPref.edit();
-        editInfo.putBoolean("mode", mode);
-        editInfo.commit();
-    }
-
     public void setCommunity(String communityName){
 
 
@@ -327,9 +319,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             }
         });
 
-
-
-        setGuestLoginPref(false);
     }
 
     private void logout() {
@@ -362,13 +351,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                         Toast.makeText(this, "Please accept terms of use before signing in", Toast.LENGTH_SHORT).show();
                     }
                 }
-                break;
-            }
-            case R.id.btn_guest_login: {
-                Intent i = new Intent(LoginActivity.this,CommunitiesAround.class);
-                startActivity(i);
-                setGuestLoginPref(false);// need to work on this
-                finish(); /*Make Sure HomeActivity exists*/
                 break;
             }
             case R.id.terms_of_use: {

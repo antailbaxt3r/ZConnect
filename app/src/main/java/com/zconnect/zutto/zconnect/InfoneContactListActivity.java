@@ -48,7 +48,8 @@ public class InfoneContactListActivity extends AppCompatActivity {
     Toolbar toolbar;
     String catId;
     RecyclerView recyclerViewContacts;
-    ArrayList<InfoneContactsRVItem> contactsRVItems,contactsRVSearchItems;
+    ArrayList<InfoneContactsRVItem> contactsRVSearchItems;
+    ArrayList<InfoneContactsRVItem> contactsRVItems = new ArrayList<>();
     InfoneContactsRVAdpater infoneContactsRVAdpater;
     DatabaseReference databaseReferenceList;
     ValueEventListener listener;
@@ -87,23 +88,19 @@ public class InfoneContactListActivity extends AppCompatActivity {
         catImageurl = getIntent().getExtras().getString("catImageurl");
         catAdmin = getIntent().getExtras().getString("catAdmin");
 
-        Log.e(TAG,"data: "+catId+" "+ catName);
-
         toolbar.setTitle(catName);
         setTitle(catName);
         communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
-        databaseReferenceList = FirebaseDatabase.getInstance().getReference().child("communities")
-                .child(communityReference).child("infone").child("categories").child(catId);
+        databaseReferenceList = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories").child(catId);
         progressBar = (ProgressBar) findViewById(R.id.infone_contact_list_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         recyclerViewContacts = (RecyclerView) findViewById(R.id.rv_infone_contacts);
         recyclerViewContacts.setVisibility(View.GONE);
         fabAddContact = (FloatingActionButton) findViewById(R.id.fab_contacts_infone);
 
-        recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false));
+        recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         fabAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,8 +110,6 @@ public class InfoneContactListActivity extends AppCompatActivity {
         });
 
         setAdapter("lite",false);
-
-        Log.e(TAG, "data :" + catId);
     }
 
     private  void setAdapter(final String queryString, final Boolean search) {

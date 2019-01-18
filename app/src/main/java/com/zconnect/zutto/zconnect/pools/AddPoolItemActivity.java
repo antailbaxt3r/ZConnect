@@ -51,7 +51,7 @@ public class AddPoolItemActivity extends BaseActivity {
     private ValueEventListener poolItemListener, poolOfferListener;
 
     private Pool pool;
-    private String communityID, userUID;
+    private String userUID;
     private int discount_percentage, max_amount, min_item;
     private Boolean offer_flag = false;
 
@@ -72,7 +72,6 @@ public class AddPoolItemActivity extends BaseActivity {
                 } else {
                     userUID = user.getUid();
                     //TODO set proper data from the preference
-                    communityID = "testCollege";
                     setToolbar();
 
                     if (toolbar != null) {
@@ -179,8 +178,6 @@ public class AddPoolItemActivity extends BaseActivity {
     private void paymentSuccess() {
         //load order data
         setProgressBarView(View.VISIBLE, "Saving order info\n DO NOT press back button.");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolDish.URL_POOL_DISH_ORDER,
-                communityID, pool.getID(), userUID));
        /* ref.updateChildren(adapter.getMp()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -199,7 +196,7 @@ public class AddPoolItemActivity extends BaseActivity {
 
     private void updateJoinedCount() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ActivePool.URL_ACTIVE_POOL,
-                communityID)).child(pool.getID()).child(ActivePool.JOINED);
+                communityReference)).child(pool.getID()).child(ActivePool.JOINED);
         ref.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
@@ -234,8 +231,7 @@ public class AddPoolItemActivity extends BaseActivity {
     private void loadItemView() {
         setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
         setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM,
-                communityID, pool.getShopID(), pool.getPoolID()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM, pool.getShopID(), pool.getPoolID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(poolItemListener);
     }
@@ -244,8 +240,7 @@ public class AddPoolItemActivity extends BaseActivity {
         toolbar.setTitle(pool.getName());
         description.setText(pool.getDescription());
         joined_peoples.setText("Ordered : " + String.valueOf(pool.getTotalOrder()));
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER,
-                communityID, pool.getShopID(), pool.getPoolID()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER, pool.getShopID(), pool.getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(poolOfferListener);
     }

@@ -33,7 +33,7 @@ public class PoolPreviousOrderActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private LinearLayout ll_progressBar;
     private TextView loading_text;
-    private String communityID, userUID;
+    private String userUID;
     private ValueEventListener orderListener;
     private PoolOrderItemAdapter adapter;
 
@@ -42,7 +42,6 @@ public class PoolPreviousOrderActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pool_previous_order);
         //TODO set proper data from the preference
-        communityID = "testCollege";
         userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         setToolbar();
@@ -74,7 +73,7 @@ public class PoolPreviousOrderActivity extends BaseActivity {
     }
 
     private void loadOrderList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ShopOrder.URL_ORDER_BASIC_INFO,communityID,userUID));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ShopOrder.URL_ORDER_BASIC_INFO,communityReference,userUID));
         Log.d(TAG, "loadOrderList : ref " + ref.toString());
 
         ref.addValueEventListener(orderListener);
@@ -98,8 +97,6 @@ public class PoolPreviousOrderActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
 
         defineListener();
-
-
     }
 
     private void defineListener() {

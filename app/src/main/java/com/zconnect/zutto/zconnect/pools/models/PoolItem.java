@@ -5,7 +5,7 @@ import com.google.firebase.database.Exclude;
 public class PoolItem {
 
     // URLS
-    public static final String URL_POOL_ITEM = "communities/%s/shopOwner/%s/pools/poolDetails/%s";
+    public static final String URL_POOL_ITEM = "shops/shopDetails/%s/pools/poolDetails/%s";
     //                                                    communityID ,   shopID ,    poolID
     public static final String ITEM_ID = "itemID";
 

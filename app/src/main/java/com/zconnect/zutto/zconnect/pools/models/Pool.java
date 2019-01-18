@@ -24,9 +24,9 @@ import java.util.HashMap;
 public class Pool {
 
     //URLS
-    public static final String URL_POOL = "communities/%s/features/shops/pools/active";
+    public static final String URL_POOL = "communities/%s/features/shops/pools/current";
     //                                                    communityID
-    public static final String URL_POOL_UP_VOTE = "communities/%s/features/shops/pools/active/%s/upVoteList/%s";
+    public static final String URL_POOL_UP_VOTE = "communities/%s/features/shops/pools/current/%s/upVoteList/%s";
     //                                                    communityID ,                      poolID,        UID
 
 
