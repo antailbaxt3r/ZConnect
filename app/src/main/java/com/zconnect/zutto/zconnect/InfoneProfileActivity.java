@@ -186,45 +186,38 @@ public class InfoneProfileActivity extends BaseActivity {
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 name = dataSnapshot.child("name").getValue(String.class);
                 desc = dataSnapshot.child("desc").getValue(String.class);
-
                 nameEt.setText(name);
                 toolbar.setTitle(name);
-                if(dataSnapshot.child("type").getValue(String.class).equals("User"))
-                {
-                    Log.i("BBBB", "IS USER");
-                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference)
-                            .child(ZConnectDetails.USERS_DB).child(dataSnapshot.getKey());
-                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshotUser) {
-                            if(!dataSnapshotUser.child("about").getValue(String.class).isEmpty())
-                            {
-                                desc = dataSnapshotUser.child("about").getValue(String.class);
-                                Log.i("BBBB", "YES ABOUT");
-                            }
-                            else
-                                Log.i("BBBB", "NO ABOUT");
-                            if(desc==null)
-                            {
-                                descTv.setVisibility(View.GONE);
-                                Log.i("BBBB", "NULL");
-                            }
-                            else
-                            {
-                                descTv.setVisibility(View.VISIBLE);
-                                descTv.setText(desc);
-                                Log.i("BBBB", "NOT NULL");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-                else
-                {
+//                if(desc==null && dataSnapshot.child("type").getValue(String.class).equals("User"))
+//                {
+//                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference)
+//                            .child(ZConnectDetails.USERS_DB).child(dataSnapshot.getKey());
+//                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshotUser) {
+//                            if(!dataSnapshotUser.child("about").getValue(String.class).isEmpty())
+//                            {
+//                                desc = dataSnapshotUser.child("about").getValue(String.class);
+//                            }
+//                            if(desc==null)
+//                            {
+//                                descTv.setVisibility(View.GONE);
+//                            }
+//                            else
+//                            {
+//                                descTv.setVisibility(View.VISIBLE);
+//                                descTv.setText(desc);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//                }
+//                else
+//                {
                     if(desc==null)
                     {
                         descTv.setVisibility(View.GONE);
@@ -236,7 +229,7 @@ public class InfoneProfileActivity extends BaseActivity {
                         descTv.setText(desc);
                         Log.i("BBBB", "NOT NULL");
                     }
-                }
+//                }
 
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);

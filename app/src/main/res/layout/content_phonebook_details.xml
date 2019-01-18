@@ -16,7 +16,6 @@
     tools:context="com.zconnect.zutto.zconnect.OpenUserDetail"
     tools:showIn="@layout/activity_open_user_detail"
     android:orientation="vertical">
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -247,14 +246,18 @@
                             android:maxLength="10"
                             android:textSize="16sp"
                             android:textColor="@color/primaryText" />
-                        <ImageView
-                            android:id="@+id/ib_call_contact_item"
-                            android:layout_width="25dp"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_weight="0.1"
-                            android:layout_height="25dp"
-                            android:layout_marginEnd="17dp"
-                            android:src="@drawable/ic_phone_black_24dp"
-                            android:visibility="visible"/>
+                            android:layout_height="wrap_content"
+                            android:gravity="end">
+                            <ImageView
+                                android:id="@+id/ib_call_contact_item"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_phone_black_24dp"
+                                android:visibility="visible" />
+                        </LinearLayout>
                         <Button
                             android:id="@+id/show_cum_request_contact_button"
                             android:layout_width="0dp"
@@ -320,16 +323,19 @@
                             android:focusableInTouchMode="false"
                             android:textColor="@color/primaryText"
                             android:textSize="16sp"/>
-                        <ImageView
-                            android:id="@+id/mailbutton"
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_weight="0.1"
-                            android:layout_height="25dp"
-                            android:src="@drawable/ic_email_black_24dp" />
+                            android:layout_height="wrap_content"
+                            android:gravity="end">
+                            <ImageView
+                                android:id="@+id/mailbutton"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_email_black_24dp" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-
-
 
                 <!--about-->
                 <LinearLayout
@@ -354,7 +360,6 @@
                         android:textSize="16sp"
                         android:layout_marginTop="@dimen/margin_top_between_similar_views"/>
                 </LinearLayout>
-
 
                 <!--skills-->
                 <LinearLayout
@@ -387,8 +392,7 @@
                         TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
                         TagsEditText:tagsTextColor="@color/colorPrimaryDark"
                         TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize"
-                        android:layout_marginTop="@dimen/margin_top_between_similar_views"
-                        />
+                        android:layout_marginTop="@dimen/margin_top_between_similar_views" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

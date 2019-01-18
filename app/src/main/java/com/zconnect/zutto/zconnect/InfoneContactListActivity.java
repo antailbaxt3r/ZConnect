@@ -116,9 +116,9 @@ public class InfoneContactListActivity extends AppCompatActivity {
         fabAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(intent, PICK_CONTACT);
-                //addContact();
+//                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+//                startActivityForResult(intent, PICK_CONTACT);
+                addContact();
             }
         });
 
@@ -353,12 +353,12 @@ public class InfoneContactListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode)
-        {
-            case PICK_CONTACT:
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        switch (requestCode)
+//        {
+//            case PICK_CONTACT:
 //                if(resultCode == Activity.RESULT_OK)
 //                {
 //                    Uri contactData = data.getData();
@@ -378,6 +378,6 @@ public class InfoneContactListActivity extends AppCompatActivity {
 //                    }
 //
 //                }
-        }
-    }
+//        }
+//    }
 }

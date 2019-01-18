@@ -359,6 +359,7 @@ public class LogoFlashActivity extends BaseActivity {
         }
     }
 
+
     //script to remove just joined community notificatin
 //    public static void removeJustJoinedNotifFromHome() {
 //        Log.d("QQQQ ENTERED ", "FUNC");
