@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.zconnect.zutto.zconnect.AddContactActivity">
     <item
-        android:title="Orders"
+        android:title="My Orders"
         android:id="@+id/action_orders"
         android:icon="@drawable/ic_shopping_cart_black_24dp"
         android:orderInCategory="1"
-        android:name="Orders"
-        app:showAsAction="collapseActionView|ifRoom" />
+        android:name="My Orders"
+        app:showAsAction="never" />
 </menu>

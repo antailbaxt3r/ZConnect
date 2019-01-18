@@ -371,7 +371,7 @@
                             android:duplicateParentState="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Notices"
+                            android:text="Shop"
                             android:layout_below="@+id/shops_recents_features_view_fl"
                             android:layout_centerHorizontal="true"
                             android:textColor="@color/white"

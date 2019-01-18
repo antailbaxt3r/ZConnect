@@ -250,28 +250,24 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         Picasso.with(ctx).load(image).into(productImage);
     }
 
-    public void setPrice(String Price,String negotiable) {
+    public void setPrice(String Price) {
         productPrice = (TextView) mView.findViewById(R.id.price);
-        productNegotiableText = (TextView) mView.findViewById(R.id.negotiable);
-        String priceString="";
-        if(negotiable!=null) {
-            if (negotiable.equals("1")) {
-                priceString = "₹" + Price + "/-";
-                productNegotiableText.setVisibility(View.VISIBLE);
-            } else if (negotiable.equals("2")){
-                priceString = "Price Negotiable";
-                productPrice.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
-            }
-            else
-                priceString = "₹" + Price + "/-";
 
-            productPrice.setText(priceString);
+        productPrice.setText("₹" + Price + "/-");
+
+        Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+        productPrice.setTypeface(ralewayMedium);
+    }
+
+    public void setNegotiable(Boolean isNegotiable) {
+
+        productNegotiableText = (TextView) mView.findViewById(R.id.negotiable);
+        if (isNegotiable){
+            productNegotiableText.setVisibility(View.VISIBLE);
+        }else {
+            productNegotiableText.setVisibility(View.GONE);
         }
-        else
-        {
-            productPrice.setText("₹" + Price + "/-");
-        }
-        Log.d("PRODUCT PRICE 2", "+" + Price);
+
         Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
         productPrice.setTypeface(ralewayMedium);
     }

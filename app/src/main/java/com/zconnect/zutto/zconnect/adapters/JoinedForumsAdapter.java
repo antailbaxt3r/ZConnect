@@ -41,6 +41,7 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public JoinedForumsAdapter(Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats, Context context) {
         this.forumCategoriesItemFormats = forumCategoriesItemFormats;
         this.context = context;
+        Log.e("yolo",forumCategoriesItemFormats.toString());
     }
 
     public JoinedForumsAdapter() {

@@ -105,7 +105,7 @@ public class InfoneProfileActivity extends BaseActivity {
     private Button viewProfileButton;
 
     private final String TAG = getClass().getSimpleName();
-    private String name, desc;
+    private String name, desc,mobileNumber;
     LinearLayout linearLayout;
     ProgressBar progressBar;
 
@@ -293,10 +293,12 @@ public class InfoneProfileActivity extends BaseActivity {
                 for (DataSnapshot childSnapshot :
                         dataSnapshot1.getChildren()) {
                     String phone = childSnapshot.getValue(String.class);
+
                     phoneNums.add(phone);
                 }
 
                 phone1Et.setText(phoneNums.get(0));
+                mobileNumber = phoneNums.get(0);
                 phone2Et.setText(phoneNums.get(1));
                 verifiedDateTextView.setText(ta.calculateTimeAgo());
 
@@ -426,6 +428,28 @@ public class InfoneProfileActivity extends BaseActivity {
         counterPush.pushValues();
     }
 
+    private void shareProfile(){
+
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta= new HashMap<>();
+        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_SHARE);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        counterItemFormat.setMeta(meta);
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
+
+        String send = "";
+        String format1 = "%1$-20s %2$-20s\n";
+        send =
+                String.format(format1,"Name: ",name)+
+                        String.format(format1,"Number: ", mobileNumber)+
+                        "\nShared using ZConnect. \nDownlaod ZConnect now, to access all contacts of your community"+ "\n \nhttps://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/*");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, send);
+        startActivity(sharingIntent);
+    }
 
     private void editProfile() {
 
@@ -679,7 +703,6 @@ public class InfoneProfileActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu=menu;
-
         getMenuInflater().inflate(R.menu.menu_edit_infone_profile, menu);
         return true;
     }
@@ -688,8 +711,10 @@ public class InfoneProfileActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_edit) {
-                editProfile();
-            }
+            editProfile();
+        }else if(item.getItemId() == R.id.action_share){
+            shareProfile();
+        }
 
         return super.onOptionsItemSelected(item);
     }

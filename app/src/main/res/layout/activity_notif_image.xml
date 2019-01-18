@@ -25,63 +25,70 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_height="match_parent">
 
-            <ImageButton
-                android:id="@+id/imageButton"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="180dp"
-                android:maxHeight="200dp"
-                android:background="@drawable/dashed_border"
-                android:contentDescription="Product image"
-                android:scaleType="fitCenter"
-                android:layout_margin="7dp"/>
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:layout_weight="1">
 
-            <EditText
-                android:id="@+id/notif_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="7dp"
-                android:textSize="18dp"
-                android:hint="Notification title"
-                android:textColor="@color/secondaryText"
-                android:textColorHint="@color/secondaryText" />
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="180dp"
+                    android:maxHeight="200dp"
+                    android:background="@drawable/dashed_border"
+                    android:contentDescription="Product image"
+                    android:scaleType="fitCenter"
+                    android:layout_margin="7dp"/>
+
+                <EditText
+                    android:id="@+id/notif_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="7dp"
+                    android:textSize="18dp"
+                    android:hint="Notification title"
+                    android:textColor="@color/secondaryText"
+                    android:textColorHint="@color/secondaryText" />
 
 
-            <EditText
-                android:id="@+id/notif_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="7dp"
-                android:textSize="18dp"
-                android:hint="Notification message"
-                android:textColor="@color/secondaryText"
-                android:textColorHint="@color/secondaryText" />
+                <EditText
+                    android:id="@+id/notif_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="7dp"
+                    android:textSize="18dp"
+                    android:hint="Notification message"
+                    android:textColor="@color/secondaryText"
+                    android:textColorHint="@color/secondaryText" />
 
-            <EditText
-                android:id="@+id/notif_url"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="7dp"
-                android:hint="Notification URL"
-                android:textSize="18dp"
-                android:textColor="@color/secondaryText"
-                android:textColorHint="@color/secondaryText" />
+                <EditText
+                    android:id="@+id/notif_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="7dp"
+                    android:hint="Notification URL"
+                    android:textSize="18dp"
+                    android:textColor="@color/secondaryText"
+                    android:textColorHint="@color/secondaryText" />
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin ="35dp"
-                android:background="@drawable/round_button_primary"
-                android:text="Send"
-                android:textColor="#ffff" />
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin ="35dp"
+                    android:background="@drawable/round_button_primary"
+                    android:text="Send"
+                    android:textColor="#ffff" />
 
-        </LinearLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

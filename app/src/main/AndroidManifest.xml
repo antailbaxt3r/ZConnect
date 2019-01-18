@@ -51,14 +51,15 @@
         -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/logo" />
+            android:resource="@mipmap/ic_zc_material_icon" />
         <!--
              Set color used with incoming notification messages. This is used when no color is set for the incoming
              notification message. See README(https://goo.gl/6BKBk7) for more.
         -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
+            android:resource="@color/colorPrimary" />
+
 
         <!-- On start activity in full screen mode -->
         <activity
@@ -188,7 +189,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zconnect.zutto.zconnect.HomeActivity" />
         </activity>
-        <activity android:name=".commonModules.image_view" />
         <activity
             android:name=".MyProducts"
             android:label="My Products"
@@ -459,11 +459,23 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Links" />
+
         <activity
             android:name=".pools.PoolActivity"
-            android:exported="true" />
-        <activity android:name=".pools.PoolItemDetailActivity" />
-        <activity android:name=".pools.AddPoolItemActivity" />
+            android:label="Shop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".pools.PoolItemDetailActivity"
+            android:label="Order Details"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".pools.AddPoolItemActivity"
+            android:label="Add Items"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".LeaderBoard"
             android:label="@string/title_activity_leader_board"
@@ -489,10 +501,27 @@
             android:label="Terms and Conditions"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".pools.PoolBillActivity" />
-        <activity android:name=".pools.PaymentCaptureActivity" />
-        <activity android:name=".pools.PoolPreviousOrderActivity" />
-        <activity android:name=".pools.OrderDetailActivity"></activity>
+
+        <activity android:name=".pools.PoolBillActivity"
+            android:label="Bill"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".pools.PaymentCaptureActivity"
+            android:label="Payment"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".pools.PoolPreviousOrderActivity"
+            android:label="Previous Orders"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".pools.OrderDetailActivity"
+            android:label="Choose items"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

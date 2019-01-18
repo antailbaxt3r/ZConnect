@@ -138,6 +138,8 @@ fabric.properties
 .idea/runConfigurations.xml
 v5.6/
 v6.0/
+/.idea/kotlinc.xml
+
 
 ### firebase functions ###
 node_modules/

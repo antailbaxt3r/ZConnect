@@ -118,6 +118,17 @@ public class Shortlist extends BaseActivity {
                     try{
                         if(shot.child("UsersReserved").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             singleProduct = shot.getValue(Product.class);
+                            if (!shot.hasChild("isNegotiable")){
+                                if(shot.hasChild("negotiable")){
+                                    if(shot.child("negotiable").getValue(Integer.class)==1){
+                                        singleProduct.setIsNegotiable(Boolean.TRUE);
+                                    }else {
+                                        singleProduct.setIsNegotiable(Boolean.FALSE);
+                                    }
+                                }else {
+                                    singleProduct.setIsNegotiable(Boolean.FALSE);
+                                }
+                            }
                             productVector.add(singleProduct);
                             flag=true;
                         }

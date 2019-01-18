@@ -81,6 +81,7 @@ import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.pools.PoolActivity;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
@@ -1604,7 +1605,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         HorizontalScrollView hsv;
         LinearLayout linearLayout;
-        RelativeLayout notices, events, cabpool, storeroom, admin;
+        RelativeLayout notices, events, cabpool, storeroom,shops, admin;
         FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
         TextView unreadCountStoreroomTV, unreadCountEventsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
         Query mOtherFeatures;
@@ -1625,6 +1626,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             storeroom = (RelativeLayout) itemView.findViewById(R.id.storeroom_recents_features_view);
             cabpool = (RelativeLayout) itemView.findViewById(R.id.cabpool_recents_features_view);
             admin = (RelativeLayout) itemView.findViewById(R.id.admin_recents_features_view);
+            shops = (RelativeLayout) itemView.findViewById(R.id.shops_recents_features_view);
+
 
             unreadCountStoreroomFL = (FrameLayout) itemView.findViewById(R.id.storeroom_unread_count_fl_recents_feature_item);
             unreadCountStoreroomTV = (TextView) itemView.findViewById(R.id.storeroom_unread_count_text_recents_feature_item);
@@ -1917,6 +1920,30 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
 
+                    shops.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                resetFeaturesUnreadCount(FeatureDBName.KEY_SHOPS, dataSnapshot);
+                                Intent intent = new Intent(context, PoolActivity.class);
+                                context.startActivity(intent);
+                                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                                HashMap<String, String> meta= new HashMap<>();
+
+                                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                                counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_OPEN);
+                                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                                counterItemFormat.setMeta(meta);
+
+                                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                                counterPush.pushValues();
+                            }else {
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),"Storeroom",context);
+                            }
+
+                        }
+                    });
+
                     mOtherFeatures.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -2000,6 +2027,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     storeroom.setVisibility(View.VISIBLE);
                 }else {
                     storeroom.setVisibility(View.GONE);
+                }
+
+                if (communityFeatures.getShops().equals("true")){
+                    shops.setVisibility(View.VISIBLE);
+                }else {
+                    shops.setVisibility(View.GONE);
                 }
 
 

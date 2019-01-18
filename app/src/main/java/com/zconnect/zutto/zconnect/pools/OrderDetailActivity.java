@@ -1,13 +1,16 @@
 package com.zconnect.zutto.zconnect.pools;
 
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemCartAdapter;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 import com.zconnect.zutto.zconnect.pools.models.ShopOrder;
@@ -28,7 +32,7 @@ import net.glxn.qrgen.android.QRCode;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class OrderDetailActivity extends AppCompatActivity {
+public class OrderDetailActivity extends BaseActivity {
 
     public static final String TAG = "OrderDetailActivity";
 
@@ -46,6 +50,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_detail);
         Bundle b = getIntent().getExtras();
+
         if (b != null) {
             if (b.containsKey("order")) {
 
@@ -59,7 +64,29 @@ public class OrderDetailActivity extends AppCompatActivity {
                     //TODO set proper data from the preference
                     communityID = "testCollege";
 
+                    setToolbar();
                     //activity main block with all valid parameters
+                    if (toolbar != null) {
+
+                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                onBackPressed();
+                            }
+                        });
+                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    }
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+                        int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+                        getWindow().setStatusBarColor(colorDarkPrimary);
+                        getWindow().setNavigationBarColor(colorPrimary);
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    }
 
                     attachID();
                     setOrderQRView();
@@ -99,7 +126,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     }
 
     private void attachID() {
-        getSupportActionBar().setTitle(order.getPoolName());
+        toolbar.setTitle(order.getPoolName());
         qr_image = findViewById(R.id.qr_image);
         orderStatus = findViewById(R.id.order_status);
         userName = findViewById(R.id.user_name);

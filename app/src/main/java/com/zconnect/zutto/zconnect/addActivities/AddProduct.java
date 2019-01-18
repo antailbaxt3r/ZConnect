@@ -249,15 +249,14 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         final String productNameValue = mProductName.getText().toString().trim();
         final String productDescriptionValue = mProductDescription.getText().toString().trim();
         final String productPriceValue = mProductPrice.getText().toString().trim();
-        final String negotiable;
+        final Boolean negotiable;
 
-        if(productPriceValue.equals("") && negotiableCheckBox.isChecked())
-            negotiable="2";
-        else
-            if(negotiableCheckBox.isChecked())
-                negotiable= "1";
-            else
-                negotiable="0";
+        if(negotiableCheckBox.isChecked()) {
+            negotiable = true;
+        } else {
+            negotiable = false;
+        }
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         assert user != null;
@@ -266,7 +265,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
         final String category = spinner1.getSelectedItem().toString();
 
-        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue) || negotiable.equals("2")) && mImageUri != null && category != null && !negotiable.equals("") && negotiableCheckBox!=null) {
+        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue)) && mImageUri != null && category != null) {
             final StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             UploadTask uploadTask = filepath.putFile(mImageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -297,7 +296,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 
                         newPost.child("userID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         newPost.child("Price").setValue(productPriceValue);
-                        newPost.child("negotiable").setValue(negotiable);
+                        newPost.child("isNegotiable").setValue(negotiable);
                         newPost.child("PostTimeMillis").setValue(postTimeMillis);
                         postedBy.setValue(null);
                         postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());

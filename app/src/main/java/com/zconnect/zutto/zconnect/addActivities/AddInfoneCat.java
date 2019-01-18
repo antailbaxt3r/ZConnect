@@ -308,6 +308,7 @@ public class AddInfoneCat extends BaseActivity {
             final Intent addContactIntent = new Intent(AddInfoneCat.this,
                     AddInfoneContact.class);
             addContactIntent.putExtra("catId", catId);
+            addContactIntent.putExtra("catName",nameEt.getText().toString());
             startActivity(addContactIntent);
 
             progressDialog.dismiss();

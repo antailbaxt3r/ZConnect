@@ -10,7 +10,8 @@
     tools:showIn="@layout/activity_create_community"
     android:padding="@dimen/parent_layout_padding">
 
-    <ImageButton
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:maxHeight="400dp"
         android:id="@+id/community_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,25 +24,12 @@
         android:hint="Community Name"
         android:layout_marginTop="@dimen/margin_top_between_non_similar_views"/>
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/community_email"
-        android:hint="Community Email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_top_between_similar_views"/>
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/community_code"
-        android:hint="Community Code"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_top_between_similar_views"/>
 
     <Button
         android:id="@+id/create_community"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Community"
+        android:text="Request Community"
         android:background="@drawable/round_button_primary"
         android:textColor="@color/white"
         android:layout_gravity="center"

@@ -1,11 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -16,10 +12,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -27,12 +21,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,10 +46,8 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -71,7 +63,6 @@ import com.zconnect.zutto.zconnect.itemFormats.CommunitiesItemFormat;
 import java.util.Vector;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class CommunitiesAround extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -82,7 +73,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
     LocationManager locationManager;
     LocationListener locationListener;
     private ProgressDialog progressDialog;
-    private TextView noCommunitiesTextView;
+    private RelativeLayout noCommunitiesLayout;
     private Button turnOnGPS;
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
@@ -156,7 +147,18 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
         communitiesReference = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
         communitiesRecycler = (RecyclerView) findViewById(R.id.all_communities);
         communitiesRecycler.setLayoutManager(new LinearLayoutManager(this));
-        noCommunitiesTextView = (TextView) findViewById(R.id.no_community);
+        noCommunitiesLayout = (RelativeLayout) findViewById(R.id.no_communities_layout);
+
+        noCommunitiesLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(CommunitiesAround.this, CreateCommunity.class);
+                i.putExtra("lat",lat);
+                i.putExtra("lon",lon);
+                startActivity(i);
+            }
+        });
+
         turnOnGPS = (Button) findViewById(R.id.turn_on_gps);
 
 
@@ -174,6 +176,8 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
             public void onClick(View view) {
 
                 Intent i = new Intent(CommunitiesAround.this, CreateCommunity.class);
+                i.putExtra("lat",lat);
+                i.putExtra("lon",lon);
                 startActivity(i);
             }
         });
@@ -331,6 +335,9 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
     public void loadCommunities(final double lon,final double lat){
 
+        this.lon = lon;
+        this.lat = lat;
+
         communitiesReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -350,7 +357,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
                        totalDistance = distance(lat,comLat,lon,comLon);
                        if(totalDistance<radius){
-                           //Toast.makeText(CommunitiesAround.this, " " + totalDistance, Toast.LENGTH_SHORT).show();
+
                            communitiesList.add(communitiesItemFormat);
                            flagNoCommunity = false;
                        }
@@ -361,9 +368,9 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                 }
 
                 if(flagNoCommunity){
-                    noCommunitiesTextView.setVisibility(View.VISIBLE);
+                    noCommunitiesLayout.setVisibility(View.VISIBLE);
                 }else{
-                    noCommunitiesTextView.setVisibility(View.GONE);
+                    noCommunitiesLayout.setVisibility(View.GONE);
                 }
                     progressDialog.dismiss();
                 adapter.notifyDataSetChanged();
