@@ -138,3 +138,6 @@ fabric.properties
 .idea/runConfigurations.xml
 v5.6/
 v6.0/
+
+### firebase functions ###
+node_modules/
