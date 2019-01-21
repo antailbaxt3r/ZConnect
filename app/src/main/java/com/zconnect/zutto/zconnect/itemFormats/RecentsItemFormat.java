@@ -30,6 +30,7 @@ public class RecentsItemFormat {
     String eventDate;
         //for storeroom
     String productPrice;
+    String productType;
         //for new users
     String communityName;
 
@@ -49,7 +50,7 @@ public class RecentsItemFormat {
                              String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate,
                              String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis,
                              PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName,
-                             String communityName, String message, String recentType, int msgLikes, int msgComments) {
+                             String communityName, String message, String recentType, int msgLikes, int msgComments, String productType) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -75,6 +76,7 @@ public class RecentsItemFormat {
         this.msgLikes = msgLikes;
         this.recentType = recentType;
         this.msgComments = msgComments;
+        this.productType = productType;
     }
 
     public RecentsItemFormat() {
@@ -213,5 +215,9 @@ public class RecentsItemFormat {
     public void setPostID(String postID) {
         this.postID = postID;
     }
+
+    public void setProductType(String productType) { this.productType = productType; }
+
+    public String getProductType() { return productType; }
 }
 

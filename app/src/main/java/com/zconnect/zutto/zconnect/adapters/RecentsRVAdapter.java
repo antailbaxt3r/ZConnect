@@ -85,6 +85,7 @@ import com.zconnect.zutto.zconnect.pools.PoolActivity;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
@@ -571,7 +572,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             context.startActivity(intent);
                         }
                     });
-                    holder.postConjunction.setText(" added a ");
+                    if(recentsItemFormats.get(position).getProductType()!=null && recentsItemFormats.get(position).getProductType().equals(ProductUtilities.TYPE_ASK_STR))
+                    {
+                        holder.postConjunction.setText(" asked for a ");
+                    }
+                    else
+                    {
+                        holder.postConjunction.setText(" added a ");
+                    }
                     holder.post.setText("Product");
                     holder.post.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -609,11 +617,26 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         holder.productDesc.setText(spannableString);
                         holder.productDesc.setMovementMethod(LinkMovementMethod.getInstance());
                     }
-                    Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
-                    holder.productPrice.setText("₹" + recentsItemFormats.get(position).getProductPrice());
-
-                    posted = " added a ";
-                    post = "Product";
+                    if(recentsItemFormats.get(position).getImageurl()!=null)
+                    {
+                        holder.productImage.setVisibility(View.VISIBLE);
+                        Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
+                    }
+                    else
+                        holder.productImage.setVisibility(View.GONE);
+                    if(recentsItemFormats.get(position).getProductType()!=null && recentsItemFormats.get(position).getProductType().equals(ProductUtilities.TYPE_ASK_STR))
+                    {
+                        holder.productPrice.setVisibility(View.GONE);
+                        posted = " asked for a ";
+                        post = "Product";
+                    }
+                    else
+                    {
+                        holder.productPrice.setVisibility(View.VISIBLE);
+                        holder.productPrice.setText("₹" + recentsItemFormats.get(position).getProductPrice());
+                        posted = " added a ";
+                        post = "Product";
+                    }
                     clickableSpanFeature = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
@@ -1143,6 +1166,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                               counterPush.pushValues();
                               i = new Intent(context, OpenProductDetails.class);
                               i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getId());
+                              String productType = recentsItemFormats.get(getAdapterPosition()).getProductType()!=null ?
+                                      recentsItemFormats.get(getAdapterPosition()).getProductType() : ProductUtilities.TYPE_ADD_STR;
+                              i.putExtra("type", productType);
                               context.startActivity(i);
 
                           } catch(Exception e) {

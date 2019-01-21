@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +30,7 @@ import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.HashMap;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
@@ -150,9 +153,26 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
 
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
-                Intent intent;
-                intent = new Intent(getContext(), AddProduct.class);
-                startActivity(intent);
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+                alertBuilder.setTitle("Add/Ask")
+                        .setMessage("Do you want to add a product or ask for a product?")
+                        .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(getContext(), AddProduct.class);
+                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("Add", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(getContext(), AddProduct.class);
+                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                                startActivity(intent);
+                            }
+                        })
+                        .show();
 
             }
         };

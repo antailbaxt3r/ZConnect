@@ -1,7 +1,9 @@
 package com.zconnect.zutto.zconnect;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +50,26 @@ public class CategoriesTab extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContext().startActivity(new Intent(getContext(), AddProduct.class));
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+                alertBuilder.setTitle("Add/Ask")
+                        .setMessage("Do you want to add a product or ask for a product?")
+                        .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(getContext(), AddProduct.class);
+                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                                getContext().startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("Add", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(getContext(), AddProduct.class);
+                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                                getContext().startActivity(intent);
+                            }
+                        })
+                        .show();
             }
         });
         return view;

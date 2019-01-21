@@ -68,7 +68,22 @@
                                 android:maxHeight="260dp"
                                 android:adjustViewBounds="true"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/product" />
+                                android:src="@drawable/product"
+                                android:visibility="visible"/>
+                            <TextView
+                                android:id="@+id/ask_text_open_product_details"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxWidth="100dp"
+                                android:text="ASK"
+                                android:textStyle="bold"
+                                android:textSize="20sp"
+                                android:ellipsize="end"
+                                android:maxLines="5"
+                                android:textColor="@color/storeroom_ask"
+                                android:layout_centerInParent="true"
+                                android:visibility="gone"
+                                android:gravity="center"/>
                             <FrameLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -136,7 +151,8 @@
                                 android:layout_weight=".6"
                                 android:text="Price"
                                 android:textColor="@color/red500"
-                                android:textSize="20dp" />
+                                android:textSize="20dp"
+                                android:visibility="visible"/>
 
                             <TextView
                                 android:id="@+id/product_price_type"
@@ -147,6 +163,22 @@
                                 android:visibility="gone"
                                 android:textAlignment="viewEnd"
                                 android:textSize="12dp" />
+
+                            <LinearLayout
+                                android:id="@+id/ask_tag_open_product_details"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:background="@drawable/ask_product_tag"
+                                android:gravity="center"
+                                android:visibility="gone">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ASK"
+                                    android:textSize="12sp"
+                                    android:textColor="@color/white"/>
+                            </LinearLayout>
 
                         </LinearLayout>
 
