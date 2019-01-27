@@ -15,10 +15,12 @@ import java.util.Vector;
 public class CabPoolLocationRVAdapter extends RecyclerView.Adapter<CabPoolLocationRVViewHolder> {
     Vector<CabPoolLocationFormat> cabPoolLocationFormat;
     Context ctx;
+    private String userType;
 
-    public CabPoolLocationRVAdapter(Context ctx, Vector<CabPoolLocationFormat> cabPoolLocationFormat){
+    public CabPoolLocationRVAdapter(Context ctx, Vector<CabPoolLocationFormat> cabPoolLocationFormat, String userType){
         this.ctx= ctx;
         this.cabPoolLocationFormat = cabPoolLocationFormat;
+        this.userType  = userType;
     }
 
 
@@ -34,7 +36,7 @@ public class CabPoolLocationRVAdapter extends RecyclerView.Adapter<CabPoolLocati
     public void onBindViewHolder(CabPoolLocationRVViewHolder holder, int position) {
         try {
             holder.setLocationName(cabPoolLocationFormat.get(position).getLocationName());
-            holder.setDeleteButton(cabPoolLocationFormat.get(position).getLocationUID(),cabPoolLocationFormat.get(position).getLocationName());
+            holder.setDeleteButton(cabPoolLocationFormat.get(position).getLocationUID(),cabPoolLocationFormat.get(position).getLocationName(),userType);
         }catch (Exception e){}
 
     }

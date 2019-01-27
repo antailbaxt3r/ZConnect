@@ -156,7 +156,6 @@ public class ActivePool {
         b.putString(OFFER, this.offer);
         b.putString(SHOP_ID, this.shopID);
         b.putString(CATEGORY_ID, this.categoryID);
-
         return b;
     }
 }

@@ -68,7 +68,7 @@ public class ActiveFragment extends Fragment {
                 ArrayList<Pool> arrayList = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Pool newPool = child.getValue(Pool.class);
-                    newPool.setID(child.getKey());
+                    newPool.setPoolPushID(child.getKey());
                     if (newPool.isActive())
                         arrayList.add(newPool);
                 }

@@ -8,5 +8,5 @@
         <attr name="metaButtonBarStyle" format="reference" />
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
-    <item name="CoordinatorLt" type="id"></item>
+    <item name="CoordinatorLt" offerType="id"></item>
 </resources>

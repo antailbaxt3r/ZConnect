@@ -15,6 +15,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
+
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 /**
@@ -39,7 +41,14 @@ public class CabPoolLocationRVViewHolder extends RecyclerView.ViewHolder {
         name.setText(locationName);
     }
 
-    public void setDeleteButton(final String locationUID, final String locationName){
+    public void setDeleteButton(final String locationUID, final String locationName,final String userType){
+
+        if(userType.equals(UsersTypeUtilities.KEY_ADMIN)){
+            deleteButton.setVisibility(View.VISIBLE);
+        }else {
+            deleteButton.setVisibility(View.INVISIBLE);
+        }
+
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

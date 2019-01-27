@@ -139,7 +139,7 @@ public class ReferralCode extends AppCompatActivity {
 //                                    screenshotUri = Uri.parse(path);
 
 //                                    shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-//                                    shareIntent.setType("image/png");
+//                                    shareIntent.setOfferType("image/png");
                                     shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
                                     progressDialog.dismiss();

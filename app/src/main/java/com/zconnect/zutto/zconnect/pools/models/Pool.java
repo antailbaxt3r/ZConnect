@@ -1,23 +1,22 @@
 package com.zconnect.zutto.zconnect.pools.models;
 /*
-status : AC/UP
-
-    diliveryTime :
-    poolID :
-    shopID :
-    name :
-    type :
-    deliveryTime :
-    description :
-    imageURL :
-    upvote :
-    totalOrdered : number
-
+ * $pushID_pools
+     * status : AC/UP
+     * timeStampCreated :
+     * timeStampActivated :
+     * deliveryTime :
+     * poolPushID :
+     * poolID :
+     * shopID :
+     * name :
+     * description :
+     * imageURL :
+     * offerType :
+     * upvote :
+     * totalOrders : number
  */
 
 import android.os.Bundle;
-
-import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
 
@@ -26,60 +25,61 @@ public class Pool {
     //URLS
     public static final String URL_POOL = "communities/%s/features/shops/pools/current";
     //                                                    communityID
-    public static final String URL_POOL_UP_VOTE = "communities/%s/features/shops/pools/current/%s/upVoteList/%s";
+    public static final String URL_POOL_UP_VOTE = "communities/%s/features/shops/pools/current/%s/upvoteList/%s";
     //                                                    communityID ,                      poolID,        UID
 
 
     //Node name
     public static final String STATUS = "status";
-    public static final String POOL_ID = "poolID";
+    public static final String CREATED_TIMESTAMP = "timeStampCreated";
+    public static final String ACTIVATED_TIMESTAMP = "timeStampActivated";
+    public static final String DELIVERY_TIME = "deliveryTime";
     public static final String POOL_PUSH_ID = "poolPushID";
+    public static final String POOL_ID = "poolID";
     public static final String SHOP_ID = "shopID";
     public static final String NAME = "name";
-    public static final String TYPE = "type";
     public static final String DESCRIPTION = "description";
     public static final String IMAGE_URL = "imageURL";
-    public static final String DELIVERY_TIME = "deliveryTime";
-    public static final String UP_VOTE = "upVote";
-    public static final String TOTAL_ORDER = "totalOrder";
+    public static final String OFFER_TYPE = "offerType";
+    public static final String UP_VOTE = "upvote";
+    public static final String UP_VOTE_LIST = "upvoteList";
+    public static final String TOTAL_ORDERS = "totalOrders";
 
     //Node values
     public static final String STATUS_UPCOMING = "upcoming";
     public static final String STATUS_ACTIVE = "active";
 
-
-    @Exclude
-    private String ID;
+    private String poolPushID;
+    private long deliveryTime, timeStampCreated, timeStampActivated;
     private String status;
     private String poolID;
     private String shopID;
     private String name;
-    private String type;
+    private String offerType;
     private String description;
     private String imageURL;
-    private long deliveryTime;
-    private HashMap<String, Integer> upVoteList;
-    @Exclude
-    private int upVote;
+    private HashMap<String, Integer> upvoteList;
+    private int upvote;
     private int totalOrder;
 
     public Pool() {
-    }
 
-    public Pool(PoolInfo poolInfo) {
-        this.name = poolInfo.getName();
-        this.type = poolInfo.getType();
-        this.poolID = poolInfo.getID();
-        this.description = poolInfo.getDescription();
-        this.imageURL = poolInfo.getImageURL();
-        this.upVote = this.getUpVote();
-        this.totalOrder = 0;
     }
 
     public static Pool getPool(Bundle b) {
         Pool pool = new Pool();
-        if (b.containsKey("pushID"))
-            pool.setID(b.getString("pushID"));
+
+        if (b.containsKey(POOL_PUSH_ID))
+            pool.setPoolPushID(b.getString(POOL_PUSH_ID));
+
+        if (b.containsKey(DELIVERY_TIME))
+            pool.setDeliveryTime(b.getLong(DELIVERY_TIME));
+
+        if (b.containsKey(ACTIVATED_TIMESTAMP))
+            pool.setTimeStampActivated(b.getLong(ACTIVATED_TIMESTAMP));
+
+        if (b.containsKey(CREATED_TIMESTAMP))
+            pool.setTimeStampCreated(b.getLong(CREATED_TIMESTAMP));
 
         if (b.containsKey(STATUS))
             pool.setStatus(b.getString(STATUS));
@@ -93,45 +93,30 @@ public class Pool {
         if (b.containsKey(NAME))
             pool.setName(b.getString(NAME));
 
-        if (b.containsKey(TYPE))
-            pool.setType(b.getString(TYPE));
-
         if (b.containsKey(DESCRIPTION))
             pool.setDescription(b.getString(DESCRIPTION));
 
         if (b.containsKey(IMAGE_URL))
             pool.setImageURL(b.getString(IMAGE_URL));
 
-        if (b.containsKey(DELIVERY_TIME))
-            pool.setDeliveryTime(b.getLong(DELIVERY_TIME));
+        if (b.containsKey(OFFER_TYPE))
+            pool.setOfferType(b.getString(OFFER_TYPE));
 
         if (b.containsKey(UP_VOTE))
-            pool.setUpVote(b.getInt(UP_VOTE));
+            pool.setUpvote(b.getInt(UP_VOTE));
 
-        if (b.containsKey(TOTAL_ORDER))
-            pool.setTotalOrder(b.getInt(TOTAL_ORDER));
-
-
-        return pool;
-    }
-
-    public PoolInfo getPoolInfo() {
-        PoolInfo pool = new PoolInfo();
-        pool.setID(this.getPoolID());
-        pool.setName(this.getName());
-        pool.setDescription(this.getDescription());
-        pool.setImageURL(this.getImageURL());
-        pool.setType(this.getType());
+        if (b.containsKey(TOTAL_ORDERS))
+            pool.setTotalOrder(b.getInt(TOTAL_ORDERS));
 
         return pool;
     }
 
-    public String getID() {
-        return ID;
+    public String getPoolPushID() {
+        return poolPushID;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setPoolPushID(String poolPushID) {
+        this.poolPushID = poolPushID;
     }
 
     public String getStatus() {
@@ -166,12 +151,12 @@ public class Pool {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public String getOfferType() {
+        return offerType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setOfferType(String offerType) {
+        this.offerType = offerType;
     }
 
     public String getDescription() {
@@ -190,13 +175,12 @@ public class Pool {
         this.imageURL = imageURL;
     }
 
-    public int getUpVote() {
-        if (upVoteList == null) return upVote;
-        return this.getUpVoteList().size();
+    public int getUpvote() {
+        return upvote;
     }
 
-    public void setUpVote(int upVote) {
-        this.upVote = upVote;
+    public void setUpvote(int upvote) {
+        this.upvote = upvote;
     }
 
     public int getTotalOrder() {
@@ -215,31 +199,69 @@ public class Pool {
         this.deliveryTime = deliveryTime;
     }
 
+    public long getTimeStampCreated() {
+        return timeStampCreated;
+    }
+
+    public void setTimeStampCreated(long timeStampCreated) {
+        this.timeStampCreated = timeStampCreated;
+    }
+
+    public long getTimeStampActivated() {
+        return timeStampActivated;
+    }
+
+    public void setTimeStampActivated(long timeStampActivated) {
+        this.timeStampActivated = timeStampActivated;
+    }
+
+    public HashMap<String, Integer> getUpvoteList() {
+        if (upvoteList == null) return new HashMap<String, Integer>();
+        return upvoteList;
+    }
+
+    public void setUpvoteList(HashMap<String, Integer> upvoteList) {
+        this.upvoteList = upvoteList;
+    }
+
+
     public HashMap<String, Object> getHashMap() {
+
         HashMap<String, Object> mp = new HashMap<>();
 
+        mp.put(POOL_PUSH_ID,this.poolPushID);
+        mp.put(DELIVERY_TIME, this.deliveryTime);
+        mp.put(ACTIVATED_TIMESTAMP,this.timeStampActivated);
+        mp.put(CREATED_TIMESTAMP,this.timeStampCreated);
         mp.put(STATUS, this.status);
         mp.put(SHOP_ID, this.shopID);
         mp.put(POOL_ID, this.poolID);
         mp.put(NAME, this.name);
-        mp.put(TYPE, this.type);
         mp.put(DESCRIPTION, this.description);
         mp.put(IMAGE_URL, this.imageURL);
-        mp.put(DELIVERY_TIME, this.deliveryTime);
-        mp.put(UP_VOTE, this.getUpVote());
-        mp.put(TOTAL_ORDER, this.totalOrder);
+        mp.put(OFFER_TYPE, this.offerType);
+        mp.put(UP_VOTE, this.getUpvote());
+        mp.put(UP_VOTE_LIST,this.upvoteList);
+        mp.put(TOTAL_ORDERS, this.totalOrder);
 
         return mp;
     }
 
     public Bundle getBundle() {
         Bundle b = new Bundle();
-        if (this.ID != null) {
-            b.putString("pushID", this.getID());
+
+        if (this.getPoolPushID() != null) {
+            b.putString(POOL_PUSH_ID, this.getPoolPushID());
         }
-        if (this.status != null) {
+
+        b.putLong(DELIVERY_TIME, this.deliveryTime);
+        b.putLong(CREATED_TIMESTAMP, this.timeStampCreated);
+        b.putLong(ACTIVATED_TIMESTAMP, this.timeStampActivated);
+
+        if (this.getStatus() != null) {
             b.putString(STATUS, this.status);
         }
+
         if (this.getPoolID() != null) {
             b.putString(POOL_ID, this.getPoolID());
         }
@@ -249,9 +271,7 @@ public class Pool {
         if (this.getName() != null) {
             b.putString(NAME, this.getName());
         }
-        if (this.getType() != null) {
-            b.putString(TYPE, this.getType());
-        }
+
         if (this.getDescription() != null) {
             b.putString(DESCRIPTION, this.getDescription());
         }
@@ -260,9 +280,12 @@ public class Pool {
             b.putString(IMAGE_URL, this.getImageURL());
         }
 
-        b.putLong(DELIVERY_TIME, this.deliveryTime);
-        b.putInt(UP_VOTE, this.upVote);
-        b.putInt(TOTAL_ORDER, this.totalOrder);
+        if (this.getOfferType() != null) {
+            b.putString(OFFER_TYPE, this.getOfferType());
+        }
+
+        b.putInt(UP_VOTE, this.upvote);
+        b.putInt(TOTAL_ORDERS, this.totalOrder);
 
         return b;
     }
@@ -273,14 +296,5 @@ public class Pool {
 
     public boolean isUpcoming() {
         return status.compareTo(STATUS_UPCOMING) == 0;
-    }
-
-    public HashMap<String, Integer> getUpVoteList() {
-        if (upVoteList == null) return new HashMap<String, Integer>();
-        return upVoteList;
-    }
-
-    public void setUpVoteList(HashMap<String, Integer> upVoteList) {
-        this.upVoteList = upVoteList;
     }
 }

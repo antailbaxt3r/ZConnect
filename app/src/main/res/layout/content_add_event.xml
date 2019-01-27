@@ -139,7 +139,7 @@
                 android:lines="200"
                 android:textColor="@color/teal500"
                 android:textSize="14sp"
-                tools:hint="type venue here" />
+                tools:hint="offerType venue here" />
 
             <CheckBox
                 android:id="@+id/add_events_location_checkbox"

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,7 +29,6 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolAddItemAdapter;
 import com.zconnect.zutto.zconnect.pools.models.ActivePool;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
-import com.zconnect.zutto.zconnect.pools.models.PoolDish;
 import com.zconnect.zutto.zconnect.pools.models.PoolInfo;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
@@ -157,6 +155,8 @@ public class AddPoolItemActivity extends BaseActivity {
             b.putStringArray(PoolItem.NAME, name);
             b.putIntArray(PoolItem.QUANTITY, quantities);
             b.putIntArray(PoolItem.PRICE, prices);
+
+
             intent.putExtra("orderList", b);
             if (offer_flag) {
                 b.putInt(PoolInfo.DISCOUNT_PERCENTAGE, discount_percentage);
@@ -167,8 +167,9 @@ public class AddPoolItemActivity extends BaseActivity {
             }
             b.putString(Pool.SHOP_ID, pool.getShopID());
             b.putString(Pool.POOL_ID, pool.getPoolID());
-            b.putString(Pool.POOL_PUSH_ID, pool.getID());
+            b.putString(Pool.POOL_PUSH_ID, pool.getPoolPushID());
             b.putString("poolName", pool.getName());
+            b.putLong(Pool.DELIVERY_TIME,pool.getDeliveryTime());
             startActivity(intent);
         }
 
@@ -196,7 +197,7 @@ public class AddPoolItemActivity extends BaseActivity {
 
     private void updateJoinedCount() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ActivePool.URL_ACTIVE_POOL,
-                communityReference)).child(pool.getID()).child(ActivePool.JOINED);
+                communityReference)).child(pool.getPoolPushID()).child(ActivePool.JOINED);
         ref.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override

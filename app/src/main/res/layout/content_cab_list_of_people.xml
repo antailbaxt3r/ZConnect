@@ -46,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:background="@drawable/message_box"
+                android:clickable="true"
                 android:gravity="center"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
@@ -60,24 +61,28 @@
                     android:background="@color/transparent"
                     android:layout_marginEnd="5dp"
                     android:layout_weight=".1"
-                    android:layout_height="wrap_content" />
-                <EditText
+                    android:layout_height="wrap_content"
+                    android:clickable="false"/>
+                <TextView
                     android:id="@+id/typer"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.9"
-                    android:hint="Type here.."
+                    android:hint="Chat with pool partners"
+                    android:duplicateParentState="true"
                     android:textColorHint="@color/secondaryText"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    android:inputType="textCapSentences"/>
+                    android:inputType="textCapSentences"
+                    android:clickable="false"/>
                 <ImageButton
                     android:id="@+id/sendBtn"
                     android:layout_width="0dp"
                     android:layout_weight="0.1"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_menu_send"
+                    android:src="@drawable/ic_send_white_24dp"
                     android:tint="@color/colorPrimary"
+                    android:clickable="false"
                     android:background="@color/transparent"
                     android:layout_marginStart="5dp" />
             </LinearLayout>

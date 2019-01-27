@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -162,7 +160,7 @@ public class PoolItemDetailActivity extends BaseActivity {
     private void activatePool() {
         setProgressBarView(View.VISIBLE, "activating pool");
         btn_activate.setEnabled(false);
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityReference)).child(pool.getID());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityReference)).child(pool.getPoolPushID());
         ref.child(Pool.STATUS).setValue(Pool.STATUS_ACTIVE).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -186,7 +184,7 @@ public class PoolItemDetailActivity extends BaseActivity {
     private void setPoolInfo() {
         toolbar.setTitle(pool.getName());
         description.setText(pool.getDescription());
-        joined_peoples.setText("Votes : " + String.valueOf(pool.getUpVote()));
+        joined_peoples.setText("Votes : " + String.valueOf(pool.getUpvote()));
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER,pool.getShopID(), pool.getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(poolOfferListener);

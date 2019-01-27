@@ -75,7 +75,7 @@ public class UpcomingFragment extends Fragment {
                 ArrayList<Pool> arrayList = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Pool newPool = child.getValue(Pool.class);
-                    newPool.setID(child.getKey());
+                    newPool.setPoolPushID(child.getKey());
                     arrayList.add(newPool);
                 }
                 adapter.addAll(arrayList);

@@ -20,6 +20,7 @@ public class PoolInfo {
     //                                                         shopID
     public static final String URL_POOL_OFFER = "shops/shopDetails/%s/pools/poolInfo/%s/offer";
     //                                                          shopID             poolID
+
     //Node name
     public static final String NAME = "name";
     public static final String TYPE = "type";
@@ -40,6 +41,7 @@ public class PoolInfo {
     private Map<String, Integer> offer;
 
     public PoolInfo() {
+
     }
 
     public static PoolInfo getDummy() {

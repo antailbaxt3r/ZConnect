@@ -367,7 +367,7 @@ public class ForumCategoriesRVAdapter extends RecyclerView.Adapter<RecyclerView.
             mView = itemView;
             catName = (TextView) itemView.findViewById(R.id.cat_name);
             joinButton = (Button) itemView.findViewById(R.id.joinCategory);
-            totalMembers = (TextView) itemView.findViewById(R.id.total_members);
+            totalMembers = (TextView) itemView.findViewById(R.id.forums_cat_not_joined_total_members);
             forumIcon = (SimpleDraweeView) itemView.findViewById(R.id.forums_group_icon_row_forums_categories_not_joined);
             defaultForumIcon = (ImageView) itemView.findViewById(R.id.default_forums_group_icon_row_forums_categories_not_joined);
             verifiedForumIconLayout = (FrameLayout) itemView.findViewById(R.id.verified_forum_icon_layout);

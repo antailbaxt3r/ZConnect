@@ -68,7 +68,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         description.setText(pool.getDescription());
         poolImage.setImageURI(pool.getImageURL());
         if (pool.getStatus().compareTo(Pool.STATUS_UPCOMING) == 0) {
-            count.setText(String.valueOf(pool.getUpVote()));
+            count.setText(String.valueOf(pool.getUpvote()));
         } else {
             count.setText(String.valueOf(pool.getTotalOrder()));
         }
@@ -116,7 +116,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
                 }
             });
             activateBtn.setVisibility(View.VISIBLE);
-            if (pool.getUpVoteList().containsKey(userUID)) {
+            if (pool.getUpvoteList().containsKey(userUID)) {
                 isLiked = true;
             } else {
                 isLiked = false;
@@ -138,7 +138,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
 
     private void toggleLike() {
         btn_like.setEnabled(false);
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL_UP_VOTE,communityReference , pool.getID(), userUID));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL_UP_VOTE,communityReference , pool.getPoolPushID(), userUID));
         if (isLiked) {
             ref.setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -188,7 +188,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         activateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL,communityReference)).child(pool.getID()).child("status").setValue("active");
+                FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL,communityReference)).child(pool.getPoolPushID()).child("status").setValue("active");
             }
         });
     }

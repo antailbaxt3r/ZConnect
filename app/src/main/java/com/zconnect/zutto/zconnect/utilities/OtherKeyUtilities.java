@@ -37,4 +37,11 @@ public class OtherKeyUtilities {
     public static final String KEY_CAB_POOL_CHAT="CabPoolChat";
 
     public static final String KEY_FORUMS_ADD="AddForum";
+
+    //Order Payment Status
+
+    public static final String KEY_PAYMENT_PENDING = "pending";
+    public static final String KEY_PAYMENT_FAILED = "failed";
+    public static final String KEY_PAYMENT_DONE = "done";
+
 }
