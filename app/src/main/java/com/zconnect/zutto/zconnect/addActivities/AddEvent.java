@@ -70,6 +70,9 @@ import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -95,7 +98,7 @@ public class AddEvent extends BaseActivity {
     private ImageView mAddImage;
     private MaterialEditText mEventName;
     private MaterialEditText mEventDescription;
-    private AutoCompleteTextView mVenue;
+    private MaterialEditText mVenue;
     private ImageView mDirections;
     private StorageReference mStorage;
     private DatabaseReference mDatabaseVerified;
@@ -117,7 +120,20 @@ public class AddEvent extends BaseActivity {
         public void onDateTimeSet(Date date) {
             eventDate = date.toString();
             dateString = String.valueOf(date.getTime());
-            dateTime.setText(eventDate);
+            Date evdate = null;
+            try {
+                evdate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(eventDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
+            DateTime _date = new DateTime(evdate, indianZone);
+            String minute = String.valueOf(_date.getMinuteOfHour());
+            if(_date.getMinuteOfHour() < 10) {
+                minute = "0" + minute;
+            }
+            String dateTimeText = _date.toString("MMM") + " " + _date.getDayOfMonth() + " " + _date.getYearOfEra() + ", " + (_date.getHourOfDay() < 12 ? _date.getHourOfDay() : _date.getHourOfDay() - 12) + ":" + minute + " " + (_date.getHourOfDay() < 12 ? "AM" : "PM");
+            dateTime.setText(dateTimeText);
 
         }
     };
@@ -187,7 +203,7 @@ public class AddEvent extends BaseActivity {
 
         mAddImage.setImageURI(Uri.parse("res:///" + R.drawable.addimage));
         CalendarButton = (LinearLayout) findViewById(R.id.dateAndTime);
-        mVenue = (AutoCompleteTextView) findViewById(R.id.VenueText);
+        mVenue = (MaterialEditText) findViewById(R.id.VenueText);
         mDirections = (ImageView) findViewById(R.id.venuePicker);
         dateTime = (TextView) findViewById(R.id.dateText);
 
@@ -243,7 +259,20 @@ public class AddEvent extends BaseActivity {
                     mEventName.setText(dataSnapshot.child("EventName").getValue().toString());
                     mEventDescription.setText(dataSnapshot.child("EventDescription").getValue().toString());
                     mVenue.setText(dataSnapshot.child("Venue").getValue().toString());
-                    dateTime.setText(dataSnapshot.child("EventDate").getValue().toString());
+                    Date evdate = null;
+                    try {
+                        evdate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(dataSnapshot.child("EventDate").getValue().toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
+                    DateTime date = new DateTime(evdate, indianZone);
+                    String minute = String.valueOf(date.getMinuteOfHour());
+                    if(date.getMinuteOfHour() < 10) {
+                        minute = "0" + minute;
+                    }
+                    String dateTimeText = date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra() + ", " + (date.getHourOfDay() < 12 ? date.getHourOfDay() : date.getHourOfDay() - 12) + ":" + minute + " " + (date.getHourOfDay() < 12 ? "AM" : "PM");
+                    dateTime.setText(dateTimeText);
                     eventDate = dataSnapshot.child("EventDate").getValue().toString();
                     Picasso.with(getApplicationContext()).load(dataSnapshot.child("EventImage").getValue().toString()).into(mAddImage);
                     mImageUri = Uri.parse(dataSnapshot.child("EventImage").getValue().toString());

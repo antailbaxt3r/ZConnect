@@ -312,6 +312,8 @@ public class AddCabPool extends BaseActivity {
                                         newPost2.child("cabpoolSource").setValue(String.valueOf(source.getSelectedItem()));
                                         newPost2.child("cabpoolDestination").setValue(String.valueOf(destination.getSelectedItem()));
                                         newPost2.child("cabpoolDate").setValue(calender.getText().toString());
+                                        newPost2.child("cabpoolTimeFrom").setValue(T1);
+                                        newPost2.child("cabpoolTimeTo").setValue(T2);
                                         newPost2.child("cabpoolTime").setValue(time);
                                         newPost2.child("cabpoolNumPeople").setValue(1);
                                         newPost2.child("PostTimeMillis").setValue(postTimeMillis);

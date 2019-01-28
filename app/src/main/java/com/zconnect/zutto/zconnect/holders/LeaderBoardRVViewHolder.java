@@ -46,10 +46,9 @@ public class LeaderBoardRVViewHolder extends RecyclerView.ViewHolder {
     public void setDetails(LeaderBoardItemFormat leaderBoardItemFormat) {
         userUID = leaderBoardItemFormat.getUserUID();
         userName.setText(leaderBoardItemFormat.getName());
-        userPoints.setText(leaderBoardItemFormat.getUserPoints());
+        userPoints.setText(leaderBoardItemFormat.getUserPointsNum() + "");
         userRank.setText(leaderBoardItemFormat.getRank());
         userImage.setImageURI(leaderBoardItemFormat.getImage());
-
         if(leaderBoardItemFormat.getUserUID().equals(FirebaseAuth.getInstance().getUid())){
             leaderBoardLayout.setBackgroundResource(R.color.colorPrimaryDark);
             userName.setTextColor(itemView.getResources().getColor(R.color.white));

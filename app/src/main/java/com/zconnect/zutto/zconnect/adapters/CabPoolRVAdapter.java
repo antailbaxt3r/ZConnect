@@ -112,8 +112,16 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
            holder.destination.setText(array.get(position).getDestination());
         holder.source.setText(array.get(position).getSource());
 //       if(array.get(position).getFrom()!=0){ holder.time.setText(array.get(position).getFrom()+":00 to "+array.get(position).getTo()+":00");}
-           if(array.get(position).getFrom()!=0){ holder.time.setText(array.get(position).getFrom()+":00 - "+array.get(position).getTo()+":00");}
-           else{holder.time.setText(array.get(position).getTime());}
+           String fromAmPm = array.get(position).getFrom()<12 ? "AM" : "PM";
+           int fromTime = array.get(position).getFrom()<=12 ? array.get(position).getFrom() : array.get(position).getFrom() - 12;
+           fromTime = fromTime == 0 ? 12 : fromTime;
+           String toAmPm = array.get(position).getTo()<12 ? "AM" : "PM";
+           int toTime = array.get(position).getTo()<=12 ? array.get(position).getTo() : array.get(position).getTo() - 12;
+           toTime = toTime == 0 ? 12 : toTime;
+           String timeText = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
+           holder.time.setText(timeText);
+//           if(array.get(position).getFrom()!=0){ }
+//           else{holder.time.setText(array.get(position).getTime());}
            Log.e("RV","array");
        }
         if(i==1){
@@ -127,12 +135,19 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth());
             holder.destination.setText(cabItemFormat.get(position).getDestination());
             holder.source.setText(cabItemFormat.get(position).getSource());
-      if(cabItemFormat.get(position).getFrom()!=0)  {
+//      if(cabItemFormat.get(position).getFrom()!=0)  {
 //          holder.time.setText(cabItemFormat.get(position).getFrom()+":00 to "+cabItemFormat.get(position).getTo()+":00");
-                holder.time.setText(cabItemFormat.get(position).getFrom()+":00 - "+cabItemFormat.get(position).getTo()+":00");
-      } else{
-          holder.time.setText(cabItemFormat.get(position).getTime());
-       }
+          String fromAmPm = cabItemFormat.get(position).getFrom()<12 ? "AM" : "PM";
+          int fromTime = cabItemFormat.get(position).getFrom()<=12 ? cabItemFormat.get(position).getFrom() : cabItemFormat.get(position).getFrom() - 12;
+          fromTime = fromTime ==  0 ? 12 : fromTime;
+          String toAmPm = cabItemFormat.get(position).getTo()<12 ? "AM" : "PM";
+          int toTime = cabItemFormat.get(position).getTo()<=12 ? cabItemFormat.get(position).getTo() : cabItemFormat.get(position).getTo() - 12;
+          toTime = toTime == 0 ? 12 : toTime;
+          String timeText = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
+          holder.time.setText(timeText);
+//      } else{
+//          holder.time.setText(cabItemFormat.get(position).getTime());
+//       }
         }
 
     }

@@ -698,8 +698,39 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
                     holder.cabpoolSource.setText(recentsItemFormats.get(position).getCabpoolSource());
                     holder.cabpoolDestination.setText(recentsItemFormats.get(position).getCabpoolDestination());
-                    holder.cabpoolDate.setText(recentsItemFormats.get(position).getCabpoolDate());
-                    holder.cabpoolTime.setText(recentsItemFormats.get(position).getCabpoolTime());
+                    DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
+                    DateTime date = null;
+                    try {
+                        DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
+                        date = dtf.parseDateTime(recentsItemFormats.get(position).getCabpoolDate());
+                    }catch (Exception e){}
+                    String dateText = date.toString("MMM") + " " + date.getDayOfMonth();
+                    holder.cabpoolDate.setText(dateText);
+                    if(recentsItemFormats.get(position).getCabpoolTimeFrom()!=-1)
+                    {
+                        String fromAmPm = recentsItemFormats.get(position).getCabpoolTimeFrom()<12 ? "AM" : "PM";
+                        int fromTime = recentsItemFormats.get(position).getCabpoolTimeFrom()<=12 ? recentsItemFormats.get(position).getCabpoolTimeFrom() : recentsItemFormats.get(position).getCabpoolTimeFrom() - 12;
+                        fromTime = fromTime ==  0 ? 12 : fromTime;
+                        String toAmPm = recentsItemFormats.get(position).getCabpoolTimeTo()<12 ? "AM" : "PM";
+                        int toTime = recentsItemFormats.get(position).getCabpoolTimeTo()<=12 ? recentsItemFormats.get(position).getCabpoolTimeTo() : recentsItemFormats.get(position).getCabpoolTimeTo() - 12;
+                        toTime = toTime == 0 ? 12 : toTime;
+                        String timeText = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
+                        holder.cabpoolTime.setText(timeText);
+                    }
+                    else
+                    {
+                        String timeText = recentsItemFormats.get(position).getCabpoolTime();
+                        int fromTime = Integer.parseInt(timeText.substring(0, timeText.indexOf(":")));
+                        String fromAmPm = fromTime<12 ? "AM" : "PM";
+                        fromTime = fromTime<=12 ? fromTime : fromTime - 12;
+                        fromTime = fromTime ==  0 ? 12 : fromTime;
+                        int toTime = Integer.parseInt(timeText.substring(timeText.indexOf("to")+3, timeText.lastIndexOf(":")));
+                        String toAmPm = toTime<12 ? "AM" : "PM";
+                        toTime = toTime<=12 ? toTime : toTime - 12;
+                        toTime = toTime == 0 ? 12 : toTime;
+                        timeText = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
+                        holder.cabpoolTime.setText(timeText);
+                    }
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
 //            layers[0].setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
@@ -1536,6 +1567,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         DatabaseReference totalMembersRef;
         TextView leaderBoardText;
         TextView totalMembers;
+        LinearLayout totalMembersLayout;
 
         public ViewHolderStatus(final View itemView) {
             super(itemView);
@@ -1545,6 +1577,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             textArea = (LinearLayout) itemView.findViewById(R.id.text_area_recents_status_add);
             totalMembers = itemView.findViewById(R.id.total_members);
             leaderBoardText = itemView.findViewById(R.id.leader_board_text);
+            totalMembersLayout = itemView.findViewById(R.id.total_members_layout);
 
             mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -1590,7 +1623,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
 
-            totalMembers.setOnClickListener(new View.OnClickListener() {
+            totalMembersLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(context, "Top the leader board by inviting your friends", Toast.LENGTH_SHORT).show();
@@ -1603,7 +1636,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     try {
-                        totalMembers.setText(dataSnapshot.getValue().toString() + "+ members");
+                        int members_num = dataSnapshot.getValue(Integer.class);
+                        if(members_num>=10 && members_num<100)
+                            members_num = (members_num/10)*10;
+                        else if(members_num>=100 && members_num<1000)
+                            members_num = (members_num/100)*100;
+                        else if(members_num>=1000 && members_num<10000)
+                            members_num = (members_num/1000)*1000;
+                        else if(members_num>=10000)
+                            members_num = 10000;
+                        totalMembers.setText(members_num + "+");
                     }catch (Exception e){}
                 }
 

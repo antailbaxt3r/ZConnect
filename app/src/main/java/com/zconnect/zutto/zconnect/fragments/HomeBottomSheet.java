@@ -153,6 +153,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
 
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
+                //TODO app crashes on line 163/171
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
                 alertBuilder.setTitle("Add/Ask")
                         .setMessage("Do you want to add a product or ask for a product?")
