@@ -44,6 +44,7 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.commonModules.NotificationService;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -88,6 +89,7 @@ public class LogoFlashActivity extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
+//            copyUserPointsToUserPointsNum();
 //            removeJustJoinedNotifFromHome();
 //            countCommunityMembers();
 //            countInfoneCatMembers();
@@ -375,6 +377,33 @@ public class LogoFlashActivity extends BaseActivity {
                         }
                     });
         }
+    }
+
+    //script to copy userPoints to userPointsNum
+    public static void copyUserPointsToUserPointsNum() {
+        Log.i("PSYCHO", "started");
+        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot shot : dataSnapshot.getChildren())
+                {
+                    if(shot.hasChild("userPoints"))
+                    {
+                        usersRef.child(shot.getKey()).child("userPointsNum").setValue(Integer.parseInt(shot.child("userPoints").getValue().toString()));
+                    }
+                    else
+                    {
+                        Log.i("PSYCHO", "no user points " + shot.getKey());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 

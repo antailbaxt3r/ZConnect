@@ -48,6 +48,7 @@ import com.zconnect.zutto.zconnect.ShortlistedPeopleList;
 import com.zconnect.zutto.zconnect.VerificationPage;
 import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -952,7 +953,8 @@ public class NotificationService extends FirebaseMessagingService {
         final String productPrice = data.get("productPrice").toString();
         final String productKey = data.get("productKey").toString();
         final String productImage = data.get("productImage").toString();
-
+        final String productType = data.get("productType").toString()!=null ?
+                data.get("productType").toString() : ProductUtilities.TYPE_ADD_STR;
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
 
@@ -993,7 +995,9 @@ public class NotificationService extends FirebaseMessagingService {
                 .setContentText(userName + " is selling " + productName + " for ₹" + productPrice);
 
         Intent intent = new Intent(NotificationService.this, OpenProductDetails.class);
+
         intent.putExtra("key", productKey);
+        intent.putExtra("type", productType);
 
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);

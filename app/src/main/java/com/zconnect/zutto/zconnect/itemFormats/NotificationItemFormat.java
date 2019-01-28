@@ -16,6 +16,7 @@ public class NotificationItemFormat {
     private String itemImage;
     private String itemLocation;
     private String itemPrice;
+    private String itemType;
 
     private String itemCategory;
     private String itemCategoryUID;
@@ -125,6 +126,12 @@ public class NotificationItemFormat {
 
     public void setItemPrice(String itemPrice) {
         this.itemPrice = itemPrice;
+    }
+
+    public String getItemType() { return itemType; }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
     }
 
     public String getItemCategory() {

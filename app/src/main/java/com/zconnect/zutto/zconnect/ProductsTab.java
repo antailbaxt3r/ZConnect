@@ -1,6 +1,9 @@
 package com.zconnect.zutto.zconnect;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -31,6 +34,7 @@ import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.Product;
 import com.zconnect.zutto.zconnect.adapters.ProductsRVAdapter;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -102,7 +106,27 @@ public class ProductsTab extends Fragment {
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
 
-                getContext().startActivity(new Intent(getContext(), AddProduct.class));
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+                alertBuilder.setTitle("Add/Ask")
+                        .setMessage("Do you want to add a product or ask for a product?")
+                        .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(getContext(), AddProduct.class);
+                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                                getContext().startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("Add", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(getContext(), AddProduct.class);
+                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                                getContext().startActivity(intent);
+                            }
+                        })
+                        .show();
+
             }
         });
 

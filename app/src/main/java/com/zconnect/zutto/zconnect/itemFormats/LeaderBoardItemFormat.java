@@ -1,27 +1,18 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
 public class LeaderBoardItemFormat {
-    private String rank,name, userPoints, userUID, image;
+    private String rank,name, userUID, image;
+    private int userPointsNum;
 
-    Integer points;
-
-    public LeaderBoardItemFormat(String rank, String name, String userPoints, String userUID, String image) {
+    public LeaderBoardItemFormat(String rank, String name, int userPointsNum, String userUID, String image) {
         this.rank = rank;
         this.name = name;
-        this.userPoints = userPoints;
+        this.userPointsNum = userPointsNum;
         this.userUID = userUID;
         this.image = image;
     }
 
     public LeaderBoardItemFormat() {
-    }
-
-    public Integer getPoints() {
-        return points;
-    }
-
-    public void setPoints(Integer points) {
-        this.points = points;
     }
 
     public String getRank() {
@@ -40,12 +31,12 @@ public class LeaderBoardItemFormat {
         this.name = name;
     }
 
-    public String getUserPoints() {
-        return userPoints;
+    public int getUserPointsNum() {
+        return userPointsNum;
     }
 
-    public void setUserPoints(String userPoints) {
-        this.userPoints = userPoints;
+    public void setUserPointsNum(int userPointsNum) {
+        this.userPointsNum = userPointsNum;
     }
 
     public String getUserUID() {

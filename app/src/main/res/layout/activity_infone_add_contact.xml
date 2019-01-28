@@ -31,16 +31,26 @@
         android:paddingEnd="15dp"
         android:paddingBottom="@dimen/padding_med"
         android:background="@color/white">
-        <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/image_add_infone_add"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/circle_dashed_border"
-            android:layout_gravity="center_horizontal"
-            fresco:actualImageScaleType="centerCrop"
-            fresco:roundAsCircle="true"
-            fresco:roundingBorderPadding="2dp"
-            android:layout_marginTop="10dp"/>
+            android:layout_gravity="center">
+            <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/image_add_infone_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/circle_dashed_border"
+                android:layout_gravity="center_horizontal"
+                fresco:actualImageScaleType="centerCrop"
+                fresco:roundAsCircle="true"
+                fresco:roundingBorderPadding="2dp" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_add_a_photo_black_24"
+                android:tint="@color/secondaryText2"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/name_et_infone_add"

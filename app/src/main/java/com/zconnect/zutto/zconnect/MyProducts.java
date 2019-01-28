@@ -38,6 +38,7 @@ import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.Product;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 public class MyProducts extends BaseActivity {
     Query query;
@@ -83,8 +84,26 @@ public class MyProducts extends BaseActivity {
         openAddProduct = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MyProducts.this, AddProduct.class);
-                startActivity(i);
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MyProducts.this);
+                alertBuilder.setTitle("Add/Ask")
+                        .setMessage("Do you want to add a product or ask for a product?")
+                        .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(MyProducts.this, AddProduct.class);
+                                intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("Add", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(MyProducts.this, AddProduct.class);
+                                intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+                                startActivity(intent);
+                            }
+                        })
+                        .show();
             }
         };
 

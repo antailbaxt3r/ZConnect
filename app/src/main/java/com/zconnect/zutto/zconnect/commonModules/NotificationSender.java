@@ -139,7 +139,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
                 break;
                 //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD:
-                productAddNotification(ND.getCommunityName(),ND.getItemName(),ND.getItemPrice(),ND.getItemKey(),ND.getItemImage(),ND.getUserName(),ND.getUserImage());
+                productAddNotification(ND.getCommunityName(),ND.getItemName(),ND.getItemPrice(),ND.getItemKey(),ND.getItemImage(),ND.getUserName(),ND.getUserImage(), ND.getItemType());
                 break;
                 //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD:
@@ -451,7 +451,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD_FREQUENCY_STR);
     }
 
-    private void productAddNotification(String communityName, String productName,String productPrice,String productKey,String productImage,String userName,String userImage) {
+    private void productAddNotification(String communityName, String productName,String productPrice,String productKey,String productImage,String userName,String userImage, String productType) {
 
 
         creator = new RemoteMessage.Builder("data");
@@ -461,6 +461,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("productPrice",productPrice);
         creator.addData("productKey",productKey);
         creator.addData("productImage",productImage);
+        creator.addData("productType", productType);
 
         creator.addData("userName", userName);
         creator.addData("userImage", userImage);

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.zconnect.zutto.zconnect.itemFormats.Product;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.holders.ProductsViewHolder;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.Vector;
 
@@ -29,19 +30,34 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
     @Override
     public ProductsViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.products_row, parent, false);
-
+        View view;
+        if(viewType == ProductUtilities.TYPE_ADD)
+            view = layoutInflater.inflate(R.layout.products_row, parent, false);
+        else
+            view = layoutInflater.inflate(R.layout.ask_products_row, parent, false);
         return new ProductsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ProductsViewHolder holder, int position) {
-        holder.setImage(ctx,productVector.get(position).getImage());
-        holder.setPrice(productVector.get(position).getPrice());
-        holder.setNegotiable(productVector.get(position).getIsNegotiable());
+        if(getItemViewType(position) == ProductUtilities.TYPE_ADD)
+        {
+            holder.setPrice(productVector.get(position).getPrice());
+            holder.setNegotiable(productVector.get(position).getIsNegotiable());
+        }
+        else
+        {
+            holder.setAskText(productVector.get(position).getProductName());
+        }
+        if(productVector.get(position).getImage()!=null)
+        {
+            holder.setImage(ctx,productVector.get(position).getImage());
+            if(getItemViewType(position)==ProductUtilities.TYPE_ASK)
+                holder.hideAskText();
+        }
         holder.setProductName(productVector.get(position).getProductName());
         holder.defaultSwitch(productVector.get(position).getKey(),ctx,productVector.get(position).getCategory(),productVector.get(position).getProductName());
-        holder.openProduct(productVector.get(position).getKey());
+        holder.openProduct(productVector.get(position).getKey(), productVector.get(position).getType());
         holder.setProductDate(productVector.get(position).getPostTimeMillis(), System.currentTimeMillis());
     }
 
@@ -51,5 +67,11 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
         return productVector.size();
     }
 
-
+    @Override
+    public int getItemViewType(int position) {
+        if(productVector.get(position).getType()!=null && productVector.get(position).getType().equals(ProductUtilities.TYPE_ASK_STR))
+            return ProductUtilities.TYPE_ASK;
+        else
+            return ProductUtilities.TYPE_ADD;
+    }
 }

@@ -5,7 +5,7 @@ package com.zconnect.zutto.zconnect.itemFormats;
  */
 
 public class Product {
-    private String ProductName, ProductDescription, Image, Key, Price, Phone_no, Category;
+    private String ProductName, ProductDescription, Image, Key, Price, Phone_no, Category, type;
     private Boolean isNegotiable;
     private PostedByDetails PostedBy;
     private long PostTimeMillis;
@@ -13,7 +13,7 @@ public class Product {
 
     }
 
-    public Product(String productName, String productDescription, String image, String key, String price, String phone_no, String category ,String negotiable, PostedByDetails postedBy, long postTimeMillis) {
+    public Product(String productName, String productDescription, String image, String key, String price, String phone_no, String category ,String negotiable, PostedByDetails postedBy, long postTimeMillis, String type) {
         ProductName = productName;
         ProductDescription = productDescription;
         Image = image;
@@ -24,6 +24,7 @@ public class Product {
         this.isNegotiable= isNegotiable;
         PostedBy = postedBy;
         PostTimeMillis = postTimeMillis;
+        this.type = type;
     }
 
     public Boolean getIsNegotiable() {
@@ -85,4 +86,8 @@ public class Product {
     public long getPostTimeMillis() {
         return PostTimeMillis;
     }
+
+    public void setType(String type) { this.type = type; }
+
+    public String getType() { return type; }
 }

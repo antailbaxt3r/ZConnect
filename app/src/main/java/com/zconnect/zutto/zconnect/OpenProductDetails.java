@@ -56,6 +56,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import java.io.UnsupportedEncodingException;
@@ -79,7 +80,7 @@ public class OpenProductDetails extends BaseActivity {
     private Boolean flag;
     private ProgressBar progressBar;
     private LinearLayout productContent;
-    private String productKey;
+    private String productKey, type;
     private FirebaseUser user;
     private ValueEventListener listener;
 
@@ -90,7 +91,8 @@ public class OpenProductDetails extends BaseActivity {
     private String path;
     private Uri screenshotUri;
     Typeface ralewayBold, ralewayLight;
-
+    private LinearLayout askTag;
+    private TextView askText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +147,8 @@ public class OpenProductDetails extends BaseActivity {
         productCall.setTypeface(ralewayBold);
         chatLayout= (LinearLayout) findViewById(R.id.chatLayout);
         chatEditText = (EditText) findViewById(R.id.typer);
+        askTag = (LinearLayout) findViewById(R.id.ask_tag_open_product_details);
+        askText = (TextView) findViewById(R.id.ask_text_open_product_details);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             chatEditText.setShowSoftInputOnFocus(false);
         }
@@ -427,12 +431,26 @@ public class OpenProductDetails extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
 
         productKey =  getIntent().getExtras().getString("key");
+        type = getIntent().getExtras().getString("type");
+        if(type!=null && type.equals(ProductUtilities.TYPE_ASK_STR))
+        {
+            productPrice.setVisibility(View.GONE);
+            productPriceType.setVisibility(View.GONE);
+            askTag.setVisibility(VISIBLE);
+        }
+        else
+        {
+            askTag.setVisibility(View.GONE);
+            productPrice.setVisibility(VISIBLE);
+            productPriceType.setVisibility(VISIBLE);
+        }
         mDatabaseProduct.child(productKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 try {
                     productName.setText(dataSnapshot.child("ProductName").getValue().toString());
-                    productPrice.setText(dataSnapshot.child("Price").getValue().toString());
+                    if(!type.equals(ProductUtilities.TYPE_ASK_STR))
+                        productPrice.setText(dataSnapshot.child("Price").getValue().toString());
                     productDescription.setText(dataSnapshot.child("ProductDescription").getValue().toString());
                     productCategory = dataSnapshot.child("Category").getValue().toString();
                     productCall.setOnClickListener(new View.OnClickListener() {
@@ -462,10 +480,21 @@ public class OpenProductDetails extends BaseActivity {
                         productDate.setText(tu.calculateTimeAgoStoreroom());
                     }
                     catch (Exception e) {
-
                     }
-                    mImageUri = dataSnapshot.child("Image").getValue().toString();
-                    setImage(OpenProductDetails.this, dataSnapshot.child("ProductName").getValue().toString(), dataSnapshot.child("Image").getValue().toString(), productImage);
+                    if(dataSnapshot.hasChild("Image"))
+                    {
+                        askText.setVisibility(View.GONE);
+                        mImageUri = dataSnapshot.child("Image").getValue().toString();
+                        setImage(OpenProductDetails.this, dataSnapshot.child("ProductName").getValue().toString(), dataSnapshot.child("Image").getValue().toString(), productImage);
+                    }
+                    else
+                    {
+                        productImage.setImageDrawable(getApplicationContext().getDrawable(R.drawable.ask_default_image));
+                        askText.setVisibility(VISIBLE);
+                        askText.setText(productName.getText());
+                        progressBar.setVisibility(View.GONE);
+                        productContent.setVisibility(VISIBLE);
+                    }
 
                     setProductPrice(productPrice,dataSnapshot.child("Price").getValue().toString());
 
@@ -530,7 +559,8 @@ public class OpenProductDetails extends BaseActivity {
                             overridePendingTransition(0, 0);
                         }
                     });
-                }catch (Exception e){}
+                }catch (Exception e){
+                }
             }
 
             @Override
