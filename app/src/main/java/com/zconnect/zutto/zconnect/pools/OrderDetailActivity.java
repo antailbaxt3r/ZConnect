@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,12 +24,11 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemCartAdapter;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
-import com.zconnect.zutto.zconnect.pools.models.ShopOrder;
+import com.zconnect.zutto.zconnect.pools.models.Order;
 
 import net.glxn.qrgen.android.QRCode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class OrderDetailActivity extends BaseActivity {
 
@@ -38,7 +36,7 @@ public class OrderDetailActivity extends BaseActivity {
 
     private ImageView qr_image;
     private String userUID;
-    private ShopOrder order;
+    private Order order;
     private RecyclerView recyclerView;
     private PoolItemCartAdapter adapter;
     private ValueEventListener poolItemListener,orderItemListener;
@@ -54,7 +52,7 @@ public class OrderDetailActivity extends BaseActivity {
         if (b != null) {
             if (b.containsKey("order")) {
 
-                order = ShopOrder.getShopOrder(b.getBundle("order"));
+                order = Order.getShopOrder(b.getBundle("order"));
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user == null) {
                     //TODO start login acitvity
@@ -114,10 +112,10 @@ public class OrderDetailActivity extends BaseActivity {
 
     private void setOrderQRView() {
 
-        Bitmap myBitmap = QRCode.from(order.getRazorPayID()+"-"+userUID).bitmap();
+        Bitmap myBitmap = QRCode.from(order.getPaymentID()+"-"+userUID).bitmap();
         qr_image.setImageBitmap(myBitmap);
 
-        orderStatus.setText(order.getOrderStatus());
+        orderStatus.setText(order.getStatus());
         userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         userEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         userAmount.setText(String.format("Amount : %s%d",getResources().getString(R.string.Rs),order.getAmount()));
@@ -189,8 +187,8 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     private void loadOrderItemList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ShopOrder.URL_ORDER_ITEM_LIST,
-                communityReference, order.getShopID(),order.getPoolPushID() ,order.getRazorPayID()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_ORDER_ITEM_LIST,
+                communityReference, order.getShopID(),order.getPoolPushID() ,order.getPaymentID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(orderItemListener);
     }
