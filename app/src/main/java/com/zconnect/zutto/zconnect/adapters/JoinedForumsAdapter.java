@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -24,6 +25,7 @@ import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -119,6 +121,8 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                     counterPush.pushValues();
                     final Intent intent = new Intent(context, ExploreForumsActivity.class);
+                    //todo check this way of getting userType:
+                    intent.putExtra("userType", UserUtilities.currentUser.getUserType());
                     context.startActivity(intent);
                 }
             });

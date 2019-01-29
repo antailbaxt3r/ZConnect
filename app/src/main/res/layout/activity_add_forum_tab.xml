@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.zconnect.zutto.zconnect.addActivities.CreateForum">
+    tools:context="com.zconnect.zutto.zconnect.addActivities.AddForumTab">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,6 +22,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_create_forum"/>
+    <include layout="@layout/content_add_forum_tab"/>
 
 </android.support.design.widget.CoordinatorLayout>

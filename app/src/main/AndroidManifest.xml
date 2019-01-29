@@ -60,7 +60,6 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
 
-
         <!-- On start activity in full screen mode -->
         <activity
             android:name=".LogoFlashActivity"
@@ -459,23 +458,21 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Links" />
-
         <activity
             android:name=".pools.PoolActivity"
             android:label="Shop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".pools.PoolItemDetailActivity"
+        <activity
+            android:name=".pools.PoolItemDetailActivity"
             android:label="Order Details"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".pools.AddPoolItemActivity"
             android:label="Add Items"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LeaderBoard"
             android:label="@string/title_activity_leader_board"
@@ -501,27 +498,31 @@
             android:label="Terms and Conditions"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".pools.PoolBillActivity"
+        <activity
+            android:name=".pools.PoolBillActivity"
             android:label="Bill"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".pools.PaymentCaptureActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".pools.PaymentCaptureActivity"
             android:label="Payment"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".pools.PoolPreviousOrderActivity"
             android:label="Previous Orders"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".pools.OrderDetailActivity"
             android:label="Choose items"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".addActivities.AddForumTab"
+            android:label="Add a Forums Tab"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
