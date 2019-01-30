@@ -1,8 +1,5 @@
 package com.zconnect.zutto.zconnect.pools.models;
 
-import android.os.Bundle;
-
-import com.google.firebase.database.Exclude;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 
 import java.util.Vector;
@@ -20,9 +17,12 @@ public class Order {
     public static final String POOL_PUSH_ID = "poolPushID";
     public static final String STATUS = "status";
     public static final String PAYMENT_ID = "paymentID";
-    public static final String TIMESTAMP_PAYMENT = "timeStampPayment";
+    public static final String TIMESTAMP_PAYMENT_STARTED = "timeStampPaymentStarted";
+    public static final String TIMESTAMP_PAYMENT_DONE= "timeStampPaymentDone";
     public static final String TOTAL_AMOUNT = "totalAmount";
     public static final String POOL_INFO = "poolInfo";
+    public static final String ITEMS = "items";
+    public static final String DELIVERY_TIME = "deliveryTime";
     public static final String ORDERED_BY = "orderedBy";
 
 
@@ -30,27 +30,39 @@ public class Order {
     private String poolPushID;
     private String status;
     private String paymentID;
-    private long getTimestampPayment;
+    private String timestampPaymentStarted;
+
+    private String timestampPaymentDone;
     private long totalAmount;
+    private long deliveryTime;
     private PoolInfo poolInfo;
     private PostedByDetails orderedBy;
+    private Vector<PoolItem> items;
 
     public Order() {
     }
 
-    public Order(String orderID, String poolPushID, String status, String paymentID, long getTimestampPayment, long totalAmount, PoolInfo poolInfo, Vector<PoolItem> items, PostedByDetails orderedBy) {
+    public Order(String orderID, String poolPushID, String status, String paymentID, String timestampPaymentStarted,String timestampPaymentDone, long totalAmount, PoolInfo poolInfo, Vector<PoolItem> items, PostedByDetails orderedBy, long deliveryTime) {
         this.orderID = orderID;
         this.poolPushID = poolPushID;
         this.status = status;
         this.paymentID = paymentID;
-        this.getTimestampPayment = getTimestampPayment;
+        this.timestampPaymentStarted = timestampPaymentStarted;
+        this.timestampPaymentDone = timestampPaymentDone;
         this.totalAmount = totalAmount;
         this.poolInfo = poolInfo;
         this.items = items;
         this.orderedBy = orderedBy;
+        this.deliveryTime = deliveryTime;
     }
 
-    private Vector<PoolItem> items;
+    public long getDeliveryTime() {
+        return deliveryTime;
+    }
+
+    public void setDeliveryTime(long deliveryTime) {
+        this.deliveryTime = deliveryTime;
+    }
 
     public String getOrderID() {
         return orderID;
@@ -82,14 +94,6 @@ public class Order {
 
     public void setPaymentID(String paymentID) {
         this.paymentID = paymentID;
-    }
-
-    public long getGetTimestampPayment() {
-        return getTimestampPayment;
-    }
-
-    public void setGetTimestampPayment(long getTimestampPayment) {
-        this.getTimestampPayment = getTimestampPayment;
     }
 
     public long getTotalAmount() {
@@ -124,7 +128,23 @@ public class Order {
         this.orderedBy = orderedBy;
     }
 
-    //    public Bundle getBundle() {
+    public String getTimestampPaymentStarted() {
+        return timestampPaymentStarted;
+    }
+
+    public void setTimestampPaymentStarted(String timestampPaymentStarted) {
+        this.timestampPaymentStarted = timestampPaymentStarted;
+    }
+
+    public String getTimestampPaymentDone() {
+        return timestampPaymentDone;
+    }
+
+    public void setTimestampPaymentDone(String timestampPaymentDone) {
+        this.timestampPaymentDone = timestampPaymentDone;
+    }
+
+//    public Bundle getBundle() {
 //        Bundle b = new Bundle();
 //        if (this.orderID != null)
 //            b.putString(SHOP_ORDER_ID, this.orderID);

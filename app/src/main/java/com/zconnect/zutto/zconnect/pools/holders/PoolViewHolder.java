@@ -21,8 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.pools.AddPoolItemActivity;
-import com.zconnect.zutto.zconnect.pools.PoolItemDetailActivity;
+import com.zconnect.zutto.zconnect.pools.ActivePoolDetailsActivity;
+import com.zconnect.zutto.zconnect.pools.UpcomingPoolDetailsActivity;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
@@ -63,10 +63,10 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
 
     public void populate(final Pool pool) {
         this.pool = pool;
-        Log.d(this.getClass().getName(), "populate : " + pool.getName());
-        name.setText(pool.getName());
-        description.setText(pool.getDescription());
-        poolImage.setImageURI(pool.getImageURL());
+        Log.d(this.getClass().getName(), "populate : " + pool.getPoolInfo().getName());
+        name.setText(pool.getPoolInfo().getName());
+        description.setText(pool.getPoolInfo().getDescription());
+        poolImage.setImageURI(pool.getPoolInfo().getImageThumbh());
         if (pool.getStatus().compareTo(Pool.STATUS_UPCOMING) == 0) {
             count.setText(String.valueOf(pool.getUpvote()));
         } else {
@@ -80,12 +80,12 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 if (pool.isUpcoming()) {
-                    Intent intent = new Intent(itemView.getContext(), PoolItemDetailActivity.class);
-                    intent.putExtra("newPool", pool.getBundle());
+                    Intent intent = new Intent(itemView.getContext(), UpcomingPoolDetailsActivity.class);
+                    intent.putExtra("pool", pool);
                     itemView.getContext().startActivity(intent);
                 } else if (pool.isActive()) {
-                    Intent intent = new Intent(itemView.getContext(), AddPoolItemActivity.class);
-                    intent.putExtra("newPool", pool.getBundle());
+                    Intent intent = new Intent(itemView.getContext(), ActivePoolDetailsActivity.class);
+                    intent.putExtra("pool", pool);
                     itemView.getContext().startActivity(intent);
                 }
             }

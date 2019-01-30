@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,28 +15,34 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
+import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemCartAdapter;
+import com.zconnect.zutto.zconnect.pools.models.DiscountOffer;
+import com.zconnect.zutto.zconnect.pools.models.Order;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolInfo;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PAYMENT_DONE;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PAYMENT_FAILED;
@@ -60,6 +65,11 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private ProgressBar progressBar;
     private LinearLayout billLinearLayout;
     private String orderID;
+    private HashMap<String,PoolItem> orderList;
+    private Vector<PoolItem> orderListVector;
+    private Pool currentPool;
+    private ValueEventListener poolOfferListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +77,17 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         setContentView(R.layout.activity_pool_bill);
         Bundle b = getIntent().getExtras();
         if (b != null) {
-            if (b.containsKey("orderList")) {
+            if (b.containsKey("orderList") && b.containsKey("pool")) {
 
-                final Bundle list = b.getBundle("orderList");
+                orderList  = (HashMap<String,PoolItem>) getIntent().getSerializableExtra("orderList");
+                currentPool = (Pool) getIntent().getSerializableExtra("pool");
+
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user == null) {
-                    //TODO start login acitvity
+                    Intent i = new Intent(this, LoginActivity.class);
+                    startActivity(i);
                     finish();
                 } else {
-                    //TODO set communiy id from preference
-                    communityID = "testCollege";
                     userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                     setToolbar();
@@ -103,7 +114,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                     }
 
-                    loadCartData(list);
+                    loadCartData();
                     btn_pay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -133,23 +144,14 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         orderID = usersOrdersRef.push().toString();
 
         HashMap<String, Object> orderObject = new HashMap<>();
-        HashMap<String, Object> orderItems = new HashMap<>();
-        //hashing info on owners end
-
-        ArrayList<PoolItem> items = adapter.getPoolsList();
-        for (PoolItem item : items) {
-            orderItems.put(item.getID(), item.toString());
-        }
-
-        orderObject.put("amount", total_amount);
-        orderObject.put(Pool.SHOP_ID, shopID);
-        orderObject.put(Pool.POOL_ID, poolID);
-        orderObject.put(Pool.POOL_PUSH_ID, poolPushID);
-        orderObject.put("poolName", poolName);
-        orderObject.put("orderStatus", KEY_PAYMENT_PENDING);
-        orderObject.put("items",orderItems);
-        orderObject.put("timeStamp", ServerValue.TIMESTAMP);
-        orderObject.put(Pool.DELIVERY_TIME,deliveryTime);
+        orderObject.put(Order.ORDER_ID,orderID);
+        orderObject.put(Order.POOL_PUSH_ID,currentPool.getPoolPushID());
+        orderObject.put(Order.STATUS,OtherKeyUtilities.KEY_PAYMENT_PENDING);
+        orderObject.put(Order.TIMESTAMP_PAYMENT_STARTED,ServerValue.TIMESTAMP);
+        orderObject.put(Order.TOTAL_AMOUNT,total_amount);
+        orderObject.put(Order.POOL_INFO,currentPool.getPoolInfo());
+        orderObject.put(Order.ITEMS,orderList);
+        orderObject.put(Order.DELIVERY_TIME, currentPool.getDeliveryTime());
 
         usersOrdersRef.child(orderID).setValue(orderObject).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -193,55 +195,74 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         }
     }
 
-    private void loadCartData(Bundle list) {
-        String[] ids = list.getStringArray(PoolItem.ITEM_ID);
-        String[] imageURL = list.getStringArray(PoolItem.IMAGE_URL);
-        String[] name = list.getStringArray(PoolItem.NAME);
-        int[] quantities = list.getIntArray(PoolItem.QUANTITY);
-        int[] prices = list.getIntArray(PoolItem.PRICE);
+    private void loadCartData() {
+
         total_quantity = 0;
         subTotal_amount = 0;
-        for (int i = 0; i < ids.length; i++) {
-            PoolItem item = new PoolItem();
-            item.setID(ids[i]);
-            item.setImageURL(imageURL[i]);
-            item.setName(name[i]);
-            item.setQuantity(quantities[i]);
-            item.setPrice(prices[i]);
+
+        orderListVector.clear();
+        for (HashMap.Entry<String, PoolItem> entry : orderList.entrySet()) {
+            PoolItem item;
+            item = entry.getValue();
             adapter.insertAtEnd(item);
+            orderListVector.add(item);
+
             subTotal_amount += item.getQuantity() * item.getPrice();
             total_quantity += item.getQuantity();
         }
-        poolID = list.getString(Pool.POOL_ID);
-        poolPushID = list.getString(Pool.POOL_PUSH_ID);
-        shopID = list.getString(Pool.SHOP_ID);
-        poolName = list.getString("poolName");
-        deliveryTime = list.getLong("deliveryTime");
 
-        //set amount view
-        //calculate discount
-        int discPer = list.getInt(PoolInfo.DISCOUNT_PERCENTAGE);
-        float max_discount = (float) list.getInt(PoolInfo.MAX_DISCOUNT);
-        int min_items = list.getInt(PoolInfo.MIN_QUANTITY);
-        if (min_items == 0) {
-            min_items = Integer.MAX_VALUE;
-        }
-        if (total_quantity < min_items) {
-            discount_amount = 0;
-        } else {
-            discount_amount = ((float) (subTotal_amount * discPer)) / 100.00f;
-            discount_amount = Math.min(discount_amount, max_discount);
+        poolID = currentPool.getPoolInfo().getPoolID();
+        poolPushID = currentPool.getPoolPushID();
+        shopID = currentPool.getPoolInfo().getShopID();
 
-        }
-        Log.d(TAG, "loadCartData : discount Amount " + String.valueOf(discount_amount) + " total quantity :" + String.valueOf(total_quantity) +
-                " min item : " + String.valueOf(min_items) + " Discount percentage : " + String.valueOf(discPer) + "Max discount : " + String.valueOf(max_discount));
-        total_amount = subTotal_amount - (int) discount_amount;
-        sub_total.setText(String.format("%s%d", getResources().getString(R.string.Rs), subTotal_amount));
-        discount.setText(String.format("-%s%.2f", getResources().getString(R.string.Rs), discount_amount));
-        total.setText(String.format("%s%d", getResources().getString(R.string.Rs), total_amount));
+        poolName = currentPool.getPoolInfo().getName();
+        deliveryTime = currentPool.getDeliveryTime();
 
-        progressBar.setVisibility(View.GONE);
-        billLinearLayout.setVisibility(View.VISIBLE );
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER, currentPool.getPoolInfo().getShopID(), currentPool.getPoolInfo().getPoolID()));
+        Log.d(TAG, "setPoolView : ref " + ref.toString());
+        ref.addListenerForSingleValueEvent(poolOfferListener);
+
+        poolOfferListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null) {
+                    DiscountOffer discountOffer = dataSnapshot.getValue(DiscountOffer.class);
+
+                    //set amount view
+                    //calculate discount
+                    int discPer = discountOffer.getDiscountPercentage();
+                    int max_discount = discountOffer.getMaxDiscount();
+                    int min_items = discountOffer.getMinQuantity();
+
+                    if (min_items == 0) {
+                        min_items = Integer.MAX_VALUE;
+                    }
+                    if (total_quantity < min_items) {
+                        discount_amount = 0;
+                    } else {
+                        discount_amount = ((float) (subTotal_amount * discPer)) / 100.00f;
+                        discount_amount = Math.min(discount_amount, max_discount);
+
+                    }
+                    Log.d(TAG, "loadCartData : discount Amount " + String.valueOf(discount_amount) + " total quantity :" + String.valueOf(total_quantity) +
+                            " min item : " + String.valueOf(min_items) + " Discount percentage : " + String.valueOf(discPer) + "Max discount : " + String.valueOf(max_discount));
+                    total_amount = subTotal_amount - (int) discount_amount;
+                    sub_total.setText(String.format("%s%d", getResources().getString(R.string.Rs), subTotal_amount));
+                    discount.setText(String.format("-%s%.2f", getResources().getString(R.string.Rs), discount_amount));
+                    total.setText(String.format("%s%d", getResources().getString(R.string.Rs), total_amount));
+
+                    progressBar.setVisibility(View.GONE);
+                    billLinearLayout.setVisibility(View.VISIBLE );
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+
     }
 
     private void attachID() {
@@ -264,9 +285,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
     @Override
     public void onPaymentSuccess(String s) {
-
         paymentSuccess(s);
-
     }
 
 

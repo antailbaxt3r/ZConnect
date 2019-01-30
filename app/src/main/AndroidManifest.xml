@@ -465,13 +465,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".pools.PoolItemDetailActivity"
+        <activity android:name=".pools.UpcomingPoolDetailsActivity"
             android:label="Order Details"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
-            android:name=".pools.AddPoolItemActivity"
+            android:name=".pools.ActivePoolDetailsActivity"
             android:label="Add Items"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>

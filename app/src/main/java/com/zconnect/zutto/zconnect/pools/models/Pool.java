@@ -18,9 +18,10 @@ package com.zconnect.zutto.zconnect.pools.models;
 
 import android.os.Bundle;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Pool {
+public class Pool implements Serializable {
 
     //URLS
     public static final String URL_POOL = "communities/%s/features/shops/pools/current";

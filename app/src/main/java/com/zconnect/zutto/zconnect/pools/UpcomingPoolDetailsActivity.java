@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.pools;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,16 +25,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemDetailAdapter;
+import com.zconnect.zutto.zconnect.pools.models.DiscountOffer;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolInfo;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
-public class PoolItemDetailActivity extends BaseActivity {
+public class UpcomingPoolDetailsActivity extends BaseActivity {
 
-    public static final String TAG = "PoolItemDetailActivity";
+    public static final String TAG = "UpPoolDetailsActivity";
 
     private RecyclerView recyclerView;
     private TextView offers, description, joined_peoples;
@@ -54,16 +57,17 @@ public class PoolItemDetailActivity extends BaseActivity {
 
         Bundle b = getIntent().getExtras();
         if (b != null) {
-            if (b.containsKey("newPool")) {
+            if (b.containsKey("pool")) {
 
-                pool = Pool.getPool(b.getBundle("newPool"));
+                pool = (Pool) getIntent().getSerializableExtra("pool");
+
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user == null) {
-                    //TODO start login acitvity
+                    Intent i = new Intent(this, LoginActivity.class);
+                    startActivity(i);
                     finish();
                 } else {
                     userUID = user.getUid();
-                    //TODO set proper data from the preference
 
                     //activity main block with all valid parameters
                     setToolbar();
@@ -142,7 +146,7 @@ public class PoolItemDetailActivity extends BaseActivity {
     private void showDialogForActivePool() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Are You Sure ?");
-        builder.setMessage("This action can not be undone\nbe sure before activating " + pool.getName());
+        builder.setMessage("This action can not be undone\nbe sure before activating " + pool.getPoolInfo().getName());
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -176,18 +180,20 @@ public class PoolItemDetailActivity extends BaseActivity {
 
     private void loadItemView() {
         setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM, pool.getShopID(), pool.getPoolID()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM, pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(poolItemListener);
     }
 
     private void setPoolInfo() {
-        toolbar.setTitle(pool.getName());
-        description.setText(pool.getDescription());
+
+        toolbar.setTitle(pool.getPoolInfo().getName());
+        description.setText(pool.getPoolInfo().getDescription());
         joined_peoples.setText("Votes : " + String.valueOf(pool.getUpvote()));
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER,pool.getShopID(), pool.getPoolID()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER,pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(poolOfferListener);
+
     }
 
     private void attachID() {
@@ -217,7 +223,6 @@ public class PoolItemDetailActivity extends BaseActivity {
                 adapter.clearDataset();
                 for (DataSnapshot items : dataSnapshot.getChildren()) {
                     PoolItem dish = items.getValue(PoolItem.class);
-                    dish.setID(items.getKey());
                     adapter.insertAtEnd(dish);
                 }
                 setProgressBarView(View.GONE, "");
@@ -234,9 +239,12 @@ public class PoolItemDetailActivity extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
 
-                    int disPer = dataSnapshot.child(PoolInfo.DISCOUNT_PERCENTAGE).getValue(Integer.class);
-                    int maxDiscount = dataSnapshot.child(PoolInfo.MAX_DISCOUNT).getValue(Integer.class);
-                    int minQuantity = dataSnapshot.child(PoolInfo.MIN_QUANTITY).getValue(Integer.class);
+                    DiscountOffer discountOffer = dataSnapshot.getValue(DiscountOffer.class);
+
+
+                    int disPer = discountOffer.getDiscountPercentage();
+                    int maxDiscount = discountOffer.getMaxDiscount();
+                    int minQuantity = discountOffer.getMinQuantity();
                     // if(disPer != 0 && maxDiscount != 0 && minQuantity !=0)
                     offers.setVisibility(View.VISIBLE);
                     offers.setText(String.format("Discount Percentage : %d\nMax Discount %d\nMin Quantity : %d", disPer, maxDiscount, minQuantity));

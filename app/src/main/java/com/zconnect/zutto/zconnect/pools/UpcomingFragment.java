@@ -62,23 +62,27 @@ public class UpcomingFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         defineListener();
-        loadPoolList();
-
-
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadPoolList();
     }
 
     private void defineListener() {
         upcomingPoolListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<Pool> arrayList = new ArrayList<>();
+                ArrayList<Pool> poolArrayList = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Pool newPool = child.getValue(Pool.class);
-                    newPool.setPoolPushID(child.getKey());
-                    arrayList.add(newPool);
+                    if (newPool.isUpcoming()) {
+                        poolArrayList.add(newPool);
+                    }
                 }
-                adapter.addAll(arrayList);
+                adapter.addAll(poolArrayList);
             }
 
             @Override

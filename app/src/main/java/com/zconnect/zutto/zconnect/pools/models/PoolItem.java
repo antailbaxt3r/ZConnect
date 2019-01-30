@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect.pools.models;
 
-public class PoolItem {
+import java.io.Serializable;
+
+public class PoolItem implements Serializable{
 
     // URLS
     public static final String URL_POOL_ITEM = "shops/shopDetails/%s/pools/poolDetails/%s";

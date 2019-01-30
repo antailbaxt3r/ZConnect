@@ -51,9 +51,14 @@ public class ActiveFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         defineListener();
-        loadPoolList();
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadPoolList();
     }
 
     private void loadPoolList() {
@@ -65,14 +70,15 @@ public class ActiveFragment extends Fragment {
         activePoolListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<Pool> arrayList = new ArrayList<>();
+                ArrayList<Pool> poolArrayList = new ArrayList<>();
+
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Pool newPool = child.getValue(Pool.class);
-                    newPool.setPoolPushID(child.getKey());
                     if (newPool.isActive())
-                        arrayList.add(newPool);
+                        poolArrayList.add(newPool);
                 }
-                adapter.addAll(arrayList);
+
+                adapter.addAll(poolArrayList);
             }
 
             @Override
