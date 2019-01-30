@@ -89,6 +89,7 @@ public class AddNotices extends BaseActivity {
     private FirebaseAuth mAuth;
     private Uri mImageUri=null, mImageUriSmall = null;
     private LinearLayout expiryDateLL;
+    private static TextView expiryDateTV;
     private static Map<String, Integer> expiryDate;
 
     @Override
@@ -128,6 +129,7 @@ public class AddNotices extends BaseActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("notices").child("activeNotices");
         submit=(Button)findViewById(R.id.submit);
         expiryDateLL = findViewById(R.id.expiryDateLayout);
+        expiryDateTV = findViewById(R.id.expiryDateText);
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
         expiryDate = new HashMap<>();
@@ -415,6 +417,8 @@ public class AddNotices extends BaseActivity {
             expiryDate.put("Year", year);
             expiryDate.put("Month", month);
             expiryDate.put("Day", day);
+            String expiryDateText = "Valid till: " + day + "/" + month + "/" + (year%100);
+            expiryDateTV.setText(expiryDateText);
         }
     }
 }

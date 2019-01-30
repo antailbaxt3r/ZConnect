@@ -74,7 +74,7 @@
                     app:srcCompat="@mipmap/ic_date_range_black_24dp" />
 
                 <TextView
-                    android:id="@+id/dateText"
+                    android:id="@+id/expiryDateText"
                     android:layout_width="352dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

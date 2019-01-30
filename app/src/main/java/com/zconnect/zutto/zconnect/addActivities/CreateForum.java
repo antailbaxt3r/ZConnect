@@ -102,6 +102,7 @@ public class CreateForum extends AppCompatActivity {
     LinearLayout deleteForumLL;
 
     CustomSpinner forumTabsSpinner;
+    LinearLayout forumTabsSpinnerLayout;
     ArrayList<ForumTabObject> forumTabsObjectList;
     ArrayList<String> forumTabsNameList;
     ArrayAdapter<String> forumTabsSpinnerAdapter;
@@ -165,6 +166,7 @@ public class CreateForum extends AppCompatActivity {
         done = (FrameLayout) findViewById(R.id.layout_done_content_create_forum);
         deleteForumLL = (LinearLayout) findViewById(R.id.delete_foruml_layout);
         forumTabsSpinner = findViewById(R.id.spinner_forum_tab);
+        forumTabsSpinnerLayout = findViewById(R.id.spinner_forum_tab_layout);
         forumTabsNameList = new ArrayList<>();
         forumTabsObjectList = new ArrayList<>();
         intentHandle = new IntentHandle();
@@ -465,6 +467,8 @@ public class CreateForum extends AppCompatActivity {
                 }
             });
         } else {
+
+            forumTabsSpinnerLayout.setVisibility(View.GONE);
 
             getSupportActionBar().setTitle("Edit forum info");
             titleFirstMessage.setVisibility(View.GONE);
