@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,16 @@ public class NoticeRVAdapter extends RecyclerView.Adapter<NoticesRVViewHolder>{
         holder.setImage(notices.get(position).getImageThumbURL(),notices.get(position).getImageURL(),notices.get(position).getTitle());
         holder.setText(notices.get(position).getTitle());
         holder.setDeleteButton(userType,notices.get(position).getKey());
+        if(notices.get(position).getExpiryDate()!=null)
+        {
+            Log.i("cold/mess3", position + "");
+            holder.setExpiryDate(notices.get(position).getExpiryDate());
+        }
+        else
+        {
+            Log.i("cold/mess3", position + "AA");
+            holder.hideExpiryDateLayout();
+        }
     }
 
 

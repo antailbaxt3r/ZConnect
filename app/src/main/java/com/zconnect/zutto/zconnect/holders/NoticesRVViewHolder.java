@@ -10,7 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.ExpiryDateItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NoticeItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -41,6 +44,8 @@ public class NoticesRVViewHolder extends RecyclerView.ViewHolder {
     private TextView name;
     private SimpleDraweeView image;
     private ImageButton deleteButton;
+    private TextView expiryDateTV;
+    private FrameLayout expiryDateFL;
     View mView;
 
     public View.OnClickListener mListener;
@@ -66,6 +71,8 @@ public class NoticesRVViewHolder extends RecyclerView.ViewHolder {
         name = (TextView) itemView.findViewById(R.id.name);
         image = (SimpleDraweeView) itemView.findViewById(R.id.image);
         deleteButton = (ImageButton) itemView.findViewById(R.id.delete_notice);
+        expiryDateFL = itemView.findViewById(R.id.notice_expiry_date_layout);
+        expiryDateTV = itemView.findViewById(R.id.notice_expiry_date_tv);
     }
 
     public void setImage(final String imageThumbURL, final String imageURL, final String title)
@@ -171,6 +178,18 @@ public class NoticesRVViewHolder extends RecyclerView.ViewHolder {
         final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, productImage, itemView.getResources().getString(R.string.transition_string));
 
         itemView.getContext().startActivity(i, optionsCompat.toBundle());
+    }
+
+    //month range is from 0 to 11.
+    public void setExpiryDate(ExpiryDateItemFormat expiryDateItemFormat) {
+        Log.i("cold/mess3", "setting text view");
+        String expiryDateText = expiryDateItemFormat.getDay() + "/" + expiryDateItemFormat.getMonth() + "/" + expiryDateItemFormat.getYear()%100;
+        expiryDateFL.setVisibility(View.VISIBLE);
+        expiryDateTV.setText(expiryDateText);
+    }
+
+    public void hideExpiryDateLayout() {
+        expiryDateFL.setVisibility(View.GONE);
     }
 }
 

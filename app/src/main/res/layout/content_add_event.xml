@@ -63,8 +63,8 @@
 
             <ImageButton
                 android:id="@+id/dateIcon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
                 android:background="@android:drawable/screen_background_light_transparent"
                 android:backgroundTint="@android:color/transparent"

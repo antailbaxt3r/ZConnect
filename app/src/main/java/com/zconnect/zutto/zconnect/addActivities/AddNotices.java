@@ -1,6 +1,9 @@
 package com.zconnect.zutto.zconnect.addActivities;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,13 +19,18 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
+import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,8 +60,16 @@ import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST;
 
@@ -72,9 +88,11 @@ public class AddNotices extends BaseActivity {
     private DatabaseReference mUsername;
     private FirebaseAuth mAuth;
     private Uri mImageUri=null, mImageUriSmall = null;
+    private LinearLayout expiryDateLL;
+    private static Map<String, Integer> expiryDate;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notice);
 
@@ -109,8 +127,10 @@ public class AddNotices extends BaseActivity {
         mName=(TextView)findViewById(R.id.name);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("notices").child("activeNotices");
         submit=(Button)findViewById(R.id.submit);
+        expiryDateLL = findViewById(R.id.expiryDateLayout);
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
+        expiryDate = new HashMap<>();
 
         intentHandle = new IntentHandle();
 
@@ -145,6 +165,14 @@ public class AddNotices extends BaseActivity {
                     startPosting();
                 }
 
+            }
+        });
+
+        expiryDateLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getFragmentManager(), "datePicker");
             }
         });
 
@@ -223,6 +251,8 @@ public class AddNotices extends BaseActivity {
         final String userId = user.getUid();
         mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
 
+
+
         if ( !TextUtils.isEmpty(noticeNameValue) &&  mImageUri != null && mImageUriSmall !=null) {
             final StorageReference filepath = mStorage.child("NoticesImages").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             UploadTask uploadTask = filepath.putFile(mImageUri);
@@ -242,21 +272,39 @@ public class AddNotices extends BaseActivity {
                     if (task.isSuccessful()) {
                         final Uri downloadUri = task.getResult();
                         final DatabaseReference newPost = mDatabase.push();
-                        final DatabaseReference postedBy = newPost.child("PostedBy");
                         key = newPost.getKey();
                         postTimeMillis = System.currentTimeMillis();
-                        newPost.child("key").setValue(key);
-                        newPost.child("title").setValue(noticeNameValue);
-                        newPost.child("imageURL").setValue(downloadUri != null ? downloadUri.toString() : null);
-                        newPost.child("postTimeMillis").setValue(postTimeMillis);
-                        postedBy.setValue(null);
-                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        final Map<String, Object> newPostMap = new HashMap<>();
+                        newPostMap.put("key", key);
+                        newPostMap.put("title", noticeNameValue);
+                        newPostMap.put("imageURL", downloadUri != null ? downloadUri.toString() : null);
+                        newPostMap.put("postTimeMillis", postTimeMillis);
+                        final Map<String, Object> postedByMap = new HashMap<>();
+                        postedByMap.put("UID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        if(expiryDate.get("Year")!=null)
+                        {
+                            Map<String, Object> expiryDateTaskMap = new HashMap<>();
+                            expiryDateTaskMap.put("year", expiryDate.get("Year"));
+                            expiryDateTaskMap.put("month", expiryDate.get("Month"));
+                            expiryDateTaskMap.put("day", expiryDate.get("Day"));
+                            newPostMap.put("expiryDate", expiryDateTaskMap);
+                        }
+//                        newPost.child("key").setValue(key);
+//                        newPost.child("title").setValue(noticeNameValue);
+//                        newPost.child("imageURL").setValue(downloadUri != null ? downloadUri.toString() : null);
+//                        newPost.child("postTimeMillis").setValue(postTimeMillis);
+//                        postedBy.setValue(null);
+//                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                                postedBy.child("Username").setValue(user.getUsername());
-                                postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                                postedByMap.put("Username", user.getUsername());
+                                postedByMap.put("ImageThumb", user.getImageURLThumbnail());
+//                                postedBy.child("Username").setValue(user.getUsername());
+//                                postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                                newPostMap.put("PostedBy", postedByMap);
+                                newPost.updateChildren(newPostMap);
                             }
 
                             @Override
@@ -350,6 +398,31 @@ public class AddNotices extends BaseActivity {
                     }
                 }
             });
+        }
+    }
+
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            Log.i("cold/mess", "right here");
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            // Do something with the date chosen by the user
+            expiryDate.put("Year", year);
+            expiryDate.put("Month", month);
+            expiryDate.put("Day", day);
         }
     }
 }

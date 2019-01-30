@@ -11,18 +11,20 @@ public class NoticeItemFormat {
     private String title;
     private PostedByDetails postedByDetails;
     private long postTimeMillis;
+    private ExpiryDateItemFormat expiryDate;
 
     public NoticeItemFormat(){
 
     }
 
-    public NoticeItemFormat(String key, String imageURL, String imageThumbURL, String title, PostedByDetails postedByDetails, long postTimeMillis) {
+    public NoticeItemFormat(String key, String imageURL, String imageThumbURL, String title, PostedByDetails postedByDetails, long postTimeMillis, ExpiryDateItemFormat expiryDate) {
         this.key = key;
         this.imageURL = imageURL;
         this.imageThumbURL = imageThumbURL;
         this.title = title;
         this.postedByDetails = postedByDetails;
         this.postTimeMillis = postTimeMillis;
+        this.expiryDate = expiryDate;
     }
 
     public String getKey() {
@@ -71,5 +73,9 @@ public class NoticeItemFormat {
 
     public void setPostTimeMillis(long postTimeMillis) {
         postTimeMillis = postTimeMillis;
+    }
+
+    public ExpiryDateItemFormat getExpiryDate() {
+        return expiryDate;
     }
 }

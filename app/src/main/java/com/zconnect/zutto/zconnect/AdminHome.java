@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.addActivities.AddForumTab;
 import com.zconnect.zutto.zconnect.itemFormats.NewUserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
@@ -137,6 +139,10 @@ public class AdminHome extends AppCompatActivity {
         private DatabaseReference newUsersDataReference;
         private Boolean flag;
         private TextView noUserMessage;
+
+
+        //for admin functionalities
+        private TextView adminFuncTV0, adminFuncTV1;
         public PlaceholderFragment() {
         }
 
@@ -152,6 +158,49 @@ public class AdminHome extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            if(getArguments().getInt(ARG_SECTION_NUMBER)<=3)
+            {
+                  return otherTabs(inflater, container);
+            }
+            else
+            {
+                return adminFunctionalityTab(inflater, container);
+            }
+
+
+        }
+
+        private View adminFunctionalityTab(LayoutInflater inflater, ViewGroup container) {
+            View rootView = inflater.inflate(R.layout.fragment_admin_functionalities, container, false);
+            adminFuncTV0 = rootView.findViewById(R.id.admin_func_0);
+            adminFuncTV1 = rootView.findViewById(R.id.admin_func_1);
+
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int option = v.getTag().toString().charAt(v.getTag().toString().length()-1) - '0';
+                    switch (option)
+                    {
+                        case 0:
+                            startActivity(new Intent(getContext(), CabPoolLocations.class));
+                            break;
+                        case 1:
+                            startActivity(new Intent(getContext(), AddForumTab.class));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
+
+            adminFuncTV0.setOnClickListener(listener);
+            adminFuncTV1.setOnClickListener(listener);
+
+            return rootView;
+        }
+
+
+        private View otherTabs(LayoutInflater inflater, ViewGroup container) {
             View rootView = inflater.inflate(R.layout.fragment_admin_home, container, false);
 
             newUsersDataReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers");
@@ -216,9 +265,8 @@ public class AdminHome extends AppCompatActivity {
             adapter = new NewUserRVAdapter(rootView.getContext(),newUserItemFormats);
             newUsersRV.setAdapter(adapter);
             return rootView;
-
-
         }
+
     }
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -236,6 +284,8 @@ public class AdminHome extends AppCompatActivity {
                     return PlaceholderFragment.newInstance(2);
                 case 2:
                     return PlaceholderFragment.newInstance(3);
+                case 3:
+                    return PlaceholderFragment.newInstance(4);
                 default:
                     return null;
             }
@@ -250,6 +300,8 @@ public class AdminHome extends AppCompatActivity {
                     return "Rejected";
                 case 2:
                     return "Approved";
+                case 3:
+                    return "Settings";
 
             }
             return null;
@@ -257,8 +309,8 @@ public class AdminHome extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            // Show 4 total pages.
+            return 4;
         }
     }
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AdminHome$PlaceholderFragment"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="Features"
+        android:padding="@dimen/padding_small"
+        android:layout_marginTop="@dimen/margin_small"/>
+    <TextView
+        android:id="@+id/admin_func_0"
+        android:tag="admin_func_0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Cabpool Location"
+        android:padding="@dimen/padding_small"
+        android:textSize="16sp"
+        android:textColor="@color/primaryText"/>
+    <TextView
+        android:id="@+id/admin_func_1"
+        android:tag="admin_func_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add a Forums Tab"
+        android:padding="@dimen/padding_small"
+        android:layout_marginTop="@dimen/margin_small"
+        android:textSize="16sp"
+        android:textColor="@color/primaryText"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/secondaryText2"
+        android:layout_marginTop="@dimen/margin_small"/>
+</LinearLayout>
