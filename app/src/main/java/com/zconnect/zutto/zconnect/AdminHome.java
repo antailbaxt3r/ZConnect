@@ -158,7 +158,7 @@ public class AdminHome extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            if(getArguments().getInt(ARG_SECTION_NUMBER)<=3)
+            if(getArguments().getInt(ARG_SECTION_NUMBER)<=3 || getArguments().getInt(ARG_SECTION_NUMBER)==5)
             {
                   return otherTabs(inflater, container);
             }
@@ -216,6 +216,8 @@ public class AdminHome extends AppCompatActivity {
                 tabType = VerificationUtilities.KEY_NOT_APPROVED;
             }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 3){
                 tabType = VerificationUtilities.KEY_APPROVED;
+            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 5) {
+                tabType = "All";
             }
 
 
@@ -239,7 +241,12 @@ public class AdminHome extends AppCompatActivity {
                             if(!shot.hasChild("approvedRejectedBy")){
                                 newUser.setApprovedRejectedBy(postedByDetails);
                             }
-                            if (newUser.getStatusCode().equals(finalTabType)) {
+                            if(finalTabType.equals("All"))
+                            {
+                                newUserItemFormats.add(newUser);
+                                flag = true;
+                            }
+                            else if (newUser.getStatusCode().equals(finalTabType)) {
                                 newUserItemFormats.add(newUser);
                                 flag = true;
                             }
@@ -249,7 +256,7 @@ public class AdminHome extends AppCompatActivity {
                     if(flag){
                         noUserMessage.setVisibility(View.GONE);
                     }else {
-                        noUserMessage.setVisibility(View.VISIBLE    );
+                        noUserMessage.setVisibility(View.VISIBLE);
                     }
                     adapter.notifyDataSetChanged();
 
@@ -286,6 +293,8 @@ public class AdminHome extends AppCompatActivity {
                     return PlaceholderFragment.newInstance(3);
                 case 3:
                     return PlaceholderFragment.newInstance(4);
+                case 4:
+                    return PlaceholderFragment.newInstance(5);
                 default:
                     return null;
             }
@@ -302,6 +311,8 @@ public class AdminHome extends AppCompatActivity {
                     return "Approved";
                 case 3:
                     return "Settings";
+                case 4:
+                    return  "All";
 
             }
             return null;
@@ -309,8 +320,8 @@ public class AdminHome extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 4 total pages.
-            return 4;
+            // Show 5 total pages.
+            return 5;
         }
     }
 }
