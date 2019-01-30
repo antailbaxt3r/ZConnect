@@ -417,7 +417,8 @@ public class AddNotices extends BaseActivity {
             expiryDate.put("Year", year);
             expiryDate.put("Month", month);
             expiryDate.put("Day", day);
-            String expiryDateText = "Valid till: " + day + "/" + month + "/" + (year%100);
+            //month range is from 0 to 11
+            String expiryDateText = "Valid till: " + day + "/" + (month+1) + "/" + (year%100);
             expiryDateTV.setText(expiryDateText);
         }
     }
