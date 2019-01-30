@@ -182,7 +182,6 @@ public class NoticesRVViewHolder extends RecyclerView.ViewHolder {
 
     //month range is from 0 to 11.
     public void setExpiryDate(ExpiryDateItemFormat expiryDateItemFormat) {
-        Log.i("cold/mess3", "setting text view");
         String expiryDateText = expiryDateItemFormat.getDay() + "/" + expiryDateItemFormat.getMonth() + "/" + expiryDateItemFormat.getYear()%100;
         expiryDateFL.setVisibility(View.VISIBLE);
         expiryDateTV.setText(expiryDateText);

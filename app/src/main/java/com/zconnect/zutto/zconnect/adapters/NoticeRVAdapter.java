@@ -42,12 +42,10 @@ public class NoticeRVAdapter extends RecyclerView.Adapter<NoticesRVViewHolder>{
         holder.setDeleteButton(userType,notices.get(position).getKey());
         if(notices.get(position).getExpiryDate()!=null)
         {
-            Log.i("cold/mess3", position + "");
             holder.setExpiryDate(notices.get(position).getExpiryDate());
         }
         else
         {
-            Log.i("cold/mess3", position + "AA");
             holder.hideExpiryDateLayout();
         }
     }

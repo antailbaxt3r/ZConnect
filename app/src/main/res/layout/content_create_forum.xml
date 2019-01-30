@@ -68,6 +68,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/forum_first_msg_hint"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Forum Tab"
+            android:textColor="@color/primaryText"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="@dimen/margin_small"/>
+        <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
+            android:id="@+id/spinner_forum_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_x_small"/>
     </LinearLayout>
     <FrameLayout
         android:layout_width="wrap_content"

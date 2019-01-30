@@ -289,20 +289,12 @@ public class AddNotices extends BaseActivity {
                             expiryDateTaskMap.put("day", expiryDate.get("Day"));
                             newPostMap.put("expiryDate", expiryDateTaskMap);
                         }
-//                        newPost.child("key").setValue(key);
-//                        newPost.child("title").setValue(noticeNameValue);
-//                        newPost.child("imageURL").setValue(downloadUri != null ? downloadUri.toString() : null);
-//                        newPost.child("postTimeMillis").setValue(postTimeMillis);
-//                        postedBy.setValue(null);
-//                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
                                 postedByMap.put("Username", user.getUsername());
                                 postedByMap.put("ImageThumb", user.getImageURLThumbnail());
-//                                postedBy.child("Username").setValue(user.getUsername());
-//                                postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
                                 newPostMap.put("PostedBy", postedByMap);
                                 newPost.updateChildren(newPostMap);
                             }
@@ -412,7 +404,7 @@ public class AddNotices extends BaseActivity {
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
 
-            Log.i("cold/mess", "right here");
+
 
             // Create a new instance of DatePickerDialog and return it
             return new DatePickerDialog(getActivity(), this, year, month, day);
