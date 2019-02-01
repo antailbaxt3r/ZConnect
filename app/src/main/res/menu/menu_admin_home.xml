@@ -3,12 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.zconnect.zutto.zconnect.AdminHome">
     <item
-        android:id="@+id/action_filter"
-        android:orderInCategory="0"
-        android:icon="@drawable/baseline_filter_list_white_24"
-        android:title="Filter"
-        app:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/action_notifications"
         android:orderInCategory="100"
         android:title="Notifications"

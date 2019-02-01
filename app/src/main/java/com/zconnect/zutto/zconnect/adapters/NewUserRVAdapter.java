@@ -27,7 +27,7 @@ public class NewUserRVAdapter extends RecyclerView.Adapter<newUserViewHolder> {
 
     private Context context;
     private Vector<NewUserItemFormat> newUserItemFormats;
-
+    private int filterOption;
 
     public NewUserRVAdapter(Context context, Vector<NewUserItemFormat> newUserItemFormats) {
         this.context = context;

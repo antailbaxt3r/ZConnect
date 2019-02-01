@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_filter"
+        android:orderInCategory="0"
+        android:icon="@drawable/baseline_filter_list_white_24"
+        android:title="Filter"
+        app:showAsAction="always">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/option_approved_users"
+                    android:title="Approved"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/option_rejected_users"
+                    android:title="Rejected"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/option_all_users"
+                    android:title="All Users"
+                    app:showAsAction="never"/>
+            </group>
+        </menu>
+    </item>
+</menu>

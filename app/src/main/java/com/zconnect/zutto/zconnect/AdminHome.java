@@ -19,11 +19,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +39,7 @@ import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 import com.zconnect.zutto.zconnect.adapters.NewUserRVAdapter;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.ref;
 
 import java.util.Vector;
 
@@ -117,15 +120,15 @@ public class AdminHome extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_notifications) {
-            Intent intent=new Intent(getApplicationContext(),NotificationAdmin.class);
-            startActivity(intent);
+        switch(id) {
+            //noinspection SimplifiableIfStatement
+            case R.id.action_notifications:
+                Intent intent=new Intent(getApplicationContext(),NotificationAdmin.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -139,6 +142,15 @@ public class AdminHome extends AppCompatActivity {
         private DatabaseReference newUsersDataReference;
         private Boolean flag;
         private TextView noUserMessage;
+
+        private ValueEventListener usersDatalistener;
+        private ProgressBar progressBar;
+
+        private int filterOption;
+        //these values are according to index in the menu_admin_filter.xml
+        private int FILTER_APPROVED = 0;
+        private int FILTER_REJECTED = 1;
+        private int FILTER_ALL_USERS = 2;
 
 
         //for admin functionalities
@@ -158,16 +170,25 @@ public class AdminHome extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            if(getArguments().getInt(ARG_SECTION_NUMBER)<=3 || getArguments().getInt(ARG_SECTION_NUMBER)==5)
+            filterOption = FILTER_ALL_USERS;
+            if(getArguments().getInt(ARG_SECTION_NUMBER)==0)
             {
-                  return otherTabs(inflater, container);
+                setHasOptionsMenu(true);
+                return verifyUsersTab(inflater, container);
             }
             else
             {
                 return adminFunctionalityTab(inflater, container);
             }
+        }
 
-
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            if(getArguments().getInt(ARG_SECTION_NUMBER)==0)
+            {
+                inflater.inflate(R.menu.menu_admin_fragment_users, menu);
+            }
+            super.onCreateOptionsMenu(menu, inflater);
         }
 
         private View adminFunctionalityTab(LayoutInflater inflater, ViewGroup container) {
@@ -200,30 +221,17 @@ public class AdminHome extends AppCompatActivity {
         }
 
 
-        private View otherTabs(LayoutInflater inflater, ViewGroup container) {
+        private View verifyUsersTab(LayoutInflater inflater, ViewGroup container) {
             View rootView = inflater.inflate(R.layout.fragment_admin_home, container, false);
-
             newUsersDataReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers");
             newUsersRV = (RecyclerView) rootView.findViewById(R.id.new_users_recycler);
             linearLayoutManager = new LinearLayoutManager(getContext());
             newUsersRV.setLayoutManager(linearLayoutManager);
             noUserMessage = (TextView) rootView.findViewById(R.id.section_label);
-
-            String tabType = null;
-            if (getArguments().getInt(ARG_SECTION_NUMBER)==1){
-                tabType = VerificationUtilities.KEY_PENDING;
-            }else if(getArguments().getInt(ARG_SECTION_NUMBER) ==2){
-                tabType = VerificationUtilities.KEY_NOT_APPROVED;
-            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 3){
-                tabType = VerificationUtilities.KEY_APPROVED;
-            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 5) {
-                tabType = "All";
-            }
-
-
-            final String finalTabType = tabType;
-
-            newUsersDataReference.addValueEventListener(new ValueEventListener() {
+            progressBar = rootView.findViewById(R.id.progress_bar);
+            progressBar.setVisibility(View.VISIBLE);
+            noUserMessage.setVisibility(View.GONE);
+            usersDatalistener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     newUserItemFormats.clear();
@@ -241,39 +249,90 @@ public class AdminHome extends AppCompatActivity {
                             if(!shot.hasChild("approvedRejectedBy")){
                                 newUser.setApprovedRejectedBy(postedByDetails);
                             }
-                            if(finalTabType.equals("All"))
+                            if(filterOption==FILTER_APPROVED
+                                    && newUser.getStatusCode().equals(VerificationUtilities.KEY_APPROVED))
                             {
                                 newUserItemFormats.add(newUser);
-                                flag = true;
                             }
-                            else if (newUser.getStatusCode().equals(finalTabType)) {
+                            else if(filterOption==FILTER_REJECTED
+                                    && newUser.getStatusCode().equals(VerificationUtilities.KEY_NOT_APPROVED))
+                            {
                                 newUserItemFormats.add(newUser);
-                                flag = true;
                             }
+                            else if(filterOption==FILTER_ALL_USERS)
+                            {
+                                newUserItemFormats.add(newUser);
+                            }
+                            flag = true;
                         }catch (Exception e){}
                     }
-
+                    progressBar.setVisibility(View.GONE);
                     if(flag){
                         noUserMessage.setVisibility(View.GONE);
                     }else {
                         noUserMessage.setVisibility(View.VISIBLE);
                     }
                     adapter.notifyDataSetChanged();
-
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-            });
+            };
 
+            newUsersDataReference.addValueEventListener(usersDatalistener);
 
             adapter = new NewUserRVAdapter(rootView.getContext(),newUserItemFormats);
             newUsersRV.setAdapter(adapter);
             return rootView;
         }
 
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            switch (id) {
+                case R.id.action_filter:
+                    View menuItemView = getView().findViewById(R.id.action_filter);
+                    Log.i("6ftunder", "YES");
+                    MenuItem menuItem = null;
+                    switch (filterOption) {
+                        case 0:
+                            menuItem = item.getSubMenu().findItem(R.id.option_approved_users);
+                            break;
+                        case 1:
+                            menuItem = item.getSubMenu().findItem(R.id.option_rejected_users);
+                            break;
+                        case 2:
+                            menuItem = item.getSubMenu().findItem(R.id.option_all_users);
+                            break;
+                    }
+                    menuItem.setChecked(true);
+                    return true;
+                //submenu of filter
+                case R.id.option_approved_users:
+                    filterOption = FILTER_APPROVED;
+                    newUsersDataReference.addValueEventListener(usersDatalistener);
+                    adapter = new NewUserRVAdapter(getView().getContext(),newUserItemFormats);
+                    newUsersRV.setAdapter(adapter);
+                    return true;
+                case R.id.option_rejected_users:
+                    filterOption = FILTER_REJECTED;
+                    newUsersDataReference.addValueEventListener(usersDatalistener);
+                    adapter = new NewUserRVAdapter(getView().getContext(),newUserItemFormats);
+                    newUsersRV.setAdapter(adapter);
+                    return true;
+                case R.id.option_all_users:
+                    filterOption = FILTER_ALL_USERS;
+                    newUsersDataReference.addValueEventListener(usersDatalistener);
+                    adapter = new NewUserRVAdapter(getView().getContext(),newUserItemFormats);
+                    newUsersRV.setAdapter(adapter);
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
     }
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -285,16 +344,9 @@ public class AdminHome extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    PlaceholderFragment frag1 = PlaceholderFragment.newInstance(1);
-                    return frag1;
+                    return PlaceholderFragment.newInstance(0);
                 case 1:
-                    return PlaceholderFragment.newInstance(2);
-                case 2:
-                    return PlaceholderFragment.newInstance(3);
-                case 3:
-                    return PlaceholderFragment.newInstance(4);
-                case 4:
-                    return PlaceholderFragment.newInstance(5);
+                    return PlaceholderFragment.newInstance(1);
                 default:
                     return null;
             }
@@ -304,24 +356,17 @@ public class AdminHome extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position){
                 case 0:
-                    return "Pending";
+                    return "Verify users";
                 case 1:
-                    return "Rejected";
-                case 2:
-                    return "Approved";
-                case 3:
                     return "Settings";
-                case 4:
-                    return  "All";
-
             }
             return null;
         }
 
         @Override
         public int getCount() {
-            // Show 5 total pages.
-            return 5;
+            // Show 2 total pages.
+            return 2;
         }
     }
 }
