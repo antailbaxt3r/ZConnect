@@ -170,34 +170,40 @@ exports.countForumMembers = functions.database.ref('/communities/{communityID}/f
 //for new apps
 exports.syncUserPointsAndUserPointsNum1 = functions.database.ref('/communities/{communityID}/Users1/{uid}/userPoints')
 .onUpdate((change, context) => {
-	const user_points_aft = parseInt(change.after.val());
-	const user_points_bef = parseInt(change.before.val());
-	const userPointsNumRef = change.after.ref.parent.child("userPointsNum");
-	return userPointsNumRef.transaction(current_value => {
-		// if(current_value)
-		// {
-			if(current_value <= user_points_bef)
-				return user_points_aft;
-			else
-				console.log("Error in sync");
-		// }
-	});
+	if(context.params.communityID === "testCollege")
+	{
+		const user_points_aft = parseInt(change.after.val());
+		const user_points_bef = parseInt(change.before.val());
+		const userPointsNumRef = change.after.ref.parent.child("userPointsNum");
+		return userPointsNumRef.transaction(current_value => {
+			// if(current_value)
+			// {
+				if(current_value <= user_points_bef)
+					return user_points_aft;
+				else
+					console.log("Error in sync");
+			// }
+		});
+	}
 });
 
 //for old apps
 exports.syncUserPointsAndUserPointsNum2 = functions.database.ref('/communities/{communityID}/Users1/{uid}/userPointsNum')
 .onUpdate((change, context) => {
-	const user_points_num_aft = change.after.val();
-	const user_points_num_bef = change.before.val();
-	const userPointsRef = change.after.ref.parent.child("userPoints");
-	return userPointsRef.transaction(current_value => {
-		// if(current_value)
-		// {
-			if(parseInt(current_value) <= user_points_num_bef)
-				return String(user_points_num_aft);
-			else
-				console.log("Error in sync " + parseInt(current_value) + " " + current_value + " " + user_points_num_bef);
-		// }
-	});
+	if(context.params.communityID === "testCollege")
+	{
+		const user_points_num_aft = change.after.val();
+		const user_points_num_bef = change.before.val();
+		const userPointsRef = change.after.ref.parent.child("userPoints");
+		return userPointsRef.transaction(current_value => {
+			// if(current_value)
+			// {
+				if(parseInt(current_value) <= user_points_num_bef)
+					return String(user_points_num_aft);
+				else
+					console.log("Error in sync " + parseInt(current_value) + " " + current_value + " " + user_points_num_bef);
+			// }
+		});
+	}
 });
 

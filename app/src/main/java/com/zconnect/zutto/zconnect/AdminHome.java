@@ -147,7 +147,7 @@ public class AdminHome extends AppCompatActivity {
         private ProgressBar progressBar;
 
         private int filterOption;
-        //these values are according to index in the menu_admin_filter.xml
+        //these values are according to index in the submenu of action_filter MenuItem
         private int FILTER_APPROVED = 0;
         private int FILTER_REJECTED = 1;
         private int FILTER_ALL_USERS = 2;

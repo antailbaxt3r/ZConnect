@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/option_electronics"
+            android:title="Electronics"
+            app:showAsAction="never"/>
+        <item android:id="@+id/option_speakers_headphones"
+            android:title="Speakers and Headphones"
+            app:showAsAction="never"/>
+        <item android:id="@+id/option_storage_devices"
+            android:title="Storage Devices"
+            app:showAsAction="never"/>
+        <item android:id="@+id/option_academics"
+            android:title="Academics"
+            app:showAsAction="never"/>
+        <item android:id="@+id/option_room_necessities"
+            android:title="Room Necessities"
+            app:showAsAction="never"/>
+        <item android:id="@+id/option_fiction"
+            android:title="Fiction"
+            app:showAsAction="never"/>
+        <item android:id="@+id/option_others"
+            android:title="Others"
+            app:showAsAction="never"/>
+        <item android:id="@+id/option_all_products"
+            android:title="All"
+            app:showAsAction="never"/>
+    </group>
+</menu>
