@@ -74,7 +74,7 @@ public class LeaderBoard extends BaseActivity {
         Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mActionBarToolbar);
 
-        mActionBarToolbar.setTitle("Community Leaders");
+        mActionBarToolbar.setTitle("Leader Board");
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {

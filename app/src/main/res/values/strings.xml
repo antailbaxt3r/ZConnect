@@ -230,7 +230,7 @@
 
     <!--admin related-->
     <string name="excl_forum_admin">Only community and forum admins can see this.</string>
-    <string name="title_activity_leader_board">Community Leaders</string>
+    <string name="title_activity_leader_board">Leader Board</string>
     <string name="explorer_forum">Explore Forums</string>
 
     <string name="Rs">
