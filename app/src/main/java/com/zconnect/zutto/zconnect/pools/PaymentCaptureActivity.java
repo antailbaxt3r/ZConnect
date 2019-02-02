@@ -66,18 +66,11 @@ public class PaymentCaptureActivity extends BaseActivity {
         tranID = b.getString("paymentID");
         total_amount = b.getInt("amount");
         into_view.setVisibility(View.GONE);
-        setProgressBarView(View.VISIBLE, "Do not Press Back Confirming Payment");
-        capturetransection();
+        //setProgressBarView(View.VISIBLE, "Do not Press Back Confirming Payment");
 
 
     }
 
-    private void capturetransection() {
-        //TODO should be run on server
-        new MyAsyncTask().execute(" ");
-
-
-    }
 
     private void attachID() {
         into_view = findViewById(R.id.ll_info);
@@ -91,45 +84,5 @@ public class PaymentCaptureActivity extends BaseActivity {
         ll_progressBar.setVisibility(visibility);
         loading_text.setText(message);
 
-    }
-
-    private class MyAsyncTask extends AsyncTask<String, Void, String> {
-
-        Exception exception;
-
-        MyAsyncTask() {
-            super();
-            this.exception = null;
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                RazorpayClient razorpayClient = new RazorpayClient(RAZOR_PAY_KEY, RAZOR_PAY_SECRET);
-                JSONObject options = new JSONObject();
-                options.put("amount", total_amount * 100);
-                razorpayClient.Payments.capture(tranID, options);
-            } catch (RazorpayException e) {
-                this.exception = e;
-            } catch (JSONException e) {
-                this.exception = e;
-
-            }
-            return "";
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (this.exception != null) {
-                setProgressBarView(View.VISIBLE, "An exception occure");
-
-            } else {
-                transictionID.setText("Transiction ID : " + tranID);
-                amount.setText("Amount : " + String.valueOf(total_amount));
-                into_view.setVisibility(View.VISIBLE);
-                setProgressBarView(View.GONE, "");
-            }
-        }
     }
 }
