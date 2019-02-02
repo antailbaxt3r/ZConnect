@@ -9,7 +9,7 @@
       * poolID :
       * shopID :
       * name :
-      * type :
+      * offerType :
       * description :
       * imageURL :
       * upvote :
@@ -22,7 +22,7 @@
     * poolID :
     * shopID :
     * name :
-    * type :
+    * offerType :
     * description :
     * imageURL :
     * upvote :
@@ -42,7 +42,7 @@
       * poolInfo :
         * $pool_ID :
           * name :
-          * type :
+          * offerType :
           * description :
           * imageURL :
       * poolDetails :

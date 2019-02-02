@@ -1,49 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:orientation="vertical"
     tools:context="com.zconnect.zutto.zconnect.CabPoolListOfPeople"
     tools:showIn="@layout/activity_cab_list_of_people">
 
-    <ProgressBar
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
         android:id="@+id/content_cabpeople_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/content_cabpeople_rv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/join"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"/>
-    <Button
-        android:id="@+id/join"
         android:layout_centerHorizontal="true"
-        android:layout_width="@dimen/single_line_btn_min_width"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/round_button_simple"
-        android:backgroundTint="@color/colorHighlight"
-        android:text="Join"
-        android:textColor="@color/white"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_marginBottom="@dimen/margin_small"/>
-    <!--<Button-->
-        <!--android:id="@+id/join"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_margin="10dp"-->
-        <!--android:background="@drawable/curveradiusgoogle"-->
-        <!--android:text="Join"-->
-        <!--android:textColor="@color/white" />-->
-</RelativeLayout>
+        android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/content_cabpeople_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"/>
+
+        <FrameLayout
+            android:id="@+id/frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/chatLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/message_box"
+                android:clickable="true"
+                android:gravity="center"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:layout_margin="5dp">
+                <ImageButton
+                    android:id="@+id/chat_photo_button"
+                    android:src="@drawable/ic_image_black_24dp"
+                    android:layout_width="0dp"
+                    android:tint="@color/colorPrimary"
+                    android:background="@color/transparent"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight=".1"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"/>
+                <TextView
+                    android:id="@+id/typer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.9"
+                    android:hint="Chat with pool partners"
+                    android:duplicateParentState="true"
+                    android:textColorHint="@color/secondaryText"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:inputType="textCapSentences"
+                    android:clickable="false"/>
+                <ImageButton
+                    android:id="@+id/sendBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.1"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_send_white_24dp"
+                    android:tint="@color/colorPrimary"
+                    android:clickable="false"
+                    android:background="@color/transparent"
+                    android:layout_marginStart="5dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/joinLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <Button
+                    android:id="@+id/join"
+                    android:text="Join"
+                    android:layout_width="@dimen/single_line_btn_min_width"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/round_button_simple"
+                    android:backgroundTint="@color/colorHighlight"
+                    android:layout_margin="@dimen/margin_small"
+                    style="?android:attr/borderlessButtonStyle"/>
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

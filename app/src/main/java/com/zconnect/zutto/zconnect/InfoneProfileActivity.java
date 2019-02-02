@@ -440,11 +440,7 @@ public class InfoneProfileActivity extends BaseActivity {
         counterPush.pushValues();
 
         String send = "";
-        String format1 = "%1$-20s %2$-20s\n";
-        send =
-                String.format(format1,"Name: ",name)+
-                        String.format(format1,"Number: ", mobileNumber)+
-                        "\nShared using ZConnect. \nDownlaod ZConnect now, to access all contacts of your community"+ "\n \nhttps://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
+        send = "Name: " + name + "\n"+ "Number: " + mobileNumber + "\n \nShared using ZConnect. \nDownlaod ZConnect now, to access all contacts of your community"+ "\n \nhttps://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/*");
         sharingIntent.putExtra(Intent.EXTRA_TEXT, send);
@@ -717,13 +713,6 @@ public class InfoneProfileActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-
-
-        return super.onPrepareOptionsMenu(menu);
     }
 
 }

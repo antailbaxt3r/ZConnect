@@ -68,7 +68,7 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
             number++;
         }
         updateUI(number);
-        adapter.updateOrderDish(item.getID(), number);
+        adapter.updateOrderDish(item, number);
     }
 
     private void updateUI(int p) {

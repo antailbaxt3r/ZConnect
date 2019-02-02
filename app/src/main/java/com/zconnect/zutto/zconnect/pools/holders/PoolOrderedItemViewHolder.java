@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.OrderDetailActivity;
-import com.zconnect.zutto.zconnect.pools.models.ShopOrder;
+import com.zconnect.zutto.zconnect.pools.models.Order;
 
 public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -16,7 +16,7 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
 
     private String communityID;
 
-    private ShopOrder order;
+    private Order order;
 
     public PoolOrderedItemViewHolder(View itemView) {
         super(itemView);
@@ -35,15 +35,15 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
         amount = itemView.findViewById(R.id.ordered_amount);
     }
 
-    public void populate(final ShopOrder order) {
+    public void populate(final Order order) {
         this.order = order;
-        poolName.setText(order.getPoolName());
-        amount.setText(String.format("%s%d", itemView.getContext().getResources().getString(R.string.Rs), order.getAmount()));
+        poolName.setText(order.getPoolInfo().getName());
+        amount.setText(String.format("%s%d", itemView.getContext().getResources().getString(R.string.Rs), order.getTotalAmount()));
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(itemView.getContext(),OrderDetailActivity.class);
-                intent.putExtra("order",order.getBundle());
+                intent.putExtra("order",order);
                 itemView.getContext().startActivity(intent);
             }
         });

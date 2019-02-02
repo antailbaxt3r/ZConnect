@@ -58,23 +58,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Random;
 
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL_JOIN;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CAB_POOL_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENTS_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT_BOOST;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_FORUMS;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_FORUMS_JOIN;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_IMAGE_NOTIF;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_LIKE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_LOVE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_MESSAGES_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_MESSAGES_CHAT_DELETE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_POST_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_STOREROOM;
 
 public class NotificationService extends FirebaseMessagingService {
 

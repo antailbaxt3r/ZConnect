@@ -35,7 +35,6 @@ public class PoolActivity extends BaseActivity {
     private ActiveFragment activePoolFragment;
     private UpcomingFragment upcomingPoolFragment;
 
-    private String communityID;
     private ArrayList<Fragment> fragmentsList = new ArrayList<>();
 
     @Override
@@ -43,7 +42,6 @@ public class PoolActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pool);
         //TODO  set proper commmunityID from preference
-        communityID = "testCollege";
 
         setToolbar();
         attachID();
@@ -97,7 +95,8 @@ public class PoolActivity extends BaseActivity {
             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
             counterPush.pushValues();
 
-            startActivity(new Intent(this, PoolPreviousOrderActivity.class));
+            Intent i = new Intent(this, PoolPreviousOrderActivity.class);
+            startActivity(i);
         }
         return true;
     }
@@ -110,8 +109,8 @@ public class PoolActivity extends BaseActivity {
         tabLayout = findViewById(R.id.pools_tab);
 
         //setting up fragments
-        activePoolFragment = ActiveFragment.newInstance(communityID);
-        upcomingPoolFragment = UpcomingFragment.newInstance(communityID);
+        activePoolFragment = ActiveFragment.newInstance();
+        upcomingPoolFragment = UpcomingFragment.newInstance();
         fragmentsList.add(activePoolFragment);
         fragmentsList.add(upcomingPoolFragment);
 

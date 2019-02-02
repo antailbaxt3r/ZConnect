@@ -4,7 +4,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolOrderItemAdapter;
-import com.zconnect.zutto.zconnect.pools.models.ShopOrder;
+import com.zconnect.zutto.zconnect.pools.models.Order;
 
 import java.util.ArrayList;
 
@@ -33,7 +32,7 @@ public class PoolPreviousOrderActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private LinearLayout ll_progressBar;
     private TextView loading_text;
-    private String communityID, userUID;
+    private String userUID;
     private ValueEventListener orderListener;
     private PoolOrderItemAdapter adapter;
 
@@ -42,7 +41,6 @@ public class PoolPreviousOrderActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pool_previous_order);
         //TODO set proper data from the preference
-        communityID = "testCollege";
         userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         setToolbar();
@@ -74,7 +72,7 @@ public class PoolPreviousOrderActivity extends BaseActivity {
     }
 
     private void loadOrderList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ShopOrder.URL_ORDER_BASIC_INFO,communityID,userUID));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_ORDER_BASIC_INFO,communityReference,userUID));
         Log.d(TAG, "loadOrderList : ref " + ref.toString());
 
         ref.addValueEventListener(orderListener);
@@ -98,18 +96,16 @@ public class PoolPreviousOrderActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
 
         defineListener();
-
-
     }
 
     private void defineListener() {
         orderListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<ShopOrder> list = new ArrayList<>();
+                ArrayList<Order> list = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    ShopOrder order = child.getValue(ShopOrder.class);
-                    order.setID(child.getKey());
+                    Order order = child.getValue(Order.class);
+                    order.setOrderID(child.getKey());
                     list.add(order);
                 }
                 adapter.addAll(list);

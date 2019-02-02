@@ -6,19 +6,28 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.pools.AddPoolItemActivity;
-import com.zconnect.zutto.zconnect.pools.PoolItemDetailActivity;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.pools.ActivePoolDetailsActivity;
+import com.zconnect.zutto.zconnect.pools.UpcomingPoolDetailsActivity;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 import java.util.Date;
 
@@ -29,7 +38,8 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
     private TextView name, description, count, deliveryTime;
     private ImageButton btn_like;
     private Boolean isLiked;
-    private String userUID, communityID;
+    private String userUID;
+    private Button activateBtn;
 
     private Pool pool;
 
@@ -49,18 +59,17 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         btn_like = itemView.findViewById(R.id.btn_like);
         isLiked = false;
         userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        //TODO load community id from preference
-        communityID = "testCollege";
+        activateBtn = itemView.findViewById(R.id.activate_btn);
     }
 
     public void populate(final Pool pool) {
         this.pool = pool;
-        Log.d(this.getClass().getName(), "populate : " + pool.getName());
-        name.setText(pool.getName());
-        description.setText(pool.getDescription());
-        poolImage.setImageURI(pool.getImageURL());
+        Log.d(this.getClass().getName(), "populate : " + pool.getPoolInfo().getName());
+        name.setText(pool.getPoolInfo().getName());
+        description.setText(pool.getPoolInfo().getDescription());
+        poolImage.setImageURI(pool.getPoolInfo().getImageThumbh());
         if (pool.getStatus().compareTo(Pool.STATUS_UPCOMING) == 0) {
-            count.setText(String.valueOf(pool.getUpVote()));
+            count.setText(String.valueOf(pool.getUpvote()));
         } else {
             count.setText(String.valueOf(pool.getTotalOrder()));
         }
@@ -72,19 +81,46 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 if (pool.isUpcoming()) {
-                    Intent intent = new Intent(itemView.getContext(), PoolItemDetailActivity.class);
-                    intent.putExtra("newPool", pool.getBundle());
+                    Toast.makeText(itemView.getContext(), "upcoming", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(itemView.getContext(), UpcomingPoolDetailsActivity.class);
+                    intent.putExtra("pool", pool);
                     itemView.getContext().startActivity(intent);
                 } else if (pool.isActive()) {
-                    Intent intent = new Intent(itemView.getContext(), AddPoolItemActivity.class);
-                    intent.putExtra("newPool", pool.getBundle());
+                    Toast.makeText(itemView.getContext(), "active", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(itemView.getContext(), ActivePoolDetailsActivity.class);
+                    intent.putExtra("pool", pool);
                     itemView.getContext().startActivity(intent);
                 }
             }
         });
 
         if (pool.isUpcoming()) {
-            if (pool.getUpVoteList().containsKey(userUID)) {
+            setActivateBtn();
+            DatabaseReference userReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(userUID);
+
+            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    UserItemFormat tempUser = dataSnapshot.getValue(UserItemFormat.class);
+                    if(dataSnapshot.hasChild("userType")){
+                        if(tempUser.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
+                            activateBtn.setVisibility(View.VISIBLE);
+                        }else {
+                            activateBtn.setVisibility(View.GONE);
+                        }
+                    }else {
+                        activateBtn.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            activateBtn.setVisibility(View.VISIBLE);
+            if (pool.getUpvoteList().containsKey(userUID)) {
                 isLiked = true;
             } else {
                 isLiked = false;
@@ -97,6 +133,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
                 }
             });
         } else {
+            activateBtn.setVisibility(View.GONE);
             btn_like.setVisibility(View.GONE);
         }
 
@@ -105,7 +142,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
 
     private void toggleLike() {
         btn_like.setEnabled(false);
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL_UP_VOTE, communityID, pool.getID(), userUID));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL_UP_VOTE,communityReference , pool.getPoolPushID(), userUID));
         if (isLiked) {
             ref.setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -149,4 +186,15 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
             btn_like.setImageDrawable(black);
         }
     }
+
+    private void setActivateBtn(){
+
+        activateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL,communityReference)).child(pool.getPoolPushID()).child("status").setValue("active");
+            }
+        });
+    }
+
 }

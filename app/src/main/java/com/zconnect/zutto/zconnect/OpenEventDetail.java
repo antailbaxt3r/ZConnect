@@ -77,7 +77,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT_BOOST;
+
 
 public class  OpenEventDetail extends BaseActivity{
 
