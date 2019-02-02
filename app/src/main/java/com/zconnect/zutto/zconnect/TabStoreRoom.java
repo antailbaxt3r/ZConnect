@@ -81,6 +81,9 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
 
     private int OPT_ELEC = 0, OPT_SPK = 1, OPT_STG = 2, OPT_ACAD = 3, OPT_ROOM = 4, OPT_FIC = 5, OPT_OTH = 6, OPT_ALL = 7;
     private int currentOptionCategory = 7;
+    private String curretOptionCategoryString = ProductUtilities.CAT_ALL;
+    private int OPT_ADD = 0, OPT_ASK = 1, OPT_BOTH = 2;
+    private int currentOptionProductType = 2;
 
 
 //    @Nullable
@@ -267,6 +270,10 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     try{
                         singleProduct = shot.getValue(Product.class);
+                        if(currentOptionProductType == OPT_ADD && !singleProduct.getType().equals(ProductUtilities.TYPE_ADD_STR))
+                            continue;
+                        else if(currentOptionProductType == OPT_ASK && !singleProduct.getType().equals(ProductUtilities.TYPE_ASK_STR))
+                            continue;
                         if(!singleProduct.getKey().equals(null)&& !singleProduct.getProductName().equals(null)) {
                             if (!shot.hasChild("isNegotiable")){
                                 if(shot.hasChild("negotiable")){
@@ -393,6 +400,18 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                         break;
                 }
                 menuItem.setChecked(true);
+                switch (currentOptionProductType) {
+                    case 0:
+                        menuItem = mPopupMenu.getMenu().findItem(R.id.option_product_type_add);
+                        break;
+                    case 1:
+                        menuItem = mPopupMenu.getMenu().findItem(R.id.option_product_type_ask);
+                        break;
+                    case 2:
+                        menuItem = mPopupMenu.getMenu().findItem(R.id.option_product_type_both);
+                        break;
+                }
+                menuItem.setChecked(true);
                 mPopupMenu.show();
                 return true;
             default:
@@ -462,6 +481,21 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
             case R.id.option_all_products:
                 currentOptionCategory = 7;
                 productsQuery = mDatabase.orderByPriority();
+                productsQuery.addValueEventListener(mListener);
+                productAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.option_product_type_add:
+                currentOptionProductType = 0;
+                productsQuery.addValueEventListener(mListener);
+                productAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.option_product_type_ask:
+                currentOptionProductType = 1;
+                productsQuery.addValueEventListener(mListener);
+                productAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.option_product_type_both:
+                currentOptionProductType = 2;
                 productsQuery.addValueEventListener(mListener);
                 productAdapter.notifyDataSetChanged();
                 return true;

@@ -15,4 +15,7 @@ public class ProductUtilities {
     public static String CAT_FICTION = "Fiction";
     public static String CAT_OTHERS = "Others";
 
+    //this is used only for filtering
+    public static String CAT_ALL = "All";
+
 }
