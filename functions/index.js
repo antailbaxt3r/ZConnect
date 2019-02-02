@@ -78,7 +78,8 @@ exports.grantSignupReward = functions.database.ref('/communities/{communityID}/U
 
 });
 
-exports.countInfoneMembers = functions.database.ref('/communities/{communityID}/infone/numbers/{contactID}/category').onCreate(
+exports.countInfoneMembers = functions.database.ref('/communities/{communityID}/infone/numbers/{contactID}/category')
+.onCreate(
 	(snap, context) => {
     console.log("snapshot val", snap.val());
     
@@ -207,3 +208,50 @@ exports.syncUserPointsAndUserPointsNum2 = functions.database.ref('/communities/{
 	}
 });
 
+exports.test_getPayment = functions.database.ref('communities/{communityID}/features/shops/orders/current/{uid}/{orderID}/paymentGatewayID')
+.onCreate((snapshot, context) => {  
+	var request = require('request');
+
+  const communityID = context.params.communityID;
+  const uid = context.params.uid;
+  const orderID = context.params.orderID;
+
+  const paymentGatewayID = snapshot.val();
+  
+  return snapshot.ref.parent.once('value', orderSnapshot => {
+    let orderObj = orderSnapshot.val();
+    const shopID = orderSnapshot.child("poolInfo/shopID").val();
+    const poolPushID = orderSnapshot.child("poolPushID").val();
+    const totalAmount = orderSnapshot.child("totalAmount").val();
+    request({
+        method: 'POST',
+        url: `https://rzp_test_SnZYABwQNAqW3y:KBY1oWxWohh9woUHahNfeW1H@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
+        form: {
+          amount: totalAmount*100
+        }
+      }, function (error, response, body) {
+        console.log('Status:', response.statusCode);
+        console.log('Headers:', JSON.stringify(response.headers));
+        console.log('Response:', body);
+        if(response.statusCode === 200)
+          {
+            console.log("inside status 200");
+            snapshot.ref.parent.child("status").set("success", ()=>{
+              snapshot.ref.root.child(`communities/${communityID}/Users1/${uid}`).once('value', userSnapshot => {
+                orderObj = {...orderObj,
+                  orderedBy: {
+                    UID: uid,
+                    Username: userSnapshot.child("username").val(),
+                    ImageThumb: userSnapshot.child("imageURLThumbnail").val()
+                  }
+                }
+                const shopRef = snapshot.ref.root.child(`shops/shopDetails/${shopID}/orders/current/${poolPushID}/${orderID}`);
+                shopRef.set(orderObj);
+              });
+            });
+          }
+        if(response.statusCode === 400)
+          snapshot.ref.parent.child("status").set("fail");
+      });
+  });
+});

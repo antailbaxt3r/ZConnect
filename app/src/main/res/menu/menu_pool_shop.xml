@@ -6,8 +6,8 @@
     <item
         android:title="My Orders"
         android:id="@+id/action_orders"
-        android:icon="@drawable/ic_shopping_cart_black_24dp"
+        android:icon="@drawable/ic_shopping_basket_white_24dp"
         android:orderInCategory="1"
         android:name="My Orders"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 </menu>

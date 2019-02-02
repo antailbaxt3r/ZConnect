@@ -8,6 +8,7 @@ import java.util.Vector;
 public class Order implements Serializable{
 
     //URLS
+    public static final String URL_MY_ORDERS = "communities/%s/features/shops/orders/current/%s";
     public static final String URL_ORDER_BASIC_INFO = "shops/shopDetails/%s/orders/%s";
     //                                                                 userID
     public static final String URL_ORDER_ITEM_LIST = "shops/shopDetails/%s/orders/%s/%s/items";
