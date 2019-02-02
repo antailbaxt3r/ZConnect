@@ -41,7 +41,8 @@ public class OtherKeyUtilities {
     //Order Payment Status
 
     public static final String KEY_PAYMENT_PENDING = "pending";
-    public static final String KEY_PAYMENT_FAILED = "failed";
-    public static final String KEY_PAYMENT_DONE = "done";
+    public static final String KEY_PAYMENT_FAIL = "fail";
+    public static final String KEY_PAYMENT_PROCESSING = "processing";
+    public static final String KEY_PAYMENT_SUCCESS = "success";
 
 }

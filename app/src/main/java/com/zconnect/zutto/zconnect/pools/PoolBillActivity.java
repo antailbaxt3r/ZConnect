@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,9 +44,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Vector;
 
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PAYMENT_DONE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PAYMENT_FAILED;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PAYMENT_PENDING;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PAYMENT_SUCCESS;
+import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PAYMENT_FAIL;
 
 public class PoolBillActivity extends BaseActivity implements PaymentResultListener {
 
@@ -79,11 +77,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         Bundle b = getIntent().getExtras();
         if (b != null) {
 
-            Toast.makeText(this, "Bundle Null", Toast.LENGTH_SHORT).show();
-
             if (b.containsKey("orderList") && b.containsKey("pool")) {
-
-                Toast.makeText(this, "orderList not present", Toast.LENGTH_SHORT).show();
 
                 orderList  = (HashMap<String,PoolItem>) getIntent().getSerializableExtra("orderList");
                 currentPool = (Pool) getIntent().getSerializableExtra("pool");
@@ -94,6 +88,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                     Intent i = new Intent(this, LoginActivity.class);
                     startActivity(i);
                     finish();
+
                 } else {
                     userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
@@ -128,7 +123,6 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                             pushOrderData();
                         }
                     });
-                    showToast("payment is possibly showing");
 
                 }
 
@@ -148,7 +142,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private void pushOrderData(){
 
         DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
-        orderID = usersOrdersRef.push().toString();
+        orderID = usersOrdersRef.push().getKey();
 
         HashMap<String, Object> orderObject = new HashMap<>();
         orderObject.put(Order.ORDER_ID,orderID);
@@ -298,7 +292,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     public void onPaymentError(int i, String s) {
         DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
 
-        usersOrdersRef.child(orderID).child("orderStatus").setValue(KEY_PAYMENT_FAILED);
+        usersOrdersRef.child(orderID).child("orderStatus").setValue(KEY_PAYMENT_FAIL);
 
         showToast("Payment Error : " + s + "  i = " + String.valueOf(i));
     }
@@ -309,7 +303,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
         HashMap<String, Object> paymentDetails = new HashMap<>();
 
-        paymentDetails.put("orderStatus",KEY_PAYMENT_DONE);
+        paymentDetails.put("orderStatus", KEY_PAYMENT_SUCCESS);
         paymentDetails.put("paymentGatewayID",paymentID);
 
         usersOrdersRef.child(orderID).updateChildren(paymentDetails).addOnSuccessListener(new OnSuccessListener<Void>() {

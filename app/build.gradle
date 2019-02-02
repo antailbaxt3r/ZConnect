@@ -94,7 +94,7 @@ dependencies {
     }
     implementation 'com.linkedin.android.spyglass:spyglass:1.4.0'
     //razorPay API
-    implementation 'com.razorpay:checkout:1.5.1'
+    implementation 'com.razorpay:checkout:1.5.2'
     implementation 'com.razorpay:razorpay-java:1.3.8'
     //QR code generator
     implementation 'com.github.kenglxn.QRGen:android:2.5.0'

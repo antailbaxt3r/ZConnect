@@ -42,7 +42,7 @@
         <!-- Razon pay API -->
         <meta-data
             android:name="com.razorpay.ApiKey"
-            android:value="rzp_test_KXsdrhWl1Mp45s" />
+            android:value="rzp_test_SnZYABwQNAqW3y" />
 
         <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.
