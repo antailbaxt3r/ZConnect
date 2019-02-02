@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -80,10 +81,13 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 if (pool.isUpcoming()) {
+                    Toast.makeText(itemView.getContext(), "upcoming", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(itemView.getContext(), UpcomingPoolDetailsActivity.class);
                     intent.putExtra("pool", pool);
                     itemView.getContext().startActivity(intent);
                 } else if (pool.isActive()) {
+                    Toast.makeText(itemView.getContext(), "active", Toast.LENGTH_SHORT).show();
+
                     Intent intent = new Intent(itemView.getContext(), ActivePoolDetailsActivity.class);
                     intent.putExtra("pool", pool);
                     itemView.getContext().startActivity(intent);

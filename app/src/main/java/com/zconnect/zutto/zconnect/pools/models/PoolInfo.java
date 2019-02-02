@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  * description :
  * imageURL :
  */
-public class PoolInfo {
+public class PoolInfo implements Serializable {
 
     // URLS
     public static final String URL_POOL_INFO = "shops/shopDetails/%s/pools/poolInfo";

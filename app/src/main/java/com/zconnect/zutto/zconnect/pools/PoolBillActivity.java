@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,14 +60,14 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private Integer total_quantity;
     private Button btn_pay;
     private float subTotal_amount, total_amount;
-    private float discount_amount;
+    private double discount_amount;
     private String shopID, poolPushID, poolID, communityID, userUID, userName, poolName;
     private long deliveryTime;
     private ProgressBar progressBar;
     private LinearLayout billLinearLayout;
     private String orderID;
     private HashMap<String,PoolItem> orderList;
-    private Vector<PoolItem> orderListVector;
+    private Vector<PoolItem> orderListVector = new Vector<>();
     private Pool currentPool;
     private ValueEventListener poolOfferListener;
 
@@ -77,13 +78,19 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         setContentView(R.layout.activity_pool_bill);
         Bundle b = getIntent().getExtras();
         if (b != null) {
+
+            Toast.makeText(this, "Bundle Null", Toast.LENGTH_SHORT).show();
+
             if (b.containsKey("orderList") && b.containsKey("pool")) {
+
+                Toast.makeText(this, "orderList not present", Toast.LENGTH_SHORT).show();
 
                 orderList  = (HashMap<String,PoolItem>) getIntent().getSerializableExtra("orderList");
                 currentPool = (Pool) getIntent().getSerializableExtra("pool");
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user == null) {
+
                     Intent i = new Intent(this, LoginActivity.class);
                     startActivity(i);
                     finish();
@@ -218,10 +225,6 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         poolName = currentPool.getPoolInfo().getName();
         deliveryTime = currentPool.getDeliveryTime();
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER, currentPool.getPoolInfo().getShopID(), currentPool.getPoolInfo().getPoolID()));
-        Log.d(TAG, "setPoolView : ref " + ref.toString());
-        ref.addListenerForSingleValueEvent(poolOfferListener);
-
         poolOfferListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -242,14 +245,13 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                     } else {
                         discount_amount = ((float) (subTotal_amount * discPer)) / 100.00f;
                         discount_amount = Math.min(discount_amount, max_discount);
-
                     }
                     Log.d(TAG, "loadCartData : discount Amount " + String.valueOf(discount_amount) + " total quantity :" + String.valueOf(total_quantity) +
                             " min item : " + String.valueOf(min_items) + " Discount percentage : " + String.valueOf(discPer) + "Max discount : " + String.valueOf(max_discount));
                     total_amount = subTotal_amount - (int) discount_amount;
-                    sub_total.setText(String.format("%s%d", getResources().getString(R.string.Rs), subTotal_amount));
-                    discount.setText(String.format("-%s%.2f", getResources().getString(R.string.Rs), discount_amount));
-                    total.setText(String.format("%s%d", getResources().getString(R.string.Rs), total_amount));
+                    sub_total.setText(String.format("%s%s", getResources().getString(R.string.Rs), String.valueOf(subTotal_amount)));
+                    discount.setText(String.format("-%s%s", getResources().getString(R.string.Rs), String.valueOf(discount_amount)));
+                    total.setText(String.format("%s%s", getResources().getString(R.string.Rs), String.valueOf(total_amount)));
 
                     progressBar.setVisibility(View.GONE);
                     billLinearLayout.setVisibility(View.VISIBLE );
@@ -262,6 +264,9 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             }
         };
 
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER, currentPool.getPoolInfo().getShopID(), currentPool.getPoolInfo().getPoolID()));
+        Log.d(TAG, "setPoolView : ref " + ref.toString());
+        ref.addListenerForSingleValueEvent(poolOfferListener);
 
     }
 

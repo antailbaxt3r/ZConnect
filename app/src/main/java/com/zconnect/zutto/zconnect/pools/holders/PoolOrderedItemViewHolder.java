@@ -37,13 +37,13 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
 
     public void populate(final Order order) {
         this.order = order;
-        poolName.setText(order.getPoolName());
-        amount.setText(String.format("%s%d", itemView.getContext().getResources().getString(R.string.Rs), order.getAmount()));
+        poolName.setText(order.getPoolInfo().getName());
+        amount.setText(String.format("%s%d", itemView.getContext().getResources().getString(R.string.Rs), order.getTotalAmount()));
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(itemView.getContext(),OrderDetailActivity.class);
-                intent.putExtra("order",order.getBundle());
+                intent.putExtra("order",order);
                 itemView.getContext().startActivity(intent);
             }
         });

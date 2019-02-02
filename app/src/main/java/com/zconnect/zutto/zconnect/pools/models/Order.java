@@ -2,9 +2,10 @@ package com.zconnect.zutto.zconnect.pools.models;
 
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 
+import java.io.Serializable;
 import java.util.Vector;
 
-public class Order {
+public class Order implements Serializable{
 
     //URLS
     public static final String URL_ORDER_BASIC_INFO = "shops/shopDetails/%s/orders/%s";

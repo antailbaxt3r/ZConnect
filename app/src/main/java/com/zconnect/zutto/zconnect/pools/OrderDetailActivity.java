@@ -52,7 +52,7 @@ public class OrderDetailActivity extends BaseActivity {
         if (b != null) {
             if (b.containsKey("order")) {
 
-                order = Order.getShopOrder(b.getBundle("order"));
+                order = (Order) getIntent().getSerializableExtra("order");
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user == null) {
                     //TODO start login acitvity
@@ -105,7 +105,7 @@ public class OrderDetailActivity extends BaseActivity {
 
     private void loadItemView() {
         //setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM, order.getShopID(), order.getPoolID()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM, order.getPoolInfo().getShopID(), order.getPoolInfo().getPoolID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(poolItemListener);
     }
@@ -118,11 +118,11 @@ public class OrderDetailActivity extends BaseActivity {
         orderStatus.setText(order.getStatus());
         userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         userEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-        userAmount.setText(String.format("Amount : %s%d",getResources().getString(R.string.Rs),order.getAmount()));
+        userAmount.setText(String.format("Amount : %s%d",getResources().getString(R.string.Rs),order.getTotalAmount()));
     }
 
     private void attachID() {
-        toolbar.setTitle(order.getPoolName());
+        toolbar.setTitle(order.getPoolInfo().getName());
         qr_image = findViewById(R.id.qr_image);
         orderStatus = findViewById(R.id.order_status);
         userName = findViewById(R.id.user_name);
@@ -144,7 +144,6 @@ public class OrderDetailActivity extends BaseActivity {
                 poolItems.clear();
                 for (DataSnapshot items : dataSnapshot.getChildren()) {
                     PoolItem dish = items.getValue(PoolItem.class);
-                    dish.setID(items.getKey());
                     poolItems.add(dish);
                 }
                 loadOrderItemList();
@@ -163,7 +162,7 @@ public class OrderDetailActivity extends BaseActivity {
                   for(DataSnapshot item : dataSnapshot.getChildren()){
                       PoolItem orderItem =null;
                       for(int i = 0 ; i < poolItems.size();i++){
-                          if(poolItems.get(i).getID().compareTo(item.getKey())==0){
+                          if(poolItems.get(i).getItemID().compareTo(item.getKey())==0){
                               orderItem = poolItems.get(i);
                               orderItem.setQuantity(item.getValue(Integer.class));
                               break;
@@ -188,7 +187,7 @@ public class OrderDetailActivity extends BaseActivity {
 
     private void loadOrderItemList() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_ORDER_ITEM_LIST,
-                communityReference, order.getShopID(),order.getPoolPushID() ,order.getPaymentID()));
+                communityReference, order.getPoolInfo().getShopID(),order.getPoolPushID() ,order.getPaymentID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(orderItemListener);
     }

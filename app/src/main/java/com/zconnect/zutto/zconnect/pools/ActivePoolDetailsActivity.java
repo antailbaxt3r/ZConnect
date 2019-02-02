@@ -59,7 +59,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
         //base case
         Bundle b = getIntent().getExtras();
         if (b != null) {
-            if (b.containsKey("newPool")) {
+            if (b.containsKey("pool")) {
 
                 pool = (Pool) getIntent().getSerializableExtra("pool");
 
