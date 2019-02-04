@@ -14,8 +14,6 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
 
     private TextView poolName, deliveryTime, amount;
 
-    private String communityID;
-
     private Order order;
 
     public PoolOrderedItemViewHolder(View itemView) {
@@ -26,10 +24,6 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void attachID() {
-
-        //TODO load community id from preference
-        communityID = "testCollege";
-
         poolName = itemView.findViewById(R.id.pool_name);
         deliveryTime = itemView.findViewById(R.id.delivery_time);
         amount = itemView.findViewById(R.id.ordered_amount);
