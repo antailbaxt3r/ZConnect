@@ -103,6 +103,7 @@ public class PoolPreviousOrderActivity extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<Order> list = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Log.i("order object", child.getValue().toString());
                     Order order = child.getValue(Order.class);
                     list.add(order);
                 }
