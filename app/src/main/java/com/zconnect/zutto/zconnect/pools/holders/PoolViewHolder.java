@@ -67,7 +67,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         Log.d(this.getClass().getName(), "populate : " + pool.getPoolInfo().getName());
         name.setText(pool.getPoolInfo().getName());
         description.setText(pool.getPoolInfo().getDescription());
-        poolImage.setImageURI(pool.getPoolInfo().getImageThumbh());
+        poolImage.setImageURI(pool.getPoolInfo().getImageThumb());
         if (pool.getStatus().compareTo(Pool.STATUS_UPCOMING) == 0) {
             count.setText(String.valueOf(pool.getUpvote()));
         } else {

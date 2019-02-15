@@ -50,7 +50,7 @@
                 android:layout_margin="16dp"
                 android:orientation="vertical"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycleView"
@@ -138,7 +138,13 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/phoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:hint="Phone number"
+                    app:met_maxCharacters="12" />
                 <!--Confirm Order view -->
                 <Button
                     android:id="@+id/btn_pay"

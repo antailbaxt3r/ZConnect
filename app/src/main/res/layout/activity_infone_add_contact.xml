@@ -29,7 +29,7 @@
         tools:context="com.zconnect.zutto.zconnect.addActivities.AddInfoneContact"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
-        android:paddingBottom="@dimen/padding_med"
+        android:paddingBottom="@dimen/padding_medium"
         android:background="@color/white">
         <RelativeLayout
             android:layout_width="wrap_content"

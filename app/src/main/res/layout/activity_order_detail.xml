@@ -29,59 +29,179 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".pools.OrderDetailActivity">
+            tools:context=".pools.OrderDetailActivity"
+            android:padding="@dimen/padding_small">
 
             <LinearLayout
-                android:gravity="center_horizontal"
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/qr_image"
                     android:layout_width="240dp"
-                    android:padding="8dp"
-                    android:layout_marginTop="36dp"
-                    android:layout_height="240dp" />
+                    android:layout_height="240dp"
+                    android:background="@color/blue500"
+                    android:layout_gravity="center"/>
                 <TextView
-                    android:layout_margin="8dp"
-                    android:padding="2dp"
-                    android:id="@+id/order_status"
-                    android:gravity="center"
-                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:id="@+id/userBillIDText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.Headline"
+                    android:gravity="center"
+                    android:text="qwexyz005"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium">
+                    <ImageView
+                        android:id="@+id/location_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/baseline_location_on_black_24"
+                        android:backgroundTint="@color/colorHighlightLight"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_medium"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_toRightOf="@+id/location_icon"
+                        android:textColor="@color/primaryText"
+                        android:textSize="14sp"
+                        android:text="Shri Kaashi Dairy and Restaurant"
+                        style="@style/TextAppearance.AppCompat.Body2"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium">
+                    <ImageView
+                        android:id="@+id/order_status_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/baseline_check_white_24"
+                        android:backgroundTint="@color/colorHighlightLight"/>
+                    <TextView
+                        android:id="@+id/order_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/order_status_icon"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        style="@style/TextAppearance.AppCompat.Caption"
+                        android:text="Order delivered on Feb 8, 9:07 PM"/>
+                    <FrameLayout
+                        android:id="@+id/delivered_tag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/small_tag"
+                            android:layout_gravity="center"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="DELIVERED"
+                            android:textSize="10sp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/primaryText"
+                            style="@style/TextAppearance.AppCompat.Caption" />
+                    </FrameLayout>
+                </RelativeLayout>
                 <TextView
-                    android:layout_margin="8dp"
-                    android:padding="2dp"
-                    android:id="@+id/user_name"
-                    android:gravity="center"
-                    style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_margin="8dp"
-                    android:padding="2dp"
-                    android:id="@+id/user_email"
-                    android:gravity="center"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_margin="8dp"
-                    android:padding="2dp"
-                    android:id="@+id/user_amount"
-                    android:gravity="center"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
+                    android:layout_height="wrap_content"
+                    android:text="BILL DETAILS"
+                    android:textSize="12sp"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    style="@style/TextAppearance.AppCompat.Body1" />
                 <android.support.v7.widget.RecyclerView
-                    android:layout_margin="24dp"
                     android:id="@+id/recycleView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:background="@drawable/dotted"
+                    android:layerType="software"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Item Total"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                    <TextView
+                        android:id="@+id/item_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs.300/-"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_x_small">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Discount Total"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                    <TextView
+                        android:id="@+id/discount_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs.300/-"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                </RelativeLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:background="@drawable/dotted"
+                    android:layerType="software"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Total"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                    <TextView
+                        android:id="@+id/discounted_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs.300/-"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
 
