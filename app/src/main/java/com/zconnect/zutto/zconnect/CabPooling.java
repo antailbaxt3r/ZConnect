@@ -140,9 +140,7 @@ public class CabPooling extends BaseActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-
                                 calender.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-
                             }
                         }, year, month, day);
                 datePickerDialog.show();

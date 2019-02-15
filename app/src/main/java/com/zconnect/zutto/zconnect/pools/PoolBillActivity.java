@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,9 +30,11 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemCartAdapter;
 import com.zconnect.zutto.zconnect.pools.models.DiscountOffer;
 import com.zconnect.zutto.zconnect.pools.models.Order;
@@ -38,13 +42,13 @@ import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolInfo;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
+import com.zconnect.zutto.zconnect.utilities.UIUtilities;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Vector;
 
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PAYMENT_SUCCESS;
 import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PAYMENT_FAIL;
 
 public class PoolBillActivity extends BaseActivity implements PaymentResultListener {
@@ -57,7 +61,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private TextView sub_total, discount, total;
     private Integer total_quantity;
     private Button btn_pay;
-    private float subTotal_amount, total_amount;
+    private float total_amount, discounted_amount;
     private double discount_amount;
     private String shopID, poolPushID, poolID, communityID, userUID, userName, poolName;
     private long deliveryTime;
@@ -68,6 +72,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private Vector<PoolItem> orderListVector = new Vector<>();
     private Pool currentPool;
     private ValueEventListener poolOfferListener;
+    private MaterialEditText phoneNumberET;
 
 
     @Override
@@ -117,6 +122,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                     }
 
                     loadCartData();
+                    loadPhoneNumber();
                     btn_pay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -139,33 +145,58 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
     }
 
-    private void pushOrderData(){
-
-        DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
-        orderID = usersOrdersRef.push().getKey();
-
-        HashMap<String, Object> orderObject = new HashMap<>();
-        orderObject.put(Order.ORDER_ID,orderID);
-        orderObject.put(Order.POOL_PUSH_ID,currentPool.getPoolPushID());
-        orderObject.put(Order.STATUS,OtherKeyUtilities.KEY_PAYMENT_PENDING);
-        orderObject.put(Order.TIMESTAMP_PAYMENT_STARTED,ServerValue.TIMESTAMP);
-        orderObject.put(Order.TOTAL_AMOUNT,total_amount);
-        orderObject.put(Order.POOL_INFO,currentPool.getPoolInfo());
-        orderObject.put(Order.ITEMS,orderList);
-        orderObject.put(Order.DELIVERY_TIME, currentPool.getDeliveryTime());
-
-        usersOrdersRef.child(orderID).setValue(orderObject).addOnSuccessListener(new OnSuccessListener<Void>() {
+    private void loadPhoneNumber() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(userUID);
+        userRef.child("mobileNumber").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onSuccess(Void aVoid) {
-                startPayment();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue()!=null)
+                    phoneNumberET.setText(dataSnapshot.getValue(String.class));
             }
-        }).addOnFailureListener(new OnFailureListener() {
+
             @Override
-            public void onFailure(@NonNull Exception e) {
-                //TODO Error in saving order : amount will be refunded within 3-5 days
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
+    }
 
+    private void pushOrderData(){
+        UIUtilities ui = new UIUtilities();
+        if(phoneNumberET.getText().length()<1)
+            ui.getSnackbar(phoneNumberET, "Please enter your mobile number", Snackbar.LENGTH_SHORT, getApplicationContext()).show();
+        else if(phoneNumberET.getText().length()<10)
+            ui.getSnackbar(phoneNumberET, "Please enter a valid mobile number", Snackbar.LENGTH_SHORT, getApplicationContext()).show();
+        else
+        {
+            DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
+            orderID = usersOrdersRef.push().getKey();
+
+            HashMap<String, Object> orderObject = new HashMap<>();
+            orderObject.put(Order.ORDER_ID,orderID);
+            orderObject.put(Order.POOL_PUSH_ID,currentPool.getPoolPushID());
+            Log.i(TAG, currentPool.getPoolPushID() + "1234");
+            orderObject.put(Order.PAYMENT_STATUS,OtherKeyUtilities.KEY_PAYMENT_PENDING);
+            orderObject.put(Order.TIMESTAMP_PAYMENT_BEFORE,ServerValue.TIMESTAMP);
+            orderObject.put(Order.TOTAL_AMOUNT, total_amount);
+            orderObject.put(Order.DISCOUNTED_AMOUNT, discounted_amount);
+            orderObject.put(Order.POOL_INFO,currentPool.getPoolInfo());
+            orderObject.put(Order.ITEMS,orderList);
+            orderObject.put(Order.DELIVERY_TIME, currentPool.getDeliveryTime());
+            orderObject.put(Order.PHONE_NUMBER, phoneNumberET.getText());
+
+            usersOrdersRef.child(orderID).setValue(orderObject).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    startPayment();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    //TODO Error in saving order : amount will be refunded within 3-5 days
+                }
+            });
+        }
     }
 
     private void startPayment() {
@@ -179,7 +210,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
             options.put("name", "ZConnect");
 
-            options.put("description", "Order #123456");
+            options.put("description", currentPool.getPoolInfo().getName());
 
             options.put("currency", "INR");
 
@@ -187,7 +218,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
              * Amount is always passed in PAISE
              * Eg: "500" = Rs 5.00
              */
-            options.put("amount", String.valueOf(total_amount * 100));
+            options.put("amount", String.valueOf(discounted_amount * 100));
 
             checkout.open(activity, options);
         } catch (Exception e) {
@@ -199,7 +230,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private void loadCartData() {
 
         total_quantity = 0;
-        subTotal_amount = 0;
+        total_amount = 0;
 
         orderListVector.clear();
         for (HashMap.Entry<String, PoolItem> entry : orderList.entrySet()) {
@@ -208,7 +239,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             adapter.insertAtEnd(item);
             orderListVector.add(item);
 
-            subTotal_amount += item.getQuantity() * item.getPrice();
+            total_amount += item.getQuantity() * item.getPrice();
             total_quantity += item.getQuantity();
         }
 
@@ -237,15 +268,15 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                     if (total_quantity < min_items) {
                         discount_amount = 0;
                     } else {
-                        discount_amount = ((float) (subTotal_amount * discPer)) / 100.00f;
+                        discount_amount = ((float) (total_amount * discPer)) / 100.00f;
                         discount_amount = Math.min(discount_amount, max_discount);
                     }
                     Log.d(TAG, "loadCartData : discount Amount " + String.valueOf(discount_amount) + " total quantity :" + String.valueOf(total_quantity) +
                             " min item : " + String.valueOf(min_items) + " Discount percentage : " + String.valueOf(discPer) + "Max discount : " + String.valueOf(max_discount));
-                    total_amount = subTotal_amount - (int) discount_amount;
-                    sub_total.setText(String.format("%s%s", getResources().getString(R.string.Rs), String.valueOf(subTotal_amount)));
+                    discounted_amount = total_amount - (int) discount_amount;
+                    sub_total.setText(String.format("%s%s", getResources().getString(R.string.Rs), String.valueOf(total_amount)));
                     discount.setText(String.format("-%s%s", getResources().getString(R.string.Rs), String.valueOf(discount_amount)));
-                    total.setText(String.format("%s%s", getResources().getString(R.string.Rs), String.valueOf(total_amount)));
+                    total.setText(String.format("%s%s", getResources().getString(R.string.Rs), String.valueOf(discounted_amount)));
 
                     progressBar.setVisibility(View.GONE);
                     billLinearLayout.setVisibility(View.VISIBLE );
@@ -280,21 +311,33 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         Checkout.preload(getApplicationContext());
         progressBar.setVisibility(View.VISIBLE);
         billLinearLayout.setVisibility(View.GONE);
+        phoneNumberET = findViewById(R.id.phoneNumber);
     }
 
     @Override
-    public void onPaymentSuccess(String s) {
-        paymentSuccess(s);
+    public void onPaymentSuccess(String razorpayPaymentId) {
+        paymentSuccess(razorpayPaymentId);
     }
 
 
     @Override
-    public void onPaymentError(int i, String s) {
+    public void onPaymentError(int code, String response) {
+        switch (code) {
+            case Checkout.PAYMENT_CANCELED:
+                showToast("Payment Cancelled.", Toast.LENGTH_LONG);
+                break;
+            case Checkout.NETWORK_ERROR:
+                Snackbar snackbar = (new UIUtilities()).getSnackbar(btn_pay, "Payment Failed. Please check connectivity.", Snackbar.LENGTH_LONG, getApplicationContext());
+                snackbar.show();
+                break;
+            case Checkout.INVALID_OPTIONS:
+            case Checkout.TLS_ERROR:
+            case Checkout.INCOMPATIBLE_PLUGIN:
+                showToast("Payment cannot be processed");
+                break;
+        }
         DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
-
-        usersOrdersRef.child(orderID).child("orderStatus").setValue(KEY_PAYMENT_FAIL);
-
-        showToast("Payment Error : " + s + "  i = " + String.valueOf(i));
+        usersOrdersRef.child(orderID).removeValue();
     }
 
     private void paymentSuccess(final String paymentID) {
@@ -303,58 +346,18 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
         HashMap<String, Object> paymentDetails = new HashMap<>();
 
-        paymentDetails.put("orderStatus", KEY_PAYMENT_SUCCESS);
         paymentDetails.put("paymentGatewayID",paymentID);
 
         usersOrdersRef.child(orderID).updateChildren(paymentDetails).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Intent intent = new Intent(PoolBillActivity.this, PaymentCaptureActivity.class);
-                intent.putExtra("paymentID", paymentID);
-                intent.putExtra("amount", total_amount);
+                intent.putExtra("orderID", orderID);
+                intent.putExtra("amount", discounted_amount);
                 startActivity(intent);
                 finish();
             }
         });
-//        HashMap<String, Object> mp = new HashMap<>();
-//        //order id is same as payment id that is razor pay id
-//
-//        //hashing info on owners end
-//        String shop_base = "shopOwner/" + shopID + "/orders/" + poolPushID + "/" + paymentID + "/items/";
-//        ArrayList<PoolItem> items = adapter.getPoolsList();
-//        for (PoolItem item : items) {
-//            mp.put(shop_base + item.getPoolPushID(), item.getQuantity());
-//        }
-//        shop_base = "shopOwner/" + shopID + "/orders/" + poolPushID + "/" + paymentID + "/paymentInfo/";
-//        mp.put(shop_base + "amount", total_amount);
-//        mp.put(shop_base + "razorPayID", paymentID);
-//        mp.put(shop_base + "userUID", userUID);
-//        mp.put(shop_base + "userName", userName);
-//        mp.put(shop_base + "status", "processing");
-//
-//        //hashing info on user end
-//        shop_base = "features/shops/orders/" + userUID + "/" + paymentID + "/";
-//        mp.put(shop_base + "amount", total_amount);
-//        mp.put(shop_base + "razorPayID", paymentID);
-//        mp.put(shop_base + Pool.SHOP_ID, shopID);
-//        mp.put(shop_base + Pool.POOL_ID, poolID);
-//        mp.put(shop_base + Pool.POOL_PUSH_ID, poolPushID);
-//        mp.put(shop_base + "poolName", poolName);
-//        mp.put(shop_base + "orderStatus", "Waiting payment confirmation");
-//
-//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-//        ref.child("communities").child(communityReference).child("features").child("shops").child("orders").updateChildren(mp).addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                //TODO Error in saving order : amount will be refunded within 3-5 days
-//            }
-//        });
-
     }
 
 }

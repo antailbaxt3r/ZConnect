@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="wrap_content"
+<LinearLayout
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -67,6 +68,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/forum_first_msg_hint"/>
+        <LinearLayout
+            android:id="@+id/spinner_forum_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Forum Tab"
+                android:textColor="@color/primaryText"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="@dimen/margin_small"/>
+            <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
+                android:id="@+id/spinner_forum_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_x_small"/>
+        </LinearLayout>
     </LinearLayout>
     <FrameLayout
         android:layout_width="wrap_content"
@@ -106,7 +126,7 @@
         android:id="@+id/delete_foruml_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_medium"
         android:background="@color/white"
         android:padding="@dimen/padding_small"
         android:orientation="vertical"

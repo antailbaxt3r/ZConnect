@@ -230,9 +230,12 @@
 
     <!--admin related-->
     <string name="excl_forum_admin">Only community and forum admins can see this.</string>
-    <string name="title_activity_leader_board">Community Leaders</string>
+    <string name="title_activity_leader_board">Leader Board</string>
     <string name="explorer_forum">Explore Forums</string>
 
     <string name="Rs">
         <xliff:g id="rsSymbol">\u20B9</xliff:g></string>
+
+    <!--pool related-->
+    <string name="order_placed_on">Ordered on</string>
 </resources>

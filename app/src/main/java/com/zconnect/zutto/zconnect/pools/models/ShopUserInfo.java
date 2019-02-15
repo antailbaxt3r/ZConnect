@@ -11,7 +11,7 @@ public class ShopUserInfo {
     public static final String EMAIL = "email";
     public static final String PHONE_NUMBER = "phoneNumber";
     public static final String IMAGE_URL = "imageURL";
-    public static final String IMAGE_THUMBH = "imageThumbh";
+    public static final String IMAGE_THUMB = "imageThumb";
     public static final String SHOP_ID = "shopID";
     public static final String TYPE = "type";
 
@@ -19,7 +19,7 @@ public class ShopUserInfo {
     private String email;
     private String phoneNumber;
     private String imageURL;
-    private String imageThumbh;
+    private String imageThumb;
     private String shopID;
     private String type;
 
@@ -27,12 +27,12 @@ public class ShopUserInfo {
 
     }
 
-    public ShopUserInfo(String name, String email, String phoneNumber, String imageURL, String imageThumbh, String shopID, String type) {
+    public ShopUserInfo(String name, String email, String phoneNumber, String imageURL, String imageThumb, String shopID, String type) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.imageURL = imageURL;
-        this.imageThumbh = imageThumbh;
+        this.imageThumb = imageThumb;
         this.shopID = shopID;
         this.type = type;
     }
@@ -69,12 +69,12 @@ public class ShopUserInfo {
         this.imageURL = imageURL;
     }
 
-    public String getImageThumbh() {
-        return imageThumbh;
+    public String getImageThumb() {
+        return imageThumb;
     }
 
-    public void setImageThumbh(String imageThumbh) {
-        this.imageThumbh = imageThumbh;
+    public void setImageThumb(String imageThumb) {
+        this.imageThumb = imageThumb;
     }
 
     public String getShopID() {

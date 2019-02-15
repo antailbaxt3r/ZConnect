@@ -29,6 +29,9 @@ import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 
@@ -62,6 +65,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
     private TextView productPrice;
     private TextView productNegotiableText;
 //    private Button productSellerContact;
+    private TextView productDate;
 
     private String sellerName;
     public Boolean flag;
@@ -90,7 +94,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void openProduct(final String key){
+    public void openProduct(final String key, final String type){
 
         mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +112,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
                 counterPush.pushValues();
                 Intent intent= new Intent(mView.getContext(),OpenProductDetails.class);
                 intent.putExtra("key", key);
+                intent.putExtra("type", type);
                 mView.getContext().startActivity(intent);
 
 
@@ -242,10 +247,23 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         post_name.setTypeface(ralewayMedium);
     }
 
+    public void setAskText(String productName) {
+        TextView ask_text = (TextView) mView.findViewById(R.id.ask_text_products_row);
+        ask_text.setText(productName);
+        ask_text.setVisibility(View.VISIBLE);
+        Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
+        ask_text.setTypeface(ralewayMedium);
+    }
+
     public void setImage(Context ctx, final String image) {
 
         productImage = (ImageView) mView.findViewById(R.id.postImg);
         Picasso.with(ctx).load(image).into(productImage);
+    }
+
+    public void hideAskText() {
+        TextView ask_text = (TextView) mView.findViewById(R.id.ask_text_products_row);
+        ask_text.setVisibility(View.GONE);
     }
 
     public void setPrice(String Price) {
@@ -270,6 +288,13 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         productPrice.setTypeface(ralewayMedium);
     }
 
+    public void setProductDate(long postedTime, long currentTime) {
+        productDate = (TextView) mView.findViewById(R.id.product_date);
+        TimeUtilities tu = new TimeUtilities(postedTime, currentTime);
+        String timeAgo = tu.calculateTimeAgoStoreroom();
+        productDate.setText(timeAgo);
+
+    }
 
 //    public void setSellerName(String postedBy) {
 //        Users.child(postedBy).addValueEventListener(new ValueEventListener() {

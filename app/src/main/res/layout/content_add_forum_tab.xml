@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingBottom="@dimen/padding_small"
+    tools:context="com.zconnect.zutto.zconnect.addActivities.CreateForum"
+    tools:showIn="@layout/activity_add_forum_tab"
+    android:background="@color/white"
+    android:padding="@dimen/padding_small">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tab Name"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@color/primaryText"/>
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/input_tab_name_content_add_forum_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_x_small"
+        android:hint="Type tab name here..."
+        app:met_textColorHint="@color/secondaryText"
+        android:textColor="@color/primaryText"
+        android:maxLength="15"
+        android:textSize="16sp"/>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/secondaryText"
+            android:layout_gravity="center" />
+        <FrameLayout
+            android:id="@+id/layout_done_content_add_forum_tab"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/forum_circle"
+                android:backgroundTint="@color/colorHighlight"
+                app:actualImageScaleType="centerCrop"
+                app:roundAsCircle="true" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_check_white_24dp"
+                android:tint="@color/white"/>
+        </FrameLayout>
+    </FrameLayout>
+</LinearLayout>

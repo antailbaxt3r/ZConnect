@@ -172,10 +172,12 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
 
         if(statusCode.equals(VerificationUtilities.KEY_APPROVED)){
             acceptUserButton.setVisibility(View.GONE);
+            declineUserButton.setVisibility(View.VISIBLE);
             adminApprovedByTextView.setText("Approved By " + approvedRejectedBy);
 
         }if(statusCode.equals(VerificationUtilities.KEY_NOT_APPROVED)){
             declineUserButton.setVisibility(View.GONE);
+            acceptUserButton.setVisibility(View.VISIBLE);
             adminApprovedByTextView.setText("Rejected By " + approvedRejectedBy);
         }if(statusCode.equals(VerificationUtilities.KEY_PENDING)){
 

@@ -64,6 +64,7 @@ public class CabPoolAll extends BaseActivity {
     ValueEventListener allPools;
     ProgressBar progressBar;
     FloatingActionButton fab;
+    TextView noCabpoolText;
 
     private SharedPreferences communitySP;
     public String communityReference;
@@ -161,6 +162,7 @@ public class CabPoolAll extends BaseActivity {
 //        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
         recyclerView = (RecyclerView) findViewById(R.id.pool_main_rv);
         progressBar = (ProgressBar) findViewById(R.id.fragment_cab_pool_main_progress_circle);
+        noCabpoolText = (TextView) findViewById(R.id.no_cabpool_text_fragment_cab_pooling);
         error = (TextView) findViewById(R.id.message);
         cabPoolRVAdapter = new CabPoolRVAdapter(CabPoolAll.this, vector_final);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
@@ -257,11 +259,13 @@ public class CabPoolAll extends BaseActivity {
 
                 if (vector_final.size() == 0) {
                     recyclerView.setVisibility(View.GONE);
+                    noCabpoolText.setVisibility(View.VISIBLE);
                     error.setVisibility(View.VISIBLE);
                     error.setOnClickListener(onEmpty);
 
                 } else {
                     recyclerView.setVisibility(View.VISIBLE);
+                    noCabpoolText.setVisibility(View.GONE);
                     error.setVisibility(View.GONE);
                     recyclerView.setAdapter(cabPoolRVAdapter);
                     cabPoolRVAdapter.notifyDataSetChanged();

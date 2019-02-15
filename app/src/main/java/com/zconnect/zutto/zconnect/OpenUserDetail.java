@@ -419,6 +419,7 @@ public class OpenUserDetail extends BaseActivity {
         editTextName.setTypeface(ralewaySemiBold);
         editTextDetails.setTypeface(ralewayRegular);
         editTextNumber.setTypeface(ralewayRegular);
+        whatsAppNumberText.setTypeface(ralewayRegular);
         editTextSkills.setTypeface(ralewayRegular);
         editTextEmail.setTypeface(ralewayRegular);
 

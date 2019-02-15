@@ -26,10 +26,13 @@ public class RecentsItemFormat {
     String cabpoolDestination;
     String cabpoolDate;
     String cabpoolTime;
+    int cabpoolTimeTo=-1;
+    int cabpoolTimeFrom=-1;
         //for events
     String eventDate;
         //for storeroom
     String productPrice;
+    String productType;
         //for new users
     String communityName;
 
@@ -47,9 +50,9 @@ public class RecentsItemFormat {
 
     public RecentsItemFormat(String name, String desc, String desc2, String imageurl, String feature, String id,
                              String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate,
-                             String cabpoolTime, String eventDate, String productPrice, String Key, long PostTimeMillis,
+                             String cabpoolTime, int cabpoolTimeFrom, int cabpoolTimeTo, String eventDate, String productPrice, String Key, long PostTimeMillis,
                              PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName,
-                             String communityName, String message, String recentType, int msgLikes, int msgComments) {
+                             String communityName, String message, String recentType, int msgLikes, int msgComments, String productType) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -68,6 +71,8 @@ public class RecentsItemFormat {
         this.cabpoolDestination = cabpoolDestination;
         this.cabpoolDate = cabpoolDate;
         this.cabpoolTime = cabpoolTime;
+        this.cabpoolTimeFrom = cabpoolTimeFrom;
+        this.cabpoolTimeTo = cabpoolTimeTo;
         this.eventDate = eventDate;
         this.productPrice = productPrice;
         this.communityName = communityName;
@@ -75,6 +80,7 @@ public class RecentsItemFormat {
         this.msgLikes = msgLikes;
         this.recentType = recentType;
         this.msgComments = msgComments;
+        this.productType = productType;
     }
 
     public RecentsItemFormat() {
@@ -161,6 +167,8 @@ public class RecentsItemFormat {
     public String getCabpoolDestination() { return cabpoolDestination; }
     public String getCabpoolDate() { return cabpoolDate; }
     public String getCabpoolTime() { return cabpoolTime; }
+    public int getCabpoolTimeFrom() { return cabpoolTimeFrom; }
+    public int getCabpoolTimeTo() { return cabpoolTimeTo; }
         //for events
     public String getEventDate() { return  eventDate; }
         //for storeroom
@@ -213,5 +221,9 @@ public class RecentsItemFormat {
     public void setPostID(String postID) {
         this.postID = postID;
     }
+
+    public void setProductType(String productType) { this.productType = productType; }
+
+    public String getProductType() { return productType; }
 }
 

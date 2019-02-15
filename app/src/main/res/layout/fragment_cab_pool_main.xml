@@ -13,6 +13,16 @@
         android:layout_gravity="center"
         android:backgroundTint="@color/secondaryText2"
         android:backgroundTintMode="src_atop"/>
+    <TextView
+        android:id="@+id/no_cabpool_text_fragment_cab_pooling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="There aren't any cab pools created recently."
+        android:layout_gravity="center"
+        android:maxWidth="250dp"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:visibility="gone"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

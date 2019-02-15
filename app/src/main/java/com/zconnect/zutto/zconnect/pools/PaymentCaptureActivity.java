@@ -1,22 +1,30 @@
 package com.zconnect.zutto.zconnect.pools;
 
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.razorpay.RazorpayClient;
-import com.razorpay.RazorpayException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.zconnect.zutto.zconnect.pools.models.Order;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 
 public class PaymentCaptureActivity extends BaseActivity {
 
@@ -25,13 +33,15 @@ public class PaymentCaptureActivity extends BaseActivity {
     private static final String RAZOR_PAY_SECRET = "RTnQaWurA8LsntSyWHPTrE4t";
 
     private LinearLayout into_view;
-    private TextView transictionID, amount;
+    private TextView amountTV;
 
     private LinearLayout ll_progressBar;
     private TextView loading_text;
-
-    private String tranID;
-    private int total_amount;
+    private Button nextButton;
+    private DatabaseReference orderRef;
+    private String orderID;
+    private ProgressBar nextBtnProgressBar;
+    private Order order;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,26 +72,71 @@ public class PaymentCaptureActivity extends BaseActivity {
         }
 
         attachID();
+        nextButton.setVisibility(View.GONE);
+        nextBtnProgressBar.setVisibility(View.VISIBLE);
         Bundle b = getIntent().getExtras();
-        tranID = b.getString("paymentID");
-        total_amount = b.getInt("amount");
-        into_view.setVisibility(View.GONE);
-        //setProgressBarView(View.VISIBLE, "Do not Press Back Confirming Payment");
+        orderID = b.getString("orderID");
+        amountTV.setText(b.getString("amount"));
+        orderRef = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_MY_PARTICULAR_ORDER, communityReference, FirebaseAuth.getInstance().getUid(), orderID));
+        orderRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("paymentStatus").getValue(String.class).equals(OtherKeyUtilities.KEY_PAYMENT_SUCCESS))
+                {
+                    ll_progressBar.setVisibility(View.GONE);
+                    into_view.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    setProgressBarVisible("Please do not press back. Confirming payment...");
+                    into_view.setVisibility(View.GONE);
+                }
+                if(dataSnapshot.hasChild("orderStatus")
+                        && dataSnapshot.hasChild("timestampPaymentAfter")
+                        && dataSnapshot.hasChild("timestampPaymentBefore")
+                        && dataSnapshot.hasChild("userBillID"))
+                {
+                    order = dataSnapshot.getValue(Order.class);
+                    try {
+                        Log.i("SLEEPING", "AF");
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    nextBtnProgressBar.setVisibility(View.GONE);
+                    nextButton.setVisibility(View.VISIBLE);
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),OrderDetailActivity.class);
+                intent.putExtra("order",order);
+                startActivity(intent);
+            }
+        });
 
     }
 
 
     private void attachID() {
         into_view = findViewById(R.id.ll_info);
-        transictionID = findViewById(R.id.transection_id);
-        amount = findViewById(R.id.total_pay_amount);
+        amountTV = findViewById(R.id.total_pay_amount);
         ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
+        nextBtnProgressBar = findViewById(R.id.next_btn_progress_bar);
+        nextButton = findViewById(R.id.next_btn);
     }
 
-    private void setProgressBarView(int visibility, String message) {
-        ll_progressBar.setVisibility(visibility);
+    private void setProgressBarVisible(String message) {
+        ll_progressBar.setVisibility(View.VISIBLE);
         loading_text.setText(message);
 
     }

@@ -464,10 +464,6 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newPost.child("infoneType").setValue(userInfoneType);
             newPost.child("contactHidden").setValue(contactHidden);
 
-            if(!newUser) {
-                databaseReferenceInfone.child("categories").child(userDetails.getInfoneType()).child(mUser.getUid()).removeValue();
-            }
-
             //for infone
             newContactNumRef = databaseReferenceInfone.child("numbers").child(mUser.getUid());
             newContactRef = databaseReferenceInfone.child("categories").child(userInfoneType).child(mUser.getUid());
@@ -492,11 +488,20 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
             newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
             newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
             newContactNumRef.child("UID").setValue(mUser.getUid());
-
+            if(userAbout!=null)
+            {
+                newContactNumRef.child("desc").setValue(userAbout);
+                newContactRef.child("desc").setValue(userAbout);
+            }
+            else
+            {
+                newContactNumRef.child("desc").setValue("");
+                newContactRef.child("desc").setValue("");
+            }
 
             if(newUser){
 
-                newPost.child("userPoints").setValue("0");
+                newPost.child("userPoints").setValue(0);
                 SharedPreferences userVerification = getSharedPreferences("userType", MODE_PRIVATE);
                 Boolean userTypeBoolean = userVerification.getBoolean("userVerification", false);
 

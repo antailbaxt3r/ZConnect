@@ -119,7 +119,6 @@
                             android:layout_gravity="end" />
 
                     </RelativeLayout>
-
                 </LinearLayout>
             </RelativeLayout>
 

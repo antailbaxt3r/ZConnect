@@ -5,8 +5,8 @@ import java.io.Serializable;
 public class PoolItem implements Serializable{
 
     // URLS
-    public static final String URL_POOL_ITEM = "shops/shopDetails/%s/pools/poolDetails/%s";
-    //                                                    communityID ,   shopID ,    poolID
+    public static final String URL_POOL_ITEM = "shops/shopDetails/%s/poolTemplates/poolDetails/%s";
+    //                                                         shopID               poolID
 
     //Node names
     public static final String ITEM_ID = "itemID";
@@ -14,7 +14,7 @@ public class PoolItem implements Serializable{
     public static final String PRICE = "price";
     public static final String DESCRIPTION = "description";
     public static final String IMAGE_URL = "imageURL";
-    public static final String IMAGE_THUMBH = "imageThumbh";
+    public static final String IMAGE_THUMB = "imageThumb";
     public static final String MAX_QUANTITY = "maxQuantity";
     public static final String QUANTITY = "quantity";
 
@@ -23,20 +23,20 @@ public class PoolItem implements Serializable{
     private int price;
     private String description;
     private String imageURL;
-    private String imageThumbh;
+    private String imageThumb;
     private int maxQuantity;
     private int quantity;
 
     public PoolItem() {
     }
 
-    public PoolItem(String itemID, String name, int price, String description, String imageURL, String imageThumbh, int maxQuantity, int quantity) {
+    public PoolItem(String itemID, String name, int price, String description, String imageURL, String imageThumb, int maxQuantity, int quantity) {
         this.itemID = itemID;
         this.name = name;
         this.price = price;
         this.description = description;
         this.imageURL = imageURL;
-        this.imageThumbh = imageThumbh;
+        this.imageThumb = imageThumb;
         this.maxQuantity = maxQuantity;
         this.quantity = quantity;
     }
@@ -81,12 +81,12 @@ public class PoolItem implements Serializable{
         this.imageURL = imageURL;
     }
 
-    public String getImageThumbh() {
-        return imageThumbh;
+    public String getImageThumb() {
+        return imageThumb;
     }
 
-    public void setImageThumbh(String imageThumbh) {
-        this.imageThumbh = imageThumbh;
+    public void setImageThumb(String imageThumb) {
+        this.imageThumb = imageThumb;
     }
 
     public int getMaxQuantity() {

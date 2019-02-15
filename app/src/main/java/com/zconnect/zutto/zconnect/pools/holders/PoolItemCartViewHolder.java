@@ -11,34 +11,22 @@ import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
 public class PoolItemCartViewHolder extends RecyclerView.ViewHolder {
 
-
-    private SimpleDraweeView itemImage;
-    private TextView name, price, quantity, amount;
-
-    private PoolItem item;
+    private TextView name, amount;
 
     public PoolItemCartViewHolder(View itemView) {
         super(itemView);
-
-
         attachID();
     }
 
     private void attachID() {
-        name = itemView.findViewById(R.id.item_name);
-        itemImage = itemView.findViewById(R.id.item_logo);
-        price = itemView.findViewById(R.id.item_price);
-        quantity = itemView.findViewById(R.id.item_quantity);
-        amount = itemView.findViewById(R.id.item_total);
+        name = itemView.findViewById(R.id.item_name_cum_quantity);
+        amount = itemView.findViewById(R.id.item_row_amount);
     }
 
     public void populate(PoolItem dish) {
-        this.item = dish;
         Log.d(this.getClass().getName(), "populate : " + dish.getName());
-        name.setText(dish.getName());
-        itemImage.setImageURI(dish.getImageURL());
-        price.setText(String.format("Price %s%d", itemView.getContext().getResources().getString(R.string.Rs), dish.getPrice()));
-        quantity.setText(String.valueOf(dish.getQuantity()));
+        String name_cum_quantity = dish.getName() + " X " + dish.getQuantity();
+        name.setText(name_cum_quantity);
         amount.setText(String.format("%s%d", itemView.getContext().getResources().getString(R.string.Rs), dish.getPrice() * dish.getQuantity()));
     }
 }

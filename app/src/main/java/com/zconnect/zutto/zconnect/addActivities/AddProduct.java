@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +30,7 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -93,11 +95,16 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private String sellerName;
     private CheckBox negotiableCheckBox;
     private Long postTimeMillis;
+    private boolean isAsk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_product);
+        isAsk = getIntent().getStringExtra("type").equals("ASK");
+        if(isAsk)
+            setContentView(R.layout.activity_add_product_ask);
+        else
+            setContentView(R.layout.activity_add_product);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         intentHandle = new IntentHandle();
@@ -264,163 +271,272 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mUsername = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
         mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
         final String category = spinner1.getSelectedItem().toString();
+        boolean _noFieldsEmpty = !TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && category != null;
+        final boolean noFieldsEmpty = isAsk ? _noFieldsEmpty : _noFieldsEmpty && mImageUri != null && (!TextUtils.isEmpty(productPriceValue));
 
-        if (!TextUtils.isEmpty(productNameValue) && !TextUtils.isEmpty(productDescriptionValue) && (!TextUtils.isEmpty(productPriceValue)) && mImageUri != null && category != null) {
-            final StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
-            UploadTask uploadTask = filepath.putFile(mImageUri);
-            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if(!task.isSuccessful())
-                    {
-                        throw task.getException();
-                    }
-                    return filepath.getDownloadUrl();
+        final Map<String, Object> taskMap = new HashMap<String, Object>();
+        final DatabaseReference _newPost = mDatabase.push();
+//        DatabaseReference _postedBy = _newPost.child("PostedBy");
+        key = _newPost.getKey();
+        postTimeMillis = System.currentTimeMillis();
+        taskMap.put("Category", String.valueOf(spinner1.getSelectedItem()));
+        taskMap.put("Key", key);
+        taskMap.put("ProductName", productNameValue);
+        taskMap.put("ProductDescription", productDescriptionValue);
+        taskMap.put("PostedBy", mAuth.getCurrentUser().getUid());
+        taskMap.put("userID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+        taskMap.put("PostTimeMillis", postTimeMillis);
+
+        final DatabaseReference _newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(_newPost.getKey());
+        final Map<String, Object> taskMapHome = new HashMap<String, Object>();
+        taskMapHome.put("name", productNameValue);
+        taskMapHome.put("desc", productDescriptionValue);
+        taskMapHome.put("feature", "StoreRoom");
+        taskMapHome.put("id", key);
+        taskMapHome.put("Key", _newPost2.getKey());
+        taskMapHome.put("PostTimeMillis", postTimeMillis);
+
+        final Map<String, Object> postedByMap = new HashMap<String, Object>();
+        postedByMap.put("UID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                postedByMap.put("Username", user.getUsername());
+                postedByMap.put("ImageThumb", user.getImageURLThumbnail());
+
+                taskMap.put("Phone_no", user.getMobileNumber());
+                taskMap.put("SellerUsername", user.getUsername());
+
+//                postedBy.child("Username").setValue(user.getUsername());
+//                postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+//                newPost.child("Phone_no").setValue(user.getMobileNumber());
+//                newPost.child("SellerUsername").setValue(user.getUsername());
+
+                taskMap.put("PostedBy", postedByMap);
+                taskMapHome.put("PostedBy", postedByMap);
+                if(isAsk)
+                {
+                    taskMap.put("type", "ASK");
+
+                    taskMapHome.put("productType", "ASK");
                 }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if(task.isSuccessful())
+                else
+                {
+                    taskMap.put("type", "ADD");
+                    taskMap.put("Price", productPriceValue);
+                    taskMap.put("isNegotiable", negotiable);
+
+                    taskMapHome.put("productType", "ADD");
+                    taskMapHome.put("desc2", productPriceValue);
+                    taskMapHome.put("productPrice", productPriceValue);
+                }
+                if (noFieldsEmpty) {
+                    Log.i("EEEEEEEEEEEEE", "entered");
+                    if(mImageUri!=null)
                     {
-                        final Uri downloadUri = task.getResult();
-                        final DatabaseReference newPost = mDatabase.push();
-                        final DatabaseReference postedBy = newPost.child("PostedBy");
-                        key = newPost.getKey();
-                        postTimeMillis = System.currentTimeMillis();
-                        newPost.child("Category").setValue(String.valueOf(spinner1.getSelectedItem()));
-                        newPost.child("Key").setValue(key);
-                        newPost.child("ProductName").setValue(productNameValue);
-                        newPost.child("ProductDescription").setValue(productDescriptionValue);
-                        newPost.child("Image").setValue(downloadUri != null ? downloadUri.toString() : null);
-                        newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
-
-                        newPost.child("userID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        newPost.child("Price").setValue(productPriceValue);
-                        newPost.child("isNegotiable").setValue(negotiable);
-                        newPost.child("PostTimeMillis").setValue(postTimeMillis);
-                        postedBy.setValue(null);
-                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                        final StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
+                        UploadTask uploadTask = filepath.putFile(mImageUri);
+                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                             @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                                postedBy.child("Username").setValue(user.getUsername());
-                                postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
-                                newPost.child("Phone_no").setValue(user.getMobileNumber());
-                                newPost.child("SellerUsername").setValue(user.getUsername());
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if(!task.isSuccessful())
+                                {
+                                    throw task.getException();
+                                }
+                                return filepath.getDownloadUrl();
                             }
-
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                             @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_STOREROOM);
-                        numberNotificationForFeatures.setCount();
-                        Log.d("NumberNoti setting for ", FeatureDBName.KEY_STOREROOM);
-
-                        CounterItemFormat counterItemFormat = new CounterItemFormat();
-                        HashMap<String, String> meta= new HashMap<>();
-
-                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADDED);
-                        counterItemFormat.setTimestamp(System.currentTimeMillis());
-                        counterItemFormat.setMeta(meta);
-
-                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                        counterPush.pushValues();
-
-                        FirebaseMessaging.getInstance().subscribeToTopic(key);
-
-
-                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
-                        final DatabaseReference newPost2Postedby = newPost2.child("PostedBy");
-                        newPost2.child("name").setValue(productNameValue);
-                        newPost2.child("desc").setValue(productDescriptionValue);
-                        newPost2.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
-                        newPost2.child("feature").setValue("StoreRoom");
-                        newPost2.child("id").setValue(key);
-                        newPost2.child("desc2").setValue(productPriceValue);
-                        newPost2.child("Key").setValue(newPost2.getKey());
-                        newPost2.child("productPrice").setValue(productPriceValue);
-                        newPost2.child("PostTimeMillis").setValue(postTimeMillis);
-
-                        newPost2Postedby.setValue(null);
-                        newPost2Postedby.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                                newPost2Postedby.child("Username").setValue(user.getUsername());
-                                newPost2Postedby.child("ImageThumb").setValue(user.getImageURLThumbnail());
-                                NotificationSender notificationSender = new NotificationSender(AddProduct.this, user.getUserUID());
-                                NotificationItemFormat addProductNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,user.getUserUID());
-                                addProductNotification.setCommunityName(communityTitle);
-
-                                addProductNotification.setItemKey(key);
-                                addProductNotification.setItemImage(downloadUri.toString());
-                                addProductNotification.setItemName(productNameValue);
-                                addProductNotification.setItemPrice(productPriceValue);
-
-                                addProductNotification.setUserName(user.getUsername());
-                                addProductNotification.setUserImage(user.getImageURLThumbnail());
-
-                                notificationSender.execute(addProductNotification);
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if(task.isSuccessful())
+                                {
+                                    final Uri downloadUri = task.getResult();
+//                        final DatabaseReference newPost = mDatabase.push();
+//                        final DatabaseReference postedBy = newPost.child("PostedBy");
+//                        key = newPost.getKey();
+//                        postTimeMillis = System.currentTimeMillis();
+//                        newPost.child("Category").setValue(String.valueOf(spinner1.getSelectedItem()));
+//                        newPost.child("Key").setValue(key);
+//                        newPost.child("ProductName").setValue(productNameValue);
+//                        newPost.child("ProductDescription").setValue(productDescriptionValue);
+//                        newPost.child("Image").setValue(downloadUri != null ? downloadUri.toString() : null);
+//                        newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
+//                        newPost.child("userID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                        newPost.child("PostTimeMillis").setValue(postTimeMillis);
+                                    taskMap.put("Image", downloadUri != null ? downloadUri.toString() : null);
+                                    taskMapHome.put("imageurl", downloadUri != null ? downloadUri.toString() : null);
+//                        postedBy.setValue(null);
+//                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(DataSnapshot dataSnapshot) {
+//                                UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+//                                postedBy.child("Username").setValue(user.getUsername());
+//                                postedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+//                                newPost.child("Phone_no").setValue(user.getMobileNumber());
+//                                newPost.child("SellerUsername").setValue(user.getUsername());
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(DatabaseError databaseError) {
+//
+//                            }
+//                        });
 
 
-                        // Adding stats
-
-                        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Object o = dataSnapshot.child("TotalProducts").getValue();
-                                if (o == null)
-                                    o = "0";
-                                Integer TotalProducts = Integer.parseInt(o.toString());
-                                TotalProducts = TotalProducts + 1;
-                                DatabaseReference newPost = mFeaturesStats;
-                                Map<String, Object> taskMap = new HashMap<String, Object>();
-                                taskMap.put("TotalProducts", TotalProducts);
-                                newPost.updateChildren(taskMap);
-                            }
 
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+//                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
+//                        final DatabaseReference newPost2Postedby = newPost2.child("PostedBy");
+//                        newPost2.child("name").setValue(productNameValue);
+//                        newPost2.child("desc").setValue(productDescriptionValue);
+//                        newPost2.child("imageurl").setValue(downloadUri != null ? downloadUri.toString() : null);
+//                        newPost2.child("feature").setValue("StoreRoom");
+//                        newPost2.child("id").setValue(key);
+//                        newPost2.child("Key").setValue(newPost2.getKey());
+//                        newPost2.child("PostTimeMillis").setValue(postTimeMillis);
 
+//                        newPost2Postedby.setValue(null);
+//                        newPost2Postedby.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                                    _newPost.updateChildren(taskMap, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                            if(databaseError != null)
+                                                Log.i("WWWWWW Error upd", databaseError.getMessage());
+                                            else
+                                                Log.i("WWWWWW No Error", "Yahoo!");
+                                        }
+                                    });
+                                    _newPost2.updateChildren(taskMapHome, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                            if(databaseError != null)
+                                                Log.i("WWWWWW home Error upd", databaseError.getMessage());
+                                            else
+                                                Log.i("WWWWWW home No Error", "Yahoo!");
+                                        }
+                                    });
+//                            _newPost.setValue(taskMap);
+//                            _newPost2.setValue(taskMapHome);
+                                    ////writing uid of product to homePosts node in Users1.uid for handling data conistency
+                                    mPostedByDetails.child("homePosts").child(key).setValue(true);
+
+                                    handleNotifAndCountAndStats(productNameValue, productPriceValue, downloadUri);
+                                    GlobalFunctions.addPoints(10);
+                                    mProgress.dismiss();
+                                    finish();
+                                }
+                                else {
+                                    // Handle failures
+                                    // ...
+                                    Snackbar snackbar = Snackbar.make(mProductName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                                    snackbar.show();
+                                }
                             }
                         });
+                    }
+                    else
+                    {
+                        _newPost.setValue(taskMap);
+                        _newPost2.setValue(taskMapHome);
+                        ////writing uid of product to homePosts node in Users1.uid for handling data conistency
+                        mPostedByDetails.child("homePosts").child(key).setValue(true);
+
+                        handleNotifAndCountAndStats(productNameValue, productPriceValue, null);
                         GlobalFunctions.addPoints(10);
                         mProgress.dismiss();
                         finish();
                     }
-                    else {
-                        // Handle failures
-                        // ...
-                        Snackbar snackbar = Snackbar.make(mProductName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
-                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
-                        snackbar.show();
-                    }
+
+                } else {
+                    Snackbar snack = Snackbar.make(mProductDescription, "Fields are empty. Can't Add Product.", Snackbar.LENGTH_LONG);
+                    TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackBarText.setTextColor(Color.WHITE);
+                    snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                    snack.show();
+                    mProgress.dismiss();
                 }
-            });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void handleNotifAndCountAndStats(final String productNameValue, final String productPriceValue, final Uri downloadUri) {
+        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_STOREROOM);
+        numberNotificationForFeatures.setCount();
+        Log.d("NumberNoti setting for ", FeatureDBName.KEY_STOREROOM);
+
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta= new HashMap<>();
+
+        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCT_ADDED);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        counterItemFormat.setMeta(meta);
+
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
+
+        FirebaseMessaging.getInstance().subscribeToTopic(key);
+
+        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+//                                newPost2Postedby.child("Username").setValue(user.getUsername());
+//                                newPost2Postedby.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                NotificationSender notificationSender = new NotificationSender(AddProduct.this, user.getUserUID());
+                NotificationItemFormat addProductNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,user.getUserUID());
+                addProductNotification.setCommunityName(communityTitle);
+
+                addProductNotification.setItemKey(key);
+                if(downloadUri!=null)
+                    addProductNotification.setItemImage(downloadUri.toString());
+                addProductNotification.setItemName(productNameValue);
+                if(!isAsk)
+                    addProductNotification.setItemPrice(productPriceValue);
+
+                addProductNotification.setUserName(user.getUsername());
+                addProductNotification.setUserImage(user.getImageURLThumbnail());
+
+                notificationSender.execute(addProductNotification);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        // Adding stats
+
+        mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Object o = dataSnapshot.child("TotalProducts").getValue();
+                if (o == null)
+                    o = "0";
+                Integer TotalProducts = Integer.parseInt(o.toString());
+                TotalProducts = TotalProducts + 1;
+                DatabaseReference newPost = mFeaturesStats;
+                Map<String, Object> taskMap = new HashMap<String, Object>();
+                taskMap.put("TotalProducts", TotalProducts);
+                newPost.updateChildren(taskMap);
+            }
 
 
-        } else {
-            Snackbar snack = Snackbar.make(mProductDescription, "Fields are empty. Can't Add Product.", Snackbar.LENGTH_LONG);
-            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
-            snackBarText.setTextColor(Color.WHITE);
-            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
-            snack.show();
-            mProgress.dismiss();
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

@@ -22,20 +22,20 @@ public class GlobalFunctions {
 
     public static void addPoints(final Integer morePoints){
 
-        pointsRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).child("userPoints");
+        pointsRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).child("userPointsNum");
         pointsRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
 
                 if(mutableData == null){
-                    mutableData.setValue("0");
+                    mutableData.setValue(0);
                 }
-                String temp = mutableData.getValue(String.class);
-                Integer existingPoints = Integer.parseInt(temp);
+//                String temp = mutableData.getValue(String.class);
+                Integer existingPoints = mutableData.getValue(Integer.class);
                 Integer newPoints;
 
                 newPoints = morePoints + existingPoints;
-                mutableData.setValue(newPoints.toString());
+                mutableData.setValue(newPoints);
                 return Transaction.success(mutableData);
             }
 
@@ -43,7 +43,6 @@ public class GlobalFunctions {
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
-                Log.d(TAG, "postTransaction:onComplete:" + databaseError);
             }
         });
     }

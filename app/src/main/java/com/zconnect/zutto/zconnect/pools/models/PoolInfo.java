@@ -19,15 +19,15 @@ public class PoolInfo implements Serializable {
     // URLS
     public static final String URL_POOL_INFO = "shops/shopDetails/%s/pools/poolInfo";
     //                                                         shopID
-    public static final String URL_POOL_OFFER = "shops/shopDetails/%s/pools/poolInfo/%s/offer";
-    //                                                          shopID             poolID
+    public static final String URL_POOL_OFFER = "shops/shopDetails/%s/poolTemplates/poolInfo/%s/offer";
+    //                                                          shopID                      poolID
 
     //Node name
     public static final String NAME = "name";
     public static final String OFFER_TYPE = "offerType";
     public static final String DESCRIPTION = "description";
     public static final String IMAGE_URL = "imageURL";
-    public static final String IMAGE_THUMBH = "imageThumbh";
+    public static final String IMAGE_THUMB = "imageThumb";
     public static final String OFFER = "offer";
     public static final String POOL_ID = "poolID";
     public static final String SHOP_ID = "shopID";
@@ -36,7 +36,7 @@ public class PoolInfo implements Serializable {
     private String name;
     private String description;
     private String imageURL;
-    private String imageThumbh;
+    private String imageThumb;
     private String offerType;
     private DiscountOffer offer;
     private String poolID;
@@ -46,11 +46,11 @@ public class PoolInfo implements Serializable {
 
     }
 
-    public PoolInfo(String name, String description, String imageURL, String imageThumbh, String offerType, DiscountOffer offer, String poolID, String shopID) {
+    public PoolInfo(String name, String description, String imageURL, String imageThumb, String offerType, DiscountOffer offer, String poolID, String shopID) {
         this.name = name;
         this.description = description;
         this.imageURL = imageURL;
-        this.imageThumbh = imageThumbh;
+        this.imageThumb = imageThumb;
         this.offerType = offerType;
         this.offer = offer;
         this.poolID = poolID;
@@ -81,12 +81,12 @@ public class PoolInfo implements Serializable {
         this.imageURL = imageURL;
     }
 
-    public String getImageThumbh() {
-        return imageThumbh;
+    public String getImageThumb() {
+        return imageThumb;
     }
 
-    public void setImageThumbh(String imageThumbh) {
-        this.imageThumbh = imageThumbh;
+    public void setImageThumb(String imageThumb) {
+        this.imageThumb = imageThumb;
     }
 
     public String getOfferType() {

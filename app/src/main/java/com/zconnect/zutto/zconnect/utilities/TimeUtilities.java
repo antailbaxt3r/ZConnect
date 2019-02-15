@@ -67,6 +67,23 @@ public class TimeUtilities {
         }
     }
 
+    public String calculateTimeAgoStoreroom() {
+        String timeAgo = calculateTimeAgo();
+        if(!timeAgo.contains("day") && !timeAgo.contains("month") && !timeAgo.contains("year"))
+        {
+            timeAgo = "New";
+        }
+        else
+        {
+            timeAgo = timeAgo.substring(0, timeAgo.indexOf(" ago"));
+            if(timeAgo.contains("month"))
+                timeAgo = timeAgo.replace("month", "mth");
+            else if(timeAgo.contains("year"))
+                timeAgo = timeAgo.replace("year", "yr");
+        }
+        return timeAgo;
+    }
+
     public String getTimeStamp(long ts1)
     {
         DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
@@ -80,11 +97,11 @@ public class TimeUtilities {
         {
             if(dt1.getYearOfEra()==dt2.getYearOfEra() && dt1.getMonthOfYear() == dt2.getMonthOfYear() && dt1.getDayOfMonth() == dt2.getDayOfMonth())
             {
-                return "TODAY";
+                return "Today";
             }
             else if(dt1.getYearOfEra()==dt2.getYearOfEra() && dt1.getMonthOfYear() == dt2.getMonthOfYear() && dt1.getDayOfMonth() == dt2.getDayOfMonth()-1)
             {
-                return "YESTERDAY";
+                return "Yesterday";
             }
             else {
                 return dt1.getDayOfMonth() + "/" + dt1.getMonthOfYear() + "/" + dt1.getYearOfCentury();

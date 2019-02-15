@@ -44,6 +44,7 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.commonModules.NotificationService;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -88,9 +89,11 @@ public class LogoFlashActivity extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
+//            copyUserPointsToUserPointsNum();
 //            removeJustJoinedNotifFromHome();
 //            countCommunityMembers();
 //            countInfoneCatMembers();
+//            setUserPointsInExistingUsers();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
             mDatabase.addValueEventListener(new ValueEventListener() {
@@ -297,13 +300,27 @@ public class LogoFlashActivity extends BaseActivity {
 //            }
 //        });
 //
-//        temp2 = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("gmc");
+//        temp2 = FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("gim");
 //
 //        temp2.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //
-//                FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("gim").setValue(dataSnapshot.getValue());
+//                FirebaseDatabase.getInstance().getReference().child("communitiesInfo").child("comm_code").setValue(dataSnapshot.getValue());
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//        temp3 = FirebaseDatabase.getInstance().getReference().child("communities").child("gim");
+//
+//        temp3.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                FirebaseDatabase.getInstance().getReference().child("communities").child("comm_code").setValue(dataSnapshot.getValue());
 //            }
 //
 //            @Override
@@ -361,6 +378,34 @@ public class LogoFlashActivity extends BaseActivity {
                     });
         }
     }
+
+    //script to copy userPoints to userPointsNum
+    public static void copyUserPointsToUserPointsNum() {
+        Log.i("PSYCHO", "started");
+        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot shot : dataSnapshot.getChildren())
+                {
+                    if(shot.hasChild("userPoints"))
+                    {
+                        usersRef.child(shot.getKey()).child("userPointsNum").setValue(Integer.parseInt(shot.child("userPoints").getValue().toString()));
+                    }
+                    else
+                    {
+                        Log.i("PSYCHO", "no user points " + shot.getKey());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     //script to remove just joined community notificatin
 //    public static void removeJustJoinedNotifFromHome() {
@@ -557,6 +602,34 @@ public class LogoFlashActivity extends BaseActivity {
 ////            }
 ////        });
 //
+
+//    public void setUserPointsInExistingUsers() {
+//        Log.d(TAG, "setUserPointsInExistingUsers started");
+//        if(communityReference!=null)
+//        {
+//            DatabaseReference users1Ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+//            users1Ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    for(DataSnapshot snapshot: dataSnapshot.getChildren())
+//                    {
+//                        if(!(snapshot.hasChild("userPoints") && Long.parseLong(snapshot.child("userPoints").getValue().toString()) >=0))
+//                        {
+//                            Log.d(TAG, "this");
+//                            snapshot.getRef().child("userPoints").setValue("0");
+//                        }
+//                        else
+//                            Log.d(TAG, "USER POINTS" + snapshot.child("userPoints").getValue().toString());
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//        }
+//    }
 
 
 

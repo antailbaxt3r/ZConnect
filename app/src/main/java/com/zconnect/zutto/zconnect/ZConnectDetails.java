@@ -11,5 +11,6 @@ public class ZConnectDetails {
     public static String COMMUNITIES_DB = "communities";
     public static String MESSAGES_DB = "messages";
     public static String VIEWS_DB = "views";
+    public static String USERS_DB = "Users1";
 
 }

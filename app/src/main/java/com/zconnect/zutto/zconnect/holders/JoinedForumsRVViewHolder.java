@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +37,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
     SimpleDraweeView forumIcon;
     ImageView defaultForumIcon;
     FrameLayout verifiedForumIconLayout;
+    private int unseen_num;
     public JoinedForumsRVViewHolder(View itemView) {
         super(itemView);
         mView = itemView;
@@ -134,7 +136,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
                 intent.putExtra("name", name);
                 intent.putExtra("tab",tabId);
                 intent.putExtra("key",uid);
-
+                intent.putExtra("unseen_num", String.valueOf(unseen_num));
                 mView.getContext().startActivity(intent);
             }
         });
@@ -146,6 +148,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
         if(totalMessages-readMessages>0){
             layoutUnseenMessages.setVisibility(View.VISIBLE);
             unSeenMessages.setText((totalMessages-readMessages) + "");
+            unseen_num = totalMessages - readMessages;
             lastMessageTime.setTextColor(mView.getContext().getResources().getColor(R.color.colorHighlight));
         }else {
             layoutUnseenMessages.setVisibility(View.INVISIBLE);

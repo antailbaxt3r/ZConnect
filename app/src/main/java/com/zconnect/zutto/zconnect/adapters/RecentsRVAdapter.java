@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -39,6 +40,10 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -80,6 +85,7 @@ import com.zconnect.zutto.zconnect.pools.PoolActivity;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
+import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
@@ -114,13 +120,18 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     boolean flag;
     private CommunityFeatures communityFeatures;
     Button scrollToTopBtn;
+    private static int firstVisibleInRV;
+    LinearLayoutManager linearLayoutManager;
+    RecyclerView recyclerView;
 
-    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, Button scrollToTopBtn, CommunityFeatures communityFeatures) {
+    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, Button scrollToTopBtn, CommunityFeatures communityFeatures, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView) {
         this.context = context;
         this.recentsItemFormats = recentsItemFormats;
         this.mHomeActivity = HomeActivity;
         this.scrollToTopBtn = scrollToTopBtn;
         this.communityFeatures = communityFeatures;
+        this.linearLayoutManager = linearLayoutManager;
+        this.recyclerView = recyclerView;
     }
 //
     @Override
@@ -175,12 +186,31 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder2, final int position) {
         final RecentsItemFormat recentItem = recentsItemFormats.get(position);
-        if(position>10)
-        {
-            scrollToTopBtn.setVisibility(View.VISIBLE);
-        }
-        else
-            scrollToTopBtn.setVisibility(View.GONE);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy > 0 && scrollToTopBtn.getVisibility()==View.VISIBLE)
+                {
+                    scrollToTopBtn.setVisibility(View.GONE);
+                }
+                else if(dy < 0 && scrollToTopBtn.getVisibility()!=View.VISIBLE)
+                {
+                    scrollToTopBtn.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+//        if(position < 2)
+//        {
+//             scrollToTopBtn.setVisibility(View.GONE);
+//        }
+//        firstVisibleInRV = linearLayoutManager.findFirstVisibleItemPosition();
+//        if(position>10)
+//        {
+//            scrollToTopBtn.setVisibility(View.VISIBLE);
+//        }
+//        else
+//            scrollToTopBtn.setVisibility(View.GONE);
         switch (holder2.getItemViewType())
         {
             case 0:
@@ -542,7 +572,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             context.startActivity(intent);
                         }
                     });
-                    holder.postConjunction.setText(" added a ");
+                    if(recentsItemFormats.get(position).getProductType()!=null && recentsItemFormats.get(position).getProductType().equals(ProductUtilities.TYPE_ASK_STR))
+                    {
+                        holder.postConjunction.setText(" asked for a ");
+                    }
+                    else
+                    {
+                        holder.postConjunction.setText(" added a ");
+                    }
                     holder.post.setText("Product");
                     holder.post.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -580,11 +617,26 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         holder.productDesc.setText(spannableString);
                         holder.productDesc.setMovementMethod(LinkMovementMethod.getInstance());
                     }
-                    Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
-                    holder.productPrice.setText("₹" + recentsItemFormats.get(position).getProductPrice());
-
-                    posted = " added a ";
-                    post = "Product";
+                    if(recentsItemFormats.get(position).getImageurl()!=null)
+                    {
+                        holder.productImage.setVisibility(View.VISIBLE);
+                        Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
+                    }
+                    else
+                        holder.productImage.setVisibility(View.GONE);
+                    if(recentsItemFormats.get(position).getProductType()!=null && recentsItemFormats.get(position).getProductType().equals(ProductUtilities.TYPE_ASK_STR))
+                    {
+                        holder.productPrice.setVisibility(View.GONE);
+                        posted = " asked for a ";
+                        post = "Product";
+                    }
+                    else
+                    {
+                        holder.productPrice.setVisibility(View.VISIBLE);
+                        holder.productPrice.setText("₹" + recentsItemFormats.get(position).getProductPrice());
+                        posted = " added a ";
+                        post = "Product";
+                    }
                     clickableSpanFeature = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
@@ -646,8 +698,39 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
                     holder.cabpoolSource.setText(recentsItemFormats.get(position).getCabpoolSource());
                     holder.cabpoolDestination.setText(recentsItemFormats.get(position).getCabpoolDestination());
-                    holder.cabpoolDate.setText(recentsItemFormats.get(position).getCabpoolDate());
-                    holder.cabpoolTime.setText(recentsItemFormats.get(position).getCabpoolTime());
+                    DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
+                    DateTime date = null;
+                    try {
+                        DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
+                        date = dtf.parseDateTime(recentsItemFormats.get(position).getCabpoolDate());
+                    }catch (Exception e){}
+                    String dateText = date.toString("MMM") + " " + date.getDayOfMonth();
+                    holder.cabpoolDate.setText(dateText);
+                    if(recentsItemFormats.get(position).getCabpoolTimeFrom()!=-1)
+                    {
+                        String fromAmPm = recentsItemFormats.get(position).getCabpoolTimeFrom()<12 ? "AM" : "PM";
+                        int fromTime = recentsItemFormats.get(position).getCabpoolTimeFrom()<=12 ? recentsItemFormats.get(position).getCabpoolTimeFrom() : recentsItemFormats.get(position).getCabpoolTimeFrom() - 12;
+                        fromTime = fromTime ==  0 ? 12 : fromTime;
+                        String toAmPm = recentsItemFormats.get(position).getCabpoolTimeTo()<12 ? "AM" : "PM";
+                        int toTime = recentsItemFormats.get(position).getCabpoolTimeTo()<=12 ? recentsItemFormats.get(position).getCabpoolTimeTo() : recentsItemFormats.get(position).getCabpoolTimeTo() - 12;
+                        toTime = toTime == 0 ? 12 : toTime;
+                        String timeText = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
+                        holder.cabpoolTime.setText(timeText);
+                    }
+                    else
+                    {
+                        String timeText = recentsItemFormats.get(position).getCabpoolTime();
+                        int fromTime = Integer.parseInt(timeText.substring(0, timeText.indexOf(":")));
+                        String fromAmPm = fromTime<12 ? "AM" : "PM";
+                        fromTime = fromTime<=12 ? fromTime : fromTime - 12;
+                        fromTime = fromTime ==  0 ? 12 : fromTime;
+                        int toTime = Integer.parseInt(timeText.substring(timeText.indexOf("to")+3, timeText.lastIndexOf(":")));
+                        String toAmPm = toTime<12 ? "AM" : "PM";
+                        toTime = toTime<=12 ? toTime : toTime - 12;
+                        toTime = toTime == 0 ? 12 : toTime;
+                        timeText = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
+                        holder.cabpoolTime.setText(timeText);
+                    }
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
 //            layers[0].setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
@@ -753,9 +836,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.post.setTextColor(context.getResources().getColor(R.color.secondaryText));
                     holder.post.setTypeface(Typeface.DEFAULT);
                     final String statusMsg = recentsItemFormats.get(position).getDesc();
-                    if(statusMsg.length()<20)
-                        holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
-                    else if(statusMsg.length()<70)
+                    if(statusMsg.length() < 70 && holder.postImage.getVisibility()==View.GONE)
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
                     else
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
@@ -769,6 +850,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 holder.messagesMessage.setMaxLines(Integer.MAX_VALUE);
                                 holder.messagesMessage.setText(statusMsg);
                                 Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
+                                holder.messagesMessage.setLinkTextColor(Color.BLUE);
+                                holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
                             }
                             @Override
                             public void updateDrawState(TextPaint ds) {
@@ -850,7 +933,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
 
                     holder.noticesText.setText(recentsItemFormats.get(position).getName());
-                    Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.noticesImage);
+                    holder.noticesImage.setImageURI(recentsItemFormats.get(position).getImageurl());
+//                    Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.noticesImage);
 
                     holder.postConjunction.setText(" posted a ");
                     holder.post.setText("Notice");
@@ -1113,6 +1197,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                               counterPush.pushValues();
                               i = new Intent(context, OpenProductDetails.class);
                               i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getId());
+                              String productType = recentsItemFormats.get(getAdapterPosition()).getProductType()!=null ?
+                                      recentsItemFormats.get(getAdapterPosition()).getProductType() : ProductUtilities.TYPE_ADD_STR;
+                              i.putExtra("type", productType);
                               context.startActivity(i);
 
                           } catch(Exception e) {
@@ -1480,6 +1567,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         DatabaseReference totalMembersRef;
         TextView leaderBoardText;
         TextView totalMembers;
+        LinearLayout totalMembersLayout;
 
         public ViewHolderStatus(final View itemView) {
             super(itemView);
@@ -1489,6 +1577,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             textArea = (LinearLayout) itemView.findViewById(R.id.text_area_recents_status_add);
             totalMembers = itemView.findViewById(R.id.total_members);
             leaderBoardText = itemView.findViewById(R.id.leader_board_text);
+            totalMembersLayout = itemView.findViewById(R.id.total_members_layout);
 
             mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -1534,7 +1623,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
 
-            totalMembers.setOnClickListener(new View.OnClickListener() {
+            totalMembersLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(context, "Top the leader board by inviting your friends", Toast.LENGTH_SHORT).show();
@@ -1547,7 +1636,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     try {
-                        totalMembers.setText(dataSnapshot.getValue().toString() + "+ members");
+                        int members_num = dataSnapshot.getValue(Integer.class);
+                        if(members_num>=10 && members_num<100)
+                            members_num = (members_num/10)*10;
+                        else if(members_num>=100 && members_num<1000)
+                            members_num = (members_num/100)*100;
+                        else if(members_num>=1000 && members_num<10000)
+                            members_num = (members_num/1000)*1000;
+                        else if(members_num>=10000)
+                            members_num = 10000;
+                        totalMembers.setText(members_num + "+");
                     }catch (Exception e){}
                 }
 
@@ -1785,6 +1883,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             admin.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    Log.d(TAG, "clicked on admin");
                                     resetFeaturesUnreadCount(FeatureDBName.KEY_ADMIN_PANEL, dataSnapshot);
                                     context.startActivity(new Intent(context, AdminHome.class));
                                 }
@@ -2019,8 +2118,27 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                     @Override
                     public void onCallBack(long value) {
-                        Log.d(TAG, String.valueOf(value));
-                        mUserDetails.child("featuresUnreadCount").child(featureDBName).setValue(value);
+                        Log.d(TAG, String.valueOf(value) + " " + featureDBName);
+                        mUserDetails.child("featuresUnreadCount").child(featureDBName).setValue(value).continueWithTask(new Continuation<Void, Task<Long>>() {
+                            @Override
+                            public Task<Long> then(@NonNull Task<Void> task) throws Exception {
+                                if(task.isSuccessful())
+                                {
+                                    Log.d(TAG, "sucessful");
+                                }
+                                else
+                                {
+                                    Log.d(TAG, "unsuccessful");
+                                    task.addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.d(TAG, e.getMessage());
+                                        }
+                                    });
+                                }
+                                return null;
+                            }
+                        });
                     }
                 });
             }

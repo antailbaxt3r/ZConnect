@@ -3,58 +3,73 @@ package com.zconnect.zutto.zconnect.pools.models;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Vector;
 
 public class Order implements Serializable{
 
     //URLS
+    public static final String URL_MY_ORDERS = "communities/%s/features/shops/orders/current/%s";
+    public static final String URL_MY_PARTICULAR_ORDER = "communities/%s/features/shops/orders/current/%s/%s";
     public static final String URL_ORDER_BASIC_INFO = "shops/shopDetails/%s/orders/%s";
     //                                                                 userID
-    public static final String URL_ORDER_ITEM_LIST = "shops/shopDetails/%s/orders/%s/%s/items";
-    //                                                         shopID     poolID,payID
+    public static final String URL_MY_ORDER_ITEM_LIST = "communities/%s/features/shops/orders/current/%s/%s/items";
+    //                                                          communnityID                      userID/orderID
 
     //Node names
     public static final String ORDER_ID = "orderID";
     public static final String POOL_PUSH_ID = "poolPushID";
-    public static final String STATUS = "status";
+    public static final String ORDER_STATUS = "orderStatus";
+    public static final String PAYMENT_STATUS = "paymentStatus";
     public static final String PAYMENT_ID = "paymentID";
-    public static final String TIMESTAMP_PAYMENT_STARTED = "timeStampPaymentStarted";
-    public static final String TIMESTAMP_PAYMENT_DONE= "timeStampPaymentDone";
+    public static final String TIMESTAMP_PAYMENT_BEFORE = "timestampPaymentBefore";
+    public static final String TIMESTAMP_PAYMENT_AFTER= "timestampPaymentAfter";
     public static final String TOTAL_AMOUNT = "totalAmount";
+    public static final String DISCOUNTED_AMOUNT = "discountedAmount";
     public static final String POOL_INFO = "poolInfo";
     public static final String ITEMS = "items";
     public static final String DELIVERY_TIME = "deliveryTime";
+    public static final String DELIVERY_RCD_TIME = "deliveryRcdTime";
     public static final String ORDERED_BY = "orderedBy";
-
+    public static final String PHONE_NUMBER = "phoneNumber";
 
     private String orderID;
     private String poolPushID;
-    private String status;
-    private String paymentID;
-    private String timestampPaymentStarted;
-
-    private String timestampPaymentDone;
+    private String orderStatus;
+    private String paymentStatus;
+    private String paymentGatewayID;
+    private long timestampPaymentBefore;
+    private long timestampPaymentAfter;
     private long totalAmount;
+    private long discountedAmount;
     private long deliveryTime;
+    private long deliveryRcdTime;
     private PoolInfo poolInfo;
     private PostedByDetails orderedBy;
-    private Vector<PoolItem> items;
+    private HashMap<String, PoolItem> items;
+    private String userBillID;
+    private String phoneNumber;
 
     public Order() {
     }
 
-    public Order(String orderID, String poolPushID, String status, String paymentID, String timestampPaymentStarted,String timestampPaymentDone, long totalAmount, PoolInfo poolInfo, Vector<PoolItem> items, PostedByDetails orderedBy, long deliveryTime) {
+    public Order(String orderID, String poolPushID, String orderStatus, String paymentStatus, String paymentGatewayID, long timestampPaymentBefore, long timestampPaymentAfter, long totalAmount, long discountedAmount, PoolInfo poolInfo, HashMap<String, PoolItem> items, PostedByDetails orderedBy, long deliveryTime, long deliveryRcdTime, String userBillID, String phoneNumber) {
         this.orderID = orderID;
         this.poolPushID = poolPushID;
-        this.status = status;
-        this.paymentID = paymentID;
-        this.timestampPaymentStarted = timestampPaymentStarted;
-        this.timestampPaymentDone = timestampPaymentDone;
+        this.orderStatus = orderStatus;
+        this.paymentGatewayID = paymentGatewayID;
+        this.timestampPaymentBefore = timestampPaymentBefore;
+        this.timestampPaymentAfter = timestampPaymentAfter;
         this.totalAmount = totalAmount;
+        this.discountedAmount = discountedAmount;
         this.poolInfo = poolInfo;
         this.items = items;
         this.orderedBy = orderedBy;
         this.deliveryTime = deliveryTime;
+        this.deliveryRcdTime = deliveryRcdTime;
+        this.userBillID = userBillID;
+        this.paymentStatus = paymentStatus;
+        this.phoneNumber = phoneNumber;
     }
 
     public long getDeliveryTime() {
@@ -63,6 +78,14 @@ public class Order implements Serializable{
 
     public void setDeliveryTime(long deliveryTime) {
         this.deliveryTime = deliveryTime;
+    }
+
+    public void setDeliveryRcdTime(long deliveryRcdTime) {
+        this.deliveryRcdTime = deliveryRcdTime;
+    }
+
+    public long getDeliveryRcdTime() {
+        return deliveryRcdTime;
     }
 
     public String getOrderID() {
@@ -81,20 +104,28 @@ public class Order implements Serializable{
         this.poolPushID = poolPushID;
     }
 
-    public String getStatus() {
-        return status;
+    public String getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
-    public String getPaymentID() {
-        return paymentID;
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
-    public void setPaymentID(String paymentID) {
-        this.paymentID = paymentID;
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public String getPaymentGatewayID() {
+        return paymentGatewayID;
+    }
+
+    public void setPaymentGatewayID(String paymentGatewayID) {
+        this.paymentGatewayID = paymentGatewayID;
     }
 
     public long getTotalAmount() {
@@ -105,6 +136,14 @@ public class Order implements Serializable{
         this.totalAmount = totalAmount;
     }
 
+    public void setDiscountedAmount(long discountedAmount) {
+        this.discountedAmount = discountedAmount;
+    }
+
+    public long getDiscountedAmount() {
+        return discountedAmount;
+    }
+
     public PoolInfo getPoolInfo() {
         return poolInfo;
     }
@@ -113,11 +152,11 @@ public class Order implements Serializable{
         this.poolInfo = poolInfo;
     }
 
-    public Vector<PoolItem> getItems() {
+    public HashMap<String, PoolItem> getItems() {
         return items;
     }
 
-    public void setItems(Vector<PoolItem> items) {
+    public void setItems(HashMap<String, PoolItem> items) {
         this.items = items;
     }
 
@@ -129,63 +168,35 @@ public class Order implements Serializable{
         this.orderedBy = orderedBy;
     }
 
-    public String getTimestampPaymentStarted() {
-        return timestampPaymentStarted;
+    public void setUserBillID(String userBillID) {
+        this.userBillID = userBillID;
     }
 
-    public void setTimestampPaymentStarted(String timestampPaymentStarted) {
-        this.timestampPaymentStarted = timestampPaymentStarted;
+    public String getUserBillID() {
+        return userBillID;
     }
 
-    public String getTimestampPaymentDone() {
-        return timestampPaymentDone;
+    public long getTimestampPaymentBefore() {
+        return timestampPaymentBefore;
     }
 
-    public void setTimestampPaymentDone(String timestampPaymentDone) {
-        this.timestampPaymentDone = timestampPaymentDone;
+    public void setTimestampPaymentBefore(long timestampPaymentBefore) {
+        this.timestampPaymentBefore = timestampPaymentBefore;
     }
 
-//    public Bundle getBundle() {
-//        Bundle b = new Bundle();
-//        if (this.orderID != null)
-//            b.putString(SHOP_ORDER_ID, this.orderID);
-//        if (this.paymentID != null)
-//            b.putString(PAYMENT_ID, this.paymentID);
-//        if (this.status != null)
-//            b.putString(status, this.status);
-//        if (this.poolID != null)
-//            b.putString(POOL_ID, this.poolID);
-//        if (this.poolName != null)
-//            b.putString(POOL_NAME, this.poolName);
-//        if(this.poolPushID != null)
-//            b.putString(POOL_PUSH_ID,this.poolPushID);
-//        if(this.shopID != null)
-//            b.putString(SHOP_ID,this.shopID);
-//        b.putInt(TOTAL_AMOUNT,this.amount);
-//        return b;
-//    }
-//    public static Order getShopOrder(Bundle b){
-//        Order o = new Order();
-//        if(b.containsKey(SHOP_ORDER_ID))
-//            o.setOrderID(b.getString(SHOP_ORDER_ID));
-//        if(b.containsKey(PAYMENT_ID))
-//            o.setPaymentID(b.getString(PAYMENT_ID));
-//        if(b.containsKey(status))
-//            o.setStatus(b.getString(status));
-//        if(b.containsKey(POOL_ID))
-//            o.setPoolID(b.getString(POOL_ID));
-//        if(b.containsKey(POOL_NAME))
-//            o.setPoolName(b.getString(POOL_NAME));
-//        if(b.containsKey(POOL_PUSH_ID))
-//            o.setPoolPushID(b.getString(POOL_PUSH_ID));
-//        if(b.containsKey(SHOP_ID))
-//            o.setShopID(b.getString(SHOP_ID));
-//        if(b.containsKey(TOTAL_AMOUNT))
-//            o.setAmount(b.getInt(TOTAL_AMOUNT));
-//
-//
-//        return o;
-//    }
+    public long getTimestampPaymentAfter() {
+        return timestampPaymentAfter;
+    }
 
+    public void setTimestampPaymentAfter(long timestampPaymentAfter) {
+        this.timestampPaymentAfter = timestampPaymentAfter;
+    }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

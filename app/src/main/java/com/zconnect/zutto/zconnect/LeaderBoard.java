@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceGroup;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.style.LeadingMarginSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.adapters.LeaderBoardRVAdapter;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.interfaces.OnLoadMoreListener;
 import com.zconnect.zutto.zconnect.itemFormats.LeaderBoardItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 
@@ -60,6 +63,8 @@ public class LeaderBoard extends BaseActivity {
     private SimpleDraweeView currentUserImage;
     private ProgressBar progressBar;
     private LinearLayout leaderBoardContent;
+    private String lastUserUID;
+    private int lastUserPointsNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +74,7 @@ public class LeaderBoard extends BaseActivity {
         Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mActionBarToolbar);
 
-        mActionBarToolbar.setTitle("Community Leaders");
+        mActionBarToolbar.setTitle("Leader Board");
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -107,57 +112,62 @@ public class LeaderBoard extends BaseActivity {
         linearLayoutManager = new LinearLayoutManager(this);
 
         leaderBoardRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
-        leaderBoardQuery = leaderBoardRef.orderByChild("points");
+        leaderBoardQuery = leaderBoardRef.orderByChild("userPointsNum").limitToLast(20);
 
         leaderBoardListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                leaderBoardItemFormats.clear();
                 Integer i=0;
-
+                if(lastUserUID==null)
+                {
+                    leaderBoardItemFormats.clear();
+                }
+                Vector<LeaderBoardItemFormat> leaderBoardItemFormatsTemp = new Vector<>();
                 for (DataSnapshot shot: dataSnapshot.getChildren()) {
                     try {
                         i++;
+                        if(i==1)
+                        {
+                            lastUserUID = shot.child("userUID").getValue().toString();
+                            lastUserPointsNum = shot.child("userPointsNum").getValue(Integer.class);
+                            continue;
+                        }
                         LeaderBoardItemFormat tempLeaderBoardItemFormat = new LeaderBoardItemFormat();
-                        if (shot.hasChild("userUID") && shot.hasChild("userPoints")) {
-                            tempLeaderBoardItemFormat.setUserPoints(shot.child("userPoints").getValue().toString());
-                            tempLeaderBoardItemFormat.setPoints(Integer.parseInt(shot.child("userPoints").getValue().toString()));
+                        if (shot.hasChild("userUID") && shot.hasChild("userPointsNum")) {
+                            tempLeaderBoardItemFormat.setUserPointsNum(shot.child("userPointsNum").getValue(Integer.class));
                             tempLeaderBoardItemFormat.setUserUID(shot.child("userUID").getValue().toString());
                             tempLeaderBoardItemFormat.setName(shot.child("username").getValue().toString());
                             tempLeaderBoardItemFormat.setImage(shot.child("imageURLThumbnail").getValue().toString());
-                            leaderBoardItemFormats.add(tempLeaderBoardItemFormat);
-
-
+                            leaderBoardItemFormatsTemp.add(tempLeaderBoardItemFormat);
                         }
 
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
 
                 }
-
-                Collections.sort(leaderBoardItemFormats, new Comparator<LeaderBoardItemFormat>() {
-                    @Override
-                    public int compare(LeaderBoardItemFormat o1, LeaderBoardItemFormat o2) {
-                        return Integer.valueOf((Integer) o2.getPoints()).compareTo((Integer) o1.getPoints()) ;
-                    }
-                });
-
-//                Collections.reverse(leaderBoardItemFormats);
-                for (int j=0;j<leaderBoardItemFormats.size();j++){
-                    leaderBoardItemFormats.get(j).setRank("#"+(j+1));
-                    if(leaderBoardItemFormats.get(j).getUserUID().equals(FirebaseAuth.getInstance().getUid())){
-                        currentUserName.setText(leaderBoardItemFormats.get(j).getName());
-                        currentUserPoints.setText(leaderBoardItemFormats.get(j).getUserPoints());
-                        currentUserRank.setText(leaderBoardItemFormats.get(j).getRank());
-                        currentUserImage.setImageURI(leaderBoardItemFormats.get(j).getImage());
+                Collections.reverse(leaderBoardItemFormatsTemp);
+                leaderBoardItemFormats.addAll(leaderBoardItemFormatsTemp);
+                if(currentUserLayout.getVisibility() != View.VISIBLE)
+                {
+                    currentUserLayout.setVisibility(View.GONE);
+                    for (int j=0;j<leaderBoardItemFormats.size();j++){
+                        leaderBoardItemFormats.get(j).setRank("#"+(j+1));
+                        if(leaderBoardItemFormats.get(j).getUserUID().equals(FirebaseAuth.getInstance().getUid())){
+                            currentUserLayout.setVisibility(View.VISIBLE);
+                            currentUserName.setText(leaderBoardItemFormats.get(j).getName());
+                            currentUserPoints.setText(leaderBoardItemFormats.get(j).getUserPointsNum() + "");
+                            currentUserRank.setText(leaderBoardItemFormats.get(j).getRank());
+                            currentUserImage.setImageURI(leaderBoardItemFormats.get(j).getImage());
+                        }
                     }
                 }
 
                 leaderBoardContent.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
                 leaderBoardRVAdapter.notifyDataSetChanged();
+                if(lastUserUID!=null)
+                    leaderBoardRVAdapter.setLoaded();
             }
 
             @Override
@@ -167,9 +177,29 @@ public class LeaderBoard extends BaseActivity {
         };
 
         leaderBoardRV.setLayoutManager(linearLayoutManager);
-        leaderBoardRVAdapter = new LeaderBoardRVAdapter(leaderBoardItemFormats,currentUserLayout,this);
-        leaderBoardRV.setAdapter(leaderBoardRVAdapter);
+        leaderBoardRVAdapter = new LeaderBoardRVAdapter(leaderBoardItemFormats,currentUserLayout,this, leaderBoardRV);
+        leaderBoardRVAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                leaderBoardItemFormats.add(null);
+                leaderBoardRVAdapter.notifyItemInserted(leaderBoardItemFormats.size() - 1);
 
+                //load more data
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //removing loading item
+                        leaderBoardItemFormats.remove(leaderBoardItemFormats.size()-1);
+                        leaderBoardRVAdapter.notifyItemRemoved(leaderBoardItemFormats.size());
+
+                        //load data
+                        leaderBoardQuery = leaderBoardRef.orderByChild("userPointsNum").endAt(lastUserPointsNum,lastUserUID).limitToLast(20);
+                        leaderBoardQuery.addValueEventListener(leaderBoardListener);
+                    }
+                }, 3000);
+            }
+        });
+        leaderBoardRV.setAdapter(leaderBoardRVAdapter);
     }
 
     @Override
@@ -184,7 +214,8 @@ public class LeaderBoard extends BaseActivity {
         if (id == R.id.action_info) {
 
             AlertDialog alertDialog = new AlertDialog.Builder(LeaderBoard.this).create();
-            alertDialog.setMessage("The more you contribute to your community by adding content, the higher position you get in the leader board");
+            alertDialog.setMessage("The more you contribute to your community by adding content, the more points you earn and the higher position you go in the leader board." +
+                    "\n\nComing soon: Use the points to redeem special, exclusive and exciting offers!");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -208,5 +239,19 @@ public class LeaderBoard extends BaseActivity {
     protected void onStop() {
         super.onStop();
         leaderBoardQuery.removeEventListener(leaderBoardListener);
+    }
+
+
+    public static class LoadingViewHolder extends RecyclerView.ViewHolder {
+        public ProgressBar loadMoreBar;
+
+        public LoadingViewHolder(View itemView) {
+            super(itemView);
+            loadMoreBar = (ProgressBar) itemView.findViewById(R.id.more_loader);
+        }
+
+        public void setState() {
+            loadMoreBar.setIndeterminate(true);
+        }
     }
 }

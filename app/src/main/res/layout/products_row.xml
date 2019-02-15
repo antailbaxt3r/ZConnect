@@ -24,6 +24,22 @@
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/product"
                 android:transitionName="@string/transition_string" />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/storeroom_product_tag"/>
+                <TextView
+                    android:id="@+id/product_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Now"
+                    android:textSize="10sp"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
         </FrameLayout>
 
         <LinearLayout

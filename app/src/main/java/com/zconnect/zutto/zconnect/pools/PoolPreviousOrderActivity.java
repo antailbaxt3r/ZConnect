@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 public class PoolPreviousOrderActivity extends BaseActivity {
 
-    public static final String TAG = "PoolOrderActivity";
+    public final String TAG = getClass().getSimpleName();
 
     private RecyclerView recyclerView;
     private LinearLayout ll_progressBar;
@@ -72,9 +72,8 @@ public class PoolPreviousOrderActivity extends BaseActivity {
     }
 
     private void loadOrderList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_ORDER_BASIC_INFO,communityReference,userUID));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_MY_ORDERS,communityReference,userUID));
         Log.d(TAG, "loadOrderList : ref " + ref.toString());
-
         ref.addValueEventListener(orderListener);
     }
 
@@ -104,9 +103,10 @@ public class PoolPreviousOrderActivity extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<Order> list = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Log.i("Lambergini", child.getValue().toString());
+                    Log.i("Lambergini", child.child("orderID").getValue().toString());
                     Order order = child.getValue(Order.class);
-                    order.setOrderID(child.getKey());
-                    list.add(order);
+                    list.add(child.getValue(Order.class));
                 }
                 adapter.addAll(list);
                 setProgressBarView(View.GONE, "");

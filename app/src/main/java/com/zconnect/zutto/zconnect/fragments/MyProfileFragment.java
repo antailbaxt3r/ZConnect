@@ -375,6 +375,7 @@ public class MyProfileFragment extends Fragment {
                 editTextName.setTypeface(ralewaySemiBold);
                 editTextDetails.setTypeface(ralewayRegular);
                 editTextNumber.setTypeface(ralewayRegular);
+                whatsAppNumberText.setTypeface(ralewayRegular);
                 editTextSkills.setTypeface(ralewayRegular);
                 editTextEmail.setTypeface(ralewayRegular);
             }

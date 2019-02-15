@@ -63,8 +63,8 @@
 
             <ImageButton
                 android:id="@+id/dateIcon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
                 android:background="@android:drawable/screen_background_light_transparent"
                 android:backgroundTint="@android:color/transparent"
@@ -91,20 +91,6 @@
             android:orientation="vertical"
             android:elevation="5dp">
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginLeft="2dp"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:paddingTop="5dp"
-                android:text="Venue : "
-                android:textAlignment="textStart"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
             <ImageButton
                 android:id="@+id/venuePicker"
                 android:layout_width="50dp"
@@ -128,18 +114,17 @@
                 android:text="Pick on Google maps "
                 android:textSize="15sp" />
 
-            <AutoCompleteTextView
+            <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/VenueText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="center_vertical"
-                android:layout_toEndOf="@+id/textView"
-                android:inputType="textAutoComplete"
-                android:lines="200"
-                android:textColor="@color/teal500"
-                android:textSize="14sp"
-                tools:hint="offerType venue here" />
+                android:minHeight="80dp"
+                android:hint="Event venue"
+                android:padding="10dp"
+                android:elevation="5dp"
+                android:ems="10"
+                android:background="@drawable/border_filled_2"
+                android:inputType="textPersonName"/>
 
             <CheckBox
                 android:id="@+id/add_events_location_checkbox"

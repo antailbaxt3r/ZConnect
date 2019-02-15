@@ -90,7 +90,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
     private FusedLocationProviderClient mFusedLocationClient;
 
-    protected static long MIN_UPDATE_INTERVAL = 30 * 1000; // 1  minute is the minimum Android recommends, but we use 30 seconds
+    protected static long MIN_UPDATE_INTERVAL = 10 * 1000; // 1  minute is the minimum Android recommends, but we use 30 seconds
 
     protected Location mLastLocation;
 
@@ -281,7 +281,6 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
     private void stopLocationUpdates() {
         mFusedLocationClient.removeLocationUpdates(locationCallback);
     }
-
 
     private void startLocationPermissionRequest(int requestCode) {
         ActivityCompat.requestPermissions(CommunitiesAround.this, new String[]{ACCESS_COARSE_LOCATION}, requestCode);

@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.pools;
 
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,8 +27,12 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemCartAdapter;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 import com.zconnect.zutto.zconnect.pools.models.Order;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 
 import net.glxn.qrgen.android.QRCode;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.util.ArrayList;
 
@@ -41,7 +47,9 @@ public class OrderDetailActivity extends BaseActivity {
     private PoolItemCartAdapter adapter;
     private ValueEventListener poolItemListener,orderItemListener;
     private ArrayList<PoolItem> poolItems = new ArrayList<>();
-    private TextView orderStatus,userName,userEmail,userAmount;
+    private TextView orderStatus, userBillID, itemTotal, discountTotal, discountedTotal;
+    private ImageView orderStatusIcon;
+    private FrameLayout deliveredTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +59,6 @@ public class OrderDetailActivity extends BaseActivity {
 
         if (b != null) {
             if (b.containsKey("order")) {
-
                 order = (Order) getIntent().getSerializableExtra("order");
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user == null) {
@@ -112,23 +119,54 @@ public class OrderDetailActivity extends BaseActivity {
 
     private void setOrderQRView() {
 
-        Bitmap myBitmap = QRCode.from(order.getPaymentID()+"-"+userUID).bitmap();
+        Bitmap myBitmap;
+        if (order.getUserBillID() != null) {
+            myBitmap = QRCode.from(order.getUserBillID()).bitmap();
+        }
+        //delete this else after cleaning database
+        else {
+            Log.i(TAG, "No userBillID");
+            myBitmap = QRCode.from("NULLNULLNULL").bitmap();
+        }
         qr_image.setImageBitmap(myBitmap);
-
-        orderStatus.setText(order.getStatus());
-        userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-        userEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-        userAmount.setText(String.format("Amount : %s%d",getResources().getString(R.string.Rs),order.getTotalAmount()));
+        if (order.getOrderStatus().equals(OtherKeyUtilities.KEY_ORDER_OUT_FOR_DELIVERY))
+        {
+            DateTime dateTime = new DateTime(order.getDeliveryTime(), DateTimeZone.forID("Asia/Kolkata"));
+            String text = "Order out for delivery on " + dateTime.toString("MMM") + " " + dateTime.getDayOfMonth();
+            orderStatus.setText(text);
+            orderStatusIcon.setImageDrawable(getApplicationContext().getDrawable(R.drawable.baseline_local_shipping_24));
+            orderStatusIcon.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorHighlightLight), PorterDuff.Mode.SRC_ATOP);
+            deliveredTag.setVisibility(View.GONE);
+        }
+        else if(order.getOrderStatus().equals(OtherKeyUtilities.KEY_ORDER_DELIVERED))
+        {
+            DateTime dateTime = new DateTime(order.getDeliveryRcdTime(), DateTimeZone.forID("Asia/Kolkata"));
+            String text = "Order delivered on " + dateTime.toString("MMM") + " " + dateTime.getDayOfMonth() + ", "
+                    + (dateTime.getHourOfDay()>12?dateTime.getHourOfDay()-12:dateTime.getHourOfDay())
+                    +":"+(dateTime.getMinuteOfHour()<10?"0"+dateTime.getMinuteOfHour():dateTime.getMinuteOfHour())
+                    + (dateTime.getHourOfDay()<12?" AM":" PM");
+            orderStatus.setText(text);
+            orderStatusIcon.setImageDrawable(getApplicationContext().getDrawable(R.drawable.baseline_check_white_24));
+            orderStatusIcon.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorHighlightLight), PorterDuff.Mode.SRC_ATOP);
+            deliveredTag.setVisibility(View.VISIBLE);
+        }
+        userBillID.setText(order.getUserBillID());
+        itemTotal.setText(String.format("%s%d",getResources().getString(R.string.Rs),order.getTotalAmount()));
+        discountTotal.setText(String.format("%s%d",getResources().getString(R.string.Rs),(order.getTotalAmount()-order.getDiscountedAmount())));
+        discountedTotal.setText(String.format("%s%d",getResources().getString(R.string.Rs),order.getDiscountedAmount()));
     }
 
     private void attachID() {
         toolbar.setTitle(order.getPoolInfo().getName());
         qr_image = findViewById(R.id.qr_image);
         orderStatus = findViewById(R.id.order_status);
-        userName = findViewById(R.id.user_name);
-        userEmail = findViewById(R.id.user_email);
-        userAmount = findViewById(R.id.user_amount);
+        userBillID = findViewById(R.id.userBillIDText);
         recyclerView = findViewById(R.id.recycleView);
+        orderStatusIcon = findViewById(R.id.order_status_icon);
+        deliveredTag = findViewById(R.id.delivered_tag);
+        itemTotal = findViewById(R.id.item_total);
+        discountTotal = findViewById(R.id.discount_total);
+        discountedTotal = findViewById(R.id.discounted_total);
 
         adapter = new PoolItemCartAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -158,24 +196,19 @@ public class OrderDetailActivity extends BaseActivity {
         orderItemListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               if(dataSnapshot != null){
-                  for(DataSnapshot item : dataSnapshot.getChildren()){
-                      PoolItem orderItem =null;
-                      for(int i = 0 ; i < poolItems.size();i++){
-                          if(poolItems.get(i).getItemID().compareTo(item.getKey())==0){
-                              orderItem = poolItems.get(i);
-                              orderItem.setQuantity(item.getValue(Integer.class));
-                              break;
-                          }
-                      }
-                      if(orderItem != null){
-                          adapter.insertAtEnd(orderItem);
+                for(DataSnapshot item : dataSnapshot.getChildren()){
+                  PoolItem orderItem =null;
+                  for(int i = 0 ; i < poolItems.size();i++){
+                      if(poolItems.get(i).getItemID().compareTo(item.getKey())==0){
+                          orderItem = poolItems.get(i);
+                          orderItem.setQuantity(item.getValue(PoolItem.class).getQuantity());
+                          break;
                       }
                   }
-
-               } else {
-                   //TODO no such order
-               }
+                  if(orderItem != null){
+                      adapter.insertAtEnd(orderItem);
+                  }
+                }
             }
 
             @Override
@@ -186,8 +219,8 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     private void loadOrderItemList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_ORDER_ITEM_LIST,
-                communityReference, order.getPoolInfo().getShopID(),order.getPoolPushID() ,order.getPaymentID()));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_MY_ORDER_ITEM_LIST,
+                communityReference, userUID, order.getOrderID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(orderItemListener);
     }
