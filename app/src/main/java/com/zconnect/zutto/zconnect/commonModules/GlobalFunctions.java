@@ -61,27 +61,21 @@ public class GlobalFunctions {
         if(audience) {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                     child(communityReference).child("notifications").child(notificationsUID);;
-            notificationsRef.child("title").setValue(title);
-            notificationsRef.child("desc").setValue(desc);
-            notificationsRef.child("count").setValue(0);
-            notificationsRef.child("type").setValue(type);
-            notificationsRef.child("timestamp").setValue(ServerValue.TIMESTAMP);
-            for(HashMap.Entry<String, String> entry : metadata.entrySet()) {
-                notificationsRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
-            }
+
         }
         else {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                     child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid())
                     .child("notifications").child(notificationsUID);
-            notificationsRef.child("title").setValue(title);
-            notificationsRef.child("desc").setValue(desc);
-            notificationsRef.child("count").setValue(0);
-            notificationsRef.child("type").setValue(type);
-            notificationsRef.child("timestamp").setValue(ServerValue.TIMESTAMP);
-            for(HashMap.Entry<String, String> entry : metadata.entrySet()) {
-                notificationsRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
-            }
+        }
+
+        notificationsRef.child("title").setValue(title);
+        notificationsRef.child("desc").setValue(desc);
+        notificationsRef.child("count").setValue(0);
+        notificationsRef.child("type").setValue(type);
+        notificationsRef.child("timestamp").setValue(ServerValue.TIMESTAMP);
+        for(HashMap.Entry<String, String> entry : metadata.entrySet()) {
+            notificationsRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
         }
     }
 }
