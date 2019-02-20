@@ -238,8 +238,16 @@ exports.test_getPayment = functions.database.ref('communities/{communityID}/feat
            console.log("inside status 200");
             snapshot.ref.parent.child("paymentStatus").set("success", ()=>{
               snapshot.ref.root.child(`communities/${communityID}/Users1/${uid}`).once('value', userSnapshot => {
-    
+                
+                const userObjForForum = {
+                  imageThumb: userSnapshot.child("imageURLThumbnail").val(),
+                  name: userSnapshot.child("username").val(),
+                  phoneNumber: userSnapshot.child("mobileNumber").val(),
+                  userUID: uid,
+                };
                 const shopRef = snapshot.ref.root.child(`shops/shopDetails/${shopID}`);
+                snapshot.ref.root.child(`communities/${communityID}/features/forums/tabsCategories/shopPools/${poolPushID}/users/${uid}`)
+                .set(userObjForForum);
                 shopRef.child(`createdPools/current/${poolPushID}/totalOrder`)
                 .transaction(current_value => {
                   const userBillID = "" + orderID.substr(-6) + getThreeDigitString(current_value + 1);
@@ -255,7 +263,7 @@ exports.test_getPayment = functions.database.ref('communities/{communityID}/feat
                     userBillID,
                     timestampPaymentAfter,
                     orderStatus,
-                  }
+                  };
                   orderSnapshot.ref.child('phoneNumber').remove();
                   const orderRefInsideShop = shopRef.child(`orders/current/${poolPushID}/${orderID}`);
                   orderRefInsideShop.set(orderObj);
