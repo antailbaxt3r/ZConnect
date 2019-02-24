@@ -37,6 +37,6 @@ public class PoolItemDetailViewHolder extends RecyclerView.ViewHolder {
         name.setText(dish.getName());
         description.setText(dish.getDescription());
         dishImage.setImageURI(dish.getImageURL());
-        price.setText(String.format("Price %s %d", itemView.getContext().getResources().getString(R.string.Rs), dish.getPrice()));
+        price.setText(String.format("Price %s%d", itemView.getContext().getResources().getString(R.string.Rs), dish.getPrice()));
     }
 }

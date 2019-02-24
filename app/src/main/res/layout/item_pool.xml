@@ -1,76 +1,254 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
-    android:orientation="vertical">
-
-    <LinearLayout
+    android:layout_height="wrap_content">
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/pool_logo"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:contentDescription="Image"
-            app:roundAsCircle="true" />
-
-        <TextView
-            android:id="@+id/pool_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-
-        <LinearLayout
-            android:layout_marginStart="24dp"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/pool_count"
-                android:text="125"
-                android:layout_width="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:elevation="@dimen/elevation"
+        android:layout_margin="@dimen/margin_small"
+        app:cardCornerRadius="@dimen/border_radius_5dp">
+        <FrameLayout
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="160dp">
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/pool_bg_image"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center" />
+                android:background="@drawable/paratha"
+                android:scaleType="centerCrop" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@drawable/gradient_up"
+                android:layout_gravity="bottom"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_small">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/pool_logo"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:contentDescription="Image"
+                        android:visibility="gone"
+                        app:roundAsCircle="true" />
+
+                    <TextView
+                        android:id="@+id/pool_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/border_fill"
+                        android:padding="@dimen/padding_x_small"
+                        android:minWidth="120dp"
+                        android:gravity="center"
+                        android:text="Kaashi Dairy"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                        android:textSize="14sp"
+                        android:textColor="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="24dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/pool_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="125"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
 
-            <ImageButton
-                android:id="@+id/btn_like"
-                android:padding="4dp"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:background="@color/transparent"
-                android:src="@drawable/ic_favorite_border_black_24dp"
-                android:layout_height="wrap_content" />
+                        <ImageButton
+                            android:id="@+id/btn_like"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@color/transparent"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_favorite_border_black_24dp" />
 
 
-        </LinearLayout>
-    </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
 
-    <TextView
-        android:id="@+id/pool_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp" />
-
-    <TextView
-        android:id="@+id/delivery_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp" />
-
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:id="@+id/order_deadline_info_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:padding="@dimen/padding_small"
+                        android:clipToPadding="false"
+                        android:background="@drawable/border_fill"
+                        android:backgroundTint="@color/green500"
+                        android:layout_marginTop="@dimen/margin_medium">
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="-5dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="@dimen/margin_x_small">
+                            <ImageView
+                                android:id="@+id/timer_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/white"
+                                android:layout_centerHorizontal="true"
+                                android:background="@drawable/baseline_timer_white_24" />
+                            <TextView
+                                android:id="@+id/delivery_day"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="8sp"
+                                android:textColor="@color/white"
+                                android:text="Feb 10"
+                                android:layout_centerHorizontal="true"
+                                android:layout_below="@+id/timer_icon" />
+                        </RelativeLayout>
+                        <TextView
+                            android:id="@+id/order_deadline_time"
+                            style="@style/Base.TextAppearance.AppCompat.Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TUE, 8:30 PM"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/pool_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:text="Loreum epsum dolor sit lorem epsum dolor sit lorem epsum sit dolor Loreum epsum dolor sit lorem epsum Loreum epsum dolor sit lorem epsum"
+                        android:textColor="@color/white" />
+                    <RelativeLayout
+                        android:id="@+id/countdown_wrapper_layout"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/pool_description"
+                        android:background="@color/yellow700"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/padding_x_small">
+                        <LinearLayout
+                            android:id="@+id/countdown_layout1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="@dimen/padding_x_small">
+                            <TextView
+                                android:id="@+id/countdown_t1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                style="@style/Base.TextAppearance.AppCompat.Title"
+                                android:background="@color/yellow200"
+                                android:textColor="@color/yellow700"
+                                android:layout_marginEnd="@dimen/margin_x_small"
+                                android:paddingStart="@dimen/padding_x_small"
+                                android:paddingEnd="@dimen/padding_x_small"/>
+                            <TextView
+                                android:id="@+id/countdown_t2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="7"
+                                style="@style/Base.TextAppearance.AppCompat.Title"
+                                android:background="@color/yellow200"
+                                android:textColor="@color/yellow700"
+                                android:paddingStart="@dimen/padding_x_small"
+                                android:paddingEnd="@dimen/padding_x_small"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/countdown_layout2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/countdown_layout1"
+                            android:gravity="center"
+                            android:padding="@dimen/padding_x_small">
+                            <TextView
+                                android:id="@+id/countdown_t3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="3"
+                                style="@style/Base.TextAppearance.AppCompat.Title"
+                                android:background="@color/yellow200"
+                                android:textColor="@color/yellow700"
+                                android:paddingStart="@dimen/padding_x_small"
+                                android:paddingEnd="@dimen/padding_x_small"/>
+                            <TextView
+                                android:id="@+id/countdown_t4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="5"
+                                style="@style/Base.TextAppearance.AppCompat.Title"
+                                android:background="@color/yellow200"
+                                android:textColor="@color/yellow700"
+                                android:layout_marginStart="@dimen/margin_xx_small"
+                                android:paddingStart="@dimen/padding_x_small"
+                                android:paddingEnd="@dimen/padding_x_small"/>
+                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/countdown_label1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Minutes"
+                            android:layout_below="@+id/countdown_layout1"
+                            android:layout_marginStart="@dimen/margin_x_small"
+                            android:textColor="@color/yellow200"
+                            android:textSize="10sp"/>
+                        <TextView
+                            android:id="@+id/countdown_label2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Seconds"
+                            android:layout_below="@+id/countdown_layout2"
+                            android:layout_alignStart="@id/countdown_layout2"
+                            android:layout_marginStart="@dimen/margin_x_small"
+                            android:textColor="@color/yellow200"
+                            android:textSize="10sp"/>
+                    </RelativeLayout>
+                    <Button
+                        android:id="@+id/order_btn"
+                        android:layout_width="wrap_content"
+                        android:minWidth="120dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/border_fill"
+                        android:backgroundTint="@color/colorHighlight"
+                        android:text="Order Now"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:visibility="gone"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </FrameLayout>
+    </android.support.v7.widget.CardView>
     <Button
         android:id="@+id/activate_btn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:minWidth="150dp"
+        android:layout_height="35dp"
+        android:text="Activate"
+        android:textAllCaps="false"
         android:visibility="gone"
-        android:padding="15dp"
-        android:text="Activate"/>
-</LinearLayout>
+        android:layout_below="@+id/card"
+        android:textColor="@color/white"
+        android:background="@drawable/border_fill"
+        android:layout_marginTop="@dimen/margin_x_small" />
+</RelativeLayout>

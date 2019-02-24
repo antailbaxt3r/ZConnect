@@ -41,7 +41,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
 
     private Button btn_payment;
     private RecyclerView recyclerView;
-    private TextView offers, description, joined_peoples;
+    private TextView offers, description;
     private LinearLayout ll_progressBar;
     private TextView loading_text;
 
@@ -141,13 +141,12 @@ public class ActivePoolDetailsActivity extends BaseActivity {
         setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM, pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
-        ref.addListenerForSingleValueEvent(poolItemListener);
+        ref.addValueEventListener(poolItemListener);
     }
 
     private void setPoolInfo() {
         toolbar.setTitle(pool.getPoolInfo().getName());
         description.setText(pool.getPoolInfo().getDescription());
-        joined_peoples.setText("Ordered : " + String.valueOf(pool.getTotalOrder()));
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER, pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(poolOfferListener);
@@ -158,7 +157,6 @@ public class ActivePoolDetailsActivity extends BaseActivity {
         recyclerView = findViewById(R.id.pool_item_rv);
         offers = findViewById(R.id.pool_offers);
         description = findViewById(R.id.pool_description);
-        joined_peoples = findViewById(R.id.joined_peoples);
         ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
 
@@ -201,7 +199,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
                     min_item = discountOffer.getMinQuantity();
                     // if(disPer != 0 && maxDiscount != 0 && minQuantity !=0)
                     offers.setVisibility(View.VISIBLE);
-                    offers.setText(String.format("Discount Percentage : %d\nMax Discount %d\nMin Quantity : %d", discount_percentage, max_amount, min_item));
+                    offers.setText(String.format("OFFER: %d%% OFF upto " + getApplicationContext().getString(R.string.Rs) + "%d on a minimum order of %d items.", discount_percentage, max_amount, min_item));
                 }
             }
 

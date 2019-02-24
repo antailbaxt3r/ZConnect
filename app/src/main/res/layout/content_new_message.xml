@@ -61,7 +61,7 @@
                 fresco:viewAspectRatio="1.33"
                 android:id="@+id/post_image_view"
                 fresco:roundingBorderPadding="5dp"
-                fresco:overlayImage="@drawable/border"
+                fresco:overlayImage="@drawable/border_outline"
                 android:visibility="gone"/>
         </LinearLayout>
         <LinearLayout

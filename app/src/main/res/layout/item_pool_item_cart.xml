@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_small"
+    android:layout_margin="@dimen/margin_x_small">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -21,17 +23,19 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:text="Butter Naan X 5"
-            android:layout_toRightOf="@id/item_dot"
-            android:layout_marginStart="@dimen/margin_x_small"
-            android:layout_centerVertical="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            android:layout_toEndOf="@+id/item_dot"
+            android:layout_marginStart="@dimen/margin_small"
+            android:textColor="@color/primaryText"
+            android:textSize="14sp"
+            android:layout_centerVertical="true"/>
         <TextView
             android:id="@+id/item_row_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Rs.300/-"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            android:textSize="16sp"
+            android:textColor="@color/primaryText"
+            android:layout_centerVertical="true"/>
     </RelativeLayout>
 </LinearLayout>
