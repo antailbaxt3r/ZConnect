@@ -129,7 +129,7 @@ public class OrderDetailActivity extends BaseActivity {
             myBitmap = QRCode.from("NULLNULLNULL").bitmap();
         }
         qr_image.setImageBitmap(myBitmap);
-        if (order.getOrderStatus().equals(OtherKeyUtilities.KEY_ORDER_OUT_FOR_DELIVERY))
+        if (order.getOrderStatus().equals(Order.KEY_ORDER_OUT_FOR_DELIVERY))
         {
             DateTime dateTime = new DateTime(order.getDeliveryTime(), DateTimeZone.forID("Asia/Kolkata"));
             String text = "Order out for delivery on " + dateTime.toString("MMM") + " " + dateTime.getDayOfMonth();
@@ -138,7 +138,7 @@ public class OrderDetailActivity extends BaseActivity {
             orderStatusIcon.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorHighlightLight), PorterDuff.Mode.SRC_ATOP);
             deliveredTag.setVisibility(View.GONE);
         }
-        else if(order.getOrderStatus().equals(OtherKeyUtilities.KEY_ORDER_DELIVERED))
+        else if(order.getOrderStatus().equals(Order.KEY_ORDER_DELIVERED))
         {
             DateTime dateTime = new DateTime(order.getDeliveryRcdTime(), DateTimeZone.forID("Asia/Kolkata"));
             String text = "Order delivered on " + dateTime.toString("MMM") + " " + dateTime.getDayOfMonth() + ", "

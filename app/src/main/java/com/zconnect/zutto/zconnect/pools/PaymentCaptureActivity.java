@@ -81,7 +81,7 @@ public class PaymentCaptureActivity extends BaseActivity {
         orderRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("paymentStatus").getValue(String.class).equals(OtherKeyUtilities.KEY_PAYMENT_SUCCESS))
+                if(dataSnapshot.child("paymentStatus").getValue(String.class).equals(Order.KEY_PAYMENT_SUCCESS))
                 {
                     ll_progressBar.setVisibility(View.GONE);
                     into_view.setVisibility(View.VISIBLE);

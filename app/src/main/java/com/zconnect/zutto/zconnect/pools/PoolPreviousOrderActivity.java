@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -101,10 +102,9 @@ public class PoolPreviousOrderActivity extends BaseActivity {
         orderListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.i("YOLO", dataSnapshot.toString());
                 ArrayList<Order> list = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Log.i("Lambergini", child.getValue().toString());
-                    Log.i("Lambergini", child.child("orderID").getValue().toString());
                     Order order = child.getValue(Order.class);
                     list.add(child.getValue(Order.class));
                 }
