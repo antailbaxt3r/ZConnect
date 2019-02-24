@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,6 +52,8 @@ public class OrderDetailActivity extends BaseActivity {
     private TextView orderStatus, userBillID, itemTotal, discountTotal, discountedTotal;
     private ImageView orderStatusIcon;
     private FrameLayout deliveredTag;
+    private RelativeLayout paymentFailedLayout;
+    private LinearLayout paymentConfirmLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,37 +123,47 @@ public class OrderDetailActivity extends BaseActivity {
 
     private void setOrderQRView() {
 
-        Bitmap myBitmap;
-        if (order.getUserBillID() != null) {
-            myBitmap = QRCode.from(order.getUserBillID()).bitmap();
+        if (order.getPaymentStatus().equals(Order.KEY_PAYMENT_FAIL)){
+            paymentConfirmLayout.setVisibility(View.GONE);
+            paymentFailedLayout.setVisibility(View.VISIBLE);
+        }else if(order.getPaymentStatus().equals(Order.KEY_PAYMENT_SUCCESS)){
+
+            Bitmap myBitmap;
+            if (order.getUserBillID() != null) {
+                myBitmap = QRCode.from(order.getUserBillID()).bitmap();
+            }
+            //delete this else after cleaning database
+            else {
+                Log.i(TAG, "No userBillID");
+                myBitmap = QRCode.from("NULLNULLNULL").bitmap();
+            }
+            qr_image.setImageBitmap(myBitmap);
+
+            paymentConfirmLayout.setVisibility(View.VISIBLE);
+            paymentFailedLayout.setVisibility(View.GONE);
+
+            if (order.getOrderStatus().equals(Order.KEY_ORDER_OUT_FOR_DELIVERY))
+            {
+                DateTime dateTime = new DateTime(order.getDeliveryTime(), DateTimeZone.forID("Asia/Kolkata"));
+                String text = "Order out for delivery on " + dateTime.toString("MMM") + " " + dateTime.getDayOfMonth();
+                orderStatus.setText(text);
+                orderStatusIcon.setImageDrawable(getApplicationContext().getDrawable(R.drawable.baseline_local_shipping_24));
+                orderStatusIcon.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorHighlightLight), PorterDuff.Mode.SRC_ATOP);
+                deliveredTag.setVisibility(View.GONE);
+            } else if(order.getOrderStatus().equals(Order.KEY_ORDER_DELIVERED))
+            {
+                DateTime dateTime = new DateTime(order.getDeliveryRcdTime(), DateTimeZone.forID("Asia/Kolkata"));
+                String text = "Order delivered on " + dateTime.toString("MMM") + " " + dateTime.getDayOfMonth() + ", "
+                        + (dateTime.getHourOfDay()>12?dateTime.getHourOfDay()-12:dateTime.getHourOfDay())
+                        +":"+(dateTime.getMinuteOfHour()<10?"0"+dateTime.getMinuteOfHour():dateTime.getMinuteOfHour())
+                        + (dateTime.getHourOfDay()<12?" AM":" PM");
+                orderStatus.setText(text);
+                orderStatusIcon.setImageDrawable(getApplicationContext().getDrawable(R.drawable.baseline_check_white_24));
+                orderStatusIcon.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorHighlightLight), PorterDuff.Mode.SRC_ATOP);
+                deliveredTag.setVisibility(View.VISIBLE);
+            }
         }
-        //delete this else after cleaning database
-        else {
-            Log.i(TAG, "No userBillID");
-            myBitmap = QRCode.from("NULLNULLNULL").bitmap();
-        }
-        qr_image.setImageBitmap(myBitmap);
-        if (order.getOrderStatus().equals(Order.KEY_ORDER_OUT_FOR_DELIVERY))
-        {
-            DateTime dateTime = new DateTime(order.getDeliveryTime(), DateTimeZone.forID("Asia/Kolkata"));
-            String text = "Order out for delivery on " + dateTime.toString("MMM") + " " + dateTime.getDayOfMonth();
-            orderStatus.setText(text);
-            orderStatusIcon.setImageDrawable(getApplicationContext().getDrawable(R.drawable.baseline_local_shipping_24));
-            orderStatusIcon.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorHighlightLight), PorterDuff.Mode.SRC_ATOP);
-            deliveredTag.setVisibility(View.GONE);
-        }
-        else if(order.getOrderStatus().equals(Order.KEY_ORDER_DELIVERED))
-        {
-            DateTime dateTime = new DateTime(order.getDeliveryRcdTime(), DateTimeZone.forID("Asia/Kolkata"));
-            String text = "Order delivered on " + dateTime.toString("MMM") + " " + dateTime.getDayOfMonth() + ", "
-                    + (dateTime.getHourOfDay()>12?dateTime.getHourOfDay()-12:dateTime.getHourOfDay())
-                    +":"+(dateTime.getMinuteOfHour()<10?"0"+dateTime.getMinuteOfHour():dateTime.getMinuteOfHour())
-                    + (dateTime.getHourOfDay()<12?" AM":" PM");
-            orderStatus.setText(text);
-            orderStatusIcon.setImageDrawable(getApplicationContext().getDrawable(R.drawable.baseline_check_white_24));
-            orderStatusIcon.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorHighlightLight), PorterDuff.Mode.SRC_ATOP);
-            deliveredTag.setVisibility(View.VISIBLE);
-        }
+
         userBillID.setText(order.getUserBillID());
         itemTotal.setText(String.format("%s%d",getResources().getString(R.string.Rs),order.getTotalAmount()));
         discountTotal.setText(String.format("%s%d",getResources().getString(R.string.Rs),(order.getTotalAmount()-order.getDiscountedAmount())));
@@ -167,6 +181,9 @@ public class OrderDetailActivity extends BaseActivity {
         itemTotal = findViewById(R.id.item_total);
         discountTotal = findViewById(R.id.discount_total);
         discountedTotal = findViewById(R.id.discounted_total);
+
+        paymentFailedLayout = findViewById(R.id.payment_failed_layout);
+        paymentConfirmLayout = findViewById(R.id.payment_confirm_layout);
 
         adapter = new PoolItemCartAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
