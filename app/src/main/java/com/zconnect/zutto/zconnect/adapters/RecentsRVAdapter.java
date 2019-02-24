@@ -1011,7 +1011,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumNameCategorySentence.setText(recentsItemFormats.get(position).getName()
                     + " in " + recentsItemFormats.get(position).getDesc());
                     posted = " created a ";
-                    post = recentsItemFormats.get(position).getFeature();
+                    post = "Forum";
                     clickableSpanFeature = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {

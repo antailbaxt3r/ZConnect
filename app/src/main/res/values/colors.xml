@@ -22,7 +22,7 @@
 
     <color name="colorAccent">#eeeeee</color>
     <color name="card_background_color">#FFF</color>
-    <color name="home_background">#FFF</color>
+    <color name="home_background">#f5f5f5</color>
     <!--<color name="colorPrimaryDark">#00695C</color>-->
     <!--<color name="colorAccent">#f44336</color>-->
     <!--<color name="colorAccent">#B0BEC5</color>-->
