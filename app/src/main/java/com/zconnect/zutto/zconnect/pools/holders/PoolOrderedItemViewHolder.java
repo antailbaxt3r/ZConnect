@@ -2,14 +2,12 @@ package com.zconnect.zutto.zconnect.pools.holders;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.OrderDetailActivity;
 import com.zconnect.zutto.zconnect.pools.models.Order;
-import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -28,7 +26,7 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
 
     private void attachID() {
         poolName = itemView.findViewById(R.id.pool_name);
-        deliveryTime = itemView.findViewById(R.id.delivery_time);
+        deliveryTime = itemView.findViewById(R.id.order_deadline_time);
         amount = itemView.findViewById(R.id.ordered_amount);
         orderPlaceTimeTV = itemView.findViewById(R.id.order_place_time);
     }

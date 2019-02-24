@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,7 +74,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private Vector<PoolItem> orderListVector = new Vector<>();
     private Pool currentPool;
     private ValueEventListener poolOfferListener;
-    private MaterialEditText phoneNumberET;
+    private EditText phoneNumberET;
 
 
     @Override
@@ -183,7 +185,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             orderObject.put(Order.POOL_INFO,currentPool.getPoolInfo());
             orderObject.put(Order.ITEMS,orderList);
             orderObject.put(Order.DELIVERY_TIME, currentPool.getDeliveryTime());
-            orderObject.put(Order.PHONE_NUMBER, phoneNumberET.getText());
+            orderObject.put(Order.PHONE_NUMBER, phoneNumberET.getText().toString());
 
             usersOrdersRef.child(orderID).setValue(orderObject).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -277,7 +279,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                     sub_total.setText(String.format("%s%s", getResources().getString(R.string.Rs), String.valueOf(total_amount)));
                     discount.setText(String.format("-%s%s", getResources().getString(R.string.Rs), String.valueOf(discount_amount)));
                     total.setText(String.format("%s%s", getResources().getString(R.string.Rs), String.valueOf(discounted_amount)));
-
+                    btn_pay.setText(String.format("Pay %s%s", getResources().getString(R.string.Rs), String.valueOf(discounted_amount)));
                     progressBar.setVisibility(View.GONE);
                     billLinearLayout.setVisibility(View.VISIBLE );
                 }

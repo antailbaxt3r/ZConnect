@@ -225,54 +225,52 @@ exports.test_getPayment = functions.database.ref('communities/{communityID}/feat
     const discountedAmount = orderSnapshot.child("discountedAmount").val();
     request({
         method: 'POST',
-        url: `https://rzp_test_SnZYABwQNAqW3y:KBY1oWxWohh9woUHahNfeW1H@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
+        url: `https://rzp_live_5xCJ1udEYck2VM:6sSRcBKLMJOLoZYNnTTnXnti@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
         form: {
           amount: discountedAmount*100
         }
-      }, function (error, response, body) {
+      }, (error, response, body) => {
         console.log('Status:', response.statusCode);
         console.log('Headers:', JSON.stringify(response.headers));
         console.log('Response:', body);
         if(response.statusCode === 200)
         {
            console.log("inside status 200");
-            snapshot.ref.parent.child("paymentStatus").set("success", ()=>{
-              snapshot.ref.root.child(`communities/${communityID}/Users1/${uid}`).once('value', userSnapshot => {
-                
-                const userObjForForum = {
-                  imageThumb: userSnapshot.child("imageURLThumbnail").val(),
-                  name: userSnapshot.child("username").val(),
-                  phoneNumber: userSnapshot.child("mobileNumber").val(),
-                  userUID: uid,
-                };
-                const shopRef = snapshot.ref.root.child(`shops/shopDetails/${shopID}`);
-                snapshot.ref.root.child(`communities/${communityID}/features/forums/tabsCategories/shopPools/${poolPushID}/users/${uid}`)
-                .set(userObjForForum);
-                shopRef.child(`createdPools/current/${poolPushID}/totalOrder`)
-                .transaction(current_value => {
-                  const userBillID = "" + orderID.substr(-6) + getThreeDigitString(current_value + 1);
-                  const timestampPaymentAfter = Date.now();
-                  const orderStatus = "out for delivery";
-                  orderObj = {...orderObj,
-                    orderedBy: {
-                      UID: uid,
-                      Username: userSnapshot.child("username").val(),
-                      ImageThumb: userSnapshot.child("imageURLThumbnail").val(),
-                      phoneNumber: orderObj.phoneNumber,
-                    },
-                    userBillID,
-                    timestampPaymentAfter,
-                    orderStatus,
-                  };
-                  orderSnapshot.ref.child('phoneNumber').remove();
-                  const orderRefInsideShop = shopRef.child(`orders/current/${poolPushID}/${orderID}`);
-                  orderRefInsideShop.set(orderObj);
-                  //set userBillID in the orderID node of users as well
-                  snapshot.ref.parent.child("userBillID").set(userBillID);
-                  snapshot.ref.parent.child("timestampPaymentAfter").set(timestampPaymentAfter);
-                  snapshot.ref.parent.child("orderStatus").set(orderStatus);
-                  return current_value + 1;
-                });
+            snapshot.ref.root.child(`communities/${communityID}/Users1/${uid}`).once('value', userSnapshot => {
+              snapshot.ref.parent.child("paymentStatus").set("success");
+              const userObjForForum = {
+                imageThumb: userSnapshot.child("imageURLThumbnail").val(),
+                name: userSnapshot.child("username").val(),
+                phoneNumber: userSnapshot.child("mobileNumber").val(),
+                userUID: uid,
+              };
+              const shopRef = snapshot.ref.root.child(`shops/shopDetails/${shopID}`);
+              snapshot.ref.root.child(`communities/${communityID}/features/forums/tabsCategories/shopPools/${poolPushID}/users/${uid}`)
+              .set(userObjForForum);
+              const timestampPaymentAfter = Date.now();
+              const orderStatus = "out for delivery";
+              orderObj = {...orderObj,
+                orderedBy: {
+                  UID: uid,
+                  Username: userSnapshot.child("username").val(),
+                  ImageThumb: userSnapshot.child("imageURLThumbnail").val(),
+                  phoneNumber: orderObj.phoneNumber,
+                },
+                timestampPaymentAfter,
+                orderStatus,
+              };
+              orderSnapshot.ref.child('phoneNumber').remove();
+              const orderRefInsideShop = shopRef.child(`orders/current/${poolPushID}/${orderID}`);
+              orderRefInsideShop.set(orderObj);
+              snapshot.ref.parent.child("timestampPaymentAfter").set(timestampPaymentAfter);
+              snapshot.ref.parent.child("orderStatus").set(orderStatus);
+              shopRef.child(`createdPools/current/${poolPushID}/totalOrder`)
+              .transaction(current_value => {
+                const userBillID = "" + orderID.substr(-6) + getThreeDigitString(current_value + 1);
+                orderRefInsideShop.child("userBillID").set(userBillID);
+                //set userBillID in the orderID node of users as well
+                snapshot.ref.parent.child("userBillID").set(userBillID);
+                return current_value + 1;
               });
             });
           }

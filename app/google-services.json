@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "90228986993-kkd7ht0k632g3dhbnjogubn4bfg0lpde.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect",
+            "certificate_hash": "31062609b895af5e2f49e7f549cb4de3c11e7bcd"
+          }
+        },
+        {
           "client_id": "90228986993-d8eekboafijrp3epnbip6v2rquifg00e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -31,71 +39,7 @@
           }
         },
         {
-          "client_id": "90228986993-e3416p18jlbbnjfe517p9r2240fi0l5b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "f7f8e94224f16d425c618ca85d6a99cd5eeaad28"
-          }
-        },
-        {
-          "client_id": "90228986993-nqb4hvks04o05gb93uv0iaqjibl2dafe.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "315b75e3a6b1965e1e516f59a364a1d0c0f8c28c"
-          }
-        },
-        {
-          "client_id": "90228986993-sqenkc6i2okbtjj27lpj2l7lqjtcgum3.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "3b671ed1d2f5f1936948b9d4c3221aae91f6b5b7"
-          }
-        },
-        {
-          "client_id": "90228986993-u2rgqvg14vr9o8s9dt951ob18m9eq0ic.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "4b6e4744d6b6e05f018fbebf1bdd53f40f0ecc6b"
-          }
-        },
-        {
-          "client_id": "90228986993-cthq7esobqaf2seclom549d1hrcgqkh9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "2d030797ff9a140976f81908e4ebdaa72b368560"
-          }
-        },
-        {
-          "client_id": "90228986993-4u8tqd0tidrre27k18lfotvgje65h53t.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "d64ada42ae667b208e5b128bf6c1108f63304b1a"
-          }
-        },
-        {
-          "client_id": "90228986993-6g6lbga4jol1239ro6qv5ohu5fmo0fgq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "691c9e26f5d642b23fe6899c9a699cd2645fd639"
-          }
-        },
-        {
-          "client_id": "90228986993-hplm8kt0fp8q47phg2a5cagcq6spt7eu.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "f6e86ec0861f6a6595a7481cdef9f1a53ae55602"
-          }
-        },
-        {
-          "client_id": "90228986993-b6bbj282moeqmoqjfc9fqlsmas9p7304.apps.googleusercontent.com",
+          "client_id": "90228986993-epscogiqjlibfb2bbpja5g9evj4s20e8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.zconnect.zutto.zconnect",
@@ -103,27 +47,79 @@
           }
         },
         {
-          "client_id": "90228986993-n6jsl564jhmc86civsnlkolgqa6mu7rd.apps.googleusercontent.com",
+          "client_id": "90228986993-v9nd4mtl0dvaopcmr6i57smpi41ptqah.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "3553ba672a6de04f9c6349750a95bda259c51830"
+            "certificate_hash": "dd4defc71065505009e94e44d92ec393fea4a108"
           }
         },
         {
-          "client_id": "90228986993-ojdtqfu45qcnhdnoefc95slc090vtkbl.apps.googleusercontent.com",
+          "client_id": "90228986993-6kragd6olmv4ln6hk1f13j494gk6eo6b.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "1d24eb272fcb28c9e7b3598b9d55558dbc817693"
+            "certificate_hash": "677b6b163eeef59612d99f28536265866fd7b138"
           }
         },
         {
-          "client_id": "90228986993-ne7n33mgm9svqv20i5nq04rcn9mb8gjh.apps.googleusercontent.com",
+          "client_id": "90228986993-3b6q3v2je3mjpct9k6se50k7p9qrhgnm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTXNK8O04l0gzHNpFsIamN7_6SrUOnRjc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90228986993-3b6q3v2je3mjpct9k6se50k7p9qrhgnm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90228986993:android:734addd9bddda194",
+        "android_client_info": {
+          "package_name": "com.zconnect.zutto.zconnect.shopowner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "90228986993-k6r3n7pmrheneqpajjfg8j5qg6ku8ojq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.zconnect.zutto.zconnect",
-            "certificate_hash": "01baf97b040a43106a580df3b3f1f16b749895ec"
+            "package_name": "com.zconnect.zutto.zconnect.shopowner",
+            "certificate_hash": "31062609b895af5e2f49e7f549cb4de3c11e7bcd"
+          }
+        },
+        {
+          "client_id": "90228986993-fu3ogkmmteh7t89nesh5p94ejsaf6q10.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect.shopowner",
+            "certificate_hash": "9bd8fd8347cd2021778be4a046f7683a1bbe9781"
+          }
+        },
+        {
+          "client_id": "90228986993-ub6m69s17t87ssvpuuum024i1jh859mt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zconnect.zutto.zconnect.shopowner",
+            "certificate_hash": "677b6b163eeef59612d99f28536265866fd7b138"
           }
         },
         {

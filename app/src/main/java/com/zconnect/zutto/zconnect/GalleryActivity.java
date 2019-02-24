@@ -104,7 +104,7 @@ public class GalleryActivity extends BaseActivity {
             View itemView = _inflater.inflate(R.layout.pager_gallery_item, container, false);
             container.addView(itemView);
 
-            // Get the border size to show around each image
+            // Get the border_outline size to show around each image
             int borderSize = _thumbnails.getPaddingTop();
 
             // Get the size of the actual thumbnail image
