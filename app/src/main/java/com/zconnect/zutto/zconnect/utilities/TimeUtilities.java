@@ -5,7 +5,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Locale;
 
 /**
  * Created by akhiller on 25/3/18.
@@ -13,6 +19,7 @@ import org.joda.time.DateTimeZone;
 
 public class TimeUtilities {
     private long postedTime, currentTime;
+    private DateTime dateTime;
 
     private static String JUST_NOW = "Just now",
         A_MIN_AGO = "1 minute ago",
@@ -33,6 +40,10 @@ public class TimeUtilities {
     public TimeUtilities(long postedTime, long currentTime) {
         this.postedTime = postedTime;
         this.currentTime = currentTime;
+    }
+
+    public TimeUtilities(long timestamp) {
+        this.dateTime = new DateTime(timestamp, DateTimeZone.forID("Asia/Kolkata"));
     }
 
     public String calculateTimeAgo() {
@@ -107,5 +118,36 @@ public class TimeUtilities {
                 return dt1.getDayOfMonth() + "/" + dt1.getMonthOfYear() + "/" + dt1.getYearOfCentury();
             }
         }
+    }
+
+    public String getTimeInHHMMAPM() {
+        String hh = dateTime.getHourOfDay()>12?""+(dateTime.getHourOfDay()-12):""+dateTime.getHourOfDay();
+        String mm = dateTime.getMinuteOfHour()<10?"0"+dateTime.getMinuteOfHour():""+dateTime.getMinuteOfHour();
+        String apm = dateTime.getHourOfDay()<12 ? "AM" : "PM";
+        return hh + ":" + mm + " " + apm;
+    }
+
+    public String getWeekName(String style) {
+        if(style.equals("SHORT"))
+        {
+            return ((DateTime.Property)dateTime.dayOfWeek()).getAsText(Locale.getDefault()).substring(0,3);
+        }
+        else if(style.equals("LONG"))
+        {
+            return ((DateTime.Property)dateTime.dayOfWeek()).getAsText(Locale.getDefault());
+        }
+        return "";
+    }
+
+    public DateTime getDateTime() {
+        return dateTime;
+    }
+
+    public String getMonthName(String style) {
+        if(style.equals("SHORT"))
+            return dateTime.toString("MMM");
+        else if(style.equals("LONG"))
+            return dateTime.toString("MMMM");
+        return "";
     }
 }

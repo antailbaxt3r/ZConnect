@@ -49,7 +49,7 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
         description.setText(item.getDescription());
         dishImage.setImageURI(item.getImageURL());
         number = item.getQuantity();
-        price.setText(String.format("Price %s %d", itemView.getContext().getResources().getString(R.string.Rs), item.getPrice()));
+        price.setText(itemView.getContext().getResources().getString(R.string.Rs) + item.getPrice());
         increment.setOnClickListener(this);
         decrement.setOnClickListener(this);
         add.setOnClickListener(this);

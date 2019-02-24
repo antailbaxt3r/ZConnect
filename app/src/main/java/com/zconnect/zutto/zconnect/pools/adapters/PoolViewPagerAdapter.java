@@ -30,7 +30,7 @@ public class PoolViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         if (position == 0) {
-            return "Active";
+            return "Hot Deals";
 
         } else if (position == 1) {
             return "Upcoming";

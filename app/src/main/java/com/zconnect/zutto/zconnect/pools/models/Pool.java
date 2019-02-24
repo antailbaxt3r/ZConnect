@@ -34,30 +34,33 @@ public class Pool implements Serializable {
     public static final String STATUS = "status";
     public static final String CREATED_TIMESTAMP = "timeStampCreated";
     public static final String ACTIVATED_TIMESTAMP = "timeStampActivated";
+    public static final String DEADLINE_TIMESTAMP = "timestampOrderReceivingDeadline";
     public static final String DELIVERY_TIME = "deliveryTime";
     public static final String POOL_PUSH_ID = "poolPushID";
     public static final String POOL_INFO = "poolInfo";
     public static final String UP_VOTE = "upvote";
     public static final String UP_VOTE_LIST = "upvoteList";
     public static final String TOTAL_ORDERS = "totalOrders";
+    public static final String ORDER_RECEIVING_STATUS = "orderReceivingStatus";
 
     //Node values
     public static final String STATUS_UPCOMING = "upcoming";
     public static final String STATUS_ACTIVE = "active";
 
     private String poolPushID;
-    private long deliveryTime, timeStampCreated, timeStampActivated;
+    private long deliveryTime, timeStampCreated, timeStampActivated, timestampOrderReceivingDeadline;
     private String status;
     private PoolInfo poolInfo;
-    private HashMap<String, Integer> upvoteList;
+    private HashMap<String, Integer> upvoteList = new HashMap<>();
     private int upvote;
     private int totalOrder;
+    private boolean orderReceivingStatus;
 
     public Pool() {
 
     }
 
-    public Pool(String poolPushID, long deliveryTime, long timeStampCreated, long timeStampActivated, String status, PoolInfo poolInfo, HashMap<String, Integer> upvoteList, int upvote, int totalOrder) {
+    public Pool(String poolPushID, long deliveryTime, long timeStampCreated, long timeStampActivated, String status, PoolInfo poolInfo, HashMap<String, Integer> upvoteList, int upvote, int totalOrder, long timestampOrderReceivingDeadline, boolean orderReceivingStatus) {
         this.poolPushID = poolPushID;
         this.deliveryTime = deliveryTime;
         this.timeStampCreated = timeStampCreated;
@@ -67,6 +70,8 @@ public class Pool implements Serializable {
         this.upvoteList = upvoteList;
         this.upvote = upvote;
         this.totalOrder = totalOrder;
+        this.timestampOrderReceivingDeadline = timestampOrderReceivingDeadline;
+        this.orderReceivingStatus = orderReceivingStatus;
     }
 
     public String getPoolPushID() {
@@ -99,6 +104,14 @@ public class Pool implements Serializable {
 
     public void setTimeStampActivated(long timeStampActivated) {
         this.timeStampActivated = timeStampActivated;
+    }
+
+    public long getTimestampOrderReceivingDeadline() {
+        return timestampOrderReceivingDeadline;
+    }
+
+    public void setTimestampOrderReceivingDeadline(long timestampOrderReceivingDeadline) {
+        this.timestampOrderReceivingDeadline = timestampOrderReceivingDeadline;
     }
 
     public String getStatus() {
@@ -140,6 +153,15 @@ public class Pool implements Serializable {
     public void setTotalOrder(int totalOrder) {
         this.totalOrder = totalOrder;
     }
+
+    public boolean isOrderReceivingStatus() {
+        return orderReceivingStatus;
+    }
+
+    public void setOrderReceivingStatus(boolean orderReceivingStatus) {
+        this.orderReceivingStatus = orderReceivingStatus;
+    }
+
     //    public HashMap<String, Object> getHashMap() {
 //
 //        HashMap<String, Object> mp = new HashMap<>();

@@ -12,8 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toolbar;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;

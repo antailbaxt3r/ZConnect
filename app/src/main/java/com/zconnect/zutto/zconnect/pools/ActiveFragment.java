@@ -20,6 +20,8 @@ import com.zconnect.zutto.zconnect.pools.adapters.PoolAdapter;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
@@ -77,6 +79,13 @@ public class ActiveFragment extends Fragment {
                     if (newPool.isActive())
                         poolArrayList.add(newPool);
                 }
+
+                Collections.sort(poolArrayList, new Comparator<Pool>() {
+                    @Override
+                    public int compare(Pool pool1, Pool pool2) {
+                        return (int)(pool1.getTimestampOrderReceivingDeadline() - pool2.getTimestampOrderReceivingDeadline());
+                    }
+                });
 
                 adapter.addAll(poolArrayList);
             }
