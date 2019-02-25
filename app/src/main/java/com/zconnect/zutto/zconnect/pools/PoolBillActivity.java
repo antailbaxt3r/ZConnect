@@ -51,7 +51,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Vector;
 
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PAYMENT_FAIL;
 
 public class PoolBillActivity extends BaseActivity implements PaymentResultListener {
 
@@ -154,6 +153,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue()!=null)
                     phoneNumberET.setText(dataSnapshot.getValue(String.class));
+
             }
 
             @Override
@@ -174,11 +174,10 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
             orderID = usersOrdersRef.push().getKey();
 
-            HashMap<String, Object> orderObject = new HashMap<>();
+            final HashMap<String, Object> orderObject = new HashMap<>();
             orderObject.put(Order.ORDER_ID,orderID);
             orderObject.put(Order.POOL_PUSH_ID,currentPool.getPoolPushID());
-            Log.i(TAG, currentPool.getPoolPushID() + "1234");
-            orderObject.put(Order.PAYMENT_STATUS,OtherKeyUtilities.KEY_PAYMENT_PENDING);
+            orderObject.put(Order.PAYMENT_STATUS,Order.KEY_PAYMENT_PROCESSING);
             orderObject.put(Order.TIMESTAMP_PAYMENT_BEFORE,ServerValue.TIMESTAMP);
             orderObject.put(Order.TOTAL_AMOUNT, total_amount);
             orderObject.put(Order.DISCOUNTED_AMOUNT, discounted_amount);
@@ -190,7 +189,10 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             usersOrdersRef.child(orderID).setValue(orderObject).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    startPayment();
+
+                        startPayment();
+
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -215,6 +217,10 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             options.put("description", currentPool.getPoolInfo().getName());
 
             options.put("currency", "INR");
+
+            options.put("prefill.email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+            options.put("prefill.contact",phoneNumberET.getText().toString());
 
             /**
              * Amount is always passed in PAISE

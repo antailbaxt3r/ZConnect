@@ -41,7 +41,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="margin_small8dp">8dp</dimen>
     <dimen name="xxx_small">2dp</dimen>
 
-    <dimen name="margin_xx_small">4dp</dimen>
+    <dimen name="margin_xx_small">3dp</dimen>
 
 
     <dimen name="single_line_btn_min_width">300dp</dimen>
