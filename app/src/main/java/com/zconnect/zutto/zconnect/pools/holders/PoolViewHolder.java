@@ -135,7 +135,6 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 if (pool.isUpcoming()) {
-                    Toast.makeText(itemView.getContext(), "Cannot place orders on this pool. Check out Hot Deals section!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(itemView.getContext(), UpcomingPoolDetailsActivity.class);
                     intent.putExtra("pool", pool);
                     itemView.getContext().startActivity(intent);
@@ -335,6 +334,14 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         {
             timerIcon.setVisibility(View.GONE);
             deliveryDay.setVisibility(View.GONE);
+            View.OnClickListener closedListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(itemView.getContext(),"This pool is no longer accepting orders.",Toast.LENGTH_SHORT).show();
+                }
+            };
+            card.setOnClickListener(closedListener);
+            orderBtn.setOnClickListener(closedListener);
         }
     }
 

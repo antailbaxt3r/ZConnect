@@ -21,9 +21,8 @@ public class Order implements Serializable{
     public static final String KEY_ORDER_OUT_FOR_DELIVERY = "out for delivery";
     public static final String KEY_ORDER_DELIVERED = "delivered";
 
-
-    public static final String KEY_PAYMENT_PENDING = "pending";
     public static final String KEY_PAYMENT_FAIL = "fail";
+    public static final String KEY_PAYMENT_PENDING = "pending";
     public static final String KEY_PAYMENT_PROCESSING = "processing";
     public static final String KEY_PAYMENT_SUCCESS = "success";
 

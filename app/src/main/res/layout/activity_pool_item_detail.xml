@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".pools.UpcomingPoolDetailsActivity"
-    android:weightSum="1">
+    tools:context=".pools.ActivePoolDetailsActivity"
+    android:background="@color/home_background">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,54 +21,67 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
     </android.support.design.widget.AppBarLayout>
-    <!-- pool info layout-->
-    <android.support.v7.widget.CardView
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/pool_description"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <!-- pool info layout-->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/pool_offers"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_medium">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/info_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/outline_info_black_24" />
+                    <TextView
+                        android:id="@+id/pool_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/primaryText"
+                        android:layout_toEndOf="@+id/info_icon"
+                        android:text="Offer description"
+                        android:layout_marginStart="@dimen/margin_small"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/pool_offers"
+                    android:visibility="visible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primaryText"
+                    android:text="Discout Percentage 25"/>
+            </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/pool_item_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/joined_peoples"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Proside for payment btn-->
+            <Button
+                android:id="@+id/btn_activate"
+                android:background="@drawable/border_fill_sharp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:text="Activate Pool"/>
+
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/pool_item_rv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </ScrollView>
+        <include layout="@layout/layout_progress_bar" />
 
-    <Button
-        android:id="@+id/btn_activate"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginTop="@dimen/margin_small"
-        android:visibility="visible"
-        android:textAllCaps="false"
-        android:text="Activate"
-        android:background="@drawable/border_fill"
-        android:textColor="@color/white" />
-
-    <include layout="@layout/layout_progress_bar" />
-
-
-
-
+    </FrameLayout>
 </LinearLayout>

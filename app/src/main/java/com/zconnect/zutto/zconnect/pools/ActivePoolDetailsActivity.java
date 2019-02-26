@@ -133,7 +133,6 @@ public class ActivePoolDetailsActivity extends BaseActivity {
             intent.putExtra("pool",pool);
             startActivity(intent);
         }
-
     }
 
     private void loadItemView() {
@@ -149,7 +148,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
         description.setText(pool.getPoolInfo().getDescription());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER, pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
-        ref.addListenerForSingleValueEvent(poolOfferListener);
+        ref.addValueEventListener(poolOfferListener);
     }
 
     private void attachID() {

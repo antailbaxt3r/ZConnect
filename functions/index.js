@@ -217,7 +217,7 @@ exports.test_getPayment = functions.database.ref('communities/{communityID}/feat
   const orderID = context.params.orderID;
 
   const paymentGatewayID = snapshot.val();
-  
+  snapshot.ref.parent.child('paymentStatus').set("processing");
   return snapshot.ref.parent.once('value', orderSnapshot => {
     let orderObj = orderSnapshot.val();
     const shopID = orderSnapshot.child("poolInfo/shopID").val();
@@ -225,7 +225,7 @@ exports.test_getPayment = functions.database.ref('communities/{communityID}/feat
     const discountedAmount = orderSnapshot.child("discountedAmount").val();
     request({
         method: 'POST',
-        url: `https://rzp_live_5xCJ1udEYck2VM:6sSRcBKLMJOLoZYNnTTnXnti@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
+        url: `https://rzp_test_A8XTiRdzpUWJcH:avDG7H44K0ChQCSFqMSwcGTg@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
         form: {
           amount: discountedAmount*100
         }
@@ -237,7 +237,6 @@ exports.test_getPayment = functions.database.ref('communities/{communityID}/feat
         {
            console.log("inside status 200");
             snapshot.ref.root.child(`communities/${communityID}/Users1/${uid}`).once('value', userSnapshot => {
-              snapshot.ref.parent.child("paymentStatus").set("success");
               const userObjForForum = {
                 imageThumb: userSnapshot.child("imageURLThumbnail").val(),
                 name: userSnapshot.child("username").val(),
@@ -262,11 +261,11 @@ exports.test_getPayment = functions.database.ref('communities/{communityID}/feat
               orderSnapshot.ref.child('phoneNumber').remove();
               const orderRefInsideShop = shopRef.child(`orders/current/${poolPushID}/${orderID}`);
               orderRefInsideShop.set(orderObj);
-              snapshot.ref.parent.child("timestampPaymentAfter").set(timestampPaymentAfter);
-              snapshot.ref.parent.child("orderStatus").set(orderStatus);
+              const tempObj = {timestampPaymentAfter, orderStatus, paymentStatus: "success"};
+              snapshot.ref.parent.update(tempObj);
               shopRef.child(`createdPools/current/${poolPushID}/totalOrder`)
               .transaction(current_value => {
-                const userBillID = "" + orderID.substr(-6) + getThreeDigitString(current_value + 1);
+                const userBillID = String(orderID.substr(-6)) + getThreeDigitString(current_value + 1);
                 orderRefInsideShop.child("userBillID").set(userBillID);
                 //set userBillID in the orderID node of users as well
                 snapshot.ref.parent.child("userBillID").set(userBillID);
@@ -276,8 +275,82 @@ exports.test_getPayment = functions.database.ref('communities/{communityID}/feat
           }
         if(response.statusCode === 400)
           {
-            snapshot.ref.parent.child("paymentStatus").set("fail");
-            snapshot.ref.parent.child("timestampPaymentAfter").set(Date.now());
+            const tempObj = {paymentStatus: "fail", timestampPaymentAfter: Date.now()};
+            snapshot.ref.parent.update(tempObj);
+          }
+      });
+  });
+});
+
+exports.getPayment = functions.database.ref('communities/{communityID}/features/shops/orders/current/{uid}/{orderID}/paymentGatewayID')
+.onCreate((snapshot, context) => {  
+	var request = require('request');
+
+  const communityID = context.params.communityID;
+  const uid = context.params.uid;
+  const orderID = context.params.orderID;
+
+  const paymentGatewayID = snapshot.val();
+  snapshot.ref.parent.child('paymentStatus').set("processing");
+  return snapshot.ref.parent.once('value', orderSnapshot => {
+    let orderObj = orderSnapshot.val();
+    const shopID = orderSnapshot.child("poolInfo/shopID").val();
+    const poolPushID = orderSnapshot.child("poolPushID").val();
+    const discountedAmount = orderSnapshot.child("discountedAmount").val();
+    request({
+        method: 'POST',
+        url: `https://rzp_test_A8XTiRdzpUWJcH:avDG7H44K0ChQCSFqMSwcGTg@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
+        form: {
+          amount: discountedAmount*100
+        }
+      }, (error, response, body) => {
+        console.log('Status:', response.statusCode);
+        console.log('Headers:', JSON.stringify(response.headers));
+        console.log('Response:', body);
+        if(response.statusCode === 200)
+        {
+           console.log("inside status 200");
+            snapshot.ref.root.child(`communities/${communityID}/Users1/${uid}`).once('value', userSnapshot => {
+              const userObjForForum = {
+                imageThumb: userSnapshot.child("imageURLThumbnail").val(),
+                name: userSnapshot.child("username").val(),
+                phoneNumber: userSnapshot.child("mobileNumber").val(),
+                userUID: uid,
+              };
+              const shopRef = snapshot.ref.root.child(`shops/shopDetails/${shopID}`);
+              snapshot.ref.root.child(`communities/${communityID}/features/forums/tabsCategories/shopPools/${poolPushID}/users/${uid}`)
+              .set(userObjForForum);
+              const timestampPaymentAfter = Date.now();
+              const orderStatus = "out for delivery";
+              orderObj = {...orderObj,
+                orderedBy: {
+                  UID: uid,
+                  Username: userSnapshot.child("username").val(),
+                  ImageThumb: userSnapshot.child("imageURLThumbnail").val(),
+                  phoneNumber: orderObj.phoneNumber,
+                },
+                timestampPaymentAfter,
+                orderStatus,
+              };
+              orderSnapshot.ref.child('phoneNumber').remove();
+              const orderRefInsideShop = shopRef.child(`orders/current/${poolPushID}/${orderID}`);
+              orderRefInsideShop.set(orderObj);
+              const tempObj = {timestampPaymentAfter, orderStatus, paymentStatus: "success"};
+              snapshot.ref.parent.update(tempObj);
+              shopRef.child(`createdPools/current/${poolPushID}/totalOrder`)
+              .transaction(current_value => {
+                const userBillID = String(orderID.substr(-6)) + getThreeDigitString(current_value + 1);
+                orderRefInsideShop.child("userBillID").set(userBillID);
+                //set userBillID in the orderID node of users as well
+                snapshot.ref.parent.child("userBillID").set(userBillID);
+                return current_value + 1;
+              });
+            });
+          }
+        if(response.statusCode === 400)
+          {
+            const tempObj = {paymentStatus: "fail", timestampPaymentAfter: Date.now()};
+            snapshot.ref.parent.update(tempObj);
           }
       });
   });
@@ -343,5 +416,5 @@ const getThreeDigitString = (num) => {
   else if(num < 100)
     return "0" + num;
   else
-    return "" + num;
+    return String(num);
 }
