@@ -24,6 +24,9 @@ public class NotificationIdentifierUtilities {
     public static final String KEY_NOTIFICATION_CHAT_CAB = "CabChat";
     public static final String KEY_NOTIFICATION_CHAT_POST = "PostChat";
 
+    //Orders
+    public static final String KEY_NOTIFICATION_ORDER_REACHED= "orderReached";
+
     public static final String KEY_NOTIFICATION_REQUEST_CALL = "RequestCall";
     public static final String KEY_NOTIFICATION_NEW_USER_ACCEPT = "NewUserAccept";
     public static final String KEY_NOTIFICATION_NEW_USER_REJECT = "NewUserReject";
