@@ -177,7 +177,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             final HashMap<String, Object> orderObject = new HashMap<>();
             orderObject.put(Order.ORDER_ID,orderID);
             orderObject.put(Order.POOL_PUSH_ID,currentPool.getPoolPushID());
-            orderObject.put(Order.PAYMENT_STATUS,Order.KEY_PAYMENT_PROCESSING);
+            orderObject.put(Order.PAYMENT_STATUS,Order.KEY_PAYMENT_PENDING);
             orderObject.put(Order.TIMESTAMP_PAYMENT_BEFORE,ServerValue.TIMESTAMP);
             orderObject.put(Order.TOTAL_AMOUNT, total_amount);
             orderObject.put(Order.DISCOUNTED_AMOUNT, discounted_amount);
@@ -299,7 +299,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER, currentPool.getPoolInfo().getShopID(), currentPool.getPoolInfo().getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
-        ref.addListenerForSingleValueEvent(poolOfferListener);
+        ref.addValueEventListener(poolOfferListener);
 
     }
 
@@ -349,6 +349,8 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     }
 
     private void paymentSuccess(final String paymentID) {
+
+        btn_pay.setOnClickListener(null);
 
         DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
 

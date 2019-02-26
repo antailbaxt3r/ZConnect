@@ -80,37 +80,16 @@
         <include
             android:visibility="gone"
             layout="@layout/layout_progress_bar" />
-        <ProgressBar
-            android:id="@+id/next_btn_progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/margin_small"/>
-        <LinearLayout
+        <Button
+            android:id="@+id/next_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-            <Button
-                android:id="@+id/chat_btn"
-                android:layout_width="0dp"
-                android:layout_weight="0.5"
-                android:layout_height="wrap_content"
-                android:text="CHAT"
-                android:textColor="@color/colorPrimary"
-                android:background="@drawable/border_outline"
-                android:layout_margin="@dimen/margin_x_small"/>
-            <Button
-                android:id="@+id/next_btn"
-                android:layout_width="0dp"
-                android:layout_weight="0.5"
-                android:layout_height="wrap_content"
-                android:text="NEXT"
-                android:background="@drawable/border_fill"
-                android:textColor="@color/white"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="@dimen/margin_x_small"/>
-        </LinearLayout>
+            android:text="NEXT"
+            android:background="@drawable/border_fill"
+            android:textColor="@color/white"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/margin_small"/>
     </RelativeLayout>
 
 </LinearLayout>

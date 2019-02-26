@@ -2,7 +2,9 @@ package com.zconnect.zutto.zconnect.pools.holders;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.OrderDetailActivity;
 import com.zconnect.zutto.zconnect.pools.models.Order;
+import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -18,7 +21,6 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
 
 
     private TextView poolName, deliveryTime, amount, orderPlaceTimeTV,paymentStatusText,orderStatusText;
-    private ImageView paymentStatusIcon,orderStatusIcon;
 
     private Order order;
 
@@ -34,29 +36,20 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
         orderPlaceTimeTV = itemView.findViewById(R.id.order_place_time);
 
         paymentStatusText = itemView.findViewById(R.id.payment_status);
-        paymentStatusIcon = itemView.findViewById(R.id.payment_status_icon);
 
         orderStatusText = itemView.findViewById(R.id.order_status);
-        orderStatusIcon = itemView.findViewById(R.id.order_status_icon);
     }
 
     public void populate(final Order order) {
         this.order = order;
         poolName.setText(order.getPoolInfo().getName());
         amount.setText(String.format("%s%d", itemView.getContext().getResources().getString(R.string.Rs), order.getTotalAmount()));
-        long timeStamp = order.getTimestampPaymentAfter();
-        DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
-        DateTime dateTime = new DateTime(timeStamp, indianZone);
-
-
-            setOrderStatus(order.getOrderStatus());
-            setPaymentStatus(order.getPaymentStatus());
-
-
-
-        String dateTimeText = itemView.getContext().getResources().getString(R.string.order_placed_on)
-                + " " + dateTime.getHourOfDay() + ":" + dateTime.getMinuteOfHour() + ", " + dateTime.getDayOfMonth() + " " + dateTime.toString("MMM") + " " + dateTime.getYearOfEra();
+        long timeStamp = order.getTimestampPaymentAfter()==0?order.getTimestampPaymentBefore():order.getTimestampPaymentAfter();
+        TimeUtilities tu = new TimeUtilities(timeStamp);
+        String dateTimeText = itemView.getContext().getResources().getString(R.string.order_placed_on) + " " + tu.getTimeInHHMMAPM() + ", " + tu.getDateTime().getDayOfMonth() + " " + tu.getMonthName("SHORT") + " " + tu.getDateTime().getYearOfEra();
         orderPlaceTimeTV.setText(dateTimeText);
+        setOrderStatus(order.getOrderStatus());
+        setPaymentStatus(order.getPaymentStatus(), order.getOrderStatus(), order.getPaymentGatewayID());
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,37 +62,36 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
 
     private void setOrderStatus(String orderStatus){
 
-        if(orderStatus.equals(Order.KEY_ORDER_OUT_FOR_DELIVERY)){
-            orderStatusText.setText("Order Confirmed");
-            orderStatusText.setTextColor(Color.YELLOW);
-            orderStatusIcon.setBackgroundColor(Color.YELLOW);
-        }else if(orderStatus.equals(Order.KEY_ORDER_DELIVERED)){
-            orderStatusText.setText("Delivered");
-            orderStatusText.setTextColor(Color.GREEN);
-            orderStatusIcon.setBackgroundColor(Color.GREEN);
+        if(orderStatus==null)
+        {
+            orderStatusText.setVisibility(View.GONE);
+            paymentStatusText.setText("Payment Failed");
+            paymentStatusText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
         }
-
+        else
+        {
+            orderStatusText.setVisibility(View.VISIBLE);
+            if(orderStatus.equals(Order.KEY_ORDER_OUT_FOR_DELIVERY)){
+                orderStatusText.setText("Order Confirmed");
+                orderStatusText.getBackground().setColorFilter(itemView.getResources().getColor(R.color.blue500), PorterDuff.Mode.SRC_ATOP);
+            }else if(orderStatus.equals(Order.KEY_ORDER_DELIVERED)){
+                orderStatusText.setText("Delivered");
+                paymentStatusText.getBackground().setColorFilter(itemView.getResources().getColor(R.color.deeporange500), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
     }
 
-    private void setPaymentStatus(String paymentStatus){
+    private void setPaymentStatus(String paymentStatus, String orderStatus, String paymentgatewayID){
 
         if (paymentStatus.equals(Order.KEY_PAYMENT_PROCESSING)){
-
-            paymentStatusText.setText("Payment Processing");
-            paymentStatusText.setTextColor(Color.YELLOW);
-            paymentStatusIcon.setBackgroundColor(Color.YELLOW);
-
-        }else if(paymentStatus.equals(Order.KEY_PAYMENT_FAIL)){
+            paymentStatusText.setText("Payment Processing...");
+            paymentStatusText.getBackground().setColorFilter(itemView.getResources().getColor(R.color.grey700), PorterDuff.Mode.SRC_ATOP);
+        }else if(paymentStatus.equals(Order.KEY_PAYMENT_FAIL) || paymentStatus.equals(Order.KEY_PAYMENT_PENDING)){
             paymentStatusText.setText("Payment Failed");
-            paymentStatusText.setTextColor(Color.RED);
-            paymentStatusIcon.setBackgroundColor(Color.RED);
-
+            paymentStatusText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
         }else if(paymentStatus.equals(Order.KEY_PAYMENT_SUCCESS)){
             paymentStatusText.setText("Payment Done");
-            paymentStatusText.setTextColor(Color.GREEN);
-            paymentStatusIcon.setBackgroundColor(Color.GREEN);
+            paymentStatusText.getBackground().setColorFilter(itemView.getResources().getColor(R.color.green500), PorterDuff.Mode.SRC_ATOP);
         }
-
     }
-
 }

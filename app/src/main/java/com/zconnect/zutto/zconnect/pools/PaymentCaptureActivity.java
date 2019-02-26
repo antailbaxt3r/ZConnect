@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -34,7 +35,7 @@ public class PaymentCaptureActivity extends BaseActivity {
 
     private LinearLayout ll_progressBar, nextStepsLL;
     private TextView loading_text, paymentStatusText;
-    private Button nextButton, chatButton;
+    private Button nextButton;
     private DatabaseReference orderRef;
     private String orderID;
     private Order order;
@@ -79,16 +80,14 @@ public class PaymentCaptureActivity extends BaseActivity {
                 if(dataSnapshot.child("paymentStatus").getValue(String.class).equals(Order.KEY_PAYMENT_SUCCESS))
                 {
                     nextButton.setVisibility(View.VISIBLE);
-                    chatButton.setVisibility(View.VISIBLE);
                     nextStepsLL.setVisibility(View.VISIBLE);
                     order = dataSnapshot.getValue(Order.class);
                     paymentStatusImage.setBackground(getApplicationContext().getDrawable(R.drawable.ic_check_green_120dp));
                     paymentStatusText.setText("Payment Successful");
                 }
-                else if(dataSnapshot.child("paymentStatus").getValue(String.class).equals(OtherKeyUtilities.KEY_PAYMENT_FAIL))
+                else if(dataSnapshot.child("paymentStatus").getValue(String.class).equals(Order.KEY_PAYMENT_FAIL))
                 {
                     nextButton.setVisibility(View.GONE);
-                    chatButton.setVisibility(View.GONE);
                     nextStepsLL.setVisibility(View.GONE);
                     paymentStatusImage.setBackground(getApplicationContext().getDrawable(R.drawable.ic_error_outline_red500_120dp));
                     paymentStatusText.setText("Payment Failed");
@@ -106,31 +105,8 @@ public class PaymentCaptureActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),OrderDetailActivity.class);
                 intent.putExtra("order",order);
+                intent.putExtra("orderID", orderID);
                 startActivity(intent);
-            }
-        });
-
-        chatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories/shopPools").child(order.getPoolPushID());
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        ForumCategoriesItemFormat itemFormat = dataSnapshot.getValue(ForumCategoriesItemFormat.class);
-                        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                        intent.putExtra("ref", dataSnapshot.getRef().toString());
-                        intent.putExtra("type","forums");
-                        intent.putExtra("name", itemFormat.getName());
-                        intent.putExtra("tab", itemFormat.getTabUID());
-                        intent.putExtra("key", itemFormat.getCatUID());
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
             }
         });
     }
@@ -141,9 +117,16 @@ public class PaymentCaptureActivity extends BaseActivity {
         ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
         nextButton = findViewById(R.id.next_btn);
-        chatButton = findViewById(R.id.chat_btn);
         nextStepsLL = findViewById(R.id.next_steps_layout);
         paymentStatusImage = findViewById(R.id.paymentstatus_image);
         paymentStatusText = findViewById(R.id.paymentstatus_text);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), PoolActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        super.onBackPressed();
     }
 }
