@@ -277,7 +277,7 @@ public class OpenUserDetail extends BaseActivity {
                 }else {
                     db_like.child(myUID).setValue(true);
                     like_status = true;
-                    currentUser.addValueEventListener(new ValueEventListener() {
+                    currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.child("Likes").hasChild(Uid)){
@@ -323,7 +323,7 @@ public class OpenUserDetail extends BaseActivity {
                 } else{
                     db_love.child(myUID).setValue(true);
                     love_status = true;
-                    currentUser.addValueEventListener(new ValueEventListener() {
+                    currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.child("Loves").hasChild(Uid)){
