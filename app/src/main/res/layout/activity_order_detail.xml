@@ -59,7 +59,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/red700"
-                                android:text="Payment Failed!"/>
+                                android:text="Payment Failed"/>
                             <TextView
                                 android:textAlignment="center"
                                 android:textColor="@color/secondaryText"
@@ -70,17 +70,40 @@
 
                     </RelativeLayout>
 
+                    <RelativeLayout
+                        android:id="@+id/payment_processing_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+                        <LinearLayout
+                            android:layout_centerInParent="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="10dp"
+                            android:layout_marginTop="110dp">
+                            <TextView
+                                android:textSize="32dp"
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primaryText"
+                                android:text="Payment Processing..."/>
+                        </LinearLayout>
+                    </RelativeLayout>
+
                     <LinearLayout
                         android:id="@+id/payment_confirm_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/qr_image"
                             android:layout_width="240dp"
                             android:layout_height="240dp"
-                            android:background="@color/blue500"
+                            android:background="@color/white"
                             android:layout_gravity="center"/>
                         <TextView
                             android:id="@+id/userBillIDText"
@@ -89,6 +112,12 @@
                             style="@style/TextAppearance.AppCompat.Headline"
                             android:gravity="center"
                             android:text="qwexyz005"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="(Order Number)"
+                            style="@style/TextAppearance.AppCompat.Caption"/>
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -110,7 +139,7 @@
                                 android:layout_marginStart="@dimen/margin_small"
                                 android:layout_centerVertical="true"
                                 android:textSize="14sp"
-                                style="@style/TextAppearance.AppCompat.Caption"
+                                android:textColor="@color/primaryText"
                                 android:text="Order delivered on Feb 8, 9:07 PM"/>
                             <FrameLayout
                                 android:id="@+id/delivered_tag"
@@ -151,6 +180,7 @@
                         android:background="@drawable/baseline_location_on_black_24"
                         android:backgroundTint="@color/colorHighlightLight"/>
                     <TextView
+                        android:id="@+id/pool_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_medium"
@@ -159,8 +189,8 @@
                         android:layout_toRightOf="@+id/location_icon"
                         android:textColor="@color/primaryText"
                         android:textSize="14sp"
-                        android:text="Shri Kaashi Dairy and Restaurant"
-                        style="@style/TextAppearance.AppCompat.Body2"/>
+                        android:text="Shop Name"
+                        android:textStyle="bold"/>
                 </RelativeLayout>
 
                 <TextView
@@ -170,7 +200,7 @@
                     android:textSize="12sp"
                     android:layout_gravity="start"
                     android:layout_marginTop="@dimen/margin_medium"
-                    style="@style/TextAppearance.AppCompat.Body1" />
+                    android:textColor="@color/primaryText" />
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycleView"
                     android:layout_width="match_parent"
@@ -192,7 +222,7 @@
                         android:text="Item Total"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                        android:textColor="@color/primaryText" />
                     <TextView
                         android:id="@+id/item_total"
                         android:layout_width="wrap_content"
@@ -200,7 +230,7 @@
                         android:text="Rs.300/-"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                        android:textColor="@color/primaryText" />
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -212,7 +242,7 @@
                         android:text="Discount Total"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                        android:textColor="@color/primaryText" />
                     <TextView
                         android:id="@+id/discount_total"
                         android:layout_width="wrap_content"
@@ -220,7 +250,7 @@
                         android:text="Rs.300/-"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                        android:textColor="@color/primaryText" />
                 </RelativeLayout>
                 <ImageView
                     android:layout_width="match_parent"
@@ -238,7 +268,9 @@
                         android:text="Total"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                        android:textColor="@color/primaryText"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
                     <TextView
                         android:id="@+id/discounted_total"
                         android:layout_width="wrap_content"
@@ -246,7 +278,9 @@
                         android:text="Rs.300/-"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                        android:textColor="@color/primaryText"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>

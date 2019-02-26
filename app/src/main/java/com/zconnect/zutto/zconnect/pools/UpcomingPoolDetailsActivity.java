@@ -39,7 +39,7 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
     public static final String TAG = "UpPoolDetailsActivity";
 
     private RecyclerView recyclerView;
-    private TextView offers, description, joined_peoples;
+    private TextView offers, description;
     private LinearLayout ll_progressBar;
     private TextView loading_text;
     private Button btn_activate;
@@ -49,6 +49,7 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
 
     private Pool pool;
     private String userUID;
+    private int discount_percentage, max_amount, min_item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +122,7 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
         });
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("communities/" + communityReference + "/Users1/" + userUID + "/userType");
         Log.d(TAG, "setAdminView : ref " + ref.toString());
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String type = dataSnapshot.getValue(String.class);
@@ -182,17 +183,16 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
         setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM, pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
-        ref.addListenerForSingleValueEvent(poolItemListener);
+        ref.addValueEventListener(poolItemListener);
     }
 
     private void setPoolInfo() {
 
         toolbar.setTitle(pool.getPoolInfo().getName());
         description.setText(pool.getPoolInfo().getDescription());
-        joined_peoples.setText("Votes : " + String.valueOf(pool.getUpvote()));
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER,pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
-        ref.addListenerForSingleValueEvent(poolOfferListener);
+        ref.addValueEventListener(poolOfferListener);
 
     }
 
@@ -200,7 +200,6 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
 
         recyclerView = findViewById(R.id.pool_item_rv);
         offers = findViewById(R.id.pool_offers);
-        joined_peoples = findViewById(R.id.joined_peoples);
         description = findViewById(R.id.pool_description);
         ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
@@ -242,12 +241,12 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
                     DiscountOffer discountOffer = dataSnapshot.getValue(DiscountOffer.class);
 
 
-                    int disPer = discountOffer.getDiscountPercentage();
-                    int maxDiscount = discountOffer.getMaxDiscount();
-                    int minQuantity = discountOffer.getMinQuantity();
+                    discount_percentage = discountOffer.getDiscountPercentage();
+                    max_amount = discountOffer.getMaxDiscount();
+                    min_item = discountOffer.getMinQuantity();
                     // if(disPer != 0 && maxDiscount != 0 && minQuantity !=0)
                     offers.setVisibility(View.VISIBLE);
-                    offers.setText(String.format("Discount Percentage : %d\nMax Discount %d\nMin Quantity : %d", disPer, maxDiscount, minQuantity));
+                    offers.setText(String.format("OFFER: %d%% OFF upto " + getApplicationContext().getString(R.string.Rs) + "%d on a minimum order of %d items.", discount_percentage, max_amount, min_item));
                 }
             }
 

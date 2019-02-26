@@ -168,7 +168,7 @@
                     android:text="Pay"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:background="@drawable/border_fill_sharp"/>
+                    android:background="@drawable/border_fill"/>
             </LinearLayout>
         </LinearLayout>
         <!-- Dummy item to prevent EditText from receiving focus -->

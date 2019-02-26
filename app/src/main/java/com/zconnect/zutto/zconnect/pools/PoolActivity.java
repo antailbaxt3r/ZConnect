@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -93,7 +92,7 @@ public class PoolActivity extends BaseActivity {
             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
             counterPush.pushValues();
 
-            Intent i = new Intent(this, PoolPreviousOrderActivity.class);
+            Intent i = new Intent(this, MyOrdersActivity.class);
             startActivity(i);
         }
         return true;

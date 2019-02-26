@@ -25,8 +25,9 @@ import com.zconnect.zutto.zconnect.pools.adapters.PoolOrderItemAdapter;
 import com.zconnect.zutto.zconnect.pools.models.Order;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class PoolPreviousOrderActivity extends BaseActivity {
+public class MyOrdersActivity extends BaseActivity {
 
     public final String TAG = getClass().getSimpleName();
 
@@ -106,8 +107,10 @@ public class PoolPreviousOrderActivity extends BaseActivity {
                 ArrayList<Order> list = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Order order = child.getValue(Order.class);
-                    list.add(child.getValue(Order.class));
+                    if(order.getOrderID()!=null)
+                        list.add(order);
                 }
+                Collections.reverse(list);
                 adapter.addAll(list);
                 setProgressBarView(View.GONE, "");
             }

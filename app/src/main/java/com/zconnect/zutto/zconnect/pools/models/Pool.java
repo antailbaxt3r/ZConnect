@@ -43,6 +43,9 @@ public class Pool implements Serializable {
     public static final String TOTAL_ORDERS = "totalOrders";
     public static final String ORDER_RECEIVING_STATUS = "orderReceivingStatus";
 
+    //tabID for forum
+    public static final String POOL_FORUM_TAB_ID = "shopPools";
+
     //Node values
     public static final String STATUS_UPCOMING = "upcoming";
     public static final String STATUS_ACTIVE = "active";

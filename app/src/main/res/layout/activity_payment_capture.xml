@@ -34,13 +34,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
-                android:id="@+id/image_success"
+                android:id="@+id/paymentstatus_image"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_check_green_120dp"
+                android:background="@drawable/ic_check_green_120dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/paymentstatus_text"
                 android:layout_marginTop="@dimen/margin_medium"
                 android:gravity="center"
                 style="@style/TextAppearance.AppCompat.Title"
@@ -56,42 +57,38 @@
                 android:text="Rs.300/-"
                 android:layout_height="wrap_content" />
 
-            <TextView
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/next_steps_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                style="@style/TextAppearance.AppCompat.Body2"
-                android:text="Next steps to be followed:"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:text="1. Click on NEXT to view your order details\n2. Click on CHAT to enter forum where you will get updates of the order form the shop.\n3. You can view your orders in My Orders."/>
+                android:orientation="vertical"
+                android:layout_marginTop="50dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.Body2"
+                    android:text="Next steps to be followed:"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:text="1. Click on NEXT to view your order details.\n2. Click on CHAT to enter Forum where you will get updates of the order form the shop.\n3. You can view all your orders in My Orders.\n4. You can access your chat later from Forums as well."/>
+            </LinearLayout>
         </LinearLayout>
 
         <include
             android:visibility="gone"
             layout="@layout/layout_progress_bar" />
-        <ProgressBar
-            android:id="@+id/next_btn_progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/margin_small"/>
         <Button
             android:id="@+id/next_btn"
-            android:visibility="gone"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="NEXT"
-            android:textSize="16sp"
-            android:background="@drawable/round_button_primary"
+            android:background="@drawable/border_fill"
             android:textColor="@color/white"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_marginBottom="@dimen/margin_small"/>
     </RelativeLayout>
 
