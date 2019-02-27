@@ -1,6 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,10 +17,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,19 +29,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.adapters.RecentsRVAdapter;
-import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
-import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
-import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -66,14 +59,11 @@ public class Recents extends Fragment {
 
     private SwipeRefreshLayout swipeContainer;
 
-
     private DatabaseReference homeDbRef,userReference,communityFeaturesRef;
     Query queryRef;
     private ValueEventListener homeListener,userListener,communityFeaturesListener;
     @BindView(R.id.recent_progress)
     ProgressBar progressBar;
-    @BindView(R.id.scroll_to_top_fab_fragments_recents)
-    Button scrollToTopBtn;
 
     RecentsItemFormat addStatus = new RecentsItemFormat();
     RecentsItemFormat features = new RecentsItemFormat();
@@ -85,7 +75,15 @@ public class Recents extends Fragment {
     Vector<RecentsItemFormat> normalPosts = new Vector<RecentsItemFormat>();
 
     private FirebaseAnalytics mFirebaseAnalytics;
+    LinearLayoutManager productLinearLayoutManager;
+    OnHomeIconListener mCallback;
 
+    public void setOnHomeIconListener(Activity activity) {
+        mCallback = (OnHomeIconListener) activity;
+    }
+    public interface OnHomeIconListener {
+        public void getLayoutManager(LinearLayoutManager linearLayoutManager);
+    }
     public Recents() {
         // Required empty public constructor
     }
@@ -94,7 +92,6 @@ public class Recents extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -146,8 +143,9 @@ public class Recents extends Fragment {
             }
         });
         recyclerView.setHasFixedSize(true);
-        final LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(productLinearLayout);
+        productLinearLayoutManager = new LinearLayoutManager(getContext());
+        mCallback.getLayoutManager(productLinearLayoutManager);
+        recyclerView.setLayoutManager(productLinearLayoutManager);
         userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -202,7 +200,7 @@ public class Recents extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
 
-                adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn,communityFeatures, productLinearLayout, recyclerView);
+                adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity() ,communityFeatures, productLinearLayoutManager, recyclerView);
                 recyclerView.setAdapter(adapter);
 
             }
@@ -260,22 +258,21 @@ public class Recents extends Fragment {
             }
         };
 
-        scrollToTopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_SCROLL_TOP);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-                scrollToTopBtn.setVisibility(View.GONE);
-                productLinearLayout.scrollToPositionWithOffset(0,0);
-            }
-        });
-        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), scrollToTopBtn,communityFeatures, productLinearLayout, recyclerView);
+//        scrollToTopBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                CounterItemFormat counterItemFormat = new CounterItemFormat();
+//                HashMap<String, String> meta= new HashMap<>();
+//                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+//                counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_SCROLL_TOP);
+//                counterItemFormat.setTimestamp(System.currentTimeMillis());
+//                counterItemFormat.setMeta(meta);
+//                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+//                counterPush.pushValues();
+//                productLinearLayoutManager.scrollToPositionWithOffset(0,0);
+//            }
+//        });
+        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity() ,communityFeatures, productLinearLayoutManager, recyclerView);
         recyclerView.setAdapter(adapter);
         communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);
 

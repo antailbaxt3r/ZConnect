@@ -514,7 +514,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".pools.OrderDetailActivity"
-            android:label="Choose items"
+            android:label="Order Details"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

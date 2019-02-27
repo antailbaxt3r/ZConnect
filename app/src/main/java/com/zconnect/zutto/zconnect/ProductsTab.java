@@ -80,10 +80,10 @@ public class ProductsTab extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_products_tab, container, false);
         GridLayoutManager productGridLayout = new GridLayoutManager(getContext(), 2);
-//        LinearLayoutManager productLinearLayout = new LinearLayoutManager(getContext());
+//        LinearLayoutManager productLinearLayoutManager = new LinearLayoutManager(getContext());
 
-//        productLinearLayout.setReverseLayout(true);
-//        productLinearLayout.setStackFromEnd(true);
+//        productLinearLayoutManager.setReverseLayout(true);
+//        productLinearLayoutManager.setStackFromEnd(true);
 
         noProductsAvailableText = (TextView) view.findViewById(R.id.no_products_available_text);
         progressBar = (ProgressBar) view.findViewById(R.id.products_tab_progress_bar);
