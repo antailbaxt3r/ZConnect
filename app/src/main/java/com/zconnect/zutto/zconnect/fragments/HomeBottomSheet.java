@@ -1,6 +1,8 @@
 package com.zconnect.zutto.zconnect.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
 import com.zconnect.zutto.zconnect.addActivities.AddNotices;
 import com.zconnect.zutto.zconnect.addActivities.AddProduct;
@@ -41,6 +45,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
     LinearLayout layoutBottomSheet;
     Button test;
     DatabaseReference communityFeaturesRef;
+    HomeActivity mHomeActivity;
 
     public HomeBottomSheet(){
 
@@ -154,23 +159,23 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
                 //TODO app crashes on line 163/171
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mHomeActivity);
                 alertBuilder.setTitle("Add/Ask")
                         .setMessage("Do you want to add a product or ask for a product?")
                         .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(getContext(), AddProduct.class);
+                                Intent intent = new Intent(mHomeActivity, AddProduct.class);
                                 intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
-                                startActivity(intent);
+                                mHomeActivity.startActivity(intent);
                             }
                         })
                         .setNegativeButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(getContext(), AddProduct.class);
+                                Intent intent = new Intent(mHomeActivity, AddProduct.class);
                                 intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
-                                startActivity(intent);
+                                mHomeActivity.startActivity(intent);
                             }
                         })
                         .show();
@@ -264,5 +269,11 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         bottomSheetAddNotices.setOnClickListener(noticesListener);
 
         return bottomSheetView;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        mHomeActivity = (HomeActivity) activity;
+        super.onAttach(activity);
     }
 }
