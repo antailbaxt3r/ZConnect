@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.pools;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,6 +49,9 @@ import com.zconnect.zutto.zconnect.utilities.UIUtilities;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -74,6 +78,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private Pool currentPool;
     private ValueEventListener poolOfferListener;
     private EditText phoneNumberET;
+    private boolean internetFlag = false;
 
 
     @Override
@@ -163,6 +168,24 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         });
     }
 
+    public boolean hasActiveInternetConnection(Context context) {
+        if (isNetworkAvailable(context)) {
+            try {
+                HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+                urlc.setRequestProperty("User-Agent", "Test");
+                urlc.setRequestProperty("Connection", "close");
+                urlc.setConnectTimeout(1500);
+                urlc.connect();
+                return (urlc.getResponseCode() == 200);
+            } catch (IOException e) {
+                Log.e(TAG, "Error checking internet connection", e);
+            }
+        } else {
+            Log.d(TAG, "No network available!");
+        }
+        return false;
+    }
+
     private void pushOrderData(){
         UIUtilities ui = new UIUtilities();
         if(phoneNumberET.getText().length()<1)
@@ -171,35 +194,49 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             ui.getSnackbar(phoneNumberET, "Please enter a valid mobile number", Snackbar.LENGTH_SHORT, getApplicationContext()).show();
         else
         {
-            DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
-            orderID = usersOrdersRef.push().getKey();
-
-            final HashMap<String, Object> orderObject = new HashMap<>();
-            orderObject.put(Order.ORDER_ID,orderID);
-            orderObject.put(Order.POOL_PUSH_ID,currentPool.getPoolPushID());
-            orderObject.put(Order.PAYMENT_STATUS,Order.KEY_PAYMENT_PENDING);
-            orderObject.put(Order.TIMESTAMP_PAYMENT_BEFORE,ServerValue.TIMESTAMP);
-            orderObject.put(Order.TOTAL_AMOUNT, total_amount);
-            orderObject.put(Order.DISCOUNTED_AMOUNT, discounted_amount);
-            orderObject.put(Order.POOL_INFO,currentPool.getPoolInfo());
-            orderObject.put(Order.ITEMS,orderList);
-            orderObject.put(Order.DELIVERY_TIME, currentPool.getDeliveryTime());
-            orderObject.put(Order.PHONE_NUMBER, phoneNumberET.getText().toString());
-
-            usersOrdersRef.child(orderID).setValue(orderObject).addOnSuccessListener(new OnSuccessListener<Void>() {
+            Thread thread = new Thread(new Runnable() {
                 @Override
-                public void onSuccess(Void aVoid) {
+                public void run() {
+                    internetFlag = hasActiveInternetConnection(getApplicationContext());
+                }
+            });
+            thread.start();
+            if(internetFlag)
+            {
+                DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
+                orderID = usersOrdersRef.push().getKey();
+
+                final HashMap<String, Object> orderObject = new HashMap<>();
+                orderObject.put(Order.ORDER_ID,orderID);
+                orderObject.put(Order.POOL_PUSH_ID,currentPool.getPoolPushID());
+                orderObject.put(Order.PAYMENT_STATUS,Order.KEY_PAYMENT_PENDING);
+                orderObject.put(Order.TIMESTAMP_PAYMENT_BEFORE,ServerValue.TIMESTAMP);
+                orderObject.put(Order.TOTAL_AMOUNT, total_amount);
+                orderObject.put(Order.DISCOUNTED_AMOUNT, discounted_amount);
+                orderObject.put(Order.POOL_INFO,currentPool.getPoolInfo());
+                orderObject.put(Order.ITEMS,orderList);
+                orderObject.put(Order.DELIVERY_TIME, currentPool.getDeliveryTime());
+                orderObject.put(Order.PHONE_NUMBER, phoneNumberET.getText().toString());
+
+                usersOrdersRef.child(orderID).setValue(orderObject).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
 
                         startPayment();
 
 
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    //TODO Error in saving order : amount will be refunded within 3-5 days
-                }
-            });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //TODO Error in saving order : amount will be refunded within 3-5 days
+                    }
+                });
+            }
+            else
+            {
+                ui.getSnackbar(phoneNumberET, "Please check internet connection", Snackbar.LENGTH_SHORT, getApplicationContext()).show();
+            }
         }
     }
 

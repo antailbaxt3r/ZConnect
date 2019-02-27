@@ -35,10 +35,10 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item android:id="@+id/option_product_type_add"
-                    android:title="Added"
+                    android:title="Sell"
                     app:showAsAction="never"/>
                 <item android:id="@+id/option_product_type_ask"
-                    android:title="Asked"
+                    android:title="Ask"
                     app:showAsAction="never"/>
                 <item android:id="@+id/option_product_type_both"
                     android:title="Both"
