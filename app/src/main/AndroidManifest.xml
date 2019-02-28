@@ -43,7 +43,7 @@
         <!-- Razon pay API -->
         <meta-data
             android:name="com.razorpay.ApiKey"
-            android:value="rzp_test_KXsdrhWl1Mp45s" />
+            android:value="rzp_test_A8XTiRdzpUWJcH" />
 
         <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.
@@ -100,7 +100,7 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".OpenEventDetail"
             android:label="Events"
@@ -463,13 +463,12 @@
             android:label="Shop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".pools.PoolItemDetailActivity"
+        <activity android:name=".pools.UpcomingPoolDetailsActivity"
             android:label="Order Details"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".pools.AddPoolItemActivity"
+            android:name=".pools.ActivePoolDetailsActivity"
             android:label="Add Items"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -509,13 +508,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".pools.PoolPreviousOrderActivity"
+            android:name=".pools.MyOrdersActivity"
             android:label="Previous Orders"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".pools.OrderDetailActivity"
-            android:label="Choose items"
+            android:label="Order Details"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

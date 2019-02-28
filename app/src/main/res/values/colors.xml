@@ -9,6 +9,7 @@
     <color name="colorPrimary">#673ab7</color>
     <color name="colorPrimaryDark">#482880</color>
     <color name="colorHighlight">#ef6c00</color>
+    <color name="colorHighlightLight">#FF9100</color>
     <color name="colorPrimaryLightest">#EDE7F6</color>
 
     <!--<color name="colorPrimary">#ef5350</color>-->
@@ -19,9 +20,9 @@
     <!--<color name="colorPrimaryDark">#2e7031</color>-->
     <!--<color name="colorHighlight">#cddc39</color>-->
 
-    <color name="colorAccent">#ef6c00</color>
+    <color name="colorAccent">#CCCBCB</color>
     <color name="card_background_color">#FFF</color>
-    <color name="home_background">#EEEEEE</color>
+    <color name="home_background">#f5f5f5</color>
     <!--<color name="colorPrimaryDark">#00695C</color>-->
     <!--<color name="colorAccent">#f44336</color>-->
     <!--<color name="colorAccent">#B0BEC5</color>-->
@@ -57,7 +58,6 @@
     <color name="cyan400">#26C6DA</color>
     <color name="cyan500">#00BCD4</color>
     <color name="green500">#4CAF50</color>
-    <color name="green700">#388E3C</color>
     <color name="green800">#2E7D32</color>
     <color name="lightgreen">#8BC34A</color>
     <color name="lime500">#CDDC39</color>
@@ -78,4 +78,20 @@
     <color name="seventyBlack">#32000000</color>
     <color name="black_transparent">#48000000</color>
     <color name="transparentGray">#99000000</color>
+
+    <color name="lightgreen800">#558b2f</color>
+    <color name="indigo800">#283593</color>
+    <color name="lightblue600">#039be5</color>
+    <color name="red400">#ef5350</color>
+
+    <color name="yellow200">#fff59d</color>
+    <color name="yellow700">#fbc02d</color>
+    <color name="red200">#ef9a9a</color>
+    <color name="red700">#d32f2f</color>
+    <color name="deeppurple200">#b39ddb</color>
+    <color name="deeppurple700">#512da8</color>
+    <color name="green200">#a5d6a7</color>
+    <color name="green700">#388e3c</color>
+
+
 </resources>

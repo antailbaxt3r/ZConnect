@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pools.PoolBillActivity">
+    tools:context=".pools.PoolBillActivity"
+    android:background="@color/home_background">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,114 +22,156 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
         <LinearLayout
+            android:id="@+id/bill_layout"
             android:layout_width="match_parent"
-            android:layout_margin="16dp"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
-
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:weightSum="1"
+            android:orientation="vertical">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycleView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
+                android:layout_height="0dp"
+                android:layout_weight="1">
             </android.support.v7.widget.RecyclerView>
-
-            <!--Total Amount View -->
+            <LinearLayout
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="0px"
+                android:layout_height="0px"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="32dp"
                 android:orientation="vertical"
-                android:padding="8dp">
-
-                <!-- Sub total view-->
+                android:layout_gravity="bottom"
+                android:padding="@dimen/padding_medium"
+                android:background="@color/home_background">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText"
+                    android:text="Total"/>
+                <!--Total Amount View -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="56dp"
-                    android:padding="8dp"
-                    android:weightSum="1">
-
-                    <TextView
-                        android:layout_width="0dp"
+                    android:orientation="vertical">
+                    <!-- Sub total view-->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.65"
-                        android:text="Sub Total" />
-
-                    <TextView
-                        android:id="@+id/tv_subTotal"
-                        android:layout_width="0dp"
+                        android:weightSum="1"
+                        android:paddingTop="@dimen/padding_x_small"
+                        android:paddingBottom="@dimen/padding_x_small">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Item Total"
+                            android:textColor="@color/primaryText" />
+                        <TextView
+                            android:id="@+id/tv_subTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rs.100/-"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primaryText"
+                            android:layout_alignParentEnd="true"/>
+                    </RelativeLayout>
+                    <!-- Discount view-->
+                    <RelativeLayout
+                        android:id="@+id/ll_discount"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_weight="0.35" />
+                        android:paddingTop="@dimen/padding_x_small"
+                        android:paddingBottom="@dimen/padding_x_small">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Discount"
+                            android:textColor="@color/primaryText"/>
+                        <TextView
+                            android:id="@+id/tv_discount"
+                            android:layout_width="wrap_content"
+                            android:textColor="@color/red500"
+                            android:textStyle="bold"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="Rs.50/-"/>
+                    </RelativeLayout>
+                    <!-- Total amount view-->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding_x_small"
+                        android:paddingBottom="@dimen/padding_x_small">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Amount to pay"
+                            android:textColor="@color/primaryText"/>
+                        <TextView
+                            android:id="@+id/tv_total_amount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/holo_green_dark"
+                            android:text="Rs.50/-"
+                            android:textStyle="bold"
+                            android:layout_alignParentEnd="true"/>
+                    </RelativeLayout>
                 </LinearLayout>
-
-                <!-- Discount view-->
-                <LinearLayout
-                    android:id="@+id/ll_discount"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="56dp"
-                    android:padding="8dp"
-                    android:weightSum="1">
-
-                    <TextView
-                        android:layout_width="0dp"
+                    android:textColor="@color/primaryText"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="Phone Number"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Button
+                        android:id="@+id/country_code"
+                        android:layout_width="50dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.65"
-                        android:text="Discount " />
-
-                    <TextView
-                        android:id="@+id/tv_discount"
-                        android:layout_width="0dp"
-                        android:textColor="@color/red500"
+                        android:text="+91"
+                        android:textSize="16sp"
+                        android:background="@color/transparent"
+                        android:layout_centerVertical="true"/>
+                    <EditText
+                        android:id="@+id/phoneNumber"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="16dp"
-                        android:layout_weight="0.35" />
-                </LinearLayout>
-
-                <!-- Total amount view-->
-                <LinearLayout
+                        android:inputType="phone"
+                        android:hint="Phone number"
+                        app:met_maxCharacters="12"
+                        android:textSize="16sp"
+                        android:textColor="@color/primaryText"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_toEndOf="@+id/country_code"/>
+                </RelativeLayout>
+                <Button
+                    android:id="@+id/btn_pay"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="56dp"
-                    android:padding="8dp"
-                    android:weightSum="1">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.65"
-                        android:text="Total" />
-
-                    <TextView
-                        android:id="@+id/tv_total_amount"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_weight="0.35"
-                        android:textColor="@android:color/holo_green_dark" />
-                </LinearLayout>
-
+                    android:text="Pay"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:background="@drawable/border_fill"/>
             </LinearLayout>
-
-            <!--Confirm Order view -->
-            <Button
-                android:id="@+id/btn_pay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="32dp"
-                android:padding="8dp"
-                android:text="Pay"
-                android:textAllCaps="false" />
-
         </LinearLayout>
-
-    </ScrollView>
+        <!-- Dummy item to prevent EditText from receiving focus -->
+        <!--Confirm Order view -->
+    </FrameLayout>
 </LinearLayout>

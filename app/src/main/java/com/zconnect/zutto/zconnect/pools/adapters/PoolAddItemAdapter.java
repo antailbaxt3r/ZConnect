@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.holders.PoolAddItemViewHolder;
+import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
 import java.util.ArrayList;
@@ -15,8 +16,7 @@ import java.util.HashMap;
 public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHolder> {
 
     private ArrayList<PoolItem> poolsList = new ArrayList<>();
-    private HashMap<String, Integer> mp = new HashMap<>();
-
+    private HashMap<String,PoolItem> orderItemList = new HashMap<>();
 
     @Override
     public PoolAddItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -45,11 +45,12 @@ public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHold
         notifyDataSetChanged();
     }
 
-    public void updateOrderDish(String id, int number) {
+    public void updateOrderDish(PoolItem poolItem, int number) {
+        poolItem.setQuantity(number);
         if (number == 0) {
-            if (mp.containsKey(id)) mp.remove(id);
+            orderItemList.remove(poolItem.getItemID());
         } else {
-            mp.put(id, number);
+            orderItemList.put(poolItem.getItemID(),poolItem);
         }
     }
 
@@ -57,7 +58,7 @@ public class PoolAddItemAdapter extends RecyclerView.Adapter<PoolAddItemViewHold
         return poolsList;
     }
 
-    public HashMap<String, Integer> getMp() {
-        return mp;
+    public HashMap<String, PoolItem> getOrderItemList() {
+        return orderItemList;
     }
 }

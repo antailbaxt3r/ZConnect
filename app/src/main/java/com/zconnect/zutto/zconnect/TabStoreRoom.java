@@ -192,13 +192,13 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
 
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getApplicationContext());
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(TabStoreRoom.this);
                 alertBuilder.setTitle("Add/Ask")
                         .setMessage("Do you want to add a product or ask for a product?")
                         .setPositiveButton("Ask", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(getApplicationContext(), AddProduct.class);
+                                Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
                                 intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
                                 startActivity(intent);
                             }
@@ -206,7 +206,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                         .setNegativeButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(getApplicationContext(), AddProduct.class);
+                                Intent intent = new Intent(TabStoreRoom.this, AddProduct.class);
                                 intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
                                 startActivity(intent);
                             }

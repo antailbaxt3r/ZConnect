@@ -1,8 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -25,6 +22,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +33,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +57,7 @@ import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
-import com.zconnect.zutto.zconnect.pools.PoolPreviousOrderActivity;
+import com.zconnect.zutto.zconnect.pools.MyOrdersActivity;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.RequestCodes;
@@ -72,13 +69,12 @@ import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
+public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, Recents.OnHomeIconListener {
 
     private final String TAG = getClass().getSimpleName();
     @BindView(R.id.drawer_layout)
@@ -130,7 +126,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     public TabLayout.Tab recentsT,forumsT,addT,infoneT,profileT;
     HomeBottomSheet bottomSheetFragment;
-
+    private LinearLayoutManager recentsLinearLayoutManager;
     public HomeActivity() {
 
         isFabOpen = false;
@@ -153,10 +149,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int colorPrimary = ContextCompat.getColor(this, R.color.black);
-            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            int colorPrimary = ContextCompat.getColor(this, R.color.black);
+//            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+//            getWindow().setStatusBarColor(getResources().getColor(R.color.white));
+//            getWindow().setNavigationBarColor(getResources().getColor(R.color.white));
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
@@ -334,6 +330,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 int pos = tab.getPosition();
                 tab.getCustomView().setAlpha((float) 1);
                 switch (pos) {
+                    case 0:
+                        recentsLinearLayoutManager.scrollToPositionWithOffset(0,0);
+                        break;
                     case 2: {
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Add",HomeActivity.this);
@@ -347,7 +346,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             }
         });
-
     }
 
     //Setting contents in the different tabs
@@ -847,7 +845,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             case R.id.MyOrders: {
 
-                Intent MyOrdersIntent = new Intent(HomeActivity.this,PoolPreviousOrderActivity.class);
+                Intent MyOrdersIntent = new Intent(HomeActivity.this, MyOrdersActivity.class);
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
                 HashMap<String, String> meta= new HashMap<>();
                 meta.put("type","fromNavigationDrawer");
@@ -1135,5 +1133,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
         }
 
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        if(fragment instanceof Recents)
+        {
+            Recents recentsFragment = (Recents) fragment;
+            recentsFragment.setOnHomeIconListener(this);
+        }
+        super.onAttachFragment(fragment);
+    }
+
+    @Override
+    public void getLayoutManager(LinearLayoutManager linearLayoutManager) {
+        recentsLinearLayoutManager = linearLayoutManager;
     }
 }

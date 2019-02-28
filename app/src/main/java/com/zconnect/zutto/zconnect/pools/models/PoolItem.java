@@ -1,36 +1,52 @@
 package com.zconnect.zutto.zconnect.pools.models;
 
-import com.google.firebase.database.Exclude;
+import java.io.Serializable;
 
-public class PoolItem {
+public class PoolItem implements Serializable{
 
     // URLS
-    public static final String URL_POOL_ITEM = "communities/%s/shopOwner/%s/pools/poolDetails/%s";
-    //                                                    communityID ,   shopID ,    poolID
-    public static final String ITEM_ID = "itemID";
-
+    public static final String URL_POOL_ITEM = "shops/shopDetails/%s/poolTemplates/poolDetails/%s";
+    //                                                         shopID               poolID
 
     //Node names
+    public static final String ITEM_ID = "itemID";
     public static final String NAME = "name";
     public static final String PRICE = "price";
     public static final String DESCRIPTION = "description";
     public static final String IMAGE_URL = "imageURL";
+    public static final String IMAGE_THUMB = "imageThumb";
+    public static final String MAX_QUANTITY = "maxQuantity";
     public static final String QUANTITY = "quantity";
 
-    @Exclude
-    private String ID;
+    private String itemID;
     private String name;
     private int price;
     private String description;
     private String imageURL;
+    private String imageThumb;
+    private int maxQuantity;
     private int quantity;
 
-    public String getID() {
-        return ID;
+    public PoolItem() {
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public PoolItem(String itemID, String name, int price, String description, String imageURL, String imageThumb, int maxQuantity, int quantity) {
+        this.itemID = itemID;
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.imageURL = imageURL;
+        this.imageThumb = imageThumb;
+        this.maxQuantity = maxQuantity;
+        this.quantity = quantity;
+    }
+
+    public String getItemID() {
+        return itemID;
+    }
+
+    public void setItemID(String itemID) {
+        this.itemID = itemID;
     }
 
     public String getName() {
@@ -65,8 +81,23 @@ public class PoolItem {
         this.imageURL = imageURL;
     }
 
+    public String getImageThumb() {
+        return imageThumb;
+    }
+
+    public void setImageThumb(String imageThumb) {
+        this.imageThumb = imageThumb;
+    }
+
+    public int getMaxQuantity() {
+        return maxQuantity;
+    }
+
+    public void setMaxQuantity(int maxQuantity) {
+        this.maxQuantity = maxQuantity;
+    }
+
     public int getQuantity() {
-        if (quantity == 0) return 0;
         return quantity;
     }
 

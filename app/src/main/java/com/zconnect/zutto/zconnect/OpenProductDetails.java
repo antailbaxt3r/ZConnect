@@ -484,12 +484,13 @@ public class OpenProductDetails extends BaseActivity {
                     if(dataSnapshot.hasChild("Image"))
                     {
                         askText.setVisibility(View.GONE);
+                        productImage.setVisibility(VISIBLE);
                         mImageUri = dataSnapshot.child("Image").getValue().toString();
                         setImage(OpenProductDetails.this, dataSnapshot.child("ProductName").getValue().toString(), dataSnapshot.child("Image").getValue().toString(), productImage);
                     }
                     else
                     {
-                        productImage.setImageDrawable(getApplicationContext().getDrawable(R.drawable.ask_default_image));
+                        productImage.setVisibility(View.GONE);
                         askText.setVisibility(VISIBLE);
                         askText.setText(productName.getText());
                         progressBar.setVisibility(View.GONE);

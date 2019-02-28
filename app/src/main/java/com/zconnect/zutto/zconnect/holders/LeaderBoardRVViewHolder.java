@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect.holders;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.itemFormats.LeaderBoardItemFormat;
 
@@ -60,5 +62,16 @@ public class LeaderBoardRVViewHolder extends RecyclerView.ViewHolder {
             userPoints.setTextColor(itemView.getResources().getColor(R.color.secondaryText));
             userRank.setTextColor(itemView.getResources().getColor(R.color.secondaryText));
         }
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(userUID!=null && !userUID.equals(FirebaseAuth.getInstance().getUid())){
+                    Intent i = new Intent(itemView.getContext(), OpenUserDetail.class);
+                    i.putExtra("Uid",userUID);
+                    itemView.getContext().startActivity(i);
+                }
+            }
+        });
     }
 }

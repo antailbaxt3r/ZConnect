@@ -25,13 +25,7 @@ import android.support.annotation.RequiresApi;
 
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.CabPoolAll;
@@ -46,35 +40,12 @@ import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ShortlistedPeopleList;
 import com.zconnect.zutto.zconnect.VerificationPage;
-import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Random;
-
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL_JOIN;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CAB_POOL_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENTS_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT_BOOST;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_FORUMS;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_FORUMS_JOIN;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_IMAGE_NOTIF;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_LIKE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_LOVE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_MESSAGES_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_MESSAGES_CHAT_DELETE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_POST_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_STOREROOM;
 
 public class NotificationService extends FirebaseMessagingService {
 
@@ -114,21 +85,25 @@ public class NotificationService extends FirebaseMessagingService {
 
         data = remoteMessage.getData();
 
-        try {
+
             if (data.containsKey("Type")) {
                 final String type = data.get("Type").toString();
 
                 if (data.containsKey("userKey")) {
-                    final String userKey = data.get("userKey").toString();
-                    if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)) {
+                    try {
+                        final String userKey = data.get("userKey").toString();
+                        if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)) {
+                            handleNotifications(type);
+                        }
+
+                    }catch (Exception e){
                         handleNotifications(type);
                     }
+
                 } else {
                     handleNotifications(type);
                 }
             }
-        }catch (Exception e){}
-
 
     }
 
@@ -493,6 +468,8 @@ public class NotificationService extends FirebaseMessagingService {
 
 
     private void postChatNotification() {
+
+
         final String communityName = data.get("communityName").toString();
         final String communityReference = data.get("communityReference").toString();
 
@@ -503,6 +480,9 @@ public class NotificationService extends FirebaseMessagingService {
         final String postKey = data.get("postKey").toString();
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText(userName + " commented on your post").setBigContentTitle(communityName);
+
 
         Bitmap bitmap = null;
 
@@ -514,9 +494,6 @@ public class NotificationService extends FirebaseMessagingService {
         if (bitmap!=null){
             mBuilder.setLargeIcon(bitmap);
         }
-
-        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-        style.bigText(userName + " commented on your post").setBigContentTitle(communityName);
 
         mBuilder.setSmallIcon(R.drawable.ic_message_white_18dp)
                 .setStyle(style)
@@ -530,14 +507,15 @@ public class NotificationService extends FirebaseMessagingService {
 
         Intent intent = new Intent(NotificationService.this, ChatActivity.class);
 
-        intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(postKey).toString());
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/"+ communityReference + "/home/"+postKey);
         intent.putExtra("key",postKey);
         intent.putExtra("type","post");
+
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(14, mBuilder.build());
+        mNotificationManager.notify(9, mBuilder.build());
 
     }
 
@@ -582,7 +560,7 @@ public class NotificationService extends FirebaseMessagingService {
         intent.putExtra("type","events");
         intent.putExtra("key",eventKey);
         intent.putExtra("name",eventName);
-        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventKey).toString());
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/" + communityReference + "/features/events/activeEvents"+ eventKey);
 
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
@@ -633,7 +611,7 @@ public class NotificationService extends FirebaseMessagingService {
         Intent intent = new Intent(NotificationService.this, ChatActivity.class);
         intent.putExtra("type","cabPool");
         intent.putExtra("key",cabKey);
-        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs").child(cabKey).toString());
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/"+ communityReference +"/features/cabPool/allCabs/"+cabKey);
 
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
@@ -684,7 +662,7 @@ public class NotificationService extends FirebaseMessagingService {
         intent.putExtra("type","storeroom");
         intent.putExtra("key",productKey);
         intent.putExtra("name",productName);
-        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/" + communityReference +"/features/storeroom/products/"+productKey);
 
 
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -708,6 +686,8 @@ public class NotificationService extends FirebaseMessagingService {
         final String forumName = data.get("forumName").toString();
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,FORUMS_CHANNEL_ID);
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText(userName + " posted in " + forumName).setBigContentTitle(communityName);
 
         Bitmap bitmap = null;
 
@@ -720,14 +700,12 @@ public class NotificationService extends FirebaseMessagingService {
             mBuilder.setLargeIcon(bitmap);
         }
 
-        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-        style.bigText(userName + " posted in " + forumName).setBigContentTitle(communityName);
 
             mBuilder.setSmallIcon(R.drawable.ic_forum_white_18dp)
                     .setStyle(style)
                     .setAutoCancel(true)
                     .setSound(defaultSoundUri)
-                    .setPriority(Notification.PRIORITY_DEFAULT)
+                    .setPriority(Notification.PRIORITY_HIGH)
                     .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                     .setContentTitle(communityName)
                     .setSubText(userName + ": "+ forumMessage)
@@ -738,7 +716,7 @@ public class NotificationService extends FirebaseMessagingService {
 
 
             Intent intent = new Intent(NotificationService.this, ChatActivity.class);
-            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(forumKey).toString());
+            intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/"+ communityReference+"/features/forums/categories/"+forumKey);
             intent.putExtra("type","forums");
             intent.putExtra("name", forumName);
             intent.putExtra("tab",forumCategoryUID);
@@ -806,6 +784,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
 
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.bigText("Hey! " + userName + " liked your profile").setBigContentTitle(communityName);
@@ -820,6 +799,7 @@ public class NotificationService extends FirebaseMessagingService {
             mBuilder.setLargeIcon(bitmap);
         }
 
+
         mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
                 .setStyle(style)
                 .setAutoCancel(true)
@@ -827,6 +807,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setSound(defaultSoundUri)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
+                .setSubText("Yolo")
                 .setContentText("Hey! " + userName + " liked your profile");
 
         Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);
@@ -931,7 +912,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setContentText(userName + " started a new forum " + forumName + " in " + forumCategory);
 
         Intent intent = new Intent(NotificationService.this, ChatActivity.class);
-        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(forumKey).toString());
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/" +communityReference+"/features/forums/categories/"+forumKey);
         intent.putExtra("type","forums");
         intent.putExtra("name", forumName);
         intent.putExtra("tab",forumCategoryUID);

@@ -2,36 +2,83 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
-    android:orientation="vertical">
-
-    <LinearLayout
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp">
-        <TextView
-            android:id="@+id/pool_name"
+        android:padding="@dimen/padding_small"
+        android:background="@color/white">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/pool_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shri Kaashi Dairy"
+                android:textSize="14sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            <TextView
+                android:id="@+id/order_deadline_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delivery at 8:30 PM"
+                android:layout_marginTop="@dimen/margin_x_small"
+                android:textSize="12sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <TextView
+                android:id="@+id/order_place_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Order Placed on May 13 2019"
+                android:layout_marginTop="@dimen/margin_x_small"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textSize="12sp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small">
+                <TextView
+                    android:id="@+id/payment_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_x_small"
+                    android:text="Payment Status"
+                    android:textSize="10sp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/border_fill"
+                    android:padding="@dimen/padding_x_small"
+                    android:layout_marginEnd="@dimen/margin_small"/>
+                <TextView
+                    android:id="@+id/order_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_x_small"
+                    android:text="Order Received"
+                    android:textSize="10sp"
+                    android:layout_toEndOf="@+id/payment_status"
+                    android:textColor="@color/white"
+                    android:background="@drawable/border_fill"
+                    android:padding="@dimen/padding_x_small"/>
+            </RelativeLayout>
+        </LinearLayout>
         <TextView
-            android:id="@+id/delivery_time"
-            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/ordered_amount"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Rs.130/-"
+            android:textSize="20sp"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:gravity="center"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/ordered_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/secondaryText2"
+        android:layout_below="@+id/info"
+        android:layout_margin="@dimen/margin_small"/>
 </RelativeLayout>

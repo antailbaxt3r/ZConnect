@@ -1,37 +1,45 @@
 package com.zconnect.zutto.zconnect.pools;
 
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.razorpay.RazorpayClient;
-import com.razorpay.RazorpayException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.pools.models.Order;
+import com.zconnect.zutto.zconnect.pools.models.Pool;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 
 public class PaymentCaptureActivity extends BaseActivity {
 
     public static final String TAG = "PaymentCaptureActivity";
-    private static final String RAZOR_PAY_KEY = "rzp_test_KXsdrhWl1Mp45s";
-    private static final String RAZOR_PAY_SECRET = "RTnQaWurA8LsntSyWHPTrE4t";
 
-    private LinearLayout into_view;
-    private TextView transictionID, amount;
+    private TextView amountTV;
 
-    private LinearLayout ll_progressBar;
-    private TextView loading_text;
-
-    private String tranID;
-    private int total_amount;
+    private LinearLayout ll_progressBar, nextStepsLL;
+    private TextView loading_text, paymentStatusText;
+    private Button nextButton;
+    private DatabaseReference orderRef;
+    private String orderID;
+    private Order order;
+    private ImageView paymentStatusImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,73 +71,62 @@ public class PaymentCaptureActivity extends BaseActivity {
 
         attachID();
         Bundle b = getIntent().getExtras();
-        tranID = b.getString("paymentID");
-        total_amount = b.getInt("amount");
-        into_view.setVisibility(View.GONE);
-        setProgressBarView(View.VISIBLE, "Do not Press Back Confirming Payment");
-        capturetransection();
+        orderID = b.getString("orderID");
+        amountTV.setText(b.getString("amount"));
+        orderRef = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_MY_PARTICULAR_ORDER, communityReference, FirebaseAuth.getInstance().getUid(), orderID));
+        orderRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("paymentStatus").getValue(String.class).equals(Order.KEY_PAYMENT_SUCCESS))
+                {
+                    nextButton.setVisibility(View.VISIBLE);
+                    nextStepsLL.setVisibility(View.VISIBLE);
+                    order = dataSnapshot.getValue(Order.class);
+                    paymentStatusImage.setBackground(getApplicationContext().getDrawable(R.drawable.ic_check_green_120dp));
+                    paymentStatusText.setText("Payment Successful");
+                }
+                else if(dataSnapshot.child("paymentStatus").getValue(String.class).equals(Order.KEY_PAYMENT_FAIL))
+                {
+                    nextButton.setVisibility(View.GONE);
+                    nextStepsLL.setVisibility(View.GONE);
+                    paymentStatusImage.setBackground(getApplicationContext().getDrawable(R.drawable.ic_error_outline_red500_120dp));
+                    paymentStatusText.setText("Payment Failed");
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),OrderDetailActivity.class);
+                intent.putExtra("order",order);
+                intent.putExtra("orderID", orderID);
+                startActivity(intent);
+            }
+        });
     }
 
-    private void capturetransection() {
-        //TODO should be run on server
-        new MyAsyncTask().execute(" ");
-
-
-    }
 
     private void attachID() {
-        into_view = findViewById(R.id.ll_info);
-        transictionID = findViewById(R.id.transection_id);
-        amount = findViewById(R.id.total_pay_amount);
+        amountTV = findViewById(R.id.total_pay_amount);
         ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
+        nextButton = findViewById(R.id.next_btn);
+        nextStepsLL = findViewById(R.id.next_steps_layout);
+        paymentStatusImage = findViewById(R.id.paymentstatus_image);
+        paymentStatusText = findViewById(R.id.paymentstatus_text);
     }
 
-    private void setProgressBarView(int visibility, String message) {
-        ll_progressBar.setVisibility(visibility);
-        loading_text.setText(message);
-
-    }
-
-    private class MyAsyncTask extends AsyncTask<String, Void, String> {
-
-        Exception exception;
-
-        MyAsyncTask() {
-            super();
-            this.exception = null;
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                RazorpayClient razorpayClient = new RazorpayClient(RAZOR_PAY_KEY, RAZOR_PAY_SECRET);
-                JSONObject options = new JSONObject();
-                options.put("amount", total_amount * 100);
-                razorpayClient.Payments.capture(tranID, options);
-            } catch (RazorpayException e) {
-                this.exception = e;
-            } catch (JSONException e) {
-                this.exception = e;
-
-            }
-            return "";
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (this.exception != null) {
-                setProgressBarView(View.VISIBLE, "An exception occure");
-
-            } else {
-                transictionID.setText("Transiction ID : " + tranID);
-                amount.setText("Amount : " + String.valueOf(total_amount));
-                into_view.setVisibility(View.VISIBLE);
-                setProgressBarView(View.GONE, "");
-            }
-        }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), PoolActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        super.onBackPressed();
     }
 }

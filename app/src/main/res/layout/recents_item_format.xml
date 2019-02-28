@@ -237,8 +237,10 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"/>
                 <View
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:layout_height="1dp"
                     android:background="@color/horizontalLine"/>
                 <LinearLayout

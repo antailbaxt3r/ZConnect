@@ -277,7 +277,7 @@ public class OpenUserDetail extends BaseActivity {
                 }else {
                     db_like.child(myUID).setValue(true);
                     like_status = true;
-                    currentUser.addValueEventListener(new ValueEventListener() {
+                    currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.child("Likes").hasChild(Uid)){
@@ -323,7 +323,7 @@ public class OpenUserDetail extends BaseActivity {
                 } else{
                     db_love.child(myUID).setValue(true);
                     love_status = true;
-                    currentUser.addValueEventListener(new ValueEventListener() {
+                    currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.child("Loves").hasChild(Uid)){
@@ -640,11 +640,7 @@ public class OpenUserDetail extends BaseActivity {
 
             String send = "";
             String format1 = "%1$-20s %2$-20s\n";
-            send =
-                    String.format(format1,"Name: ",name)+
-                            String.format(format1,"Number: ", mobileNumber)+
-                            "\nShared using ZConnect. \nDownlaod ZConnect now, to access all contacts of your community"+ "\n \nhttps://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
-
+            send = "Name: " + name + "\n"+ "Number: " + mobileNumber + "\n \nShared using ZConnect. \nDownlaod ZConnect now, to access all contacts of your community"+ "\n \nhttps://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/*");
             sharingIntent.putExtra(Intent.EXTRA_TEXT, send);

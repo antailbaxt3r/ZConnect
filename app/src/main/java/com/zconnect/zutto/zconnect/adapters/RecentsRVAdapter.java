@@ -119,16 +119,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     View.OnClickListener openUserProfileListener;
     boolean flag;
     private CommunityFeatures communityFeatures;
-    Button scrollToTopBtn;
     private static int firstVisibleInRV;
     LinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
 
-    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, Button scrollToTopBtn, CommunityFeatures communityFeatures, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView) {
+    public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, CommunityFeatures communityFeatures, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView) {
         this.context = context;
         this.recentsItemFormats = recentsItemFormats;
         this.mHomeActivity = HomeActivity;
-        this.scrollToTopBtn = scrollToTopBtn;
         this.communityFeatures = communityFeatures;
         this.linearLayoutManager = linearLayoutManager;
         this.recyclerView = recyclerView;
@@ -185,32 +183,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder2, final int position) {
-        final RecentsItemFormat recentItem = recentsItemFormats.get(position);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if(dy > 0 && scrollToTopBtn.getVisibility()==View.VISIBLE)
-                {
-                    scrollToTopBtn.setVisibility(View.GONE);
-                }
-                else if(dy < 0 && scrollToTopBtn.getVisibility()!=View.VISIBLE)
-                {
-                    scrollToTopBtn.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-//        if(position < 2)
-//        {
-//             scrollToTopBtn.setVisibility(View.GONE);
-//        }
-//        firstVisibleInRV = linearLayoutManager.findFirstVisibleItemPosition();
-//        if(position>10)
-//        {
-//            scrollToTopBtn.setVisibility(View.VISIBLE);
-//        }
-//        else
-//            scrollToTopBtn.setVisibility(View.GONE);
         switch (holder2.getItemViewType())
         {
             case 0:
@@ -1011,7 +983,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumNameCategorySentence.setText(recentsItemFormats.get(position).getName()
                     + " in " + recentsItemFormats.get(position).getDesc());
                     posted = " created a ";
-                    post = recentsItemFormats.get(position).getFeature();
+                    post = "Forum";
                     clickableSpanFeature = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {

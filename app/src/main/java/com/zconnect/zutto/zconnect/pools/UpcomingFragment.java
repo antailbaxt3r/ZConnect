@@ -18,11 +18,9 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolAdapter;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
 
-import java.util.ArrayList;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+import java.util.ArrayList;
 
 public class UpcomingFragment extends Fragment {
 
@@ -33,16 +31,13 @@ public class UpcomingFragment extends Fragment {
     private PoolAdapter adapter;
     private ValueEventListener upcomingPoolListener;
 
-    private String communityID;
-
 
     public UpcomingFragment() {
         // Required empty public constructor
     }
 
-    public static UpcomingFragment newInstance(String communityID) {
+    public static UpcomingFragment newInstance() {
         UpcomingFragment frag = new UpcomingFragment();
-        frag.communityID = communityID;
         return frag;
     }
 
@@ -54,7 +49,7 @@ public class UpcomingFragment extends Fragment {
     }
 
     private void loadPoolList() {
-        Query query = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityID)).orderByChild(Pool.STATUS).equalTo(Pool.STATUS_UPCOMING);
+        Query query = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityReference)).orderByChild(Pool.STATUS).equalTo(Pool.STATUS_UPCOMING);
         query.addValueEventListener(upcomingPoolListener);
     }
 
@@ -67,23 +62,27 @@ public class UpcomingFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         defineListener();
-        loadPoolList();
-
-
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadPoolList();
     }
 
     private void defineListener() {
         upcomingPoolListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<Pool> arrayList = new ArrayList<>();
+                ArrayList<Pool> poolArrayList = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Pool newPool = child.getValue(Pool.class);
-                    newPool.setID(child.getKey());
-                    arrayList.add(newPool);
+                    if (newPool.isUpcoming()) {
+                        poolArrayList.add(newPool);
+                    }
                 }
-                adapter.addAll(arrayList);
+                adapter.addAll(poolArrayList);
             }
 
             @Override

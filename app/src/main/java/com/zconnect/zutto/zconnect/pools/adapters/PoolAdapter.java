@@ -45,7 +45,7 @@ public class PoolAdapter extends RecyclerView.Adapter<PoolViewHolder> {
 
     public void removePool(Pool pool) {
         for (int i = 0; i < poolsList.size(); i++) {
-            if (poolsList.get(i).getID().compareTo(pool.getID()) == 0) {
+            if (poolsList.get(i).getPoolPushID().compareTo(pool.getPoolPushID()) == 0) {
                 poolsList.remove(i);
                 notifyItemRemoved(i);
                 return;
@@ -55,7 +55,7 @@ public class PoolAdapter extends RecyclerView.Adapter<PoolViewHolder> {
 
     public void updatePool(Pool pool) {
         for (int i = 0; i < poolsList.size(); i++) {
-            if (poolsList.get(i).getID().compareTo(pool.getID()) == 0) {
+            if (poolsList.get(i).getPoolPushID().compareTo(pool.getPoolPushID()) == 0) {
                 poolsList.set(i, pool);
                 notifyItemChanged(i);
                 return;
@@ -65,7 +65,7 @@ public class PoolAdapter extends RecyclerView.Adapter<PoolViewHolder> {
 
     public Pool getPool(String id) {
         for (int i = 0; i < poolsList.size(); i++) {
-            if (poolsList.get(i).getID().compareTo(id) == 0) {
+            if (poolsList.get(i).getPoolPushID().compareTo(id) == 0) {
                 return poolsList.get(i);
             }
         }

@@ -29,59 +29,259 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".pools.OrderDetailActivity">
+            tools:context=".pools.OrderDetailActivity"
+            android:padding="@dimen/padding_small">
 
             <LinearLayout
-                android:gravity="center_horizontal"
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/qr_image"
-                    android:layout_width="240dp"
-                    android:padding="8dp"
-                    android:layout_marginTop="36dp"
-                    android:layout_height="240dp" />
-                <TextView
-                    android:layout_margin="8dp"
-                    android:padding="2dp"
-                    android:id="@+id/order_status"
-                    android:gravity="center"
-                    style="@style/TextAppearance.AppCompat.Subhead"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_margin="8dp"
-                    android:padding="2dp"
-                    android:id="@+id/user_name"
-                    android:gravity="center"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_margin="8dp"
-                    android:padding="2dp"
-                    android:id="@+id/user_email"
-                    android:gravity="center"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_margin="8dp"
-                    android:padding="2dp"
-                    android:id="@+id/user_amount"
-                    android:gravity="center"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
 
+                    <RelativeLayout
+                        android:id="@+id/payment_failed_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_centerInParent="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="48dp">
+                            <TextView
+                                android:textSize="32dp"
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/red700"
+                                android:text="Payment Failed"/>
+                            <TextView
+                                android:textAlignment="center"
+                                android:textColor="@color/secondaryText"
+                                android:text="Any amount deducted will be refunded within 8-10 working days"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/payment_processing_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+                        <LinearLayout
+                            android:layout_centerInParent="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="10dp"
+                            android:layout_marginTop="110dp">
+                            <TextView
+                                android:textSize="32dp"
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primaryText"
+                                android:text="Payment Processing..."/>
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/payment_confirm_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/qr_image"
+                            android:layout_width="240dp"
+                            android:layout_height="240dp"
+                            android:background="@color/white"
+                            android:layout_gravity="center"/>
+                        <TextView
+                            android:id="@+id/userBillIDText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/TextAppearance.AppCompat.Headline"
+                            android:gravity="center"
+                            android:text="qwexyz005"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="(Order Number)"
+                            style="@style/TextAppearance.AppCompat.Caption"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_medium">
+                            <ImageView
+                                android:id="@+id/order_status_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/baseline_check_white_24"
+                                android:backgroundTint="@color/colorHighlightLight"/>
+                            <TextView
+                                android:id="@+id/order_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@+id/order_status_icon"
+                                android:layout_marginStart="@dimen/margin_small"
+                                android:layout_centerVertical="true"
+                                android:textSize="14sp"
+                                android:textColor="@color/primaryText"
+                                android:text="Order delivered on Feb 8, 9:07 PM"/>
+                            <FrameLayout
+                                android:id="@+id/delivered_tag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true">
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/small_tag"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="DELIVERED"
+                                    android:textSize="10sp"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/primaryText"
+                                    style="@style/TextAppearance.AppCompat.Caption" />
+                            </FrameLayout>
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium">
+                    <ImageView
+                        android:id="@+id/location_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/baseline_location_on_black_24"
+                        android:backgroundTint="@color/colorHighlightLight"/>
+                    <TextView
+                        android:id="@+id/pool_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_medium"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_toRightOf="@+id/location_icon"
+                        android:textColor="@color/primaryText"
+                        android:textSize="14sp"
+                        android:text="Shop Name"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="BILL DETAILS"
+                    android:textSize="12sp"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:textColor="@color/primaryText" />
                 <android.support.v7.widget.RecyclerView
-                    android:layout_margin="24dp"
                     android:id="@+id/recycleView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:background="@drawable/dotted"
+                    android:layerType="software"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Item Total"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/primaryText" />
+                    <TextView
+                        android:id="@+id/item_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs.300/-"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/primaryText" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_x_small">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Discount Total"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/primaryText" />
+                    <TextView
+                        android:id="@+id/discount_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs.300/-"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/primaryText" />
+                </RelativeLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:background="@drawable/dotted"
+                    android:layerType="software"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Total"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/primaryText"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+                    <TextView
+                        android:id="@+id/discounted_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs.300/-"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/primaryText"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+                </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
 

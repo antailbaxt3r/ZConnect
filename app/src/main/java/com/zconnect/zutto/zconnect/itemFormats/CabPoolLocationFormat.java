@@ -6,6 +6,7 @@ package com.zconnect.zutto.zconnect.itemFormats;
 
 public class CabPoolLocationFormat {
 
+    private String locationUID;
     private String locationName;
     private Long PostTimeMillis;
     private PostedByDetails PostedBy;
@@ -42,6 +43,14 @@ public class CabPoolLocationFormat {
 
     public void setPostedBy(PostedByDetails postedBy) {
         PostedBy = postedBy;
+    }
+
+    public String getLocationUID() {
+        return locationUID;
+    }
+
+    public void setLocationUID(String locationUID) {
+        this.locationUID = locationUID;
     }
 
 }

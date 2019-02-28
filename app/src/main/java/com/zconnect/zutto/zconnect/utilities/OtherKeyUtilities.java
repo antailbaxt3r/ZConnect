@@ -37,4 +37,5 @@ public class OtherKeyUtilities {
     public static final String KEY_CAB_POOL_CHAT="CabPoolChat";
 
     public static final String KEY_FORUMS_ADD="AddForum";
+
 }

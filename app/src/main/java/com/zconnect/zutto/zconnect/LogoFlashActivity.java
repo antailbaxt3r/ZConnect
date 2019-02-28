@@ -79,21 +79,18 @@ public class LogoFlashActivity extends BaseActivity {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         } catch (Exception ignore) {
         }
+
+
+
         Fresco.initialize(this);
         FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_logo_flash);
         bgImage =  findViewById(R.id.bgImage);
-        bgColor = findViewById(R.id.bgColor);
 
         SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
-//            copyUserPointsToUserPointsNum();
-//            removeJustJoinedNotifFromHome();
-//            countCommunityMembers();
-//            countInfoneCatMembers();
-//            setUserPointsInExistingUsers();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
             mDatabase.addValueEventListener(new ValueEventListener() {
