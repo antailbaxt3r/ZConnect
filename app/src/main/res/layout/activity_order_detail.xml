@@ -92,6 +92,28 @@
                         </LinearLayout>
                     </RelativeLayout>
 
+                    <RelativeLayout
+                        android:id="@+id/payment_pending_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+                        <LinearLayout
+                            android:layout_centerInParent="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="10dp"
+                            android:layout_marginTop="110dp">
+                            <TextView
+                                android:textSize="32dp"
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/primaryText"
+                                android:text="Payment Pending"/>
+                        </LinearLayout>
+                    </RelativeLayout>
+
                     <LinearLayout
                         android:id="@+id/payment_confirm_layout"
                         android:layout_width="match_parent"
