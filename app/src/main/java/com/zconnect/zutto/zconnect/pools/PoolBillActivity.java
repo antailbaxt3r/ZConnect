@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -350,6 +351,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
     private void paymentSuccess(final String paymentID) {
 
+        FirebaseMessaging.getInstance().subscribeToTopic(poolPushID);
         btn_pay.setOnClickListener(null);
 
         DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
