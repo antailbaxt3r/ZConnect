@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.pools;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,8 +50,18 @@ import com.zconnect.zutto.zconnect.utilities.UIUtilities;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 
 public class PoolBillActivity extends BaseActivity implements PaymentResultListener {
@@ -75,6 +86,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private Pool currentPool;
     private ValueEventListener poolOfferListener;
     private EditText phoneNumberET;
+    private boolean internetFlag = false;
 
 
     @Override
@@ -172,35 +184,79 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             ui.getSnackbar(phoneNumberET, "Please enter a valid mobile number", Snackbar.LENGTH_SHORT, getApplicationContext()).show();
         else
         {
-            DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
-            orderID = usersOrdersRef.push().getKey();
+            Toast.makeText(getApplicationContext(), "Checking connection...", Toast.LENGTH_SHORT).show();
+            if(checkInternetConnection())
+            {
+                DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
+                orderID = usersOrdersRef.push().getKey();
 
-            final HashMap<String, Object> orderObject = new HashMap<>();
-            orderObject.put(Order.ORDER_ID,orderID);
-            orderObject.put(Order.POOL_PUSH_ID,currentPool.getPoolPushID());
-            orderObject.put(Order.PAYMENT_STATUS,Order.KEY_PAYMENT_PENDING);
-            orderObject.put(Order.TIMESTAMP_PAYMENT_BEFORE,ServerValue.TIMESTAMP);
-            orderObject.put(Order.TOTAL_AMOUNT, total_amount);
-            orderObject.put(Order.DISCOUNTED_AMOUNT, discounted_amount);
-            orderObject.put(Order.POOL_INFO,currentPool.getPoolInfo());
-            orderObject.put(Order.ITEMS,orderList);
-            orderObject.put(Order.DELIVERY_TIME, currentPool.getDeliveryTime());
-            orderObject.put(Order.PHONE_NUMBER, phoneNumberET.getText().toString());
+                final HashMap<String, Object> orderObject = new HashMap<>();
+                orderObject.put(Order.ORDER_ID,orderID);
+                orderObject.put(Order.POOL_PUSH_ID,currentPool.getPoolPushID());
+                orderObject.put(Order.PAYMENT_STATUS,Order.KEY_PAYMENT_PENDING);
+                orderObject.put(Order.TIMESTAMP_PAYMENT_BEFORE,ServerValue.TIMESTAMP);
+                orderObject.put(Order.TOTAL_AMOUNT, total_amount);
+                orderObject.put(Order.DISCOUNTED_AMOUNT, discounted_amount);
+                orderObject.put(Order.POOL_INFO,currentPool.getPoolInfo());
+                orderObject.put(Order.ITEMS,orderList);
+                orderObject.put(Order.DELIVERY_TIME, currentPool.getDeliveryTime());
+                orderObject.put(Order.PHONE_NUMBER, phoneNumberET.getText().toString());
 
-            usersOrdersRef.child(orderID).setValue(orderObject).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
+                usersOrdersRef.child(orderID).setValue(orderObject).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
 
                         startPayment();
 
 
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //TODO Error in saving order : amount will be refunded within 3-5 days
+                    }
+                });
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(), "Could not connect to server.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private boolean checkInternetConnection() {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Callable<Object> task = new Callable<Object>() {
+            public Object call() {
+                try {
+                    HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+                    urlc.setRequestProperty("User-Agent", "Test");
+                    urlc.setRequestProperty("Connection", "close");
+                    urlc.setConnectTimeout(1500);
+                    urlc.connect();
+                    return (urlc.getResponseCode() == 200);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error checking internet connection", e);
+                    return false;
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    //TODO Error in saving order : amount will be refunded within 3-5 days
-                }
-            });
+            }
+        };
+        Future<Object> future = executor.submit(task);
+        try{
+            //Give the task 5 seconds to complete
+            //if not it raises a timeout exception
+            Object result = future.get(5, TimeUnit.SECONDS);
+            //finished in time
+            return (boolean) result;
+        }catch (TimeoutException ex){
+            //Didn't finish in time
+            return false;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

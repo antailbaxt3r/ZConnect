@@ -100,7 +100,7 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".OpenEventDetail"
             android:label="Events"
@@ -368,7 +368,6 @@
             android:label="@string/infone_search"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.SEARCH" /> -->
             <!-- </intent-filter> -->
@@ -515,7 +514,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".pools.OrderDetailActivity"
-            android:label="Choose items"
+            android:label="Order Details"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

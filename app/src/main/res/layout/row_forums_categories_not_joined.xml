@@ -17,7 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:padding="@dimen/padding_small">
             <FrameLayout
                 android:id="@+id/layout_forums_group_icon_row_forums_categories_not_joined"
                 android:layout_width="wrap_content"
@@ -57,21 +57,22 @@
                             android:layout_height="wrap_content">
                             <TextView
                                 android:id="@+id/cat_name"
-                                android:layout_width="0dp"
-                                android:layout_weight="0.75"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Cat Name"
+                                android:text="Forum Name"
                                 android:maxLines="1"
+                                android:maxWidth="210dp"
                                 android:ellipsize="end"
                                 android:textColor="@color/primaryText"
-                                android:textSize="18sp"/>
+                                android:textSize="16sp"/>
                             <FrameLayout
                                 android:id="@+id/verified_forum_icon_layout"
                                 android:layout_width="15dp"
                                 android:minWidth="15dp"
                                 android:layout_height="15dp"
                                 android:layout_gravity="center"
-                                android:visibility="gone">
+                                android:visibility="visible"
+                                android:layout_marginStart="@dimen/margin_x_small">
                                 <com.facebook.drawee.view.SimpleDraweeView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -81,7 +82,7 @@
                                 <ImageView
                                     android:layout_width="12dp"
                                     android:layout_height="12dp"
-                                    android:background="@drawable/baseline_star_rate_white_18"
+                                    android:background="@drawable/baseline_check_white_18"
                                     android:layout_gravity="center"/>
                             </FrameLayout>
                         </LinearLayout>
@@ -125,7 +126,9 @@
         </LinearLayout>
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="1px"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
             android:background="@color/secondaryText2"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

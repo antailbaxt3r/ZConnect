@@ -22,26 +22,23 @@
                 android:layout_weight="0.75">
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/storeroom_ask">
+                    android:layout_height="match_parent">
                     <ImageView
                         android:id="@+id/postImg"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/ask_default_image"
                         android:transitionName="@string/transition_string" />
                     <TextView
                         android:id="@+id/ask_text_products_row"
                         android:layout_width="wrap_content"
-                        android:maxWidth="100dp"
+                        android:maxWidth="120dp"
                         android:layout_height="wrap_content"
                         android:text="ASK"
-                        android:textStyle="bold"
                         android:ellipsize="end"
-                        android:maxLines="5"
+                        android:maxLines="4"
                         android:textSize="20sp"
-                        android:textColor="@color/storeroom_ask"
+                        android:textColor="@color/primaryText"
                         android:layout_centerInParent="true"
                         android:visibility="visible"
                         android:gravity="center"/>
@@ -107,14 +104,16 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ask_product_tag"
+                    android:background="@drawable/border_outline"
                     android:gravity="center"
                     android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_x_small">
+                    android:layout_marginTop="@dimen/margin_x_small"
+                    android:paddingStart="@dimen/padding_small"
+                    android:paddingEnd="@dimen/padding_small">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white"
+                        android:textColor="@color/colorPrimary"
                         android:text="ASK"
                         android:textSize="12sp"/>
                 </LinearLayout>
