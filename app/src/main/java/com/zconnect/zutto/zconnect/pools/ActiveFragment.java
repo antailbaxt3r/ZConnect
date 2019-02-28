@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +33,7 @@ public class ActiveFragment extends Fragment {
     private RecyclerView recyclerView;
     private PoolAdapter adapter;
     private ValueEventListener activePoolListener;
+    private TextView noPools;
 
     public ActiveFragment() {
         // Required empty public constructor
@@ -49,6 +51,7 @@ public class ActiveFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_active, container, false);
         recyclerView = view.findViewById(R.id.active_pool_rv);
+        noPools = view.findViewById(R.id.no_active_pools);
         adapter = new PoolAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
@@ -86,7 +89,10 @@ public class ActiveFragment extends Fragment {
                         return (int)(pool1.getTimestampOrderReceivingDeadline() - pool2.getTimestampOrderReceivingDeadline());
                     }
                 });
-
+                if(poolArrayList.size()>0)
+                    noPools.setVisibility(View.GONE);
+                else
+                    noPools.setVisibility(View.VISIBLE);
                 adapter.addAll(poolArrayList);
             }
 

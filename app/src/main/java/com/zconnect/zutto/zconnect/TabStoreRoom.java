@@ -270,6 +270,11 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     try{
                         singleProduct = shot.getValue(Product.class);
+                        if(singleProduct.getType()==null)
+                        {
+                            Log.d("HEEEERE", "KK" + singleProduct.getProductName() + " " + singleProduct.getKey());
+                            singleProduct.setType(ProductUtilities.TYPE_ADD_STR);
+                        }
                         if(currentOptionProductType == OPT_ADD && !singleProduct.getType().equals(ProductUtilities.TYPE_ADD_STR))
                             continue;
                         else if(currentOptionProductType == OPT_ASK && !singleProduct.getType().equals(ProductUtilities.TYPE_ASK_STR))
@@ -277,7 +282,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                         if(!singleProduct.getKey().equals(null)&& !singleProduct.getProductName().equals(null)) {
                             if (!shot.hasChild("isNegotiable")){
                                 if(shot.hasChild("negotiable")){
-                                    if(shot.child("negotiable").getValue(Integer.class)==1){
+                                    if(shot.child("negotiable").getValue(String.class).equals("1")){
                                         singleProduct.setIsNegotiable(Boolean.TRUE);
                                     }else {
                                         singleProduct.setIsNegotiable(Boolean.FALSE);
@@ -304,7 +309,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                 Collections.sort(productVector, new Comparator<Product>() {
                     @Override
                     public int compare(Product o1, Product o2) {
-                        return (int) (o2.getPostTimeMillis() - o1.getPostTimeMillis());
+                        return Long.compare(o2.getPostTimeMillis(), o1.getPostTimeMillis());
                     }
                 });
                 productAdapter.notifyDataSetChanged();
