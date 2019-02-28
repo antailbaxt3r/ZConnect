@@ -55,7 +55,6 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
 
     public void setDetails(ForumCategoriesItemFormat forumCategoriesItemFormat){
         catName.setText(forumCategoriesItemFormat.getName());
-
         setUnSeenMessages(forumCategoriesItemFormat.getTotalMessages(),forumCategoriesItemFormat.getSeenMessages());
 
         if(forumCategoriesItemFormat.getImageThumb()!=null)

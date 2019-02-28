@@ -54,6 +54,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 
 public class PoolBillActivity extends BaseActivity implements PaymentResultListener {
@@ -168,24 +175,6 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         });
     }
 
-    public boolean hasActiveInternetConnection(Context context) {
-        if (isNetworkAvailable(context)) {
-            try {
-                HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
-                urlc.setRequestProperty("User-Agent", "Test");
-                urlc.setRequestProperty("Connection", "close");
-                urlc.setConnectTimeout(1500);
-                urlc.connect();
-                return (urlc.getResponseCode() == 200);
-            } catch (IOException e) {
-                Log.e(TAG, "Error checking internet connection", e);
-            }
-        } else {
-            Log.d(TAG, "No network available!");
-        }
-        return false;
-    }
-
     private void pushOrderData(){
         UIUtilities ui = new UIUtilities();
         if(phoneNumberET.getText().length()<1)
@@ -194,14 +183,8 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             ui.getSnackbar(phoneNumberET, "Please enter a valid mobile number", Snackbar.LENGTH_SHORT, getApplicationContext()).show();
         else
         {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    internetFlag = hasActiveInternetConnection(getApplicationContext());
-                }
-            });
-            thread.start();
-            if(internetFlag)
+            Toast.makeText(getApplicationContext(), "Checking connection...", Toast.LENGTH_SHORT).show();
+            if(checkInternetConnection())
             {
                 DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
                 orderID = usersOrdersRef.push().getKey();
@@ -235,8 +218,44 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             }
             else
             {
-                ui.getSnackbar(phoneNumberET, "Please check internet connection", Snackbar.LENGTH_SHORT, getApplicationContext()).show();
+                Toast.makeText(getApplicationContext(), "Could not connect to server.", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private boolean checkInternetConnection() {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Callable<Object> task = new Callable<Object>() {
+            public Object call() {
+                try {
+                    HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+                    urlc.setRequestProperty("User-Agent", "Test");
+                    urlc.setRequestProperty("Connection", "close");
+                    urlc.setConnectTimeout(1500);
+                    urlc.connect();
+                    return (urlc.getResponseCode() == 200);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error checking internet connection", e);
+                    return false;
+                }
+            }
+        };
+        Future<Object> future = executor.submit(task);
+        try{
+            //Give the task 5 seconds to complete
+            //if not it raises a timeout exception
+            Object result = future.get(5, TimeUnit.SECONDS);
+            //finished in time
+            return (boolean) result;
+        }catch (TimeoutException ex){
+            //Didn't finish in time
+            return false;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
