@@ -17,7 +17,7 @@
                 android:id="@+id/pool_bg_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/paratha"
+                android:background="@drawable/default_pool_bg"
                 android:scaleType="centerCrop" />
             <ImageView
                 android:layout_width="match_parent"

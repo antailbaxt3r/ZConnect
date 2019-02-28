@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
                     style="@style/TextAppearance.AppCompat.Body1"
-                    android:text="1. Click on NEXT to view your order details.\n2. Click on CHAT to enter Forum where you will get updates of the order form the shop.\n3. You can view all your orders in My Orders.\n4. You can access your chat later from Forums as well."/>
+                    android:text="1. Click on NEXT to view your order details.\n2.In the next section, find the chat icon to enter forum where you'll recieve constant updates from the seller. \n3. You can view all your orders in My Orders.\n4. You can access your chat later from your Forums as well."/>
             </LinearLayout>
         </LinearLayout>
 
