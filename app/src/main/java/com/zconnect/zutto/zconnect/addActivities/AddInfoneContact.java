@@ -112,14 +112,26 @@ public class AddInfoneContact extends AppCompatActivity {
         catName = getIntent().getExtras().getString("catName");
         catImageURL = getIntent().getExtras().getString("catImageURL");
         totalContacts = getIntent().getIntExtra("totalContacts",0);
-
+        String contactName = getIntent().getStringExtra("contactName");
+        String contactNumber = getIntent().getStringExtra("contactNumber");
+//        Bitmap contactPhoto = (Bitmap) getIntent().getParcelableExtra("contactPhoto");
+//        Uri photoUri=null;
+        addImage = (SimpleDraweeView) findViewById(R.id.image_add_infone_add);
+//        if(contactPhoto!=null)
+//        {
+//            ByteArrayOutputStream out = new ByteArrayOutputStream();
+////        contactPhoto.compress(Bitmap.CompressFormat.JPEG, 50, out);
+//            String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), contactPhoto, "Title", null);
+//            photoUri = Uri.parse(path);
+//            addImage.setImageURI(photoUri);
+//        }
         nameEt = (MaterialEditText) findViewById(R.id.name_et_infone_add);
+        nameEt.setText(contactName);
         phone1Et = (MaterialEditText) findViewById(R.id.phone_et_infone_add);
+        phone1Et.setText(contactNumber);
         phone2Et = (MaterialEditText) findViewById(R.id.phone2_et_infone_add);
         descEt = (MaterialEditText) findViewById(R.id.desc_et_infone_add);
         saveButton = (Button) findViewById(R.id.btn_save_infone_add);
-        addImage = (SimpleDraweeView) findViewById(R.id.image_add_infone_add);
-
         communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 

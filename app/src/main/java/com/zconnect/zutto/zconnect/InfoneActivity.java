@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -57,6 +59,7 @@ public class InfoneActivity extends Fragment {
     ValueEventListener listener;
     InfoneCategoriesRVAdapter infoneCategoriesRVAdapter;
     private static final int REQUEST_PHONE_CALL = 1;
+    private static final int REQUEST_READ_CONTACTS = 2;
     private SharedPreferences communitySP;
     public String communityReference;
     ProgressBar progressBar;
@@ -381,6 +384,10 @@ public class InfoneActivity extends Fragment {
 
         }
 
+        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACTS);
+        }
+
     }
 
     @Override
@@ -390,6 +397,14 @@ public class InfoneActivity extends Fragment {
             case REQUEST_PHONE_CALL: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //startActivity(intent);
+                } else {
+                    askCallPermissions();
+                }
+                return;
+            }
+            case REQUEST_READ_CONTACTS: {
+                if(grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+
                 } else {
                     askCallPermissions();
                 }

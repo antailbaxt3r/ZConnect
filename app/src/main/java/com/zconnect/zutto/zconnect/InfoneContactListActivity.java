@@ -2,16 +2,21 @@ package com.zconnect.zutto.zconnect;
 
 import android.app.Activity;
 import android.app.SearchManager;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +47,8 @@ import com.zconnect.zutto.zconnect.addActivities.AddInfoneCat;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneContact;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,7 +58,7 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 
 public class InfoneContactListActivity extends AppCompatActivity {
 
-    static final int PICK_CONTACT = 1;
+    private static final int RQS_PICK_CONTACT = 1;
 
     Toolbar toolbar;
     String catId;
@@ -113,9 +120,8 @@ public class InfoneContactListActivity extends AppCompatActivity {
         fabAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-//                startActivityForResult(intent, PICK_CONTACT);
-                addContact();
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, RQS_PICK_CONTACT);
             }
         });
 
@@ -228,13 +234,16 @@ public class InfoneContactListActivity extends AppCompatActivity {
 
     }
 
-    private void addContact() {
+    private void addContact(String contactName, String contactNumber) {
 
         Intent addContactIntent = new Intent(this, AddInfoneContact.class);
         addContactIntent.putExtra("catId", catId);
         addContactIntent.putExtra("catImageURL",catImageurl);
         addContactIntent.putExtra("catName", catName);
         addContactIntent.putExtra("totalContacts",totalContacts);
+        addContactIntent.putExtra("contactName", contactName);
+        addContactIntent.putExtra("contactNumber", contactNumber);
+//        addContactIntent.putExtra("contactPhoto", contactPhoto);
         startActivity(addContactIntent);
 
     }
@@ -348,31 +357,58 @@ public class InfoneContactListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        switch (requestCode)
-//        {
-//            case PICK_CONTACT:
-//                if(resultCode == Activity.RESULT_OK)
-//                {
-//                    Uri contactData = data.getData();
-//                    Cursor c = getContentResolver().query(contactData, null, null, null, null);
-//                    if(c.moveToFirst())
-//                    {
-//                        String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-//                        String hasPhone =  c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RQS_PICK_CONTACT) {
+            if(resultCode == Activity.RESULT_OK) {
+                Uri contactData = data.getData();
+                String number = "";
+                Cursor c = getContentResolver().query(contactData, null, null, null, null);
+                if (c.moveToFirst()) {
+
+
+                    String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+
+                    String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+                    if (hasPhone.equalsIgnoreCase("1")) {
+                        Cursor phones = getContentResolver().query(
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id,
+                                null, null);
+                        phones.moveToFirst();
+                        number = phones.getString(phones.getColumnIndex("data1"));
+                        number = number.substring(number.indexOf(' ')+1);
+                        number = number.replace(' ', '\0');
+                    }
+                    String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+//                    Bitmap photo = null;
 //
-//                        if(hasPhone.equalsIgnoreCase("1"))
-//                        {
-//                            Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,null, null);
-//                            phones.moveToFirst();
-//                            String cNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                            Toast.makeText(getApplicationContext(), "Number is "+cNumber, Toast.LENGTH_SHORT).show();
+//                    try {
+//                        InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getApplicationContext().getContentResolver(),
+//                                ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(id)));
+//
+//                        if (inputStream != null) {
+//                            photo = BitmapFactory.decodeStream(inputStream);
 //                        }
-//                    }
 //
-//                }
-//        }
-//    }
+//                        assert inputStream != null;
+//                        inputStream.close();
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+                    if(number.length()<1)
+                        Toast.makeText(getApplicationContext(), "Contact does not have a number.", Toast.LENGTH_SHORT).show();
+                    else
+                        addContact(name, number);
+                }
+            }
+        }
+    }
 }
