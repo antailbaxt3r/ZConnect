@@ -284,8 +284,10 @@ public class MyProducts extends BaseActivity {
         //Set Product Price
         public void setPrice(String productPrice) {
             TextView post_price = (TextView) mView.findViewById(R.id.price);
-
-                post_price.setText("₹" + productPrice + "/-");
+                if(productPrice!=null)
+                    post_price.setText("₹" + productPrice + "/-");
+                else
+                    post_price.setText("ASKED");
 
             //"₹" + productPrice + "/-"
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");
