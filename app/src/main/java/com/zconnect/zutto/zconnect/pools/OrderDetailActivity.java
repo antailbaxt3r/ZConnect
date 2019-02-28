@@ -238,6 +238,7 @@ public class OrderDetailActivity extends BaseActivity {
         orderItemListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                adapter.clearDataset();
                 for(DataSnapshot item : dataSnapshot.getChildren()){
                   PoolItem orderItem = item.getValue(PoolItem.class);
                   if(orderItem != null){

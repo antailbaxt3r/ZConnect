@@ -238,4 +238,5 @@
 
     <!--pool related-->
     <string name="order_placed_on">Ordered on</string>
+    <string name="order_delivery_on">Delivery on</string>
 </resources>

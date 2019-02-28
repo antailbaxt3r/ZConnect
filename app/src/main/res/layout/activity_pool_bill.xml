@@ -110,6 +110,27 @@
                             android:layout_alignParentEnd="true"
                             android:text="Rs.50/-"/>
                     </RelativeLayout>
+                    <!--convenience fee view-->
+                    <RelativeLayout
+                        android:id="@+id/ll_convenience"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding_x_small"
+                        android:paddingBottom="@dimen/padding_x_small">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Convenience Fee"
+                            android:textColor="@color/primaryText"/>
+                        <TextView
+                            android:id="@+id/tv_convenience"
+                            android:layout_width="wrap_content"
+                            android:textColor="@color/primaryText"
+                            android:textStyle="bold"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="Rs.10/-"/>
+                    </RelativeLayout>
                     <!-- Total amount view-->
                     <RelativeLayout
                         android:layout_width="match_parent"
