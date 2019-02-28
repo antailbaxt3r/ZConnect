@@ -111,7 +111,6 @@ public class ExploreForumsActivity extends BaseActivity{
         }
         showBackButton();
 
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
         communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
@@ -128,7 +127,7 @@ public class ExploreForumsActivity extends BaseActivity{
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     infoneTabItemFormats.add(shot.getValue(InfoneTabsItemFormat.class));
                 }
-                adapter.notifyDataSetChanged();
+                adapter = new ViewPagerAdapter(getSupportFragmentManager());
                 setupViewPager(viewPager);
             }
 

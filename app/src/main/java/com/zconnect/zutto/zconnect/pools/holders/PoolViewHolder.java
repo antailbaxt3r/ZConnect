@@ -114,23 +114,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         {
             orderDeadlineTime.setText("CLOSED");
         }
-//        new CountDownTimer(pool.getDeliveryTime() - System.currentTimeMillis(), 1000) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//                DateTime dateTime = new DateTime(millisUntilFinished, DateTimeZone.forID("Asia/Kolkata"));
-//                int mm = dateTime.getMinuteOfHour();
-//                int ss = dateTime.getSecondOfMinute();
-//                countdownT1.setText(mm<10?"0":""+mm/10);
-//                countdownT2.setText(mm<10?""+mm:""+mm%10);
-//                countdownT3.setText(ss<10?"0":""+ss/10);
-//                countdownT4.setText(ss<10?""+ss:""+ss%10);
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//
-//            }
-//        }.start();
+
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,7 +159,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
 
                 }
             });
-            activateBtn.setVisibility(View.VISIBLE);
+
             if (pool.getUpvoteList().containsKey(userUID)) {
                 isLiked = true;
             } else {

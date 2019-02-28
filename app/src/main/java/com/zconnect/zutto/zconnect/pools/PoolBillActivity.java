@@ -262,7 +262,6 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
     private void startPayment() {
         Checkout checkout = new Checkout();
-
         checkout.setImage(R.drawable.logo);
 
         final Activity activity = this;
@@ -362,6 +361,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
     private void attachID() {
         toolbar.setTitle("Bill");
+        Checkout.preload(getApplicationContext());
         recyclerView = findViewById(R.id.recycleView);
         sub_total = findViewById(R.id.tv_subTotal);
         discount = findViewById(R.id.tv_discount);
@@ -373,7 +373,6 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new PoolItemCartAdapter();
         recyclerView.setAdapter(adapter);
-        Checkout.preload(getApplicationContext());
         progressBar.setVisibility(View.VISIBLE);
         billLinearLayout.setVisibility(View.GONE);
         phoneNumberET = findViewById(R.id.phoneNumber);
