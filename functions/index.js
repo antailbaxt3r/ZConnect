@@ -181,8 +181,11 @@ exports.syncUserPointsAndUserPointsNum1 = functions.database.ref('/communities/{
 			// {
 				if(current_value <= user_points_bef)
 					return user_points_aft;
-				else
-					console.log("Error in sync");
+        else
+        {
+          console.log("Error in sync");
+          return current_value;
+        }
 			// }
 		});
 	}
@@ -201,8 +204,11 @@ exports.syncUserPointsAndUserPointsNum2 = functions.database.ref('/communities/{
 			// {
 				if(parseInt(current_value) <= user_points_num_bef)
 					return String(user_points_num_aft);
-				else
-					console.log("Error in sync " + parseInt(current_value) + " " + current_value + " " + user_points_num_bef);
+        else
+        {
+          console.log("Error in sync " + parseInt(current_value) + " " + current_value + " " + user_points_num_bef);
+          return parseInt(current_value);
+        }
 			// }
 		});
 	}
