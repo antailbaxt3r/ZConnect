@@ -3,50 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.zconnect.zutto.zconnect.Recents">
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical">-->
-        <!--<FrameLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
-            <!--<Button-->
-                <!--android:id="@+id/scroll_to_top_fab_fragments_recents"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:background="@drawable/round_button_simple"-->
-                <!--android:text="Scroll to top"-->
-                <!--android:textStyle="bold"-->
-                <!--android:paddingStart="@dimen/button_padding_start_end"-->
-                <!--android:paddingEnd="@dimen/button_padding_start_end"-->
-                <!--android:layout_marginTop="@dimen/margin_small"-->
-                <!--android:textColor="@color/colorPrimary"-->
-                <!--android:layout_gravity="center|top"-->
-                <!--android:visibility="gone"/>-->
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/secondaryText"
-                android:layout_marginStart="20dp"
-                android:visibility="gone"/>
 
-            <ProgressBar
-                android:id="@+id/recent_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-            <!-- A RecyclerView with some commonly used attributes -->
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/swipeRefreshContainer"
+        <ProgressBar
+            android:id="@+id/recent_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+        <!-- A RecyclerView with some commonly used attributes -->
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recent_rv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recent_rv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="vertical"
-                    android:layout_marginStart="0dp"/>
-            </android.support.v4.widget.SwipeRefreshLayout>
-        <!--</FrameLayout>-->
-    <!--</LinearLayout>-->
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:layout_marginStart="0dp"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
 </FrameLayout>
