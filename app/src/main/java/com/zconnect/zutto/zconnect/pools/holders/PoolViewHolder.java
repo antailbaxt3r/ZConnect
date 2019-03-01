@@ -26,12 +26,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.pools.ActivePoolDetailsActivity;
 import com.zconnect.zutto.zconnect.pools.UpcomingPoolDetailsActivity;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
+
+import java.util.HashMap;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
@@ -119,10 +124,31 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 if (pool.isUpcoming()) {
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_POOL_OPEN_UPCOMING);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+
                     Intent intent = new Intent(itemView.getContext(), UpcomingPoolDetailsActivity.class);
                     intent.putExtra("pool", pool);
                     itemView.getContext().startActivity(intent);
                 } else if (pool.isActive()) {
+
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_POOL_OPEN_ACTIVE);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
                     Intent intent = new Intent(itemView.getContext(), ActivePoolDetailsActivity.class);
                     intent.putExtra("pool", pool);
                     itemView.getContext().startActivity(intent);
