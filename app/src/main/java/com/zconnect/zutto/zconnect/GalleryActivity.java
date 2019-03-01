@@ -60,8 +60,8 @@ public class GalleryActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            getWindow().setStatusBarColor(colorPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
         }
         _images = (ArrayList<String>) getIntent().getSerializableExtra(EXTRA_NAME);
         Assert.assertNotNull(_images);

@@ -73,6 +73,7 @@
                     android:textColorHint="@color/secondaryText"
                     android:textColor="@color/black"
                     android:textSize="16sp"
+                    style="@style/Base.V7.Widget.AppCompat.EditText"
                     android:inputType="textCapSentences"
                     android:clickable="false"/>
                 <ImageButton

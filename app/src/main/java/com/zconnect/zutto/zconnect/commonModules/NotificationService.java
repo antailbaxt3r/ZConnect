@@ -987,54 +987,68 @@ public class NotificationService extends FirebaseMessagingService {
 
         final String communityName = data.get("communityName").toString();
         final String productName = data.get("productName").toString();
-        final String productPrice = data.get("productPrice").toString();
         final String productKey = data.get("productKey").toString();
-        final String productImage = data.get("productImage").toString();
-        final String productType = data.get("productType").toString()!=null ?
-                data.get("productType").toString() : ProductUtilities.TYPE_ADD_STR;
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
 
-        Bitmap bitmap = null;
-        try {
-            URL url = new URL(productImage);
-            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-        } catch(IOException e) {
-            System.out.println(e);
-        }
-
-        Bitmap bitmap2 = null;
-        try {
-            URL url = new URL(userImage);
-            bitmap2 = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-        } catch(IOException e) {
-            System.out.println(e);
-        }
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID);
-
-        if(bitmap!=null) {
-            NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
-            style.bigPicture(bitmap).setSummaryText(userName + " is selling " + productName + " for ₹" + productPrice).setBigContentTitle(communityName);
-            mBuilder.setStyle(style);
-        }
-
-        if (bitmap2!=null){
-            mBuilder.setLargeIcon(bitmap2);
-        }
-
-        mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_24dp)
-                .setSound(defaultSoundUri)
-                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
-                .setAutoCancel(true)
-                .setPriority(Notification.PRIORITY_DEFAULT)
-                .setContentTitle(communityName)
-                .setContentText(userName + " is selling " + productName + " for ₹" + productPrice);
-
         Intent intent = new Intent(NotificationService.this, OpenProductDetails.class);
+//This is for ask Product exception
 
-        intent.putExtra("key", productKey);
-        intent.putExtra("type", productType);
+        try {
+            final String productPrice = data.get("productPrice").toString();
+            final String productImage = data.get("productImage").toString();
+
+            Bitmap bitmap = null;
+            try {
+                URL url = new URL(productImage);
+                bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch(IOException e) {
+                System.out.println(e);
+            }
+
+            Bitmap bitmap2 = null;
+            try {
+                URL url = new URL(userImage);
+                bitmap2 = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch(IOException e) {
+                System.out.println(e);
+            }
+
+            if(bitmap!=null) {
+                NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
+                style.bigPicture(bitmap).setSummaryText(userName + " is selling " + productName + " for ₹" + productPrice).setBigContentTitle(communityName);
+                mBuilder.setStyle(style);
+            }
+
+            if (bitmap2!=null){
+                mBuilder.setLargeIcon(bitmap2);
+            }
+
+            mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_24dp)
+                    .setSound(defaultSoundUri)
+                    .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                    .setAutoCancel(true)
+                    .setPriority(Notification.PRIORITY_DEFAULT)
+                    .setContentTitle(communityName)
+                    .setContentText(userName + " is selling " + productName + " for ₹" + productPrice);
+
+            intent.putExtra("key", productKey);
+            intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+
+
+        }catch (Exception e){
+            mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_24dp)
+                    .setSound(defaultSoundUri)
+                    .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                    .setAutoCancel(true)
+                    .setPriority(Notification.PRIORITY_DEFAULT)
+                    .setContentTitle(communityName)
+                    .setContentText(userName + " is asking for " + productName);
+
+            intent.putExtra("key", productKey);
+            intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+        }
 
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);

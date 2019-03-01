@@ -57,6 +57,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Vector;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
@@ -106,12 +107,12 @@ public class CabPoolListOfPeople extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-        showBackButton();
-        setSupportActionBar(getToolbar());
+//        showBackButton();
+//        setSupportActionBar(getToolbar());
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -427,21 +428,19 @@ public class CabPoolListOfPeople extends BaseActivity {
             dialog.show();
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorHighlight));
 
-
-
         }
 
         return super.onOptionsItemSelected(item);
     }
-//
-//    public boolean onPrepareOptionsMenu(Menu menu){
-//        if(flag){
-//            menu.getItem(R.id.leave_pool).setVisible(true);
-//        }else {
-//            menu.getItem(R.id.leave_pool).setVisible(false);
-//        }
-//        return  super.onPrepareOptionsMenu(menu);
-//    }
+
+    public boolean onPrepareOptionsMenu(Menu menu){
+        if(flag){
+            menu.findItem(R.id.leave_pool).setVisible(true);
+        }else {
+            menu.findItem(R.id.leave_pool).setVisible(false);
+        }
+        return  super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     protected void onDestroy() {
