@@ -81,6 +81,7 @@ public class PaymentCaptureActivity extends BaseActivity {
                 {
                     nextButton.setVisibility(View.VISIBLE);
                     nextStepsLL.setVisibility(View.VISIBLE);
+                    amountTV.setVisibility(View.VISIBLE);
                     order = dataSnapshot.getValue(Order.class);
                     paymentStatusImage.setBackground(getApplicationContext().getDrawable(R.drawable.ic_check_green_120dp));
                     paymentStatusText.setText("Payment Successful");
