@@ -44,7 +44,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
 
 
     private SimpleDraweeView poolImage;
-    private TextView name, description, count, orderDeadlineTime, deliveryDay;
+    private TextView name, description, count, orderDeadlineTime, orderDealineSubtext, deliveryDay;
     private ImageButton btn_like;
     private Boolean isLiked;
     private String userUID;
@@ -72,6 +72,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         description = itemView.findViewById(R.id.pool_description);
         count = itemView.findViewById(R.id.pool_count);
         orderDeadlineTime = itemView.findViewById(R.id.order_deadline_time);
+        orderDealineSubtext = itemView.findViewById(R.id.order_deadline_subtext);
         deliveryDay = itemView.findViewById(R.id.delivery_day);
         btn_like = itemView.findViewById(R.id.btn_like);
         isLiked = false;
@@ -113,10 +114,12 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
             String deliveryTimeText = tu.getWeekName("SHORT") + ", " + tu.getTimeInHHMMAPM();
             String deliveryDayText = tu.getMonthName("SHORT") + " " + tu.getDateTime().getDayOfMonth();
             orderDeadlineTime.setText(deliveryTimeText);
+            orderDealineSubtext.setVisibility(View.VISIBLE);
             deliveryDay.setText(deliveryDayText);
         }
         else
         {
+            orderDealineSubtext.setVisibility(View.GONE);
             orderDeadlineTime.setText("CLOSED");
         }
 

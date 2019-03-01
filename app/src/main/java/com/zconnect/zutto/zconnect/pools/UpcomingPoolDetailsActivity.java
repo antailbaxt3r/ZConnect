@@ -33,13 +33,14 @@ import com.zconnect.zutto.zconnect.pools.models.DiscountOffer;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolInfo;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
+import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 public class UpcomingPoolDetailsActivity extends BaseActivity {
 
     public static final String TAG = "UpPoolDetailsActivity";
 
     private RecyclerView recyclerView;
-    private TextView offers, description;
+    private TextView offers, orderDeadlineTime, deliveryTime;
     private LinearLayout ll_progressBar;
     private TextView loading_text;
     private Button btn_activate;
@@ -192,7 +193,12 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
     private void setPoolInfo() {
 
         toolbar.setTitle(pool.getPoolInfo().getName());
-        description.setText(pool.getPoolInfo().getDescription());
+        TimeUtilities timeUtilities = new TimeUtilities(pool.getTimestampOrderReceivingDeadline());
+        String text = "2. Orders will be taken till " + timeUtilities.getTimeInHHMMAPM() + ", " + timeUtilities.getMonthName("SHORT") + " " + timeUtilities.getDateTime().getDayOfMonth() + " " + timeUtilities.getDateTime().getYearOfEra();
+        orderDeadlineTime.setText(text);
+        timeUtilities = new TimeUtilities(pool.getDeliveryTime());
+        text = "3. Orders will be delivered on " + timeUtilities.getMonthName("SHORT") + " " + timeUtilities.getDateTime().getDayOfMonth() + " " + timeUtilities.getDateTime().getYearOfEra() + ", " + timeUtilities.getTimeInHHMMAPM();
+        deliveryTime.setText(text);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER,pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
         ref.addValueEventListener(poolOfferListener);
@@ -203,7 +209,8 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
 
         recyclerView = findViewById(R.id.pool_item_rv);
         offers = findViewById(R.id.pool_offers);
-        description = findViewById(R.id.pool_description);
+        orderDeadlineTime = findViewById(R.id.order_deadline_time);
+        deliveryTime = findViewById(R.id.order_delivery_time);
         ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
         btn_activate = findViewById(R.id.btn_activate);
@@ -249,7 +256,7 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
                     min_item = discountOffer.getMinQuantity();
                     // if(disPer != 0 && maxDiscount != 0 && minQuantity !=0)
                     offers.setVisibility(View.VISIBLE);
-                    offers.setText(String.format("OFFER: %d%% OFF upto " + getApplicationContext().getString(R.string.Rs) + "%d on a minimum order of %d items.", discount_percentage, max_amount, min_item));
+                    offers.setText(String.format("1. OFFER: %d%% OFF upto " + getApplicationContext().getString(R.string.Rs) + "%d on a minimum order of %d items.", discount_percentage, max_amount, min_item));
                 }
             }
 

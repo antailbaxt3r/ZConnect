@@ -121,13 +121,28 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_below="@+id/timer_icon" />
                         </RelativeLayout>
-                        <TextView
-                            android:id="@+id/order_deadline_time"
-                            style="@style/Base.TextAppearance.AppCompat.Title"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="TUE, 8:30 PM"
-                            android:textColor="@color/white" />
+                            android:layout_marginEnd="-5dp"
+                            android:layout_gravity="center">
+                            <TextView
+                                android:id="@+id/order_deadline_time"
+                                style="@style/Base.TextAppearance.AppCompat.Title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TUE, 8:30 PM"
+                                android:textColor="@color/white" />
+                            <TextView
+                                android:id="@+id/order_deadline_subtext"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Order dealine"
+                                android:layout_below="@+id/order_deadline_time"
+                                android:textColor="@color/white"
+                                android:textSize="8sp"
+                                android:layout_centerHorizontal="true"/>
+                        </RelativeLayout>
                     </LinearLayout>
                     <TextView
                         android:id="@+id/pool_description"

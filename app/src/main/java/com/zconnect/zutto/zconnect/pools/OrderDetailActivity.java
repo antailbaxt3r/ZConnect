@@ -54,7 +54,8 @@ public class OrderDetailActivity extends BaseActivity {
     private PoolItemCartAdapter adapter;
     private ValueEventListener orderItemListener;
     private ArrayList<PoolItem> poolItems = new ArrayList<>();
-    private TextView orderStatus, userBillID, itemTotal, discountTotal, discountedTotal, poolName;
+    private TextView orderStatus, userBillID, itemTotal, discountedTotal, poolName;
+//    private TextView discountTotal;
     private ImageView orderStatusIcon;
     private FrameLayout deliveredTag;
     private RelativeLayout paymentFailedLayout, paymentProcessingLayout, paymentPendingLayout;
@@ -137,11 +138,10 @@ public class OrderDetailActivity extends BaseActivity {
 
     private void loadItemView() {
         poolName.setText(order.getPoolInfo().getName());
-        itemTotal.setText(String.format("%s%d",getResources().getString(R.string.Rs),order.getTotalAmount()));
-        discountTotal.setText(String.format("%s%d",getResources().getString(R.string.Rs),(order.getTotalAmount()-order.getDiscountedAmount())));
-        discountedTotal.setText(String.format("%s%d",getResources().getString(R.string.Rs),order.getDiscountedAmount()));
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_MY_ORDER_ITEM_LIST,
-                communityReference, userUID, order.getOrderID()));
+        itemTotal.setText(String.format("%s%s",getResources().getString(R.string.Rs),String.valueOf(order.getTotalAmount())));
+//        discountTotal.setText(String.format("%s%s",getResources().getString(R.string.Rs),String.valueOf(order.getTotalAmount()-order.getDiscountedAmount())));
+        discountedTotal.setText(String.format("%s%s",getResources().getString(R.string.Rs),String.valueOf(order.getDiscountedAmount())));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_MY_ORDER_ITEM_LIST, communityReference, userUID, order.getOrderID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
         ref.addListenerForSingleValueEvent(orderItemListener);
     }
@@ -219,7 +219,7 @@ public class OrderDetailActivity extends BaseActivity {
         orderStatusIcon = findViewById(R.id.order_status_icon);
         deliveredTag = findViewById(R.id.delivered_tag);
         itemTotal = findViewById(R.id.item_total);
-        discountTotal = findViewById(R.id.discount_total);
+//        discountTotal = findViewById(R.id.discount_total);
         discountedTotal = findViewById(R.id.discounted_total);
 
         paymentFailedLayout = findViewById(R.id.payment_failed_layout);

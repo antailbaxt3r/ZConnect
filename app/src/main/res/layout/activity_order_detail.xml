@@ -138,7 +138,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="(Order Number)"
+                            android:text="(Bill Number)"
                             style="@style/TextAppearance.AppCompat.Caption"/>
 
                         <RelativeLayout
@@ -254,26 +254,26 @@
                         android:layout_centerVertical="true"
                         android:textColor="@color/primaryText" />
                 </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_x_small">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Discount Total"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:textColor="@color/primaryText" />
-                    <TextView
-                        android:id="@+id/discount_total"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rs.300/-"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:textColor="@color/primaryText" />
-                </RelativeLayout>
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="@dimen/margin_x_small">-->
+                    <!--<TextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="Discount Total"-->
+                        <!--android:layout_alignParentStart="true"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:textColor="@color/primaryText" />-->
+                    <!--<TextView-->
+                        <!--android:id="@+id/discount_total"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="Rs.300/-"-->
+                        <!--android:layout_alignParentEnd="true"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:textColor="@color/primaryText" />-->
+                <!--</RelativeLayout>-->
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="5dp"

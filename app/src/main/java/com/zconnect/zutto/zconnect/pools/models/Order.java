@@ -50,8 +50,8 @@ public class Order implements Serializable{
     private String paymentGatewayID;
     private long timestampPaymentBefore;
     private long timestampPaymentAfter;
-    private long totalAmount;
-    private long discountedAmount;
+    private double totalAmount;
+    private double discountedAmount;
     private long deliveryTime;
     private long deliveryRcdTime;
     private PoolInfo poolInfo;
@@ -63,7 +63,7 @@ public class Order implements Serializable{
     public Order() {
     }
 
-    public Order(String orderID, String poolPushID, String orderStatus, String paymentStatus, String paymentGatewayID, long timestampPaymentBefore, long timestampPaymentAfter, long totalAmount, long discountedAmount, PoolInfo poolInfo, HashMap<String, PoolItem> items, PostedByDetails orderedBy, long deliveryTime, long deliveryRcdTime, String userBillID, String phoneNumber) {
+    public Order(String orderID, String poolPushID, String orderStatus, String paymentStatus, String paymentGatewayID, long timestampPaymentBefore, long timestampPaymentAfter, double totalAmount, double discountedAmount, PoolInfo poolInfo, HashMap<String, PoolItem> items, PostedByDetails orderedBy, long deliveryTime, long deliveryRcdTime, String userBillID, String phoneNumber) {
         this.orderID = orderID;
         this.poolPushID = poolPushID;
         this.orderStatus = orderStatus;
@@ -138,19 +138,19 @@ public class Order implements Serializable{
         this.paymentGatewayID = paymentGatewayID;
     }
 
-    public long getTotalAmount() {
+    public double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(long totalAmount) {
+    public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public void setDiscountedAmount(long discountedAmount) {
+    public void setDiscountedAmount(double discountedAmount) {
         this.discountedAmount = discountedAmount;
     }
 
-    public long getDiscountedAmount() {
+    public double getDiscountedAmount() {
         return discountedAmount;
     }
 

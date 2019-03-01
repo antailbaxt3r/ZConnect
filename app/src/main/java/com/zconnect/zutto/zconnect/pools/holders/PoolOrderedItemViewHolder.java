@@ -51,7 +51,7 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
     public void populate(final Order order) {
         this.order = order;
         poolName.setText(order.getPoolInfo().getName());
-        amount.setText(String.format("%s%d", itemView.getContext().getResources().getString(R.string.Rs), order.getTotalAmount()));
+        amount.setText(String.format("%s%s", itemView.getContext().getResources().getString(R.string.Rs), String.valueOf(order.getTotalAmount())));
         long timeStamp = order.getTimestampPaymentAfter()==0?order.getTimestampPaymentBefore():order.getTimestampPaymentAfter();
         TimeUtilities tu = new TimeUtilities(timeStamp);
         String dateTimeText = itemView.getContext().getResources().getString(R.string.order_placed_on) + " " + tu.getTimeInHHMMAPM() + ", " + tu.getDateTime().getDayOfMonth() + " " + tu.getMonthName("SHORT") + " " + tu.getDateTime().getYearOfEra();
