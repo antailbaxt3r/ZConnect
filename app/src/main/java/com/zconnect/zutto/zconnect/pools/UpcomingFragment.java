@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +31,7 @@ public class UpcomingFragment extends Fragment {
     private RecyclerView recyclerView;
     private PoolAdapter adapter;
     private ValueEventListener upcomingPoolListener;
+    private TextView noPools;
 
 
     public UpcomingFragment() {
@@ -58,6 +60,7 @@ public class UpcomingFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
         recyclerView = view.findViewById(R.id.recycleView);
+        noPools = view.findViewById(R.id.no_upcoming_pools);
         adapter = new PoolAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
@@ -82,6 +85,10 @@ public class UpcomingFragment extends Fragment {
                         poolArrayList.add(newPool);
                     }
                 }
+                if(poolArrayList.size()>0)
+                    noPools.setVisibility(View.GONE);
+                else
+                    noPools.setVisibility(View.VISIBLE);
                 adapter.addAll(poolArrayList);
             }
 

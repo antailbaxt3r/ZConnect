@@ -89,6 +89,65 @@
                     android:gravity="center"
                     android:orientation="vertical">
                     <RelativeLayout
+                        android:id="@+id/shops_recents_features_view"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="15dp">
+                        <FrameLayout
+                            android:id="@+id/shops_recents_features_view_fl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:duplicateParentState="true"
+                            android:layout_centerHorizontal="true">
+                            <ImageView
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                android:duplicateParentState="true"
+                                android:id="@+id/shops_circle_recents_feature_item"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:src="@drawable/ic_store_white_36dp"
+                                android:tint="@color/white" />
+                            <FrameLayout
+                                android:id="@+id/shops_unread_count_fl_recents_feature_item"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_gravity="end"
+                                android:visibility="gone">
+                                <com.facebook.drawee.view.SimpleDraweeView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/avatar_circle_24dp"
+                                    android:backgroundTint="@color/colorHighlight"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:id="@+id/shops_unread_count_text_recents_feature_item"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="8sp"
+                                    android:textColor="@color/white"
+                                    android:layout_gravity="center"/>
+                            </FrameLayout>
+                        </FrameLayout>
+                        <TextView
+                            android:id="@+id/shops_text_recents_feature_item"
+                            android:duplicateParentState="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Shop"
+                            android:layout_below="@+id/shops_recents_features_view_fl"
+                            android:layout_centerHorizontal="true"
+                            android:textColor="@color/white"
+                            android:layout_marginTop="5dp"
+                            android:textSize="10sp"/>
+                    </RelativeLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <RelativeLayout
                         android:id="@+id/storeroom_recents_features_view"
                         android:visibility="gone"
                         android:layout_width="match_parent"
@@ -313,66 +372,6 @@
                             android:layout_height="wrap_content"
                             android:text="Notices"
                             android:layout_below="@+id/notices_circle_recents_feature_item_fl"
-                            android:layout_centerHorizontal="true"
-                            android:textColor="@color/white"
-                            android:layout_marginTop="5dp"
-                            android:textSize="10sp"/>
-                    </RelativeLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical">
-                    <RelativeLayout
-                        android:id="@+id/shops_recents_features_view"
-                        android:visibility="gone"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="15dp">
-                        <FrameLayout
-                            android:id="@+id/shops_recents_features_view_fl"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:duplicateParentState="true"
-                            android:layout_centerHorizontal="true">
-                            <ImageView
-                                xmlns:app="http://schemas.android.com/apk/res-auto"
-                                android:duplicateParentState="true"
-                                android:id="@+id/shops_circle_recents_feature_item"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_favorite_border_black_24dp"
-                                android:tint="@color/white" />
-                            <FrameLayout
-                                android:id="@+id/shops_unread_count_fl_recents_feature_item"
-                                android:layout_width="15dp"
-                                android:layout_height="15dp"
-                                android:layout_gravity="end"
-                                android:visibility="gone">
-                                <com.facebook.drawee.view.SimpleDraweeView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/avatar_circle_24dp"
-                                    android:backgroundTint="@color/colorHighlight"
-                                    android:layout_gravity="center"/>
-                                <TextView
-                                    android:id="@+id/shops_unread_count_text_recents_feature_item"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="8sp"
-                                    android:textColor="@color/white"
-                                    android:layout_gravity="center"/>
-                            </FrameLayout>
-                        </FrameLayout>
-                        <TextView
-                            android:id="@+id/shops_text_recents_feature_item"
-                            android:duplicateParentState="true"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Shop"
-                            android:layout_below="@+id/shops_recents_features_view_fl"
                             android:layout_centerHorizontal="true"
                             android:textColor="@color/white"
                             android:layout_marginTop="5dp"

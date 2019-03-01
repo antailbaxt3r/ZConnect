@@ -33,7 +33,7 @@ public class MyOrdersActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private LinearLayout ll_progressBar;
-    private TextView loading_text;
+    private TextView loading_text, noOrders;
     private String userUID;
     private ValueEventListener orderListener;
     private PoolOrderItemAdapter adapter;
@@ -90,6 +90,7 @@ public class MyOrdersActivity extends BaseActivity {
         recyclerView = findViewById(R.id.recycleView);
         ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
+        noOrders = findViewById(R.id.no_my_orders);
 
         //setup adapter
         adapter = new PoolOrderItemAdapter();
@@ -111,6 +112,10 @@ public class MyOrdersActivity extends BaseActivity {
                         list.add(order);
                 }
                 Collections.reverse(list);
+                if(list.size()>0)
+                    noOrders.setVisibility(View.GONE);
+                else
+                    noOrders.setVisibility(View.VISIBLE);
                 adapter.addAll(list);
                 setProgressBarView(View.GONE, "");
             }

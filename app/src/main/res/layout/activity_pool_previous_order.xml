@@ -22,17 +22,24 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white">
+        <TextView
+            android:id="@+id/no_my_orders"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="You haven't ordered anything yet. Checkout Hot Deals to see what is being sold in your community!"
+            android:gravity="center"
+            android:textSize="16sp"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycleView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>
         <include layout="@layout/layout_progress_bar" />
-    </RelativeLayout>
+    </FrameLayout>
 
 </LinearLayout>

@@ -21,6 +21,7 @@ public class PoolInfo implements Serializable {
     //                                                         shopID
     public static final String URL_POOL_OFFER = "shops/shopDetails/%s/poolTemplates/poolInfo/%s/offer";
     //                                                          shopID                      poolID
+    public static final String URL_POOL_TEMPLATE_INFO = "shops/shopDetails/%s/poolTemplates/poolInfo/%s";
 
     //Node name
     public static final String NAME = "name";
@@ -31,6 +32,8 @@ public class PoolInfo implements Serializable {
     public static final String OFFER = "offer";
     public static final String POOL_ID = "poolID";
     public static final String SHOP_ID = "shopID";
+    public static final String CONVENIENCE_PERCENTAGE = "conveniencePercentage";
+    public static final String CONVENIENCE_UPTO = "convenienceUpto";
 
     // nodes
     private String name;
@@ -41,12 +44,14 @@ public class PoolInfo implements Serializable {
     private DiscountOffer offer;
     private String poolID;
     private String shopID;
+    private int conveniencePercentage;
+    private int convenienceUpto;
 
     public PoolInfo() {
 
     }
 
-    public PoolInfo(String name, String description, String imageURL, String imageThumb, String offerType, DiscountOffer offer, String poolID, String shopID) {
+    public PoolInfo(String name, String description, String imageURL, String imageThumb, String offerType, DiscountOffer offer, String poolID, String shopID, int conveniencePercentage, int convenienceUpto) {
         this.name = name;
         this.description = description;
         this.imageURL = imageURL;
@@ -55,6 +60,8 @@ public class PoolInfo implements Serializable {
         this.offer = offer;
         this.poolID = poolID;
         this.shopID = shopID;
+        this.conveniencePercentage = conveniencePercentage;
+        this.convenienceUpto = convenienceUpto;
     }
 
     public String getName() {
@@ -121,7 +128,23 @@ public class PoolInfo implements Serializable {
         this.shopID = shopID;
     }
 
-//
+    public int getConveniencePercentage() {
+        return conveniencePercentage;
+    }
+
+    public void setConveniencePercentage(int conveniencePercentage) {
+        this.conveniencePercentage = conveniencePercentage;
+    }
+
+    public int getConvenienceUpto() {
+        return convenienceUpto;
+    }
+
+    public void setConvenienceUpto(int convenienceUpto) {
+        this.convenienceUpto = convenienceUpto;
+    }
+
+    //
 //    public static PoolInfo getPoolInfo(Bundle b) {
 //        PoolInfo poolInfo = new PoolInfo();
 //        if (b.containsKey("poolInfoID"))

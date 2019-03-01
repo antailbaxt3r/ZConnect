@@ -12,6 +12,11 @@
 
     <group android:id="@+id/group">
         <item
+            android:title="My Orders"
+            android:id="@+id/MyOrders"
+            android:icon="@drawable/ic_shopping_basket_grey_24dp"
+            android:name="My Orders"/>
+        <item
             android:title="My Products"
             android:id="@+id/MyProducts"
             android:icon="@drawable/ic_local_mall_grey_24dp"
@@ -31,11 +36,6 @@
             android:id="@+id/Noti_Settings"
             android:icon="@drawable/ic_notifications_grey_24dp"
             android:name="Notifications"/>
-        <item
-            android:title="My Orders"
-            android:id="@+id/MyOrders"
-            android:icon="@drawable/ic_notifications_grey_24dp"
-            android:name="My Orders"/>
     </group>
     <group
         android:id="@+id/group1"

@@ -31,7 +31,7 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
 
     private void attachID() {
         poolName = itemView.findViewById(R.id.pool_name);
-        deliveryTime = itemView.findViewById(R.id.order_deadline_time);
+        deliveryTime = itemView.findViewById(R.id.order_delivery_time);
         amount = itemView.findViewById(R.id.ordered_amount);
         orderPlaceTimeTV = itemView.findViewById(R.id.order_place_time);
 
@@ -47,7 +47,11 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
         long timeStamp = order.getTimestampPaymentAfter()==0?order.getTimestampPaymentBefore():order.getTimestampPaymentAfter();
         TimeUtilities tu = new TimeUtilities(timeStamp);
         String dateTimeText = itemView.getContext().getResources().getString(R.string.order_placed_on) + " " + tu.getTimeInHHMMAPM() + ", " + tu.getDateTime().getDayOfMonth() + " " + tu.getMonthName("SHORT") + " " + tu.getDateTime().getYearOfEra();
+        timeStamp = order.getDeliveryTime();
         orderPlaceTimeTV.setText(dateTimeText);
+        tu = new TimeUtilities(timeStamp);
+        dateTimeText = itemView.getContext().getResources().getString(R.string.order_delivery_on) + " " + tu.getTimeInHHMMAPM() + ", " + tu.getDateTime().getDayOfMonth() + " " + tu.getMonthName("SHORT") + " " + tu.getDateTime().getYearOfEra();
+        deliveryTime.setText(dateTimeText);
         setOrderStatus(order.getOrderStatus());
         setPaymentStatus(order.getPaymentStatus(), order.getOrderStatus(), order.getPaymentGatewayID());
         itemView.setOnClickListener(new View.OnClickListener() {

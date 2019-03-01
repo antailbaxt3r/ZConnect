@@ -95,6 +95,7 @@ public class ChatActivity extends BaseActivity {
     private ProgressBar progressBar;
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
+    private static boolean unseenFlag, unseenFlag2;
 
     //For Photo Posting
     private IntentHandle intentHandle;
@@ -140,6 +141,8 @@ public class ChatActivity extends BaseActivity {
 
         //For Photo Posting
         intentHandle = new IntentHandle();
+        unseenFlag = true;
+        unseenFlag2 = false;
 
         SharedPreferences communitySP;
         final String communityReference;
@@ -395,7 +398,14 @@ public class ChatActivity extends BaseActivity {
                     else
                         unseen_num = 0;
                     mydb.replaceForum(name,key,tab,messages.size());
-                    chatView.scrollToPosition(messages.size()-1-unseen_num);
+                    if(unseenFlag) {
+                        Log.d("HEEEERE", "AAA");
+                        chatView.scrollToPosition(messages.size() - 1 - unseen_num);
+                        unseenFlag = false;
+                    }
+                    if(unseenFlag2) {
+                        chatView.scrollToPosition(messages.size() - 1);
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 if(!type.equals("forums"))
@@ -441,7 +451,7 @@ public class ChatActivity extends BaseActivity {
             showToast("Message is empty.");
             return;
         }
-
+        unseenFlag2 = true;
         final ChatItemFormats message = new ChatItemFormats();
         message.setTimeDate(calendar.getTimeInMillis());
         mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {

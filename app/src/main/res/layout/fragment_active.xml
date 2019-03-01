@@ -4,11 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".pools.ActiveFragment">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/active_pool_rv"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/no_active_pools"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Nothing here as of now. Check back soon!"
+            android:gravity="center"
+            android:textSize="16sp"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/active_pool_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
 
 </LinearLayout>
