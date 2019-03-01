@@ -132,6 +132,9 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
                 } else if (type.compareToIgnoreCase("admin") == 0) {
                     btn_activate.setVisibility(View.VISIBLE);
                     btn_activate.setEnabled(true);
+                }else {
+                    btn_activate.setVisibility(View.GONE);
+                    btn_activate.setEnabled(false);
                 }
             }
 

@@ -283,6 +283,7 @@
         <activity
             android:name=".CabPoolListOfPeople"
             android:label="@string/title_activity_cab_list_of_people"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

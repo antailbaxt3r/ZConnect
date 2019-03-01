@@ -7,7 +7,7 @@
         android:title="Chat"
         android:id="@+id/menu_chat"
         android:name="Sign Out"
-        app:showAsAction="withText"
+        app:showAsAction="collapseActionView"
         android:orderInCategory="2"
         android:icon="@drawable/ic_chat_white_24dp" />
 
@@ -15,7 +15,7 @@
         android:id="@+id/leave_pool"
         android:title="Leave Pool"
         android:name="Leave Pool"
-        app:showAsAction="withText"
+        app:showAsAction="collapseActionView"
         android:orderInCategory="1"
         android:icon="@drawable/ic_close_white_24dp" />
 

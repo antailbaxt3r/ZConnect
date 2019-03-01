@@ -433,15 +433,15 @@ public class CabPoolListOfPeople extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    public boolean onPrepareOptionsMenu(Menu menu){
-        if(flag){
-            menu.getItem(R.id.leave_pool).setVisible(true);
-        }else {
-            menu.getItem(R.id.leave_pool).setVisible(false);
-        }
-        return  super.onPrepareOptionsMenu(menu);
-    }
+//
+//    public boolean onPrepareOptionsMenu(Menu menu){
+//        if(flag){
+//            menu.getItem(R.id.leave_pool).setVisible(true);
+//        }else {
+//            menu.getItem(R.id.leave_pool).setVisible(false);
+//        }
+//        return  super.onPrepareOptionsMenu(menu);
+//    }
 
     @Override
     protected void onDestroy() {
