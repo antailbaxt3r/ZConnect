@@ -148,14 +148,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            int colorPrimary = ContextCompat.getColor(this, R.color.black);
-//            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-//            getWindow().setStatusBarColor(getResources().getColor(R.color.white));
-//            getWindow().setNavigationBarColor(getResources().getColor(R.color.white));
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
-
 
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 

@@ -52,8 +52,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            setColour(colorPrimary);
+            int colorPrimaryDark = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+            setColour(colorPrimaryDark);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -77,7 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setColour(int colour) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(colour);
-            getWindow().setNavigationBarColor(colour);
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.black));
 
         }
     }
