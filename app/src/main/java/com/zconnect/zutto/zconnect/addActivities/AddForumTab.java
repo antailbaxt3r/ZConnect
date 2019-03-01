@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 
 import java.util.Calendar;
@@ -23,7 +24,7 @@ import java.util.Calendar;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 
-public class AddForumTab extends AppCompatActivity {
+public class AddForumTab extends BaseActivity {
 
     private MaterialEditText inputTabName;
     private FrameLayout doneLayout;

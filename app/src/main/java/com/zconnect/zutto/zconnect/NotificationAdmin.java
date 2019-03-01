@@ -11,11 +11,12 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.zconnect.zutto.zconnect.adapters.NotificationRVAdapter;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class NotificationAdmin extends AppCompatActivity {
+public class NotificationAdmin extends BaseActivity {
 
     private ArrayList notification_type=new ArrayList<>(Arrays.asList("Image Notification","Text Notification"));
     private Toolbar mActionBarToolbar;

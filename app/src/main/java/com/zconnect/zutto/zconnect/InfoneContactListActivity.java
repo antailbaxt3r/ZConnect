@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneContactsRVItem;
@@ -56,7 +57,7 @@ import java.util.HashMap;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
-public class InfoneContactListActivity extends AppCompatActivity {
+public class InfoneContactListActivity extends BaseActivity {
 
     private static final int RQS_PICK_CONTACT = 1;
 

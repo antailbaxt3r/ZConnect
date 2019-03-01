@@ -41,6 +41,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
@@ -68,7 +69,7 @@ import java.util.Map;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST;
 
-public class CreateForum extends AppCompatActivity {
+public class CreateForum extends BaseActivity {
     public class ForumTabObject {
         String name, UID;
         ForumTabObject() {

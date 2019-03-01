@@ -24,6 +24,7 @@ import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 
 import java.io.UnsupportedEncodingException;
@@ -33,7 +34,7 @@ import java.util.Calendar;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
-public class ReferralCode extends AppCompatActivity {
+public class ReferralCode extends BaseActivity {
 
     private SimpleDraweeView referralCodeImage;
     private Button inviteButton;

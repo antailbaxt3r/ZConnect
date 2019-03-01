@@ -7,7 +7,7 @@ android {
         applicationId "com.zconnect.zutto.zconnect"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 24
+        versionCode 25
         versionName "7.3"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -23,6 +23,14 @@ android {
         maven { url 'https://maven.fabric.io/public' }
     }
     productFlavors {
+    }
+    android {
+        lintOptions {
+            checkReleaseBuilds false
+            // Or, if you prefer, you can continue to check for errors in release builds,
+            // but continue the build even when errors are found:
+            abortOnError false
+        }
     }
 }
 

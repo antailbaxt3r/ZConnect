@@ -34,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.addActivities.AddForumTab;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.NewUserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
@@ -43,7 +44,7 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.ref;
 
 import java.util.Vector;
 
-public class AdminHome extends AppCompatActivity {
+public class AdminHome extends BaseActivity {
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;

@@ -37,11 +37,12 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 
 import java.io.IOException;
 
-public class CreateCommunity extends AppCompatActivity {
+public class CreateCommunity extends BaseActivity {
 
     private static final int GALLERY_REQUEST = 7;
     IntentHandle intentHandle;
