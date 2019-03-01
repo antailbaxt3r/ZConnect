@@ -231,7 +231,7 @@ exports.getPayment = functions.database.ref('communities/{communityID}/features/
     const discountedAmount = orderSnapshot.child("discountedAmount").val();
     request({
         method: 'POST',
-        url: `https://rzp_test_A8XTiRdzpUWJcH:avDG7H44K0ChQCSFqMSwcGTg@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
+        url: `https://rzp_live_pMQ3fHFcjSv6kP:NNQNMb0W2HGprUf6IkXV4oXG@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
         form: {
           amount: discountedAmount*100
         }

@@ -272,7 +272,6 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                         singleProduct = shot.getValue(Product.class);
                         if(singleProduct.getType()==null)
                         {
-                            Log.d("HEEEERE", "KK" + singleProduct.getProductName() + " " + singleProduct.getKey());
                             singleProduct.setType(ProductUtilities.TYPE_ADD_STR);
                         }
                         if(currentOptionProductType == OPT_ADD && !singleProduct.getType().equals(ProductUtilities.TYPE_ADD_STR))

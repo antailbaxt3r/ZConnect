@@ -399,7 +399,6 @@ public class ChatActivity extends BaseActivity {
                         unseen_num = 0;
                     mydb.replaceForum(name,key,tab,messages.size());
                     if(unseenFlag) {
-                        Log.d("HEEEERE", "AAA");
                         chatView.scrollToPosition(messages.size() - 1 - unseen_num);
                         unseenFlag = false;
                     }
