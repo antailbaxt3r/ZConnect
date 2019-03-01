@@ -69,7 +69,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private TextView sub_total, discount, convenienceFeeTV, total;
     private Integer total_quantity;
     private Button btn_pay;
-    private float total_amount, discounted_amount, convenienceFee;
+    private double total_amount, discounted_amount, convenienceFee,discounted_amount_paise;
     private double discount_amount;
     private String shopID, poolPushID, poolID, communityID, userUID, userName, poolName;
     private long deliveryTime;
@@ -277,7 +277,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
              * Amount is always passed in PAISE
              * Eg: "500" = Rs 5.00
              */
-            options.put("amount", String.valueOf(discounted_amount * 100));
+            options.put("amount", String.valueOf(discounted_amount_paise));
 
             checkout.open(activity, options);
         } catch (Exception e) {
@@ -337,8 +337,15 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                     discounted_amount = total_amount - (float) discount_amount;
                     convenienceFee = total_amount * poolInfo.getConveniencePercentage() / 100.0f;
                     convenienceFee = Math.min(convenienceFee, poolInfo.getConvenienceUpto());
-                    convenienceFee = Math.round(convenienceFee * 100) / 100.0f;
+                    convenienceFee = Math.round(convenienceFee * 100.0) / 100.0;
                     discounted_amount = discounted_amount + convenienceFee;
+                    discounted_amount = Math.round(discounted_amount * 100.0) / 100.0;
+
+                    discounted_amount_paise=discounted_amount * 100;
+                    discounted_amount_paise=Math.round(discounted_amount_paise * 100.0) / 100.0;;
+
+                    Log.i("pol",discount_amount + " "+ discounted_amount +" "+ discounted_amount_paise);
+
                     sub_total.setText(String.format("%s%s", getResources().getString(R.string.Rs), String.valueOf(total_amount)));
                     discount.setText(String.format("-%s%s", getResources().getString(R.string.Rs), String.valueOf(discount_amount)));
                     convenienceFeeTV.setText(String.format("%s%s", getResources().getString(R.string.Rs), String.valueOf(convenienceFee)));
@@ -357,7 +364,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_TEMPLATE_INFO, currentPool.getPoolInfo().getShopID(), currentPool.getPoolInfo().getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
-        ref.addValueEventListener(poolTemplateInfoListener);
+        ref.addListenerForSingleValueEvent(poolTemplateInfoListener);
 
     }
 
