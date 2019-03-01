@@ -9,13 +9,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.pools.OrderDetailActivity;
 import com.zconnect.zutto.zconnect.pools.models.Order;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+
+import java.util.HashMap;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -57,6 +65,17 @@ public class PoolOrderedItemViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_ORDER_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
                 Intent intent = new Intent(itemView.getContext(),OrderDetailActivity.class);
                 intent.putExtra("order",order);
                 itemView.getContext().startActivity(intent);

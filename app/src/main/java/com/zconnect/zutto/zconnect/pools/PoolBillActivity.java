@@ -35,12 +35,15 @@ import com.razorpay.PaymentResultListener;
 import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemCartAdapter;
 import com.zconnect.zutto.zconnect.pools.models.DiscountOffer;
 import com.zconnect.zutto.zconnect.pools.models.Order;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolInfo;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.UIUtilities;
 
 import org.json.JSONObject;
@@ -81,6 +84,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private Pool currentPool;
     private ValueEventListener poolTemplateInfoListener;
     private EditText phoneNumberET;
+    private Checkout checkout = new Checkout();
     private boolean internetFlag = false;
 
 
@@ -104,6 +108,9 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                     finish();
 
                 } else {
+
+                    checkout.setImage(R.drawable.logo);
+
                     userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                     setToolbar();
@@ -132,9 +139,19 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
                     loadCartData();
                     loadPhoneNumber();
+
                     btn_pay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_PAY_BUTTON_CLICK);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
                             pushOrderData();
                         }
                     });
@@ -256,8 +273,6 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     }
 
     private void startPayment() {
-        Checkout checkout = new Checkout();
-        checkout.setImage(R.drawable.logo);
 
         final Activity activity = this;
         try {
@@ -396,6 +411,17 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
 
     @Override
     public void onPaymentError(int code, String response) {
+
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta= new HashMap<>();
+        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_PAYMENT_ERROR);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        counterItemFormat.setMeta(meta);
+
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
+
         switch (code) {
             case Checkout.PAYMENT_CANCELED:
                 showToast("Payment Cancelled.", Toast.LENGTH_LONG);
@@ -415,6 +441,17 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     }
 
     private void paymentSuccess(final String paymentID) {
+
+        CounterItemFormat counterItemFormat = new CounterItemFormat();
+        HashMap<String, String> meta= new HashMap<>();
+        meta.put("type","fromRecents");
+        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+        counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_PAYMENT_SUCCESS);
+        counterItemFormat.setTimestamp(System.currentTimeMillis());
+        counterItemFormat.setMeta(meta);
+
+        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+        counterPush.pushValues();
 
         FirebaseMessaging.getInstance().subscribeToTopic(poolPushID);
         btn_pay.setOnClickListener(null);
