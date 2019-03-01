@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +41,7 @@ public class PaymentCaptureActivity extends BaseActivity {
     private String orderID;
     private Order order;
     private ImageView paymentStatusImage;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,11 +76,13 @@ public class PaymentCaptureActivity extends BaseActivity {
         orderID = b.getString("orderID");
         amountTV.setText(b.getString("amount"));
         orderRef = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_MY_PARTICULAR_ORDER, communityReference, FirebaseAuth.getInstance().getUid(), orderID));
+        progressBar.setVisibility(View.VISIBLE);
         orderRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child("paymentStatus").getValue(String.class).equals(Order.KEY_PAYMENT_SUCCESS))
                 {
+                    progressBar.setVisibility(View.GONE);
                     nextButton.setVisibility(View.VISIBLE);
                     nextStepsLL.setVisibility(View.VISIBLE);
                     amountTV.setVisibility(View.VISIBLE);
@@ -88,6 +92,7 @@ public class PaymentCaptureActivity extends BaseActivity {
                 }
                 else if(dataSnapshot.child("paymentStatus").getValue(String.class).equals(Order.KEY_PAYMENT_FAIL))
                 {
+                    progressBar.setVisibility(View.GONE);
                     nextButton.setVisibility(View.GONE);
                     nextStepsLL.setVisibility(View.GONE);
                     paymentStatusImage.setBackground(getApplicationContext().getDrawable(R.drawable.ic_error_outline_red500_120dp));
@@ -121,6 +126,7 @@ public class PaymentCaptureActivity extends BaseActivity {
         nextStepsLL = findViewById(R.id.next_steps_layout);
         paymentStatusImage = findViewById(R.id.paymentstatus_image);
         paymentStatusText = findViewById(R.id.paymentstatus_text);
+        progressBar = findViewById(R.id.progress_bar);
     }
 
     @Override
