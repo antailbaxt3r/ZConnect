@@ -99,6 +99,7 @@
                         <CheckBox
                             android:id="@+id/check_accept"
                             android:allowUndo="true"
+                            android:buttonTint="@color/colorAccent"
                             android:textColorHighlight="@color/colorHighlight"
                             android:text="I accept all the "
                             android:layout_width="wrap_content"
@@ -112,43 +113,6 @@
                     </LinearLayout>
 
                 </RelativeLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight=".4"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:visibility="gone">
-
-                    <!--<com.google.android.gms.common.SignInButton-->
-                    <!--android:id="@+id/GoogleSignIn"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_weight=".5"-->
-                    <!--android:layout_height="60dp"/>-->
-                    <Button
-                        android:id="@+id/btn_google_sign_in"
-                        android:layout_width="0dp"
-                        android:layout_height="45dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight=".5"
-                        android:background="@drawable/curveradiusgoogle"
-                        android:text="Google"
-                        android:textStyle="bold"
-                        android:textColor="@color/white" />
-
-                    <Button
-                        android:id="@+id/btn_guest_login"
-                        android:layout_width="0dp"
-                        android:layout_height="45dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight=".5"
-                        android:background="@drawable/curveradiusguest"
-                        android:text="Guest LogIn"
-                        android:textColor="@color/white" />
-
-                </LinearLayout>
             </LinearLayout>
 
 

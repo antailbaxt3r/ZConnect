@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -42,8 +43,6 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 
 public class PoolViewHolder extends RecyclerView.ViewHolder {
 
-
-    private SimpleDraweeView poolImage;
     private TextView name, description, count, orderDeadlineTime, orderDealineSubtext, deliveryDay;
     private ImageButton btn_like;
     private Boolean isLiked;
@@ -68,7 +67,6 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
 
     private void attachID() {
         name = itemView.findViewById(R.id.pool_name);
-        poolImage = itemView.findViewById(R.id.pool_logo);
         description = itemView.findViewById(R.id.pool_description);
         count = itemView.findViewById(R.id.pool_count);
         orderDeadlineTime = itemView.findViewById(R.id.order_deadline_time);
@@ -98,9 +96,8 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         Log.d(this.getClass().getName(), "populate : " + pool.getPoolInfo().getName());
         name.setText(pool.getPoolInfo().getName());
         description.setText(pool.getPoolInfo().getDescription());
-        poolImage.setImageURI(pool.getPoolInfo().getImageThumb());
-        if(pool.getPoolInfo().getImageURL()!=null)
-            poolBgImage.setImageURI(pool.getPoolInfo().getImageURL());
+        poolBgImage.setImageURI(pool.getPoolInfo().getImageURL());
+
         setBackgroundColors();
 
         if (pool.getStatus().compareTo(Pool.STATUS_UPCOMING) == 0) {
