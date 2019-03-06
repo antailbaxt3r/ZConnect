@@ -230,7 +230,7 @@ public class InfoneContactListActivity extends BaseActivity {
             }
 
         }else {
-            databaseReferenceList.addValueEventListener(listener);
+            databaseReferenceList.addListenerForSingleValueEvent(listener);
         }
 
     }

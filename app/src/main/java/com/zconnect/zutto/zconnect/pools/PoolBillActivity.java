@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect.pools;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -86,6 +87,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
     private EditText phoneNumberET;
     private Checkout checkout = new Checkout();
     private boolean internetFlag = false;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -143,6 +145,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                     btn_pay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            progressDialog.show();
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta= new HashMap<>();
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
@@ -196,7 +199,6 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
             ui.getSnackbar(phoneNumberET, "Please enter a valid mobile number", Snackbar.LENGTH_SHORT, getApplicationContext()).show();
         else
         {
-            Toast.makeText(getApplicationContext(), "Checking connection...", Toast.LENGTH_SHORT).show();
             if(checkInternetConnection())
             {
                 DatabaseReference usersOrdersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("shops").child("orders").child("current").child(FirebaseAuth.getInstance().getUid());
@@ -230,7 +232,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                 });
             }
             else
-            {
+            {   progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Could not connect to server.", Toast.LENGTH_SHORT).show();
             }
         }
@@ -294,8 +296,10 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
              */
             options.put("amount", String.valueOf(discounted_amount_paise));
 
+            progressDialog.dismiss();
             checkout.open(activity, options);
         } catch (Exception e) {
+            progressDialog.dismiss();
             Log.e(TAG, "Error in starting Razorpay Checkout", e);
             showToast("Error in starting Razorpay Checkout");
         }
@@ -393,6 +397,9 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
         convenienceFeeTV = findViewById(R.id.tv_convenience);
         btn_pay = findViewById(R.id.btn_pay);
         progressBar = findViewById(R.id.progress_bar);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Processing");
+        progressDialog.setCanceledOnTouchOutside(false);
         billLinearLayout = findViewById(R.id.bill_layout);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

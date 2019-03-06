@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -171,16 +172,23 @@ public class newUserViewHolder extends RecyclerView.ViewHolder{
     public void setCardUI(String statusCode,String approvedRejectedBy) {
 
         if(statusCode.equals(VerificationUtilities.KEY_APPROVED)){
+            adminApprovedByTextView.setVisibility(View.VISIBLE);
             acceptUserButton.setVisibility(View.GONE);
             declineUserButton.setVisibility(View.VISIBLE);
             adminApprovedByTextView.setText("Approved By " + approvedRejectedBy);
+            Log.i("YOLOAAAA", "...");
 
         }if(statusCode.equals(VerificationUtilities.KEY_NOT_APPROVED)){
+            adminApprovedByTextView.setVisibility(View.VISIBLE);
             declineUserButton.setVisibility(View.GONE);
             acceptUserButton.setVisibility(View.VISIBLE);
             adminApprovedByTextView.setText("Rejected By " + approvedRejectedBy);
+            Log.i("YOLORRRR", "...");
         }if(statusCode.equals(VerificationUtilities.KEY_PENDING)){
-
+            adminApprovedByTextView.setVisibility(View.GONE);
+            declineUserButton.setVisibility(View.VISIBLE);
+            acceptUserButton.setVisibility(View.VISIBLE);
+            Log.i("YOLOPPPP", "...");
         }
     }
 }

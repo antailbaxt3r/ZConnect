@@ -36,14 +36,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <com.facebook.drawee.view.SimpleDraweeView
-                        android:id="@+id/pool_logo"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:contentDescription="Image"
-                        android:visibility="gone"
-                        app:roundAsCircle="true" />
-
                     <TextView
                         android:id="@+id/pool_name"
                         android:layout_width="wrap_content"
@@ -135,7 +127,7 @@
                                 android:id="@+id/order_deadline_subtext"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Order dealine"
+                                android:text="Order deadline"
                                 android:layout_below="@+id/order_deadline_time"
                                 android:textColor="@color/white"
                                 android:textSize="8sp"

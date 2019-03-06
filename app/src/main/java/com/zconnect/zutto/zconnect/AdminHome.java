@@ -149,9 +149,9 @@ public class AdminHome extends BaseActivity {
 
         private int filterOption;
         //these values are according to index in the submenu of action_filter MenuItem
-        private int FILTER_APPROVED = 0;
+        private int FILTER_PENDING = 0;
         private int FILTER_REJECTED = 1;
-        private int FILTER_ALL_USERS = 2;
+        private int FILTER_APPROVED = 2;
 
 
         //for admin functionalities
@@ -171,7 +171,7 @@ public class AdminHome extends BaseActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            filterOption = FILTER_ALL_USERS;
+            filterOption = FILTER_PENDING;
             if(getArguments().getInt(ARG_SECTION_NUMBER)==0)
             {
                 setHasOptionsMenu(true);
@@ -250,8 +250,8 @@ public class AdminHome extends BaseActivity {
                             if(!shot.hasChild("approvedRejectedBy")){
                                 newUser.setApprovedRejectedBy(postedByDetails);
                             }
-                            if(filterOption==FILTER_APPROVED
-                                    && newUser.getStatusCode().equals(VerificationUtilities.KEY_APPROVED))
+                            if(filterOption==FILTER_PENDING
+                                    && newUser.getStatusCode().equals(VerificationUtilities.KEY_PENDING))
                             {
                                 newUserItemFormats.add(newUser);
                             }
@@ -260,7 +260,8 @@ public class AdminHome extends BaseActivity {
                             {
                                 newUserItemFormats.add(newUser);
                             }
-                            else if(filterOption==FILTER_ALL_USERS)
+                            else if(filterOption==FILTER_APPROVED
+                                    && newUser.getStatusCode().equals(VerificationUtilities.KEY_APPROVED))
                             {
                                 newUserItemFormats.add(newUser);
                             }
@@ -300,36 +301,39 @@ public class AdminHome extends BaseActivity {
                     MenuItem menuItem = null;
                     switch (filterOption) {
                         case 0:
-                            menuItem = item.getSubMenu().findItem(R.id.option_approved_users);
+                            menuItem = item.getSubMenu().findItem(R.id.option_pending);
                             break;
                         case 1:
                             menuItem = item.getSubMenu().findItem(R.id.option_rejected_users);
                             break;
                         case 2:
-                            menuItem = item.getSubMenu().findItem(R.id.option_all_users);
+                            menuItem = item.getSubMenu().findItem(R.id.option_approved_users);
                             break;
                     }
                     menuItem.setChecked(true);
                     return true;
                 //submenu of filter
-                case R.id.option_approved_users:
-                    filterOption = FILTER_APPROVED;
+                case R.id.option_pending: {
+                    filterOption = FILTER_PENDING;
                     newUsersDataReference.addValueEventListener(usersDatalistener);
-                    adapter = new NewUserRVAdapter(getView().getContext(),newUserItemFormats);
+                    adapter = new NewUserRVAdapter(getView().getContext(), newUserItemFormats);
                     newUsersRV.setAdapter(adapter);
                     return true;
-                case R.id.option_rejected_users:
+                }
+                case R.id.option_rejected_users: {
                     filterOption = FILTER_REJECTED;
                     newUsersDataReference.addValueEventListener(usersDatalistener);
                     adapter = new NewUserRVAdapter(getView().getContext(),newUserItemFormats);
                     newUsersRV.setAdapter(adapter);
                     return true;
-                case R.id.option_all_users:
-                    filterOption = FILTER_ALL_USERS;
+                }
+                case R.id.option_approved_users: {
+                    filterOption = FILTER_APPROVED;
                     newUsersDataReference.addValueEventListener(usersDatalistener);
                     adapter = new NewUserRVAdapter(getView().getContext(),newUserItemFormats);
                     newUsersRV.setAdapter(adapter);
                     return true;
+                }
                 default:
                     return super.onOptionsItemSelected(item);
             }
