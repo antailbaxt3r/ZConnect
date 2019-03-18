@@ -58,24 +58,21 @@ exports.grantSignupReward = functions.database.ref('/communities/{communityID}/U
   var communityID = context.params.communityID;
 
   return admin.database().ref(`communities/${communityID}/Users1/${uid}/referredBy`)
-  .once('value').then(function(data) {
+  .once('value').then(data => {
     var referred_by_uid = data.val();
     if (referred_by_uid) {
       var points = admin.database().ref(`/communities/${communityID}/Users1/${referred_by_uid}/userPoints/`);
-      points.transaction(function (current_value) {
+      points.transaction(current_value => {
         return String((parseInt(current_value) || 0) + 50);
       });
 
       var points2 = admin.database().ref(`/communities/${communityID}/Users1/${uid}/userPoints/`);
-      points2.transaction(function (current_value) {
+      points2.transaction(current_value => {
         return String((parseInt(current_value) || 0) + 50);
       });
     }
-
      return console.log('Referal Added');
   });
-
-
 });
 
 exports.countInfoneMembers = functions.database.ref('/communities/{communityID}/infone/numbers/{contactID}/category')
@@ -257,13 +254,14 @@ exports.getPayment = functions.database.ref('communities/{communityID}/features/
                 },
                 timestampPaymentAfter,
                 orderStatus,
+                paymentStatus: "success",
               };
               orderSnapshot.ref.child('phoneNumber').remove();
               const orderRefInsideShop = shopRef.child(`orders/current/${poolPushID}/${orderID}`);
               orderRefInsideShop.set(orderObj);
               const tempObj = {timestampPaymentAfter, orderStatus, paymentStatus: "success"};
               snapshot.ref.parent.update(tempObj);
-              shopRef.child(`createdPools/current/${poolPushID}/totalOrder`)
+              shopRef.child(`createdPools/current/${poolPushID}/totalOrders`)
               .transaction(current_value => {
                 const userBillID = String(orderID.substr(-6)) + getThreeDigitString(current_value + 1);
                 orderRefInsideShop.child("userBillID").set(userBillID);
