@@ -306,6 +306,8 @@ exports.deleteActivePoolFromCommunity = functions.database.ref('shops/shopDetail
       });
     });
   }
+  else 
+    return console.log("Nothing to do");
 });
 
 exports.changeOrderStatus = functions.database.ref('shops/shopDetails/{shopID}/orders/current/{poolPushID}/{orderID}/orderStatus')
@@ -342,3 +344,58 @@ const getThreeDigitString = (num) => {
   else
     return String(num);
 }
+
+//New functions for integrity of userForums in features-> forums
+
+exports.addForumToUserForum = functions.database.ref('/communities/{communityID}/features/forums/categories/{categoryID}/users/{userPushID}')
+.onCreate((snapshot, context) => {
+    return snapshot.ref.parent.parent.once('value', (forumDetailsSnapshot) =>{
+        //const userKey = snapshot.key;
+        let obj = forumDetailsSnapshot.val();
+        delete obj['users'];
+        return snapshot.ref.parent.parent.parent.parent.child(`userForums/${context.params.userPushID}/joinedForums/${context.params.categoryID}`)
+            .set(obj);
+    });
+});
+
+exports.updateForumToUserForum = functions.database.ref('/communities/{communityID}/features/forums/categories/{categoryID}')
+.onUpdate((change, context) =>{
+      let obj = change.after.val();
+      delete obj['users'];
+      return change.after.ref.parent.parent.child(`userForums`).once('value', usersSnapshot => {
+        usersSnapshot.forEach((user) => {
+          if(user.hasChild(context.params.categoryID))
+          {
+            return change.after.ref.parent.parent.child(`userForums/${user.key}/joinedForums/${context.params.categoryID}`)
+            .set(obj);
+          }
+          else
+            return console.log("NONE");
+      });
+    });
+  });
+
+exports.deleteForumFromUserForum = functions.database.ref('/communities/{communityID}/features/forums/categories/{categoryID}/users/{userPushID}')
+.onDelete((snap, context) =>{
+  const userID = snap.ref;
+  return userID.parent.parent.parent.parent.child(`userForums/${context.params.userPushID}/joinedForums/${context.params.categoryID}`)
+  .remove();
+});
+
+exports.copyOrderReceivingStatusInShopDetail = functions.database.ref('/communities/{communityID}/features/shops/pools/current/{poolPushID}/orderReceivingStatus')
+.onUpdate((change, context) => {
+  return change.after.ref.parent.child('poolInfo/shopID').once('value', shopIDSnapshot => {
+    const shopID = shopIDSnapshot.val();
+    return change.after.ref.root.child(`shops/shopDetails/${shopID}/createdPools/current/${context.params.poolPushID}/orderReceivingStatus`)
+    .set(change.after.val());
+  });
+});
+
+exports.copyOrderReceivingStatusInShopFeature = functions.database.ref('shops/shopDetails/{shopID}/createdPools/current/{poolPushID}/orderReceivingStatus')
+.onUpdate((change, context) => {
+  return change.after.ref.parent.parent.parent.parent.child('info/communityID').once('value', communityIDSnapshot => {
+    const communityID = communityIDSnapshot.val();
+    return change.after.ref.root.child(`communities/${communityID}/features/shops/pools/current/${context.params.poolPushID}/orderReceivingStatus`)
+    .set(change.after.val());
+  });
+});
