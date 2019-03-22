@@ -171,8 +171,6 @@ exports.countForumMembers = functions.database.ref('/communities/{communityID}/f
 //for new apps
 exports.syncUserPointsAndUserPointsNum1 = functions.database.ref('/communities/{communityID}/Users1/{uid}/userPoints')
 .onUpdate((change, context) => {
-	if(context.params.communityID === "testCollege")
-	{
 		const user_points_aft = parseInt(change.after.val());
 		const user_points_bef = parseInt(change.before.val());
 		const userPointsNumRef = change.after.ref.parent.child("userPointsNum");
@@ -188,14 +186,11 @@ exports.syncUserPointsAndUserPointsNum1 = functions.database.ref('/communities/{
         }
 			// }
 		});
-	}
 });
 
 //for old apps
 exports.syncUserPointsAndUserPointsNum2 = functions.database.ref('/communities/{communityID}/Users1/{uid}/userPointsNum')
 .onUpdate((change, context) => {
-	if(context.params.communityID === "testCollege")
-	{
 		const user_points_num_aft = change.after.val();
 		const user_points_num_bef = change.before.val();
 		const userPointsRef = change.after.ref.parent.child("userPoints");
@@ -211,7 +206,6 @@ exports.syncUserPointsAndUserPointsNum2 = functions.database.ref('/communities/{
         }
 			// }
 		});
-	}
 });
 
 exports.getPayment = functions.database.ref('communities/{communityID}/features/shops/orders/current/{uid}/{orderID}/paymentGatewayID')
@@ -234,7 +228,7 @@ exports.getPayment = functions.database.ref('communities/{communityID}/features/
         method: 'POST',
         url: `https://rzp_live_pMQ3fHFcjSv6kP:NNQNMb0W2HGprUf6IkXV4oXG@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
         form: {
-          amount: parseInt(discountedAmount*100)
+          amount: parseInt(discountedAmount*1000/10)
         }
       }, (error, response, body) => {
         console.log('Status:', response.statusCode);

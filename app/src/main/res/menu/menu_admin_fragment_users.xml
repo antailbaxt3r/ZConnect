@@ -10,16 +10,16 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/option_approved_users"
-                    android:title="Approved"
+                    android:id="@+id/option_pending"
+                    android:title="Pending"
                     app:showAsAction="never"/>
                 <item
                     android:id="@+id/option_rejected_users"
                     android:title="Rejected"
                     app:showAsAction="never"/>
                 <item
-                    android:id="@+id/option_all_users"
-                    android:title="All Users"
+                    android:id="@+id/option_approved_users"
+                    android:title="Approved"
                     app:showAsAction="never"/>
             </group>
         </menu>

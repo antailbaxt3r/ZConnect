@@ -86,6 +86,7 @@ public class LogoFlashActivity extends BaseActivity {
         FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_logo_flash);
         bgImage =  findViewById(R.id.bgImage);
+        bgColor = findViewById(R.id.bgColor);
 
         SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
@@ -99,6 +100,7 @@ public class LogoFlashActivity extends BaseActivity {
                     if (dataSnapshot.hasChild("bgUrl")) {
                         bgImage.setImageURI(Uri.parse(dataSnapshot.child("bgUrl").getValue(String.class)));
                     } else {
+//                        todo
                         bgColor.setVisibility(View.GONE);
                         bgImage.setBackground(null);
                     }
@@ -377,31 +379,31 @@ public class LogoFlashActivity extends BaseActivity {
     }
 
     //script to copy userPoints to userPointsNum
-    public static void copyUserPointsToUserPointsNum() {
-        Log.i("PSYCHO", "started");
-        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot shot : dataSnapshot.getChildren())
-                {
-                    if(shot.hasChild("userPoints"))
-                    {
-                        usersRef.child(shot.getKey()).child("userPointsNum").setValue(Integer.parseInt(shot.child("userPoints").getValue().toString()));
-                    }
-                    else
-                    {
-                        Log.i("PSYCHO", "no user points " + shot.getKey());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    public static void copyUserPointsToUserPointsNum() {
+//        Log.i("PSYCHO", "started");
+//        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+//        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot shot : dataSnapshot.getChildren())
+//                {
+//                    if(shot.hasChild("userPoints"))
+//                    {
+//                        usersRef.child(shot.getKey()).child("userPointsNum").setValue(Integer.parseInt(shot.child("userPoints").getValue().toString()));
+//                    }
+//                    else
+//                    {
+//                        Log.i("PSYCHO", "no user points " + shot.getKey());
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 
     //script to remove just joined community notificatin

@@ -53,7 +53,7 @@ public class NewUserRVAdapter extends RecyclerView.Adapter<newUserViewHolder> {
             if (!newUserItemFormats.get(position).getApprovedRejectedBy().getUsername().equals("none")) {
                 holder.setCardUI(newUserItemFormats.get(position).getStatusCode(), newUserItemFormats.get(position).getApprovedRejectedBy().getUsername());
             } else {
-                holder.adminApprovedByTextView.setVisibility(View.GONE);
+                holder.setCardUI(newUserItemFormats.get(position).getStatusCode(), "");
             }
         }catch (Exception e){}
 
