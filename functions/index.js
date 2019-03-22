@@ -229,6 +229,7 @@ exports.getPayment = functions.database.ref('communities/{communityID}/features/
     const shopID = orderSnapshot.child("poolInfo/shopID").val();
     const poolPushID = orderSnapshot.child("poolPushID").val();
     const discountedAmount = orderSnapshot.child("discountedAmount").val();
+
     request({
         method: 'POST',
         url: `https://rzp_live_pMQ3fHFcjSv6kP:NNQNMb0W2HGprUf6IkXV4oXG@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
