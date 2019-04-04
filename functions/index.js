@@ -297,12 +297,17 @@ exports.deleteActivePoolFromCommunity = functions.database.ref('shops/shopDetail
     return change.after.ref.parent.once('value', poolSnapshot => {
 
       return poolSnapshot.ref.parent.parent.parent.child("info/communityID").once('value', communityIDSnapshot => {
-        poolSnapshot.ref.root.child(`communities/${communityIDSnapshot.val()}/features/shops/pools/current/${poolPushID}`)
-          .remove();
-        poolSnapshot.ref.root.child(`communities/${communityIDSnapshot.val()}/features/shops/pools/archive/${poolPushID}`)
-          .set(poolSnapshot.val());
+        const communityID = communityIDSnapshot.val();
+        poolSnapshot.ref.root.child(`communities/${communityID}/features/shops/pools/current/${poolPushID}`)
+        .remove();
+        poolSnapshot.ref.root.child(`communities/${communityID}/features/shops/pools/archive/${poolPushID}`)
+        .set(poolSnapshot.val());
         poolSnapshot.ref.parent.parent.child("previousPools").child(poolPushID).set(poolSnapshot.val());
-        return poolSnapshot.ref.remove();
+        poolSnapshot.ref.remove();
+        poolSnapshot.ref.root.child(`communities/${communityID}/features/forums/categories/${poolPushID}`)
+        .remove();
+        poolSnapshot.ref.root.child(`communities/${communityID}/features/forums/tabsCategories/shopPools/${poolPushID}`)
+        .remove();
       });
     });
   }
