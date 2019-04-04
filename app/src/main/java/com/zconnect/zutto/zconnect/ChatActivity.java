@@ -95,6 +95,7 @@ public class ChatActivity extends BaseActivity {
     private ProgressBar progressBar;
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
+    private static boolean unseenFlag, unseenFlag2;
 
     //For Photo Posting
     private IntentHandle intentHandle;
@@ -129,16 +130,19 @@ public class ChatActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
         showBackButton();
 
         mAuth = FirebaseAuth.getInstance();
 
+
         //For Photo Posting
         intentHandle = new IntentHandle();
+        unseenFlag = true;
+        unseenFlag2 = false;
 
         SharedPreferences communitySP;
         final String communityReference;
@@ -328,6 +332,7 @@ public class ChatActivity extends BaseActivity {
         chatView = (RecyclerView) findViewById(R.id.chatList);
         adapter = new ChatRVAdapter(messages,this);
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -368,7 +373,6 @@ public class ChatActivity extends BaseActivity {
         loadMessagesListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                progressBar.setVisibility(View.VISIBLE);
                 messages.clear();
                 for (DataSnapshot snapshot:dataSnapshot.getChildren()) {
                     ChatItemFormats temp = new ChatItemFormats();
@@ -394,7 +398,13 @@ public class ChatActivity extends BaseActivity {
                     else
                         unseen_num = 0;
                     mydb.replaceForum(name,key,tab,messages.size());
-                    chatView.scrollToPosition(messages.size()-1-unseen_num);
+                    if(unseenFlag) {
+                        chatView.scrollToPosition(messages.size() - 1 - unseen_num);
+                        unseenFlag = false;
+                    }
+                    if(unseenFlag2) {
+                        chatView.scrollToPosition(messages.size() - 1);
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 if(!type.equals("forums"))
@@ -440,7 +450,7 @@ public class ChatActivity extends BaseActivity {
             showToast("Message is empty.");
             return;
         }
-
+        unseenFlag2 = true;
         final ChatItemFormats message = new ChatItemFormats();
         message.setTimeDate(calendar.getTimeInMillis());
         mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -731,7 +741,7 @@ public class ChatActivity extends BaseActivity {
         i.putExtra("catUID", key);
         i.putExtra("flag", "true");
         startActivity(i);
-        finish();
+//        finish();
     }
 
     @Override

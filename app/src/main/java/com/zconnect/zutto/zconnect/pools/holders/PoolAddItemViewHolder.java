@@ -30,14 +30,14 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
     }
 
     private void attachID() {
-        name = itemView.findViewById(R.id.dish_name);
+        name = itemView.findViewById(R.id.item_name);
         increment = itemView.findViewById(R.id.increment_button);
         decrement = itemView.findViewById(R.id.decrement_button);
         price = itemView.findViewById(R.id.item_price);
         rl_btn = itemView.findViewById(R.id.user_quantity_details);
         add = itemView.findViewById(R.id.btn_first_add);
-        dishImage = itemView.findViewById(R.id.pool_dish_image);
-        description = itemView.findViewById(R.id.dish_description);
+        dishImage = itemView.findViewById(R.id.item_image);
+        description = itemView.findViewById(R.id.item_description);
         quantity = itemView.findViewById(R.id.quantity_display);
     }
 
@@ -49,7 +49,7 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
         description.setText(item.getDescription());
         dishImage.setImageURI(item.getImageURL());
         number = item.getQuantity();
-        price.setText(String.format("Price %s %d", itemView.getContext().getResources().getString(R.string.Rs), item.getPrice()));
+        price.setText(itemView.getContext().getResources().getString(R.string.Rs) + item.getPrice());
         increment.setOnClickListener(this);
         decrement.setOnClickListener(this);
         add.setOnClickListener(this);
@@ -68,7 +68,7 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
             number++;
         }
         updateUI(number);
-        adapter.updateOrderDish(item.getID(), number);
+        adapter.updateOrderDish(item, number);
     }
 
     private void updateUI(int p) {

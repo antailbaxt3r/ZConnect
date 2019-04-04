@@ -30,12 +30,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.addActivities.AddForumTab;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneTabsItemFormat;
 import com.zconnect.zutto.zconnect.fragments.ForumsFragment;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,13 +105,12 @@ public class ExploreForumsActivity extends BaseActivity{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
         showBackButton();
 
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
         communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
@@ -125,7 +127,7 @@ public class ExploreForumsActivity extends BaseActivity{
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     infoneTabItemFormats.add(shot.getValue(InfoneTabsItemFormat.class));
                 }
-                adapter.notifyDataSetChanged();
+                adapter = new ViewPagerAdapter(getSupportFragmentManager());
                 setupViewPager(viewPager);
             }
 
@@ -186,6 +188,22 @@ public class ExploreForumsActivity extends BaseActivity{
             MenuItem item = menu.findItem(R.id.action_done);
             item.setVisible(false);
         }
+        MenuItem item_addTab = menu.findItem(R.id.action_add_tab);
+        if (getIntent().hasExtra("userType"))
+        {
+            if(getIntent().getStringExtra("userType").equals(UsersTypeUtilities.KEY_ADMIN))
+            {
+               item_addTab.setVisible(true);
+            }
+            else
+            {
+                item_addTab.setVisible(false);
+            }
+        }
+        else
+        {
+            item_addTab.setVisible(false);
+        }
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -196,6 +214,9 @@ public class ExploreForumsActivity extends BaseActivity{
         int id = item.getItemId();
         if (id == R.id.action_done) {
             finish();
+        }
+        if(id == R.id.action_add_tab) {
+            startActivity(new Intent(getApplicationContext(), AddForumTab.class));
         }
         return super.onOptionsItemSelected(item);
     }

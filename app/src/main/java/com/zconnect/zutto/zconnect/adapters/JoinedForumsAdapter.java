@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,11 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -24,6 +30,7 @@ import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -118,8 +125,22 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     counterItemFormat.setMeta(meta);
                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                     counterPush.pushValues();
-                    final Intent intent = new Intent(context, ExploreForumsActivity.class);
-                    context.startActivity(intent);
+                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("userType");
+                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Intent intent = new Intent(context, ExploreForumsActivity.class);
+                            if(dataSnapshot.getValue()!=null)
+                                intent.putExtra("userType", dataSnapshot.getValue().toString());
+                            context.startActivity(intent);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
             });
         }

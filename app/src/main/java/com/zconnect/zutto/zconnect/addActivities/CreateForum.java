@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,7 +41,9 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
@@ -54,11 +57,11 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +69,25 @@ import java.util.Map;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST;
 
-public class CreateForum extends AppCompatActivity {
+public class CreateForum extends BaseActivity {
+    public class ForumTabObject {
+        String name, UID;
+        ForumTabObject() {
+
+        }
+        ForumTabObject(String UID, String name) {
+            this.UID = UID;
+            this.name = name;
+        }
+
+        public String getUID() {
+            return UID;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
     String mtabName, uid;
     boolean editForumFlag;
     FrameLayout addForumIcon, done;
@@ -80,6 +101,13 @@ public class CreateForum extends AppCompatActivity {
     ProgressDialog progressDialog;
     TextView titleFirstMessage;
     LinearLayout deleteForumLL;
+
+    CustomSpinner forumTabsSpinner;
+    LinearLayout forumTabsSpinnerLayout;
+    ArrayList<ForumTabObject> forumTabsObjectList;
+    ArrayList<String> forumTabsNameList;
+    ArrayAdapter<String> forumTabsSpinnerAdapter;
+    private int init_opn_index;
 
     private String TAG = CreateForum.class.getSimpleName();
 
@@ -111,8 +139,8 @@ public class CreateForum extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
@@ -120,6 +148,7 @@ public class CreateForum extends AppCompatActivity {
         editForumFlag = Boolean.parseBoolean(getIntent().getStringExtra("flag"));
 
         DatabaseReference tabName= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabs").child(uid);
+        DatabaseReference tabsRef = tabName.getParent();
         tabName.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -137,8 +166,41 @@ public class CreateForum extends AppCompatActivity {
         titleFirstMessage = (TextView) findViewById(R.id.title_first_msg_create_forum_alert);
         done = (FrameLayout) findViewById(R.id.layout_done_content_create_forum);
         deleteForumLL = (LinearLayout) findViewById(R.id.delete_foruml_layout);
+        forumTabsSpinner = findViewById(R.id.spinner_forum_tab);
+        forumTabsSpinnerLayout = findViewById(R.id.spinner_forum_tab_layout);
+        forumTabsNameList = new ArrayList<>();
+        forumTabsObjectList = new ArrayList<>();
         intentHandle = new IntentHandle();
         mStorage = FirebaseStorage.getInstance().getReference();
+
+        tabsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int i = 0;
+                for(DataSnapshot shot : dataSnapshot.getChildren())
+                {
+                    if(uid.equals(shot.getKey()))
+                    {
+                        init_opn_index = i;
+                    }
+                    i++;
+                    forumTabsObjectList.add(new ForumTabObject(shot.getKey(), shot.child("name").getValue().toString()));
+                    forumTabsNameList.add(shot.child("name").getValue().toString());
+                }
+                forumTabsSpinnerAdapter.notifyDataSetChanged();
+                forumTabsSpinner.setSelection(init_opn_index);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        forumTabsSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, forumTabsNameList);
+        forumTabsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        forumTabsSpinner.setAdapter(forumTabsSpinnerAdapter);
+
         addForumIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,6 +237,12 @@ public class CreateForum extends AppCompatActivity {
                     {
                         progressDialog.setMessage("Creating forum");
                         progressDialog.show();
+
+                        if(forumTabsSpinner.getSelectedItem()!=null)
+                        {
+                            uid = forumTabsObjectList.get(forumTabsSpinner.getSelectedItemPosition()).UID;
+                            mtabName = forumTabsNameList.get(forumTabsSpinner.getSelectedItemPosition());
+                        }
 
                         final String catName = addForumName.getText().toString();
                         final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
@@ -400,6 +468,8 @@ public class CreateForum extends AppCompatActivity {
                 }
             });
         } else {
+
+            forumTabsSpinnerLayout.setVisibility(View.GONE);
 
             getSupportActionBar().setTitle("Edit forum info");
             titleFirstMessage.setVisibility(View.GONE);

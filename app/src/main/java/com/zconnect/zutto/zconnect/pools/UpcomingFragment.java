@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,11 +19,9 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolAdapter;
 import com.zconnect.zutto.zconnect.pools.models.Pool;
 
-import java.util.ArrayList;
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+import java.util.ArrayList;
 
 public class UpcomingFragment extends Fragment {
 
@@ -32,17 +31,15 @@ public class UpcomingFragment extends Fragment {
     private RecyclerView recyclerView;
     private PoolAdapter adapter;
     private ValueEventListener upcomingPoolListener;
-
-    private String communityID;
+    private TextView noPools;
 
 
     public UpcomingFragment() {
         // Required empty public constructor
     }
 
-    public static UpcomingFragment newInstance(String communityID) {
+    public static UpcomingFragment newInstance() {
         UpcomingFragment frag = new UpcomingFragment();
-        frag.communityID = communityID;
         return frag;
     }
 
@@ -54,7 +51,7 @@ public class UpcomingFragment extends Fragment {
     }
 
     private void loadPoolList() {
-        Query query = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityID)).orderByChild(Pool.STATUS).equalTo(Pool.STATUS_UPCOMING);
+        Query query = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityReference)).orderByChild(Pool.STATUS).equalTo(Pool.STATUS_UPCOMING);
         query.addValueEventListener(upcomingPoolListener);
     }
 
@@ -63,27 +60,36 @@ public class UpcomingFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
         recyclerView = view.findViewById(R.id.recycleView);
+        noPools = view.findViewById(R.id.no_upcoming_pools);
         adapter = new PoolAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         defineListener();
-        loadPoolList();
-
-
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadPoolList();
     }
 
     private void defineListener() {
         upcomingPoolListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<Pool> arrayList = new ArrayList<>();
+                ArrayList<Pool> poolArrayList = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Pool newPool = child.getValue(Pool.class);
-                    newPool.setID(child.getKey());
-                    arrayList.add(newPool);
+                    if (newPool.isUpcoming()) {
+                        poolArrayList.add(newPool);
+                    }
                 }
-                adapter.addAll(arrayList);
+                if(poolArrayList.size()>0)
+                    noPools.setVisibility(View.GONE);
+                else
+                    noPools.setVisibility(View.VISIBLE);
+                adapter.addAll(poolArrayList);
             }
 
             @Override

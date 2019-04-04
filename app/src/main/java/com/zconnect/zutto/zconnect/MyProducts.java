@@ -76,8 +76,8 @@ public class MyProducts extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
@@ -284,8 +284,10 @@ public class MyProducts extends BaseActivity {
         //Set Product Price
         public void setPrice(String productPrice) {
             TextView post_price = (TextView) mView.findViewById(R.id.price);
-
-                post_price.setText("₹" + productPrice + "/-");
+                if(productPrice!=null)
+                    post_price.setText("₹" + productPrice + "/-");
+                else
+                    post_price.setText("ASKED");
 
             //"₹" + productPrice + "/-"
             Typeface ralewayMedium = Typeface.createFromAsset(mView.getContext().getAssets(), "fonts/Raleway-SemiBold.ttf");

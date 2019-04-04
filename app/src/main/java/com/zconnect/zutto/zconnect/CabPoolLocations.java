@@ -28,6 +28,7 @@ import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CabPoolLocationFormat;
 import com.zconnect.zutto.zconnect.adapters.CabPoolLocationRVAdapter;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
@@ -67,8 +68,8 @@ public class CabPoolLocations extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
@@ -99,9 +100,14 @@ public class CabPoolLocations extends BaseActivity {
         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
-                {
-                    fab.setVisibility(View.VISIBLE);
+                if(dataSnapshot.hasChild("userType")){
+                    if (dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN)){
+                        fab.setVisibility(View.VISIBLE);
+                    }else {
+                        fab.setVisibility(View.INVISIBLE);
+                    }
+                }else{
+                    fab.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -165,8 +171,11 @@ public class CabPoolLocations extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 locationsVector.clear();
                 for (DataSnapshot shot: dataSnapshot.getChildren()) {
+                    CabPoolLocationFormat cabPoolLocationFormat = new CabPoolLocationFormat();
                     try {
-                        locationsVector.add(shot.getValue(CabPoolLocationFormat.class));
+                        cabPoolLocationFormat = shot.getValue(CabPoolLocationFormat.class);
+                        cabPoolLocationFormat.setLocationUID(shot.getKey());
+                        locationsVector.add(cabPoolLocationFormat);
                     }catch (Exception e){}
 
                 }
@@ -183,8 +192,25 @@ public class CabPoolLocations extends BaseActivity {
             }
         };
 
-        cabPoolLocationRVAdapter = new CabPoolLocationRVAdapter(this,locationsVector);
-        locationRecyclerView.setAdapter(cabPoolLocationRVAdapter);
+        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild("userType")){
+                    UserItemFormat currentUser = dataSnapshot.getValue(UserItemFormat.class);
+                    cabPoolLocationRVAdapter = new CabPoolLocationRVAdapter(getApplicationContext(),locationsVector,currentUser.getUserType());
+                    locationRecyclerView.setAdapter(cabPoolLocationRVAdapter);
+                }else {
+                    cabPoolLocationRVAdapter = new CabPoolLocationRVAdapter(getApplicationContext(),locationsVector,UsersTypeUtilities.KEY_VERIFIED);
+                    locationRecyclerView.setAdapter(cabPoolLocationRVAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     @Override

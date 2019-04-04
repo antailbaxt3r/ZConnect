@@ -20,34 +20,19 @@
         android:orientation="vertical">
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@color/storeroom_ask">
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/postImg"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ask_product_circle"/>
+            android:layout_height="200dp">
             <ImageButton
                 android:id="@+id/imageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/baseline_add_a_photo_black_36"
-                android:backgroundTint="#33ffff"
+                android:backgroundTint="@color/secondaryText2"
                 android:textSize="70sp"
                 android:textStyle="bold"
                 android:textColor="@color/storeroom_ask"
                 android:layout_gravity="center"
                 android:visibility="visible"/>
         </FrameLayout>
-        <!--<ImageButton-->
-            <!--android:id="@+id/imageButton"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="200dp"-->
-            <!--android:background="@drawable/dashed_border"-->
-            <!--android:scaleType="centerCrop"-->
-            <!--android:contentDescription="Product image"/>-->
-
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/name"
             android:layout_width="match_parent"

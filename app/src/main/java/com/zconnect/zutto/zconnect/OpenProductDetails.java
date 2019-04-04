@@ -120,8 +120,8 @@ public class OpenProductDetails extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
         ralewayBold = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Raleway-Bold.ttf");
@@ -484,12 +484,13 @@ public class OpenProductDetails extends BaseActivity {
                     if(dataSnapshot.hasChild("Image"))
                     {
                         askText.setVisibility(View.GONE);
+                        productImage.setVisibility(VISIBLE);
                         mImageUri = dataSnapshot.child("Image").getValue().toString();
                         setImage(OpenProductDetails.this, dataSnapshot.child("ProductName").getValue().toString(), dataSnapshot.child("Image").getValue().toString(), productImage);
                     }
                     else
                     {
-                        productImage.setImageDrawable(getApplicationContext().getDrawable(R.drawable.ask_default_image));
+                        productImage.setVisibility(View.GONE);
                         askText.setVisibility(VISIBLE);
                         askText.setText(productName.getText());
                         progressBar.setVisibility(View.GONE);

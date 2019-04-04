@@ -79,6 +79,9 @@ public class LogoFlashActivity extends BaseActivity {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         } catch (Exception ignore) {
         }
+
+
+
         Fresco.initialize(this);
         FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_logo_flash);
@@ -89,11 +92,6 @@ public class LogoFlashActivity extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
-//            copyUserPointsToUserPointsNum();
-//            removeJustJoinedNotifFromHome();
-//            countCommunityMembers();
-//            countInfoneCatMembers();
-//            setUserPointsInExistingUsers();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
             mDatabase.addValueEventListener(new ValueEventListener() {
@@ -102,6 +100,7 @@ public class LogoFlashActivity extends BaseActivity {
                     if (dataSnapshot.hasChild("bgUrl")) {
                         bgImage.setImageURI(Uri.parse(dataSnapshot.child("bgUrl").getValue(String.class)));
                     } else {
+//                        todo
                         bgColor.setVisibility(View.GONE);
                         bgImage.setBackground(null);
                     }
@@ -380,31 +379,31 @@ public class LogoFlashActivity extends BaseActivity {
     }
 
     //script to copy userPoints to userPointsNum
-    public static void copyUserPointsToUserPointsNum() {
-        Log.i("PSYCHO", "started");
-        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot shot : dataSnapshot.getChildren())
-                {
-                    if(shot.hasChild("userPoints"))
-                    {
-                        usersRef.child(shot.getKey()).child("userPointsNum").setValue(Integer.parseInt(shot.child("userPoints").getValue().toString()));
-                    }
-                    else
-                    {
-                        Log.i("PSYCHO", "no user points " + shot.getKey());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    public static void copyUserPointsToUserPointsNum() {
+//        Log.i("PSYCHO", "started");
+//        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+//        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot shot : dataSnapshot.getChildren())
+//                {
+//                    if(shot.hasChild("userPoints"))
+//                    {
+//                        usersRef.child(shot.getKey()).child("userPointsNum").setValue(Integer.parseInt(shot.child("userPoints").getValue().toString()));
+//                    }
+//                    else
+//                    {
+//                        Log.i("PSYCHO", "no user points " + shot.getKey());
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 
     //script to remove just joined community notificatin

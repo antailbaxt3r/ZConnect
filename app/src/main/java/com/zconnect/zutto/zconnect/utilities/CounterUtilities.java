@@ -164,13 +164,24 @@ public class CounterUtilities {
     public static final String KEY_NOTICES_DELETE_NOTICE = "deleteNotice";
 
 
-    //SHOPS
+    //Shops
     public static final String KEY_SHOPS_OPEN = "shopsOpen";
 
     public static final String KEY_SHOPS_MY_ORDERS_OPEN = "shopsMyOrdersOpen";
 
+    public static final String KEY_SHOPS_PAY_BUTTON_CLICK = "shopsMakePayment";
 
-    //recents
+    public static final String KEY_SHOPS_PAYMENT_SUCCESS = "shopsPaymentSuccess";
+
+    public static final String KEY_SHOPS_PAYMENT_ERROR = "shopsPaymentError";
+
+    public static final String KEY_SHOPS_POOL_OPEN_ACTIVE = "shopsPoolOpenActive";
+
+    public static final String KEY_SHOPS_POOL_OPEN_UPCOMING = "shopsPoolOpenUpcoming";
+
+    public static final String KEY_SHOPS_ORDER_OPEN = "shopsOrderOpen";
+
+
     //checked
     public static final String KEY_RECENTS_ADD_STATUS = "recentsAddStatus";
     //checked

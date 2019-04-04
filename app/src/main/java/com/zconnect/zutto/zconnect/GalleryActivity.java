@@ -60,8 +60,8 @@ public class GalleryActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-            getWindow().setStatusBarColor(colorPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
         }
         _images = (ArrayList<String>) getIntent().getSerializableExtra(EXTRA_NAME);
         Assert.assertNotNull(_images);
@@ -104,7 +104,7 @@ public class GalleryActivity extends BaseActivity {
             View itemView = _inflater.inflate(R.layout.pager_gallery_item, container, false);
             container.addView(itemView);
 
-            // Get the border size to show around each image
+            // Get the border_outline size to show around each image
             int borderSize = _thumbnails.getPaddingTop();
 
             // Get the size of the actual thumbnail image

@@ -61,8 +61,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     private ProgressDialog mProgress;
 //    @BindView(R.id.btn_google_sign_in)
 //    Button mGoogleSignInBtn;
-    @BindView(R.id.btn_guest_login)
-    Button mGuestLogInBtn;
     @BindView(R.id.layout_google_sign_in)
     LinearLayout mGoogleSignInLayout;
     @BindView(R.id.text_google_sign_in)
@@ -97,9 +95,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-        mGuestLogInBtn.setOnClickListener(this);
-        mGuestLogInBtn.setVisibility(View.GONE);
 
         termsOfUseText.setOnClickListener(this);
 //        mGoogleSignInBtn.setOnClickListener(this);
@@ -248,14 +243,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
         }
     }
 
-    @SuppressLint("ApplySharedPref")
-    public void setGuestLoginPref(Boolean mode) {
-        SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
-        SharedPreferences.Editor editInfo = sharedPref.edit();
-        editInfo.putBoolean("mode", mode);
-        editInfo.commit();
-    }
-
     public void setCommunity(String communityName){
 
 
@@ -327,9 +314,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
             }
         });
 
-
-
-        setGuestLoginPref(false);
     }
 
     private void logout() {
@@ -346,10 +330,8 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.btn_google_sign_in: {
             case R.id.layout_google_sign_in: {
                 if (!isNetworkAvailable(getApplicationContext())) {
-//                    Snackbar snackbar = Snackbar.make(mGoogleSignInBtn, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
                     Snackbar snackbar = Snackbar.make(mGoogleSignInLayout, "No Internet. Can't Sign In.", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                     snackBarText.setTextColor(Color.WHITE);
@@ -362,13 +344,6 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                         Toast.makeText(this, "Please accept terms of use before signing in", Toast.LENGTH_SHORT).show();
                     }
                 }
-                break;
-            }
-            case R.id.btn_guest_login: {
-                Intent i = new Intent(LoginActivity.this,CommunitiesAround.class);
-                startActivity(i);
-                setGuestLoginPref(false);// need to work on this
-                finish(); /*Make Sure HomeActivity exists*/
                 break;
             }
             case R.id.terms_of_use: {

@@ -24,6 +24,7 @@ import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.IntentHandle;
 
 import java.io.UnsupportedEncodingException;
@@ -33,7 +34,7 @@ import java.util.Calendar;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
-public class ReferralCode extends AppCompatActivity {
+public class ReferralCode extends BaseActivity {
 
     private SimpleDraweeView referralCodeImage;
     private Button inviteButton;
@@ -66,8 +67,8 @@ public class ReferralCode extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
@@ -139,7 +140,7 @@ public class ReferralCode extends AppCompatActivity {
 //                                    screenshotUri = Uri.parse(path);
 
 //                                    shareIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-//                                    shareIntent.setType("image/png");
+//                                    shareIntent.setOfferType("image/png");
                                     shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
                                     progressDialog.dismiss();

@@ -14,10 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:padding="@dimen/padding_small">
             <FrameLayout
                 android:id="@+id/layout_forums_group_icon_row_forums_categories_not_joined"
                 android:layout_width="wrap_content"
@@ -36,95 +36,99 @@
                     android:src="@drawable/baseline_people_white_36"
                     android:layout_gravity="center"/>
             </FrameLayout>
-            <LinearLayout
-                android:id="@+id/forums_group_title_row_forums_categories_not_joined"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_toRightOf="@+id/layout_forums_group_icon_row_forums_categories_not_joined"
-                android:layout_marginStart="@dimen/margin_small"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/layout_forums_group_icon_row_forums_categories_not_joined">
                 <LinearLayout
+                    android:id="@+id/forums_group_title_row_forums_categories_not_joined"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
                     <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_weight="0.79"
                         android:layout_height="wrap_content">
-                        <TextView
-                            android:id="@+id/cat_name"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.9"
-                            android:layout_height="wrap_content"
-                            android:text="Cat Name"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textColor="@color/primaryText"
-                            android:textSize="18sp"/>
-                        <FrameLayout
-                            android:id="@+id/verified_forum_icon_layout"
-                            android:layout_width="0dp"
-                            android:layout_weight="0.1"
-                            android:minWidth="15dp"
-                            android:layout_height="15dp"
-                            android:layout_gravity="center"
-                            android:visibility="gone"
-                            android:layout_marginStart="@dimen/margin_x_small">
-                            <com.facebook.drawee.view.SimpleDraweeView
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/cat_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Forum Name"
+                                android:maxLines="1"
+                                android:maxWidth="210dp"
+                                android:ellipsize="end"
+                                android:textColor="@color/primaryText"
+                                android:textSize="16sp"/>
+                            <FrameLayout
+                                android:id="@+id/verified_forum_icon_layout"
                                 android:layout_width="15dp"
+                                android:minWidth="15dp"
                                 android:layout_height="15dp"
-                                android:background="@drawable/feature_circle"
-                                android:backgroundTint="@color/blue500"
-                                android:layout_gravity="center"/>
-                            <ImageView
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:background="@drawable/baseline_star_rate_white_18"
-                                android:layout_gravity="center"/>
-                        </FrameLayout>
+                                android:layout_gravity="center"
+                                android:visibility="visible"
+                                android:layout_marginStart="@dimen/margin_x_small">
+                                <com.facebook.drawee.view.SimpleDraweeView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/feature_circle"
+                                    android:backgroundTint="@color/blue500"
+                                    android:layout_gravity="center"/>
+                                <ImageView
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:background="@drawable/baseline_check_white_18"
+                                    android:layout_gravity="center"/>
+                            </FrameLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/forums_cat_not_joined_total_members"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.8"
+                                android:textColor="@color/secondaryText"
+                                android:ellipsize="end"
+                                style="@style/autoscroll"
+                                android:maxLines="1"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
                     </LinearLayout>
-                    <TextView
-                        android:layout_marginStart="5dp"
-                        android:id="@+id/forums_cat_last_message_timestamp"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.21"
-                        android:text="15:30 PM"
-                        android:textColor="@color/secondaryText"
-                        android:textSize="12sp"
-                        android:gravity="end"/>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/joinCategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/outline_add_circle_outline_white_36"
+                            android:background="@drawable/round_button_simple"
+                            android:text="Join"
+                            android:textSize="12sp"
+                            android:textColor="@color/colorPrimary"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:layout_gravity="end" />
+
+                    </RelativeLayout>
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:id="@+id/forums_cat_not_joined_last_message_with_username"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.8"
-                        android:textColor="@color/secondaryText"
-                        android:ellipsize="end"
-                        style="@style/autoscroll"
-                        android:maxLines="1"
-                        android:textSize="14sp" />
-                    <Button
-                        android:id="@+id/joinCategory"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.2"
-                        android:layout_height="24dp"
-                        android:src="@drawable/outline_add_circle_outline_white_36"
-                        android:background="@drawable/round_button_simple"
-                        android:text="Join"
-                        android:textSize="12sp"
-                        android:textColor="@color/colorPrimary"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_gravity="end" />
-                </LinearLayout>
-            </LinearLayout>
-        </RelativeLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="1px"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
             android:background="@color/secondaryText2"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

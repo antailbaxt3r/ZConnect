@@ -46,7 +46,6 @@ public class GlobalFunctions {
             public void onComplete(DatabaseError databaseError, boolean b,
                                    DataSnapshot dataSnapshot) {
                 // Transaction completed
-                Log.d("PSYCHO", "postTransaction:onComplete:" + databaseError);
             }
         });
     }

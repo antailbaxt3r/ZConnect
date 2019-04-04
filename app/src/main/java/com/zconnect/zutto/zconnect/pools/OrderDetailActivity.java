@@ -1,17 +1,23 @@
 package com.zconnect.zutto.zconnect.pools;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,40 +27,71 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolItemCartAdapter;
+import com.zconnect.zutto.zconnect.pools.models.Pool;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
-import com.zconnect.zutto.zconnect.pools.models.ShopOrder;
+import com.zconnect.zutto.zconnect.pools.models.Order;
+import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 
 import net.glxn.qrgen.android.QRCode;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class OrderDetailActivity extends BaseActivity {
 
     public static final String TAG = "OrderDetailActivity";
 
     private ImageView qr_image;
-    private String communityID,userUID;
-    private ShopOrder order;
+    private String userUID;
+    private Order order;
     private RecyclerView recyclerView;
     private PoolItemCartAdapter adapter;
-    private ValueEventListener poolItemListener,orderItemListener;
+    private ValueEventListener orderItemListener;
     private ArrayList<PoolItem> poolItems = new ArrayList<>();
-    private TextView orderStatus,userName,userEmail,userAmount;
+    private TextView orderStatus, userBillID, itemTotal, discountedTotal, poolName;
+//    private TextView discountTotal;
+    private ImageView orderStatusIcon;
+    private FrameLayout deliveredTag;
+    private RelativeLayout paymentFailedLayout, paymentProcessingLayout, paymentPendingLayout;
+    private LinearLayout paymentConfirmLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_detail);
         Bundle b = getIntent().getExtras();
+        setToolbar();
+        //activity main block with all valid parameters
+        if (toolbar != null) {
 
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBackPressed();
+                }
+            });
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
+            int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        }
         if (b != null) {
             if (b.containsKey("order")) {
-
-                order = ShopOrder.getShopOrder(b.getBundle("order"));
+                order = (Order) getIntent().getSerializableExtra("order");
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user == null) {
                     //TODO start login acitvity
@@ -62,38 +99,33 @@ public class OrderDetailActivity extends BaseActivity {
                 } else {
                     userUID = user.getUid();
                     //TODO set proper data from the preference
-                    communityID = "testCollege";
-
-                    setToolbar();
-                    //activity main block with all valid parameters
-                    if (toolbar != null) {
-
-                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    if(order==null)
+                    {
+                        String orderID = getIntent().getStringExtra("orderID");
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_MY_PARTICULAR_ORDER, communityReference, FirebaseAuth.getInstance().getUid(), orderID));
+                        ref.addValueEventListener(new ValueEventListener() {
                             @Override
-                            public void onClick(View view) {
-                                onBackPressed();
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                order = dataSnapshot.getValue(Order.class);
+                                attachID();
+                                setOrderQRView();
+                                loadItemView();
+                                invalidateOptionsMenu();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
                             }
                         });
-                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    else
+                    {
+                        attachID();
+                        setOrderQRView();
+                        loadItemView();
                     }
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
-                        int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-                        getWindow().setStatusBarColor(colorDarkPrimary);
-                        getWindow().setNavigationBarColor(colorPrimary);
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                    }
-
-                    attachID();
-                    setOrderQRView();
-                    loadItemView();
                 }
-
-
             } else {
                 Log.d(TAG, "onCreate : bundle does not contain newPool key finishing activity");
                 finish();
@@ -102,37 +134,98 @@ public class OrderDetailActivity extends BaseActivity {
             Log.d(TAG, "onCreate : null bundle finishing activity");
             finish();
         }
-
-
     }
 
     private void loadItemView() {
-        //setProgressBarView(View.VISIBLE, "Loading list\nplease wait..");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolItem.URL_POOL_ITEM,
-                communityID, order.getShopID(), order.getPoolID()));
+        poolName.setText(order.getPoolInfo().getName());
+        itemTotal.setText(String.format("%s%s",getResources().getString(R.string.Rs),String.valueOf(order.getTotalAmount())));
+//        discountTotal.setText(String.format("%s%s",getResources().getString(R.string.Rs),String.valueOf(order.getTotalAmount()-order.getDiscountedAmount())));
+        discountedTotal.setText(String.format("%s%s",getResources().getString(R.string.Rs),String.valueOf(order.getDiscountedAmount())));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(Order.URL_MY_ORDER_ITEM_LIST, communityReference, userUID, order.getOrderID()));
         Log.d(TAG, "loadItemView : ref " + ref.toString());
-        ref.addListenerForSingleValueEvent(poolItemListener);
+        ref.addListenerForSingleValueEvent(orderItemListener);
     }
 
     private void setOrderQRView() {
 
-        Bitmap myBitmap = QRCode.from(order.getRazorPayID()+"-"+userUID).bitmap();
-        qr_image.setImageBitmap(myBitmap);
+        if (order.getPaymentStatus().equals(Order.KEY_PAYMENT_FAIL)) {
+            paymentConfirmLayout.setVisibility(View.GONE);
+            paymentProcessingLayout.setVisibility(View.GONE);
+            paymentPendingLayout.setVisibility(View.GONE);
+            paymentFailedLayout.setVisibility(View.VISIBLE);
+        }
+        else if(order.getPaymentStatus().equals(Order.KEY_PAYMENT_PENDING)) {
+            paymentConfirmLayout.setVisibility(View.GONE);
+            paymentProcessingLayout.setVisibility(View.GONE);
+            paymentPendingLayout.setVisibility(View.VISIBLE);
+            paymentFailedLayout.setVisibility(View.GONE);
+        }
+        else if(order.getPaymentStatus().equals(Order.KEY_PAYMENT_PROCESSING))
+        {
+            paymentConfirmLayout.setVisibility(View.GONE);
+            paymentProcessingLayout.setVisibility(View.VISIBLE);
+            paymentPendingLayout.setVisibility(View.GONE);
+            paymentFailedLayout.setVisibility(View.GONE);
+        }
+        else if(order.getPaymentStatus().equals(Order.KEY_PAYMENT_SUCCESS)) {
 
-        orderStatus.setText(order.getOrderStatus());
-        userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-        userEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-        userAmount.setText(String.format("Amount : %s%d",getResources().getString(R.string.Rs),order.getAmount()));
+            Bitmap myBitmap;
+            if (order.getUserBillID() != null) {
+                myBitmap = QRCode.from(order.getUserBillID()).bitmap();
+            }
+            //delete this else after cleaning database
+            else {
+                Log.i(TAG, "No userBillID");
+                myBitmap = QRCode.from("NULLNULLNULL").bitmap();
+            }
+            qr_image.setImageBitmap(myBitmap);
+
+            paymentConfirmLayout.setVisibility(View.VISIBLE);
+            paymentProcessingLayout.setVisibility(View.GONE);
+            paymentPendingLayout.setVisibility(View.GONE);
+            paymentFailedLayout.setVisibility(View.GONE);
+
+            if (order.getOrderStatus().equals(Order.KEY_ORDER_OUT_FOR_DELIVERY))
+            {
+                DateTime dateTime = new DateTime(order.getDeliveryTime(), DateTimeZone.forID("Asia/Kolkata"));
+                String text = "Order out for delivery on " + dateTime.toString("MMM") + " " + dateTime.getDayOfMonth();
+                orderStatus.setText(text);
+                orderStatusIcon.setImageDrawable(getApplicationContext().getDrawable(R.drawable.baseline_local_shipping_24));
+                orderStatusIcon.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorHighlightLight), PorterDuff.Mode.SRC_ATOP);
+                deliveredTag.setVisibility(View.GONE);
+            } else if(order.getOrderStatus().equals(Order.KEY_ORDER_DELIVERED))
+            {
+                DateTime dateTime = new DateTime(order.getDeliveryRcdTime(), DateTimeZone.forID("Asia/Kolkata"));
+                String text = "Order delivered on " + dateTime.toString("MMM") + " " + dateTime.getDayOfMonth() + ", "
+                        + (dateTime.getHourOfDay()>12?dateTime.getHourOfDay()-12:dateTime.getHourOfDay())
+                        +":"+(dateTime.getMinuteOfHour()<10?"0"+dateTime.getMinuteOfHour():dateTime.getMinuteOfHour())
+                        + (dateTime.getHourOfDay()<12?" AM":" PM");
+                orderStatus.setText(text);
+                orderStatusIcon.setImageDrawable(getApplicationContext().getDrawable(R.drawable.baseline_check_white_24));
+                orderStatusIcon.setColorFilter(getApplicationContext().getResources().getColor(R.color.colorHighlightLight), PorterDuff.Mode.SRC_ATOP);
+                deliveredTag.setVisibility(View.VISIBLE);
+            }
+            userBillID.setText(order.getUserBillID());
+        }
     }
 
     private void attachID() {
-        toolbar.setTitle(order.getPoolName());
+        toolbar.setTitle(order.getPoolInfo().getName());
+        poolName = findViewById(R.id.pool_name);
         qr_image = findViewById(R.id.qr_image);
         orderStatus = findViewById(R.id.order_status);
-        userName = findViewById(R.id.user_name);
-        userEmail = findViewById(R.id.user_email);
-        userAmount = findViewById(R.id.user_amount);
+        userBillID = findViewById(R.id.userBillIDText);
         recyclerView = findViewById(R.id.recycleView);
+        orderStatusIcon = findViewById(R.id.order_status_icon);
+        deliveredTag = findViewById(R.id.delivered_tag);
+        itemTotal = findViewById(R.id.item_total);
+//        discountTotal = findViewById(R.id.discount_total);
+        discountedTotal = findViewById(R.id.discounted_total);
+
+        paymentFailedLayout = findViewById(R.id.payment_failed_layout);
+        paymentConfirmLayout = findViewById(R.id.payment_confirm_layout);
+        paymentProcessingLayout = findViewById(R.id.payment_processing_layout);
+        paymentPendingLayout = findViewById(R.id.payment_pending_layout);
 
         adapter = new PoolItemCartAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -142,45 +235,16 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     private void defineListener() {
-        poolItemListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                poolItems.clear();
-                for (DataSnapshot items : dataSnapshot.getChildren()) {
-                    PoolItem dish = items.getValue(PoolItem.class);
-                    dish.setID(items.getKey());
-                    poolItems.add(dish);
-                }
-                loadOrderItemList();
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                //TODO on cancel
-            }
-        };
         orderItemListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               if(dataSnapshot != null){
-                  for(DataSnapshot item : dataSnapshot.getChildren()){
-                      PoolItem orderItem =null;
-                      for(int i = 0 ; i < poolItems.size();i++){
-                          if(poolItems.get(i).getID().compareTo(item.getKey())==0){
-                              orderItem = poolItems.get(i);
-                              orderItem.setQuantity(item.getValue(Integer.class));
-                              break;
-                          }
-                      }
-                      if(orderItem != null){
-                          adapter.insertAtEnd(orderItem);
-                      }
+                adapter.clearDataset();
+                for(DataSnapshot item : dataSnapshot.getChildren()){
+                  PoolItem orderItem = item.getValue(PoolItem.class);
+                  if(orderItem != null){
+                      adapter.insertAtEnd(orderItem);
                   }
-
-               } else {
-                   //TODO no such order
-               }
+                }
             }
 
             @Override
@@ -190,10 +254,52 @@ public class OrderDetailActivity extends BaseActivity {
         };
     }
 
-    private void loadOrderItemList() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(ShopOrder.URL_ORDER_ITEM_LIST,
-                communityID, order.getShopID(),order.getPoolPushID() ,order.getRazorPayID()));
-        Log.d(TAG, "loadItemView : ref " + ref.toString());
-        ref.addListenerForSingleValueEvent(orderItemListener);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.item_open_chat:
+                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(order.getPoolPushID()).toString());
+                intent.putExtra("type", "forums");
+                intent.putExtra("name", "Chat with seller");
+                intent.putExtra("tab", Pool.POOL_FORUM_TAB_ID);
+                intent.putExtra("key", order.getOrderID());
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_order_detail, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(order==null)
+        {
+            menu.findItem(R.id.item_open_chat).setVisible(false);
+        }
+        else
+        {
+            if(!order.getPaymentStatus().equals(Order.KEY_PAYMENT_SUCCESS))
+            {
+                //payment is successful but the orderStatus node has not been pushed into the database by firebase funciton
+                menu.findItem(R.id.item_open_chat).setVisible(false);
+            }
+            else if(order.getOrderStatus().equals(Order.KEY_ORDER_OUT_FOR_DELIVERY))
+            {
+                menu.findItem(R.id.item_open_chat).setVisible(true);
+            }
+            else
+            {
+                menu.findItem(R.id.item_open_chat).setVisible(false);
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 }

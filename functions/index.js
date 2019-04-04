@@ -58,27 +58,25 @@ exports.grantSignupReward = functions.database.ref('/communities/{communityID}/U
   var communityID = context.params.communityID;
 
   return admin.database().ref(`communities/${communityID}/Users1/${uid}/referredBy`)
-  .once('value').then(function(data) {
+  .once('value').then(data => {
     var referred_by_uid = data.val();
     if (referred_by_uid) {
       var points = admin.database().ref(`/communities/${communityID}/Users1/${referred_by_uid}/userPoints/`);
-      points.transaction(function (current_value) {
+      points.transaction(current_value => {
         return String((parseInt(current_value) || 0) + 50);
       });
 
       var points2 = admin.database().ref(`/communities/${communityID}/Users1/${uid}/userPoints/`);
-      points2.transaction(function (current_value) {
+      points2.transaction(current_value => {
         return String((parseInt(current_value) || 0) + 50);
       });
     }
-
      return console.log('Referal Added');
   });
-
-
 });
 
-exports.countInfoneMembers = functions.database.ref('/communities/{communityID}/infone/numbers/{contactID}/category').onCreate(
+exports.countInfoneMembers = functions.database.ref('/communities/{communityID}/infone/numbers/{contactID}/category')
+.onCreate(
 	(snap, context) => {
     console.log("snapshot val", snap.val());
     
@@ -170,34 +168,234 @@ exports.countForumMembers = functions.database.ref('/communities/{communityID}/f
 //for new apps
 exports.syncUserPointsAndUserPointsNum1 = functions.database.ref('/communities/{communityID}/Users1/{uid}/userPoints')
 .onUpdate((change, context) => {
-	const user_points_aft = parseInt(change.after.val());
-	const user_points_bef = parseInt(change.before.val());
-	const userPointsNumRef = change.after.ref.parent.child("userPointsNum");
-	return userPointsNumRef.transaction(current_value => {
-		// if(current_value)
-		// {
-			if(current_value <= user_points_bef)
-				return user_points_aft;
-			else
-				console.log("Error in sync");
-		// }
-	});
+		const user_points_aft = parseInt(change.after.val());
+		const user_points_bef = parseInt(change.before.val());
+		const userPointsNumRef = change.after.ref.parent.child("userPointsNum");
+		return userPointsNumRef.transaction(current_value => {
+			// if(current_value)
+			// {
+				if(current_value <= user_points_bef)
+					return user_points_aft;
+        else
+        {
+          console.log("Error in sync");
+          return current_value;
+        }
+			// }
+		});
 });
 
 //for old apps
 exports.syncUserPointsAndUserPointsNum2 = functions.database.ref('/communities/{communityID}/Users1/{uid}/userPointsNum')
 .onUpdate((change, context) => {
-	const user_points_num_aft = change.after.val();
-	const user_points_num_bef = change.before.val();
-	const userPointsRef = change.after.ref.parent.child("userPoints");
-	return userPointsRef.transaction(current_value => {
-		// if(current_value)
-		// {
-			if(parseInt(current_value) <= user_points_num_bef)
-				return String(user_points_num_aft);
-			else
-				console.log("Error in sync " + parseInt(current_value) + " " + current_value + " " + user_points_num_bef);
-		// }
-	});
+		const user_points_num_aft = change.after.val();
+		const user_points_num_bef = change.before.val();
+		const userPointsRef = change.after.ref.parent.child("userPoints");
+		return userPointsRef.transaction(current_value => {
+			// if(current_value)
+			// {
+				if(parseInt(current_value) <= user_points_num_bef)
+					return String(user_points_num_aft);
+        else
+        {
+          console.log("Error in sync " + parseInt(current_value) + " " + current_value + " " + user_points_num_bef);
+          return parseInt(current_value);
+        }
+			// }
+		});
 });
 
+exports.getPayment = functions.database.ref('communities/{communityID}/features/shops/orders/current/{uid}/{orderID}/paymentGatewayID')
+.onCreate((snapshot, context) => {  
+	var request = require('request');
+
+  const communityID = context.params.communityID;
+  const uid = context.params.uid;
+  const orderID = context.params.orderID;
+
+  const paymentGatewayID = snapshot.val();
+  snapshot.ref.parent.child('paymentStatus').set("processing");
+  return snapshot.ref.parent.once('value', orderSnapshot => {
+    let orderObj = orderSnapshot.val();
+    const shopID = orderSnapshot.child("poolInfo/shopID").val();
+    const poolPushID = orderSnapshot.child("poolPushID").val();
+    const discountedAmount = orderSnapshot.child("discountedAmount").val();
+    request({
+        method: 'POST',
+        url: `https://rzp_live_pMQ3fHFcjSv6kP:NNQNMb0W2HGprUf6IkXV4oXG@api.razorpay.com/v1/payments/${paymentGatewayID}/capture`,
+        form: {
+          amount: parseInt(discountedAmount*1000/10)
+        }
+      }, (error, response, body) => {
+        console.log('Status:', response.statusCode);
+        console.log('Headers:', JSON.stringify(response.headers));
+        console.log('Response:', body);
+        if(response.statusCode === 200)
+        {
+           console.log("inside status 200");
+            snapshot.ref.root.child(`communities/${communityID}/Users1/${uid}`).once('value', userSnapshot => {
+              const userObjForForum = {
+                imageThumb: userSnapshot.child("imageURLThumbnail").val(),
+                name: userSnapshot.child("username").val(),
+                phoneNumber: userSnapshot.child("mobileNumber").val(),
+                userUID: uid,
+              };
+              const shopRef = snapshot.ref.root.child(`shops/shopDetails/${shopID}`);
+              snapshot.ref.root.child(`communities/${communityID}/features/forums/tabsCategories/shopPools/${poolPushID}/users/${uid}`)
+              .set(userObjForForum);
+              const timestampPaymentAfter = Date.now();
+              const orderStatus = "out for delivery";
+              orderObj = {...orderObj,
+                orderedBy: {
+                  UID: uid,
+                  Username: userSnapshot.child("username").val(),
+                  ImageThumb: userSnapshot.child("imageURLThumbnail").val(),
+                  phoneNumber: orderObj.phoneNumber,
+                },
+                timestampPaymentAfter,
+                orderStatus,
+                paymentStatus: "success",
+              };
+              orderSnapshot.ref.child('phoneNumber').remove();
+              const orderRefInsideShop = shopRef.child(`orders/current/${poolPushID}/${orderID}`);
+              orderRefInsideShop.set(orderObj);
+              const tempObj = {timestampPaymentAfter, orderStatus, paymentStatus: "success"};
+              snapshot.ref.parent.update(tempObj);
+              shopRef.child(`createdPools/current/${poolPushID}/totalOrders`)
+              .transaction(current_value => {
+                const userBillID = String(orderID.substr(-6)) + getThreeDigitString(current_value + 1);
+                orderRefInsideShop.child("userBillID").set(userBillID);
+                //set userBillID in the orderID node of users as well
+                snapshot.ref.parent.child("userBillID").set(userBillID);
+                return current_value + 1;
+              });
+            });
+          }
+        if(response.statusCode === 400)
+          {
+            const tempObj = {paymentStatus: "fail", timestampPaymentAfter: Date.now()};
+            snapshot.ref.parent.update(tempObj);
+          }
+      });
+  });
+});
+
+exports.createUpcomingPoolInCommunity = functions.database.ref('shops/shopDetails/{shopID}/createdPools/current/{poolPushID}')
+.onCreate((snapshot, context) => {
+  return snapshot.ref.parent.parent.parent.child("info/communityID").once('value', (communityIDSnapshot)=>{
+      const communityID = communityIDSnapshot.val();
+      return snapshot.ref.root.child(`communities/${communityID}/features/shops/pools/current/${context.params.poolPushID}`)
+            .set(snapshot.val());
+  });
+});
+
+exports.deleteActivePoolFromCommunity = functions.database.ref('shops/shopDetails/{shopID}/createdPools/current/{poolPushID}/status')
+.onUpdate((change, context) => {
+  if(change.after.val() === "paymentRequested")
+  {
+    const poolPushID = context.params.poolPushID;
+    return change.after.ref.parent.once('value', poolSnapshot => {
+
+      return poolSnapshot.ref.parent.parent.parent.child("info/communityID").once('value', communityIDSnapshot => {
+        poolSnapshot.ref.root.child(`communities/${communityIDSnapshot.val()}/features/shops/pools/current/${poolPushID}`)
+          .remove();
+        poolSnapshot.ref.root.child(`communities/${communityIDSnapshot.val()}/features/shops/pools/archive/${poolPushID}`)
+          .set(poolSnapshot.val());
+        poolSnapshot.ref.parent.parent.child("previousPools").child(poolPushID).set(poolSnapshot.val());
+        return poolSnapshot.ref.remove();
+      });
+    });
+  }
+  else 
+    return console.log("Nothing to do");
+});
+
+exports.changeOrderStatus = functions.database.ref('shops/shopDetails/{shopID}/orders/current/{poolPushID}/{orderID}/orderStatus')
+.onUpdate((change, context) => {
+  return change.after.ref.parent.parent.parent.parent.parent.child('info/communityID').once('value', communityIDSnapshot => {
+    return change.after.ref.parent.child('orderedBy').once('value', orderedBySnapshot => {
+      const uid = orderedBySnapshot.child('UID').val();
+      const communityID = communityIDSnapshot.val();
+      const orderID = context.params.orderID;
+      const userOrderRef = change.after.ref.root.child(`communities/${communityID}/features/shops/orders/current/${uid}/${orderID}`);
+      userOrderRef.child('orderStatus').set(change.after.val());
+      const timestamp = Date.now();
+      userOrderRef.child('deliveryRcdTime').set(timestamp);
+      change.after.ref.parent.child('deliveryRcdTime').set(timestamp);
+    });
+  });
+});
+
+exports.changePoolStatus = functions.database.ref('communities/{communityID}/features/shops/pools/current/{poolPushID}/status')
+.onUpdate((change, context) => {
+  return change.after.ref.parent.child('poolInfo/shopID').once('value', shopIDSnapshot => {
+    const shopID = shopIDSnapshot.val();
+    const poolPushID = context.params.poolPushID;
+    const shopPoolRef = change.after.ref.root.child(`shops/shopDetails/${shopID}/createdPools/current/${poolPushID}`);
+    shopPoolRef.child('status').set(change.after.val());
+  });
+});
+
+const getThreeDigitString = (num) => {
+  if(num < 10)
+    return "00" + num;
+  else if(num < 100)
+    return "0" + num;
+  else
+    return String(num);
+}
+
+//New functions for integrity of userForums in features-> forums
+
+exports.addForumToUserForum = functions.database.ref('/communities/{communityID}/features/forums/categories/{categoryID}/users/{userPushID}')
+.onCreate((snapshot, context) => {
+    return snapshot.ref.parent.parent.once('value', (forumDetailsSnapshot) =>{
+        //const userKey = snapshot.key;
+        let obj = forumDetailsSnapshot.val();
+        delete obj['users'];
+        return snapshot.ref.parent.parent.parent.parent.child(`userForums/${context.params.userPushID}/joinedForums/${context.params.categoryID}`)
+            .set(obj);
+    });
+});
+
+exports.updateForumToUserForum = functions.database.ref('/communities/{communityID}/features/forums/categories/{categoryID}')
+.onUpdate((change, context) =>{
+      let obj = change.after.val();
+      delete obj['users'];
+      return change.after.ref.parent.parent.child(`userForums`).once('value', usersSnapshot => {
+        usersSnapshot.forEach((user) => {
+          if(user.hasChild(context.params.categoryID))
+          {
+            return change.after.ref.parent.parent.child(`userForums/${user.key}/joinedForums/${context.params.categoryID}`)
+            .set(obj);
+          }
+          else
+            return console.log("NONE");
+      });
+    });
+  });
+
+exports.deleteForumFromUserForum = functions.database.ref('/communities/{communityID}/features/forums/categories/{categoryID}/users/{userPushID}')
+.onDelete((snap, context) =>{
+  const userID = snap.ref;
+  return userID.parent.parent.parent.parent.child(`userForums/${context.params.userPushID}/joinedForums/${context.params.categoryID}`)
+  .remove();
+});
+
+exports.copyOrderReceivingStatusInShopDetail = functions.database.ref('/communities/{communityID}/features/shops/pools/current/{poolPushID}/orderReceivingStatus')
+.onUpdate((change, context) => {
+  return change.after.ref.parent.child('poolInfo/shopID').once('value', shopIDSnapshot => {
+    const shopID = shopIDSnapshot.val();
+    return change.after.ref.root.child(`shops/shopDetails/${shopID}/createdPools/current/${context.params.poolPushID}/orderReceivingStatus`)
+    .set(change.after.val());
+  });
+});
+
+exports.copyOrderReceivingStatusInShopFeature = functions.database.ref('shops/shopDetails/{shopID}/createdPools/current/{poolPushID}/orderReceivingStatus')
+.onUpdate((change, context) => {
+  return change.after.ref.parent.parent.parent.parent.child('info/communityID').once('value', communityIDSnapshot => {
+    const communityID = communityIDSnapshot.val();
+    return change.after.ref.root.child(`communities/${communityID}/features/shops/pools/current/${context.params.poolPushID}/orderReceivingStatus`)
+    .set(change.after.val());
+  });
+});

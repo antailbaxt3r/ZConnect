@@ -7,13 +7,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toolbar;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
@@ -35,7 +32,6 @@ public class PoolActivity extends BaseActivity {
     private ActiveFragment activePoolFragment;
     private UpcomingFragment upcomingPoolFragment;
 
-    private String communityID;
     private ArrayList<Fragment> fragmentsList = new ArrayList<>();
 
     @Override
@@ -43,7 +39,6 @@ public class PoolActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pool);
         //TODO  set proper commmunityID from preference
-        communityID = "testCollege";
 
         setToolbar();
         attachID();
@@ -66,8 +61,8 @@ public class PoolActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
@@ -97,7 +92,8 @@ public class PoolActivity extends BaseActivity {
             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
             counterPush.pushValues();
 
-            startActivity(new Intent(this, PoolPreviousOrderActivity.class));
+            Intent i = new Intent(this, MyOrdersActivity.class);
+            startActivity(i);
         }
         return true;
     }
@@ -110,8 +106,8 @@ public class PoolActivity extends BaseActivity {
         tabLayout = findViewById(R.id.pools_tab);
 
         //setting up fragments
-        activePoolFragment = ActiveFragment.newInstance(communityID);
-        upcomingPoolFragment = UpcomingFragment.newInstance(communityID);
+        activePoolFragment = ActiveFragment.newInstance();
+        upcomingPoolFragment = UpcomingFragment.newInstance();
         fragmentsList.add(activePoolFragment);
         fragmentsList.add(upcomingPoolFragment);
 

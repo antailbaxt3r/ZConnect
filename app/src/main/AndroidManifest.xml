@@ -43,8 +43,7 @@
         <!-- Razon pay API -->
         <meta-data
             android:name="com.razorpay.ApiKey"
-            android:value="rzp_test_KXsdrhWl1Mp45s" />
-
+            android:value="rzp_live_pMQ3fHFcjSv6kP" />
         <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.
      See README(https://goo.gl/l4GJaQ) for more.
@@ -59,7 +58,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
-
 
         <!-- On start activity in full screen mode -->
         <activity
@@ -101,7 +99,7 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".OpenEventDetail"
             android:label="Events"
@@ -284,6 +282,7 @@
         <activity
             android:name=".CabPoolListOfPeople"
             android:label="@string/title_activity_cab_list_of_people"
+            android:parentActivityName=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -312,6 +311,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <service android:name=".commonModules.instantIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -368,7 +368,6 @@
             android:label="@string/infone_search"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.SEARCH" /> -->
             <!-- </intent-filter> -->
@@ -459,23 +458,20 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Links" />
-
         <activity
             android:name=".pools.PoolActivity"
             android:label="Shop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".pools.PoolItemDetailActivity"
+        <activity android:name=".pools.UpcomingPoolDetailsActivity"
             android:label="Order Details"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".pools.AddPoolItemActivity"
+            android:name=".pools.ActivePoolDetailsActivity"
             android:label="Add Items"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LeaderBoard"
             android:label="@string/title_activity_leader_board"
@@ -501,27 +497,31 @@
             android:label="Terms and Conditions"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".pools.PoolBillActivity"
+        <activity
+            android:name=".pools.PoolBillActivity"
             android:label="Bill"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".pools.PaymentCaptureActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".pools.PaymentCaptureActivity"
             android:label="Payment"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".pools.PoolPreviousOrderActivity"
+            android:name=".pools.MyOrdersActivity"
             android:label="Previous Orders"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".pools.OrderDetailActivity"
-            android:label="Choose items"
+            android:label="Order Details"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".addActivities.AddForumTab"
+            android:label="Add a Forums Tab"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

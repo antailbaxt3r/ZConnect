@@ -74,7 +74,7 @@ public class LeaderBoard extends BaseActivity {
         Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mActionBarToolbar);
 
-        mActionBarToolbar.setTitle("Community Leaders");
+        mActionBarToolbar.setTitle("Leader Board");
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -91,7 +91,7 @@ public class LeaderBoard extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
@@ -120,7 +120,6 @@ public class LeaderBoard extends BaseActivity {
                 Integer i=0;
                 if(lastUserUID==null)
                 {
-                    Log.i("EAST4", "last user id is null");
                     leaderBoardItemFormats.clear();
                 }
                 Vector<LeaderBoardItemFormat> leaderBoardItemFormatsTemp = new Vector<>();
@@ -135,7 +134,6 @@ public class LeaderBoard extends BaseActivity {
                         }
                         LeaderBoardItemFormat tempLeaderBoardItemFormat = new LeaderBoardItemFormat();
                         if (shot.hasChild("userUID") && shot.hasChild("userPointsNum")) {
-                            Log.i("EAST4", i + " " + shot.child("username").getValue(String.class));
                             tempLeaderBoardItemFormat.setUserPointsNum(shot.child("userPointsNum").getValue(Integer.class));
                             tempLeaderBoardItemFormat.setUserUID(shot.child("userUID").getValue().toString());
                             tempLeaderBoardItemFormat.setName(shot.child("username").getValue().toString());
@@ -144,18 +142,12 @@ public class LeaderBoard extends BaseActivity {
                         }
 
                     } catch (Exception e) {
-                        Log.i("EAST4 ", e.getMessage());
                         e.printStackTrace();
                     }
 
                 }
                 Collections.reverse(leaderBoardItemFormatsTemp);
                 leaderBoardItemFormats.addAll(leaderBoardItemFormatsTemp);
-                if(lastUserUID!=null)
-                {
-                    Log.i("EAST4", lastUserUID + " " + lastUserPointsNum);
-
-                }
                 if(currentUserLayout.getVisibility() != View.VISIBLE)
                 {
                     currentUserLayout.setVisibility(View.GONE);
@@ -222,7 +214,8 @@ public class LeaderBoard extends BaseActivity {
         if (id == R.id.action_info) {
 
             AlertDialog alertDialog = new AlertDialog.Builder(LeaderBoard.this).create();
-            alertDialog.setMessage("The more you contribute to your community by adding content, the higher position you get in the leader board");
+            alertDialog.setMessage("The more you contribute to your community by adding content, the more points you earn and the higher position you go in the leader board." +
+                    "\n\nComing soon: Use the points to redeem special, exclusive and exciting offers!");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {

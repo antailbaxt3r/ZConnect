@@ -40,6 +40,7 @@ import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -51,7 +52,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class AddInfoneContact extends AppCompatActivity {
+public class AddInfoneContact extends BaseActivity {
 
     String catId,catName,catImageURL;
     int totalContacts;
@@ -102,8 +103,8 @@ public class AddInfoneContact extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-            getWindow().setStatusBarColor(colorDarkPrimary);
-            getWindow().setNavigationBarColor(colorPrimary);
+//            getWindow().setStatusBarColor(colorDarkPrimary);
+//            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
         mProgress = new ProgressDialog(this);
@@ -112,14 +113,26 @@ public class AddInfoneContact extends AppCompatActivity {
         catName = getIntent().getExtras().getString("catName");
         catImageURL = getIntent().getExtras().getString("catImageURL");
         totalContacts = getIntent().getIntExtra("totalContacts",0);
-
+        String contactName = getIntent().getStringExtra("contactName");
+        String contactNumber = getIntent().getStringExtra("contactNumber");
+//        Bitmap contactPhoto = (Bitmap) getIntent().getParcelableExtra("contactPhoto");
+//        Uri photoUri=null;
+        addImage = (SimpleDraweeView) findViewById(R.id.image_add_infone_add);
+//        if(contactPhoto!=null)
+//        {
+//            ByteArrayOutputStream out = new ByteArrayOutputStream();
+////        contactPhoto.compress(Bitmap.CompressFormat.JPEG, 50, out);
+//            String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), contactPhoto, "Title", null);
+//            photoUri = Uri.parse(path);
+//            addImage.setImageURI(photoUri);
+//        }
         nameEt = (MaterialEditText) findViewById(R.id.name_et_infone_add);
+        nameEt.setText(contactName);
         phone1Et = (MaterialEditText) findViewById(R.id.phone_et_infone_add);
+        phone1Et.setText(contactNumber);
         phone2Et = (MaterialEditText) findViewById(R.id.phone2_et_infone_add);
         descEt = (MaterialEditText) findViewById(R.id.desc_et_infone_add);
         saveButton = (Button) findViewById(R.id.btn_save_infone_add);
-        addImage = (SimpleDraweeView) findViewById(R.id.image_add_infone_add);
-
         communitySP = this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 

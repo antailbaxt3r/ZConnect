@@ -9,4 +9,10 @@
         android:orderInCategory="2"
         android:name="Done"
         app:showAsAction="ifRoom" />
+    <item
+        android:title="Add a tab"
+        android:id="@+id/action_add_tab"
+        android:orderInCategory="3"
+        android:icon="@drawable/baseline_add_white_24"
+        app:showAsAction="ifRoom"/>
 </menu>

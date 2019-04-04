@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_filter_products"
+        android:icon="@drawable/baseline_filter_list_white_24"
+        android:title="Filter"
+        android:orderInCategory="0"
+        app:showAsAction="always"/>
+    <item
         android:title="My Products"
         android:id="@+id/action_storeroom"
         android:orderInCategory="100"

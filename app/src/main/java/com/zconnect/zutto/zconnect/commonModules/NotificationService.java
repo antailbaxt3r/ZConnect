@@ -25,13 +25,7 @@ import android.support.annotation.RequiresApi;
 
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.CabPoolAll;
@@ -46,35 +40,12 @@ import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.ShortlistedPeopleList;
 import com.zconnect.zutto.zconnect.VerificationPage;
-import com.zconnect.zutto.zconnect.itemFormats.Event;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Random;
-
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CABPOOL_JOIN;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_CAB_POOL_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENTS_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_EVENT_BOOST;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_FORUMS;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_FORUMS_JOIN;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_IMAGE_NOTIF;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_LIKE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_LOVE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_MESSAGES_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_MESSAGES_CHAT_DELETE;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_POST_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_PRODUCT_CHAT;
-import static com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities.KEY_STOREROOM;
 
 public class NotificationService extends FirebaseMessagingService {
 
@@ -114,21 +85,25 @@ public class NotificationService extends FirebaseMessagingService {
 
         data = remoteMessage.getData();
 
-        try {
-            if (data.containsKey("Type")) {
-                final String type = data.get("Type").toString();
 
-                if (data.containsKey("userKey")) {
+        if (data.containsKey("Type")) {
+            final String type = data.get("Type").toString();
+
+            if (data.containsKey("userKey")) {
+                try {
                     final String userKey = data.get("userKey").toString();
                     if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userKey)) {
                         handleNotifications(type);
                     }
-                } else {
+
+                }catch (Exception e){
                     handleNotifications(type);
                 }
-            }
-        }catch (Exception e){}
 
+            } else {
+                handleNotifications(type);
+            }
+        }
 
     }
 
@@ -182,6 +157,8 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD: noticeAddNotification();
                 break;
+            case NotificationIdentifierUtilities.KEY_NOTIFICATION_ORDER_REACHED: orderReachedNotification();
+                break;
         }
 
     }
@@ -191,6 +168,61 @@ public class NotificationService extends FirebaseMessagingService {
         super.onNewToken(s);
     }
 
+    private void orderReachedNotification() {
+
+        final String communityReference = data.get("communityReference").toString();
+
+        final String shopName = data.get("shopName").toString();
+        final String poolName = data.get("itemName").toString();
+        final String poolPushKey = data.get("itemKey").toString();
+        final String poolImage = data.get("itemImage").toString();
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,FORUMS_CHANNEL_ID);
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText("Click to check more details regarding your order").setBigContentTitle(shopName + " order arrived");
+
+        Bitmap bitmap = null;
+
+        try {
+            bitmap = getRoundedBitmap(poolImage);
+        }catch (Exception e){}
+
+
+        if (bitmap!=null){
+            mBuilder.setLargeIcon(bitmap);
+        }
+
+
+        mBuilder.setSmallIcon(R.drawable.ic_forum_white_18dp)
+                .setStyle(style)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                .setContentTitle(shopName + " order arrived")
+                .setContentText("Click to check more details regarding your order");
+
+        Intent intent0 = new Intent(NotificationService.this,HomeActivity.class);
+        intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+
+        Intent intent = new Intent(NotificationService.this, ChatActivity.class);
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/"+ communityReference+"/features/forums/categories/"+poolPushKey);
+        intent.putExtra("type","forums");
+        intent.putExtra("name", poolName);
+        intent.putExtra("tab","shopPools");
+        intent.putExtra("key",poolPushKey);
+
+
+        Intent[] intents = new Intent[]{intent0,intent};
+
+
+        PendingIntent intent1 = PendingIntent.getActivities(NotificationService.this, 0, intents, PendingIntent.FLAG_ONE_SHOT);
+        mBuilder.setContentIntent(intent1);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(21, mBuilder.build());
+    }
 
     private void noticeAddNotification() {
         final String communityName = data.get("communityName").toString();
@@ -493,6 +525,8 @@ public class NotificationService extends FirebaseMessagingService {
 
 
     private void postChatNotification() {
+
+
         final String communityName = data.get("communityName").toString();
         final String communityReference = data.get("communityReference").toString();
 
@@ -503,6 +537,9 @@ public class NotificationService extends FirebaseMessagingService {
         final String postKey = data.get("postKey").toString();
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText(userName + " commented on your post").setBigContentTitle(communityName);
+
 
         Bitmap bitmap = null;
 
@@ -514,9 +551,6 @@ public class NotificationService extends FirebaseMessagingService {
         if (bitmap!=null){
             mBuilder.setLargeIcon(bitmap);
         }
-
-        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-        style.bigText(userName + " commented on your post").setBigContentTitle(communityName);
 
         mBuilder.setSmallIcon(R.drawable.ic_message_white_18dp)
                 .setStyle(style)
@@ -530,9 +564,10 @@ public class NotificationService extends FirebaseMessagingService {
 
         Intent intent = new Intent(NotificationService.this, ChatActivity.class);
 
-        intent.putExtra("ref",FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(postKey).toString());
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/"+ communityReference + "/home/"+postKey);
         intent.putExtra("key",postKey);
         intent.putExtra("type","post");
+
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
 
@@ -582,7 +617,7 @@ public class NotificationService extends FirebaseMessagingService {
         intent.putExtra("type","events");
         intent.putExtra("key",eventKey);
         intent.putExtra("name",eventName);
-        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventKey).toString());
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/" + communityReference + "/features/events/activeEvents"+ eventKey);
 
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
@@ -633,7 +668,7 @@ public class NotificationService extends FirebaseMessagingService {
         Intent intent = new Intent(NotificationService.this, ChatActivity.class);
         intent.putExtra("type","cabPool");
         intent.putExtra("key",cabKey);
-        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs").child(cabKey).toString());
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/"+ communityReference +"/features/cabPool/allCabs/"+cabKey);
 
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
@@ -684,7 +719,7 @@ public class NotificationService extends FirebaseMessagingService {
         intent.putExtra("type","storeroom");
         intent.putExtra("key",productKey);
         intent.putExtra("name",productName);
-        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/" + communityReference +"/features/storeroom/products/"+productKey);
 
 
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -708,6 +743,8 @@ public class NotificationService extends FirebaseMessagingService {
         final String forumName = data.get("forumName").toString();
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,FORUMS_CHANNEL_ID);
+        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
+        style.bigText(userName + " posted in " + forumName).setBigContentTitle(communityName);
 
         Bitmap bitmap = null;
 
@@ -720,14 +757,12 @@ public class NotificationService extends FirebaseMessagingService {
             mBuilder.setLargeIcon(bitmap);
         }
 
-        NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
-        style.bigText(userName + " posted in " + forumName).setBigContentTitle(communityName);
 
             mBuilder.setSmallIcon(R.drawable.ic_forum_white_18dp)
                     .setStyle(style)
                     .setAutoCancel(true)
                     .setSound(defaultSoundUri)
-                    .setPriority(Notification.PRIORITY_DEFAULT)
+                    .setPriority(Notification.PRIORITY_HIGH)
                     .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                     .setContentTitle(communityName)
                     .setSubText(userName + ": "+ forumMessage)
@@ -738,7 +773,7 @@ public class NotificationService extends FirebaseMessagingService {
 
 
             Intent intent = new Intent(NotificationService.this, ChatActivity.class);
-            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(forumKey).toString());
+            intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/"+ communityReference+"/features/forums/categories/"+forumKey);
             intent.putExtra("type","forums");
             intent.putExtra("name", forumName);
             intent.putExtra("tab",forumCategoryUID);
@@ -806,6 +841,7 @@ public class NotificationService extends FirebaseMessagingService {
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
 
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,PERSONAL_CHANNEL_ID);
         NotificationCompat.BigTextStyle style = new android.support.v4.app.NotificationCompat.BigTextStyle();
         style.bigText("Hey! " + userName + " liked your profile").setBigContentTitle(communityName);
@@ -820,6 +856,7 @@ public class NotificationService extends FirebaseMessagingService {
             mBuilder.setLargeIcon(bitmap);
         }
 
+
         mBuilder.setSmallIcon(R.drawable.ic_thumb_up_white_24dp)
                 .setStyle(style)
                 .setAutoCancel(true)
@@ -827,6 +864,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setSound(defaultSoundUri)
                 .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
                 .setContentTitle(communityName)
+                .setSubText("Yolo")
                 .setContentText("Hey! " + userName + " liked your profile");
 
         Intent intent = new Intent(NotificationService.this, OpenUserDetail.class);
@@ -840,7 +878,6 @@ public class NotificationService extends FirebaseMessagingService {
 
 
     }
-
 
     private void infoneCategoryAddNotification(){
         final String communityName = data.get("communityName").toString();
@@ -931,7 +968,7 @@ public class NotificationService extends FirebaseMessagingService {
                 .setContentText(userName + " started a new forum " + forumName + " in " + forumCategory);
 
         Intent intent = new Intent(NotificationService.this, ChatActivity.class);
-        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(forumKey).toString());
+        intent.putExtra("ref", "https://zconnectmulticommunity.firebaseio.com/communities/" +communityReference+"/features/forums/categories/"+forumKey);
         intent.putExtra("type","forums");
         intent.putExtra("name", forumName);
         intent.putExtra("tab",forumCategoryUID);
@@ -950,54 +987,68 @@ public class NotificationService extends FirebaseMessagingService {
 
         final String communityName = data.get("communityName").toString();
         final String productName = data.get("productName").toString();
-        final String productPrice = data.get("productPrice").toString();
         final String productKey = data.get("productKey").toString();
-        final String productImage = data.get("productImage").toString();
-        final String productType = data.get("productType").toString()!=null ?
-                data.get("productType").toString() : ProductUtilities.TYPE_ADD_STR;
         final String userName = data.get("userName").toString();
         final String userImage = data.get("userImage").toString();
 
-        Bitmap bitmap = null;
-        try {
-            URL url = new URL(productImage);
-            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-        } catch(IOException e) {
-            System.out.println(e);
-        }
-
-        Bitmap bitmap2 = null;
-        try {
-            URL url = new URL(userImage);
-            bitmap2 = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-        } catch(IOException e) {
-            System.out.println(e);
-        }
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,COMMUNITY_CHANNEL_ID);
-
-        if(bitmap!=null) {
-            NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
-            style.bigPicture(bitmap).setSummaryText(userName + " is selling " + productName + " for ₹" + productPrice).setBigContentTitle(communityName);
-            mBuilder.setStyle(style);
-        }
-
-        if (bitmap2!=null){
-            mBuilder.setLargeIcon(bitmap2);
-        }
-
-        mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_24dp)
-                .setSound(defaultSoundUri)
-                .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
-                .setAutoCancel(true)
-                .setPriority(Notification.PRIORITY_DEFAULT)
-                .setContentTitle(communityName)
-                .setContentText(userName + " is selling " + productName + " for ₹" + productPrice);
-
         Intent intent = new Intent(NotificationService.this, OpenProductDetails.class);
+//This is for ask Product exception
 
-        intent.putExtra("key", productKey);
-        intent.putExtra("type", productType);
+        try {
+            final String productPrice = data.get("productPrice").toString();
+            final String productImage = data.get("productImage").toString();
+
+            Bitmap bitmap = null;
+            try {
+                URL url = new URL(productImage);
+                bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch(IOException e) {
+                System.out.println(e);
+            }
+
+            Bitmap bitmap2 = null;
+            try {
+                URL url = new URL(userImage);
+                bitmap2 = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch(IOException e) {
+                System.out.println(e);
+            }
+
+            if(bitmap!=null) {
+                NotificationCompat.BigPictureStyle style = new android.support.v4.app.NotificationCompat.BigPictureStyle();
+                style.bigPicture(bitmap).setSummaryText(userName + " is selling " + productName + " for ₹" + productPrice).setBigContentTitle(communityName);
+                mBuilder.setStyle(style);
+            }
+
+            if (bitmap2!=null){
+                mBuilder.setLargeIcon(bitmap2);
+            }
+
+            mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_24dp)
+                    .setSound(defaultSoundUri)
+                    .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                    .setAutoCancel(true)
+                    .setPriority(Notification.PRIORITY_DEFAULT)
+                    .setContentTitle(communityName)
+                    .setContentText(userName + " is selling " + productName + " for ₹" + productPrice);
+
+            intent.putExtra("key", productKey);
+            intent.putExtra("type", ProductUtilities.TYPE_ADD_STR);
+
+
+        }catch (Exception e){
+            mBuilder.setSmallIcon(R.drawable.ic_local_mall_white_24dp)
+                    .setSound(defaultSoundUri)
+                    .setColor(ContextCompat.getColor(NotificationService.this, R.color.colorPrimary))
+                    .setAutoCancel(true)
+                    .setPriority(Notification.PRIORITY_DEFAULT)
+                    .setContentTitle(communityName)
+                    .setContentText(userName + " is asking for " + productName);
+
+            intent.putExtra("key", productKey);
+            intent.putExtra("type", ProductUtilities.TYPE_ASK_STR);
+        }
 
         PendingIntent intent1 = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(intent1);
@@ -1074,8 +1125,6 @@ public class NotificationService extends FirebaseMessagingService {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(4, mBuilder.build());
     }
-
-
 
     private void productShortlistNotification(){
 

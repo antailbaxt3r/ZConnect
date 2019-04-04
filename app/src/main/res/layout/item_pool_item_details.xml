@@ -1,62 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginBottom="8dp"
-    android:elevation="4dp"
-    android:padding="8dp"
-    app:cardCornerRadius="8dp">
-
-    <LinearLayout
+    android:layout_margin="@dimen/margin_medium"
+    android:background="@color/home_background">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
-
+        android:layout_height="90dp">
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/item_image"
-            android:layout_width="match_parent"
-            android:layout_height="160dp" />
-
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:background="@drawable/default_pool_item_bg"/>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp">
-
-            <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/item_image"
+            android:layout_marginStart="@dimen/margin_small">
+            <TextView
+                android:id="@+id/item_name"
+                android:textSize="14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/item_name"
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Biryani" />
-
-                <TextView
-                    android:id="@+id/item_description"
-                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="+Rs10 convenience fee" />
+                android:textColor="@color/primaryText"
+                android:text="Aloo Paratha"
+                android:layout_alignParentTop="true"/>
+            <TextView
+                android:id="@+id/item_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:ellipsize="end"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_below="@+id/item_name"
+                android:text="Fresh potato masala mix stuffed inside wheat dough potato masala mix stuffed inside potato masala mix stu"
+                android:layout_marginTop="@dimen/margin_x_small"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_x_small"
+                android:layout_alignParentBottom="true">
                 <TextView
                     android:id="@+id/item_price"
-                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primaryText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="+Rs10 convenience fee" />
-
-            </LinearLayout>
-
-
+                    android:text="Rs. 200/-" />
+            </RelativeLayout>
         </RelativeLayout>
-
-
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+    </RelativeLayout>
+</LinearLayout>
