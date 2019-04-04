@@ -151,6 +151,8 @@ public class CounterUtilities {
     //checked
     public static final String KEY_PROFILE_EDIT_OPEN = "profileEdit";
 
+    //notifications
+    public static final String KEY_NOTIFICATIONS_OPEN = "notificationsOpen";
 
     //Notices
     public static final String KEY_NOTICES_OPEN = "noticesOpen";
