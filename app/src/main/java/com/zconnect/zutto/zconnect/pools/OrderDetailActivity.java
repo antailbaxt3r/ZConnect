@@ -58,7 +58,7 @@ public class OrderDetailActivity extends BaseActivity {
 //    private TextView discountTotal;
     private ImageView orderStatusIcon;
     private FrameLayout deliveredTag;
-    private RelativeLayout paymentFailedLayout, paymentProcessingLayout, paymentPendingLayout;
+    private RelativeLayout paymentFailedLayout, paymentProcessingLayout;
     private LinearLayout paymentConfirmLayout;
 
     @Override
@@ -148,23 +148,15 @@ public class OrderDetailActivity extends BaseActivity {
 
     private void setOrderQRView() {
 
-        if (order.getPaymentStatus().equals(Order.KEY_PAYMENT_FAIL)) {
+        if (order.getPaymentStatus().equals(Order.KEY_PAYMENT_FAIL) || order.getPaymentStatus().equals(Order.KEY_PAYMENT_PENDING)) {
             paymentConfirmLayout.setVisibility(View.GONE);
             paymentProcessingLayout.setVisibility(View.GONE);
-            paymentPendingLayout.setVisibility(View.GONE);
             paymentFailedLayout.setVisibility(View.VISIBLE);
-        }
-        else if(order.getPaymentStatus().equals(Order.KEY_PAYMENT_PENDING)) {
-            paymentConfirmLayout.setVisibility(View.GONE);
-            paymentProcessingLayout.setVisibility(View.GONE);
-            paymentPendingLayout.setVisibility(View.VISIBLE);
-            paymentFailedLayout.setVisibility(View.GONE);
         }
         else if(order.getPaymentStatus().equals(Order.KEY_PAYMENT_PROCESSING))
         {
             paymentConfirmLayout.setVisibility(View.GONE);
             paymentProcessingLayout.setVisibility(View.VISIBLE);
-            paymentPendingLayout.setVisibility(View.GONE);
             paymentFailedLayout.setVisibility(View.GONE);
         }
         else if(order.getPaymentStatus().equals(Order.KEY_PAYMENT_SUCCESS)) {
@@ -182,7 +174,6 @@ public class OrderDetailActivity extends BaseActivity {
 
             paymentConfirmLayout.setVisibility(View.VISIBLE);
             paymentProcessingLayout.setVisibility(View.GONE);
-            paymentPendingLayout.setVisibility(View.GONE);
             paymentFailedLayout.setVisibility(View.GONE);
 
             if (order.getOrderStatus().equals(Order.KEY_ORDER_OUT_FOR_DELIVERY))
@@ -225,7 +216,6 @@ public class OrderDetailActivity extends BaseActivity {
         paymentFailedLayout = findViewById(R.id.payment_failed_layout);
         paymentConfirmLayout = findViewById(R.id.payment_confirm_layout);
         paymentProcessingLayout = findViewById(R.id.payment_processing_layout);
-        paymentPendingLayout = findViewById(R.id.payment_pending_layout);
 
         adapter = new PoolItemCartAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

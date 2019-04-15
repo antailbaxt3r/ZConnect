@@ -43,7 +43,7 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 
 public class PoolViewHolder extends RecyclerView.ViewHolder {
 
-    private TextView name, description, count, orderDeadlineTime, orderDealineSubtext, deliveryDay;
+    private TextView name, description, count, orderDeadlineTime, orderDealineSubtext, deliveryDay, totalOrders;
     private ImageButton btn_like;
     private Boolean isLiked;
     private String userUID;
@@ -67,6 +67,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
 
     private void attachID() {
         name = itemView.findViewById(R.id.pool_name);
+        totalOrders = itemView.findViewById(R.id.total_orders);
         description = itemView.findViewById(R.id.pool_description);
         count = itemView.findViewById(R.id.pool_count);
         orderDeadlineTime = itemView.findViewById(R.id.order_deadline_time);
@@ -95,6 +96,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         this.pool = pool;
         Log.d(this.getClass().getName(), "populate : " + pool.getPoolInfo().getName());
         name.setText(pool.getPoolInfo().getName());
+        totalOrders.setText(pool.getTotalOrder() + " Orders");
         description.setText(pool.getPoolInfo().getDescription());
         poolBgImage.setImageURI(pool.getPoolInfo().getImageURL());
 
@@ -269,6 +271,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
         {
             case 0:
                 name.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.lightgreen800), PorterDuff.Mode.SRC_ATOP);
+                totalOrders.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.lightgreen800), PorterDuff.Mode.SRC_ATOP);
                 orderDeadlineInfoLayout.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.red700), PorterDuff.Mode.SRC_ATOP);
                 //next release code
 //                countdownWrapper.setBackgroundColor(itemView.getContext().getResources().getColor(R.color.red700));
@@ -285,6 +288,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
                 break;
             case 1:
                 name.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.indigo800), PorterDuff.Mode.SRC_ATOP);
+                totalOrders.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.indigo800), PorterDuff.Mode.SRC_ATOP);
                 orderDeadlineInfoLayout.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.green700), PorterDuff.Mode.SRC_ATOP);
                 //next release code
 //                countdownWrapper.setBackgroundColor(itemView.getContext().getResources().getColor(R.color.green700));
@@ -301,6 +305,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
                 break;
             case 2:
                 name.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.red400), PorterDuff.Mode.SRC_ATOP);
+                totalOrders.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.red400), PorterDuff.Mode.SRC_ATOP);
                 orderDeadlineInfoLayout.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.yellow700), PorterDuff.Mode.SRC_ATOP);
                 //next release code
 //                countdownWrapper.setBackgroundColor(itemView.getContext().getResources().getColor(R.color.yellow700));
@@ -317,6 +322,7 @@ public class PoolViewHolder extends RecyclerView.ViewHolder {
                 break;
             case 3:
                 name.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.lightblue600), PorterDuff.Mode.SRC_ATOP);
+                totalOrders.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.lightblue600), PorterDuff.Mode.SRC_ATOP);
                 orderDeadlineInfoLayout.getBackground().setColorFilter(itemView.getContext().getResources().getColor(R.color.deeppurple700), PorterDuff.Mode.SRC_ATOP);
                 //next release code
 //                countdownWrapper.setBackgroundColor(itemView.getContext().getResources().getColor(R.color.deeppurple700));

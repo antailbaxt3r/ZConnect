@@ -261,12 +261,13 @@ exports.getPayment = functions.database.ref('communities/{communityID}/features/
               orderRefInsideShop.set(orderObj);
               const tempObj = {timestampPaymentAfter, orderStatus, paymentStatus: "success"};
               snapshot.ref.parent.update(tempObj);
-              shopRef.child(`createdPools/current/${poolPushID}/totalOrders`)
+              shopRef.child(`createdPools/current/${poolPushID}/totalOrder`)
               .transaction(current_value => {
                 const userBillID = String(orderID.substr(-6)) + getThreeDigitString(current_value + 1);
                 orderRefInsideShop.child("userBillID").set(userBillID);
                 //set userBillID in the orderID node of users as well
                 snapshot.ref.parent.child("userBillID").set(userBillID);
+                snapshot.ref.parent.parent.parent.parent.parent.child(`pools/current/${poolPushID}/totalOrder`).set(current_value + 1);
                 return current_value + 1;
               });
             });
