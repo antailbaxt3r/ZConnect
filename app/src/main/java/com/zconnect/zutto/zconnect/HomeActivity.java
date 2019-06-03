@@ -55,6 +55,7 @@ import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
+import com.zconnect.zutto.zconnect.fragments.NotificationsFragment;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.pools.MyOrdersActivity;
@@ -111,7 +112,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences defaultPrefs;
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
-    private Fragment recent, forums, shop, myProfile, infone;
+    private Fragment recent, forums, shop, myProfile, infone, notifications;
     public Boolean flag = false;
     public Boolean setTitleFlag = true;
 
@@ -124,7 +125,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     SimpleDraweeView[] tabImage = new SimpleDraweeView[6];
     ImageView[] tabNotificationCircle = new ImageView[6];
 
-    public TabLayout.Tab recentsT,forumsT,addT,infoneT,profileT;
+    public TabLayout.Tab recentsT,forumsT,addT,infoneT,profileT, notificationsT;
     HomeBottomSheet bottomSheetFragment;
     private LinearLayoutManager recentsLinearLayoutManager;
     public HomeActivity() {
@@ -287,23 +288,27 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 4: {
-                        setActionBarTitle("You");
+                        //setActionBarTitle("You");
+                        setActionBarTitle("Notifications");
 
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
                         HashMap<String, String> meta= new HashMap<>();
                         meta.put("type","fromRecents");
-                        meta.put("userType","myProfile");
+                        //meta.put("userType","myProfile");
+                        meta.put("userType", "notifications");
                         meta.put("userUID",FirebaseAuth.getInstance().getUid());
 
                         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
+                        //counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTIFICATIONS_OPEN);
                         counterItemFormat.setTimestamp(System.currentTimeMillis());
                         counterItemFormat.setMeta(meta);
 
                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                         counterPush.pushValues();
 
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, notifications).commit();
+                        //getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
                         break;
                     }
                 }
@@ -395,25 +400,35 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         vInfone.setAlpha((float) 0.7);
         infoneT.setCustomView(vInfone);
 
-        View vProfile = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
-        profileT = tabs.newTab();
+        View vNotification = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        notificationsT = tabs.newTab();
+        tabTitle[4] = (TextView) vNotification.findViewById(R.id.tabTitle);
+        tabTitle[4].setText("Notifications");
+        tabImage[4] = (SimpleDraweeView) vNotification.findViewById(R.id.tabImage);
+        tabImage[4].setImageResource(R.drawable.baseline_notifications_white_18dp);
 
-        tabTitle[4] = (TextView) vProfile.findViewById(R.id.tabTitle);
-        tabTitle[4].setText("Profile");
-        tabImage[4] = (SimpleDraweeView) vProfile.findViewById(R.id.tabImage);
-        tabImage[4].setImageResource(R.drawable.ic_person_white_24dp);
-        tabImage[4].setImageResource(R.drawable.avatar_circle_36dp);
+        tabNotificationCircle[4] = (ImageView) vNotification.findViewById(R.id.notification_circle);
+        notificationsT.setCustomView(vNotification);
 
-        tabNotificationCircle[4] = (ImageView) vProfile.findViewById(R.id.notification_circle);
+        //View vProfile = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
+        //profileT = tabs.newTab();
+
+        //tabTitle[4] = (TextView) vProfile.findViewById(R.id.tabTitle);
+        //tabTitle[4].setText("Profile");
+        //tabImage[4] = (SimpleDraweeView) vProfile.findViewById(R.id.tabImage);
+        //tabImage[4].setImageResource(R.drawable.ic_person_white_24dp);
+        //tabImage[4].setImageResource(R.drawable.avatar_circle_36dp);
+
+        //tabNotificationCircle[4] = (ImageView) vProfile.findViewById(R.id.notification_circle);
 //        vProfile.setAlpha((float) 0.7);
-        profileT.setCustomView(vProfile);
+        //profileT.setCustomView(vProfile);
 
         tabs.addTab(recentsT);
         tabs.addTab(forumsT);
         tabs.addTab(addT);
         tabs.addTab(infoneT);
-        tabs.addTab(profileT);
-
+        //tabs.addTab(profileT);
+        tabs.addTab(notificationsT);
     }
 
 
@@ -601,10 +616,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 forums = new JoinedForums();
                                 myProfile = new MyProfileFragment();
                                 infone = new InfoneActivity();
+                                notifications = new NotificationsFragment();
 
                                 getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
 
-                                tabImage[4].setImageURI(UserUtilities.currentUser.getImageURLThumbnail());
+                                //tabImage[4].setImageURI(UserUtilities.currentUser.getImageURLThumbnail());
                                 setTabListener();
                                 flag = true;
                             }
