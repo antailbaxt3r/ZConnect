@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.zconnect.zutto.zconnect.CabPooling"
     tools:showIn="@layout/activity_cab_pooling"
@@ -208,6 +208,21 @@
             android:layout_width="match_parent"
             android:layout_height="2px"
             android:background="@color/horizontalLine"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="10sp"
+            android:text="Please search for your required cabpool option. If case of no match, it will be added automatically."
+            android:textAlignment="center" />
+
     </LinearLayout>
 
 </LinearLayout>
