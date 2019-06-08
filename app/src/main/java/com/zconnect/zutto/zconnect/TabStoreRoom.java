@@ -27,6 +27,7 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -76,8 +77,9 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
     private Product singleProduct;
     private Boolean flagNoProductsAvailable;
     private TextView noProductsAvailableText;
-    private ProgressBar progressBar;
+
     private FloatingActionButton fab;
+    private ShimmerFrameLayout shimmerContainer;
 
     private int OPT_ELEC = 0, OPT_SPK = 1, OPT_STG = 2, OPT_ACAD = 3, OPT_ROOM = 4, OPT_FIC = 5, OPT_OTH = 6, OPT_ALL = 7;
     private int currentOptionCategory = 7;
@@ -171,8 +173,8 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
 
         GridLayoutManager productGridLayout = new GridLayoutManager(this, 2);
 
-        noProductsAvailableText = (TextView) findViewById(R.id.no_products_available_text);
-        progressBar = (ProgressBar) findViewById(R.id.products_tab_progress_bar);
+
+        shimmerContainer = (ShimmerFrameLayout) findViewById(R.id.shimmer_view_container1);
         mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
@@ -217,7 +219,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         });
 
         mAuth = FirebaseAuth.getInstance();
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerContainer.startShimmerAnimation();
 
         SharedPreferences sharedPref = getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
@@ -299,12 +301,9 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                     }
                 }
 
-                progressBar.setVisibility(View.INVISIBLE);
-                if(flagNoProductsAvailable){
-                    noProductsAvailableText.setVisibility(View.VISIBLE);
-                }else{
-                    noProductsAvailableText.setVisibility(View.GONE);
-                }
+                shimmerContainer.stopShimmerAnimation(); //stops shimmer when data has been fetched
+                shimmerContainer.setVisibility(View.INVISIBLE);
+
                 Collections.sort(productVector, new Comparator<Product>() {
                     @Override
                     public int compare(Product o1, Product o2) {
