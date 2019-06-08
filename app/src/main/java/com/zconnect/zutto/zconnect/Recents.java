@@ -188,6 +188,7 @@ public class Recents extends Fragment {
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
 
+
             }
 
             @Override
@@ -251,6 +252,8 @@ public class Recents extends Fragment {
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+
+
             }
 
             @Override
