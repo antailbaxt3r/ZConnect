@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -156,6 +157,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         bottomSheetFragment = new HomeBottomSheet();
 
+
         View navHeader = navigationView.getHeaderView(0);
 
         // Navigation Drawer initialization
@@ -168,6 +170,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) tabs.getLayoutParams();
+        layoutParams.setBehavior(new BottomNavigationViewBehavior());
 
         navigationView.setNavigationItemSelectedListener(this);
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
