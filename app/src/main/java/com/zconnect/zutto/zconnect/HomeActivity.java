@@ -429,6 +429,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabs.addTab(infoneT);
         //tabs.addTab(profileT);
         tabs.addTab(notificationsT);
+//        tabs.getTabAt(0)
     }
 
 
