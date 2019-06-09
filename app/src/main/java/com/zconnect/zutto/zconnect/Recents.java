@@ -143,10 +143,10 @@ public class Recents extends Fragment {
                 }, 3000);
             }
         });
-        TabLayout tl = getActivity().findViewById(R.id.navigation);
-        View v = tl.getTabAt(1).getCustomView();
-        v.findViewById(R.id.notification_circle).setVisibility(VISIBLE);
-        tl.getTabAt(1).setCustomView(v);
+//        TabLayout tl = getActivity().findViewById(R.id.navigation);
+//        View v = tl.getTabAt(1).getCustomView();
+//        v.findViewById(R.id.notification_circle).setVisibility(VISIBLE);
+//        tl.getTabAt(1).setCustomView(v);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         productLinearLayoutManager = new LinearLayoutManager(getContext());
