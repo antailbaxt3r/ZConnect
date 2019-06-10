@@ -74,8 +74,8 @@ public class InfoneProfileActivity extends BaseActivity {
     private TextView verifiedDateTextView, validLabel;
     private String verfiedDate;
     private Long postTimeMillis;
-    LinearLayout phone1Etll;
-    LinearLayout whatsAppll;
+    private LinearLayout phone1Etll;
+    private LinearLayout whatsAppll;
 
     /*image uploading elements*/
     private Uri mImageUri = null;
@@ -235,7 +235,12 @@ public class InfoneProfileActivity extends BaseActivity {
 
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);
-                validButton.setText(dataSnapshot.child("validCount").getValue().toString() + " validations");
+                validLabel.setText(dataSnapshot.child("validCount").getValue().toString() + " validations");
+                if(dataSnapshot.child("validCount").getValue().toString().equals("1")){
+                    validLabel.setText(dataSnapshot.child("validCount").getValue().toString() + " validation");
+
+                }
+
 
                 userType = dataSnapshot.child("type").getValue(String.class);
                 verfiedDate = dataSnapshot.child("verifiedDate").getValue().toString();
@@ -279,11 +284,17 @@ public class InfoneProfileActivity extends BaseActivity {
 
                 if (dataSnapshot.child("valid").hasChild(mAuth.getCurrentUser().getUid())){
                     flag=true;
-                    validButton.setBackground(getResources().getDrawable(R.drawable.round_button_simple));
-                    validButton.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+                    validButton.setText("Invalidate");
+                    validButton.setTextColor(getResources().getColor(R.color.gray_holo_dark));
+
+//                    validButton.setBackground(getResources().getDrawable(R.drawable.round_button_simple));
+//                    validButton.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }else {
-                    validButton.setBackground(getResources().getDrawable(R.drawable.round_button_primary));
-                    validButton.setTextColor(getResources().getColor(R.color.white));
+                    validButton.setText("Validate");
+                    validButton.setTextColor(getResources().getColor(R.color.colorPrimary));
+//                    validButton.setBackground(getResources().getDrawable(R.drawable.round_button_primary));
+//                    validButton.setTextColor(getResources().getColor(R.color.white));
                     flag=false;
                 }
 
@@ -303,6 +314,12 @@ public class InfoneProfileActivity extends BaseActivity {
                 mobileNumber = phoneNums.get(0);
                 phone2Et.setText(phoneNums.get(1));
                 verifiedDateTextView.setText(ta.calculateTimeAgo());
+                if(phone2Et.getText().toString().length()<9){
+                    whatsAppll.setVisibility(View.GONE);
+                }
+                if(phone1Et.getText().toString().length()<9){
+                    phone1Etll.setVisibility(View.GONE);
+                }
 
                 progressBar.setVisibility(View.GONE);
                 linearLayout.setVisibility(View.VISIBLE);
@@ -330,9 +347,7 @@ public class InfoneProfileActivity extends BaseActivity {
             }
         });
 
-        if(phone2Et.getText().toString().length()<10){
-            whatsAppll.setVisibility(View.GONE);
-        }
+
         whatsAppll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

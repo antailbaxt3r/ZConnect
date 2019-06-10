@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     tools:context="com.zconnect.zutto.zconnect.InfoneProfileActivity"
     android:layout_height="match_parent"
-    android:background="#F8F8F8"
+    android:background="@color/white"
     android:orientation="vertical">
 
 
@@ -15,7 +15,7 @@
 android:layout_width="match_parent"
 tools:context="com.zconnect.zutto.zconnect.InfoneProfileActivity"
 android:layout_height="match_parent"
-android:background="#F8F8F8"
+android:background="@color/white"
 android:id="@+id/infone_profile_linear_layout"
 android:orientation="vertical">
 
@@ -34,51 +34,64 @@ android:orientation="vertical">
     </android.support.design.widget.AppBarLayout>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="405dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
-            android:background="@drawable/gradient"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/image_profile_infone"
-                android:layout_marginTop="45dp"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/profile_avatar_circle"
                 fresco:actualImageScaleType="centerCrop"
                 fresco:roundAsCircle="true"/>
             <com.rengwuxian.materialedittext.MaterialEditText
+                app:met_hideUnderline="true"
                 android:layout_marginTop="@dimen/appbar_padding_top"
                 android:id="@+id/et_name_infone_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:gravity="center_horizontal"
-                android:text="Anshuman"
                 android:textSize="26sp"
                 app:met_textColor="@color/white"
                 android:textStyle="bold"/>
             <TextView
                 android:textSize="18sp"
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_desc_infone_profile"
-                android:text="This is where my about/Bio goes."
+                android:text=""
                 android:layout_gravity="center_horizontal"/>
 
             <LinearLayout
+                android:layout_marginBottom="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal">
                 <TextView
+                    android:textColor="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/valid_label"/>
                 <TextView
+                    android:layout_marginHorizontal="@dimen/border_radius_5dp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="•"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:textColor="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/verified_date"/>
@@ -91,54 +104,33 @@ android:orientation="vertical">
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="360dp"
+        android:layout_marginEnd="20dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center"
         android:layout_marginTop="15dp">
-        <LinearLayout
-            android:orientation="horizontal"
-            android:paddingLeft="25dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_email_black_24dp"/>
-            <TextView
-                android:id="@+id/contact_details_email_editText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:focusable="false"
-                android:paddingLeft="20dp"
-                android:text="anshumansingh64@gmail.com"
-                android:layout_gravity="center_vertical"
-                android:focusableInTouchMode="false"
-                android:textColor="@color/primaryText"
-                android:textSize="16sp"
-                />
-
-        </LinearLayout>
-        <LinearLayout
+               <LinearLayout
+                   android:layout_gravity="center_horizontal"
             android:id="@+id/phone1ll"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="50dp"
             android:orientation="horizontal"
-            android:paddingLeft="25dp"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:tint="@color/colorPrimary"
                 android:src="@drawable/ic_phone"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
+                app:met_hideUnderline="true"
                 android:id="@+id/et_phone1_infone_profile"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:text="9844381031"
-                android:ems="10"
+                android:text=""
+                android:textIsSelectable="true"
                 android:maxLength="10"
                 android:layout_gravity="center_vertical"
                 android:textSize="16sp"
@@ -150,20 +142,22 @@ android:orientation="vertical">
             android:id="@+id/whatsappll"
             android:layout_marginTop="25dp"
             android:orientation="horizontal"
-            android:paddingLeft="25dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:tint="@color/colorPrimary"
                 android:src="@drawable/whatsapp_64px"/>
             <com.rengwuxian.materialedittext.MaterialEditText
+                app:met_hideUnderline="true"
                 android:id="@+id/et_phone2_infone_profile"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:text="9844381031"
                 android:ems="10"
+                android:text=""
+                android:textIsSelectable="true"
                 android:maxLength="10"
                 android:layout_gravity="center_vertical"
                 android:textSize="16sp"
@@ -183,14 +177,17 @@ android:orientation="vertical">
     </LinearLayout>
 
     <LinearLayout
+        android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
+        android:orientation="vertical"
         android:layout_height="wrap_content">
     <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:background="@color/white"
+        android:layout_margin="@dimen/margin_top_between_similar_views"
         android:id="@+id/valid_button"
-        android:textColor="#fff"
-        android:background="@drawable/gradient"
-        android:layout_marginTop="25dp"
+        android:textColor="@color/colorPrimary"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -198,18 +195,18 @@ android:orientation="vertical">
 
 
     <Button
+        android:background="@drawable/round_button_primary"
+        android:padding="16dp"
         android:id="@+id/viewProfileButton"
-        android:textColor="#fff"
-        android:background="@drawable/gradient"
-        android:layout_marginTop="25dp"
+        android:textColor="@color/white"
+        android:layout_margin="@dimen/margin_top_between_similar_views"
+
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View Profile"/>
 
     </LinearLayout>
-
-
 </LinearLayout>
 
 
@@ -224,273 +221,3 @@ android:orientation="vertical">
         android:layout_centerInParent="true"/>
 </RelativeLayout>
 
-
-
-<!--<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:orientation="vertical"-->
-    <!--tools:context="com.zconnect.zutto.zconnect.InfoneProfileActivity">-->
-
-    <!--<android.support.design.widget.AppBarLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:theme="@style/AppTheme.AppBarOverlay">-->
-
-        <!--<android.support.v7.widget.Toolbar-->
-            <!--android:id="@+id/toolbar_app_bar_home"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="?attr/actionBarSize"-->
-            <!--android:background="?attr/colorPrimary"-->
-            <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
-
-    <!--</android.support.design.widget.AppBarLayout>-->
-    <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">-->
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:orientation="vertical">-->
-
-            <!--<FrameLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent">-->
-
-                <!--<ProgressBar-->
-                    <!--android:id="@+id/infone_profile_progress_circle"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:backgroundTint="@color/secondaryText2"-->
-                    <!--android:backgroundTintMode="src_atop"-->
-                    <!--android:visibility="gone"/>-->
-                <!--<LinearLayout-->
-                    <!--android:id="@+id/infone_profile_linear_layout"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:orientation="vertical"-->
-                    <!--android:layout_marginTop="10dp"-->
-                    <!--app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"-->
-                    <!--android:paddingStart="10dp"-->
-                    <!--android:paddingEnd="10dp"-->
-                    <!--android:paddingBottom="@dimen/padding_small">-->
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content">-->
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="0.5"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:gravity="center"-->
-                            <!--android:orientation="vertical">-->
-                            <!--<com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"-->
-                                <!--android:id="@+id/image_profile_infone"-->
-                                <!--android:layout_width="wrap_content"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:layout_gravity="center_horizontal"-->
-                                <!--android:background="@drawable/profile_avatar_circle"-->
-                                <!--fresco:actualImageScaleType="centerCrop"-->
-                                <!--fresco:roundAsCircle="true"/>-->
-                            <!--<com.rengwuxian.materialedittext.MaterialEditText-->
-                                <!--android:id="@+id/et_name_infone_profile"-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:inputType="text"-->
-                                <!--android:gravity="center_horizontal"-->
-                                <!--android:text="name"-->
-                                <!--android:textSize="16sp"-->
-                                <!--app:met_textColor="@color/primaryText"-->
-                                <!--android:textStyle="bold"/>-->
-                        <!--</LinearLayout>-->
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="0.5"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:orientation="vertical"-->
-                            <!--android:gravity="center">-->
-                            <!--<FrameLayout-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="wrap_content">-->
-                                <!--<com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"-->
-                                    <!--android:layout_width="wrap_content"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:layout_gravity="center_horizontal"-->
-                                    <!--android:background="@drawable/profile_avatar_circle"-->
-                                    <!--android:backgroundTint="@color/colorPrimaryLightest"-->
-                                    <!--fresco:actualImageScaleType="centerCrop"-->
-                                    <!--fresco:roundAsCircle="true" />-->
-                                <!--<ImageButton-->
-                                    <!--android:id="@+id/infone_profile_callbtn"-->
-                                    <!--android:layout_gravity="center"-->
-                                    <!--android:layout_width="wrap_content"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:background="@drawable/baseline_phone_white_48"-->
-                                    <!--android:backgroundTint="@color/primaryText" />-->
-                            <!--</FrameLayout>-->
-                            <!--<com.rengwuxian.materialedittext.MaterialEditText-->
-                                <!--android:id="@+id/et_phone1_infone_profile"-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:inputType="number"-->
-                                <!--android:text="phone1"-->
-                                <!--android:gravity="center_horizontal"-->
-                                <!--app:met_textColor="@color/primaryText"-->
-                                <!--android:textSize="16sp"-->
-                                <!--android:textStyle="bold"/>-->
-                        <!--</LinearLayout>-->
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="0.5"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:orientation="vertical"-->
-                            <!--android:gravity="center">-->
-                            <!--<FrameLayout-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="wrap_content">-->
-                                <!--<com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"-->
-                                    <!--android:layout_width="wrap_content"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:layout_gravity="center_horizontal"-->
-                                    <!--android:background="@drawable/profile_avatar_circle"-->
-                                    <!--android:backgroundTint="@color/colorPrimaryLightest"-->
-                                    <!--fresco:actualImageScaleType="centerCrop"-->
-                                    <!--fresco:roundAsCircle="true" />-->
-                                <!--<ImageButton-->
-                                    <!--android:id="@+id/infone_profile_whatsapp_btn"-->
-                                    <!--android:layout_gravity="center"-->
-                                    <!--android:layout_width="wrap_content"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:background="@drawable/whatsapp_64px"-->
-                                    <!--android:backgroundTint="@color/green500" />-->
-                            <!--</FrameLayout>-->
-                            <!--<com.rengwuxian.materialedittext.MaterialEditText-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:inputType="number"-->
-                                <!--android:enabled="false"-->
-                                <!--android:text="WhatsApp"-->
-                                <!--android:gravity="center_horizontal"-->
-                                <!--app:met_textColor="@color/primaryText"-->
-                                <!--android:textSize="16sp"-->
-                                <!--android:textStyle="bold"/>-->
-                        <!--</LinearLayout>-->
-                    <!--</LinearLayout>-->
-                    <!--<TextView-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="About"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:textStyle="bold"/>-->
-                    <!--<TextView-->
-                        <!--android:id="@+id/tv_desc_infone_profile"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:textSize="16sp" />-->
-
-                    <!--<TextView-->
-                        <!--android:layout_marginTop="10dp"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="Mobile Number"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:textStyle="bold" />-->
-
-                    <!--<com.rengwuxian.materialedittext.MaterialEditText-->
-                        <!--android:id="@+id/et_phone1_infone_profile"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:inputType="number"-->
-                        <!--android:text="phone1"-->
-                        <!--app:met_textColor="@color/primaryText" />-->
-
-                    <!--<TextView-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="Whatsapp Number"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:textStyle="bold"-->
-                        <!--android:visibility="gone"-->
-                        <!--android:layout_marginTop="10dp"/>-->
-                    <!--<com.rengwuxian.materialedittext.MaterialEditText-->
-                        <!--android:id="@+id/et_phone2_infone_profile"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:inputType="number"-->
-                        <!--android:visibility="gone"-->
-                        <!--android:text="phone2"-->
-                        <!--app:met_textColor="@color/primaryText"/>-->
-
-                    <!--<Button-->
-                        <!--android:id="@+id/save_edit_infone_profile"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:background="@drawable/round_button_primary"-->
-                        <!--android:paddingStart="@dimen/button_padding_start_end"-->
-                        <!--android:paddingEnd="@dimen/button_padding_start_end"-->
-                        <!--android:text="Save"-->
-                        <!--android:textSize="16sp"-->
-                        <!--android:textColor="@color/white"-->
-                        <!--android:layout_marginTop="10dp"-->
-                        <!--style="?android:attr/borderlessButtonStyle" />-->
-                    <!--<TextView-->
-                        <!--android:layout_marginTop="@dimen/margin_small"-->
-                        <!--android:id="@+id/valid_label"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="Is this number valid?"-->
-                        <!--android:textColor="@color/primaryText"-->
-                        <!--android:textStyle="bold"/>-->
-                    <!--<Button-->
-                        <!--android:id="@+id/valid_button"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:paddingStart="@dimen/button_padding_start_end"-->
-                        <!--android:paddingEnd="@dimen/button_padding_start_end"-->
-                        <!--android:background="@drawable/round_button_primary"-->
-                        <!--android:layout_marginTop="10dp"-->
-                        <!--android:text="Validate"-->
-                        <!--android:textSize="16sp"-->
-                        <!--android:textColor="@color/white"-->
-                        <!--style="?android:attr/borderlessButtonStyle" />-->
-
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:orientation="horizontal"-->
-                        <!--android:layout_marginTop="10dp">-->
-                        <!--<TextView-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:text="Last verified " />-->
-
-                        <!--<TextView-->
-                            <!--android:id="@+id/verified_date"-->
-                            <!--android:layout_marginStart="5dp"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:text="Verified Date" />-->
-
-                    <!--</LinearLayout>-->
-                    <!--<Button-->
-                        <!--android:id="@+id/viewProfileButton"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="View Profile"-->
-                        <!--android:paddingStart="@dimen/button_padding_start_end"-->
-                        <!--android:paddingEnd="@dimen/button_padding_start_end"-->
-                        <!--android:textColor="@color/white"-->
-                        <!--android:background="@drawable/round_button_primary"-->
-                        <!--android:textSize="16sp"-->
-                        <!--android:layout_marginTop="10dp"-->
-                        <!--android:visibility="gone"-->
-                        <!--style="?android:attr/borderlessButtonStyle"/>-->
-                <!--</LinearLayout>-->
-            <!--</FrameLayout>-->
-        <!--</LinearLayout>-->
-    <!--</ScrollView>-->
-<!--</android.support.design.widget.CoordinatorLayout>-->
