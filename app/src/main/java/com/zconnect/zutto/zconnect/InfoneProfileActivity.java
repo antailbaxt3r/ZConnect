@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.icu.text.IDNA;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -20,10 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,8 +53,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
-
 public class InfoneProfileActivity extends BaseActivity {
 
     /*UI elements*/
@@ -74,8 +70,8 @@ public class InfoneProfileActivity extends BaseActivity {
     private TextView verifiedDateTextView, validLabel;
     private String verfiedDate;
     private Long postTimeMillis;
-    private LinearLayout phone1Etll;
-    private LinearLayout whatsAppll;
+    private RelativeLayout phone1Etrl;
+    private RelativeLayout whatsApprl;
 
     /*image uploading elements*/
     private Uri mImageUri = null;
@@ -143,12 +139,12 @@ public class InfoneProfileActivity extends BaseActivity {
         linearLayout = (LinearLayout) findViewById(R.id.infone_profile_linear_layout);
         progressBar.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
-        whatsAppll = findViewById(R.id.whatsappll);
+        whatsApprl = findViewById(R.id.whatsappll);
         nameEt = (MaterialEditText) findViewById(R.id.et_name_infone_profile);
         descTv = (TextView) findViewById(R.id.tv_desc_infone_profile);
         profileImage = (SimpleDraweeView) findViewById(R.id.image_profile_infone);
         phone1Et = (MaterialEditText) findViewById(R.id.et_phone1_infone_profile);
-        phone1Etll =  findViewById(R.id.phone1ll);
+        phone1Etrl =  findViewById(R.id.phone1ll);
         phone2Et = (MaterialEditText) findViewById(R.id.et_phone2_infone_profile);
 //        saveEditBtn = (Button) findViewById(R.id.save_edit_infone_profile);
         validLabel = (TextView) findViewById(R.id.valid_label);
@@ -189,7 +185,7 @@ public class InfoneProfileActivity extends BaseActivity {
                 name = dataSnapshot.child("name").getValue(String.class);
                 desc = dataSnapshot.child("desc").getValue(String.class);
                 nameEt.setText(name);
-                toolbar.setTitle(name);
+                toolbar.setTitle("Contact Details");
 //                if(desc==null && dataSnapshot.child("type").getValue(String.class).equals("User"))
 //                {
 //                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference)
@@ -315,10 +311,10 @@ public class InfoneProfileActivity extends BaseActivity {
                 phone2Et.setText(phoneNums.get(1));
                 verifiedDateTextView.setText(ta.calculateTimeAgo());
                 if(phone2Et.getText().toString().length()<9){
-                    whatsAppll.setVisibility(View.GONE);
+                    whatsApprl.setVisibility(View.GONE);
                 }
                 if(phone1Et.getText().toString().length()<9){
-                    phone1Etll.setVisibility(View.GONE);
+                    phone1Etrl.setVisibility(View.GONE);
                 }
 
                 progressBar.setVisibility(View.GONE);
@@ -348,7 +344,7 @@ public class InfoneProfileActivity extends BaseActivity {
         });
 
 
-        whatsAppll.setOnClickListener(new View.OnClickListener() {
+        whatsApprl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(phone2Et.getText().toString().length()<10){
@@ -361,7 +357,7 @@ public class InfoneProfileActivity extends BaseActivity {
             }
         });
 
-        phone1Etll.setOnClickListener(new View.OnClickListener() {
+        phone1Etrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

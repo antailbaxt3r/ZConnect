@@ -5,6 +5,7 @@
     android:nestedScrollingEnabled="true"
     tools:context="com.zconnect.zutto.zconnect.Recents">
 
+
     <ProgressBar
         android:id="@+id/recent_progress"
         android:layout_width="wrap_content"

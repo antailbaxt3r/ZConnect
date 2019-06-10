@@ -902,7 +902,7 @@ public class ChatActivity extends BaseActivity {
 
                     if (bitmap.getByteCount() > 350000) {
 
-                        bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), false);
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 960, (int) (960 / ratio), true);
                     }
                     String path = MediaStore.Images.Media.insertImage(ChatActivity.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
