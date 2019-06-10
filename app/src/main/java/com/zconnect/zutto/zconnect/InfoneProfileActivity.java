@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.icu.text.IDNA;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -74,6 +75,7 @@ public class InfoneProfileActivity extends BaseActivity {
     private String verfiedDate;
     private Long postTimeMillis;
     ImageButton phone1EtCallbtn;
+    ImageButton whatsAppBtn;
 
     /*image uploading elements*/
     private Uri mImageUri = null;
@@ -141,7 +143,7 @@ public class InfoneProfileActivity extends BaseActivity {
         linearLayout = (LinearLayout) findViewById(R.id.infone_profile_linear_layout);
         progressBar.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
-
+        whatsAppBtn = findViewById(R.id.infone_profile_whatsapp_btn);
         nameEt = (MaterialEditText) findViewById(R.id.et_name_infone_profile);
         descTv = (TextView) findViewById(R.id.tv_desc_infone_profile);
         profileImage = (SimpleDraweeView) findViewById(R.id.image_profile_infone);
@@ -323,9 +325,25 @@ public class InfoneProfileActivity extends BaseActivity {
                 if (!phone1Et.getText().toString().isEmpty()) {
                     callCounter();
                     makeCall(phone1Et.getText().toString());
+                    Log.d("InfoneProfileActivity",phone1Et.getText().toString());
                 }
             }
         });
+
+        whatsAppBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("whatsappNumber",phone2Et.getText().toString());
+                if(phone2Et.getText().toString().length()<10){
+
+                    Toast.makeText(InfoneProfileActivity.this,"WhatsApp number does not exist.",Toast.LENGTH_SHORT).show();
+                    return;
+
+                }
+                redirectToWhatsApp(phone2Et.getText().toString());
+            }
+        });
+
         phone1EtCallbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -570,6 +588,24 @@ public class InfoneProfileActivity extends BaseActivity {
             databaseRefEditNum.child("thumbnail").setValue("default");
             finish();
         }
+    }
+
+    private void redirectToWhatsApp(String number){
+        PackageManager pm=getPackageManager();
+        try {
+            String text = "";
+
+            String toNumber = "91"+number;
+
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("http://api.whatsapp.com/send?phone="+toNumber +"&text="+text));
+            startActivity(intent);
+        }
+        catch (Exception e){
+            Log.d("InfoneProfileActivity",e.toString());
+        }
+
     }
 
     private void makeCall(String number) {

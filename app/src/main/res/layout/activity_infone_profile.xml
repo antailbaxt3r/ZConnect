@@ -115,6 +115,42 @@
                                     android:textSize="16sp"
                                     android:textStyle="bold"/>
                             </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_weight="0.5"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <FrameLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+                                    <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_horizontal"
+                                        android:background="@drawable/profile_avatar_circle"
+                                        android:backgroundTint="@color/colorPrimaryLightest"
+                                        fresco:actualImageScaleType="centerCrop"
+                                        fresco:roundAsCircle="true" />
+                                    <ImageButton
+                                        android:id="@+id/infone_profile_whatsapp_btn"
+                                        android:layout_gravity="center"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/whatsapp_64px"
+                                        android:backgroundTint="@color/green500" />
+                                </FrameLayout>
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="number"
+                                    android:enabled="false"
+                                    android:text="WhatsApp"
+                                    android:gravity="center_horizontal"
+                                    app:met_textColor="@color/primaryText"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"/>
+                            </LinearLayout>
                         </LinearLayout>
                         <TextView
                             android:layout_width="match_parent"
@@ -151,12 +187,14 @@
                             android:text="Whatsapp Number"
                             android:textColor="@color/primaryText"
                             android:textStyle="bold"
+                            android:visibility="gone"
                             android:layout_marginTop="10dp"/>
                         <com.rengwuxian.materialedittext.MaterialEditText
                             android:id="@+id/et_phone2_infone_profile"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number"
+                            android:visibility="gone"
                             android:text="phone2"
                             app:met_textColor="@color/primaryText"/>
 
