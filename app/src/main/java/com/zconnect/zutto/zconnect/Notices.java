@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +31,7 @@ import java.util.Vector;
 public class Notices extends BaseActivity {
     private DatabaseReference noticesRef, mUserDetails;
     private RecyclerView noticesRV;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private FirebaseAuth mAuth;
     private Vector<NoticeItemFormat> noticesItemFormats = new Vector<>();
     private NoticeRVAdapter noticeRVAdapter;
@@ -69,9 +71,11 @@ public class Notices extends BaseActivity {
         mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         noticesRV =(RecyclerView)findViewById(R.id.photos);
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container_notices);
         noticesRV.setLayoutManager(new GridLayoutManager(this, 3));
         noticesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("notices").child("activeNotices");
         add_photo =(FloatingActionButton)findViewById(R.id.add_photo);
+        shimmerFrameLayout.startShimmerAnimation();
         add_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,11 +105,14 @@ public class Notices extends BaseActivity {
                        UserItemFormat currentUser = dataSnapshot.getValue(UserItemFormat.class);
                        noticeRVAdapter = new NoticeRVAdapter(noticesItemFormats,getApplicationContext(),currentUser.getUserType());
                        noticesRV.setAdapter(noticeRVAdapter);
+                       shimmerFrameLayout.stopShimmerAnimation();
+                       shimmerFrameLayout.setVisibility(View.INVISIBLE);
                    }
 
                    @Override
                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        shimmerFrameLayout.startShimmerAnimation();
+                        shimmerFrameLayout.setVisibility(View.VISIBLE);
                    }
                });
             };

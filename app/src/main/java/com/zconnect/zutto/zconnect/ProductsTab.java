@@ -205,9 +205,6 @@ public class ProductsTab extends Fragment {
                     }
                 }
 
-                shimmerContainer.stopShimmerAnimation();
-                shimmerContainer.setVisibility(View.INVISIBLE);
-
                 Collections.reverse(productVector);
                 productAdapter.notifyDataSetChanged();
             }

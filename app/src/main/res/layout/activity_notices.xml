@@ -20,6 +20,46 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_view_container_notices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        app:duration="2000">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:rowCount="4"
+            android:layout_marginTop="50dp"
+            android:columnCount="3">
+
+            <include layout="@layout/notices_shimmer_item" />
+
+            <include layout="@layout/notices_shimmer_item" />
+
+            <include layout="@layout/notices_shimmer_item" />
+            <include layout="@layout/notices_shimmer_item" />
+
+            <include layout="@layout/notices_shimmer_item" />
+
+            <include layout="@layout/notices_shimmer_item" />
+            <include layout="@layout/notices_shimmer_item" />
+
+            <include layout="@layout/notices_shimmer_item" />
+
+            <include layout="@layout/notices_shimmer_item" />
+            <include layout="@layout/notices_shimmer_item" />
+
+            <include layout="@layout/notices_shimmer_item" />
+
+            <include layout="@layout/notices_shimmer_item" />
+
+        </GridLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/photos"
         android:layout_width="match_parent"

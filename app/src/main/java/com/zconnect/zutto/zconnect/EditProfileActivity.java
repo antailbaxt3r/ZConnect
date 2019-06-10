@@ -240,7 +240,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                         if(userInfo.getPhotoUrl() != null)
                             userImageView.setImageURI(userInfo.getPhotoUrl());
                         else
-                            userImageView.setImageURI(DEFAULT_PHOTO_URL);
+                            userImageView.setImageURI(Uri.parse(DEFAULT_PHOTO_URL));
                     }
                 }
             }

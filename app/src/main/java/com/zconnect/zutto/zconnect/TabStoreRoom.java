@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -47,9 +48,12 @@ import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemClickListener {
 
@@ -301,8 +305,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                     }
                 }
 
-                shimmerContainer.stopShimmerAnimation(); //stops shimmer when data has been fetched
-                shimmerContainer.setVisibility(View.INVISIBLE);
+
 
                 Collections.sort(productVector, new Comparator<Product>() {
                     @Override

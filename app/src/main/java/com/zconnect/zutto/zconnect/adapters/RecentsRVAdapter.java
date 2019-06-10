@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -845,6 +846,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     if(recentsItemFormats.get(position).getDesc2().equals("y")) {
                         holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
                         holder.avatarCircle.setImageResource(R.drawable.question_mark_icon);
+                        holder.avatarCircle.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.darkgreyforavatarbg)));
                         holder.avatarCircle.setOnClickListener(null);
 //                holder.avatarCircle.setBackground(context.getResources().getDrawable(R.drawable.question_mark_icon));
                     } else {
