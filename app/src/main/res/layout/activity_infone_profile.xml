@@ -156,13 +156,14 @@ android:orientation="vertical">
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:ems="10"
-                android:text=""
+                android:text="gfg"
                 android:textIsSelectable="true"
                 android:maxLength="10"
                 android:layout_gravity="center_vertical"
                 android:textSize="16sp"
                 android:paddingLeft="20dp"
                 app:met_textColor="@color/primaryText" />
+          
         </LinearLayout>
 
     </LinearLayout>

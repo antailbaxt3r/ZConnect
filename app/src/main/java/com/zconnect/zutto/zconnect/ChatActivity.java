@@ -464,6 +464,9 @@ public class ChatActivity extends BaseActivity {
                 message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                 GlobalFunctions.addPoints(2);
                 databaseReference.child("Chat").push().setValue(message);
+//                messages.add(message);
+
+//                adapter.notifyDataSetChanged();
                 if (type.equals("forums")){
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this,userItem.getUserUID());
 
@@ -571,9 +574,18 @@ public class ChatActivity extends BaseActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
 
         final ChatItemFormats message = new ChatItemFormats();
+        final ChatItemFormats message1 = new ChatItemFormats();
         message.setTimeDate(calendar.getTimeInMillis());
 
         if(mImageUri!=null){
+            Log.d("Try","Image Posting");
+            message1.setPhotoURL(mImageUri.toString());
+            message1.setMessageType(MessageTypeUtilities.KEY_PHOTO_SENDING_STR);
+            messages.add(message1);
+            adapter.notifyDataSetChanged();
+            chatView.scrollToPosition(messages.size()-1);
+
+
             final StorageReference filePath = mStorage.child(communityReference).child("features").child(type).child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             UploadTask uploadTask = filePath.putFile(mImageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -602,6 +614,7 @@ public class ChatActivity extends BaseActivity {
                                 message.setMessage(" \uD83D\uDCF7 Image ");
                                 message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
                                 GlobalFunctions.addPoints(5);
+
                                 databaseReference.child("Chat").push().setValue(message);
                                 if (type.equals("forums")){
                                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
@@ -894,6 +907,10 @@ public class ChatActivity extends BaseActivity {
                     String path = MediaStore.Images.Media.insertImage(ChatActivity.this.getContentResolver(), bitmap, mImageUri.getLastPathSegment(), null);
 
                     mImageUri = Uri.parse(path);
+                    ChatItemFormats temproraryChat = new ChatItemFormats();
+                    temproraryChat.setPhotoURL(mImageUri.toString());
+                    temproraryChat.setMessageType(MessageTypeUtilities.KEY_PHOTO_SENDING_STR);
+                    messages.add(temproraryChat);
 
                     postPhoto();
 
