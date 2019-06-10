@@ -66,7 +66,7 @@ public class InfoneProfileActivity extends BaseActivity {
     //private TextView desc;
     MaterialEditText phone1Et;
     MaterialEditText phone2Et;
-    Button saveEditBtn;
+//    Button saveEditBtn;
     SimpleDraweeView profileImage;
     Toolbar toolbar;
     private Menu menu;
@@ -74,8 +74,8 @@ public class InfoneProfileActivity extends BaseActivity {
     private TextView verifiedDateTextView, validLabel;
     private String verfiedDate;
     private Long postTimeMillis;
-    ImageButton phone1EtCallbtn;
-    ImageButton whatsAppBtn;
+    LinearLayout phone1Etll;
+    LinearLayout whatsAppll;
 
     /*image uploading elements*/
     private Uri mImageUri = null;
@@ -143,14 +143,14 @@ public class InfoneProfileActivity extends BaseActivity {
         linearLayout = (LinearLayout) findViewById(R.id.infone_profile_linear_layout);
         progressBar.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
-        whatsAppBtn = findViewById(R.id.infone_profile_whatsapp_btn);
+        whatsAppll = findViewById(R.id.whatsappll);
         nameEt = (MaterialEditText) findViewById(R.id.et_name_infone_profile);
         descTv = (TextView) findViewById(R.id.tv_desc_infone_profile);
         profileImage = (SimpleDraweeView) findViewById(R.id.image_profile_infone);
         phone1Et = (MaterialEditText) findViewById(R.id.et_phone1_infone_profile);
-        phone1EtCallbtn = (ImageButton) findViewById(R.id.infone_profile_callbtn);
+        phone1Etll =  findViewById(R.id.phone1ll);
         phone2Et = (MaterialEditText) findViewById(R.id.et_phone2_infone_profile);
-        saveEditBtn = (Button) findViewById(R.id.save_edit_infone_profile);
+//        saveEditBtn = (Button) findViewById(R.id.save_edit_infone_profile);
         validLabel = (TextView) findViewById(R.id.valid_label);
         validButton = (Button) findViewById(R.id.valid_button);
         verifiedDateTextView = (TextView) findViewById(R.id.verified_date);
@@ -160,7 +160,7 @@ public class InfoneProfileActivity extends BaseActivity {
         phone1Et.setEnabled(false);
         phone2Et.setEnabled(false);
         profileImage.setEnabled(false);
-        saveEditBtn.setVisibility(View.GONE);
+//        saveEditBtn.setVisibility(View.GONE);
 
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
         catID = getIntent().getExtras().getString("catID");
@@ -330,10 +330,12 @@ public class InfoneProfileActivity extends BaseActivity {
             }
         });
 
-        whatsAppBtn.setOnClickListener(new View.OnClickListener() {
+        if(phone2Et.getText().toString().length()<10){
+            whatsAppll.setVisibility(View.GONE);
+        }
+        whatsAppll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("whatsappNumber",phone2Et.getText().toString());
                 if(phone2Et.getText().toString().length()<10){
 
                     Toast.makeText(InfoneProfileActivity.this,"WhatsApp number does not exist.",Toast.LENGTH_SHORT).show();
@@ -344,7 +346,7 @@ public class InfoneProfileActivity extends BaseActivity {
             }
         });
 
-        phone1EtCallbtn.setOnClickListener(new View.OnClickListener() {
+        phone1Etll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -396,12 +398,12 @@ public class InfoneProfileActivity extends BaseActivity {
             }
         });
 
-        saveEditBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveEdits();
-            }
-        });
+//        saveEditBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                saveEdits();
+//            }
+//        });
 
         validButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -471,7 +473,7 @@ public class InfoneProfileActivity extends BaseActivity {
         phone1Et.setEnabled(true);
         phone2Et.setEnabled(true);
         profileImage.setEnabled(true);
-        saveEditBtn.setVisibility(View.VISIBLE);
+//        saveEditBtn.setVisibility(View.VISIBLE);
         validButton.setVisibility(View.GONE);
         validLabel.setVisibility(View.GONE);
 
