@@ -148,7 +148,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.message.setText(messageText);
                 Linkify.addLinks(holder.message, Linkify.ALL);
             }
-        }else if(message.getMessageType().equals("photo")) {
+        }
+        else if(message.getMessageType().equals("photo")) {
 
 
             final photoViewHolder holder = (photoViewHolder) rvHolder;
@@ -206,7 +207,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 });
             }
-        }else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_MESSAGE_STR)){
+        }
+        else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_MESSAGE_STR)){
 
             messageShopViewHolder holder = (messageShopViewHolder) rvHolder;
             long previousTs = 0;
@@ -259,7 +261,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.message.setText(messageText);
                 Linkify.addLinks(holder.message, Linkify.ALL);
             }
-        }else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_PHOTO_STR)) {
+        }
+        else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_PHOTO_STR)) {
 
 
             final photoShopViewHolder holder = (photoShopViewHolder) rvHolder;
