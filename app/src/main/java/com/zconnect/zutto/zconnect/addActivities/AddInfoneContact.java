@@ -40,6 +40,7 @@ import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
@@ -50,10 +51,12 @@ import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AddInfoneContact extends BaseActivity {
-
+    int count=0;
+    ArrayList<String> arrayList = new ArrayList<>();
     String catId,catName,catImageURL;
     int totalContacts;
     private SharedPreferences communitySP;
@@ -64,6 +67,7 @@ public class AddInfoneContact extends BaseActivity {
     MaterialEditText nameEt;
     MaterialEditText phone1Et, phone2Et, descEt;
     Button saveButton;
+    DatabaseReference databaseReference;
     SimpleDraweeView addImage;
     String key;
     private Long postTimeMillis;
@@ -137,8 +141,27 @@ public class AddInfoneContact extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         databaseReferenceInfone = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone");
+        databaseReferenceInfone.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("categoryInfo", String.valueOf(count));
+                for (DataSnapshot childsnapshot : dataSnapshot.child("categories").child(catId).getChildren()) {
+                    arrayList.add((String) childsnapshot.child("phone").child("0").getValue());
+                    Log.d("finalphoneNum", String.valueOf(count));
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         mStorageRef = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+
 
         databaseRecents = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -146,108 +169,126 @@ public class AddInfoneContact extends BaseActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-            String name = nameEt.getText().toString();
-            String phoneNum1 = phone1Et.getText().toString();
-            String phoneNum2 = phone2Et.getText().toString();
-            String desc = descEt.getText().toString();
-            desc = desc.isEmpty() ? "" : desc;
-            if (phoneNum1.isEmpty() && !phoneNum2.isEmpty()) {
-                phoneNum1 = phoneNum2;
-                phoneNum2 = "";
-            }
-
-            if (!name.isEmpty() && !phoneNum1.isEmpty() && !(phoneNum1.length()<10)) {
-
-                mProgress.setMessage("Saving Contact");
-                mProgress.setCancelable(false);
-                mProgress.show();
-
-                postTimeMillis = System.currentTimeMillis();
-                key = databaseReferenceInfone.child("numbers").push().getKey();
-                newContactNumRef = databaseReferenceInfone.child("numbers").child(key);
-                newContactRef = databaseReferenceInfone.child("categories").child(catId).child(key);
-                categoryInfo = databaseReferenceInfone.child("categoriesInfo").child(catId);
-
-                Log.e(TAG, "data phone:" + key + " " + phoneNum1);
-
-                //Inside Categories Info
-                categoryInfo.child("totalContacts").setValue(totalContacts + 1);
-
-                //Inside Categories
-                newContactRef.child("name").setValue(name);
-                newContactRef.child("phone").child("0").setValue(phoneNum1);
-                newContactRef.child("phone").child("1").setValue(phoneNum2);
-                newContactRef.child("desc").setValue(desc);
-                newContactRef.child("key").child(key);
-
-                //Inside Contacts
-                newContactNumRef.child("category").setValue(catId);
-                newContactNumRef.child("key").child(key);
-                newContactNumRef.child("name").setValue(name);
-                newContactNumRef.child("phone").child("0").setValue(phoneNum1);
-                newContactNumRef.child("phone").child("1").setValue(phoneNum2);
-                newContactNumRef.child("type").setValue("NotUser");
-                newContactNumRef.child("validCount").setValue(0);
-                newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
-                newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
-                newContactNumRef.child("desc").setValue(desc);
-                newContactNumRef.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                uploadImage();
-
-                //Inside Recents
-                final DatabaseReference recentsPost = databaseRecents.push();
-                final DatabaseReference recentsPostPostedBy = recentsPost.child("PostedBy");
-
-                recentsPost.child("infoneContactName").setValue(name);
-                recentsPostPostedBy.setValue(null);
-                recentsPost.child("infoneContactCategoryName").setValue(catName);
-                recentsPost.child("id").setValue(key);
-                recentsPost.child("feature").setValue("Infone");
-                recentsPost.child("desc").setValue(catId);
-                recentsPost.child("PostTimeMillis").setValue(postTimeMillis);
-                recentsPostPostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                        recentsPostPostedBy.child("Username").setValue(user.getUsername());
-                        newContactNumRef.child("PostedBy").child("Username").setValue(user.getUsername());
-                        recentsPostPostedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
-                        newContactNumRef.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-                ////writing uid of post to homePosts node in Users1.uid for handling data conistency
-                mPostedByDetails.child("homePosts").child(recentsPost.getKey()).setValue(true);
-
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-
-                meta.put("catID",catId);
-
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_ADDED_CONTACT);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-
-            }else {
-                if(phoneNum1.length()<10) {
-                    Snackbar snackbar = Snackbar.make(nameEt, "Please check the contact details", Snackbar.LENGTH_LONG);
-                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
-                    snackbar.show();
-                }else {
-                    Toast.makeText(AddInfoneContact.this, "All fields not set, including image.", Toast.LENGTH_SHORT).show();
+                String name = nameEt.getText().toString();
+                String phoneNum1 = phone1Et.getText().toString();
+                String phoneNum2 = phone2Et.getText().toString();
+                String desc = descEt.getText().toString();
+                desc = desc.isEmpty() ? "" : desc;
+                if (phoneNum1.isEmpty() && !phoneNum2.isEmpty()) {
+                    phoneNum1 = phoneNum2;
+                    phoneNum2 = "";
                 }
-            }
+
+                if (!name.isEmpty() && !phoneNum1.isEmpty() && !(phoneNum1.length()<10)) {
+
+                    mProgress.setMessage("Saving Contact");
+                    mProgress.setCancelable(false);
+                    mProgress.show();
+
+                    postTimeMillis = System.currentTimeMillis();
+                    key = databaseReferenceInfone.child("numbers").push().getKey();
+
+                    newContactNumRef = databaseReferenceInfone.child("numbers").child(key);
+
+                    newContactRef = databaseReferenceInfone.child("categories").child(catId).child(key);
+
+                    categoryInfo = databaseReferenceInfone.child("categoriesInfo").child(catId);
+
+
+
+
+                    final String finalPhoneNum = phoneNum1;
+
+                    for (String mobNum : arrayList){
+                        Log.d("MobNUm",mobNum);
+                        if(mobNum.equals(finalPhoneNum)){
+
+                            Log.d(TAG, "data phone:" + " " + mobNum);
+                            count=1;
+                            mProgress.dismiss();
+                            Toast.makeText(AddInfoneContact.this, "Number already exists", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                    if(count!=1) {
+                        //Inside Categories Info
+                        categoryInfo.child("totalContacts").setValue(totalContacts + 1);
+
+                        //Inside Categories
+                        newContactRef.child("name").setValue(name);
+                        newContactRef.child("phone").child("0").setValue(phoneNum1);
+                        newContactRef.child("phone").child("1").setValue(phoneNum2);
+                        newContactRef.child("desc").setValue(desc);
+                        newContactRef.child("key").child(key);
+
+                        //Inside Contacts
+                        newContactNumRef.child("category").setValue(catId);
+                        newContactNumRef.child("key").child(key);
+                        newContactNumRef.child("name").setValue(name);
+                        newContactNumRef.child("phone").child("0").setValue(phoneNum1);
+                        newContactNumRef.child("phone").child("1").setValue(phoneNum2);
+                        newContactNumRef.child("type").setValue("NotUser");
+                        newContactNumRef.child("validCount").setValue(0);
+                        newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
+                        newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
+                        newContactNumRef.child("desc").setValue(desc);
+                        newContactNumRef.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        uploadImage();
+                        Log.d(TAG, "DATA UPLOADED" + " ");
+                        //Inside Recents
+                        final DatabaseReference recentsPost = databaseRecents.push();
+                        final DatabaseReference recentsPostPostedBy = recentsPost.child("PostedBy");
+
+                        recentsPost.child("infoneContactName").setValue(name);
+                        recentsPostPostedBy.setValue(null);
+                        recentsPost.child("infoneContactCategoryName").setValue(catName);
+                        recentsPost.child("id").setValue(key);
+                        recentsPost.child("feature").setValue("Infone");
+                        recentsPost.child("desc").setValue(catId);
+                        recentsPost.child("PostTimeMillis").setValue(postTimeMillis);
+                        recentsPostPostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+                                recentsPostPostedBy.child("Username").setValue(user.getUsername());
+                                newContactNumRef.child("PostedBy").child("Username").setValue(user.getUsername());
+                                recentsPostPostedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+                                newContactNumRef.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        ////writing uid of post to homePosts node in Users1.uid for handling data conistency
+                        mPostedByDetails.child("homePosts").child(recentsPost.getKey()).setValue(true);
+
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta = new HashMap<>();
+
+                        meta.put("catID", catId);
+
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_ADDED_CONTACT);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        counterItemFormat.setMeta(meta);
+
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+                    }
+                    else{finish();}
+                }else {
+                    if(phoneNum1.length()<10) {
+                        Snackbar snackbar = Snackbar.make(nameEt, "Please check the contact details", Snackbar.LENGTH_LONG);
+                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                        snackbar.show();
+                    }else {
+                        Toast.makeText(AddInfoneContact.this, "All fields not set, including image.", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
             }
         });
