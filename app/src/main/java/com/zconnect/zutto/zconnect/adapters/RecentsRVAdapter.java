@@ -15,7 +15,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
@@ -380,13 +382,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
                     holder.postConjunction.setText(" added a ");
-                    holder.post.setText("Contact");
+                    holder.post.setText("contact");
                     holder.infoneNameCategorySentence.setText("Contact of " +
                             recentsItemFormats.get(position).getInfoneContactName() +
                             " added in " +
                             recentsItemFormats.get(position).getInfoneContactCategoryName());
                     posted = " added a ";
-                    post = "Contact";
+                    post = "contact";
                     clickableSpanFeature = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
@@ -1013,21 +1015,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 String sentence = name + posted + post;
                 SpannableString spannableString = new SpannableString(sentence);
-
                 spannableString.setSpan(clickableSpanPostedBy, sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 spannableString.setSpan(clickableSpanFeature, sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.link));
+                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
                 spannableString.setSpan(foregroundColorSpan, sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 if(post.equals("status"))
-                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.secondaryText));
+                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
                 else
-                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.link));
+                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
                 spannableString.setSpan(foregroundColorSpan, sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.secondaryText));
+                foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
                 spannableString.setSpan(foregroundColorSpan, sentence.indexOf(posted), sentence.indexOf(posted) + posted.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
+                spannableString.setSpan(new android.text.style.StyleSpan(BOLD), sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new android.text.style.StyleSpan(BOLD), sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 holder.sentence.setText(spannableString);
                 holder.sentence.setMovementMethod(LinkMovementMethod.getInstance());
                 break;
@@ -1420,7 +1422,35 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             final RelativeLayout likeLayout = (RelativeLayout) itemView.findViewById(R.id.messagesRecentItem_like_layout);
             final ImageView likeIcon = (ImageView) itemView.findViewById(R.id.like_image_status);
             final TextView likeText = (TextView) itemView.findViewById(R.id.like_text_status);
-            statusDatabase.child("likeUids").addValueEventListener(new ValueEventListener() {
+
+
+            likeIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(statusLikeFlag == true){
+                        statusLikeFlag = false;
+                        likeText.setText(String.valueOf(Integer.valueOf(likeText.getText().toString())-1));
+                        if(likeText.getText().toString().equals("0")){
+                            likeText.setText("");
+                        }
+                        likeIcon.setColorFilter(itemView.getContext().getResources().getColor(R.color.icon_color));
+                        likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
+                    }else{
+                        statusLikeFlag = true;
+                        likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
+                        likeIcon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+                        if(likeText.getText().toString().equals("")){
+                            likeText.setText("1");
+                        }else {
+                            likeText.setText(String.valueOf(Integer.valueOf(likeText.getText().toString()) + 1));
+                        }
+
+                    }
+                }
+            });
+
+
+            statusDatabase.child("likeUids").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     statusLikeCount = dataSnapshot.getChildrenCount();
