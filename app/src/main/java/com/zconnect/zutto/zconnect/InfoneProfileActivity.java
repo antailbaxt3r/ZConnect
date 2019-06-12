@@ -1,12 +1,15 @@
 package com.zconnect.zutto.zconnect;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.icu.text.IDNA;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -20,10 +23,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,8 +57,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
-
 public class InfoneProfileActivity extends BaseActivity {
 
     /*UI elements*/
@@ -66,16 +66,15 @@ public class InfoneProfileActivity extends BaseActivity {
     //private TextView desc;
     MaterialEditText phone1Et;
     MaterialEditText phone2Et;
-    Button saveEditBtn;
+//    Button saveEditBtn;
     SimpleDraweeView profileImage;
     Toolbar toolbar;
     private Menu menu;
-    private Button validButton;
     private TextView verifiedDateTextView, validLabel;
     private String verfiedDate;
     private Long postTimeMillis;
-    ImageButton phone1EtCallbtn;
-    ImageButton whatsAppBtn;
+    private RelativeLayout phone1Etrl;
+    private RelativeLayout whatsApprl;
 
     /*image uploading elements*/
     private Uri mImageUri = null;
@@ -105,6 +104,35 @@ public class InfoneProfileActivity extends BaseActivity {
     private DatabaseReference mDatabaseViews;
     private Boolean flag;
     private Button viewProfileButton;
+
+    //Elements for call verification(All belong to the popup dialog
+    private static boolean hasCalled = false;
+    Dialog verifyDialog;
+    Button dialogVerifyYesbtn;
+    Button dialogVerifyNobtn;
+    MaterialEditText dialogVerifyphoneEt;
+    MaterialEditText dialogVerifyNameEt;
+    SimpleDraweeView dialogVerifyProfileImg;
+
+    //Elements for VerifiedProgress
+    LinearLayout validatePercentYesLl;
+    LinearLayout validatePercentNoLl;
+    LinearLayout validatePercentLl;
+
+
+    //Elements for valid/invalid
+    private RelativeLayout validrl; //Encloses
+    private LinearLayout validLl;
+    private Button validButton;
+    private Button invalidButton;
+
+
+
+
+
+
+
+
 
     private final String TAG = getClass().getSimpleName();
     private String name, desc,mobileNumber;
@@ -143,24 +171,27 @@ public class InfoneProfileActivity extends BaseActivity {
         linearLayout = (LinearLayout) findViewById(R.id.infone_profile_linear_layout);
         progressBar.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
-        whatsAppBtn = findViewById(R.id.infone_profile_whatsapp_btn);
+        whatsApprl = findViewById(R.id.whatsappll);
         nameEt = (MaterialEditText) findViewById(R.id.et_name_infone_profile);
         descTv = (TextView) findViewById(R.id.tv_desc_infone_profile);
         profileImage = (SimpleDraweeView) findViewById(R.id.image_profile_infone);
         phone1Et = (MaterialEditText) findViewById(R.id.et_phone1_infone_profile);
-        phone1EtCallbtn = (ImageButton) findViewById(R.id.infone_profile_callbtn);
+        phone1Etrl =  findViewById(R.id.phone1ll);
         phone2Et = (MaterialEditText) findViewById(R.id.et_phone2_infone_profile);
-        saveEditBtn = (Button) findViewById(R.id.save_edit_infone_profile);
+//        saveEditBtn = (Button) findViewById(R.id.save_edit_infone_profile);
         validLabel = (TextView) findViewById(R.id.valid_label);
         validButton = (Button) findViewById(R.id.valid_button);
         verifiedDateTextView = (TextView) findViewById(R.id.verified_date);
         viewProfileButton = (Button) findViewById(R.id.viewProfileButton);
+        validatePercentLl = findViewById(R.id.validate_percent);
+        validatePercentNoLl = findViewById(R.id.validate_percent_no);
+        validatePercentYesLl = findViewById(R.id.validate_percent_yes);
 
         nameEt.setEnabled(false);
         phone1Et.setEnabled(false);
         phone2Et.setEnabled(false);
         profileImage.setEnabled(false);
-        saveEditBtn.setVisibility(View.GONE);
+//        saveEditBtn.setVisibility(View.GONE);
 
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
         catID = getIntent().getExtras().getString("catID");
@@ -178,6 +209,33 @@ public class InfoneProfileActivity extends BaseActivity {
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
+
+        verifyDialog =new Dialog(this);
+        verifyDialog.setContentView(R.layout.dialog_validate_number);
+        verifyDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogVerifyYesbtn = verifyDialog.findViewById(R.id.validate_infone_yes_btn);
+        dialogVerifyNobtn = verifyDialog.findViewById(R.id.validate_infone_no_btn);
+        dialogVerifyNameEt = verifyDialog.findViewById(R.id.et_name_infone_profile);
+        dialogVerifyphoneEt = verifyDialog.findViewById(R.id.et_phone1_infone_profile);
+        dialogVerifyProfileImg = verifyDialog.findViewById(R.id.image_profile_infone);
+        dialogVerifyYesbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).setValue("true");
+                verifyDialog.dismiss();
+
+            }
+        });
+        dialogVerifyNobtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                databaseReferenceInfone.child("numbers").child(infoneUserId).child("invalid").child(mAuth.getCurrentUser().getUid()).setValue("true");
+                verifyDialog.dismiss();
+
+            }
+        });
+
         Log.e(TAG, "data comRef:" + communityReference);
 
         updateViews();
@@ -189,7 +247,8 @@ public class InfoneProfileActivity extends BaseActivity {
                 name = dataSnapshot.child("name").getValue(String.class);
                 desc = dataSnapshot.child("desc").getValue(String.class);
                 nameEt.setText(name);
-                toolbar.setTitle(name);
+                dialogVerifyNameEt.setText(name);
+                toolbar.setTitle("Contact Details");
 //                if(desc==null && dataSnapshot.child("type").getValue(String.class).equals("User"))
 //                {
 //                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB).child(communityReference)
@@ -235,7 +294,37 @@ public class InfoneProfileActivity extends BaseActivity {
 
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);
-                validButton.setText(dataSnapshot.child("validCount").getValue().toString() + " validations");
+                validLabel.setText(dataSnapshot.child("validCount").getValue().toString() + " validations");
+                int validCounts = Integer.parseInt(dataSnapshot.child("validCount").getValue().toString());
+                int invalidCounts = 0;
+                if(dataSnapshot.hasChild("invalidCount")){
+                    invalidCounts = Integer.parseInt(dataSnapshot.child("invalidCount").getValue().toString());
+                }
+                else{
+                    databaseReferenceContact.child("invalidCount").setValue(0);
+                }
+
+                int totalCounts = validCounts+invalidCounts;
+                validatePercentLl.setVisibility(View.VISIBLE);
+                if(totalCounts<1){
+                    validatePercentLl.setVisibility(View.GONE);
+                }
+                else {
+                    LinearLayout.LayoutParams yesLlLayoutParams = (LinearLayout.LayoutParams) validatePercentYesLl.getLayoutParams();
+                    yesLlLayoutParams.weight = (float) validCounts / (float) totalCounts;
+                    LinearLayout.LayoutParams noLlLayoutParams = (LinearLayout.LayoutParams) validatePercentNoLl.getLayoutParams();
+                    noLlLayoutParams.weight = 1 - yesLlLayoutParams.weight;
+                }
+                if(dataSnapshot.child("validCount").getValue().toString().equals("0")){
+                    validLabel.setText("No Validations yet");
+
+                }
+
+                else if(dataSnapshot.child("validCount").getValue().toString().equals("1")){
+                    validLabel.setText(dataSnapshot.child("validCount").getValue().toString() + " validation");
+
+                }
+
 
                 userType = dataSnapshot.child("type").getValue(String.class);
                 verfiedDate = dataSnapshot.child("verifiedDate").getValue().toString();
@@ -243,7 +332,9 @@ public class InfoneProfileActivity extends BaseActivity {
                 verifiedDateTextView.setText(ta.calculateTimeAgo());
 
                 if (userType.equals("User")) {
-                    menu.findItem(R.id.action_edit).setVisible(false);
+                    if(menu != null) {
+                        menu.findItem(R.id.action_edit).setVisible(false);
+                    }
                     viewProfileButton.setVisibility(View.VISIBLE);
                     viewProfileButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -275,19 +366,27 @@ public class InfoneProfileActivity extends BaseActivity {
                 if (imageUrl != null && !imageUrl.equalsIgnoreCase("default")) {
                     Uri imageUri = Uri.parse(imageUrl);
                     profileImage.setImageURI(imageUri);
+                    dialogVerifyProfileImg.setImageURI(imageUri);
                 }
 
                 if (dataSnapshot.child("valid").hasChild(mAuth.getCurrentUser().getUid())){
                     flag=true;
-                    validButton.setBackground(getResources().getDrawable(R.drawable.round_button_simple));
-                    validButton.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+                    validButton.setText("Invalidate");
+                    validButton.setTextColor(getResources().getColor(R.color.gray_holo_dark));
+
+//                    validButton.setBackground(getResources().getDrawable(R.drawable.round_button_simple));
+//                    validButton.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }else {
-                    validButton.setBackground(getResources().getDrawable(R.drawable.round_button_primary));
-                    validButton.setTextColor(getResources().getColor(R.color.white));
+                    validButton.setText("Validate");
+                    validButton.setTextColor(getResources().getColor(R.color.colorPrimary));
+//                    validButton.setBackground(getResources().getDrawable(R.drawable.round_button_primary));
+//                    validButton.setTextColor(getResources().getColor(R.color.white));
                     flag=false;
                 }
 
                 databaseReferenceContact.child("validCount").setValue(dataSnapshot.child("valid").getChildrenCount());
+                databaseReferenceContact.child("validCount").setValue(dataSnapshot.child("invalid").getChildrenCount());
 
 
                 phoneNums = new ArrayList<>();
@@ -300,9 +399,16 @@ public class InfoneProfileActivity extends BaseActivity {
                 }
 
                 phone1Et.setText(phoneNums.get(0));
+                dialogVerifyphoneEt.setText(phoneNums.get(0));
                 mobileNumber = phoneNums.get(0);
                 phone2Et.setText(phoneNums.get(1));
                 verifiedDateTextView.setText(ta.calculateTimeAgo());
+                if(phone2Et.getText().toString().length()<9){
+                    whatsApprl.setVisibility(View.GONE);
+                }
+                if(phone1Et.getText().toString().length()<9){
+                    phone1Etrl.setVisibility(View.GONE);
+                }
 
                 progressBar.setVisibility(View.GONE);
                 linearLayout.setVisibility(View.VISIBLE);
@@ -330,10 +436,10 @@ public class InfoneProfileActivity extends BaseActivity {
             }
         });
 
-        whatsAppBtn.setOnClickListener(new View.OnClickListener() {
+
+        whatsApprl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("whatsappNumber",phone2Et.getText().toString());
                 if(phone2Et.getText().toString().length()<10){
 
                     Toast.makeText(InfoneProfileActivity.this,"WhatsApp number does not exist.",Toast.LENGTH_SHORT).show();
@@ -344,12 +450,12 @@ public class InfoneProfileActivity extends BaseActivity {
             }
         });
 
-        phone1EtCallbtn.setOnClickListener(new View.OnClickListener() {
+        phone1Etrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 callCounter();
-
+                hasCalled = true;
                 Intent intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse("tel:" + phone1Et.getText().toString()));
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -396,12 +502,12 @@ public class InfoneProfileActivity extends BaseActivity {
             }
         });
 
-        saveEditBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveEdits();
-            }
-        });
+//        saveEditBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                saveEdits();
+//            }
+//        });
 
         validButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -471,7 +577,7 @@ public class InfoneProfileActivity extends BaseActivity {
         phone1Et.setEnabled(true);
         phone2Et.setEnabled(true);
         profileImage.setEnabled(true);
-        saveEditBtn.setVisibility(View.VISIBLE);
+//        saveEditBtn.setVisibility(View.VISIBLE);
         validButton.setVisibility(View.GONE);
         validLabel.setVisibility(View.GONE);
 
@@ -627,6 +733,9 @@ public class InfoneProfileActivity extends BaseActivity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+
+
+        hasCalled = true;
         startActivity(intent);
 
         Toast.makeText(this, "call being made to " + strName, Toast.LENGTH_SHORT).show();
@@ -680,11 +789,37 @@ public class InfoneProfileActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("Test","onResume");
+        if(hasCalled) {
+            Toast.makeText(InfoneProfileActivity.this, "How was your call bruh?", Toast.LENGTH_SHORT);
+        }
         databaseReferenceContact.addValueEventListener(listener);
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("Try","onPause");
+        if(hasCalled) {
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    verifyDialog.show();
+                    hasCalled = false;
+                }
+            }, 5000);
+
+        }
+
     }
 
     @Override
     protected void onStop() {
+        Log.d("Try","OnStop");
         super.onStop();
         databaseReferenceContact.removeEventListener(listener);
         mDatabaseViews.removeEventListener(listenerView);

@@ -189,6 +189,7 @@ public class AddInfoneContact extends BaseActivity {
                 newContactNumRef.child("phone").child("1").setValue(phoneNum2);
                 newContactNumRef.child("type").setValue("NotUser");
                 newContactNumRef.child("validCount").setValue(0);
+                newContactNumRef.child("invalidCount").setValue(0);
                 newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
                 newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
                 newContactNumRef.child("desc").setValue(desc);
