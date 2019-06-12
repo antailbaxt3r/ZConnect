@@ -74,6 +74,8 @@ public class Recents extends Fragment {
     Vector<RecentsItemFormat> normalPostsUsers = new Vector<RecentsItemFormat>();
     Vector<RecentsItemFormat> normalPosts = new Vector<RecentsItemFormat>();
 
+    private Boolean setRecyclerView = true;
+
     private FirebaseAnalytics mFirebaseAnalytics;
     LinearLayoutManager productLinearLayoutManager;
     OnHomeIconListener mCallback;
@@ -142,7 +144,7 @@ public class Recents extends Fragment {
                 }, 3000);
             }
         });
-        recyclerView.setNestedScrollingEnabled(false);
+//        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         productLinearLayoutManager = new LinearLayoutManager(getContext());
         mCallback.getLayoutManager(productLinearLayoutManager);
@@ -187,6 +189,7 @@ public class Recents extends Fragment {
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+
 
             }
 
@@ -251,6 +254,8 @@ public class Recents extends Fragment {
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+
+
             }
 
             @Override

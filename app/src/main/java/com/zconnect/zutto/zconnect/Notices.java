@@ -72,7 +72,7 @@ public class Notices extends BaseActivity {
 
         noticesRV =(RecyclerView)findViewById(R.id.photos);
         shimmerFrameLayout = findViewById(R.id.shimmer_view_container_notices);
-        noticesRV.setLayoutManager(new GridLayoutManager(this, 3));
+        noticesRV.setLayoutManager(new GridLayoutManager(this, 2));
         noticesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("notices").child("activeNotices");
         add_photo =(FloatingActionButton)findViewById(R.id.add_photo);
         shimmerFrameLayout.startShimmerAnimation();
