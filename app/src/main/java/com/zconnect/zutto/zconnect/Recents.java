@@ -142,7 +142,7 @@ public class Recents extends Fragment {
                 }, 3000);
             }
         });
-        recyclerView.setNestedScrollingEnabled(false);
+//        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         productLinearLayoutManager = new LinearLayoutManager(getContext());
         mCallback.getLayoutManager(productLinearLayoutManager);

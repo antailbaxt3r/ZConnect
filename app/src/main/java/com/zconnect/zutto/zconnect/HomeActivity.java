@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -26,6 +27,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -56,6 +58,7 @@ import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.fragments.NotificationsFragment;
+import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.pools.MyOrdersActivity;
@@ -102,6 +105,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference currentUserReference;
     private DatabaseReference mDatabasePopUps;
     private DatabaseReference communityInfoRef;
+
+    private DatabaseReference communityFeaturesRef;
+    private Menu nav_Menu;
+
     private Boolean isFabOpen;
     private FloatingActionButton fab, fab1, fab2, fab3;
     private Animation fab_open, fab_close, rotate_forward, rotate_backward;
@@ -138,7 +145,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        TODO check for loopholes in referral system
+
+        //        TODO check for loopholes in referral system
 
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
@@ -156,6 +164,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         bottomSheetFragment = new HomeBottomSheet();
 
+
         View navHeader = navigationView.getHeaderView(0);
 
         // Navigation Drawer initialization
@@ -168,6 +177,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) tabs.getLayoutParams();
+        layoutParams.setBehavior(new BottomNavigationViewBehavior());
 
         navigationView.setNavigationItemSelectedListener(this);
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
@@ -190,7 +202,47 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabs();
 
+        communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
 
+        nav_Menu = navigationView.getMenu();
+
+        communityFeaturesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                CommunityFeatures communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
+
+                try {
+
+                    if (communityFeatures.getCabpool().equals("true")){
+                        nav_Menu.findItem(R.id.MyRides).setVisible(true);
+                    }else {
+                        nav_Menu.findItem(R.id.MyRides).setVisible(false);
+                    }
+
+                    if (communityFeatures.getShops().equals("true")){
+                        nav_Menu.findItem(R.id.MyOrders).setVisible(true);
+                    }else {
+                        nav_Menu.findItem(R.id.MyOrders).setVisible(false);
+                    }
+
+                    if (communityFeatures.getStoreroom().equals("true")){
+                        nav_Menu.findItem(R.id.MyProducts).setVisible(true);
+                    }else {
+                        nav_Menu.findItem(R.id.MyProducts).setVisible(false);
+                    }
+
+
+                }catch (Exception e){
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //Circular notification in the bottom navigation

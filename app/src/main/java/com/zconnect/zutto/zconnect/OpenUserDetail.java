@@ -465,6 +465,9 @@ public class OpenUserDetail extends BaseActivity {
             skillsArray[skillsArray.length - 1] = skillsArray[skillsArray.length - 1]
                     .substring(0, skillsArray[skillsArray.length - 1].length() - 1);
             editTextSkills.setTags(skillsArray);
+            editTextSkills.setClickable(false);
+            editTextSkills.setEnabled(false);
+
         } else {
             editTextSkills.setVisibility(View.GONE);
         }
