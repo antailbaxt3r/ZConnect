@@ -118,14 +118,15 @@
         android:layout_marginTop="5dp"
         android:text="Choose Category"
         android:textColor="@color/primaryText"/>
-    <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
-        android:id="@+id/categories"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/categories"
-        android:padding="10dp"
-        android:prompt="@string/category_prompt"
-        android:spinnerMode="dialog" />
+
+        <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
+            android:id="@+id/categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/categories"
+            android:padding="10dp"
+            android:prompt="@string/category_prompt"
+            android:spinnerMode="dialog" />
 
     <View
         android:layout_width="match_parent"

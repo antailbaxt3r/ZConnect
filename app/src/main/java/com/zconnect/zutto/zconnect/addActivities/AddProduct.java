@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.Continuation;
@@ -140,7 +141,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         spinner1 = (CustomSpinner) findViewById(R.id.categories);
         negotiableCheckBox=(CheckBox) findViewById(R.id.priceNegotiable);
-        spinner1.setSelection(6);
+        spinner1.setSelection(7);
         mAuth = FirebaseAuth.getInstance();
         mProgress = new ProgressDialog(this);
 
@@ -250,9 +251,10 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
     private void startPosting() {
-
-        mProgress.setMessage("Posting Product..");
-        mProgress.show();
+        if(!String.valueOf(spinner1.getSelectedItem()).equals("Choose Category")) {
+            mProgress.setMessage("Posting Product..");
+            mProgress.show();
+        }
         final String productNameValue = mProductName.getText().toString().trim();
         final String productDescriptionValue = mProductDescription.getText().toString().trim();
         final String productPriceValue = mProductPrice.getText().toString().trim();
@@ -333,25 +335,27 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                 }
                 if (noFieldsEmpty) {
                     Log.i("EEEEEEEEEEEEE", "entered");
-                    if(mImageUri!=null)
+                    if(String.valueOf(spinner1.getSelectedItem()).equals("Choose Category"))
                     {
-                        final StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
-                        UploadTask uploadTask = filepath.putFile(mImageUri);
-                        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if(!task.isSuccessful())
-                                {
-                                    throw task.getException();
+                        Toast.makeText(AddProduct.this, "Please select a category for the product", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        if (mImageUri != null) {
+                            final StorageReference filepath = mStorage.child("ProductImage").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
+                            UploadTask uploadTask = filepath.putFile(mImageUri);
+                            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                @Override
+                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                    if (!task.isSuccessful()) {
+                                        throw task.getException();
+                                    }
+                                    return filepath.getDownloadUrl();
                                 }
-                                return filepath.getDownloadUrl();
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if(task.isSuccessful())
-                                {
-                                    final Uri downloadUri = task.getResult();
+                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        final Uri downloadUri = task.getResult();
 //                        final DatabaseReference newPost = mDatabase.push();
 //                        final DatabaseReference postedBy = newPost.child("PostedBy");
 //                        key = newPost.getKey();
@@ -364,8 +368,8 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 //                        newPost.child("PostedBy").setValue(mAuth.getCurrentUser().getUid());
 //                        newPost.child("userID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 //                        newPost.child("PostTimeMillis").setValue(postTimeMillis);
-                                    taskMap.put("Image", downloadUri != null ? downloadUri.toString() : null);
-                                    taskMapHome.put("imageurl", downloadUri != null ? downloadUri.toString() : null);
+                                        taskMap.put("Image", downloadUri != null ? downloadUri.toString() : null);
+                                        taskMapHome.put("imageurl", downloadUri != null ? downloadUri.toString() : null);
 //                        postedBy.setValue(null);
 //                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 //                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -385,8 +389,6 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 //                        });
 
 
-
-
 //                        DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
 //                        final DatabaseReference newPost2Postedby = newPost2.child("PostedBy");
 //                        newPost2.child("name").setValue(productNameValue);
@@ -400,57 +402,54 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 //                        newPost2Postedby.setValue(null);
 //                        newPost2Postedby.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                    _newPost.updateChildren(taskMap, new DatabaseReference.CompletionListener() {
-                                        @Override
-                                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                                            if(databaseError != null)
-                                                Log.i("WWWWWW Error upd", databaseError.getMessage());
-                                            else
-                                                Log.i("WWWWWW No Error", "Yahoo!");
-                                        }
-                                    });
-                                    _newPost2.updateChildren(taskMapHome, new DatabaseReference.CompletionListener() {
-                                        @Override
-                                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                                            if(databaseError != null)
-                                                Log.i("WWWWWW home Error upd", databaseError.getMessage());
-                                            else
-                                                Log.i("WWWWWW home No Error", "Yahoo!");
-                                        }
-                                    });
+                                        _newPost.updateChildren(taskMap, new DatabaseReference.CompletionListener() {
+                                            @Override
+                                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                                if (databaseError != null)
+                                                    Log.i("WWWWWW Error upd", databaseError.getMessage());
+                                                else
+                                                    Log.i("WWWWWW No Error", "Yahoo!");
+                                            }
+                                        });
+                                        _newPost2.updateChildren(taskMapHome, new DatabaseReference.CompletionListener() {
+                                            @Override
+                                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                                if (databaseError != null)
+                                                    Log.i("WWWWWW home Error upd", databaseError.getMessage());
+                                                else
+                                                    Log.i("WWWWWW home No Error", "Yahoo!");
+                                            }
+                                        });
 //                            _newPost.setValue(taskMap);
 //                            _newPost2.setValue(taskMapHome);
-                                    ////writing uid of product to homePosts node in Users1.uid for handling data conistency
-                                    mPostedByDetails.child("homePosts").child(key).setValue(true);
+                                        ////writing uid of product to homePosts node in Users1.uid for handling data conistency
+                                        mPostedByDetails.child("homePosts").child(key).setValue(true);
 
-                                    handleNotifAndCountAndStats(productNameValue, productPriceValue, downloadUri);
-                                    GlobalFunctions.addPoints(10);
-                                    mProgress.dismiss();
-                                    finish();
+                                        handleNotifAndCountAndStats(productNameValue, productPriceValue, downloadUri);
+                                        GlobalFunctions.addPoints(10);
+                                        mProgress.dismiss();
+                                        finish();
+                                    } else {
+                                        // Handle failures
+                                        // ...
+                                        Snackbar snackbar = Snackbar.make(mProductName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                                        snackbar.show();
+                                    }
                                 }
-                                else {
-                                    // Handle failures
-                                    // ...
-                                    Snackbar snackbar = Snackbar.make(mProductName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
-                                    snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
-                                    snackbar.show();
-                                }
-                            }
-                        });
-                    }
-                    else
-                    {
-                        _newPost.setValue(taskMap);
-                        _newPost2.setValue(taskMapHome);
-                        ////writing uid of product to homePosts node in Users1.uid for handling data conistency
-                        mPostedByDetails.child("homePosts").child(key).setValue(true);
+                            });
+                        } else {
+                            _newPost.setValue(taskMap);
+                            _newPost2.setValue(taskMapHome);
+                            ////writing uid of product to homePosts node in Users1.uid for handling data conistency
+                            mPostedByDetails.child("homePosts").child(key).setValue(true);
 
-                        handleNotifAndCountAndStats(productNameValue, productPriceValue, null);
-                        GlobalFunctions.addPoints(10);
-                        mProgress.dismiss();
-                        finish();
+                            handleNotifAndCountAndStats(productNameValue, productPriceValue, null);
+                            GlobalFunctions.addPoints(10);
+                            mProgress.dismiss();
+                            finish();
+                        }
                     }
-
                 } else {
                     Snackbar snack = Snackbar.make(mProductDescription, "Fields are empty. Can't Add Product.", Snackbar.LENGTH_LONG);
                     TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
