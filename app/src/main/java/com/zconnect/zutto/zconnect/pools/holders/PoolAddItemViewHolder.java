@@ -1,14 +1,20 @@
 package com.zconnect.zutto.zconnect.pools.holders;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.viewImage;
 import com.zconnect.zutto.zconnect.pools.adapters.PoolAddItemAdapter;
 import com.zconnect.zutto.zconnect.pools.models.PoolItem;
 
@@ -41,19 +47,43 @@ public class PoolAddItemViewHolder extends RecyclerView.ViewHolder implements Vi
         quantity = itemView.findViewById(R.id.quantity_display);
     }
 
-    public void populate(PoolItem item) {
+    public void populate(final PoolItem item) {
         this.item = item;
         Log.d("PoolDishViewHolder", "populate : " + item.getName());
         name.setText(item.getName());
         quantity.setText(String.valueOf(item.getQuantity()));
         description.setText(item.getDescription());
-        dishImage.setImageURI(item.getImageURL());
+        dishImage.setImageURI(item.getImageThumb());
         number = item.getQuantity();
         price.setText(itemView.getContext().getResources().getString(R.string.Rs) + item.getPrice());
         increment.setOnClickListener(this);
         decrement.setOnClickListener(this);
         add.setOnClickListener(this);
 
+
+        dishImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ProgressDialog mProgress = new ProgressDialog(itemView.getContext());
+                mProgress.setMessage("Loading...");
+                mProgress.show();
+                animate((Activity)itemView.getContext(), item.getName(), item.getImageURL(), dishImage);
+                mProgress.dismiss();
+
+            }
+        });
+
+    }
+
+    public void animate(final Activity activity, final String name, String url, ImageView productImage) {
+        final Intent i = new Intent(itemView.getContext(), viewImage.class);
+        i.putExtra("currentEvent", name);
+        i.putExtra("eventImage", url);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        final ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, productImage, itemView.getContext().getResources().getString(R.string.transition_string));
+
+        itemView.getContext().startActivity(i, optionsCompat.toBundle());
     }
 
     @Override

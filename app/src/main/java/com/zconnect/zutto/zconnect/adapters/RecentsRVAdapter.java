@@ -27,7 +27,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -67,6 +66,7 @@ import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.Recents;
 import com.zconnect.zutto.zconnect.ReferralCode;
 import com.zconnect.zutto.zconnect.Shop_detail;
 import com.zconnect.zutto.zconnect.TabStoreRoom;
@@ -110,7 +110,7 @@ import static android.graphics.Typeface.BOLD;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
-public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     Context context;
     Vector<RecentsItemFormat> recentsItemFormats;
@@ -1280,7 +1280,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     counterPush.pushValues();
 
                                     FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(postID).removeValue();
+                                    recentsItemFormats.remove(getAdapterPosition());
+                                    notifyDataSetChanged();
+
                                 }
+
+
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
@@ -1310,6 +1315,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     dialog.show();
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));
                 }
+
             });
 
         }

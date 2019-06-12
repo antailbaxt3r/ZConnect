@@ -69,6 +69,7 @@ public class ActiveFragment extends Fragment {
     private void loadPoolList() {
         Query query = FirebaseDatabase.getInstance().getReference(String.format(Pool.URL_POOL, communityReference)).orderByChild(Pool.STATUS).equalTo(Pool.STATUS_ACTIVE);
         query.addValueEventListener(activePoolListener);
+        query.keepSynced(true);
     }
 
     private void defineListener() {
@@ -77,10 +78,15 @@ public class ActiveFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<Pool> poolArrayList = new ArrayList<>();
 
+
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Pool newPool = child.getValue(Pool.class);
-                    if (newPool.isActive())
-                        poolArrayList.add(newPool);
+
+                    if (child.hasChild(Pool.POOL_INFO)) {
+                        Pool newPool = child.getValue(Pool.class);
+                        if (newPool.isActive())
+                            poolArrayList.add(newPool);
+
+                    }
                 }
 
                 Collections.sort(poolArrayList, new Comparator<Pool>() {

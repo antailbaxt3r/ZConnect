@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -163,6 +164,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         bottomSheetFragment = new HomeBottomSheet();
 
+
         View navHeader = navigationView.getHeaderView(0);
 
         // Navigation Drawer initialization
@@ -175,6 +177,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) tabs.getLayoutParams();
+        layoutParams.setBehavior(new BottomNavigationViewBehavior());
 
         navigationView.setNavigationItemSelectedListener(this);
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
@@ -197,47 +202,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabs();
 
-        communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
-
-        nav_Menu = navigationView.getMenu();
-
-        communityFeaturesRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                CommunityFeatures communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
-
-                try {
-
-                    if (communityFeatures.getCabpool().equals("true")){
-                        nav_Menu.findItem(R.id.MyRides).setVisible(true);
-                    }else {
-                        nav_Menu.findItem(R.id.MyRides).setVisible(false);
-                    }
-
-                    if (communityFeatures.getShops().equals("true")){
-                        nav_Menu.findItem(R.id.MyOrders).setVisible(true);
-                    }else {
-                        nav_Menu.findItem(R.id.MyOrders).setVisible(false);
-                    }
-
-                    if (communityFeatures.getStoreroom().equals("true")){
-                        nav_Menu.findItem(R.id.MyProducts).setVisible(true);
-                    }else {
-                        nav_Menu.findItem(R.id.MyProducts).setVisible(false);
-                    }
-
-
-                }catch (Exception e){
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     //Circular notification in the bottom navigation
@@ -752,6 +716,49 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             } else if(communityReference!=null) {
                 Log.d("RRRRR","COMM REF NOT NULL");
                 initialiseNotifications();
+
+                communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
+
+                nav_Menu = navigationView.getMenu();
+
+                communityFeaturesRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        CommunityFeatures communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
+
+                        try {
+
+                            if (communityFeatures.getCabpool().equals("true")){
+                                nav_Menu.findItem(R.id.MyRides).setVisible(true);
+                            }else {
+                                nav_Menu.findItem(R.id.MyRides).setVisible(false);
+                            }
+
+                            if (communityFeatures.getShops().equals("true")){
+                                nav_Menu.findItem(R.id.MyOrders).setVisible(true);
+                            }else {
+                                nav_Menu.findItem(R.id.MyOrders).setVisible(false);
+                            }
+
+                            if (communityFeatures.getStoreroom().equals("true")){
+                                nav_Menu.findItem(R.id.MyProducts).setVisible(true);
+                            }else {
+                                nav_Menu.findItem(R.id.MyProducts).setVisible(false);
+                            }
+
+
+                        }catch (Exception e){
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
                 LocalDate dateTime = new LocalDate();
 

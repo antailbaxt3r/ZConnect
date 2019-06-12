@@ -79,26 +79,36 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return MessageTypeUtilities.KEY_SHOP_MESSAGE;
         }else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_SHOP_PHOTO_STR)){
             return MessageTypeUtilities.KEY_SHOP_PHOTO;
-        }else return -1;
+        }
+//        else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_PHOTO_SENDING_STR)){
+//            return MessageTypeUtilities.KEY_PHOTO_SENDING;
+//        }
+        else{
+        } return -1;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        if(viewType == MessageTypeUtilities.KEY_MESSAGE) {
+        if (viewType == MessageTypeUtilities.KEY_MESSAGE) {
             View messageContactView = inflater.inflate(R.layout.chat_message_format, parent, false);
             return new messageViewHolder(messageContactView, parent.getContext());
-        }else if (viewType == MessageTypeUtilities.KEY_PHOTO){
+        } else if (viewType == MessageTypeUtilities.KEY_PHOTO) {
             View photoContactView = inflater.inflate(R.layout.chat_photo_format, parent, false);
             return new photoViewHolder(photoContactView, parent.getContext());
-        }else if (viewType == MessageTypeUtilities.KEY_SHOP_MESSAGE){
+        } else if (viewType == MessageTypeUtilities.KEY_SHOP_MESSAGE) {
             View photoContactView = inflater.inflate(R.layout.chat_shop_message_format, parent, false);
             return new messageShopViewHolder(photoContactView, parent.getContext());
-        }else if (viewType == MessageTypeUtilities.KEY_SHOP_PHOTO){
+        } else if (viewType == MessageTypeUtilities.KEY_SHOP_PHOTO) {
             View photoContactView = inflater.inflate(R.layout.chat_shop_photo_format, parent, false);
             return new photoShopViewHolder(photoContactView, parent.getContext());
-        }else{
+        }
+//        else if(viewType == MessageTypeUtilities.KEY_PHOTO_SENDING){
+//            View photoContactView = inflater.inflate(R.layout.chat_photo_format, parent, false);
+//            return new photoViewHolder(photoContactView, parent.getContext());
+//        }
+        else{
             View emptyView = inflater.inflate(R.layout.empty, parent, false);
             return new EmptyRVViewHolder(emptyView);
         }
@@ -165,7 +175,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.message.setText(messageText);
                 Linkify.addLinks(holder.message, Linkify.ALL);
             }
-        }else if(message.getMessageType().equals("photo")) {
+        }
+        else if(message.getMessageType().equals("photo")) {
 
 
             final photoViewHolder holder = (photoViewHolder) rvHolder;
@@ -223,7 +234,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 });
             }
-        }else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_MESSAGE_STR)){
+        }
+        else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_MESSAGE_STR)){
 
             messageShopViewHolder holder = (messageShopViewHolder) rvHolder;
             long previousTs = 0;
@@ -276,7 +288,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.message.setText(messageText);
                 Linkify.addLinks(holder.message, Linkify.ALL);
             }
-        }else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_PHOTO_STR)) {
+        }
+        else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_PHOTO_STR)) {
 
 
             final photoShopViewHolder holder = (photoShopViewHolder) rvHolder;
