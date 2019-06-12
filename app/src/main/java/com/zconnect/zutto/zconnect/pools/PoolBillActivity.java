@@ -357,6 +357,7 @@ public class PoolBillActivity extends BaseActivity implements PaymentResultListe
                     convenienceFee = total_amount * poolInfo.getConveniencePercentage() / 100.0f;
                     convenienceFee = Math.min(convenienceFee, poolInfo.getConvenienceUpto());
                     convenienceFee = Math.round(convenienceFee * 100.0) / 100.0;
+                    convenienceFee = convenienceFee < poolInfo.getConvenienceMin() ? poolInfo.getConvenienceMin() : convenienceFee;
                     discounted_amount = discounted_amount + convenienceFee;
                     discounted_amount = Math.round(discounted_amount * 100.0) / 100.0;
 

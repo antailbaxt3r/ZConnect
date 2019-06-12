@@ -87,14 +87,30 @@ public class Recents extends Fragment {
         public void getLayoutManager(LinearLayoutManager linearLayoutManager);
     }
     public Recents() {
-        setRecyclerView = true;
+        // Required empty public constructor
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_recents, container, false);
+        ButterKnife.bind(this, view);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Yolo");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
@@ -108,6 +124,31 @@ public class Recents extends Fragment {
         queryRef = homeDbRef.limitToLast(100);
         queryRef.keepSynced(true);
 
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshContainer);
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary, R.color.colorHighlight);
+
+        progressBar.setVisibility(VISIBLE);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // implement Handler to wait for 3 seconds and then update UI means update value of TextView
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // cancel the Visual indication of a refresh
+                        swipeContainer.setRefreshing(false);
+                        queryRef.addListenerForSingleValueEvent(homeListener);
+                        userReference.addListenerForSingleValueEvent(userListener);
+                        communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);
+                    }
+                }, 3000);
+            }
+        });
+//        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setHasFixedSize(true);
+        productLinearLayoutManager = new LinearLayoutManager(getContext());
+        mCallback.getLayoutManager(productLinearLayoutManager);
+        recyclerView.setLayoutManager(productLinearLayoutManager);
         userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -148,6 +189,7 @@ public class Recents extends Fragment {
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+
 
             }
 
@@ -212,6 +254,8 @@ public class Recents extends Fragment {
                 features.setRecentType(RecentTypeUtilities.KEY_RECENT_FEATURES_STR);
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+
+
             }
 
             @Override
@@ -235,68 +279,17 @@ public class Recents extends Fragment {
 //            }
 //        });
         adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity() ,communityFeatures, productLinearLayoutManager, recyclerView);
-
+        recyclerView.setAdapter(adapter);
         communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);
-        queryRef.addListenerForSingleValueEvent(homeListener);
-        userReference.addListenerForSingleValueEvent(userListener);
 
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_recents, container, false);
-        ButterKnife.bind(this, view);
-
-        // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
-
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Yolo");
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setHasFixedSize(true);
-        productLinearLayoutManager = new LinearLayoutManager(getContext());
-        mCallback.getLayoutManager(productLinearLayoutManager);
-        recyclerView.setLayoutManager(productLinearLayoutManager);
-
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshContainer);
-        swipeContainer.setColorSchemeResources(R.color.colorPrimary, R.color.colorHighlight);
-
-        progressBar.setVisibility(VISIBLE);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // implement Handler to wait for 3 seconds and then update UI means update value of TextView
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // cancel the Visual indication of a refresh
-                        swipeContainer.setRefreshing(false);
-                        queryRef.addListenerForSingleValueEvent(homeListener);
-                        userReference.addListenerForSingleValueEvent(userListener);
-                        communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);
-                    }
-                }, 3000);
-            }
-        });
-
-
-        if (setRecyclerView) {
-            recyclerView.setAdapter(adapter);
-            setRecyclerView = false;
-        }
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        queryRef.addListenerForSingleValueEvent(homeListener);
+        userReference.addListenerForSingleValueEvent(userListener);
     }
 
     @Override

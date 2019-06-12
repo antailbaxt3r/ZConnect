@@ -42,7 +42,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
 
     private Button btn_payment;
     private RecyclerView recyclerView;
-    private TextView offers, orderDeadlineTime, deliveryTime;
+    private TextView offers, orderDeadlineTime, deliveryTime, poolExtraDesc;
     private LinearLayout ll_progressBar;
     private TextView loading_text;
 
@@ -152,6 +152,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
         timeUtilities = new TimeUtilities(pool.getDeliveryTime());
         text = "3. Orders will be delivered on " + timeUtilities.getMonthName("SHORT") + " " + timeUtilities.getDateTime().getDayOfMonth() + " " + timeUtilities.getDateTime().getYearOfEra() + ", " + timeUtilities.getTimeInHHMMAPM();
         deliveryTime.setText(text);
+        poolExtraDesc.setText(pool.getPoolInfo().getExtras());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(String.format(PoolInfo.URL_POOL_OFFER, pool.getPoolInfo().getShopID(), pool.getPoolInfo().getPoolID()));
         Log.d(TAG, "setPoolView : ref " + ref.toString());
         ref.addValueEventListener(poolOfferListener);
@@ -163,6 +164,7 @@ public class ActivePoolDetailsActivity extends BaseActivity {
         offers = findViewById(R.id.pool_offers);
         orderDeadlineTime = findViewById(R.id.order_deadline_time);
         deliveryTime = findViewById(R.id.order_delivery_time);
+        poolExtraDesc = findViewById(R.id.pool_extra_desc);
         ll_progressBar = findViewById(R.id.ll_progressBar);
         loading_text = findViewById(R.id.loading_text);
 

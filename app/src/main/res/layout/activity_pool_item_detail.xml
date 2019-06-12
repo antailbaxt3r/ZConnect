@@ -69,6 +69,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/primaryText" />
+                <TextView
+                    android:id="@+id/pool_extra_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:textSize="14sp"
+                    style="@style/TextAppearance.AppCompat.Caption"/>
             </LinearLayout>
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/pool_item_rv"

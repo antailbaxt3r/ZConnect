@@ -51,7 +51,6 @@ public class GlobalFunctions {
     }
 
     public static void pushNotifications(String title, String desc, boolean audience, int type, HashMap<String, String> metadata) {
-        String notificationsUID = notificationsRef.push().getKey();
 
         /*
         audience true - Community specific notifications
@@ -59,19 +58,23 @@ public class GlobalFunctions {
         */
         if(audience) {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
-                    child(communityReference).child("notifications").child(notificationsUID);;
+                    child(communityReference).child("notifications");
 
         }
         else {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                     child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid())
-                    .child("notifications").child(notificationsUID);
+                    .child("notifications");
         }
+
+        String notificationsUID = notificationsRef.push().getKey();
+        notificationsRef = notificationsRef.child(notificationsUID);
 
         notificationsRef.child("title").setValue(title);
         notificationsRef.child("desc").setValue(desc);
         notificationsRef.child("count").setValue(0);
         notificationsRef.child("type").setValue(type);
+        notificationsRef.child("seen").setValue(false);
         notificationsRef.child("timestamp").setValue(ServerValue.TIMESTAMP);
         for(HashMap.Entry<String, String> entry : metadata.entrySet()) {
             notificationsRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());

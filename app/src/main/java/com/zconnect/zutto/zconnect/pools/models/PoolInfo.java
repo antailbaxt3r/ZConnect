@@ -27,6 +27,7 @@ public class PoolInfo implements Serializable {
     public static final String NAME = "name";
     public static final String OFFER_TYPE = "offerType";
     public static final String DESCRIPTION = "description";
+    public static final String EXTRAS = "extras";
     public static final String IMAGE_URL = "imageURL";
     public static final String IMAGE_THUMB = "imageThumb";
     public static final String OFFER = "offer";
@@ -34,10 +35,12 @@ public class PoolInfo implements Serializable {
     public static final String SHOP_ID = "shopID";
     public static final String CONVENIENCE_PERCENTAGE = "conveniencePercentage";
     public static final String CONVENIENCE_UPTO = "convenienceUpto";
+    public static final String CONVENIENCE_MIN = "convenienceMin";
 
     // nodes
     private String name;
     private String description;
+    private String extras;
     private String imageURL;
     private String imageThumb;
     private String offerType;
@@ -46,14 +49,16 @@ public class PoolInfo implements Serializable {
     private String shopID;
     private int conveniencePercentage;
     private int convenienceUpto;
+    private int convenienceMin;
 
     public PoolInfo() {
 
     }
 
-    public PoolInfo(String name, String description, String imageURL, String imageThumb, String offerType, DiscountOffer offer, String poolID, String shopID, int conveniencePercentage, int convenienceUpto) {
+    public PoolInfo(String name, String description, String extras, String imageURL, String imageThumb, String offerType, DiscountOffer offer, String poolID, String shopID, int conveniencePercentage, int convenienceUpto, int convenienceMin) {
         this.name = name;
         this.description = description;
+        this.extras = extras;
         this.imageURL = imageURL;
         this.imageThumb = imageThumb;
         this.offerType = offerType;
@@ -62,6 +67,7 @@ public class PoolInfo implements Serializable {
         this.shopID = shopID;
         this.conveniencePercentage = conveniencePercentage;
         this.convenienceUpto = convenienceUpto;
+        this.convenienceMin = convenienceMin;
     }
 
     public String getName() {
@@ -78,6 +84,14 @@ public class PoolInfo implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getExtras() {
+        return extras;
+    }
+
+    public void setExtras(String extras) {
+        this.extras = extras;
     }
 
     public String getImageURL() {
@@ -144,6 +158,13 @@ public class PoolInfo implements Serializable {
         this.convenienceUpto = convenienceUpto;
     }
 
+    public int getConvenienceMin() {
+        return convenienceMin;
+    }
+
+    public void setConvenienceMin(int convenienceMin) {
+        this.convenienceMin = convenienceMin;
+    }
     //
 //    public static PoolInfo getPoolInfo(Bundle b) {
 //        PoolInfo poolInfo = new PoolInfo();

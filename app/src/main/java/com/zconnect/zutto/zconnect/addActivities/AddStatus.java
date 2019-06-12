@@ -221,6 +221,7 @@ public class AddStatus extends BaseActivity {
                     newMessage.child("id").setValue(key);
                     newMessage.child("PostTimeMillis").setValue(System.currentTimeMillis());
                     FirebaseMessaging.getInstance().subscribeToTopic(key);
+
                     mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

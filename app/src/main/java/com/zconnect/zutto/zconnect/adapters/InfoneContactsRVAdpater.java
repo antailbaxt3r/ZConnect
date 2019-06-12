@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -95,6 +96,19 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                 }
             }
         });
+
+        holder.hiddentv.setVisibility(View.GONE);
+        holder.callImageBtn.setVisibility(View.VISIBLE);
+        holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.primaryText));
+        holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.primaryText));
+
+        if(infoneContactsRVItems.get(position).getContactHidden()){
+            holder.hiddentv.setVisibility(View.VISIBLE);
+            holder.callImageBtn.setVisibility(View.GONE);
+            holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.gray_holo_light));
+            holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.gray_holo_light));
+            holder.hiddentv.setText("hidden");
+        }
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

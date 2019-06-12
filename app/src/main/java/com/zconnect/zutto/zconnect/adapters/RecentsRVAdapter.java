@@ -27,7 +27,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -67,6 +66,7 @@ import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.Recents;
 import com.zconnect.zutto.zconnect.ReferralCode;
 import com.zconnect.zutto.zconnect.Shop_detail;
 import com.zconnect.zutto.zconnect.TabStoreRoom;
@@ -110,7 +110,7 @@ import static android.graphics.Typeface.BOLD;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
-public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     Context context;
     Vector<RecentsItemFormat> recentsItemFormats;
@@ -1280,7 +1280,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     counterPush.pushValues();
 
                                     FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(postID).removeValue();
+                                    recentsItemFormats.remove(getAdapterPosition());
+                                    notifyDataSetChanged();
+
                                 }
+
+
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
@@ -1310,6 +1315,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     dialog.show();
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));
                 }
+
             });
 
         }
@@ -1646,8 +1652,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         HorizontalScrollView hsv;
         LinearLayout linearLayout;
         RelativeLayout notices, events, cabpool, storeroom,shops, admin;
-        FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
-        TextView unreadCountStoreroomTV, unreadCountEventsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
+        FrameLayout unreadCountStoreroomFL, unreadCountEventsFL,unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
+        TextView unreadCountStoreroomTV, unreadCountEventsTV,unreadCountShopsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
         Query mOtherFeatures;
 
         //for other features
@@ -1674,6 +1680,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             unreadCountEventsFL = (FrameLayout) itemView.findViewById(R.id.events_unread_count_fl_recents_feature_item);
             unreadCountEventsTV = (TextView) itemView.findViewById(R.id.events_unread_count_text_recents_feature_item);
+
+            unreadCountShopsFL = (FrameLayout) itemView.findViewById(R.id.shops_unread_count_fl_recents_feature_item);
+            unreadCountShopsTV = (TextView) itemView.findViewById(R.id.shops_unread_count_text_recents_feature_item);
 
             unreadCountCabpoolFL = (FrameLayout) itemView.findViewById(R.id.cabpool_unread_count_fl_recents_feature_item);
             unreadCountCabpoolTV = (TextView) itemView.findViewById(R.id.cabpool_unread_count_text_recents_feature_item);
@@ -1790,6 +1799,38 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             }
                         });
                     }
+
+                    //for shops
+                    if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_SHOPS))
+                    {
+                        final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_SHOPS).getValue(Long.class);
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_SHOPS);
+                        numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                            @Override
+                            public void onCallBack(long value) {
+                                if(value - current > 0)
+                                {
+                                    unreadCountShopsTV.setText(String.valueOf(value - current));
+                                    unreadCountShopsFL.setVisibility(View.VISIBLE);
+                                }
+                                else
+                                {
+                                    unreadCountShopsFL.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_SHOPS);
+                        numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
+                            @Override
+                            public void onCallBack(long value) {
+                                mUserDetails.child("featuresUnreadCount").child(FeatureDBName.KEY_SHOPS).setValue(value);
+                            }
+                        });
+                    }
+
                     //for cabpool
                     if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_CABPOOL))
                     {
@@ -1820,6 +1861,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             }
                         });
                     }
+
+                    //for notices
                     if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_NOTICES))
                     {
                         final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_NOTICES).getValue(Long.class);

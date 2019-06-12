@@ -7,7 +7,7 @@ android {
         applicationId "com.zconnect.zutto.zconnect"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 27
+        versionCode 29
         versionName "7.4.3"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

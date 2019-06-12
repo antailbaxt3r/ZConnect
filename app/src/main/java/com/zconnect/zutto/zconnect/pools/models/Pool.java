@@ -40,7 +40,7 @@ public class Pool implements Serializable {
     public static final String POOL_INFO = "poolInfo";
     public static final String UP_VOTE = "upvote";
     public static final String UP_VOTE_LIST = "upvoteList";
-    public static final String TOTAL_ORDERS = "totalOrders";
+    public static final String TOTAL_ORDERS = "totalOrder";
     public static final String ORDER_RECEIVING_STATUS = "orderReceivingStatus";
 
     //tabID for forum
