@@ -55,7 +55,7 @@ public class AdminHome extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Admin Home");
         setSupportActionBar(toolbar);
 
@@ -86,10 +86,10 @@ public class AdminHome extends BaseActivity {
         }
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
@@ -225,10 +225,10 @@ public class AdminHome extends BaseActivity {
         private View verifyUsersTab(LayoutInflater inflater, ViewGroup container) {
             View rootView = inflater.inflate(R.layout.fragment_admin_home, container, false);
             newUsersDataReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers");
-            newUsersRV = (RecyclerView) rootView.findViewById(R.id.new_users_recycler);
+            newUsersRV = rootView.findViewById(R.id.new_users_recycler);
             linearLayoutManager = new LinearLayoutManager(getContext());
             newUsersRV.setLayoutManager(linearLayoutManager);
-            noUserMessage = (TextView) rootView.findViewById(R.id.section_label);
+            noUserMessage = rootView.findViewById(R.id.section_label);
             progressBar = rootView.findViewById(R.id.progress_bar);
             progressBar.setVisibility(View.VISIBLE);
             usersDatalistener = new ValueEventListener() {
