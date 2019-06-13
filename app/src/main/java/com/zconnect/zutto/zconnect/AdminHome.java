@@ -231,7 +231,6 @@ public class AdminHome extends BaseActivity {
             noUserMessage = (TextView) rootView.findViewById(R.id.section_label);
             progressBar = rootView.findViewById(R.id.progress_bar);
             progressBar.setVisibility(View.VISIBLE);
-            noUserMessage.setVisibility(View.GONE);
             usersDatalistener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -265,13 +264,12 @@ public class AdminHome extends BaseActivity {
                             {
                                 newUserItemFormats.add(newUser);
                             }
+                            if(newUserItemFormats.isEmpty())
                             flag = true;
                         }catch (Exception e){}
                     }
                     progressBar.setVisibility(View.GONE);
-                    if(flag){
-                        noUserMessage.setVisibility(View.GONE);
-                    }else {
+                    if(flag) {
                         noUserMessage.setVisibility(View.VISIBLE);
                     }
                     adapter.notifyDataSetChanged();
