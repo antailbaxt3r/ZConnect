@@ -232,6 +232,7 @@ public class UpcomingPoolDetailsActivity extends BaseActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 adapter.clearDataset();
+
                 for (DataSnapshot items : dataSnapshot.getChildren()) {
                     PoolItem dish = items.getValue(PoolItem.class);
                     adapter.insertAtEnd(dish);

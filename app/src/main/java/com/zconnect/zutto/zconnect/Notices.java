@@ -69,7 +69,7 @@ public class Notices extends BaseActivity {
         mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         noticesRV =(RecyclerView)findViewById(R.id.photos);
-        noticesRV.setLayoutManager(new GridLayoutManager(this, 3));
+        noticesRV.setLayoutManager(new GridLayoutManager(this, 2));
         noticesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("notices").child("activeNotices");
         add_photo =(FloatingActionButton)findViewById(R.id.add_photo);
         add_photo.setOnClickListener(new View.OnClickListener() {

@@ -80,9 +80,12 @@ public class UpcomingFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<Pool> poolArrayList = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Pool newPool = child.getValue(Pool.class);
-                    if (newPool.isUpcoming()) {
-                        poolArrayList.add(newPool);
+
+                    if (child.hasChild(Pool.POOL_INFO)) {
+                        Pool newPool = child.getValue(Pool.class);
+                        if (newPool.isUpcoming()) {
+                            poolArrayList.add(newPool);
+                        }
                     }
                 }
                 if(poolArrayList.size()>0)

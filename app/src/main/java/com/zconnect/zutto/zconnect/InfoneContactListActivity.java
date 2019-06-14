@@ -122,6 +122,12 @@ public class InfoneContactListActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        databaseReferenceList.addListenerForSingleValueEvent(listener);
+    }
+
     private  void setAdapter(final String queryString, final Boolean search) {
 
         listener = new ValueEventListener() {
