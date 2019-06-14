@@ -13,6 +13,8 @@ import com.zconnect.zutto.zconnect.holders.ProductsViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.NoticeItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.Product;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Vector;
 
 public class NoticeRVAdapter extends RecyclerView.Adapter<NoticesRVViewHolder>{
@@ -21,10 +23,13 @@ public class NoticeRVAdapter extends RecyclerView.Adapter<NoticesRVViewHolder>{
     String userType;
     Context context;
 
+
     public NoticeRVAdapter(Vector<NoticeItemFormat> notices, Context context, String userType) {
+        Collections.reverse(notices);
         this.notices=notices;
         this.context = context;
         this.userType = userType;
+
     }
 
 
@@ -37,6 +42,7 @@ public class NoticeRVAdapter extends RecyclerView.Adapter<NoticesRVViewHolder>{
 
     @Override
     public void onBindViewHolder(NoticesRVViewHolder holder, int position) {
+
         holder.setImage(notices.get(position).getImageThumbURL(),notices.get(position).getImageURL(),notices.get(position).getTitle());
         holder.setText(notices.get(position).getTitle());
         holder.setDeleteButton(userType,notices.get(position).getKey());

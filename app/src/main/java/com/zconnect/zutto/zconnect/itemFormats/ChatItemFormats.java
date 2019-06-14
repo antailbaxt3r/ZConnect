@@ -11,6 +11,8 @@ public class ChatItemFormats {
     private String messageType;
     private String photoURL;
 
+    private String key;
+
     public ChatItemFormats(long timeDate, String uuid, String name, String message, String imageThumb, String messageType) {
         this.timeDate = timeDate;
         this.uuid = uuid;
@@ -86,5 +88,13 @@ public class ChatItemFormats {
 
     public void setPhotoURL(String photoURL) {
         this.photoURL = photoURL;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

@@ -206,9 +206,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
                     infoneCategories.add(shot.getValue(InfoneCategoryModel.class));
                     infoneCategoriesName.add(shot.child("name").getValue(String.class));
+                    Log.d(shot.child("name").getValue(String.class), "onDataChangeon: ");
+                    Log.d(shot.getValue(InfoneCategoryModel.class).getCatId(), "onDataChangeon: ");
                 }
                 infoneAdapter.notifyDataSetChanged();
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -304,9 +307,12 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
 
         hideContactCB.setChecked(userDetails.getContactHidden());
 
-        for(int i=0;i<infoneCategories.size();i++){
+        for(int i=0;i<infoneCategoriesName.size();i++){
+            Log.d(userDetails.getInfoneType(), "updateViewDetailsfor: ");
             if(infoneCategories.get(i).getCatId().equals(userDetails.getInfoneType())){
+                Log.d(infoneCategoriesName.get(i), "updateViewDetails: ");
                 userInfoneTypeSpinner.setText(infoneCategoriesName.get(i));
+                infoneAdapter.notifyDataSetChanged();
                 infoneTypeIndex=i;
             }
         }
@@ -345,7 +351,7 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
                 snackBarText.setTextColor(Color.WHITE);
                 snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                 snack.show();
-            } else {
+            } else{
                 try {
                     attemptUpdate();
                 } catch (IOException e) {
@@ -409,7 +415,6 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         userWhatsapp = userWhatsappNumberText.getText().toString();
         userMobile = userMobileNumberText.getText().toString();
         userSkillTags = userSkillTagsText.getTags().toString();
-
         Boolean contactHidden = false;
         contactHidden = hideContactCB.isChecked();
 

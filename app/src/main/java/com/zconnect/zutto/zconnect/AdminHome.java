@@ -103,10 +103,10 @@ public class AdminHome extends BaseActivity {
         }
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
@@ -242,13 +242,12 @@ public class AdminHome extends BaseActivity {
         private View verifyUsersTab(LayoutInflater inflater, ViewGroup container) {
             View rootView = inflater.inflate(R.layout.fragment_admin_home, container, false);
             newUsersDataReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("newUsers");
-            newUsersRV = (RecyclerView) rootView.findViewById(R.id.new_users_recycler);
+            newUsersRV = rootView.findViewById(R.id.new_users_recycler);
             linearLayoutManager = new LinearLayoutManager(getContext());
             newUsersRV.setLayoutManager(linearLayoutManager);
-            noUserMessage = (TextView) rootView.findViewById(R.id.section_label);
+            noUserMessage = rootView.findViewById(R.id.section_label);
             progressBar = rootView.findViewById(R.id.progress_bar);
             progressBar.setVisibility(View.VISIBLE);
-            noUserMessage.setVisibility(View.GONE);
             usersDatalistener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -282,13 +281,12 @@ public class AdminHome extends BaseActivity {
                             {
                                 newUserItemFormats.add(newUser);
                             }
+                            if(newUserItemFormats.isEmpty())
                             flag = true;
                         }catch (Exception e){}
                     }
                     progressBar.setVisibility(View.GONE);
-                    if(flag){
-                        noUserMessage.setVisibility(View.GONE);
-                    }else {
+                    if(flag) {
                         noUserMessage.setVisibility(View.VISIBLE);
                     }
                     adapter.notifyDataSetChanged();

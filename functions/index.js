@@ -354,13 +354,13 @@ const getThreeDigitString = (num) => {
 
 //New functions for integrity of userForums in features-> forums
 
-exports.addForumToUserForum = functions.database.ref('/communities/{communityID}/features/forums/categories/{categoryID}/users/{userPushID}')
+exports.addForumToUserForum = functions.database.ref('/communities/{communityID}/features/forums/tabCategories/{tabID}/{categoryID}/users/{userPushID}')
 .onCreate((snapshot, context) => {
     return snapshot.ref.parent.parent.once('value', (forumDetailsSnapshot) =>{
         //const userKey = snapshot.key;
         let obj = forumDetailsSnapshot.val();
         delete obj['users'];
-        return snapshot.ref.parent.parent.parent.parent.child(`userForums/${context.params.userPushID}/joinedForums/${context.params.categoryID}`)
+        return snapshot.ref.parent.parent.parent.parent.parent.child(`userForums/${context.params.userPushID}/joinedForums/${context.params.categoryID}`)
             .set(obj);
     });
 });
