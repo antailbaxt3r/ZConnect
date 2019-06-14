@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -105,7 +106,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference currentUserReference;
     private DatabaseReference mDatabasePopUps;
     private DatabaseReference communityInfoRef;
-
     private DatabaseReference communityFeaturesRef;
     private Menu nav_Menu;
 
@@ -242,14 +242,35 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
-                tab.getCustomView().setAlpha((float) 1);
+
+                tabImage[0].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
+                for(int i=0; i<5; i++){
+                    if(i!=pos){
+                        tabImage[pos].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                    }else{
+                        tabImage[pos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+
+
                 switch (pos) {
                     case 0: {
                         setToolbarTitle(Title);
+                        setColour(R.color.black);
+                        tabImage[0].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[1].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[2].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[3].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[4].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
+                        tabImage[pos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[0].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[2].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[3].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[4].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Forums",HomeActivity.this);
                             tabs.getTabAt(prePos);
@@ -269,6 +290,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 2: {
+                        tabImage[pos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[1].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[0].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[3].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[4].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Add",HomeActivity.this);
                             tabs.getTabAt(prePos);
@@ -278,6 +304,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 3: {
+                        tabImage[1].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[2].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[0].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[4].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[pos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Infone",HomeActivity.this);
                             tabs.getTabAt(prePos);
@@ -299,6 +330,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 4: {
+                        tabImage[pos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[1].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[2].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[3].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+                        tabImage[0].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
                         //setActionBarTitle("You");
                         setActionBarTitle("Notifications");
 
@@ -327,16 +363,19 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                if(tab.getPosition()!=4)
-                    tab.getCustomView().setAlpha((float) .7);
+
                 prePos = tab.getPosition();
+                tabImage[prePos].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
                 int pos = tab.getPosition();
-                tab.getCustomView().setAlpha((float) 1);
+
+                tabImage[prePos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
+
                 switch (pos) {
                     case 0:
                         recentsLinearLayoutManager.scrollToPositionWithOffset(0,0);
@@ -366,6 +405,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabImage[0] = (SimpleDraweeView) vRecents.findViewById(R.id.tabImage);
         tabImage[0].setImageResource(R.drawable.baseline_home_white_36);
+        tabImage[0].setColorFilter(R.color.deepPurple500,PorterDuff.Mode.SRC_ATOP);
 
         tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
 
@@ -380,9 +420,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabImage[1] = (SimpleDraweeView) vForums.findViewById(R.id.tabImage);
         tabImage[1].setImageResource(R.drawable.baseline_forum_white_36);
-
+        tabImage[1].setColorFilter(R.color.black);
         tabNotificationCircle[1] = (ImageView) vForums.findViewById(R.id.notification_circle);
-        vForums.setAlpha((float) 0.7);
+
         forumsT.setCustomView(vForums);
 
         View vAdd = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
@@ -393,9 +433,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabImage[2] = (SimpleDraweeView) vAdd.findViewById(R.id.tabImage);
         tabImage[2].setImageResource(R.drawable.outline_add_circle_outline_white_36);
-
+        tabImage[2].setColorFilter(R.color.black);
         tabNotificationCircle[2] = (ImageView) vAdd.findViewById(R.id.notification_circle);
-        vAdd.setAlpha((float) 0.7);
+
         addT.setCustomView(vAdd);
 
         View vInfone = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
@@ -406,9 +446,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabImage[3] = (SimpleDraweeView) vInfone.findViewById(R.id.tabImage);
         tabImage[3].setImageResource(R.drawable.baseline_phone_white_36);
+        tabImage[3].setColorFilter(R.color.black);
 
         tabNotificationCircle[3] = (ImageView) vInfone.findViewById(R.id.notification_circle);
-        vInfone.setAlpha((float) 0.7);
+
         infoneT.setCustomView(vInfone);
 
         View vNotification = LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab_layout, null);
@@ -417,6 +458,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[4].setText("Notifications");
         tabImage[4] = (SimpleDraweeView) vNotification.findViewById(R.id.tabImage);
         tabImage[4].setImageResource(R.drawable.baseline_notifications_white_18dp);
+        tabImage[4].setColorFilter(R.color.black);
+        vAdd.setAlpha((float) 1);
+        vInfone.setAlpha((float) 1);
+        vForums.setAlpha((float) 1);
+        vRecents.setAlpha((float) 1);
+        vNotification.setAlpha((float) 1);
 
         tabNotificationCircle[4] = (ImageView) vNotification.findViewById(R.id.notification_circle);
         notificationsT.setCustomView(vNotification);

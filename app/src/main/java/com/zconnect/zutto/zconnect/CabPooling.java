@@ -60,8 +60,9 @@ public class CabPooling extends BaseActivity {
         setContentView(R.layout.activity_cab_pooling);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
+        toolbar.setTitle("Search For Rides");
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override

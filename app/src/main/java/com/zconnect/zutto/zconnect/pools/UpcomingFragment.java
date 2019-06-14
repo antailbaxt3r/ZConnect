@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -32,6 +33,7 @@ public class UpcomingFragment extends Fragment {
     private PoolAdapter adapter;
     private ValueEventListener upcomingPoolListener;
     private TextView noPools;
+    private ShimmerFrameLayout shimmerFrameLayout;
 
 
     public UpcomingFragment() {
@@ -61,9 +63,11 @@ public class UpcomingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
         recyclerView = view.findViewById(R.id.recycleView);
         noPools = view.findViewById(R.id.no_upcoming_pools);
+        shimmerFrameLayout = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container_pool_upcoming);
         adapter = new PoolAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+        shimmerFrameLayout.startShimmerAnimation();
         defineListener();
         return view;
     }
@@ -93,6 +97,8 @@ public class UpcomingFragment extends Fragment {
                 else
                     noPools.setVisibility(View.VISIBLE);
                 adapter.addAll(poolArrayList);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
             }
 
             @Override

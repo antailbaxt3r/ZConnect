@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,7 +44,7 @@ public class JoinedForums extends Fragment {
     private RecyclerView joinedForumsRV;
     private LinearLayoutManager linearLayoutManager;
     private JoinedForumsAdapter adapter;
-
+    private ShimmerFrameLayout shimmerFrameLayout;
     private DatabaseReference forumsCategoriesRef;
     private Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats = new Vector<>();
     ForumCategoriesItemFormat exploreButton = new ForumCategoriesItemFormat();
@@ -75,7 +76,9 @@ public class JoinedForums extends Fragment {
 
         forumsCategoriesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories");
         joinedForumsRV =view.findViewById(R.id.joined_forums_rv);
-        progressBar = view.findViewById(R.id.progress_bar);
+        shimmerFrameLayout = view.findViewById(R.id.shimmer_view_container_forums);
+        shimmerFrameLayout.startShimmerAnimation();
+        joinedForumsRV.setVisibility(View.INVISIBLE);
         linearLayoutManager = new LinearLayoutManager(view.getContext());
 
         joinedForumsListener = new ValueEventListener() {
@@ -157,7 +160,9 @@ public class JoinedForums extends Fragment {
 
                 Collections.reverse(forumCategoriesItemFormats);
 
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
+                joinedForumsRV.setVisibility(View.VISIBLE);
                 joinedForumsRV.setVisibility(View.VISIBLE);
                 adapter.notifyDataSetChanged();
             }

@@ -373,8 +373,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -427,8 +427,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -538,8 +538,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            layers[1] = context.getResources().getDrawable(R.drawable.ic_local_mall_white_24dp);
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.storeroom), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_mall_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_mall_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -712,8 +712,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            layers[1] = context.getResources().getDrawable(R.drawable.ic_local_taxi_white_18dp);
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_taxi_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_taxi_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -765,8 +765,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_24dp));
                     holder.postConjunction.setText(" put an ");
                     holder.post.setText("Offer");
                     holder.layoutFeatureIcon.setOnClickListener(null);
@@ -803,8 +803,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             holder.postImage.setVisibility(View.GONE);
                     }catch (Exception e){}
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.messages), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(null);
                     holder.postConjunction.setText(" wrote a ");
                     holder.post.setText("status");
@@ -886,8 +886,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.VISIBLE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.notices), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_18));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_24));
                     holder.setOpenNoticeImage(recentsItemFormats.get(position).getName(), recentsItemFormats.get(position).getImageurl());
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -974,8 +974,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.forums), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

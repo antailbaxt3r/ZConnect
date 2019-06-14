@@ -100,8 +100,10 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
+        toolbar.setTitle("Storeroom");
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -314,7 +316,10 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                     }
                 });
                 productAdapter.notifyDataSetChanged();
+                shimmerContainer.stopShimmerAnimation();
+                shimmerContainer.setVisibility(View.INVISIBLE);
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -325,6 +330,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         mBuilder = new NotificationCompat.Builder(this);
 
     }
+
 
 
     @Override
@@ -435,6 +441,8 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
     public void onPause() {
         super.onPause();
         productsQuery.removeEventListener(mListener);
+        shimmerContainer.stopShimmerAnimation();
+        shimmerContainer.setVisibility(View.INVISIBLE);
     }
 
     @Override

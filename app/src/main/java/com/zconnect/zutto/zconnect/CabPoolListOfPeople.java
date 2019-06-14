@@ -88,7 +88,7 @@ public class CabPoolListOfPeople extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cab_list_of_people);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 //        setTitle("List of people");
         if (toolbar != null) {

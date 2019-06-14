@@ -35,6 +35,8 @@ import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import java.util.HashMap;
 import java.util.Vector;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
+
 public class CabPoolLocations extends BaseActivity {
     private DatabaseReference databaseReferenceCabPool;
     private DatabaseReference mPostedByDetails;
@@ -53,6 +55,10 @@ public class CabPoolLocations extends BaseActivity {
         setContentView(R.layout.activity_cab_pool_locations);
         toolbar=(Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
