@@ -340,7 +340,7 @@ public class ChatActivity extends BaseActivity {
         }
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
-        adapter = new ChatRVAdapter(messages,this);
+        adapter = new ChatRVAdapter(messages,databaseReference,this);
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
@@ -388,6 +388,8 @@ public class ChatActivity extends BaseActivity {
                     ChatItemFormats temp = new ChatItemFormats();
 
                     temp = snapshot.getValue(ChatItemFormats.class);
+
+                    temp.setKey(snapshot.getKey());
 
                     if (!snapshot.hasChild("messageType")) {
                         temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);

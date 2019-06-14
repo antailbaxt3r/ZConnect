@@ -1,10 +1,13 @@
 package com.zconnect.zutto.zconnect.adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
@@ -12,13 +15,22 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.holders.EmptyRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
@@ -41,10 +53,15 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     ArrayList<ChatItemFormats> chatFormats;
     Context ctx;
 
+    private DatabaseReference databaseref;
+    private ValueEventListener loadMessagesListener;
+    private ChatItemFormats delMessage;
+    private ChatItemFormats delphoto;
 
-    public ChatRVAdapter(ArrayList<ChatItemFormats> chatFormats, Context ctx) {
+    public ChatRVAdapter(ArrayList<ChatItemFormats> chatFormats, DatabaseReference databaseref, Context ctx) {
         this.chatFormats = chatFormats;
         this.ctx = ctx;
+        this.databaseref = databaseref;
     }
 
     @Override
@@ -101,7 +118,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder rvHolder, final int position) {
 
-
+        rvHolder.itemView.setTag(position);
 
         final ChatItemFormats message = chatFormats.get(position);
 
@@ -331,6 +348,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 });
             }
         }
+
     }
 
     private void setTimeTextVisibility(long ts1, long ts2, TextView timeText){
@@ -402,7 +420,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         LinearLayout rightDummy, leftDummy, messageBubble, chatContainer, chatItem;
         Context context;
 
-        public messageViewHolder(View itemView, Context context) {
+        public messageViewHolder(final View itemView, final Context context) {
             super(itemView);
             this.context = context;
             userAvatar = (SimpleDraweeView) itemView.findViewById(R.id.chat_format_user_avatar);
@@ -421,7 +439,72 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Typeface quicksandLight = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Quicksand-Light.ttf");
             name.setTypeface(quicksandBold);
             time.setTypeface(quicksandLight);
+
+            itemView.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+
+                    delMessage = chatFormats.get( (int) itemView.getTag());
+
+                    if(delMessage.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                    {
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        //Yes button clicked
+                                        databaseref.child("deletedChat").push().setValue(delMessage);
+                                        deleteFromDatabase(delMessage.getKey());
+                                        break;
+
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        //No button clicked
+                                        break;
+                                }
+                            }
+                        };
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage("Delete message?").setPositiveButton("Yes", dialogClickListener)
+                                .setNegativeButton("No", dialogClickListener).show();
+                    }
+
+                    return true;
+                }
+            });
         }
+    }
+
+    private void deleteFromDatabase(String key) {
+
+        databaseref.child("Chat").child(key).removeValue();
+
+        // After deleting , chat needs to be refreshed
+        loadMessagesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                chatFormats.clear();
+                for (DataSnapshot snapshot:dataSnapshot.getChildren()) {
+                    ChatItemFormats temp = new ChatItemFormats();
+
+                    temp = snapshot.getValue(ChatItemFormats.class);
+
+                    temp.setKey(snapshot.getKey());
+
+                    if (!snapshot.hasChild("messageType")) {
+                        temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                    }
+                    chatFormats.add(temp);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+
+        databaseref.child("Chat").addValueEventListener(loadMessagesListener);
     }
 
 
@@ -432,7 +515,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         LinearLayout rightDummy, leftDummy, messageBubble, chatContainer, chatItem;
         Context context;
 
-        public photoViewHolder(View itemView, Context context) {
+        public photoViewHolder(final View itemView, final Context context) {
             super(itemView);
             this.context = context;
             userAvatar = (SimpleDraweeView) itemView.findViewById(R.id.chat_format_user_avatar);
@@ -452,6 +535,40 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Typeface quicksandLight = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Quicksand-Light.ttf");
             name.setTypeface(quicksandBold);
             time.setTypeface(quicksandLight);
+
+            itemView.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+
+                    delphoto = chatFormats.get( (int) itemView.getTag());
+
+                    if(delMessage.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                    {
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        //Yes button clicked
+                                        deleteFromDatabase(delphoto.getKey());
+                                        break;
+
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        //No button clicked
+                                        break;
+                                }
+                            }
+                        };
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage("Delete photo?").setPositiveButton("Yes", dialogClickListener)
+                                .setNegativeButton("No", dialogClickListener).show();
+                    }
+
+                    return true;
+                }
+            });
+
         }
     }
 
