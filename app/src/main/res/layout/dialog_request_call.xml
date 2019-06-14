@@ -15,7 +15,7 @@
         android:id="@+id/validate_infone_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Was the number you called correct?"
+        android:text="Select a number to call."
         android:textSize="18sp"
         android:gravity="center"
         android:layout_marginBottom="10dp"
@@ -43,45 +43,30 @@
         app:met_hideUnderline="true"
         app:met_textColor="@color/primaryText" />
 
-    <com.rengwuxian.materialedittext.MaterialEditText
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:id="@+id/et_phone1_infone_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:inputType="number"
-        android:enabled="false"
-        android:clickable="false"
+        android:maxLength="10"
+        android:background="@color/white"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:met_hideUnderline="true"
+        app:met_textColor="@color/primaryText" />
+    <Button
+        android:background="@color/white"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/et_phone2_infone_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:maxLength="10"
         android:textIsSelectable="true"
         android:textSize="16sp"
         app:met_hideUnderline="true"
         app:met_textColor="@color/primaryText" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:background="@drawable/round_button_primary"
-            android:layout_marginHorizontal="5dp"
-            android:textColor="@color/white"
-            android:padding="@dimen/margin_small8dp"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/validate_infone_yes_btn"
-            android:text="Yes, Validate"
-            android:layout_alignParentStart="true" />
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/validate_infone_no_btn"
-            android:textColor="@color/colorPrimary"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_alignParentEnd="true"
-            android:text="No" />
-
-    </LinearLayout>
-
 
 
 </LinearLayout>

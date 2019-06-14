@@ -548,6 +548,8 @@ public class InfoneProfileActivity extends BaseActivity {
             public void onClick(View v) {
                 databaseReferenceInfone.child("numbers").child(infoneUserId).child("invalid").child(mAuth.getCurrentUser().getUid()).setValue("true");
                 databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                postTimeMillis = System.currentTimeMillis();
+                databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
 
 //                displayThankYou();
 

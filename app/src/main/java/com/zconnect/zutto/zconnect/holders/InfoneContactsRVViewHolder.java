@@ -28,12 +28,18 @@ public class InfoneContactsRVViewHolder extends RecyclerView.ViewHolder {
     public SimpleDraweeView userAvatar;
     public TextView desctv;
     public TextView hiddentv;
-    public static Dialog verifyDialog;
+    public Dialog verifyDialog;
     public  Button dialogVerifyYesbtn;
     public Button dialogVerifyNobtn;
     public MaterialEditText dialogVerifyphoneEt;
     public MaterialEditText dialogVerifyNameEt;
     public SimpleDraweeView dialogVerifyProfileImg;
+    public Dialog requestCallDialog;
+    public  Button dialogRequestCall1btn;
+    public Button dialogRequestCall2btn;
+    public MaterialEditText dialogRequestCallNameEt;
+    public SimpleDraweeView dialogRequestCallProfileImg;
+    public ImageButton whatsAppImageBtn;
 
 
     public InfoneContactsRVViewHolder(View itemView) {
@@ -54,5 +60,14 @@ public class InfoneContactsRVViewHolder extends RecyclerView.ViewHolder {
         dialogVerifyNameEt = verifyDialog.findViewById(R.id.et_name_infone_profile);
         dialogVerifyphoneEt = verifyDialog.findViewById(R.id.et_phone1_infone_profile);
         dialogVerifyProfileImg = verifyDialog.findViewById(R.id.image_profile_infone);
+
+        requestCallDialog =new Dialog(itemView.getContext());
+        requestCallDialog.setContentView(R.layout.dialog_request_call);
+        requestCallDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogRequestCall1btn = requestCallDialog.findViewById(R.id.et_phone1_infone_profile);
+        dialogRequestCall2btn = requestCallDialog.findViewById(R.id.et_phone2_infone_profile);
+        dialogRequestCallNameEt = requestCallDialog.findViewById(R.id.et_name_infone_profile);
+        dialogRequestCallProfileImg = requestCallDialog.findViewById(R.id.image_profile_infone);
+        whatsAppImageBtn = itemView.findViewById(R.id.image_btn_whatsapp_infone_contacts) ;
     }
 }

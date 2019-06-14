@@ -1,29 +1,17 @@
 package com.zconnect.zutto.zconnect;
 
 import  android.app.Activity;
-import android.app.Dialog;
 import android.app.SearchManager;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,35 +22,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneContactsRVItem;
-import com.zconnect.zutto.zconnect.adapters.InfoneContactsRVAdpater;
+import com.zconnect.zutto.zconnect.adapters.InfoneContactsRVAdapter;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneCat;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneContact;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class InfoneContactListActivity extends BaseActivity {
 
@@ -73,7 +54,7 @@ public class InfoneContactListActivity extends BaseActivity {
     RecyclerView recyclerViewContacts;
     ArrayList<InfoneContactsRVItem> contactsRVSearchItems;
     ArrayList<InfoneContactsRVItem> contactsRVItems = new ArrayList<>();
-    InfoneContactsRVAdpater infoneContactsRVAdpater;
+    InfoneContactsRVAdapter infoneContactsRVAdapter;
     DatabaseReference databaseReferenceList;
     ValueEventListener listener;
     FloatingActionButton fabAddContact;
@@ -202,8 +183,8 @@ public class InfoneContactListActivity extends BaseActivity {
                 });
 
 
-                infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVItems, catId);
-                recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
+                infoneContactsRVAdapter = new InfoneContactsRVAdapter(InfoneContactListActivity.this, contactsRVItems, catId);
+                recyclerViewContacts.setAdapter(infoneContactsRVAdapter);
                 progressBar.setVisibility(View.GONE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }
@@ -230,13 +211,13 @@ public class InfoneContactListActivity extends BaseActivity {
                     }
                 }
 
-                infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVSearchItems, catId);
-                recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
+                infoneContactsRVAdapter = new InfoneContactsRVAdapter(InfoneContactListActivity.this, contactsRVSearchItems, catId);
+                recyclerViewContacts.setAdapter(infoneContactsRVAdapter);
                 progressBar.setVisibility(View.GONE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }else {
-                infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVItems, catId);
-                recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
+                infoneContactsRVAdapter = new InfoneContactsRVAdapter(InfoneContactListActivity.this, contactsRVItems, catId);
+                recyclerViewContacts.setAdapter(infoneContactsRVAdapter);
                 progressBar.setVisibility(View.GONE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }
@@ -302,17 +283,7 @@ public class InfoneContactListActivity extends BaseActivity {
      */
     @Override
     protected void onPause() {
-        if(hasCalled) {
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-//                    verifyDialog.show();
-                    hasCalled = false;
-                }
-            }, 5000);
 
-        }
         super.onPause();
     }
 
