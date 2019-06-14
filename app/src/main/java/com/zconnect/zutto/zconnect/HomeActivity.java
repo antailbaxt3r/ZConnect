@@ -53,6 +53,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
@@ -71,6 +72,7 @@ import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 import butterknife.BindView;
@@ -121,6 +123,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private DatabaseReference mDatabaseUserStats;
     private String navHeaderBackGroundImageUrl = null;
     private String Title;
+    Context context;
 
     TextView[] tabTitle = new TextView[6];
     SimpleDraweeView[] tabImage = new SimpleDraweeView[6];
@@ -179,6 +182,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
 
 
+
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -196,6 +200,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         initListeners();
 
         tabs();
+        setForumNotificationDot();
 
 
     }
@@ -222,66 +227,66 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //    }
 
 ////fixFirebase to add respective forum details under each user. change "testCollege" to desired community/use loops
-//    void fixFirebase() {
-//
-//        final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("userForums");
-//        Log.d("Fix", "Starting fixFirebase");
-//        DatabaseReference tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("tabsCategories");
-//        tabsCategories.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot tablist : dataSnapshot.getChildren()) {
-//                    Log.d("Fix", tablist.toString());
-//                    String tabName = tablist.getKey();
-//                    for (DataSnapshot forumlist : tablist.getChildren()) {
-//                        Log.d("Fix", forumlist.toString());
-//                        for (DataSnapshot user : forumlist.child("users").getChildren()) {
-//                            Log.d("Fix:IsUser?", user.toString());
-//                            DatabaseReference newUserForm = userForums.child(user.getKey()).child(forumlist.getKey());
-//                            copyData(forumlist.getRef(), newUserForm);
-//
-//
-//                        }
-//
-//
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-//
-////copyData to copy a set of data from one node to another. Copies data and then deletes user node from the new copy
-//    private void copyData(final DatabaseReference fromPath, final DatabaseReference toPath) {
-//        fromPath.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                toPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-//                    @Override
-//                    public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
-//                        if (firebaseError != null) {
-//                            Log.d("Try:Error", firebaseError.toString());
-//                        } else {
-//                            System.out.println("Success");
-//                            toPath.child("users").removeValue();
-//
-//
-//                        }
-//                    }
-//                });
-//
-//            }
+    void fixFirebase() {
 
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
+        final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("userForums");
+        Log.d("Fix", "Starting fixFirebase");
+        DatabaseReference tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("tabsCategories");
+        tabsCategories.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot tablist : dataSnapshot.getChildren()) {
+                    Log.d("Fix", tablist.toString());
+                    String tabName = tablist.getKey();
+                    for (DataSnapshot forumlist : tablist.getChildren()) {
+                        Log.d("Fix", forumlist.toString());
+                        for (DataSnapshot user : forumlist.child("users").getChildren()) {
+                            Log.d("Fix:IsUser?", user.toString());
+                            DatabaseReference newUserForm = userForums.child(user.getKey()).child(forumlist.getKey());
+                            copyData(forumlist.getRef(), newUserForm);
+
+
+                        }
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+//copyData to copy a set of data from one node to another. Copies data and then deletes user node from the new copy
+    private void copyData(final DatabaseReference fromPath, final DatabaseReference toPath) {
+        fromPath.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                toPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                        if (firebaseError != null) {
+                            Log.d("Try:Error", firebaseError.toString());
+                        } else {
+                            System.out.println("Success");
+                            toPath.child("users").removeValue();
+
+
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     //Circular notification in the bottom navigation
     void setNotificationCircle() {
@@ -310,6 +315,61 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        } else {
 //            tabNotificationCircle[3].setVisibility(View.GONE);
 //        }
+    }
+
+    public void setForumNotificationDot(){
+        mUser = mAuth.getCurrentUser();
+        DBHelper mydb = new DBHelper(getApplicationContext());
+        final Map<String,Integer> allForumsSeenMessages = mydb.getAllForums();
+//        forumsCategoriesRef.addValueEventListener(joinedForumsListener);
+        Log.d("Forum",mUser.getUid());
+        DatabaseReference userForum = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums").child(mUser.getUid());
+        userForum.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Integer totalUnreadMessages = 0;
+                for(DataSnapshot forum: dataSnapshot.getChildren()){
+                    try {
+                        Integer totalMessages = Integer.getInteger(forum.child("totalMessages").toString());
+                        String catUID = forum.child("catUID").toString();
+                        Integer readMessages = allForumsSeenMessages.get(catUID);
+//                        if(totalMessages == null){
+                            Log.d("totalMessages","null");
+
+//                            return;
+//                        }
+//                    if(totalMessages == null){
+                        Log.d("totalMessages","null");
+
+//                        return;
+//                    }
+                        Log.d("totalMessages",Integer.toString(totalMessages));
+                        Log.d("readMessages",Integer.toString(readMessages));
+
+                        totalUnreadMessages = totalUnreadMessages+ totalMessages - readMessages;
+                        if(totalUnreadMessages>0){
+                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                            break;
+                        }
+                    }
+                    catch(Exception e){
+                        Log.d("ForumDot",e.toString());
+
+                        continue;
+                    }
+                }
+//                if(totalUnreadMessages<=0){
+                    tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+
+
+//                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void setTabListener() {
@@ -526,6 +586,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabs.addTab(infoneT);
         //tabs.addTab(profileT);
         tabs.addTab(notificationsT);
+        setForumNotificationDot();
 //        tabs.getTabAt(0)
     }
 
