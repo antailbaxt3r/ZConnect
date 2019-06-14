@@ -80,8 +80,6 @@ public class LogoFlashActivity extends BaseActivity {
         } catch (Exception ignore) {
         }
 
-       // createadminnode();   code to create admin node
-
         Fresco.initialize(this);
         FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_logo_flash);
@@ -378,31 +376,30 @@ public class LogoFlashActivity extends BaseActivity {
         }
     }
 
-    //script to transfers users from 'user1' with type 'admin' to admin node
-    private void createadminnode() {
-    if(communityReference!=null) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
-        final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("admins");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
-                    if (childsnap.child("userType").getValue().toString().equals("admin")) {
-                        databaseReference1.child(childsnap.getKey()).child("UID").setValue(childsnap.getKey());
-                        databaseReference1.child(childsnap.getKey()).child("Username").setValue(childsnap.child("username").getValue());
-                        databaseReference1.child(childsnap.getKey()).child("ImageThumb").setValue(childsnap.child("imageURL").getValue());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
-    }
-}
+    //script to transfers users from 'Users1' with type 'admin' to admin node
+//    private void createadminnode() {
+//        if(communityReference!=null) {
+//            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+//            final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("admins");
+//            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
+//                        if (childsnap.child("userType").getValue().toString().equals("admin")) {
+//                            databaseReference1.child(childsnap.getKey()).child("UID").setValue(childsnap.getKey());
+//                            databaseReference1.child(childsnap.getKey()).child("Username").setValue(childsnap.child("username").getValue());
+//                            databaseReference1.child(childsnap.getKey()).child("ImageThumb").setValue(childsnap.child("imageURL").getValue());
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//        }
+//    }
 
 
 
