@@ -109,6 +109,19 @@
 
     </FrameLayout>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_cat_infone"
+        android:layout_marginBottom="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="end|bottom"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        app:backgroundTint="@color/colorHighlight"
+        app:srcCompat="@drawable/ic_add_white_36dp" />
+
+
 
 
     <android.support.design.widget.TabLayout

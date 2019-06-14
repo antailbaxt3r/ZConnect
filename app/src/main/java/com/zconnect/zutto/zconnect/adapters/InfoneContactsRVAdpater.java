@@ -23,7 +23,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
+import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.holders.InfoneContactsRVViewHolder;
@@ -72,7 +74,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
     }
 
     @Override
-    public void onBindViewHolder(InfoneContactsRVViewHolder holder, final int position) {
+    public void onBindViewHolder(final InfoneContactsRVViewHolder holder, final int position) {
 
         holder.nametv.setText(infoneContactsRVItems.get(position).getName());
         holder.viewstv.setText(infoneContactsRVItems.get(position).getViews());
@@ -96,6 +98,27 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                 }
             }
         });
+
+//        final DatabaseReference databaseReferenceInfone=FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+//                .child(communityReference).child(ZConnectDetails.INFONE_DB_NEW);
+//        holder.dialogVerifyYesbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("invalid").child(mAuth.getCurrentUser().getUid()).removeValue();
+//                databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("valid").child(mAuth.getCurrentUser().getUid()).setValue("true");
+//                holder.verifyDialog.dismiss();
+//
+//            }
+//        });
+//        holder.dialogVerifyNobtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                databaseReferenceInfone.child("numbers").child(infoneUserId).child("valid").child(mAuth.getCurrentUser().getUid()).removeValue();
+//                databaseReferenceInfone.child("numbers").child(infoneUserId).child("invalid").child(mAuth.getCurrentUser().getUid()).setValue("true");
+//                verifyDialog.dismiss();
+//
+//            }
+//        });
 
         holder.hiddentv.setVisibility(View.GONE);
         holder.callImageBtn.setVisibility(View.VISIBLE);
@@ -167,6 +190,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
         builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 dialog.dismiss();
             }
         });
@@ -189,6 +213,7 @@ public class InfoneContactsRVAdpater extends RecyclerView.Adapter<InfoneContacts
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
+                InfoneContactListActivity.hasCalled = true;
                 context.startActivity(intent);
                 Toast.makeText(context, "call being made to " + strName, Toast.LENGTH_SHORT).show();
             }

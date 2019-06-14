@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import  android.app.Activity;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.ContentUris;
 import android.content.Context;
@@ -11,8 +12,11 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -30,15 +34,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -77,8 +84,10 @@ public class InfoneContactListActivity extends BaseActivity {
     private String catName, catImageurl;
     private String catAdmin;
     ProgressBar progressBar;
-
     int totalContacts;
+
+    //Elements for call verification(All belong to the popup dialog
+    public static boolean hasCalled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +136,9 @@ public class InfoneContactListActivity extends BaseActivity {
         });
 
         setAdapter("lite",false);
+
+
+
     }
 
     private  void setAdapter(final String queryString, final Boolean search) {
@@ -283,6 +295,25 @@ public class InfoneContactListActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         databaseReferenceList.removeEventListener(listener);
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+        if(hasCalled) {
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                    verifyDialog.show();
+                    hasCalled = false;
+                }
+            }, 5000);
+
+        }
+        super.onPause();
     }
 
     @Override

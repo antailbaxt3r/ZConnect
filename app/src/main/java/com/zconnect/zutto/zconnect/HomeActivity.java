@@ -1,12 +1,10 @@
 package com.zconnect.zutto.zconnect;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -19,7 +17,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -195,12 +192,109 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
-
+        fixFirebase();
+//        testTheFix();
         initListeners();
 
         tabs();
 
 
+    }
+
+//    private void testTheFix() {
+//        final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("newUserForums");
+//        userForums.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot users: dataSnapshot.getChildren()){
+//                    String tot = users.c
+//                    for(DataSnapshot forums: users.getChildren()){
+//
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//    }
+
+
+    void fixFirebase(){
+        ArrayList<String> lol=new ArrayList<>();
+        lol.add("bitsGoa");
+        lol.add("bitsPilani");
+        lol.add("gim");
+        lol.add("gmc");
+        lol.add("iitbhu");
+        lol.add("nitraipur");
+        lol.add("nitrourkela");
+        lol.add("pggc");
+        lol.add("testCollege");
+        lol.add("testCommunity");
+        for(String s: lol){
+            final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child(s).child("features").child("forums").child("userForums");
+            Log.d("Fix","Starting fixFirebase");
+            DatabaseReference tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(s).child("features").child("forums").child("tabsCategories");
+            tabsCategories.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot tablist: dataSnapshot.getChildren()){
+                        Log.d("Fix",tablist.toString());
+                        String tabName = tablist.getKey();
+                        for(DataSnapshot forumlist: tablist.getChildren()){
+                            Log.d("Fix",forumlist.toString());
+                            for(DataSnapshot user: forumlist.child("users").getChildren()){
+                                Log.d("Fix:IsUser?",user.toString());
+                                DatabaseReference newUserForm = userForums.child(user.getKey()).child(forumlist.getKey());
+                                copyData(forumlist.getRef(),newUserForm);
+
+
+                            }
+
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+    }
+
+    private void copyData(final DatabaseReference fromPath, final DatabaseReference toPath) {
+        fromPath.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                toPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                        if (firebaseError != null) {
+                            Log.d("Try:Error",firebaseError.toString());
+                        } else {
+                            System.out.println("Success");
+                            toPath.child("users").removeValue();
+
+
+
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //Circular notification in the bottom navigation

@@ -1,5 +1,8 @@
 package com.zconnect.zutto.zconnect.holders;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.R;
 
 /**
@@ -24,6 +28,13 @@ public class InfoneContactsRVViewHolder extends RecyclerView.ViewHolder {
     public SimpleDraweeView userAvatar;
     public TextView desctv;
     public TextView hiddentv;
+    public static Dialog verifyDialog;
+    public  Button dialogVerifyYesbtn;
+    public Button dialogVerifyNobtn;
+    public MaterialEditText dialogVerifyphoneEt;
+    public MaterialEditText dialogVerifyNameEt;
+    public SimpleDraweeView dialogVerifyProfileImg;
+
 
     public InfoneContactsRVViewHolder(View itemView) {
         super(itemView);
@@ -35,5 +46,13 @@ public class InfoneContactsRVViewHolder extends RecyclerView.ViewHolder {
         userAvatar = (SimpleDraweeView) itemView.findViewById(R.id.image_infone_contacts);
         desctv = (TextView) itemView.findViewById(R.id.tv_desc_infone_contacts);
         hiddentv = (TextView) itemView.findViewById(R.id.tv_hidden_infone_contacts);
+        verifyDialog =new Dialog(itemView.getContext());
+        verifyDialog.setContentView(R.layout.dialog_validate_number);
+        verifyDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogVerifyYesbtn = verifyDialog.findViewById(R.id.validate_infone_yes_btn);
+        dialogVerifyNobtn = verifyDialog.findViewById(R.id.validate_infone_no_btn);
+        dialogVerifyNameEt = verifyDialog.findViewById(R.id.et_name_infone_profile);
+        dialogVerifyphoneEt = verifyDialog.findViewById(R.id.et_phone1_infone_profile);
+        dialogVerifyProfileImg = verifyDialog.findViewById(R.id.image_profile_infone);
     }
 }

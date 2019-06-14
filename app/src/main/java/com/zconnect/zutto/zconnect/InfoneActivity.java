@@ -65,6 +65,7 @@ public class InfoneActivity extends Fragment {
     ProgressBar progressBar;
     Toolbar toolbar;
 
+
     public InfoneActivity() {
         // Required empty public constructor
     }
@@ -84,7 +85,8 @@ public class InfoneActivity extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         recyclerViewCat = (RecyclerView) view.findViewById(R.id.rv_cat_infone);
         recyclerViewCat.setVisibility(View.GONE);
-        fabCatAdd = (FloatingActionButton) view.findViewById(R.id.fab_cat_infone);
+        fabCatAdd = getActivity().findViewById(R.id.fab_cat_infone);
+        fabCatAdd.setVisibility(View.VISIBLE);
 
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
