@@ -34,14 +34,4 @@ public class ZConnect extends Application {
         FirebaseApp.initializeApp(this);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
     }
-
-    private String community= new String("Yo");
-
-    public String getData(){
-        return this.community;
-    }
-
-    public void setData(String d){
-        this.community=d;
-    }
 }

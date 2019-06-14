@@ -74,6 +74,8 @@ public class Recents extends Fragment {
     Vector<RecentsItemFormat> normalPostsUsers = new Vector<RecentsItemFormat>();
     Vector<RecentsItemFormat> normalPosts = new Vector<RecentsItemFormat>();
 
+    private Boolean setRecyclerView = true;
+
     private FirebaseAnalytics mFirebaseAnalytics;
     LinearLayoutManager productLinearLayoutManager;
     OnHomeIconListener mCallback;

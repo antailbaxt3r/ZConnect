@@ -254,7 +254,7 @@ public class OrderDetailActivity extends BaseActivity {
                 intent.putExtra("type", "forums");
                 intent.putExtra("name", "Chat with seller");
                 intent.putExtra("tab", Pool.POOL_FORUM_TAB_ID);
-                intent.putExtra("key", order.getOrderID());
+                intent.putExtra("key", order.getPoolPushID());
                 startActivity(intent);
                 return true;
             default:

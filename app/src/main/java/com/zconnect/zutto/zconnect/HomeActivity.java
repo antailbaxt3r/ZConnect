@@ -202,47 +202,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         tabs();
 
-        communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
-
-        nav_Menu = navigationView.getMenu();
-
-        communityFeaturesRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                CommunityFeatures communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
-
-                try {
-
-                    if (communityFeatures.getCabpool().equals("true")){
-                        nav_Menu.findItem(R.id.MyRides).setVisible(true);
-                    }else {
-                        nav_Menu.findItem(R.id.MyRides).setVisible(false);
-                    }
-
-                    if (communityFeatures.getShops().equals("true")){
-                        nav_Menu.findItem(R.id.MyOrders).setVisible(true);
-                    }else {
-                        nav_Menu.findItem(R.id.MyOrders).setVisible(false);
-                    }
-
-                    if (communityFeatures.getStoreroom().equals("true")){
-                        nav_Menu.findItem(R.id.MyProducts).setVisible(true);
-                    }else {
-                        nav_Menu.findItem(R.id.MyProducts).setVisible(false);
-                    }
-
-
-                }catch (Exception e){
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     //Circular notification in the bottom navigation
@@ -757,6 +716,49 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             } else if(communityReference!=null) {
                 Log.d("RRRRR","COMM REF NOT NULL");
                 initialiseNotifications();
+
+                communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
+
+                nav_Menu = navigationView.getMenu();
+
+                communityFeaturesRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        CommunityFeatures communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
+
+                        try {
+
+                            if (communityFeatures.getCabpool().equals("true")){
+                                nav_Menu.findItem(R.id.MyRides).setVisible(true);
+                            }else {
+                                nav_Menu.findItem(R.id.MyRides).setVisible(false);
+                            }
+
+                            if (communityFeatures.getShops().equals("true")){
+                                nav_Menu.findItem(R.id.MyOrders).setVisible(true);
+                            }else {
+                                nav_Menu.findItem(R.id.MyOrders).setVisible(false);
+                            }
+
+                            if (communityFeatures.getStoreroom().equals("true")){
+                                nav_Menu.findItem(R.id.MyProducts).setVisible(true);
+                            }else {
+                                nav_Menu.findItem(R.id.MyProducts).setVisible(false);
+                            }
+
+
+                        }catch (Exception e){
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 FirebaseMessaging.getInstance().subscribeToTopic(communityReference);
                 LocalDate dateTime = new LocalDate();
 
