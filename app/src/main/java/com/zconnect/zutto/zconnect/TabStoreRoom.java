@@ -321,7 +321,12 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         };
 
         mBuilder = new NotificationCompat.Builder(this);
+        
+        setAdapter("lite",false);
 
+    }
+
+    private void setAdapter(String lite, boolean b) {
     }
 
 
