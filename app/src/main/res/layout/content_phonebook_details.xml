@@ -263,14 +263,15 @@
                             android:layout_width="0dp"
                             android:layout_weight="0.55"
                             android:layout_height="30dp"
+                            android:textSize="12dp"
                             android:background="@drawable/round_button_primary"
                             android:layout_marginEnd="@dimen/margin_small"
                             android:text="@string/show_contact"
                             android:textColor="@color/white"
                             android:paddingStart="@dimen/button_padding_start_end"
                             android:paddingEnd="@dimen/button_padding_start_end"
-                            android:visibility="gone"
                             android:layout_gravity="center"
+                            android:visibility="gone"
                             style="?android:attr/borderlessButtonStyle" />
                     </LinearLayout>
                 </LinearLayout>

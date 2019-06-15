@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,9 +8,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.zconnect.zutto.zconnect.CabPooling"
     tools:showIn="@layout/activity_cab_pooling"
-    android:orientation="vertical"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:orientation="vertical">
 
 
 
@@ -307,8 +306,8 @@
         android:background="@color/placeholder_bg"/>
 
     <ImageView
-        android:layout_width="300dp"
-        android:layout_height="250dp"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         android:src="@drawable/cab_sharing_image"/>
 
@@ -316,13 +315,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp">
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/done"
             android:layout_gravity="center"
-            android:layout_marginVertical="@dimen/margin_top_between_non_similar_views"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -337,18 +334,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="3px"
-            android:layout_marginHorizontal="10dp"
-            android:background="@color/placeholder_bg"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:padding="10sp"
-            android:text="We will search a suitable cabpool option for you. In case of no match, your pool will be added automatically"
+            android:text="Please search for your required cabpool option. If case of no match, it will be added automatically."
             android:textAlignment="center" />
         <View
             android:layout_width="match_parent"

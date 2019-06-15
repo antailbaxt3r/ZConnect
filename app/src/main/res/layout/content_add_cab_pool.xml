@@ -4,13 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="600dp"
-    android:orientation="vertical"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.zconnect.zutto.zconnect.addActivities.AddCabPool"
-    tools:showIn="@layout/activity_add_cab_pool">
+    tools:showIn="@layout/activity_add_cab_pool"
+    android:orientation="vertical">
 
 
     //overall layout
@@ -307,8 +305,8 @@
         android:background="@color/placeholder_bg"/>
 
     <ImageView
-        android:layout_width="300dp"
-        android:layout_height="250dp"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         android:src="@drawable/cab_sharing_image"/>
 
@@ -316,8 +314,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp">
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/done"
@@ -337,19 +334,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="3px"
-            android:layout_marginTop="2dp"
-            android:layout_marginHorizontal="10dp"
-            android:background="@color/placeholder_bg"/>
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10sp"
             android:text="Please search for your required cabpool option. If case of no match, it will be added automatically."
             android:textAlignment="center" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3px"
+            android:layout_marginHorizontal="10dp"
+            android:background="@color/placeholder_bg"/>
 
 
     </LinearLayout>
