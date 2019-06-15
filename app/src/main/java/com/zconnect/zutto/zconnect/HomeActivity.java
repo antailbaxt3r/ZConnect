@@ -247,11 +247,22 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     case 0: {
                         setToolbarTitle(Title);
                         setColour(R.color.black);
+                        tabImage[0].setImageResource(R.drawable.ic_home_purple_24dp);
+                        tabImage[1].setImageResource(R.drawable.ic_forum_black_24dp);
+                        tabImage[2].setImageResource(R.drawable.ic_control_point_black_24dp);
+                        tabImage[3].setImageResource(R.drawable.ic_phone_black_24dp);
+                        tabImage[4].setImageResource(R.drawable.ic_notifications_black_24dp);
 
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
+
+                        tabImage[0].setImageResource(R.drawable.ic_home_black_24dp);
+                        tabImage[1].setImageResource(R.drawable.ic_forum_purple_24dp);
+                        tabImage[2].setImageResource(R.drawable.ic_control_point_black_24dp);
+                        tabImage[3].setImageResource(R.drawable.ic_phone_black_24dp);
+                        tabImage[4].setImageResource(R.drawable.ic_notifications_black_24dp);
 
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Forums",HomeActivity.this);
@@ -273,6 +284,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                     case 2: {
 
+                        tabImage[0].setImageResource(R.drawable.ic_home_black_24dp);
+                        tabImage[1].setImageResource(R.drawable.ic_forum_black_24dp);
+                        tabImage[2].setImageResource(R.drawable.ic_control_point_purple_24dp);
+                        tabImage[3].setImageResource(R.drawable.ic_phone_black_24dp);
+                        tabImage[4].setImageResource(R.drawable.ic_notifications_black_24dp);
+
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Add",HomeActivity.this);
                             tabs.getTabAt(prePos);
@@ -282,6 +299,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 3: {
+
+                        tabImage[0].setImageResource(R.drawable.ic_home_black_24dp);
+                        tabImage[1].setImageResource(R.drawable.ic_forum_black_24dp);
+                        tabImage[2].setImageResource(R.drawable.ic_control_point_black_24dp);
+                        tabImage[3].setImageResource(R.drawable.ic_phone_purple_24dp);
+                        tabImage[4].setImageResource(R.drawable.ic_notifications_black_24dp);
 
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Infone",HomeActivity.this);
@@ -304,6 +327,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 4: {
+
+                        tabImage[0].setImageResource(R.drawable.ic_home_black_24dp);
+                        tabImage[1].setImageResource(R.drawable.ic_forum_black_24dp);
+                        tabImage[2].setImageResource(R.drawable.ic_control_point_black_24dp);
+                        tabImage[3].setImageResource(R.drawable.ic_phone_black_24dp);
+                        tabImage[4].setImageResource(R.drawable.ic_notifications_purple_24dp);
 
                         //setActionBarTitle("You");
                         setActionBarTitle("Notifications");
@@ -374,7 +403,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[0].setText("Recents");
 
         tabImage[0] = (SimpleDraweeView) vRecents.findViewById(R.id.tabImage);
-        tabImage[0].setImageResource(R.drawable.ic_home_black_24dp);
+        tabImage[0].setImageResource(R.drawable.ic_home_purple_24dp);
 
         tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
 
