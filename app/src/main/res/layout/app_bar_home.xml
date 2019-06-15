@@ -119,6 +119,8 @@
         android:background="@color/colorPrimary"
         android:layout_gravity="bottom"
         app:tabSelectedTextColor="@color/deepPurple500"
+        app:tabTextColor="@color/black"
+        app:tabIndicatorColor="@color/deepPurple500"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         />

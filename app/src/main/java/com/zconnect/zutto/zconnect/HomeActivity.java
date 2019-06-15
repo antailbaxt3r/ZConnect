@@ -243,34 +243,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
 
-                tabImage[0].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
-                for(int i=0; i<5; i++){
-                    if(i!=pos){
-                        tabImage[pos].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                    }else{
-                        tabImage[pos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
-                    }
-                }
 
 
                 switch (pos) {
                     case 0: {
                         setToolbarTitle(Title);
                         setColour(R.color.black);
-                        tabImage[0].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[1].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[2].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[3].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[4].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
-                        tabImage[pos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[0].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[2].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[3].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[4].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Forums",HomeActivity.this);
                             tabs.getTabAt(prePos);
@@ -290,11 +274,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 2: {
-                        tabImage[pos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[1].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[0].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[3].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[4].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Add",HomeActivity.this);
                             tabs.getTabAt(prePos);
@@ -304,11 +284,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 3: {
-                        tabImage[1].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[2].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[0].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[4].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[pos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
+
                         if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                             newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Infone",HomeActivity.this);
                             tabs.getTabAt(prePos);
@@ -330,11 +306,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 4: {
-                        tabImage[pos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[1].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[2].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[3].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
-                        tabImage[0].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+
                         //setActionBarTitle("You");
                         setActionBarTitle("Notifications");
 
@@ -365,7 +337,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public void onTabUnselected(TabLayout.Tab tab) {
 
                 prePos = tab.getPosition();
-                tabImage[prePos].setColorFilter(R.color.black, PorterDuff.Mode.SRC_ATOP);
+
 
             }
 
@@ -374,7 +346,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 int pos = tab.getPosition();
 
-                tabImage[prePos].setColorFilter(R.color.deepPurple500, PorterDuff.Mode.SRC_ATOP);
+
 
                 switch (pos) {
                     case 0:

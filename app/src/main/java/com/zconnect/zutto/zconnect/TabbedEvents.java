@@ -104,7 +104,6 @@ public class TabbedEvents extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setTabTextColors(R.color.black, R.color.deepPurple500);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
