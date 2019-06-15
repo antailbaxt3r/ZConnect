@@ -53,10 +53,14 @@ public class CabPoolLocations extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_cab_pool_locations);
-        toolbar=(Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(ic_arrow_back_black_24dp);
         toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+
 
         toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
         if (toolbar != null) {

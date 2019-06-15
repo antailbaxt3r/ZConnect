@@ -115,7 +115,7 @@ public class CreateForum extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_forum);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         intentHandle = new IntentHandle();
         calendar = Calendar.getInstance();

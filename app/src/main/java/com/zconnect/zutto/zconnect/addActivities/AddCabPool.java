@@ -79,7 +79,7 @@ public class AddCabPool extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cab_pool);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

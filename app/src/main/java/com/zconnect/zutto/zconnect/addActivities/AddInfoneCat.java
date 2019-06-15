@@ -88,7 +88,7 @@ public class AddInfoneCat extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTitle("Add Infone Category");
         setContentView(R.layout.activity_infone_add_cat);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

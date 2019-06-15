@@ -99,7 +99,7 @@ public class AddNotices extends BaseActivity {
 
         mProgress = new ProgressDialog(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {

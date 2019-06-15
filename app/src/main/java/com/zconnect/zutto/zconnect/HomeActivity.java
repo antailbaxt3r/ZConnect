@@ -243,8 +243,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
 
-
-
                 switch (pos) {
                     case 0: {
                         setToolbarTitle(Title);
@@ -376,8 +374,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[0].setText("Recents");
 
         tabImage[0] = (SimpleDraweeView) vRecents.findViewById(R.id.tabImage);
-        tabImage[0].setImageResource(R.drawable.baseline_home_white_36);
-        tabImage[0].setColorFilter(R.color.deepPurple500,PorterDuff.Mode.SRC_ATOP);
+        tabImage[0].setImageResource(R.drawable.ic_home_black_24dp);
 
         tabNotificationCircle[0] = (ImageView) vRecents.findViewById(R.id.notification_circle);
 
@@ -391,8 +388,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[1].setText("Forums");
 
         tabImage[1] = (SimpleDraweeView) vForums.findViewById(R.id.tabImage);
-        tabImage[1].setImageResource(R.drawable.baseline_forum_white_36);
-        tabImage[1].setColorFilter(R.color.black);
+        tabImage[1].setImageResource(R.drawable.ic_forum_black_24dp);
         tabNotificationCircle[1] = (ImageView) vForums.findViewById(R.id.notification_circle);
 
         forumsT.setCustomView(vForums);
@@ -404,8 +400,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        tabTitle[2].setText("Add");
 
         tabImage[2] = (SimpleDraweeView) vAdd.findViewById(R.id.tabImage);
-        tabImage[2].setImageResource(R.drawable.outline_add_circle_outline_white_36);
-        tabImage[2].setColorFilter(R.color.black);
+        tabImage[2].setImageResource(R.drawable.ic_control_point_black_24dp);
         tabNotificationCircle[2] = (ImageView) vAdd.findViewById(R.id.notification_circle);
 
         addT.setCustomView(vAdd);
@@ -417,8 +412,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[3].setText("Infone");
 
         tabImage[3] = (SimpleDraweeView) vInfone.findViewById(R.id.tabImage);
-        tabImage[3].setImageResource(R.drawable.baseline_phone_white_36);
-        tabImage[3].setColorFilter(R.color.black);
+        tabImage[3].setImageResource(R.drawable.ic_phone_black_24dp);
 
         tabNotificationCircle[3] = (ImageView) vInfone.findViewById(R.id.notification_circle);
 
@@ -429,13 +423,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabTitle[4] = (TextView) vNotification.findViewById(R.id.tabTitle);
         tabTitle[4].setText("Notifications");
         tabImage[4] = (SimpleDraweeView) vNotification.findViewById(R.id.tabImage);
-        tabImage[4].setImageResource(R.drawable.baseline_notifications_white_18dp);
-        tabImage[4].setColorFilter(R.color.black);
-        vAdd.setAlpha((float) 1);
-        vInfone.setAlpha((float) 1);
-        vForums.setAlpha((float) 1);
-        vRecents.setAlpha((float) 1);
-        vNotification.setAlpha((float) 1);
+        tabImage[4].setImageResource(R.drawable.ic_notifications_black_24dp);
+
 
         tabNotificationCircle[4] = (ImageView) vNotification.findViewById(R.id.notification_circle);
         notificationsT.setCustomView(vNotification);

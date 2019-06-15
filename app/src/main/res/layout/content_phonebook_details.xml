@@ -48,7 +48,7 @@
                     android:ems="10"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textColorHint="@color/secondaryText"
                     android:textSize="16sp"/>
@@ -262,7 +262,7 @@
                             android:id="@+id/show_cum_request_contact_button"
                             android:layout_width="0dp"
                             android:layout_weight="0.55"
-                            android:layout_height="25dp"
+                            android:layout_height="30dp"
                             android:background="@drawable/round_button_primary"
                             android:layout_marginEnd="@dimen/margin_small"
                             android:text="@string/show_contact"
