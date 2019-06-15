@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.HomeActivity;
+import com.zconnect.zutto.zconnect.InfoneActivity;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
 import com.zconnect.zutto.zconnect.addActivities.AddNotices;
 import com.zconnect.zutto.zconnect.addActivities.AddProduct;
@@ -258,6 +259,21 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
 
                 Intent intent;
                 intent = new Intent(getContext(), AddNotices.class);
+                startActivity(intent);
+            }
+        };
+
+        View.OnClickListener addContactListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    HomeBottomSheet.this.dismiss();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
+                Intent intent;
+                intent = new Intent(getContext(), InfoneActivity.class);
                 startActivity(intent);
             }
         };

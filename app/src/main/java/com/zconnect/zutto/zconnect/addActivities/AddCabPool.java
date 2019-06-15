@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect.addActivities;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.zconnect.zutto.zconnect.CabPoolAll;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
@@ -278,6 +280,8 @@ public class AddCabPool extends BaseActivity {
                                             }
                                         });
 
+
+
                                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_CABPOOL);
                                         numberNotificationForFeatures.setCount();
                                         Log.d("NumberNoti setting for ", FeatureDBName.KEY_CABPOOL);
@@ -376,6 +380,13 @@ public class AddCabPool extends BaseActivity {
                                         notificationSender.execute(cabAddNotification);
 
                                         GlobalFunctions.addPoints(10);
+
+                                        Intent intent = new Intent(AddCabPool.this,CabPoolAll.class);
+
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        //AddCabPool.this.startActivity(new Intent(AddCabPool.this, CabPoolAll.class));
+
                                         finish();
 
                                     } else {
