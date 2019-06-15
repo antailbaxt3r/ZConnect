@@ -1,330 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.zconnect.zutto.zconnect.CabPooling"
-    tools:showIn="@layout/activity_cab_pooling"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:layout_marginTop="50dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="3.7dp"
-        android:layout_marginRight="3.7dp"
-        android:background="@drawable/rounded_corner"
-        android:layout_gravity="center">
+        android:orientation="horizontal"
+        >
 
         <TextView
-            android:id="@+id/search_for_rides"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search for rides"
-            android:textAlignment="center"
-            android:layout_margin="5dp"
-            android:textColor="@color/primaryText"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:textSize="30dp"/>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/horizontalLine"
-        android:layout_marginBottom="10dp"/>
+            android:text="Date"
+            android:layout_margin="@dimen/border_radius_5dp"
+            android:background="@drawable/rounded_corner_border"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:textSize="30dp"
+            android:padding="10dp"
+            android:id="@+id/date_cp_detail"/>
 
-
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:cardElevation="3dp"
-        app:cardCornerRadius="@dimen/border_radius_5dp"
-        app:cardUseCompatPadding="true"
-        >
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_margin="@dimen/border_radius_5dp"
+            android:textColor="@color/black"
+            android:id="@+id/time_cp_detail"
+            android:background="@drawable/rounded_corner_border"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_corner"
-            android:orientation="horizontal">
+            android:textSize="30dp"
+            android:text="Time"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textAlignment="textEnd"/>
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_margin="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:padding="10dp"
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_my_location_white_18dp"
-                        android:tint="@color/black"/>
-                    <TextView
-                        android:id="@+id/from"
-                        android:layout_width="0dp"
-                        android:layout_weight=".3"
-                        android:layout_height="wrap_content"
-                        android:text="Source"
-                        android:textSize="20dp"
-                        android:layout_marginStart="5dp"
-                        android:textColor="@color/black"/>
-                </LinearLayout>
-
-                <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
-                    android:id="@+id/spinner_source"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_weight=".7"
-                    android:prompt="@string/source_prompt" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@color/placeholder_bg"
-                />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_margin="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_gravity="center"
-                android:paddingTop="10dp"
-                android:paddingHorizontal="5dp"
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    >
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_location_on_white_18dp"
-                        android:tint="@color/black"/>
-                    <TextView
-                        android:id="@+id/destination"
-                        android:layout_width="0dp"
-                        android:layout_weight=".3"
-                        android:textSize="20dp"
-                        android:layout_height="wrap_content"
-                        android:text="Destination"
-                        android:textColor="@color/black"/>
-                </LinearLayout>
-                <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
-                    android:id="@+id/spinner_destination"
-                    android:layout_width="match_parent"
-                    android:layout_weight=".7"
-                    android:layout_height="50dp"
-                    android:prompt="@string/destination_prompt"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@color/placeholder_bg"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:paddingTop="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="0dp"
-                    android:text="Date:"
-                    android:textColor="@color/primaryText"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/calender"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Click to choose"
-                    android:layout_gravity="center"
-                    android:gravity="center|center"
-                    android:paddingBottom="5dp"
-                    android:textSize="20dp"
-                    android:textColor="@color/secondaryText"/>
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:cardElevation="3dp"
-        app:cardUseCompatPadding="true"
-        >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@drawable/rounded_corner"
-            >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_margin="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_gravity="center"
-                android:padding="10dp"
-                android:layout_weight="1"
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp">
-
-                    <TextView
-                        android:id="@+id/timeslot"
-                        android:layout_width="0dp"
-                        android:layout_weight=".3"
-                        android:layout_marginLeft="3.5dp"
-                        android:layout_height="wrap_content"
-                        android:text="Between: "
-                        android:textSize="20dp"
-                        android:textColor="@color/black"/>
-                </LinearLayout>
-                <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
-                    android:id="@+id/spinner_time_from"
-                    android:layout_width="match_parent"
-                    android:layout_weight=".7"
-                    android:layout_height="50dp"
-                    android:entries="@array/time"
-                    android:prompt="@string/time_prompt"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@color/placeholder_bg"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_margin="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_gravity="center"
-                android:padding="10dp"
-                android:layout_weight="1"
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp">
-
-                    <TextView
-                        android:id="@+id/timeslot2"
-                        android:layout_width="0dp"
-                        android:layout_weight=".3"
-                        android:textSize="20dp"
-                        android:layout_marginLeft="4dp"
-                        android:layout_height="wrap_content"
-                        android:text="And: "
-                        android:textColor="@color/black"/>
-                </LinearLayout>
-                <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
-                    android:id="@+id/spinner_time_to"
-                    android:layout_width="match_parent"
-                    android:layout_weight=".7"
-                    android:layout_height="50dp"
-                    android:entries="@array/time"
-                    android:prompt="@string/time_prompt"/>
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2px"
-            android:background="@color/horizontalLine"/>
-        <Button
-            android:id="@+id/done"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="16dp"
-            android:background="@drawable/round_button_primary"
-            android:text="Search"
-            style="?android:attr/borderlessButtonStyle"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2px"
-            android:background="@color/horizontalLine"/>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_corner_border"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:padding="10sp"
-            android:text="Please search for your required cabpool option. If case of no match, it will be added automatically."
-            android:textAlignment="center" />
+            android:padding="10dp"
+            android:layout_weight="4"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:text="From"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:id="@+id/source_cp_detail"
+            android:layout_weight="1"
+            android:textColor="@color/secondaryText"
+            android:textSize="20dp"
+            android:textAlignment="textEnd"
+            android:text="Source"/>
+
 
     </LinearLayout>
 
-</LinearLayout>
-<!--
-    https://cdn11.bigcommerce.com/s-hfhomm5/products/180/images/451/Solid_Red_Sized__25214.1507754519.380.380.jpg?c=2
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_corner_border"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
 
-    https://firebasestorage.googleapis.com/v0/b/zconnect-89fbd.appspot.com/o/PhonebookImage%2FdefaultprofilePhone.png?alt=media&token=5f814762-16dc-4dfb-ba7d-bcff0de7a336
--->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_weight="4"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:text="To"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:id="@+id/destination_cp_detail"
+            android:layout_weight="1"
+            android:textColor="@color/secondaryText"
+            android:textSize="20dp"
+            android:textAlignment="textEnd"
+            android:text="Destination"/>
+
+
+    </LinearLayout>
+</LinearLayout>

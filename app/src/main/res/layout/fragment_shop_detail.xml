@@ -86,7 +86,7 @@
         android:padding="5dp"
         android:text="Products"
         android:textColor="@color/black"
-        android:textSize="18dp" />
+        android:textSize="18sp" />
 
     <HorizontalScrollView
         android:id="@+id/menuScroll"

@@ -122,6 +122,7 @@ public class ChatActivity extends BaseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         setToolbar();
+        setTitle("Chat");
         setSupportActionBar(toolbar);
 //        setTitle("List of people");
         if (toolbar != null) {

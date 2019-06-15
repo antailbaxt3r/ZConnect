@@ -19,6 +19,8 @@
             android:layout_height="wrap_content" />
     </android.support.design.widget.AppBarLayout>
 
+    <include layout="@layout/cabpool_onclick_details" />
+
     <include layout="@layout/content_cab_list_of_people"/>
 
 
