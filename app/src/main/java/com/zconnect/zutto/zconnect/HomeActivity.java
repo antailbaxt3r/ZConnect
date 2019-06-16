@@ -331,7 +331,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         final Map<String,Integer> allForumsSeenMessages = mydb.getAllForums();
 //        forumsCategoriesRef.addValueEventListener(joinedForumsListener);
         Log.d("Forum",mUser.getUid());
-        DatabaseReference userForum = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums").child(mUser.getUid());
+        DatabaseReference userForum = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("userForums").child(mUser.getUid());
         userForum.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -341,18 +341,15 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         Integer totalMessages = Integer.getInteger(forum.child("totalMessages").toString());
                         String catUID = forum.child("catUID").toString();
                         Integer readMessages = allForumsSeenMessages.get(catUID);
-//                        if(totalMessages == null){
+                        if(totalMessages == null){
                             Log.d("totalMessages","null");
 
-//                            return;
-//                        }
-//                    if(totalMessages == null){
-                        Log.d("totalMessages","null");
 
-//                        return;
-//                    }
-                        Log.d("totalMessages",Integer.toString(totalMessages));
-                        Log.d("readMessages",Integer.toString(readMessages));
+                        }
+                    if(readMessages == null){
+                        Log.d("readlMessages","null");
+
+                    }
 
                         totalUnreadMessages = totalUnreadMessages+ totalMessages - readMessages;
                         if(totalUnreadMessages>0){

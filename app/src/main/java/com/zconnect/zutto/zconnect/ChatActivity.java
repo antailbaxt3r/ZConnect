@@ -175,6 +175,7 @@ public class ChatActivity extends BaseActivity {
         chatLayout.setVisibility(View.VISIBLE);
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref);
+        Log.d("Try",databaseReference.getParent().toString());
 
         if(FirebaseAuth.getInstance().getCurrentUser().getUid()==null) {
             showToast("You have to be logged in to chat");
