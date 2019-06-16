@@ -57,7 +57,7 @@ import java.util.HashMap;
 public class AddInfoneContact extends BaseActivity {
     int count=0;
     ArrayList<String> arrayList = new ArrayList<>();
-    String catId,catName,catImageURL;
+    String catId,catName,catImageURL,catAdmin;
     int totalContacts;
     private SharedPreferences communitySP;
     public String communityReference;
@@ -117,6 +117,7 @@ public class AddInfoneContact extends BaseActivity {
         catName = getIntent().getExtras().getString("catName");
         catImageURL = getIntent().getExtras().getString("catImageURL");
         totalContacts = getIntent().getIntExtra("totalContacts",0);
+        catAdmin = getIntent().getExtras().getString("categoryadmin");
         String contactName = getIntent().getStringExtra("contactName");
         String contactNumber = getIntent().getStringExtra("contactNumber");
 //        Bitmap contactPhoto = (Bitmap) getIntent().getParcelableExtra("contactPhoto");
@@ -337,6 +338,14 @@ public class AddInfoneContact extends BaseActivity {
 
                                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                 counterPush.pushValues();
+                                Intent intent = new Intent(AddInfoneContact.this,InfoneContactListActivity.class);
+                                intent.putExtra("catId",catId);
+                                intent.putExtra("catName",catName);
+                                intent.putExtra("catImageurl",catImageURL);
+                                intent.putExtra("catAdmin",catAdmin);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+
                             }
                             else{finish();}
 
@@ -346,6 +355,7 @@ public class AddInfoneContact extends BaseActivity {
                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
+
                     });
 
 

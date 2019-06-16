@@ -550,6 +550,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 switch (which){
                                     case DialogInterface.BUTTON_POSITIVE:
                                         //Yes button clicked
+                                        databaseref.child("deletedChat").push().setValue(delphoto);
                                         deleteFromDatabase(delphoto.getKey());
                                         break;
 

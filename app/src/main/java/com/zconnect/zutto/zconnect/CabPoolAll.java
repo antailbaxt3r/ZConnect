@@ -212,49 +212,6 @@ public class CabPoolAll extends BaseActivity {
 //            }
 //        });
 
-        onEmpty = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CabPoolAll.this, AddCabPool.class);
-                startActivity(intent);
-            }
-        };
-
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", MODE_PRIVATE);
-        Boolean status = sharedPref.getBoolean("mode", false);
-
-        if (!status) {
-            mAuth = FirebaseAuth.getInstance();
-            user = mAuth.getCurrentUser();
-
-            mUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(user.getUid()).child("Stats");
-            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
-            mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    try {
-                        TotalEvents = dataSnapshot.child("TotalCabpools").getValue().toString();
-                        DatabaseReference newPost = mUserStats;
-                        Map<String, Object> taskMap = new HashMap<>();
-                        taskMap.put("TotalCabpools", TotalEvents);
-                        newPost.updateChildren(taskMap);
-                    } catch (Exception e) {
-                        Log.d("Error Alert: ", e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
         allPools = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -329,6 +286,44 @@ public class CabPoolAll extends BaseActivity {
                 recyclerView.setVisibility(View.VISIBLE);
             }
         };
+
+        onEmpty = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CabPoolAll.this, AddCabPool.class);
+                startActivity(intent);
+            }
+        };
+
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("guestMode", MODE_PRIVATE);
+        Boolean status = sharedPref.getBoolean("mode", false);
+
+        if (!status) {
+            mAuth = FirebaseAuth.getInstance();
+            user = mAuth.getCurrentUser();
+
+            mUserStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(user.getUid()).child("Stats");
+            mFeaturesStats = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Stats");
+            mFeaturesStats.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    try {
+                        TotalEvents = dataSnapshot.child("TotalCabpools").getValue().toString();
+                        DatabaseReference newPost = mUserStats;
+                        Map<String, Object> taskMap = new HashMap<>();
+                        taskMap.put("TotalCabpools", TotalEvents);
+                        newPost.updateChildren(taskMap);
+                    } catch (Exception e) {
+                        Log.d("Error Alert: ", e.getMessage());
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
 
         databaseReference.addValueEventListener(allPools);
     }
@@ -436,3 +431,4 @@ public class CabPoolAll extends BaseActivity {
     }
 
 }
+

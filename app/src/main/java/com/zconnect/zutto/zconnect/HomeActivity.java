@@ -1037,6 +1037,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.admins: {
+                Intent intent = new Intent(getApplicationContext(), ViewAdmin.class);
+                startActivity(intent);
+                break;
+            }
             case R.id.edit_profile: {
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
                 intent.putExtra("newUser", false);

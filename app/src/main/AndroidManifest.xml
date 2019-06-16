@@ -167,6 +167,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ViewAdmin"
+            android:label="@string/title_activity_about_us"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".Advertisement"
             android:label="@string/title_activity_advertisement"
             android:screenOrientation="portrait"
@@ -398,6 +403,7 @@
             android:label="@string/title_activity_cab_pool_locations"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ForumsPeopleList"
             android:label="@string/title_activity_forums_people_list"

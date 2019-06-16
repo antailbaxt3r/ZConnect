@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.HomeActivity;
+import com.zconnect.zutto.zconnect.InfoneActivity;
 import com.zconnect.zutto.zconnect.addActivities.AddEvent;
 import com.zconnect.zutto.zconnect.addActivities.AddNotices;
 import com.zconnect.zutto.zconnect.addActivities.AddProduct;
@@ -64,6 +65,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         LinearLayout bottomSheetAddMessage = (LinearLayout) bottomSheetView.findViewById(R.id.addMessage_bottomSheet);
         final LinearLayout bottomSheetSearchPool = (LinearLayout) bottomSheetView.findViewById(R.id.searchPool_bottomSheet);
         final LinearLayout bottomSheetAddNotices = bottomSheetView.findViewById(R.id.add_notices_bottomSheet);
+        LinearLayout bottomSheetAddContact = (LinearLayout) bottomSheetView.findViewById(R.id.addContact_bottomSheet);
 
         communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
 
@@ -262,11 +264,27 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
             }
         };
 
+        View.OnClickListener addContactListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    HomeBottomSheet.this.dismiss();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
+                Intent intent;
+                intent = new Intent(getContext(), InfoneActivity.class);
+                startActivity(intent);
+            }
+        };
+
         bottomSheetAddEvent.setOnClickListener(addEventListener);
         bottomSheetAddProduct.setOnClickListener(addProductListener);
         bottomSheetAddMessage.setOnClickListener(addMessageListener);
         bottomSheetSearchPool.setOnClickListener(searchPoolListener);
         bottomSheetAddNotices.setOnClickListener(noticesListener);
+        bottomSheetAddContact.setOnClickListener(addContactListener);
 
         return bottomSheetView;
     }

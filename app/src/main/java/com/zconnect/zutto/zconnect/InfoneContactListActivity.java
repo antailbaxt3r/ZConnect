@@ -122,11 +122,6 @@ public class InfoneContactListActivity extends BaseActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        databaseReferenceList.addListenerForSingleValueEvent(listener);
-    }
 
     private  void setAdapter(final String queryString, final Boolean search) {
 
@@ -243,6 +238,7 @@ public class InfoneContactListActivity extends BaseActivity {
         addContactIntent.putExtra("totalContacts",totalContacts);
         addContactIntent.putExtra("contactName", contactName);
         addContactIntent.putExtra("contactNumber", contactNumber);
+        addContactIntent.putExtra("categoryadmin",catAdmin);
 //        addContactIntent.putExtra("contactPhoto", contactPhoto);
         startActivity(addContactIntent);
 
