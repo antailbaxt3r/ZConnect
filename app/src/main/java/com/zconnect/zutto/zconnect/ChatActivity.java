@@ -95,10 +95,11 @@ public class ChatActivity extends BaseActivity {
     private RecyclerView chatView;
     private RecyclerView.Adapter adapter;
     private DatabaseReference databaseReference ;
+    private DatabaseReference forumCategory = null;
     private Calendar calendar;
     private ArrayList<ChatItemFormats> messages  = new ArrayList<>();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private String type=null;
+    private String type = null;
     private Button joinButton;
     private LinearLayout joinLayout,chatLayout;
     private Menu menu;
@@ -270,7 +271,7 @@ public class ChatActivity extends BaseActivity {
                 final String key,tab;
                 key = getIntent().getStringExtra("key");
                 tab = getIntent().getStringExtra("tab");
-                final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
+                forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
 
                 forumCategory.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -340,7 +341,7 @@ public class ChatActivity extends BaseActivity {
         }
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
-        adapter = new ChatRVAdapter(messages,databaseReference,this);
+        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this);
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
