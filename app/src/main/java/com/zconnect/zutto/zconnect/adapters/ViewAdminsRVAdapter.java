@@ -9,7 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.addActivities.AddStatus;
+
 import java.util.Vector;
 
 /**
@@ -28,6 +33,7 @@ public class ViewAdminsRVAdapter extends RecyclerView.Adapter<ViewAdminsRVAdapte
     }
 
 
+
     @Override
     public ViewAdminsRVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d("oncreatevh", "onCreateViewHolder: ");
@@ -42,7 +48,9 @@ public class ViewAdminsRVAdapter extends RecyclerView.Adapter<ViewAdminsRVAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         Uri uri = Uri.parse(admimg.get(position));
-        holder.adminimage.setImageURI(uri);
+        Picasso.with(context).load(uri).into(holder.adminimage);
+        //holder.adminimage.setImageURI(uri);
+        Log.d("img-set", "onBindViewHolder: ");
         holder.adminname.setText(admname.get(position));
     }
 
@@ -55,11 +63,11 @@ public class ViewAdminsRVAdapter extends RecyclerView.Adapter<ViewAdminsRVAdapte
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView adminname;
-        ImageView adminimage;
+        SimpleDraweeView adminimage;
         public ViewHolder(View itemView) {
             super(itemView);
             adminname =(TextView)itemView.findViewById(R.id.admin_name);
-            adminimage =(ImageView)itemView.findViewById(R.id.admin_image);
+            adminimage =(SimpleDraweeView)itemView.findViewById(R.id.admin_image);
 
         }
     }
