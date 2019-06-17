@@ -20,12 +20,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ProgressBar;
-
 import android.widget.Toast;
 
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,7 +60,7 @@ public class InfoneActivity extends Fragment {
     private static final int REQUEST_READ_CONTACTS = 2;
     private SharedPreferences communitySP;
     public String communityReference;
-    ProgressBar progressBar;
+    private ShimmerFrameLayout shimmerFrameLayout;
     Toolbar toolbar;
 
     public InfoneActivity() {
@@ -75,19 +73,20 @@ public class InfoneActivity extends Fragment {
 //        setHasOptionsMenu(true);
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.activity_infone2, container, false);
-        progressBar = (ProgressBar) view.findViewById(R.id.infone2_progress_circle);
-        progressBar.setVisibility(View.VISIBLE);
+
         recyclerViewCat = (RecyclerView) view.findViewById(R.id.rv_cat_infone);
         recyclerViewCat.setVisibility(View.GONE);
         fabCatAdd = (FloatingActionButton) view.findViewById(R.id.fab_cat_infone);
-
+        shimmerFrameLayout = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container_infone_cat);
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
+        shimmerFrameLayout.startShimmerAnimation();
 
         databaseReferenceCat = FirebaseDatabase.getInstance().getReference().child("communities")
                 .child(communityReference).child("infone").child("categoriesInfo");
@@ -112,7 +111,8 @@ public class InfoneActivity extends Fragment {
                         categoriesList.add(infoneCategoryModel);
                     }catch (Exception e){}
 
-                    progressBar.setVisibility(View.GONE);
+                    shimmerFrameLayout.stopShimmerAnimation();
+                    shimmerFrameLayout.setVisibility(View.INVISIBLE);
                     recyclerViewCat.setVisibility(View.VISIBLE);
 
                 }
@@ -132,7 +132,8 @@ public class InfoneActivity extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(InfoneActivity.class.getName(), "database error" + databaseError.toString());
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewCat.setVisibility(View.VISIBLE);
                 Toast.makeText(getActivity().getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }

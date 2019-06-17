@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -14,7 +15,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
@@ -370,8 +373,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -379,13 +382,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
                     holder.postConjunction.setText(" added a ");
-                    holder.post.setText("Contact");
+                    holder.post.setText("contact");
                     holder.infoneNameCategorySentence.setText("Contact of " +
                             recentsItemFormats.get(position).getInfoneContactName() +
                             " added in " +
                             recentsItemFormats.get(position).getInfoneContactCategoryName());
                     posted = " added a ";
-                    post = "Contact";
+                    post = "contact";
                     clickableSpanFeature = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
@@ -424,8 +427,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -535,8 +538,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            layers[1] = context.getResources().getDrawable(R.drawable.ic_local_mall_white_24dp);
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.storeroom), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_mall_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_mall_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -709,8 +712,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            layers[1] = context.getResources().getDrawable(R.drawable.ic_local_taxi_white_18dp);
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_taxi_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_taxi_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -762,8 +765,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_24dp));
                     holder.postConjunction.setText(" put an ");
                     holder.post.setText("Offer");
                     holder.layoutFeatureIcon.setOnClickListener(null);
@@ -800,8 +803,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             holder.postImage.setVisibility(View.GONE);
                     }catch (Exception e){}
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.messages), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(null);
                     holder.postConjunction.setText(" wrote a ");
                     holder.post.setText("status");
@@ -845,6 +848,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     if(recentsItemFormats.get(position).getDesc2().equals("y")) {
                         holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
                         holder.avatarCircle.setImageResource(R.drawable.question_mark_icon);
+                        holder.avatarCircle.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.darkgreyforavatarbg)));
                         holder.avatarCircle.setOnClickListener(null);
 //                holder.avatarCircle.setBackground(context.getResources().getDrawable(R.drawable.question_mark_icon));
                     } else {
@@ -882,8 +886,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.VISIBLE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.notices), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_18));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_24));
                     holder.setOpenNoticeImage(recentsItemFormats.get(position).getName(), recentsItemFormats.get(position).getImageurl());
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -970,8 +974,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.forums), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -1011,21 +1015,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 String sentence = name + posted + post;
                 SpannableString spannableString = new SpannableString(sentence);
-
                 spannableString.setSpan(clickableSpanPostedBy, sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 spannableString.setSpan(clickableSpanFeature, sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.link));
+                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
                 spannableString.setSpan(foregroundColorSpan, sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 if(post.equals("status"))
-                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.secondaryText));
+                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
                 else
-                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.link));
+                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
                 spannableString.setSpan(foregroundColorSpan, sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.secondaryText));
+                foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
                 spannableString.setSpan(foregroundColorSpan, sentence.indexOf(posted), sentence.indexOf(posted) + posted.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
+                spannableString.setSpan(new android.text.style.StyleSpan(BOLD), sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new android.text.style.StyleSpan(BOLD), sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 holder.sentence.setText(spannableString);
                 holder.sentence.setMovementMethod(LinkMovementMethod.getInstance());
                 break;
@@ -1424,7 +1428,35 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             final RelativeLayout likeLayout = (RelativeLayout) itemView.findViewById(R.id.messagesRecentItem_like_layout);
             final ImageView likeIcon = (ImageView) itemView.findViewById(R.id.like_image_status);
             final TextView likeText = (TextView) itemView.findViewById(R.id.like_text_status);
-            statusDatabase.child("likeUids").addValueEventListener(new ValueEventListener() {
+
+
+            likeIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(statusLikeFlag == true){
+                        statusLikeFlag = false;
+                        likeText.setText(String.valueOf(Integer.valueOf(likeText.getText().toString())-1));
+                        if(likeText.getText().toString().equals("0")){
+                            likeText.setText("");
+                        }
+                        likeIcon.setColorFilter(itemView.getContext().getResources().getColor(R.color.icon_color));
+                        likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
+                    }else{
+                        statusLikeFlag = true;
+                        likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
+                        likeIcon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+                        if(likeText.getText().toString().equals("")){
+                            likeText.setText("1");
+                        }else {
+                            likeText.setText(String.valueOf(Integer.valueOf(likeText.getText().toString()) + 1));
+                        }
+
+                    }
+                }
+            });
+
+
+            statusDatabase.child("likeUids").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     statusLikeCount = dataSnapshot.getChildrenCount();

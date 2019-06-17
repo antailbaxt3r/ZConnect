@@ -77,6 +77,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
 
 
 public class  OpenEventDetail extends BaseActivity{
@@ -118,8 +119,14 @@ public class  OpenEventDetail extends BaseActivity{
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        mActionBarToolbar = findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
+        mActionBarToolbar.setTitle("Event Details");
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActionBarToolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        mActionBarToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        mActionBarToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         final String communityReference = communitySP.getString("communityReference", null);
@@ -266,7 +273,7 @@ public class  OpenEventDetail extends BaseActivity{
                 try {
                     if(dataSnapshot.child("BoostersUids").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
-                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
+                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.deeppurple700));
                         boostBtn.setTypeface(ralewayBold);
                     }
                     Date evdate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(event.getEventDate());

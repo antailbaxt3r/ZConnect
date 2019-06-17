@@ -76,13 +76,14 @@ public class OpenUserDetail extends BaseActivity {
     private LinearLayout content;
     private ProgressBar progressBar;
     private Menu menu;
+    private Toolbar toolbar;
     private Button userTypeText, requestContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_user_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         content = (LinearLayout) findViewById(R.id.phonebook_details_content);
         progressBar = (ProgressBar) findViewById(R.id.phonebook_details_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
@@ -232,7 +233,7 @@ public class OpenUserDetail extends BaseActivity {
         }
 
         if(db_like != null){
-            db_like.addValueEventListener(new ValueEventListener() {
+            db_like.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     long like = dataSnapshot.getChildrenCount();

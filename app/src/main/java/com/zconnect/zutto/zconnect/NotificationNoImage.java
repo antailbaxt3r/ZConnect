@@ -58,6 +58,12 @@ public class NotificationNoImage extends BaseActivity {
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActionBarToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        mActionBarToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        mActionBarToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+
 
         if (mActionBarToolbar != null) {
             mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {

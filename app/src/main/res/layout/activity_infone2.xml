@@ -30,12 +30,40 @@
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
-        <ProgressBar
-            android:id="@+id/infone2_progress_circle"
-            android:layout_width="wrap_content"
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:backgroundTint="@color/secondaryText2" />
+            android:id="@+id/shimmer_view_container_infone_cat"
+            app:duration="2000">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_cat_infone"
             android:layout_width="wrap_content"

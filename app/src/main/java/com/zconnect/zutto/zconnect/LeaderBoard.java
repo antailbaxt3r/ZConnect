@@ -47,6 +47,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
+
 public class LeaderBoard extends BaseActivity {
 
     private RecyclerView leaderBoardRV;
@@ -71,8 +73,15 @@ public class LeaderBoard extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader_board);
 
-        Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mActionBarToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mActionBarToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        mActionBarToolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        mActionBarToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+
+        mActionBarToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         mActionBarToolbar.setTitle("Leader Board");
 

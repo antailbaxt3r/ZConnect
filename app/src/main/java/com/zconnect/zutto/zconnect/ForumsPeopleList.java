@@ -65,7 +65,7 @@ public class ForumsPeopleList extends BaseActivity {
 
         joinLeaveButton = (Button) findViewById(R.id.join);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 //        setTitle("List of people");
         if (toolbar != null) {

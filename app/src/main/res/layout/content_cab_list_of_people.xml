@@ -28,11 +28,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:text="List Of People"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/content_cabpeople_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:layout_marginTop="10dp"
             android:clipToPadding="false"
             android:scrollbars="vertical"/>
 
@@ -57,7 +68,7 @@
                     android:id="@+id/chat_photo_button"
                     android:src="@drawable/ic_image_black_24dp"
                     android:layout_width="0dp"
-                    android:tint="@color/colorPrimary"
+                    android:tint="@color/deepPurple500"
                     android:background="@color/transparent"
                     android:layout_marginEnd="5dp"
                     android:layout_weight=".1"
@@ -82,7 +93,7 @@
                     android:layout_weight="0.1"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_send_white_24dp"
-                    android:tint="@color/colorPrimary"
+                    android:tint="@color/deepPurple500"
                     android:clickable="false"
                     android:background="@color/transparent"
                     android:layout_marginStart="5dp" />

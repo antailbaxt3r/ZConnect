@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="50dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:layout_margin="@dimen/border_radius_5dp"
+            android:background="@drawable/rounded_corner_border"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:textSize="30dp"
+            android:padding="10dp"
+            android:id="@+id/date_cp_detail"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_margin="@dimen/border_radius_5dp"
+            android:textColor="@color/black"
+            android:id="@+id/time_cp_detail"
+            android:background="@drawable/rounded_corner_border"
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            android:text="Time"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textAlignment="textEnd"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_corner_border"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_weight="4"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:text="From"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:id="@+id/source_cp_detail"
+            android:layout_weight="1"
+            android:textColor="@color/secondaryText"
+            android:textSize="20dp"
+            android:textAlignment="textEnd"
+            android:text="Source"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_corner_border"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_weight="4"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:text="To"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:id="@+id/destination_cp_detail"
+            android:layout_weight="1"
+            android:textColor="@color/secondaryText"
+            android:textSize="20dp"
+            android:textAlignment="textEnd"
+            android:text="Destination"/>
+
+
+    </LinearLayout>
+</LinearLayout>
