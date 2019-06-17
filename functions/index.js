@@ -354,26 +354,40 @@ const getThreeDigitString = (num) => {
 
 //New functions for integrity of userForums in features-> forums
 
-exports.addForumToUserForum = functions.database.ref('/communities/{communityID}/features/forums/tabCategories/{tabID}/{categoryID}/users/{userPushID}')
+exports.addForumToUserForum = functions.database.ref('communities/{communityID}/features/forums/tabCategories/{tabID}/{categoryID}/users/{userPushID}/')
 .onCreate((snapshot, context) => {
+  console.log('entered A');
     return snapshot.ref.parent.parent.once('value', (forumDetailsSnapshot) =>{
         //const userKey = snapshot.key;
         let obj = forumDetailsSnapshot.val();
         delete obj['users'];
-        return snapshot.ref.parent.parent.parent.parent.parent.child(`userForums/${context.params.userPushID}/joinedForums/${context.params.categoryID}`)
+        console.log('adding...');
+        return snapshot.ref.parent.parent.parent.parent.parent.child(`userForums/${context.params.userPushID}/${context.params.categoryID}`)
             .set(obj);
     });
 });
 
-exports.updateForumToUserForum = functions.database.ref('/communities/{communityID}/features/forums/categories/{categoryID}')
+exports.testAddForumToUserForum = functions.database.ref('communities/{communityID}/features/forums/tabCategories/{tabID}/{categoryID}/users/{userPushID}/')
+.onCreate((snapshot, context) => {
+  return console.log('entered A');
+});
+
+exports.testFunc = functions.database.ref('/communities/{communityID}/features/forums/tabCategories/{tabID}/{catID}/users/{uid}')
+.onCreate((snapshot, context) => {
+  return console.log("ABCD", context.params.uid);
+});
+
+exports.updateForumToUserForum = functions.database.ref('/communities/{communityID}/features/forums/tabCategories/{tabID}/{categoryID}')
 .onUpdate((change, context) =>{
+  console.log('entered U');
       let obj = change.after.val();
       delete obj['users'];
-      return change.after.ref.parent.parent.child(`userForums`).once('value', usersSnapshot => {
+      return change.after.ref.parent.parent.parent.child(`userForums`).once('value', usersSnapshot => {
         usersSnapshot.forEach((user) => {
           if(user.hasChild(context.params.categoryID))
           {
-            return change.after.ref.parent.parent.child(`userForums/${user.key}/joinedForums/${context.params.categoryID}`)
+            console.log('updating...');
+            return change.after.ref.parent.parent.child(`userForums/${user.key}/${context.params.categoryID}`)
             .set(obj);
           }
           else
@@ -382,10 +396,11 @@ exports.updateForumToUserForum = functions.database.ref('/communities/{community
     });
   });
 
-exports.deleteForumFromUserForum = functions.database.ref('/communities/{communityID}/features/forums/categories/{categoryID}/users/{userPushID}')
+exports.deleteForumFromUserForum = functions.database.ref('/communities/{communityID}/features/forums/tabCategories/{tabID}/{categoryID}/users/{userPushID}')
 .onDelete((snap, context) =>{
-  const userID = snap.ref;
-  return userID.parent.parent.parent.parent.child(`userForums/${context.params.userPushID}/joinedForums/${context.params.categoryID}`)
+  console.log('entered D');
+  console.log('removing...');
+  return snap.ref.parent.parent.parent.parent.parent.child(`userForums/${context.params.userPushID}/${context.params.categoryID}`)
   .remove();
 });
 
