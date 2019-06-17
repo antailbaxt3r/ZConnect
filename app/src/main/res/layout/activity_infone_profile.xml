@@ -215,6 +215,38 @@
                     app:met_textColor="@color/primaryText" />
 
             </RelativeLayout>
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/personalchatrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="20dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/logo"
+                    android:tint="@color/colorPrimary" />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/message_on_zconnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:ems="10"
+                    android:clickable="false"
+                    android:inputType="number"
+                    android:paddingLeft="20dp"
+                    android:text="Message on ZConnect"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp"
+                    app:met_hideUnderline="true"
+                    app:met_textColor="@color/primaryText" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 

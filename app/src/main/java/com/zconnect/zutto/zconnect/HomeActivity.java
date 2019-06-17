@@ -207,7 +207,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         initListeners();
 
         tabs();
-        setForumNotificationDot();
+//        setForumNotificationDot();
 
 
     }
@@ -325,57 +325,57 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        }
     }
 
-    public void setForumNotificationDot(){
-        mUser = mAuth.getCurrentUser();
-        DBHelper mydb = new DBHelper(getApplicationContext());
-        final Map<String,Integer> allForumsSeenMessages = mydb.getAllForums();
-//        forumsCategoriesRef.addValueEventListener(joinedForumsListener);
-        Log.d("Forum",mUser.getUid());
-        DatabaseReference userForum = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("userForums").child(mUser.getUid());
-        userForum.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Integer totalUnreadMessages = 0;
-                for(DataSnapshot forum: dataSnapshot.getChildren()){
-                    try {
-                        Integer totalMessages = Integer.getInteger(forum.child("totalMessages").toString());
-                        String catUID = forum.child("catUID").toString();
-                        Integer readMessages = allForumsSeenMessages.get(catUID);
-                        if(totalMessages == null){
-                            Log.d("totalMessages","null");
-
-
-                        }
-                    if(readMessages == null){
-                        Log.d("readlMessages","null");
-
-                    }
-
-                        totalUnreadMessages = totalUnreadMessages+ totalMessages - readMessages;
-                        if(totalUnreadMessages>0){
-                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
-                            break;
-                        }
-                    }
-                    catch(Exception e){
-                        Log.d("ForumDot",e.toString());
-
-                        continue;
-                    }
-                }
-//                if(totalUnreadMessages<=0){
-                    tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
-
-
+//    public void setForumNotificationDot(){
+//        mUser = mAuth.getCurrentUser();
+//        DBHelper mydb = new DBHelper(getApplicationContext());
+//        final Map<String,Integer> allForumsSeenMessages = mydb.getAllForums();
+////        forumsCategoriesRef.addValueEventListener(joinedForumsListener);
+//        Log.d("Forum",mUser.getUid());
+//        DatabaseReference userForum = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("userForums").child(mUser.getUid());
+//        userForum.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                Integer totalUnreadMessages = 0;
+//                for(DataSnapshot forum: dataSnapshot.getChildren()){
+//                    try {
+//                        Integer totalMessages = Integer.getInteger(forum.child("totalMessages").toString());
+//                        String catUID = forum.child("catUID").toString();
+//                        Integer readMessages = allForumsSeenMessages.get(catUID);
+//                        if(totalMessages == null){
+//                            Log.d("totalMessages","null");
+//
+//
+//                        }
+//                    if(readMessages == null){
+//                        Log.d("readlMessages","null");
+//
+//                    }
+//
+//                        totalUnreadMessages = totalUnreadMessages+ totalMessages - readMessages;
+//                        if(totalUnreadMessages>0){
+//                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+//                            break;
+//                        }
+//                    }
+//                    catch(Exception e){
+//                        Log.d("ForumDot",e.toString());
+//
+//                        continue;
+//                    }
 //                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+////                if(totalUnreadMessages<=0){
+//                    tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+//
+//
+////                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     public void setTabListener() {
 
@@ -591,7 +591,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabs.addTab(infoneT);
         //tabs.addTab(profileT);
         tabs.addTab(notificationsT);
-        setForumNotificationDot();
+//        setForumNotificationDot();
 //        tabs.getTabAt(0)
     }
 

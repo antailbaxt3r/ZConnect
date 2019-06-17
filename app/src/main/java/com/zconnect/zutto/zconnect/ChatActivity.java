@@ -195,6 +195,8 @@ public class ChatActivity extends BaseActivity {
             setActionBarTitle("Chat with seller");
         }else if (type.equals("post")){
             setActionBarTitle("Comments");
+        }else if(type.equals("personalChats")){
+            setActionBarTitle(getIntent().getStringExtra("name"));
         }
 
         if(type!=null){
@@ -338,6 +340,20 @@ public class ChatActivity extends BaseActivity {
                     }
                 });
             }
+            else if(type.equals("personalChats")){
+
+                final String key,tab;
+                key = getIntent().getStringExtra("key");
+                tab = getIntent().getStringExtra("tab");
+                setToolbarTitle(getIntent().getStringExtra("name"));
+
+                final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
+                joinButton.setVisibility(View.GONE);
+                joinLayout.setVisibility(View.GONE);
+                chatLayout.setVisibility(View.VISIBLE);
+
+            }
+
         }
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
@@ -567,6 +583,19 @@ public class ChatActivity extends BaseActivity {
                     cabChatNotification.setCommunityName(communityTitle);
 
                     notificationSender.execute(cabChatNotification);
+                }else if(type.equals("personalChats")){
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats").child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
 
             }
