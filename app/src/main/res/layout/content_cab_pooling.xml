@@ -126,7 +126,7 @@
                                         android:id="@+id/destination"
                                         android:layout_width="wrap_content"
                                         android:layout_weight=".3"
-                                        android:textSize="20dp"
+                                        android:textSize="20sp"
                                         android:textAlignment="center"
                                         android:layout_height="wrap_content"
                                         android:text="Destination"
@@ -192,7 +192,7 @@
                                     android:textAlignment="center"
                                     android:layout_height="wrap_content"
                                     android:text="Between"
-                                    android:textSize="20dp"
+                                    android:textSize="20sp"
                                     android:textColor="@color/black"/>
                             </LinearLayout>
                             <com.zconnect.zutto.zconnect.commonModules.CustomSpinner
@@ -234,7 +234,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_weight=".3"
                                     android:textAlignment="center"
-                                    android:textSize="20dp"
+                                    android:textSize="20sp"
                                     android:layout_gravity="center"
                                     android:layout_height="wrap_content"
                                     android:text="And"
@@ -272,7 +272,7 @@
                                 android:padding="0dp"
                                 android:text="Date"
                                 android:textColor="@color/primaryText"
-                                android:textSize="20dp" />
+                                android:textSize="20sp" />
 
                             <TextView
                                 android:id="@+id/calender"
@@ -283,7 +283,7 @@
                                 android:gravity="center|center"
                                 android:layout_marginTop="17dp"
                                 android:paddingBottom="5dp"
-                                android:textSize="18dp"
+                                android:textSize="18sp"
                                 android:textColor="@color/black"/>
 
                         </LinearLayout>

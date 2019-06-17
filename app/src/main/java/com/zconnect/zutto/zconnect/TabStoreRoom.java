@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,9 +16,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -69,15 +72,22 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
     NotificationCompat.Builder mBuilder;
     String TotalProducts;
     String userId;
+
     Query productsQuery;
+
     DatabaseReference mUserStats, mFeaturesStats;
+
     private RecyclerView mProductList;
+
     private DatabaseReference mDatabase;
     private Query query;
     private boolean flag = false;
+
     private ProductsRVAdapter productAdapter;
     private Vector<Product> productVector= new Vector<Product>();
+    private Vector<Product> searchProductVector;
     private ValueEventListener mListener;
+
     private Product singleProduct;
     private Boolean flagNoProductsAvailable;
     private TextView noProductsAvailableText;
@@ -92,7 +102,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
     private int currentOptionProductType = 2;
 
 
-//    @Nullable
+    //    @Nullable
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +143,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
 
 //        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_app_bar_home);
 //        tabLayout.setupWithViewPager(mViewPager);
+
         final CounterItemFormat counterItemFormat = new CounterItemFormat();
         final HashMap<String, String> meta= new HashMap<>();
         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
@@ -142,6 +153,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
 
         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
         counterPush.pushValues();
+
 //        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 //            @Override
 //            public void onTabSelected(TabLayout.Tab tab) {
@@ -179,12 +191,15 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
 
         GridLayoutManager productGridLayout = new GridLayoutManager(this, 2);
 
+        noProductsAvailableText = (TextView) findViewById(R.id.no_products_available_text);
 
         shimmerContainer = (ShimmerFrameLayout) findViewById(R.id.shimmer_view_container1);
         mProductList = (RecyclerView) findViewById(R.id.productList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
+
         fab = (FloatingActionButton) findViewById(R.id.fab_content_store_room);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -268,36 +283,50 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         productAdapter = new ProductsRVAdapter(productVector,this);
         mProductList.setAdapter(productAdapter);
 
-
-
         mListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 productVector.clear();;
                 flagNoProductsAvailable = true;
+
                 for (DataSnapshot shot: dataSnapshot.getChildren()){
+
                     try{
+
                         singleProduct = shot.getValue(Product.class);
+
                         if(singleProduct.getType()==null)
                         {
                             singleProduct.setType(ProductUtilities.TYPE_ADD_STR);
                         }
+
                         if(currentOptionProductType == OPT_ADD && !singleProduct.getType().equals(ProductUtilities.TYPE_ADD_STR))
                             continue;
                         else if(currentOptionProductType == OPT_ASK && !singleProduct.getType().equals(ProductUtilities.TYPE_ASK_STR))
                             continue;
-                        if(!singleProduct.getKey().equals(null)&& !singleProduct.getProductName().equals(null)) {
-                            if (!shot.hasChild("isNegotiable")){
-                                if(shot.hasChild("negotiable")){
-                                    if(shot.child("negotiable").getValue(String.class).equals("1")){
+
+                        if(!singleProduct.getKey().equals(null)&& !singleProduct.getProductName().equals(null))
+                        {
+                            if (!shot.hasChild("isNegotiable"))
+                            {
+                                if(shot.hasChild("negotiable"))
+                                {
+                                    if(shot.child("negotiable").getValue(String.class).equals("1"))
+                                    {
                                         singleProduct.setIsNegotiable(Boolean.TRUE);
-                                    }else {
+                                    }
+                                    else
+                                        {
                                         singleProduct.setIsNegotiable(Boolean.FALSE);
                                     }
-                                }else {
+                                }
+                                else
+                                    {
                                     singleProduct.setIsNegotiable(Boolean.FALSE);
                                 }
                             }
+
                             productVector.add(singleProduct);
                             flagNoProductsAvailable = false;
                         }
@@ -315,6 +344,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                         return Long.compare(o2.getPostTimeMillis(), o1.getPostTimeMillis());
                     }
                 });
+
                 productAdapter.notifyDataSetChanged();
                 shimmerContainer.stopShimmerAnimation();
                 shimmerContainer.setVisibility(View.INVISIBLE);
@@ -328,12 +358,47 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         };
 
         mBuilder = new NotificationCompat.Builder(this);
-        
-        setAdapter("lite",false);
 
+        setAdapter("lite",false);
     }
 
-    private void setAdapter(String lite, boolean b) {
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        productsQuery.addListenerForSingleValueEvent(mListener);
+    }
+
+    private void setAdapter(String queryString, boolean search) {
+
+        if(search){
+            if(!queryString.equals("")) {
+                searchProductVector = new Vector<Product>();
+                for (int i = 0; i < productVector.size(); i++) {
+
+                    if (productVector.get(i).getProductName().toLowerCase().trim().contains(queryString.toLowerCase())) {
+                        searchProductVector.add(productVector.get(i));
+                    }
+                    if (searchProductVector.size() > 7) {
+                        break;
+                    }
+                }
+
+                productAdapter = new ProductsRVAdapter(searchProductVector,this);
+                mProductList.setAdapter(productAdapter);
+                //progressBar.setVisibility(View.GONE);
+                //mProductList.setVisibility(View.VISIBLE);
+            }else {
+                productAdapter = new ProductsRVAdapter(productVector,this);
+                mProductList.setAdapter(productAdapter);
+                //progressBar.setVisibility(View.GONE);
+                //mProductList.setVisibility(View.VISIBLE);
+            }
+
+        }else {
+            productsQuery.addListenerForSingleValueEvent(mListener);
+        }
+
     }
 
 
@@ -345,6 +410,58 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
 
         if (!status){
             getMenuInflater().inflate(R.menu.menu_storeroom, menu);
+
+            // Associate searchable configuration with the SearchView
+            SearchManager searchManager =
+                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView =
+                    (SearchView) menu.findItem(R.id.search).getActionView();
+            searchView.setSearchableInfo(
+                    searchManager.getSearchableInfo(getComponentName()));
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    setAdapter(query,true);
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    setAdapter(newText,true);
+                    return false;
+                }
+            });
+
+
+            MenuItem menuItem = menu.findItem(R.id.search);
+
+            MenuItemCompat.setOnActionExpandListener(menuItem,new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+
+                    /*final CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    final HashMap<String, String> meta= new HashMap<>();
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_PRODUCTS_TAB_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();*/
+
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    setAdapter("lite",false);
+                    //Toast.makeText(InfoneContactListActivity.this, "Collapsed", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+            return true;
+
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -448,6 +565,12 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
         productsQuery.removeEventListener(mListener);
         shimmerContainer.stopShimmerAnimation();
         shimmerContainer.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        productsQuery.removeEventListener(mListener);
     }
 
     @Override

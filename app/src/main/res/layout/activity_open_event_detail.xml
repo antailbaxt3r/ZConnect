@@ -62,7 +62,7 @@
                             android:layout_height="wrap_content"
                             android:text="Event Date"
                             android:textColor="@color/colorHighlight"
-                            android:textSize="16dp"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -88,7 +88,7 @@
                                 android:text="Venue N/A"
                                 android:layout_marginLeft="0dp"
                                 android:textColor="@color/secondaryText"
-                                android:textSize="16dp"
+                                android:textSize="16sp"
                                 android:textStyle="bold"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -102,7 +102,7 @@
                         android:paddingTop="5dp"
                         android:text="Event Description"
                         android:textColor="@color/primaryText"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
                         android:linksClickable="true"
                         android:autoLink="web" />
 

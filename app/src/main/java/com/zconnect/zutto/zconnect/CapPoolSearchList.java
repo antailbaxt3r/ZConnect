@@ -65,7 +65,7 @@ public class CapPoolSearchList extends BaseActivity {
 
     Context mcontext;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
+        private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     private FirebaseAuth mUser;
 
     @Override
