@@ -50,6 +50,7 @@ import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.TabStoreRoom;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
@@ -333,6 +334,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     taskMapHome.put("desc2", productPriceValue);
                     taskMapHome.put("productPrice", productPriceValue);
                 }
+
                 if (noFieldsEmpty) {
                     Log.i("EEEEEEEEEEEEE", "entered");
                     if(String.valueOf(spinner1.getSelectedItem()).equals("Choose Category"))
@@ -370,7 +372,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 //                        newPost.child("PostTimeMillis").setValue(postTimeMillis);
                                         taskMap.put("Image", downloadUri != null ? downloadUri.toString() : null);
                                         taskMapHome.put("imageurl", downloadUri != null ? downloadUri.toString() : null);
-//                        postedBy.setValue(null);
+                                        //                        postedBy.setValue(null);
 //                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 //                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
 //                            @Override
@@ -428,6 +430,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                                         handleNotifAndCountAndStats(productNameValue, productPriceValue, downloadUri);
                                         GlobalFunctions.addPoints(10);
                                         mProgress.dismiss();
+
                                         finish();
                                     } else {
                                         // Handle failures
