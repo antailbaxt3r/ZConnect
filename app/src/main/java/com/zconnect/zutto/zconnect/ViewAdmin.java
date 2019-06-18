@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -98,7 +99,7 @@ DatabaseReference databaseReference;
                 }
                 recyclerView = (RecyclerView) findViewById(R.id.view_admins_rv);
                 viewAdminsRVAdapter = new ViewAdminsRVAdapter(ViewAdmin.this,admimg,admname);
-                recyclerView.setLayoutManager(new LinearLayoutManager(ViewAdmin.this));
+                recyclerView.setLayoutManager(new GridLayoutManager(ViewAdmin.this,2));
                 recyclerView.setAdapter(viewAdminsRVAdapter);
                 recyclerView.setVisibility(View.VISIBLE);
 
