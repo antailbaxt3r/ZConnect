@@ -329,7 +329,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                         counterPush.pushValues();
 
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, notifications).commit();
+                        fm.beginTransaction().hide(active).show(notifications).commit();
+                        active = notifications;
+                        //getSupportFragmentManager().beginTransaction().replace(R.id.container, notifications).commit();
                         //getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
                         break;
                     }
@@ -643,6 +645,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 fm = getSupportFragmentManager();
                                 active = recent;
 
+                                fm.beginTransaction().add(R.id.container, notifications, "4").hide(notifications).commit();
                                 fm.beginTransaction().add(R.id.container, infone, "3").hide(infone).commit();
                                 fm.beginTransaction().add(R.id.container, forums, "2").hide(forums).commit();
                                 fm.beginTransaction().add(R.id.container,recent, "1").commit();
@@ -1102,13 +1105,21 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void onBackPressed() {
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
             return;
         }
 
-        if (doubleBackToExitPressedOnce) {
+        if (active!=recent)
+        {
+            setToolbarTitle(Title);
+            tabs.getTabAt(0).select();
+            fm.beginTransaction().hide(active).show(recent).commit();
+            active = recent;}
+
+            if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
             return;
         }
@@ -1122,12 +1133,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         new Handler().postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
+                    @Override
+                    public void run() { doubleBackToExitPressedOnce = false;
+                    }
+                }, 2000);
             }
-        }, 2000);
-    }
+
 //
 //    @SuppressLint("ApplySharedPref")
 //    private void promptToAddContact() {
