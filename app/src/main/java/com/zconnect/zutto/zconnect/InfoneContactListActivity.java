@@ -1,11 +1,15 @@
 package com.zconnect.zutto.zconnect;
 
 import  android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
@@ -22,6 +26,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -67,6 +73,12 @@ public class InfoneContactListActivity extends BaseActivity {
     ProgressBar progressBar;
     int totalContacts;
 
+    //Dialog UI
+    Dialog addContactDialog;
+    LinearLayout dialogAddContactZconnectLl;
+    LinearLayout dialogAddContactPhonebookLl;
+    Button dialogAddContactCancelButton;
+
     //Elements for call verification(All belong to the popup dialog
     public static boolean hasCalled = false;
 
@@ -105,14 +117,44 @@ public class InfoneContactListActivity extends BaseActivity {
         recyclerViewContacts = (RecyclerView) findViewById(R.id.rv_infone_contacts);
         recyclerViewContacts.setVisibility(View.GONE);
         fabAddContact = (FloatingActionButton) findViewById(R.id.fab_contacts_infone);
+        addContactDialog = new Dialog(InfoneContactListActivity.this);
+        addContactDialog.setContentView(R.layout.add_infone_contact_dialog);
+        addContactDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.LTGRAY));
+        dialogAddContactZconnectLl =addContactDialog.findViewById(R.id.add_infone_contact_zconnectll);
+        dialogAddContactPhonebookLl = addContactDialog.findViewById(R.id.add_infone_contact_phonebookll);
+        dialogAddContactCancelButton = addContactDialog.findViewById(R.id.add_infone_contact_cancel_btn);
+
+        dialogAddContactPhonebookLl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addContactDialog.dismiss();
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, RQS_PICK_CONTACT);
+            }
+        });
+        dialogAddContactZconnectLl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addContactDialog.dismiss();
+                addContact("","");
+            }
+        });
+
+        dialogAddContactCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addContactDialog.dismiss();
+            }
+        });
 
         recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         fabAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(intent, RQS_PICK_CONTACT);
+            addContactDialog.show();
+
+
             }
         });
 

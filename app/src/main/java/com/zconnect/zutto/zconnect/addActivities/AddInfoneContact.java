@@ -361,6 +361,7 @@ public class AddInfoneContact extends BaseActivity {
 
 
                 }else {
+                    mProgress.dismiss();
                     if(phoneNum1.length()<10) {
                         Snackbar snackbar = Snackbar.make(nameEt, "Please check the contact details", Snackbar.LENGTH_LONG);
                         snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
@@ -368,6 +369,7 @@ public class AddInfoneContact extends BaseActivity {
                     }else {
                         Toast.makeText(AddInfoneContact.this, "All fields not set, including image.", Toast.LENGTH_SHORT).show();
                     }
+                    return;
                 }
 
             }
