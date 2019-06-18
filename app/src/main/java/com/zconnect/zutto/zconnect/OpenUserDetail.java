@@ -84,6 +84,7 @@ public class OpenUserDetail extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_user_detail);
         setToolbar();
+        setSupportActionBar(toolbar);
         content = (LinearLayout) findViewById(R.id.phonebook_details_content);
         progressBar = (ProgressBar) findViewById(R.id.phonebook_details_progress_circle);
         progressBar.setVisibility(View.VISIBLE);

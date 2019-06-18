@@ -36,6 +36,7 @@ public class Offers extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offers);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {

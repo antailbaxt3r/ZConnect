@@ -56,6 +56,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class InfoneContactListActivity extends BaseActivity {
@@ -86,6 +87,12 @@ public class InfoneContactListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infone_contact_list);
         toolbar=(Toolbar) findViewById(R.id.toolbar_app_bar_infone);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

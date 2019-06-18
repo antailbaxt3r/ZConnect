@@ -128,9 +128,15 @@ public class EditProfileActivity extends BaseActivity implements TagsEditText.Ta
         setContentView(R.layout.activity_edit_profile);
         ButterKnife.bind(this);
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+
         if (toolbar != null) {
-            setToolbar();
-            setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

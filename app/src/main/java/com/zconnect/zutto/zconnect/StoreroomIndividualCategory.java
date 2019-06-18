@@ -48,6 +48,7 @@ public class StoreroomIndividualCategory extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_individual_category);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();

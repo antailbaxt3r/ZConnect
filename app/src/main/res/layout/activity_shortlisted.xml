@@ -23,8 +23,18 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <include layout="@layout/item_product_in_shortlist"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="People Who Shortlisted Your Product"
+        android:textStyle="bold"
+        android:layout_margin="10dp"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

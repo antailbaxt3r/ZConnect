@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
+    android:layout_margin="10dp"
     app:cardCornerRadius="3dp">
 
     <LinearLayout
@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/postImg"
+            android:id="@+id/postImgInShortlist"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
@@ -34,7 +34,7 @@
                 android:paddingTop="10dp">
 
                 <TextView
-                    android:id="@+id/productName"
+                    android:id="@+id/productNameInShortlist"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".55"
@@ -45,7 +45,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/price"
+                android:id="@+id/priceInShortlist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -53,24 +53,14 @@
                 android:text="Price"
                 android:textStyle="italic" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/productDescriptionInShortlist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="10dp"
-                android:layout_gravity="bottom"
-                android:gravity="center">
+                android:paddingTop="5dp"
+                android:text="Product Description"/>
 
-                <Button
-                    android:id="@+id/archive"
-                    android:layout_width="match_parent"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/round_button_primary"
-                    android:text="Remove"
-                    android:textColor="@color/white"
-                    style="?android:attr/borderlessButtonStyle"/>
-            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

@@ -6,8 +6,9 @@
     <!--<color name="colorPrimaryDark">#01579B</color>-->
     <!--<color name="colorHighlight">#FF9800</color>-->
 
-  <!-- <color name="colorPrimary">#673ab7</color>--> <!--original purple colors-->
-   <!-- <color name="colorPrimaryDark">#482880</color>-->
+    <!--<color name="colorPrimary">#673ab7</color>--> <!--original purple colors-->
+    <!--<color name="colorPrimaryDark">#482880</color>-->
+
 
     <color name="colorPrimary">#fff</color>
     <color name="colorPrimaryDark">#E2E2E2</color>
