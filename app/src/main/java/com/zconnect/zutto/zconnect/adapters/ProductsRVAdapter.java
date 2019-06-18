@@ -53,7 +53,10 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
         {
             holder.setImage(ctx,productVector.get(position).getImage());
             if(getItemViewType(position)==ProductUtilities.TYPE_ASK)
-                holder.hideAskText();
+                holder.hideAskText(); }
+        else
+        {
+            holder.setImage(ctx,null);
         }
         holder.setProductName(productVector.get(position).getProductName());
         holder.defaultSwitch(productVector.get(position).getKey(),ctx,productVector.get(position).getCategory(),productVector.get(position).getProductName());

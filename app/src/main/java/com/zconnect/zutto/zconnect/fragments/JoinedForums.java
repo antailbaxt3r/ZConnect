@@ -1,13 +1,19 @@
 package com.zconnect.zutto.zconnect.fragments;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -20,14 +26,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.HomeActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.adapters.JoinedForumsAdapter;
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
+import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 
+import static com.zconnect.zutto.zconnect.R.menu.menu_infone_contact_list;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 import java.io.FileReader;
@@ -46,6 +58,7 @@ public class JoinedForums extends Fragment {
 
     private DatabaseReference forumsCategoriesRef;
     private Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats = new Vector<>();
+    private Vector<ForumCategoriesItemFormat> searchForumCategoriesItemFormats;
     ForumCategoriesItemFormat exploreButton = new ForumCategoriesItemFormat();
     private ValueEventListener joinedForumsListener;
     private DBHelper mydb;
@@ -64,6 +77,8 @@ public class JoinedForums extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -77,6 +92,12 @@ public class JoinedForums extends Fragment {
         joinedForumsRV =view.findViewById(R.id.joined_forums_rv);
         progressBar = view.findViewById(R.id.progress_bar);
         linearLayoutManager = new LinearLayoutManager(view.getContext());
+
+        setAdapter("lite",false);
+        return  view;
+    }
+
+    private  void setAdapter(final String queryString, final Boolean search) {
 
         joinedForumsListener = new ValueEventListener() {
             @Override
@@ -157,6 +178,10 @@ public class JoinedForums extends Fragment {
 
                 Collections.reverse(forumCategoriesItemFormats);
 
+                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
+                joinedForumsRV.setLayoutManager(linearLayoutManager);
+                joinedForumsRV.setAdapter(adapter);
+
                 progressBar.setVisibility(View.GONE);
                 joinedForumsRV.setVisibility(View.VISIBLE);
                 adapter.notifyDataSetChanged();
@@ -168,12 +193,77 @@ public class JoinedForums extends Fragment {
             }
         };
 
-        adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
-        joinedForumsRV.setLayoutManager(linearLayoutManager);
-        joinedForumsRV.setAdapter(adapter);
-        return  view;
+        if(search){
+            if(!queryString.equals("")) {
+                searchForumCategoriesItemFormats = new Vector<ForumCategoriesItemFormat>();
+                for (int i = 0; i < forumCategoriesItemFormats.size(); i++) {
+
+                    if (forumCategoriesItemFormats.get(i).getName().toLowerCase().trim().contains(queryString.toLowerCase())) {
+                        searchForumCategoriesItemFormats.add(forumCategoriesItemFormats.get(i));
+                    }
+                    if (searchForumCategoriesItemFormats.size() > 7) {
+                        break;
+                    }
+                }
+
+                adapter = new JoinedForumsAdapter(searchForumCategoriesItemFormats,getContext());
+                joinedForumsRV.setAdapter(adapter);
+                progressBar.setVisibility(View.GONE);
+                joinedForumsRV.setVisibility(View.VISIBLE);
+            }else {
+                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
+                joinedForumsRV.setAdapter(adapter);
+                progressBar.setVisibility(View.GONE);
+                joinedForumsRV.setVisibility(View.VISIBLE);
+            }
+
+        }else {
+            forumsCategoriesRef.addValueEventListener(joinedForumsListener);
+        }
+
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_joinedforum_search, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+
+       SearchView searchView = new SearchView(((HomeActivity)getActivity()).getSupportActionBar().getThemedContext());
+       MenuItemCompat.setShowAsAction(item,MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+       MenuItemCompat.setActionView(item,searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                setAdapter(query,true);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                setAdapter(newText,true);
+                return false;
+            }
+        });
+
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+
+        MenuItemCompat.setOnActionExpandListener(menuItem,new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                setAdapter("lite",false);
+                //Toast.makeText(InfoneContactListActivity.this, "Collapsed", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+    }
 
     @Override
     public void onAttach(Context context) {

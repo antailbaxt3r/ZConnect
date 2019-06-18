@@ -47,21 +47,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-
 public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     ArrayList<ChatItemFormats> chatFormats;
     Context ctx;
 
     private DatabaseReference databaseref;
+    private DatabaseReference forumRef;
+    private boolean hasChild = false ;
     private ValueEventListener loadMessagesListener;
     private ChatItemFormats delMessage;
     private ChatItemFormats delphoto;
 
-    public ChatRVAdapter(ArrayList<ChatItemFormats> chatFormats, DatabaseReference databaseref, Context ctx) {
+    public ChatRVAdapter(ArrayList<ChatItemFormats> chatFormats, DatabaseReference databaseref,DatabaseReference reference,Context ctx) {
         this.chatFormats = chatFormats;
         this.ctx = ctx;
         this.databaseref = databaseref;
+        this.forumRef = reference;
     }
 
     @Override
@@ -446,6 +448,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     delMessage = chatFormats.get( (int) itemView.getTag());
 
+
+
                     if(delMessage.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -455,7 +459,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                     case DialogInterface.BUTTON_POSITIVE:
                                         //Yes button clicked
                                         databaseref.child("deletedChat").push().setValue(delMessage);
-                                        deleteFromDatabase(delMessage.getKey());
+                                        deleteFromDatabase(delMessage);
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:
@@ -476,10 +480,9 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    private void deleteFromDatabase(String key) {
+    private void deleteFromDatabase(final ChatItemFormats Message) {
 
-        databaseref.child("Chat").child(key).removeValue();
-
+        databaseref.child("Chat").child(Message.getKey()).removeValue();
         // After deleting , chat needs to be refreshed
         loadMessagesListener = new ValueEventListener() {
             @Override
@@ -505,6 +508,49 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         };
 
         databaseref.child("Chat").addValueEventListener(loadMessagesListener);
+
+        try
+        {
+            forumRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("lastMessage"))
+                {
+                    hasChild = true;
+                }
+                else
+                    hasChild = false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        if(hasChild)
+        {
+            forumRef.child("lastMessage").child("message").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.getValue().equals(Message.getMessage()))
+                    {
+                        forumRef.child("lastMessage").removeValue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
 
@@ -551,7 +597,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                     case DialogInterface.BUTTON_POSITIVE:
                                         //Yes button clicked
                                         databaseref.child("deletedChat").push().setValue(delphoto);
-                                        deleteFromDatabase(delphoto.getKey());
+                                        deleteFromDatabase(delphoto);
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:
