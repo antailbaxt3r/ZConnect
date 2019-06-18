@@ -46,12 +46,16 @@ public class ViewAdminsRVAdapter extends RecyclerView.Adapter<ViewAdminsRVAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-        Uri uri = Uri.parse(admimg.get(position));
-        Picasso.with(context).load(uri).into(holder.adminimage);
-        //holder.adminimage.setImageURI(uri);
-        Log.d("img-set", "onBindViewHolder: ");
-        holder.adminname.setText(admname.get(position));
+        try {
+            Uri uri = Uri.parse(admimg.get(position));
+            Picasso.with(context).load(uri).into(holder.adminimage);
+            //holder.adminimage.setImageURI(uri);
+            Log.d("img-set", "onBindViewHolder: ");
+            holder.adminname.setText(admname.get(position));
+        }
+        catch (Exception e) {
+            Log.d("THOUSAND", admimg.get(position) + "-AAA");
+        }
     }
 
 
