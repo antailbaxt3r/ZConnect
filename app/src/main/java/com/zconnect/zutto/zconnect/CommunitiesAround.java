@@ -63,6 +63,7 @@ import com.zconnect.zutto.zconnect.itemFormats.CommunitiesItemFormat;
 import java.util.Vector;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
 
 public class CommunitiesAround extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -106,6 +107,10 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
         setContentView(R.layout.activity_communities_around);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(true);

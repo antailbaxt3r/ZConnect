@@ -33,6 +33,7 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -76,7 +77,7 @@ public class InfoneContactListActivity extends BaseActivity {
     private final String TAG = getClass().getSimpleName();
     private String catName, catImageurl;
     private String catAdmin;
-    ProgressBar progressBar;
+    private ShimmerFrameLayout shimmerFrameLayout;
 
     int totalContacts;
 
@@ -110,8 +111,8 @@ public class InfoneContactListActivity extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
 
         databaseReferenceList = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("infone").child("categories").child(catId);
-        progressBar = (ProgressBar) findViewById(R.id.infone_contact_list_progress_circle);
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container_infone_contacts);
+        shimmerFrameLayout.startShimmerAnimation();
         recyclerViewContacts = (RecyclerView) findViewById(R.id.rv_infone_contacts);
         recyclerViewContacts.setVisibility(View.GONE);
         fabAddContact = (FloatingActionButton) findViewById(R.id.fab_contacts_infone);
@@ -193,14 +194,16 @@ public class InfoneContactListActivity extends BaseActivity {
 
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(InfoneContactListActivity.class.getName(), "database error" + databaseError.toString());
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
                 Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
@@ -221,12 +224,14 @@ public class InfoneContactListActivity extends BaseActivity {
 
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVSearchItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }else {
                 infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVItems, catId);
                 recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }
 

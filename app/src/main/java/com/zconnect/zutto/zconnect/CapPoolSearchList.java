@@ -65,7 +65,7 @@ public class CapPoolSearchList extends BaseActivity {
 
     Context mcontext;
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
+        private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     private FirebaseAuth mUser;
 
     @Override
@@ -73,7 +73,7 @@ public class CapPoolSearchList extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_pool_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

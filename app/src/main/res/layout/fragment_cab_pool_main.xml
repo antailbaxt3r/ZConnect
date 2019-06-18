@@ -6,13 +6,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".CabPoolAll">
 
-    <ProgressBar
-        android:id="@+id/fragment_cab_pool_main_progress_circle"
-        android:layout_width="wrap_content"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_view_container_cabpool"
+        android:layout_width="match_parent"
+        android:layout_marginTop="50dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:backgroundTint="@color/secondaryText2"
-        android:backgroundTintMode="src_atop"/>
+        android:orientation="vertical"
+        app:duration="2000">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/cabpool_shimmer_item" />
+
+            <include layout="@layout/cabpool_shimmer_item" />
+
+            <include layout="@layout/cabpool_shimmer_item" />
+
+            <include layout="@layout/cabpool_shimmer_item" />
+
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <TextView
         android:id="@+id/no_cabpool_text_fragment_cab_pooling"
         android:layout_width="wrap_content"

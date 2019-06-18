@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
@@ -53,9 +55,9 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     Context context;
     TreeMap<Double,CabItemFormat> treeMap_double;
     TreeMap<String,CabItemFormat> treeMap_string;
-
+    String sourceText, destinationText, timeText, dateText;
+    DatabaseReference cabpoolReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     Typeface regular, light, semiBold;
-
     ArrayList<CabItemFormat> array;
     String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
     Vector<CabItemFormat> cabItemFormat;
@@ -99,7 +101,6 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
 
     @Override
     public void onBindViewHolder(CabPoolRVAdapter.ViewHolder holder, int position) {
-
        if(i==0){
            DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
            DateTime date = null;
@@ -168,6 +169,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
         LinearLayout list_people, share;
         public ViewHolder(View itemView) {
             super(itemView);
+
             source =(TextView)itemView.findViewById(R.id.source);
             destination =(TextView)itemView.findViewById(R.id.destination);
             time=(TextView)itemView.findViewById(R.id.time_range);
@@ -187,10 +189,20 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
 
                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                     counterPush.pushValues();
+
+                    sourceText = source.getText().toString();
+                    destinationText = destination.getText().toString();
+                    timeText = time.getText().toString();
+                    dateText = date.getText().toString();
+
                 if(i==0) {
                     Intent intent = new Intent(context, CabPoolListOfPeople.class);
                     intent.putExtra("key", array.get(getAdapterPosition()).getKey());
                     intent.putExtra("date", (array.get(getAdapterPosition()).getDT()).substring(0,8));
+                    intent.putExtra("sourceText", sourceText);
+                    intent.putExtra("destinationText", destinationText);
+                    intent.putExtra("timeText", timeText);
+                    intent.putExtra("dateText", dateText);
 
                     context.startActivity(intent);
                 }
@@ -199,6 +211,11 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                         Intent intent = new Intent(context, CabPoolListOfPeople.class);
                         intent.putExtra("key", cabItemFormat.get(getAdapterPosition()).getKey());
                         intent.putExtra("date", (cabItemFormat.get(getAdapterPosition()).getDT()).substring(0,8));
+                        intent.putExtra("sourceText", sourceText);
+                        intent.putExtra("destinationText", destinationText);
+                        intent.putExtra("timeText", timeText);
+                        intent.putExtra("dateText", dateText);
+
                         context.startActivity(intent);
                     }}
             });

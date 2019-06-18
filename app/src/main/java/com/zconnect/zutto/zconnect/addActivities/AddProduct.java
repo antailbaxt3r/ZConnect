@@ -106,7 +106,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
             setContentView(R.layout.activity_add_product_ask);
         else
             setContentView(R.layout.activity_add_product);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         intentHandle = new IntentHandle();
 
