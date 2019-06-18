@@ -26,14 +26,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.adapters.MakeAdminRVAdapter;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 public class MakeAdmin extends BaseActivity {
     private SharedPreferences communitySP;
+    String oldestPostId;
     public String communityReference;
     MakeAdminRVAdapter makeAdminRVAdapter;
     ProgressBar progressBar;
+    ProgressBar progressBar2;
     RecyclerView recyclerViewContacts;
     DatabaseReference databaseReference;
     Vector<String> name = new Vector<>();
@@ -42,6 +43,7 @@ public class MakeAdmin extends BaseActivity {
     Vector<String> sname = new Vector<>();
     Vector<String> simage = new Vector<>();
     Vector<String> suid = new Vector<>();
+    View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +68,16 @@ public class MakeAdmin extends BaseActivity {
         communityReference = communitySP.getString("communityReference", null);
         progressBar = (ProgressBar) findViewById(R.id.make_admin_list_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
+        progressBar2 = findViewById(R.id.progressBar2);
         recyclerViewContacts = (RecyclerView) findViewById(R.id.rv_make_admin);
         recyclerViewContacts.setVisibility(View.GONE);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.limitToFirst(15).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 for (DataSnapshot childsnap:dataSnapshot.getChildren()){
     if(!("admin").equals(childsnap.child("userType").getValue())) {
+        oldestPostId = childsnap.getKey();
         name.add(String.valueOf(childsnap.child("username").getValue()));
         if (!("").equals(childsnap.child("imageURL").getValue())) {
             image.add(String.valueOf(childsnap.child("imageURL").getValue()));
@@ -85,9 +89,55 @@ for (DataSnapshot childsnap:dataSnapshot.getChildren()){
     }
                 recyclerViewContacts.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
+
                 recyclerViewContacts.setLayoutManager(new LinearLayoutManager(MakeAdmin.this));
-                MakeAdminRVAdapter makeAdminRVAdapter = new MakeAdminRVAdapter(MakeAdmin.this,image,name,uid);
+               makeAdminRVAdapter = new MakeAdminRVAdapter(MakeAdmin.this,image,name,uid);
                 recyclerViewContacts.setAdapter(makeAdminRVAdapter);
+
+                recyclerViewContacts.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (!recyclerView.canScrollVertically(1)) {
+                            progressBar.setVisibility(View.VISIBLE);
+                            Log.d("i scrolled", "onScrolled: ");
+                            databaseReference.orderByKey().startAt(oldestPostId).limitToFirst(15).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    name.removeElementAt(name.size()-1);
+                                    image.removeElementAt(name.size()-1);
+                                    for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
+                                        if (!("admin").equals(childsnap.child("userType").getValue())) {
+                                            oldestPostId = childsnap.getKey();
+                                            name.add(String.valueOf(childsnap.child("username").getValue()));
+                                            if (!("").equals(childsnap.child("imageURL").getValue())) {
+                                                image.add(String.valueOf(childsnap.child("imageURL").getValue()));
+                                            } else {
+                                                image.add("https://lh6.googleusercontent.com/-idc9bXb9n-Q/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DVg6FhNzc1jkN4eBCa6ESbBPmpl5g/s96-c/photo.jpg");
+                                            }
+                                            uid.add(String.valueOf(childsnap.child("userUID").getValue()));
+                                        }
+                                    }
+                                    Log.d("DATA CHANGED", "onDataChange: ");
+                                   makeAdminRVAdapter.notifyDataSetChanged();
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.e(MakeAdmin.class.getName(), "database error" + databaseError.toString());
+                                    progressBar.setVisibility(View.GONE);
+                                    recyclerViewContacts.setVisibility(View.VISIBLE);
+                                    Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                        }
+                    }
+                });
+
+
+
             }
 
             @Override
@@ -99,7 +149,6 @@ for (DataSnapshot childsnap:dataSnapshot.getChildren()){
 
             }
         });
-
 
 
     }
@@ -151,6 +200,9 @@ for (DataSnapshot childsnap:dataSnapshot.getChildren()){
                     recyclerViewContacts.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
+                else{
+                    makeAdminRVAdapter = new MakeAdminRVAdapter(MakeAdmin.this,image,name,uid);
+                    recyclerViewContacts.setAdapter(makeAdminRVAdapter);}
                 return false;
             }
 
@@ -171,11 +223,14 @@ for (DataSnapshot childsnap:dataSnapshot.getChildren()){
                             break;
                         }
                     }
+
                     makeAdminRVAdapter = new MakeAdminRVAdapter(MakeAdmin.this,simage,sname,suid);
                     recyclerViewContacts.setAdapter(makeAdminRVAdapter);
                     progressBar.setVisibility(View.GONE);
                 }
-
+                else{
+                makeAdminRVAdapter = new MakeAdminRVAdapter(MakeAdmin.this,image,name,uid);
+                recyclerViewContacts.setAdapter(makeAdminRVAdapter);}
                 return false;
             }
         });
