@@ -272,7 +272,7 @@ public class InfoneProfileActivity extends BaseActivity {
                                 String key = dataSnapshot.getValue().toString();
                                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
-                                intent.putExtra("type", "personalChat");
+                                intent.putExtra("type", "personalChats");
                                 intent.putExtra("name", name);
                                 intent.putExtra("tab", "personalChats");
                                 intent.putExtra("key", key);
@@ -604,10 +604,11 @@ public class InfoneProfileActivity extends BaseActivity {
         });
     }
 
-    private String createPersonalChat(String uid, String infoneUserUID) {
+    private String createPersonalChat(final String uid, String infoneUserUID) {
         final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
         final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats");
         final DatabaseReference newPush = databaseReferenceCategories.push();
+        final DatabaseReference databaseReferenceUserForums = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums");
         newPush.child("name").setValue("null");
         Long postTimeMillis = System.currentTimeMillis();
         newPush.child("PostTimeMillis").setValue(postTimeMillis);
@@ -651,6 +652,8 @@ public class InfoneProfileActivity extends BaseActivity {
                 userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
 
                 databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(userItem.getUserUID()).setValue(userDetails);
+//                databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("image").setValue(userItem.getImageURL());
+
 
             }
 
@@ -668,6 +671,20 @@ public class InfoneProfileActivity extends BaseActivity {
         databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
         databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue("personalChats");
         databaseReferenceTabsCategories.child(newPush.getKey()).child("lastMessage").setValue("Null");
+
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("chatName").setValue(name);
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("tabUID").setValue("personalChats");
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("lastMessage").setValue("Null");
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("image").setValue(mImageUri);
+
+        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("chatName").setValue(mAuth.getCurrentUser().getDisplayName());
+        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("tabUID").setValue("personalChats");
+        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("lastMessage").setValue("Null");
+
+
+
         return newPush.getKey();
 
     }

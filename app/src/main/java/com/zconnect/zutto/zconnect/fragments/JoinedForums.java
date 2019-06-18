@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,9 @@ public class JoinedForums extends Fragment {
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
 
+    //New Forums
+    private DatabaseReference userForumsRef;
+    private ValueEventListener forumEventListener;
 
     public JoinedForums() {
         // Required empty public constructor
@@ -77,6 +81,91 @@ public class JoinedForums extends Fragment {
         joinedForumsRV =view.findViewById(R.id.joined_forums_rv);
         progressBar = view.findViewById(R.id.progress_bar);
         linearLayoutManager = new LinearLayoutManager(view.getContext());
+        userForumsRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums").child(mAuth.getCurrentUser().getUid()).child("joinedForums");
+        forumEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot forumData: dataSnapshot.getChildren()) {
+//                    if(forumData.child("tabUID").getValue().toString().equals("personalChats")){
+
+//                    }
+                    Log.d("Try",forumData.toString());
+                    try {
+
+                        ForumCategoriesItemFormat temp;
+                        temp = forumData.getValue(ForumCategoriesItemFormat.class);
+                        if (allForumsSeenMessages.get(temp.getCatUID()) != null) {
+                            temp.setSeenMessages(allForumsSeenMessages.get(temp.getCatUID()));
+                        } else {
+                            if (!forumData.hasChild("totalMessages")) {
+                                temp.setSeenMessages(0);
+                            } else {
+                                temp.setSeenMessages(Integer.parseInt(forumData.child("totalMessages").getValue().toString()));
+                            }
+                        }
+                        if (!forumData.hasChild("totalMessages")) {
+                            temp.setTotalMessages(0);
+                        }
+                        temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
+                        if (forumData.child("users").child(mAuth.getCurrentUser().getUid()).hasChild("userType")) {
+                            if (!(forumData.child("users").child(mAuth.getCurrentUser().getUid()).child("userType").getValue().equals(ForumsUserTypeUtilities.KEY_BLOCKED))) {
+                                if (forumData.hasChild("lastMessage")) {
+                                    forumCategoriesItemFormats.add(temp);
+                                } else {
+                                    ChatItemFormats lastMessage = new ChatItemFormats();
+                                    lastMessage.setMessage(" ");
+                                    lastMessage.setTimeDate(1388534400);
+                                    lastMessage.setName(" ");
+                                    temp.setLastMessage(lastMessage);
+                                    forumCategoriesItemFormats.add(temp);
+                                }
+                            }
+                        } else {
+                            if (forumData.hasChild("lastMessage")) {
+                                forumCategoriesItemFormats.add(temp);
+                            } else {
+                                ChatItemFormats lastMessage = new ChatItemFormats();
+                                lastMessage.setMessage(" ");
+                                lastMessage.setTimeDate(1388534400);
+                                lastMessage.setName(" ");
+                                lastMessage.setMessageType("message");
+                                lastMessage.setUuid(" ");
+                                temp.setLastMessage(lastMessage);
+                                forumCategoriesItemFormats.add(temp);
+                            }
+
+
+                        }
+
+                    }
+                    catch (Exception e){
+                        Log.d("Try", e.toString());
+                    }
+                }
+
+                Collections.sort(forumCategoriesItemFormats, new Comparator<ForumCategoriesItemFormat>() {
+                    @Override
+                    public int compare(ForumCategoriesItemFormat o2, ForumCategoriesItemFormat o1) {
+
+                        return Long.valueOf((Long) o2.getLastMessage().getTimeDate()).compareTo((Long) o1.getLastMessage().getTimeDate()) ;
+                    }
+                });
+
+                forumCategoriesItemFormats.add(exploreButton);
+
+                Collections.reverse(forumCategoriesItemFormats);
+
+                progressBar.setVisibility(View.GONE);
+                joinedForumsRV.setVisibility(View.VISIBLE);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
 
         joinedForumsListener = new ValueEventListener() {
             @Override
@@ -185,14 +274,16 @@ public class JoinedForums extends Fragment {
         super.onResume();
         mydb = new DBHelper(getContext());
         allForumsSeenMessages = mydb.getAllForums();
-        forumsCategoriesRef.addValueEventListener(joinedForumsListener);
+        userForumsRef.addValueEventListener(forumEventListener);
+//        forumsCategoriesRef.addValueEventListener(joinedForumsListener);
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        forumsCategoriesRef.removeEventListener(joinedForumsListener);
+        userForumsRef.removeEventListener(forumEventListener);
+//        forumsCategoriesRef.removeEventListener(joinedForumsListener);
     }
 
     @Override

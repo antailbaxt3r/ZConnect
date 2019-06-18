@@ -54,7 +54,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
-import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
@@ -74,7 +73,6 @@ import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 import butterknife.BindView;
@@ -202,8 +200,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
-//        fixFirebase();
+//        fixFirebaseUserForum();
 //        testTheFix();
+//        fixUpdateTotalJoinedForums();
         initListeners();
 
         tabs();
@@ -232,12 +231,29 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        });
 //
 //    }
+    void fixUpdateTotalJoinedForums(){
+        final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("userForums");
+        userForums.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot user : dataSnapshot.getChildren()){
+                    long count = user.child("joinedForums").getChildrenCount();
+                    userForums.child(user.getKey()).child("totalJoinedForums").setValue(count);
+                }
+            }
 
-////fixFirebase to add respective forum details under each user. change "testCollege" to desired community/use loops
-    void fixFirebase() {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+////fixFirebaseUserForum to add respective forum details under each user. change "testCollege" to desired community/use loops
+    void fixFirebaseUserForum() {
 
         final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("userForums");
-        Log.d("Fix", "Starting fixFirebase");
+        Log.d("Fix", "Starting fixFirebaseUserForum");
         DatabaseReference tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("tabsCategories");
         tabsCategories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -249,7 +265,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         Log.d("Fix", forumlist.toString());
                         for (DataSnapshot user : forumlist.child("users").getChildren()) {
                             Log.d("Fix:IsUser?", user.toString());
-                            DatabaseReference newUserForm = userForums.child(user.getKey()).child(forumlist.getKey());
+
+                            DatabaseReference newUserForm = userForums.child(user.getKey()).child("joinedForums").child(forumlist.getKey());
                             copyData(forumlist.getRef(), newUserForm);
 
 
