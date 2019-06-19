@@ -200,15 +200,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
-//        fixFirebaseUserForum();
+        initListeners();
+        tabs();
+
+        fixFirebaseUserForum();
 //        testTheFix();
 //        fixUpdateTotalJoinedForums();
-        initListeners();
-
-        tabs();
 //        setForumNotificationDot();
-
-
     }
 
 //    private void testTheFix() {

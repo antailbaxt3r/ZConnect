@@ -229,7 +229,7 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:src="@drawable/logo"
-                    android:tint="@color/colorPrimary" />
+                    />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/message_on_zconnect"
@@ -238,6 +238,7 @@
                     android:layout_gravity="center_vertical"
                     android:ems="10"
                     android:clickable="false"
+                    android:enabled="false"
                     android:inputType="number"
                     android:paddingLeft="20dp"
                     android:text="Message on ZConnect"
