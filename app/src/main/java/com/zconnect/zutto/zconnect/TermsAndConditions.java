@@ -18,6 +18,7 @@ public class TermsAndConditions extends BaseActivity {
 
         setContentView(R.layout.activity_terms_and_conditions);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {

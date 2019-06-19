@@ -40,7 +40,7 @@
                 android:maxHeight="300dp"
                 android:background="@drawable/dashed_border"
                 android:contentDescription="Product image"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 android:layout_margin="7dp"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <LinearLayout
@@ -8,7 +8,7 @@
         android:orientation="vertical"
         android:gravity="center"
         android:padding="5dp"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/white">
 
         <HorizontalScrollView
             android:id="@+id/hsv_recents_features_view"
@@ -48,7 +48,8 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/outline_settings_applications_white_36"
-                                android:tint="@color/black"/>
+                                android:tint="@color/deepPurple500"
+                                />
                             <FrameLayout
                                 android:id="@+id/admin_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -107,7 +108,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/ic_store_white_36dp"
-                                android:tint="@color/black" />
+                                android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/shops_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -166,7 +167,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/outline_local_mall_white_36"
-                                android:tint="@color/black"/>
+                                android:tint="@color/deepPurple500"/>
                             <FrameLayout
                                 android:id="@+id/storeroom_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -225,7 +226,7 @@
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
                                 android:src="@drawable/outline_event_white_36"
-                                android:tint="@color/black" />
+                                android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/events_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -284,7 +285,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:src="@drawable/outline_local_taxi_white_36"
-                                android:tint="@color/black" />
+                                android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/cabpool_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -343,7 +344,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:src="@drawable/baseline_insert_photo_white_36"
-                                android:tint="@color/black" />
+                                android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/notices_unread_count_fl_recents_feature_item"
                                 android:layout_width="15dp"
@@ -510,4 +511,4 @@
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

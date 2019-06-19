@@ -125,7 +125,7 @@
             android:orientation="horizontal">
             <LinearLayout
                 android:id="@+id/sharecab"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center">
                 <ImageButton
@@ -138,6 +138,16 @@
                     android:layout_height="wrap_content"
                     android:text="Share"
                     android:textColor="@color/primaryText"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0 people"
+                    android:id="@+id/people_count"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textAlignment="textEnd"
+                    />
             </LinearLayout>
 
         </LinearLayout>

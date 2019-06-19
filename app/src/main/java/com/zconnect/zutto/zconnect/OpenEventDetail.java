@@ -273,7 +273,7 @@ public class  OpenEventDetail extends BaseActivity{
                 try {
                     if(dataSnapshot.child("BoostersUids").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
-                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.deeppurple700));
+                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.deeporange500));
                         boostBtn.setTypeface(ralewayBold);
                     }
                     Date evdate = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(event.getEventDate());
@@ -630,7 +630,7 @@ public class  OpenEventDetail extends BaseActivity{
                 if (user != null) {
                     if (dataSnapshot.hasChild(user.getUid())) {
                         boostBtn.setText(dataSnapshot.getChildrenCount() + " Boosted");
-                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
+                        boostBtn.setTextColor(getApplicationContext().getResources().getColor(R.color.deeporange500));
                         boostBtn.setTypeface(ralewayBold);
                         flag = true;
                     } else {

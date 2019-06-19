@@ -18,8 +18,11 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
@@ -55,13 +58,14 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     Context context;
     TreeMap<Double,CabItemFormat> treeMap_double;
     TreeMap<String,CabItemFormat> treeMap_string;
-    String sourceText, destinationText, timeText, dateText;
+    String sourceText, destinationText, timeText, dateText, peopleText;
     DatabaseReference cabpoolReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     Typeface regular, light, semiBold;
     ArrayList<CabItemFormat> array;
     String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
     Vector<CabItemFormat> cabItemFormat;
-    int i;
+    String peopletextfinal;
+    private int i;
 
     public CabPoolRVAdapter(Context context, TreeMap<String,CabItemFormat> treeMap_string ,int a) {
         this.context = context;
@@ -76,6 +80,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
         this.context = context;
         this.treeMap_double = treeMap_double;
         array=new ArrayList<>(treeMap_double.values());
+
         i=0;
         Log.e("RV","tree map");
     }
@@ -100,18 +105,40 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(CabPoolRVAdapter.ViewHolder holder, int position) {
-       if(i==0){
+    public void onBindViewHolder(final CabPoolRVAdapter.ViewHolder holder, int position) {
+
+
+
+
+
+        if(i==0){
            DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
            DateTime date = null;
            try {
                DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
                date = dtf.parseDateTime(array.get(position).getDate());
            }catch (Exception e){}
+
+
 //           holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
            holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth());
            holder.destination.setText(array.get(position).getDestination());
-        holder.source.setText(array.get(position).getSource());
+           holder.source.setText(array.get(position).getSource());
+           String key0 = cabItemFormat.get(position).getKey();
+           cabpoolReference.child(key0).child("usersListItemFormats").addListenerForSingleValueEvent(new ValueEventListener() {
+               @Override
+               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                   int size = (int) dataSnapshot.getChildrenCount();
+                   peopleText = Integer.toString(size);
+               }
+
+               @Override
+               public void onCancelled(@NonNull DatabaseError databaseError) {
+
+               }
+           });
+
+           holder.people.setText(peopleText);
 //       if(array.get(position).getFrom()!=0){ holder.time.setText(array.get(position).getFrom()+":00 to "+array.get(position).getTo()+":00");}
            String fromAmPm = array.get(position).getFrom()<12 ? "AM" : "PM";
            int fromTime = array.get(position).getFrom()<=12 ? array.get(position).getFrom() : array.get(position).getFrom() - 12;
@@ -121,11 +148,13 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
            toTime = toTime == 0 ? 12 : toTime;
            String timeText = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
            holder.time.setText(timeText);
+
 //           if(array.get(position).getFrom()!=0){ }
 //           else{holder.time.setText(array.get(position).getTime());}
            Log.e("RV","array");
        }
         if(i==1){
+
             DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
             DateTime date = null;
             try {
@@ -134,6 +163,28 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             }catch (Exception e){}
 //            holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth() + " " + date.getYearOfEra());
             holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth());
+
+            final String key1 = cabItemFormat.get(position).getKey();
+
+            cabpoolReference.child(key1).child("usersListItemFormats").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int size = (int) dataSnapshot.getChildrenCount();
+                    //System.out.println("sizevalue for " + key1 + " : " + size); //for testing
+                    peopleText = Integer.toString(size);
+                    //System.out.println("peopletextvalue: " + peopleText); //for testing
+                    //System.out.println("INSIDE DATASNAPSHOT"); //for testing
+                    holder.people.setText(peopleText + " People");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            //System.out.println("OUTSIDE DATASNAPSHOT"); //for testing
+            //System.out.println("peopletext outside: " + peopleText); //for testing
+
             holder.destination.setText(cabItemFormat.get(position).getDestination());
             holder.source.setText(cabItemFormat.get(position).getSource());
 //      if(cabItemFormat.get(position).getFrom()!=0)  {
@@ -164,13 +215,15 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-       TextView source,destination,details,time,date;
+       TextView source,destination,details,time,date, people;
+
         String key;
         LinearLayout list_people, share;
         public ViewHolder(View itemView) {
             super(itemView);
 
             source =(TextView)itemView.findViewById(R.id.source);
+            people = itemView.findViewById(R.id.people_count);
             destination =(TextView)itemView.findViewById(R.id.destination);
             time=(TextView)itemView.findViewById(R.id.time_range);
             date=(TextView)itemView.findViewById(R.id.date);
@@ -203,21 +256,23 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                     intent.putExtra("destinationText", destinationText);
                     intent.putExtra("timeText", timeText);
                     intent.putExtra("dateText", dateText);
+                    intent.putExtra("peopleText", people.getText().toString());
 
                     context.startActivity(intent);
                 }
 
                 if(i==1) {
-                        Intent intent = new Intent(context, CabPoolListOfPeople.class);
-                        intent.putExtra("key", cabItemFormat.get(getAdapterPosition()).getKey());
-                        intent.putExtra("date", (cabItemFormat.get(getAdapterPosition()).getDT()).substring(0,8));
-                        intent.putExtra("sourceText", sourceText);
-                        intent.putExtra("destinationText", destinationText);
-                        intent.putExtra("timeText", timeText);
-                        intent.putExtra("dateText", dateText);
+                    Intent intent = new Intent(context, CabPoolListOfPeople.class);
+                    intent.putExtra("key", cabItemFormat.get(getAdapterPosition()).getKey());
+                    intent.putExtra("date", (cabItemFormat.get(getAdapterPosition()).getDT()).substring(0,8));
+                    intent.putExtra("sourceText", sourceText);
+                    intent.putExtra("destinationText", destinationText);
+                    intent.putExtra("timeText", timeText);
+                    intent.putExtra("dateText", dateText);
+                    intent.putExtra("peopleText", people.getText().toString());
 
-                        context.startActivity(intent);
-                    }}
+                    context.startActivity(intent);
+                }}
             });
             share.setOnClickListener(new View.OnClickListener() {
                 @Override

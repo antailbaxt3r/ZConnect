@@ -52,6 +52,7 @@ DatabaseReference databaseReference;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_admins);
         Toolbar toolbar = (Toolbar) findViewById(R.id.view_admins_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 
         if (toolbar != null) {
