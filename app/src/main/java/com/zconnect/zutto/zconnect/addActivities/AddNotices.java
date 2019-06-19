@@ -9,11 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -243,7 +246,7 @@ public class AddNotices extends BaseActivity {
     private void startPosting() {
 
         mProgress.setMessage("Posting Notice..");
-        mProgress.show();
+
         final String noticeNameValue = mName.getText().toString().trim();
 
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -256,6 +259,7 @@ public class AddNotices extends BaseActivity {
 
 
         if ( !TextUtils.isEmpty(noticeNameValue) &&  mImageUri != null && mImageUriSmall !=null) {
+            mProgress.show();
             final StorageReference filepath = mStorage.child("NoticesImages").child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
             UploadTask uploadTask = filepath.putFile(mImageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -392,6 +396,13 @@ public class AddNotices extends BaseActivity {
                     }
                 }
             });
+        }else{
+            RelativeLayout relativeLayout = findViewById(R.id.addNoticeLayout);
+            Snackbar snack = (Snackbar) Snackbar.make(relativeLayout, "Fields are empty. Can't Add Notice", Snackbar.LENGTH_LONG);
+            TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
+            snackBarText.setTextColor(Color.WHITE);
+            snack.getView().setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+            snack.show();
         }
     }
 
