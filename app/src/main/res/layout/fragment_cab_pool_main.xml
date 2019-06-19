@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_search_white_24dp"
+        android:src="@drawable/ic_search_white_on_orange_24dd"
         app:backgroundTint="@color/colorHighlight"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp"/>

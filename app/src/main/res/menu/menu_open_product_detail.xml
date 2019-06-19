@@ -5,6 +5,7 @@
         android:title="Share"
         android:id="@+id/share"
         android:icon="@drawable/ic_share_white_24dp"
+        android:iconTint="@color/black"
         android:orderInCategory="1"
         android:name="Share"
         app:showAsAction="collapseActionView|ifRoom" />
@@ -13,6 +14,7 @@
         android:id="@+id/menu_chat_room"
         android:icon="@drawable/ic_chat_white_24dp"
         android:orderInCategory="100"
+        android:iconTint="@color/black"
         app:showAsAction="always"
         android:name="Chat Room" />
 </menu>

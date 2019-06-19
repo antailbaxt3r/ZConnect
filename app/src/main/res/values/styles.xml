@@ -9,10 +9,16 @@
         <item name="elevation">0dp</item>
         <item name="android:navigationBarColor">#000000</item>
         <item name="drawerArrowStyle">@style/DrawerIcon</item>
+        <item name="actionBarPopupTheme">@style/ActionbarPopupTheme</item>
     </style>
 
     <style name="DrawerIcon" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@color/black</item>
+    </style>
+    
+    <style name="ActionbarPopupTheme">
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="login" parent="AppTheme">
@@ -20,6 +26,7 @@
         <item name="windowActionBar">false</item>
         <item name="colorAccent">@color/hint</item>
     </style>
+
 
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
@@ -38,6 +45,8 @@
         <item name="windowNoTitle">true</item>
         <item name="elevation">0dp</item>
         <item name="android:navigationBarColor">#000000</item>
+        <item name="actionBarPopupTheme">@style/ActionbarPopupTheme</item>
+
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

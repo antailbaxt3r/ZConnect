@@ -255,7 +255,7 @@
                                 android:id="@+id/ib_call_contact_item"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
-                                android:src="@drawable/ic_phone_black_24dp"
+                                android:src="@drawable/ic_phone_outline_24dp"
                                 android:visibility="visible" />
                         </LinearLayout>
                         <Button

@@ -4,6 +4,7 @@
     <item
         android:title="@string/edit_forum"
         android:id="@+id/action_edit_forum"
+        android:iconTint="@color/black"
         android:icon="@drawable/ic_edit_white_24dp"
         android:orderInCategory="0"
         app:showAsAction="collapseActionView|ifRoom" />
@@ -11,6 +12,7 @@
         android:title="Members"
         android:id="@+id/action_list_people"
         android:icon="@drawable/ic_people_white_24dp"
+        android:iconTint="@color/black"
         android:orderInCategory="1"
         android:name="Members"
         app:showAsAction="collapseActionView|ifRoom" />

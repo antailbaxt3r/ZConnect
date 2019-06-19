@@ -603,6 +603,7 @@ public class OpenProductDetails extends BaseActivity {
 
                             } else {
                                 productShortlist.setText("Shortlisted");
+
                                 final UsersListItemFormat userDetails = new UsersListItemFormat();
                                 DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 user.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -722,7 +723,7 @@ public class OpenProductDetails extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 productShortlist.setOnClickListener(null);
                 if (dataSnapshot.child(key).child("UsersReserved").hasChild(userId)) {
-                    productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
+                    productShortlist.setTextColor(getApplicationContext().getResources().getColor(R.color.deepPurple500));
                     productShortlist.setTypeface(ralewayBold);
                     productShortlist.setText("Shortlisted");
                 } else {
