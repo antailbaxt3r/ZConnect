@@ -65,6 +65,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         LinearLayout bottomSheetAddMessage = (LinearLayout) bottomSheetView.findViewById(R.id.addMessage_bottomSheet);
         final LinearLayout bottomSheetSearchPool = (LinearLayout) bottomSheetView.findViewById(R.id.searchPool_bottomSheet);
         final LinearLayout bottomSheetAddNotices = bottomSheetView.findViewById(R.id.add_notices_bottomSheet);
+        LinearLayout bottomSheetAddContact = (LinearLayout) bottomSheetView.findViewById(R.id.addContact_bottomSheet);
 
         communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
 
@@ -283,6 +284,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         bottomSheetAddMessage.setOnClickListener(addMessageListener);
         bottomSheetSearchPool.setOnClickListener(searchPoolListener);
         bottomSheetAddNotices.setOnClickListener(noticesListener);
+        bottomSheetAddContact.setOnClickListener(addContactListener);
 
         return bottomSheetView;
     }
