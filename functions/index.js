@@ -168,7 +168,7 @@ exports.syncForumToUserForum_Add = functions.database.ref('/communities/{communi
 .onCreate((snapshot, context) => {
   const uid = context.params.uid;
   const forumID = context.params.forumID;
-  const userForumRef = snapshot.ref.parent.parent.parent.parent.parent.child("userForums").child(uid);
+  const userForumRef = snapshot.ref.parent.parent.parent.parent.parent.child("userForums").child(uid).child("joinedForums");
   const forumRef = snapshot.ref.parent.parent;
   return forumRef.once('value', forumSnapshot => {
     const forumObj = forumSnapshot.val();
@@ -186,7 +186,7 @@ exports.syncForumToUserForum_Update = functions.database.ref('/communities/{comm
   const userForumListRef = snapshot.ref.parent.parent.parent.child("userForums");
   const joinedUsersListSnapshot = snapshot.child('users');
   return joinedUsersListSnapshot.forEach(userSnapshot => {
-    userForumListRef.child(userSnapshot.key).child(forumID).set(forumObj);
+    userForumListRef.child(userSnapshot.key).child("joinedForums").child(forumID).set(forumObj);
   });
 });
 
@@ -194,8 +194,14 @@ exports.syncForumToUserForum_Delete = functions.database.ref('/communities/{comm
 .onDelete((snapshot, context) => {
   const uid = context.params.uid;
   const forumID = context.params.forumID;
-  const userForumRef = snapshot.ref.parent.parent.parent.parent.parent.child("userForums").child(uid);
-  return userForumRef.child(forumID).remove();
+  const joinedForumRef = snapshot.ref.parent.parent.parent.parent.parent.child("userForums").child(uid).child("joinedForums");
+  return joinedForumRef.child(forumID).remove();
+});
+
+exports.countNumberOfForums = functions.database.ref('/communities/{communityID}/features/forums/userForums/{uid}/joinedForums')
+.onWrite((change, context) => {
+  const totalJoinedForumsRef = change.after.ref.parent.child('totalJoinedForums');
+  return totalJoinedForumsRef.set(change.after.numChildren());
 });
 
 //for new apps
