@@ -123,20 +123,27 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <LinearLayout
-                android:id="@+id/share_cab_cp_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center">
-                <ImageButton
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:background="@drawable/whatsapp_64px"/>
-                <TextView
-                    android:layout_marginStart="@dimen/margin_x_small"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Share"
-                    android:textColor="@color/primaryText"/>
+                    android:layout_height="match_parent"
+                    android:id="@+id/share_cab_cp_detail"
+                    android:orientation="horizontal">
+                    <ImageButton
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@drawable/whatsapp_64px"/>
+                    <TextView
+                        android:layout_marginStart="@dimen/margin_x_small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Share"
+                        android:textStyle="bold"
+                        android:textColor="@color/primaryText"/>
+
+                </LinearLayout>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

@@ -32,7 +32,7 @@
             android:text="@string/referral_code_desc"
             android:textSize="16sp"
             android:textColor="@color/primaryText"
-            android:layout_marginTop="20dp"/>
+            android:layout_margin="20dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -40,7 +40,8 @@
             android:text="@string/referral_code_desc_2"
             android:textSize="16sp"
             android:textColor="@color/primaryText"
-            android:layout_marginTop="@dimen/margin_top_between_non_similar_views"/>
+            android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
+            android:layout_marginHorizontal="20dp"/>
     </LinearLayout>
 
     <Button
