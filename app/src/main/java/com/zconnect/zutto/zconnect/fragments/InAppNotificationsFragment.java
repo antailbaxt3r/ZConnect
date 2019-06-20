@@ -19,19 +19,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.adapters.NotificationsAdapter;
-import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
-import com.zconnect.zutto.zconnect.itemFormats.NotificationsModel;
+import com.zconnect.zutto.zconnect.adapters.InAppNotificationsAdapter;
+import com.zconnect.zutto.zconnect.itemFormats.InAppNotificationsItemFormat;
 
 import org.joda.time.DateTime;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class NotificationsFragment extends Fragment {
+public class InAppNotificationsFragment extends Fragment {
 
     private RecyclerView notifRecyclerView;
     private ProgressBar progressBar;
@@ -39,10 +37,10 @@ public class NotificationsFragment extends Fragment {
     public String communityRef;
     private DatabaseReference notificationsReference;
     private ValueEventListener listener;
-    ArrayList<NotificationsModel> notificationsList;
-    private NotificationsAdapter notificationsAdapter;
+    ArrayList<InAppNotificationsItemFormat> notificationsList;
+    private InAppNotificationsAdapter inAppNotificationsAdapter;
 
-    public NotificationsFragment() {
+    public InAppNotificationsFragment() {
 
     }
 
@@ -83,21 +81,9 @@ public class NotificationsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     try {
-                        System.out.println(childSnapshot);
-                        String key = childSnapshot.getKey();
-                        String title = childSnapshot.child("title").getValue(String.class);
-                        String desc = childSnapshot.child("desc").getValue(String.class);
-                        long dateValue = childSnapshot.child("timestamp").getValue(Long.class);
-                        DateTime date = new DateTime(dateValue);
-                        long type = childSnapshot.child("type").getValue(Long.class);
-                        boolean seen = childSnapshot.child("seen").getValue(Boolean.class);
-                        HashMap<String, String> metadata = new HashMap<>();
-                        for(DataSnapshot grandChildSnapshot : childSnapshot.child("metadata").getChildren()) {
-                            metadata.put(grandChildSnapshot.getKey(), grandChildSnapshot.getValue(String.class));
-                        }
-                        System.out.println("NOTTIF: " + title + " " + desc);
-                        NotificationsModel notificationsModel = new NotificationsModel(title, desc, date, (int)type, seen, metadata, key);
-                        notificationsList.add(notificationsModel);
+                        InAppNotificationsItemFormat inAppNotificationsItemFormat = childSnapshot.getValue(InAppNotificationsItemFormat.class);
+
+                        notificationsList.add(inAppNotificationsItemFormat);
                     } catch (Exception e) {
                         System.out.println(e);
                     }
@@ -105,7 +91,7 @@ public class NotificationsFragment extends Fragment {
 
                 progressBar.setVisibility(View.GONE);
                 notifRecyclerView.setVisibility(View.VISIBLE);
-                notificationsAdapter.notifyDataSetChanged();
+                inAppNotificationsAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -115,8 +101,8 @@ public class NotificationsFragment extends Fragment {
         };
         notificationsReference.addValueEventListener(listener);
 
-        notificationsAdapter = new NotificationsAdapter(communityRef, notificationsList, getContext());
-        notifRecyclerView.setAdapter(notificationsAdapter);
+        inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, notificationsList);
+        notifRecyclerView.setAdapter(inAppNotificationsAdapter);
 
         return view;
     }

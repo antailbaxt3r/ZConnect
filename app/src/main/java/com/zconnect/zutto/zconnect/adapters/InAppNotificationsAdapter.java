@@ -10,40 +10,35 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.holders.NotificationsViewHolder;
-import com.zconnect.zutto.zconnect.itemFormats.NotificationsModel;
+import com.zconnect.zutto.zconnect.holders.InAppNotificationsRVViewHolder;
+import com.zconnect.zutto.zconnect.itemFormats.InAppNotificationsItemFormat;
 
 import java.util.ArrayList;
 
-import static android.content.Context.MODE_PRIVATE;
+public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotificationsRVViewHolder> {
 
-public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsViewHolder> {
-
-    private ArrayList<NotificationsModel> notificationsList;
+    private ArrayList<InAppNotificationsItemFormat> notificationsList;
     private Context context;
     private String communityRef;
 
-    public NotificationsAdapter(String communityRef, ArrayList<NotificationsModel> notificationsList, Context context) {
+    public InAppNotificationsAdapter(Context context, String communityRef, ArrayList<InAppNotificationsItemFormat> notificationsList) {
         this.notificationsList = notificationsList;
         this.context = context;
         this.communityRef = communityRef;
     }
 
     @Override
-    public NotificationsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public InAppNotificationsRVViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.item_notification, parent, false);
+        View view = layoutInflater.inflate(R.layout.item_in_app_notifications, parent, false);
 
-        return new NotificationsViewHolder(view);
+        return new InAppNotificationsRVViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(NotificationsViewHolder holder, final int position) {
+    public void onBindViewHolder(InAppNotificationsRVViewHolder holder, final int position) {
         holder.titletv.setText(notificationsList.get(position).getTitle());
         holder.desctv.setText(notificationsList.get(position).getDesc());
-
-        holder.datetv.setText(notificationsList.get(position).getDate().toString().substring(11,16));
-
         holder.notificationsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
