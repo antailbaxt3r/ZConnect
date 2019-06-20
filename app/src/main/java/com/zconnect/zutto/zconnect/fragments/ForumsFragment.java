@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -75,7 +76,6 @@ public class ForumsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(currenttab);
-
         adapter = new ForumCategoriesRVAdapter(forumCategories, getContext(),currenttab,newUser);
         recyclerView.setAdapter(adapter);
 
@@ -212,4 +212,5 @@ public class ForumsFragment extends Fragment {
 
        return seenMessages;
     }
+
 }

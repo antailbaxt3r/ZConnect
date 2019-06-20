@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -144,7 +145,10 @@ public class Recents extends Fragment {
                 }, 3000);
             }
         });
+
+
 //        recyclerView.setNestedScrollingEnabled(false);
+
         recyclerView.setHasFixedSize(true);
         productLinearLayoutManager = new LinearLayoutManager(getContext());
         mCallback.getLayoutManager(productLinearLayoutManager);
