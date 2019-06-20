@@ -341,9 +341,9 @@
                                 xmlns:app="http://schemas.android.com/apk/res-auto"
                                 android:duplicateParentState="true"
                                 android:id="@+id/notices_circle_recents_feature_item"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/baseline_insert_photo_white_36"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:src="@drawable/outline_insert_photo_black_24dp"
                                 android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/notices_unread_count_fl_recents_feature_item"
