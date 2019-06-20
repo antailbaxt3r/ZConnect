@@ -240,13 +240,8 @@ public class JoinedForums extends Fragment {
                         return Long.valueOf((Long) o2.getLastMessage().getTimeDate()).compareTo((Long) o1.getLastMessage().getTimeDate()) ;
                     }
                 });
-                if(activityType != null) {
-                    if (!activityType.equals(ForumShareUtilities.KEY_MESSAGE_TYPE_STR)) {
-                        forumCategoriesItemFormats.add(exploreButton);
-                    }
+                if(activityType == null) {
 
-                }
-                else{
                     forumCategoriesItemFormats.add(exploreButton);
                 }
 

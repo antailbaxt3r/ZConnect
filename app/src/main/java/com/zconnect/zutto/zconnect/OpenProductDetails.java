@@ -55,9 +55,11 @@ import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -94,6 +96,10 @@ public class OpenProductDetails extends BaseActivity {
     private LinearLayout askTag;
     private TextView askText;
 
+    private DatabaseReference databaseReferenceUser;
+    private DatabaseReference databaseReferenceSellingUser;
+    String productSellerUserUID;
+    String productSellerUserImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,34 +160,82 @@ public class OpenProductDetails extends BaseActivity {
         }
 
         progressDialog = new ProgressDialog(this);
-
-        chatLayout.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onChat = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //char room clicked
-                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-                intent.putExtra("type","storeroom");
-                intent.putExtra("key",productKey);
-                intent.putExtra("name",productName.getText());
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            }
-        });
+                databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-        chatEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //char room clicked
-                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-                intent.putExtra("type","storeroom");
-                intent.putExtra("key",productKey);
-                intent.putExtra("name",productName.getText());
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
-                startActivity(intent);
-                overridePendingTransition(0, 0);
+                        if (!dataSnapshot.child("userChats").hasChild(productSellerUserUID)) {
+//                            userImageURL = dataSnapshot.child("imageURL").getValue().toString();
+                            Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), productSellerUserUID));
+                        }
+                        databaseReferenceUser.child("userChats").child(productSellerUserUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String key = dataSnapshot.getValue().toString();
+                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                                intent.putExtra("type", "personalChats");
+                                intent.putExtra("store_room_message","Hey there, I was checking out the following product:\nProduct Name: "+
+                                        productName.getText().toString()+"\nProduct Category:"+productCategory+"\nPrice:"+
+                                        productPrice.getText().toString());
+
+                                intent.putExtra("name", productSellerName.getText());
+                                intent.putExtra("tab", "personalChats");
+                                intent.putExtra("key", key);
+                                startActivity(intent);
+                                                overridePendingTransition(0, 0);
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+//                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+//                intent.putExtra("type","storeroom");
+//                intent.putExtra("key",productKey);
+//                intent.putExtra("name",productName.getText());
+//                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+//                startActivity(intent);
+//                overridePendingTransition(0, 0);
             }
-        });
+        };
+
+                chatLayout.setOnClickListener(onChat);
+
+
+//        chatEditText.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //char room clicked
+//                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+//                intent.putExtra("type","storeroom");
+//                intent.putExtra("key",productKey);
+//                intent.putExtra("name",productName.getText());
+//                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+//                startActivity(intent);
+//                overridePendingTransition(0, 0);
+//            }
+//        });
+        chatEditText.setOnClickListener(onChat);
         mDatabaseProduct = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products");
 
 
@@ -191,7 +245,7 @@ public class OpenProductDetails extends BaseActivity {
         SharedPreferences sharedPref = this.getSharedPreferences("guestMode", MODE_PRIVATE);
         Boolean status = sharedPref.getBoolean("mode", false);
 
-       // mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).child("views");
+        // mDatabaseViews = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).child("views");
 
 //        if (!status) {
 //            mAuth = FirebaseAuth.getInstance();
@@ -228,6 +282,101 @@ public class OpenProductDetails extends BaseActivity {
 //            mDatabaseViews.addListenerForSingleValueEvent(listener);
 //        }
 
+
+    }
+
+        private String createPersonalChat(final String uid, final String sellingUserUID) {
+        final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
+        final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats");
+        final DatabaseReference newPush = databaseReferenceCategories.push();
+        final DatabaseReference databaseReferenceUserForums = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums");
+        newPush.child("name").setValue("null");
+        Long postTimeMillis = System.currentTimeMillis();
+        newPush.child("PostTimeMillis").setValue(postTimeMillis);
+        newPush.child("UID").setValue(newPush.getKey());
+        newPush.child("tab").setValue("personalChats");
+        newPush.child("Chat");
+        final UserItemFormat[] user = {null};
+
+        databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+
+                UsersListItemFormat userDetails = new UsersListItemFormat();
+
+                userDetails.setImageThumb(userItem.getImageURLThumbnail());
+                userDetails.setName(userItem.getUsername());
+                userDetails.setPhonenumber(userItem.getMobileNumber());
+                userDetails.setUserUID(userItem.getUserUID());
+                userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
+                databaseReferenceUserForums.child(sellingUserUID).child("joinedForums").child(newPush.getKey()).child("image").setValue(userItem.getImageURLThumbnail());
+                databaseReferenceUserForums.child(sellingUserUID).child("joinedForums").child(newPush.getKey()).child("imageThumb").setValue(userItem.getImageURLThumbnail());
+
+                user[0] = dataSnapshot.getValue(UserItemFormat.class);
+                databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(userItem.getUserUID()).setValue(userDetails);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseReferenceSellingUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+
+                UsersListItemFormat userDetails = new UsersListItemFormat();
+
+                userDetails.setImageThumb(userItem.getImageURLThumbnail());
+
+                userDetails.setName(userItem.getUsername());
+                userDetails.setPhonenumber(userItem.getMobileNumber());
+                userDetails.setUserUID(userItem.getUserUID());
+                userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
+                databaseReferenceUserForums.child(sellingUserUID).child("joinedForums").child(newPush.getKey()).child("image").setValue(userItem.getImageURL());
+                databaseReferenceUserForums.child(sellingUserUID).child("joinedForums").child(newPush.getKey()).child("imageThumb").setValue(userItem.getImageURLThumbnail());
+                databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(userItem.getUserUID()).setValue(userDetails);
+//                databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("image").setValue(userItem.getImageURL());
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+
+            }
+        });
+
+
+        databaseReferenceUser.child("userChats").child(sellingUserUID).setValue(newPush.getKey());
+        databaseReferenceSellingUser.child("userChats").child(uid).setValue(newPush.getKey());
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue("null");
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue("personalChats");
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("lastMessage").setValue("Null");
+
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("personalChatTitle").setValue(productSellerName.getText());
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("tabUID").setValue("personalChats");
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("lastMessage").setValue("Null");
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("image").setValue(productSellerUserImage);
+        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("imageThumb").setValue(productSellerUserImage);
+
+
+        databaseReferenceUserForums.child(sellingUserUID).child("joinedForums").child(newPush.getKey()).child("personalChatTitle").setValue(mAuth.getCurrentUser().getDisplayName());
+        databaseReferenceUserForums.child(sellingUserUID).child("joinedForums").child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+        databaseReferenceUserForums.child(sellingUserUID).child("joinedForums").child(newPush.getKey()).child("tabUID").setValue("personalChats");
+        databaseReferenceUserForums.child(sellingUserUID).child("joinedForums").child(newPush.getKey()).child("lastMessage").setValue("Null");
+
+
+
+
+        return newPush.getKey();
 
     }
 
@@ -449,6 +598,10 @@ public class OpenProductDetails extends BaseActivity {
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 try {
                     productName.setText(dataSnapshot.child("ProductName").getValue().toString());
+                    productSellerUserUID = dataSnapshot.child("PostedBy").child("UID").getValue().toString();
+                    productSellerUserImage = dataSnapshot.child("PostedBy").child("ImageThumb").getValue().toString();
+                    databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    databaseReferenceSellingUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(productSellerUserUID);
                     if(!type.equals(ProductUtilities.TYPE_ASK_STR))
                         productPrice.setText(dataSnapshot.child("Price").getValue().toString());
                     productDescription.setText(dataSnapshot.child("ProductDescription").getValue().toString());
@@ -507,59 +660,59 @@ public class OpenProductDetails extends BaseActivity {
 
                     defaultSwitch(productKey, productCategory, productShortlist);
 
-                    chatLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+//                    chatLayout.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//
+//                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+//                            HashMap<String, String> meta = new HashMap<>();
+//                            meta.put("type", "fromTextBox");
+//                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+//                            counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_CHAT);
+//                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+//                            counterItemFormat.setMeta(meta);
+//
+//
+//                            CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
+//                            counterPush2.pushValues();
+//
+//                            //char room clicked
+//                            Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+//                            intent.putExtra("type", "storeroom");
+//                            intent.putExtra("key", productKey);
+//                            intent.putExtra("name", productName.getText());
+//                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+//                            startActivity(intent);
+//                            overridePendingTransition(0, 0);
+//                        }
+//                    });
 
-                            CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta = new HashMap<>();
-                            meta.put("type", "fromTextBox");
-                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                            counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_CHAT);
-                            counterItemFormat.setTimestamp(System.currentTimeMillis());
-                            counterItemFormat.setMeta(meta);
-
-
-                            CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
-                            counterPush2.pushValues();
-
-                            //char room clicked
-                            Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-                            intent.putExtra("type", "storeroom");
-                            intent.putExtra("key", productKey);
-                            intent.putExtra("name", productName.getText());
-                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
-                            startActivity(intent);
-                            overridePendingTransition(0, 0);
-                        }
-                    });
-
-                    chatEditText.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //char room clicked
-                            CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta = new HashMap<>();
-                            meta.put("type", "fromTextBox");
-                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                            counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_CHAT);
-                            counterItemFormat.setTimestamp(System.currentTimeMillis());
-                            counterItemFormat.setMeta(meta);
-
-
-                            CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
-                            counterPush2.pushValues();
-
-
-                            Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-                            intent.putExtra("type", "storeroom");
-                            intent.putExtra("key", productKey);
-                            intent.putExtra("name", productName.getText());
-                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
-                            startActivity(intent);
-                            overridePendingTransition(0, 0);
-                        }
-                    });
+//                    chatEditText.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            //char room clicked
+//                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+//                            HashMap<String, String> meta = new HashMap<>();
+//                            meta.put("type", "fromTextBox");
+//                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+//                            counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_CHAT);
+//                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+//                            counterItemFormat.setMeta(meta);
+//
+//
+//                            CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
+//                            counterPush2.pushValues();
+//
+//
+//                            Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+//                            intent.putExtra("type", "storeroom");
+//                            intent.putExtra("key", productKey);
+//                            intent.putExtra("name", productName.getText());
+//                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+//                            startActivity(intent);
+//                            overridePendingTransition(0, 0);
+//                        }
+//                    });
                 }catch (Exception e){
                 }
             }
@@ -662,7 +815,7 @@ public class OpenProductDetails extends BaseActivity {
 
     public void setProductPrice(TextView productPrice, String productPriceValue) {
 
-            productPrice.setText("₹" + productPriceValue + "/-");
+        productPrice.setText("₹" + productPriceValue + "/-");
 
     }
 

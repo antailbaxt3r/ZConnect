@@ -120,6 +120,9 @@ public class ChatActivity extends BaseActivity {
     String shareMessageType = null;
     String shareMessage = null;
 
+    //For Storeroom message
+    String storeRoomMessage;
+
     //UI elements
     EditText typer;
 
@@ -170,6 +173,9 @@ public class ChatActivity extends BaseActivity {
         if(callingActivityIntent.getStringExtra(ForumShareUtilities.KEY_MESSAGE_TYPE_STR) != null){
             shareMessage = callingActivityIntent.getStringExtra(ForumShareUtilities.KEY_MESSAGE);
             shareMessageType = callingActivityIntent.getStringExtra(ForumShareUtilities.KEY_MESSAGE_TYPE_STR);
+        }
+        if(callingActivityIntent.getStringExtra("store_room_message") != null){
+            storeRoomMessage = callingActivityIntent.getStringExtra("store_room_message");
         }
         mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if(getIntent()!=null && !TextUtils.isEmpty(getIntent().getStringExtra("ref"))) {
@@ -498,10 +504,17 @@ public class ChatActivity extends BaseActivity {
     private void postMessage(){
 
 //        final EditText typer = ((EditText) findViewById(R.id.typer));
-        final String text = typer.getText().toString().trim();
-        if (TextUtils.isEmpty(text)) {
+        final String text;
+        if (TextUtils.isEmpty(typer.getText().toString().trim())) {
             showToast("Message is empty.");
             return;
+        }
+        if(storeRoomMessage != null){
+            text = storeRoomMessage+"\n"+typer.getText().toString().trim();
+            storeRoomMessage = null;
+        }
+        else{
+              text = typer.getText().toString().trim();
         }
         unseenFlag2 = true;
         final ChatItemFormats message = new ChatItemFormats();
