@@ -201,7 +201,7 @@ public class JoinedForums extends Fragment {
                         }
 
                     }
-                }catch (Exception e){Log.e("Try",e.toString());}
+                }catch (Exception e){Log.e("Try:Outside Error",e.toString());}
                         }
 
 

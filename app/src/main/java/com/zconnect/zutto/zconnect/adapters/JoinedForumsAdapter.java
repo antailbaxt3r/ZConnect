@@ -91,9 +91,45 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         }else if(forumCategory.getForumType().equals(ForumTypeUtilities.KEY_JOINED_STR)) {
 
-            JoinedForumsRVViewHolder holderMain = (JoinedForumsRVViewHolder) holder;
-            holderMain.setDetails(forumCategoriesItemFormats.get(position));
-            holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
+            final JoinedForumsRVViewHolder holderMain = (JoinedForumsRVViewHolder) holder;
+            Log.d("In here",forumCategoriesItemFormats.get(position).getTabUID().toString());
+            if(forumCategoriesItemFormats.get(position).getTabUID().toString().equals("personalChats")){
+                Log.d("In here inside",forumCategoriesItemFormats.get(position).getTabUID().toString());
+
+                final ForumCategoriesItemFormat itemFormat = forumCategoriesItemFormats.get(position);
+                DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabCategories").child("personalChats").child(forumCategoriesItemFormats.get(position).getCatUID());
+                db.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        dataSnapshot = dataSnapshot.child("users");
+                        Log.d("user:details",dataSnapshot.toString());
+
+                        for(DataSnapshot user: dataSnapshot.getChildren()){
+                            Log.d("user:details",user.toString());
+                            if(user.child("userUID").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                continue;
+                            }
+                            ForumCategoriesItemFormat itemFormat1 = itemFormat;
+                            itemFormat1.setName(user.child("name").getValue().toString());
+                            itemFormat1.setImageThumb(user.child("imageThumb").getValue().toString());
+                            itemFormat1.setImage(user.child("imageThumb").getValue().toString());
+                            Log.d("Try:inside dataChange",user.child("name").getValue().toString());
+                            holderMain.setDetails(itemFormat1);
+                            holderMain.openChat(itemFormat1.getCatUID(), itemFormat1.getTabUID(), itemFormat1.getName());
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("error",databaseError.toString());
+                    }
+                });
+            }
+//            else {
+                holderMain.setDetails(forumCategoriesItemFormats.get(position));
+                holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
+//            }
 
         }
     }

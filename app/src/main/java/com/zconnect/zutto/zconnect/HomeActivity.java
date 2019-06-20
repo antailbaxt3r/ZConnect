@@ -203,7 +203,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         initListeners();
         tabs();
 
-        fixFirebaseUserForum();
+//        fixFirebaseUserForum();
 //        testTheFix();
 //        fixUpdateTotalJoinedForums();
 //        setForumNotificationDot();
@@ -242,7 +242,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.e("Error",databaseError.toString());
             }
         });
 
