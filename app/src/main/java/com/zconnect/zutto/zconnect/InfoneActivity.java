@@ -65,6 +65,7 @@ public class InfoneActivity extends Fragment {
     ProgressBar progressBar;
     Toolbar toolbar;
 
+
     public InfoneActivity() {
         // Required empty public constructor
     }
@@ -84,7 +85,7 @@ public class InfoneActivity extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         recyclerViewCat = (RecyclerView) view.findViewById(R.id.rv_cat_infone);
         recyclerViewCat.setVisibility(View.GONE);
-        fabCatAdd = (FloatingActionButton) view.findViewById(R.id.fab_cat_infone);
+        fabCatAdd = getActivity().findViewById(R.id.fab_cat_infone);
 
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
@@ -386,6 +387,12 @@ public class InfoneActivity extends Fragment {
 
         if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACTS);
+        }
+        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.PROCESS_OUTGOING_CALLS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.PROCESS_OUTGOING_CALLS}, REQUEST_READ_CONTACTS);
+        }
+        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_CONTACTS);
         }
 
     }

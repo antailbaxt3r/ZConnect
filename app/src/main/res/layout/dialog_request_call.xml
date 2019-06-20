@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="30dp"
+    android:background="@drawable/round_button_primary"
+    android:backgroundTint="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+
+
+    <TextView
+        android:id="@+id/validate_infone_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select a number to call."
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/colorPrimary"/>
+    <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/image_profile_infone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginVertical="10dp"
+        android:background="@drawable/profile_avatar_circle"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:roundAsCircle="true" />
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/et_name_infone_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/appbar_padding_top"
+        android:gravity="center_horizontal"
+        android:inputType="text"
+        android:enabled="false"
+        android:clickable="false"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:met_hideUnderline="true"
+        app:met_textColor="@color/primaryText" />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/et_phone1_infone_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:maxLength="10"
+        android:background="@color/white"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:met_hideUnderline="true"
+        app:met_textColor="@color/primaryText" />
+    <Button
+        android:background="@color/white"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:id="@+id/et_phone2_infone_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:maxLength="10"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:met_hideUnderline="true"
+        app:met_textColor="@color/primaryText" />
+
+
+</LinearLayout>
+

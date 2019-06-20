@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.R;
@@ -54,6 +55,10 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setDetails(ForumCategoriesItemFormat forumCategoriesItemFormat){
+
+
+
+
         catName.setText(forumCategoriesItemFormat.getName());
         setUnSeenMessages(forumCategoriesItemFormat.getTotalMessages(),forumCategoriesItemFormat.getSeenMessages());
 
