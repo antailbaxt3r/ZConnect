@@ -28,6 +28,7 @@ import com.zconnect.zutto.zconnect.holders.JoinedForumsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumShareUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UserUtilities;
@@ -56,11 +57,15 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
+        Log.d(forumCategoriesItemFormats.get(position).getForumType(),ForumShareUtilities.VALUE_SHARE_FORUM_STR);
         if(forumCategoriesItemFormats.get(position).getForumType().equals(ForumTypeUtilities.KEY_EXPLORER_FORUM_STR)) {
             return ForumTypeUtilities.KEY_EXPLORE_FORUM;
         }else if (forumCategoriesItemFormats.get(position).getForumType().equals(ForumTypeUtilities.KEY_JOINED_STR)) {
             return ForumTypeUtilities.KEY_JOINED;
-        }else return -1;
+        }else if(forumCategoriesItemFormats.get(position).getForumType().equals(ForumShareUtilities.VALUE_SHARE_FORUM_STR)){
+            return ForumTypeUtilities.KEY_SHARE_FORUM;
+        }
+        else return -1;
     }
 
     @Override
@@ -73,7 +78,11 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }else if( viewType == ForumTypeUtilities.KEY_JOINED) {
             View joinedContactView = layoutInflater.inflate(R.layout.row_forums_sub_categories_joined, parent, false);
             return new JoinedForumsRVViewHolder(joinedContactView);
-        }else {
+        }else if( viewType == ForumTypeUtilities.KEY_SHARE_FORUM) {
+            View joinedContactView = layoutInflater.inflate(R.layout.row_forums_sub_categories_joined, parent, false);
+            return new JoinedForumsRVViewHolder(joinedContactView);
+        }
+        else {
             View joinedContactView = layoutInflater.inflate(R.layout.row_forums_sub_categories_joined, parent, false);
             return new JoinedForumsRVViewHolder(joinedContactView);
         }
@@ -131,6 +140,16 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
 //            }
 
+        } else if(forumCategory.getForumType().equals(ForumShareUtilities.VALUE_SHARE_FORUM_STR)){
+            final JoinedForumsRVViewHolder holderMain = (JoinedForumsRVViewHolder) holder;
+            Log.d("Setting View",Integer.toString(position));
+
+            holderMain.setDetailsForShare(forumCategoriesItemFormats.get(position));
+            holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID()
+                    , forumCategoriesItemFormats.get(position).getTabUID()
+                    , forumCategoriesItemFormats.get(position).getName()
+                    ,forumCategoriesItemFormats.get(position).getMessage()
+                    ,forumCategoriesItemFormats.get(position).getMessageType());
         }
     }
 

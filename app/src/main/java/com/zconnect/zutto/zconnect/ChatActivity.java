@@ -69,6 +69,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumShareUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
@@ -115,6 +116,13 @@ public class ChatActivity extends BaseActivity {
     private String userType = ForumsUserTypeUtilities.KEY_USER;
     private ValueEventListener loadMessagesListener;
 
+    //For Sharing
+    String shareMessageType = null;
+    String shareMessage = null;
+
+    //UI elements
+    EditText typer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,11 +161,16 @@ public class ChatActivity extends BaseActivity {
         intentHandle = new IntentHandle();
         unseenFlag = true;
         unseenFlag2 = false;
-
+        typer = ((EditText) findViewById(R.id.typer));
         SharedPreferences communitySP;
         final String communityReference;
         communitySP = ChatActivity.this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
+        Intent callingActivityIntent = getIntent();
+        if(callingActivityIntent.getStringExtra(ForumShareUtilities.KEY_MESSAGE_TYPE_STR) != null){
+            shareMessage = callingActivityIntent.getStringExtra(ForumShareUtilities.KEY_MESSAGE);
+            shareMessageType = callingActivityIntent.getStringExtra(ForumShareUtilities.KEY_MESSAGE_TYPE_STR);
+        }
         mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if(getIntent()!=null && !TextUtils.isEmpty(getIntent().getStringExtra("ref"))) {
             if (!TextUtils.isEmpty(getIntent().getStringExtra("ref"))){
@@ -469,11 +482,22 @@ public class ChatActivity extends BaseActivity {
                 }
             }
         });
+        if(shareMessageType!= null) {
+            if (shareMessageType.equals(ForumShareUtilities.VALUE_MESSAGE_TEXT_MESSAGE)) {
+                typer.setText(shareMessage);
+                postMessage();
+            }
+            if (shareMessageType.equals(ForumShareUtilities.VALUE_MESSAGE_IMAGE)) {
+                mImageUri = Uri.parse(shareMessage);
+                postPhoto();
+            }
+        }
+
     }
 
     private void postMessage(){
 
-        final EditText typer = ((EditText) findViewById(R.id.typer));
+//        final EditText typer = ((EditText) findViewById(R.id.typer));
         final String text = typer.getText().toString().trim();
         if (TextUtils.isEmpty(text)) {
             showToast("Message is empty.");

@@ -21,6 +21,7 @@ import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumShareUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import java.text.SimpleDateFormat;
@@ -55,9 +56,6 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setDetails(ForumCategoriesItemFormat forumCategoriesItemFormat){
-
-
-
 
         catName.setText(forumCategoriesItemFormat.getName());
         setUnSeenMessages(forumCategoriesItemFormat.getTotalMessages(),forumCategoriesItemFormat.getSeenMessages());
@@ -158,6 +156,80 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
             layoutUnseenMessages.setVisibility(View.INVISIBLE);
             lastMessageTime.setTextColor(mView.getContext().getResources().getColor(R.color.secondaryText));
         }
+
+    }
+
+    public void setDetailsForShare(ForumCategoriesItemFormat forumCategoriesItemFormat) {
+        catName.setText(forumCategoriesItemFormat.getName());
+        Log.d("InsideSetDetails",catName.getText().toString());
+        try
+        {
+            if(forumCategoriesItemFormat.getVerified())
+            {
+                Log.d(TAG, forumCategoriesItemFormat.getCatUID());
+                Log.d(TAG, forumCategoriesItemFormat.getVerified().toString());
+                verifiedForumIconLayout.setVisibility(View.VISIBLE);
+            }
+            else {
+                verifiedForumIconLayout.setVisibility(View.GONE);
+            }
+        }
+        catch (Exception e)
+        {
+            verifiedForumIconLayout.setVisibility(View.GONE);
+        }
+
+        if(forumCategoriesItemFormat.getImageThumb()!=null)
+        {
+            defaultForumIcon.setVisibility(View.GONE);
+            forumIcon.setImageURI(forumCategoriesItemFormat.getImageThumb());
+        } else {
+            forumIcon.setImageResource(android.R.color.transparent);
+            defaultForumIcon.setVisibility(View.VISIBLE);
+            forumIcon.setBackground(mView.getContext().getResources().getDrawable(R.drawable.forum_circle));
+        }
+        unSeenMessages.setVisibility(View.GONE);
+        lastMessageTime.setVisibility(View.GONE);
+        lastMessageWithName.setVisibility(View.GONE);
+        layoutUnseenMessages.setVisibility(View.GONE);
+
+        catName.setTextColor(mView.getContext().getResources().getColor(R.color.primaryText));
+
+    }
+
+    public void openChat(final String uid, final String tabId, final String name, final String message, final String messageType) {
+        Log.d("inOpenChat",name);
+        mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mView.getContext(), ChatActivity.class);
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+                meta.put("type","fromFeature");
+                meta.put("channelType","joined");
+                meta.put("channelID",uid);
+                meta.put("catID",tabId);
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CHANNEL_OPEN);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(uid).toString());
+                intent.putExtra("type","forums");
+                intent.putExtra("name", name);
+                intent.putExtra("tab",tabId);
+                intent.putExtra("key",uid);
+                intent.putExtra("unseen_num", String.valueOf(unseen_num));
+                intent.putExtra(ForumShareUtilities.KEY_MESSAGE_TYPE_STR,messageType);
+                intent.putExtra(ForumShareUtilities.KEY_MESSAGE,message);
+                mView.getContext().startActivity(intent);
+            }
+        });
 
     }
 }

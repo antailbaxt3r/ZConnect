@@ -26,6 +26,7 @@ import com.zconnect.zutto.zconnect.adapters.JoinedForumsAdapter;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
+import com.zconnect.zutto.zconnect.utilities.ForumShareUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 
@@ -61,6 +62,12 @@ public class JoinedForums extends Fragment {
     private DatabaseReference userForumsRef;
     private ValueEventListener forumEventListener;
 
+    //Share Forums
+    boolean isShare =false;
+    String activityType;
+    String messageType;
+    String message;
+
     public JoinedForums() {
         // Required empty public constructor
     }
@@ -69,6 +76,15 @@ public class JoinedForums extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            activityType = getArguments().getString(ForumShareUtilities.KEY_ACTIVITY_TYPE_STR);
+            if(activityType.equals(ForumShareUtilities.VALUE_SHARE_FORUM_STR)){
+                messageType = getArguments().getString(ForumShareUtilities.KEY_MESSAGE_TYPE_STR,null);
+                if(messageType != null){
+                    message = getArguments().getString(ForumShareUtilities.KEY_MESSAGE,null);
+                }
+            }
+        }
 
     }
 
@@ -139,7 +155,18 @@ public class JoinedForums extends Fragment {
                     if (!shot2.hasChild("totalMessages")) {
                         temp.setTotalMessages(0);
                     }
-                    temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
+                    if(activityType != null) {
+                        if (activityType.equals(ForumShareUtilities.VALUE_SHARE_FORUM_STR)) {
+                            Log.d("Setting message", message);
+                            temp.setForumType(ForumShareUtilities.VALUE_SHARE_FORUM_STR);
+                            temp.setMessage(message);
+                            temp.setMessageType(messageType);
+
+                        }
+                    }
+                    else {
+                        temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
+                    }
                     if(name!=null){
                         temp.setName(name);
                     }
@@ -213,13 +240,24 @@ public class JoinedForums extends Fragment {
                         return Long.valueOf((Long) o2.getLastMessage().getTimeDate()).compareTo((Long) o1.getLastMessage().getTimeDate()) ;
                     }
                 });
+                if(activityType != null) {
+                    if (!activityType.equals(ForumShareUtilities.KEY_MESSAGE_TYPE_STR)) {
+                        forumCategoriesItemFormats.add(exploreButton);
+                    }
 
-                forumCategoriesItemFormats.add(exploreButton);
+                }
+                else{
+                    forumCategoriesItemFormats.add(exploreButton);
+                }
 
                 Collections.reverse(forumCategoriesItemFormats);
 
                 progressBar.setVisibility(View.GONE);
                 joinedForumsRV.setVisibility(View.VISIBLE);
+                Log.d("Adapter List",forumCategoriesItemFormats.toString());
+                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getActivity());
+                joinedForumsRV.setLayoutManager(linearLayoutManager);
+                joinedForumsRV.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
 
@@ -229,9 +267,7 @@ public class JoinedForums extends Fragment {
             }
         };
 
-        adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
-        joinedForumsRV.setLayoutManager(linearLayoutManager);
-        joinedForumsRV.setAdapter(adapter);
+
         return  view;
     }
 
