@@ -88,7 +88,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @BindView(R.id.toolbar_app_bar_home)
     Toolbar toolbar;
     @BindView(R.id.navigation)
-    TabLayout tabs;
+    public TabLayout tabs;
     String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
     private boolean doubleBackToExitPressedOnce = false;
     private ValueEventListener editProfileValueEventListener;
