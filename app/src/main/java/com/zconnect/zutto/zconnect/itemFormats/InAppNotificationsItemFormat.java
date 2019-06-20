@@ -5,24 +5,32 @@ import org.joda.time.DateTime;
 
 import java.util.HashMap;
 
-public class NotificationsModel {
+public class InAppNotificationsItemFormat {
 
-    String title;
-    String desc;
-    DateTime date;
-    boolean seen;
-    int type;
-    HashMap<String, String> metadata;
-    String key;
+    private String title;
+    private String desc;
+    private long PostTimeMillis;
+    private boolean seen;
+    private String type;
+    private HashMap<String, Object> metadata;
+    private String key;
 
-    public NotificationsModel(String title, String desc, DateTime date, int type, boolean seen, HashMap<String, String> metadata, String key) {
+    public InAppNotificationsItemFormat(String title, String desc, long PostTimeMillis, String type, boolean seen, HashMap<String, Object> metadata, String key) {
         this.title = title;
         this.desc = desc;
-        this.date = date;
+        this.PostTimeMillis = PostTimeMillis;
         this.type = type;
         this.seen = seen;
         this.metadata = metadata;
         this.key = key;
+    }
+
+    public long getPostTimeMillis() {
+        return PostTimeMillis;
+    }
+
+    public void setPostTimeMillis(long postTimeMillis) {
+        PostTimeMillis = postTimeMillis;
     }
 
     public String getTitle() {
@@ -41,14 +49,6 @@ public class NotificationsModel {
         this.desc = desc;
     }
 
-    public DateTime getDate() {
-        return date;
-    }
-
-    public void setDate(DateTime date) {
-        this.date = date;
-    }
-
     public boolean isSeen() {
         return seen;
     }
@@ -57,19 +57,19 @@ public class NotificationsModel {
         this.seen = seen;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public HashMap<String, String> getMetadata() {
+    public HashMap<String, Object> getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(HashMap<String, String> metadata) {
+    public void setMetadata(HashMap<String, Object> metadata) {
         this.metadata = metadata;
     }
 

@@ -50,7 +50,7 @@ public class GlobalFunctions {
         });
     }
 
-    public static void pushNotifications(String title, String desc, boolean audience, int type, HashMap<String, String> metadata) {
+    public static void pushNotifications(String title, String desc, boolean audience, String type, HashMap<String, Object> metadata) {
 
         /*
         audience true - Community specific notifications
@@ -67,17 +67,16 @@ public class GlobalFunctions {
                     .child("notifications");
         }
 
-        String notificationsUID = notificationsRef.push().getKey();
-        notificationsRef = notificationsRef.child(notificationsUID);
+        DatabaseReference newNotifRef = notificationsRef.push();
 
-        notificationsRef.child("title").setValue(title);
-        notificationsRef.child("desc").setValue(desc);
-        notificationsRef.child("count").setValue(0);
-        notificationsRef.child("type").setValue(type);
-        notificationsRef.child("seen").setValue(false);
-        notificationsRef.child("timestamp").setValue(ServerValue.TIMESTAMP);
-        for(HashMap.Entry<String, String> entry : metadata.entrySet()) {
-            notificationsRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
+        newNotifRef.child("title").setValue(title);
+        newNotifRef.child("desc").setValue(desc);
+        newNotifRef.child("PostTimeMillis").setValue(System.currentTimeMillis());
+        newNotifRef.child("seen").setValue(false);
+        newNotifRef.child("type").setValue(type);
+        for(HashMap.Entry<String, Object> entry : metadata.entrySet()) {
+            newNotifRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
         }
+        newNotifRef.child("key").setValue(newNotifRef.getKey());
     }
 }
