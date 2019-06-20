@@ -57,7 +57,7 @@ import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
-import com.zconnect.zutto.zconnect.fragments.NotificationsFragment;
+import com.zconnect.zutto.zconnect.fragments.InAppNotificationsFragment;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
@@ -88,7 +88,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @BindView(R.id.toolbar_app_bar_home)
     Toolbar toolbar;
     @BindView(R.id.navigation)
-    TabLayout tabs;
+    public TabLayout tabs;
     String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
     private boolean doubleBackToExitPressedOnce = false;
     private ValueEventListener editProfileValueEventListener;
@@ -664,7 +664,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 forums = new JoinedForums();
                                 myProfile = new MyProfileFragment();
                                 infone = new InfoneActivity();
-                                notifications = new NotificationsFragment();
+                                notifications = new InAppNotificationsFragment();
 
                                 getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
 

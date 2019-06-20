@@ -385,7 +385,7 @@ public class LogoFlashActivity extends BaseActivity {
 //                @Override
 //                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                    for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
-//                        if (childsnap.child("userType").getValue().toString().equals("admin")) {
+//                        if (childsnap.hasChild("userType") && childsnap.child("userType").getValue().toString().equals("admin")) {
 //                            databaseReference1.child(childsnap.getKey()).child("UID").setValue(childsnap.getKey());
 //                            databaseReference1.child(childsnap.getKey()).child("Username").setValue(childsnap.child("username").getValue());
 //                            databaseReference1.child(childsnap.getKey()).child("ImageThumb").setValue(childsnap.child("imageURL").getValue());
