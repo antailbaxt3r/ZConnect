@@ -102,7 +102,9 @@ public class CabPoolListOfPeople extends BaseActivity {
         setContentView(R.layout.activity_cab_list_of_people);
         setToolbar();
         setSupportActionBar(toolbar);
+
         toolbar.setTitle("Cabpool Details");
+
         share = findViewById(R.id.share_cab_cp_detail);
 //        setTitle("List of people");
         if (toolbar != null) {
