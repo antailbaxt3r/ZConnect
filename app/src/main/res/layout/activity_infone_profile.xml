@@ -33,11 +33,17 @@
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        </android.support.design.widget.AppBarLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            </android.support.design.widget.AppBarLayout>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,21 +76,21 @@
                     app:met_hideUnderline="true"
                     app:met_textColor="@color/black" />
 
-                <TextView
-                    android:id="@+id/tv_desc_infone_profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text=""
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp" />
+                        <TextView
+                            android:id="@+id/tv_desc_infone_profile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:text=""
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="16dp">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="16dp">
 
                     <TextView
                         android:id="@+id/valid_label"
@@ -106,58 +112,65 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black" />
 
-                </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/validate_percent"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="@dimen/margin_small8dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/margin_small8dp"
+                            android:weightSum="1">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:id="@+id/validate_percent_yes"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/percentage_indiator_left"
+                                android:backgroundTint="@color/green500"
+                                android:layout_weight="0.5"
+                                />
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:id="@+id/validate_percent_no"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/percentage_indicator_right"
+                                android:backgroundTint="@color/red500"
+                                android:layout_weight="0.5"
+                                />
+
+
+                        </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/horizontalLine"
+                    />
+
+
+                    </LinearLayout>
+
+                </RelativeLayout>
 
                 <LinearLayout
-                    android:id="@+id/validate_percent"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="@dimen/margin_small8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_small8dp"
-                    android:weightSum="1">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:id="@+id/validate_percent_yes"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/percentage_indiator_left"
-                        android:backgroundTint="@color/green500"
-                        android:layout_weight="0.5"
-                        />
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:id="@+id/validate_percent_no"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/percentage_indicator_right"
-                        android:backgroundTint="@color/red500"
-                        android:layout_weight="0.5"
-                        />
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginHorizontal="30dp"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:id="@+id/phone1ll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="50dp"
-                android:orientation="horizontal">
+                    <RelativeLayout
+                        android:id="@+id/phone1ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="50dp"
+                        android:orientation="horizontal">
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/et_phone1_infone_profile"
@@ -183,14 +196,14 @@
                     android:tint="@color/deepPurple500" />
 
 
-            </RelativeLayout>
+                    </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/whatsappll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:orientation="horizontal">
+                    <RelativeLayout
+                        android:id="@+id/whatsappll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        android:orientation="horizontal">
 
                 <ImageView
                     android:layout_alignParentEnd="true"
@@ -215,14 +228,14 @@
                     app:met_hideUnderline="true"
                     app:met_textColor="@color/black" />
 
-            </RelativeLayout>
-            <RelativeLayout
-                android:visibility="gone"
-                android:id="@+id/personalchatrl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:orientation="horizontal">
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:visibility="gone"
+                        android:id="@+id/personalchatrl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        android:orientation="horizontal">
 
                 <ImageView
                     android:layout_alignParentEnd="true"
@@ -248,57 +261,58 @@
                     app:met_hideUnderline="true"
                     app:met_textColor="@color/black" />
 
-            </RelativeLayout>
+                    </RelativeLayout>
 
-        </LinearLayout>
+                </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal">
 
 
-        </LinearLayout>
+                </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/valid_rl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+                <RelativeLayout
+                    android:id="@+id/valid_rl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal">
 
-            <TextView
-                android:id="@+id/thank_you_tv"
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:textAlignment="center"
-                android:text="Thank you for your feedback!!"
-                android:textSize="28sp"/>
+                    <TextView
+                        android:id="@+id/thank_you_tv"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:textAlignment="center"
+                        android:text="Thank you for your feedback!!"
+                        android:textSize="28sp"/>
 
-        <LinearLayout
-            android:visibility="visible"
-            android:id="@+id/valid_ll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical">
+                    <LinearLayout
+                        android:visibility="visible"
+                        android:id="@+id/valid_ll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:textSize="18sp"
+                android:textColor="@color/black"
                 android:layout_marginBottom="10dp"
                 android:text="Are the contact details correct?"/>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/valid_button"
@@ -322,28 +336,27 @@
                 android:text="No"
                 android:textColor="@color/colorPrimary" />
 
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+                <Button
+                    android:id="@+id/viewProfileButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/margin_top_between_similar_views"
+                    android:visibility="gone"
+                    android:background="@drawable/round_button_primary"
+                    android:padding="16dp"
+                    android:text="View Profile"
+                    android:textColor="@color/white" />
             </LinearLayout>
-
+    </ScrollView>
         </LinearLayout>
-
-        </RelativeLayout>
-
-
-            <Button
-                android:id="@+id/viewProfileButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/margin_top_between_similar_views"
-                android:visibility="gone"
-                android:background="@drawable/round_button_primary"
-                android:padding="16dp"
-                android:text="View Profile"
-                android:textColor="@color/white" />
-
-
-    </LinearLayout>
-
 
     <ProgressBar
         android:id="@+id/infone_profile_progress_circle"

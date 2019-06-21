@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
@@ -255,8 +256,7 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         ask_text.setTypeface(ralewayMedium);
     }
 
-    public void setImage(Context ctx, final String image) {
-
+    public void setImage(final Context ctx, final String image) {
         productImage = (ImageView) mView.findViewById(R.id.postImg);
         Picasso.with(ctx).load(image).into(productImage);
     }
