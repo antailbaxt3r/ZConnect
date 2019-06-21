@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,20 +21,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.zconnect.zutto.zconnect.ExploreForumsActivity;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.addActivities.CreateForum;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.holders.JoinedForumsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
-import com.zconnect.zutto.zconnect.utilities.ForumShareUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
-import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
-import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Vector;
 
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
@@ -57,12 +51,12 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        Log.d(forumCategoriesItemFormats.get(position).getForumType(),ForumShareUtilities.VALUE_SHARE_FORUM_STR);
+        Log.d(forumCategoriesItemFormats.get(position).getForumType(), ForumUtilities.VALUE_SHARE_FORUM_STR);
         if(forumCategoriesItemFormats.get(position).getForumType().equals(ForumTypeUtilities.KEY_EXPLORER_FORUM_STR)) {
             return ForumTypeUtilities.KEY_EXPLORE_FORUM;
         }else if (forumCategoriesItemFormats.get(position).getForumType().equals(ForumTypeUtilities.KEY_JOINED_STR)) {
             return ForumTypeUtilities.KEY_JOINED;
-        }else if(forumCategoriesItemFormats.get(position).getForumType().equals(ForumShareUtilities.VALUE_SHARE_FORUM_STR)){
+        }else if(forumCategoriesItemFormats.get(position).getForumType().equals(ForumUtilities.VALUE_SHARE_FORUM_STR)){
             return ForumTypeUtilities.KEY_SHARE_FORUM;
         }
         else return -1;
@@ -106,7 +100,7 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 Log.d("In here inside",forumCategoriesItemFormats.get(position).getTabUID().toString());
 
                 final ForumCategoriesItemFormat itemFormat = forumCategoriesItemFormats.get(position);
-                DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabCategories").child("personalChats").child(forumCategoriesItemFormats.get(position).getCatUID());
+                DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats").child(forumCategoriesItemFormats.get(position).getCatUID());
                 db.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -124,7 +118,7 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             itemFormat1.setImage(user.child("imageThumb").getValue().toString());
                             Log.d("Try:inside dataChange",user.child("name").getValue().toString());
                             holderMain.setDetails(itemFormat1);
-                            holderMain.openChat(itemFormat1.getCatUID(), itemFormat1.getTabUID(), itemFormat1.getName());
+                            holderMain.openChat(itemFormat1.getCatUID(), itemFormat1.getTabUID(), user.child("name").getValue().toString());
 
                         }
                     }
@@ -135,14 +129,50 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 });
             }
-//            else {
+            else {
                 holderMain.setDetails(forumCategoriesItemFormats.get(position));
                 holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID(), forumCategoriesItemFormats.get(position).getTabUID(), forumCategoriesItemFormats.get(position).getName());
-//            }
+            }
 
-        } else if(forumCategory.getForumType().equals(ForumShareUtilities.VALUE_SHARE_FORUM_STR)){
+        } else if(forumCategory.getForumType().equals(ForumUtilities.VALUE_SHARE_FORUM_STR)){
             final JoinedForumsRVViewHolder holderMain = (JoinedForumsRVViewHolder) holder;
-            Log.d("Setting View",Integer.toString(position));
+            Log.d("In here",forumCategoriesItemFormats.get(position).getTabUID().toString());
+            if(forumCategoriesItemFormats.get(position).getTabUID().toString().equals("personalChats")){
+                Log.d("In here inside",forumCategoriesItemFormats.get(position).getTabUID().toString());
+
+                final ForumCategoriesItemFormat itemFormat = forumCategoriesItemFormats.get(position);
+                DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats").child(forumCategoriesItemFormats.get(position).getCatUID());
+                db.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        dataSnapshot = dataSnapshot.child("users");
+                        Log.d("user:details",dataSnapshot.toString());
+
+                        for(DataSnapshot user: dataSnapshot.getChildren()){
+                            Log.d("user:details",user.toString());
+                            if(user.child("userUID").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                continue;
+                            }
+                            ForumCategoriesItemFormat itemFormat1 = itemFormat;
+                            itemFormat1.setName(user.child("name").getValue().toString());
+                            itemFormat1.setImageThumb(user.child("imageThumb").getValue().toString());
+                            itemFormat1.setImage(user.child("imageThumb").getValue().toString());
+                            Log.d("Try:inside dataChange",user.child("name").getValue().toString());
+                            holderMain.setDetailsForShare(itemFormat1);
+                            holderMain.openChat(itemFormat1.getCatUID(), itemFormat1.getTabUID(), user.child("name").getValue().toString(),
+                                    itemFormat1.getMessage(),itemFormat1.getMessageType());
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("error",databaseError.toString());
+                    }
+                });
+            }
+            else {
+                            Log.d("Setting View",Integer.toString(position));
 
             holderMain.setDetailsForShare(forumCategoriesItemFormats.get(position));
             holderMain.openChat(forumCategoriesItemFormats.get(position).getCatUID()
@@ -150,6 +180,8 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     , forumCategoriesItemFormats.get(position).getName()
                     ,forumCategoriesItemFormats.get(position).getMessage()
                     ,forumCategoriesItemFormats.get(position).getMessageType());
+
+            }
         }
     }
 

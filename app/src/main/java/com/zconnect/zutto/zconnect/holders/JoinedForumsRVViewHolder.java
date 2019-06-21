@@ -1,7 +1,6 @@
 package com.zconnect.zutto.zconnect.holders;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -9,11 +8,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.R;
@@ -21,7 +18,7 @@ import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
-import com.zconnect.zutto.zconnect.utilities.ForumShareUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 
 import java.text.SimpleDateFormat;
@@ -225,8 +222,8 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
                 intent.putExtra("tab",tabId);
                 intent.putExtra("key",uid);
                 intent.putExtra("unseen_num", String.valueOf(unseen_num));
-                intent.putExtra(ForumShareUtilities.KEY_MESSAGE_TYPE_STR,messageType);
-                intent.putExtra(ForumShareUtilities.KEY_MESSAGE,message);
+                intent.putExtra(ForumUtilities.KEY_MESSAGE_TYPE_STR,messageType);
+                intent.putExtra(ForumUtilities.KEY_MESSAGE,message);
                 mView.getContext().startActivity(intent);
             }
         });

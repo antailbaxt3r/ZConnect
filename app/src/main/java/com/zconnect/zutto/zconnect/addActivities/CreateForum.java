@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -50,6 +49,7 @@ import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
@@ -59,14 +59,13 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 import static com.zconnect.zutto.zconnect.utilities.RequestCodes.GALLERY_REQUEST;
 
 public class CreateForum extends BaseActivity {
@@ -101,24 +100,58 @@ public class CreateForum extends BaseActivity {
     ProgressDialog progressDialog;
     TextView titleFirstMessage;
     LinearLayout deleteForumLL;
-
     CustomSpinner forumTabsSpinner;
     LinearLayout forumTabsSpinnerLayout;
     ArrayList<ForumTabObject> forumTabsObjectList;
     ArrayList<String> forumTabsNameList;
     ArrayAdapter<String> forumTabsSpinnerAdapter;
     private int init_opn_index;
-
     private String TAG = CreateForum.class.getSimpleName();
+
+    //For Cabpols and Events
+    Intent callingActivityIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        callingActivityIntent = getIntent();
+        calendar = Calendar.getInstance();
+        mStorage = FirebaseStorage.getInstance().getReference();
+
+        if(callingActivityIntent.getStringExtra(ForumUtilities.KEY_ACTIVITY_TYPE_STR) != null){
+            DatabaseReference forumIDSaveLocation = FirebaseDatabase.getInstance().getReferenceFromUrl(callingActivityIntent.getStringExtra(ForumUtilities.KEY_REF_LOCATION));
+            String imageUri = callingActivityIntent.getStringExtra(ForumUtilities.KEY_FORUM_IMAGE_STR);
+            String message = callingActivityIntent.getStringExtra(ForumUtilities.KEY_MESSAGE);
+            String desc = callingActivityIntent.getStringExtra(ForumUtilities.KEY_FORUM_DESC_STR);
+            String name = callingActivityIntent.getStringExtra(ForumUtilities.KEY_FORUM_NAME_STR);
+            String tab = callingActivityIntent.getStringExtra(ForumUtilities.KEY_FORUM_TAB_STR);
+            mtabName = tab;
+            mImageUri = Uri.parse(imageUri);
+            final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
+            final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab);
+            forumIDSaveLocation.child("forumUID").setValue(createForumWithDetails(name,
+                    databaseReferenceCategories,
+                    databaseReferenceTabsCategories,
+                    tab,
+                    tab,
+                    calendar.getTimeInMillis(),
+                    message,
+                    null,
+                    null,
+                    null,
+                    imageUri
+            ));
+            return;
+
+
+        }
+
+
         setContentView(R.layout.activity_create_forum);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
         intentHandle = new IntentHandle();
-        calendar = Calendar.getInstance();
 
         progressDialog = new ProgressDialog(this);
 
@@ -233,13 +266,12 @@ public class CreateForum extends BaseActivity {
                 public void onClick(View v) {
 
                     if(addForumName.getText()!=null && addForumName.getText().toString().length()!=0
-                            && firstMessage.getText()!=null && firstMessage.getText().toString().length()!=0)
-                    {
+                            && firstMessage.getText()!=null && firstMessage.getText().toString().length()!=0) {
                         progressDialog.setMessage("Creating forum");
                         progressDialog.show();
 
-                        if(forumTabsSpinner.getSelectedItem()!=null)
-                        {
+
+                        if (forumTabsSpinner.getSelectedItem() != null) {
                             uid = forumTabsObjectList.get(forumTabsSpinner.getSelectedItemPosition()).UID;
                             mtabName = forumTabsNameList.get(forumTabsSpinner.getSelectedItemPosition());
                         }
@@ -249,222 +281,26 @@ public class CreateForum extends BaseActivity {
                         final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid);
                         final DatabaseReference databaseReferenceHome = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home");
 
-                        final DatabaseReference newPush=databaseReferenceCategories.push();
-                        DatabaseReference mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        createForumWithDetails(catName,
+                                databaseReferenceCategories,
+                                databaseReferenceTabsCategories,
+                                uid,
+                                mtabName,
+                                calendar.getTimeInMillis(),
+                                firstMessage.getText().toString(),
+                                mImageUri,
+                                mImageUriThumb,
+                                databaseReferenceHome,
+                                null
+                                );
 
-                        newPush.child("name").setValue(catName);
-                        Long postTimeMillis = System.currentTimeMillis();
-                        newPush.child("PostTimeMillis").setValue(postTimeMillis);
-                        newPush.child("UID").setValue(newPush.getKey());
-                        newPush.child("tab").setValue(uid);
-
-                        final DatabaseReference userDataRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        userDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
-                                {
-                                    newPush.child("verified").setValue(true);
-                                    databaseReferenceTabsCategories.child(newPush.getKey()).child("verified").setValue(true);
-                                    databaseReferenceHome.child(newPush.getKey()).child("verified").setValue(true);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-                        databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
-                        databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
-                        databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(uid);
-
-                        CounterItemFormat counterItemFormat = new CounterItemFormat();
-                        HashMap<String, String> meta= new HashMap<>();
-                        meta.put("catID",uid);
-                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_FORUM_CREATED);
-                        counterItemFormat.setTimestamp(System.currentTimeMillis());
-                        counterItemFormat.setMeta(meta);
-                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                        counterPush.pushValues();
-
-                        //Home
-                        databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
-                        databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
-                        databaseReferenceHome.child(newPush.getKey()).child("id").setValue(uid);
-                        databaseReferenceHome.child(newPush.getKey()).child("desc").setValue(mtabName);
-                        databaseReferenceHome.child(newPush.getKey()).child("Key").setValue(newPush.getKey());
-                        databaseReferenceHome.child(newPush.getKey()).child("PostTimeMillis").setValue(postTimeMillis);
-
-                        databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
-
-                                UsersListItemFormat userDetails = new UsersListItemFormat();
-
-                                userDetails.setImageThumb(userItem.getImageURLThumbnail());
-                                userDetails.setName(userItem.getUsername());
-                                userDetails.setPhonenumber(userItem.getMobileNumber());
-                                userDetails.setUserUID(userItem.getUserUID());
-                                userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
-
-                                databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(userItem.getUserUID()).setValue(userDetails);
-
-                                newPush.child("PostedBy").child("Username").setValue(userItem.getUsername());
-                                newPush.child("PostedBy").child("ImageThumb").setValue(userItem.getImageURLThumbnail());
-
-                                databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("Username").setValue(userItem.getUsername());
-                                databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("ImageThumb").setValue(userItem.getImageURLThumbnail());
-
-                                ChatItemFormats message = new ChatItemFormats();
-                                message.setTimeDate(calendar.getTimeInMillis());
-                                message.setUuid(userItem.getUserUID());
-                                message.setName(userItem.getUsername());
-                                message.setImageThumb(userItem.getImageURLThumbnail());
-                                message.setMessage("\""+firstMessage.getText()+"\"");
-                                message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
-                                newPush.child("Chat").push().setValue(message);
-
-                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid).child(newPush.getKey()).child("lastMessage").setValue(message);
-
-                                NotificationSender notificationSender = new NotificationSender(CreateForum.this,userItem.getUserUID());
-                                NotificationItemFormat addForumNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,userItem.getUserUID());
-                                addForumNotification.setCommunityName(communityTitle);
-                                addForumNotification.setItemKey(newPush.getKey());
-                                addForumNotification.setItemCategoryUID(uid);
-                                addForumNotification.setItemCategory(mtabName);
-                                addForumNotification.setItemName(catName);
-                                addForumNotification.setUserImage(userItem.getImageURLThumbnail());
-                                addForumNotification.setUserName(userItem.getUsername());
-
-                                notificationSender.execute(addForumNotification);
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        ////writing uid of post to homePosts node in Users1.uid for handling data conistency
-                        mPostedByDetails.child("homePosts").child(newPush.getKey()).setValue(true);
-
-
-                        if(mImageUri!=null && mImageUriThumb!=null)
-                        {
-                            flag = false;
-                            final StorageReference filePath = mStorage.child(communityReference).child("features").child("forums").child("groupIcons").child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            UploadTask uploadTask = filePath.putFile(mImageUri);
-                            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                @Override
-                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                    if (!task.isSuccessful()) {
-                                        throw task.getException();
-                                    }
-
-                                    // Continue with the task to get the download URL
-                                    return filePath.getDownloadUrl();
-                                }
-                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri downloadUri = task.getResult();
-                                        newPush.child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
-                                        databaseReferenceTabsCategories.child(newPush.getKey()).child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
-                                        databaseReferenceHome.child(newPush.getKey()).child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
-                                        if(flag) {
-                                            Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
-                                            intent.putExtra("type", "forums");
-                                            intent.putExtra("name", catName);
-                                            intent.putExtra("tab", uid);
-                                            intent.putExtra("key", newPush.getKey());
-                                            GlobalFunctions.addPoints(10);
-                                            startActivity(intent);
-                                            finish();
-                                        } else{ flag = true;}
-                                    } else {
-                                        Snackbar snackbar = Snackbar.make(addForumName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
-                                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
-                                        snackbar.show();
-                                    }
-                                }
-                            });
-                            final StorageReference filePathThumb = mStorage.child(communityReference).child("features").child("forums").child("groupIcons").child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid() + "Thumb");
-                            UploadTask uploadTaskThumb = filePathThumb.putFile(mImageUriThumb);
-                            uploadTaskThumb.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                @Override
-                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                    if (!task.isSuccessful()) {
-                                        throw task.getException();
-                                    }
-
-                                    // Continue with the task to get the download URL
-                                    return filePathThumb.getDownloadUrl();
-                                }
-                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        Uri downloadUri = task.getResult();
-                                        newPush.child("imageThumb").setValue(downloadUri != null ? downloadUri.toString() : null);
-                                        databaseReferenceTabsCategories.child(newPush.getKey()).child("imageThumb").setValue(downloadUri != null ? downloadUri.toString() : null);
-                                        databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue(downloadUri != null ? downloadUri.toString() : null);
-                                        if (flag) {
-                                            Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
-                                            intent.putExtra("type", "forums");
-                                            intent.putExtra("name", catName);
-                                            intent.putExtra("tab", uid);
-                                            intent.putExtra("key", newPush.getKey());
-                                            GlobalFunctions.addPoints(10);
-                                            startActivity(intent);
-                                            finish();
-                                        } else {
-                                            flag = true;
-                                        }
-                                    } else {
-                                        // Handle failures
-                                        // ...
-                                        Snackbar snackbar = Snackbar.make(addForumName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
-                                        snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
-                                        snackbar.show();
-                                    }
-
-                                }
-                            });
-                        }
-                        else {
-//                        newPush.child("image").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
-//                        databaseReferenceTabsCategories.child(newPush.getKey()).child("image").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
-//                        databaseReferenceHome.child(newPush.getKey()).child("image").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
-//                        newPush.child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
-//                        databaseReferenceTabsCategories.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
-//                        databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
-                            Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
-                            intent.putExtra("type","forums");
-                            intent.putExtra("name", catName);
-                            intent.putExtra("tab",uid);
-                            intent.putExtra("key",newPush.getKey());
-                            startActivity(intent);
-                            GlobalFunctions.addPoints(10);
-                            finish();
-                        }
                     }
                     else {
                         Snackbar snackbar = Snackbar.make(addForumName, "Forum name and first message required", Snackbar.LENGTH_SHORT);
                         snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
                         snackbar.show();
                     }
+
                 }
             });
         } else {
@@ -554,6 +390,7 @@ public class CreateForum extends BaseActivity {
 
                         final Map<String, Object> taskMap = new HashMap<String, Object>();
                         taskMap.put("name", catName);
+
 
 
                         if(mImageUri!=null && mImageUriThumb!=null)
@@ -696,6 +533,7 @@ public class CreateForum extends BaseActivity {
 
         }
 
+
     }
 
     @Override
@@ -746,4 +584,249 @@ public class CreateForum extends BaseActivity {
             }
         }
     }
-}
+    //RETURNS WHETHER USER IS VERIFIED OR NOT
+    String createForumWithDetails(final String catName,
+                                   final DatabaseReference databaseReferenceCategories,
+                                   final DatabaseReference databaseReferenceTabsCategories,
+                                   final String tabUid,
+                                   final String mtabName,
+                                   final long calendarTime,
+                                   final String firstMessage,
+                                   final Uri mImageUri,
+                                   final Uri mImageUriThumb,
+                                   final DatabaseReference databaseReferenceHome,
+                                  final String mImageURL
+                                   ){
+
+            final DatabaseReference newPush=databaseReferenceCategories.push();
+            DatabaseReference mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            newPush.child("name").setValue(catName);
+            Long postTimeMillis = System.currentTimeMillis();
+            newPush.child("PostTimeMillis").setValue(postTimeMillis);
+            newPush.child("UID").setValue(newPush.getKey());
+            newPush.child("tab").setValue(tabUid);
+
+            final DatabaseReference userDataRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            userDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
+                    {
+                        newPush.child("verified").setValue(true);
+                        databaseReferenceTabsCategories.child(newPush.getKey()).child("verified").setValue(true);
+                        if(databaseReferenceHome!=null) {
+                            databaseReferenceHome.child(newPush.getKey()).child("verified").setValue(true);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+            databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(catName);
+            databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+            databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue(tabUid);
+
+            CounterItemFormat counterItemFormat = new CounterItemFormat();
+            HashMap<String, String> meta= new HashMap<>();
+            meta.put("catID",tabUid);
+            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+            counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_FORUM_CREATED);
+            counterItemFormat.setTimestamp(System.currentTimeMillis());
+            counterItemFormat.setMeta(meta);
+            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+            counterPush.pushValues();
+
+            //Home
+        if(databaseReferenceHome!=null) {
+            databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
+            databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
+            databaseReferenceHome.child(newPush.getKey()).child("id").setValue(tabUid);
+            databaseReferenceHome.child(newPush.getKey()).child("desc").setValue(mtabName);
+            databaseReferenceHome.child(newPush.getKey()).child("Key").setValue(newPush.getKey());
+            databaseReferenceHome.child(newPush.getKey()).child("PostTimeMillis").setValue(postTimeMillis);
+
+            databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
+
+            mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+
+                    UsersListItemFormat userDetails = new UsersListItemFormat();
+
+                    userDetails.setImageThumb(userItem.getImageURLThumbnail());
+                    userDetails.setName(userItem.getUsername());
+                    userDetails.setPhonenumber(userItem.getMobileNumber());
+                    userDetails.setUserUID(userItem.getUserUID());
+                    userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
+
+                    databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(userItem.getUserUID()).setValue(userDetails);
+
+                    newPush.child("PostedBy").child("Username").setValue(userItem.getUsername());
+                    newPush.child("PostedBy").child("ImageThumb").setValue(userItem.getImageURLThumbnail());
+
+                    if(databaseReferenceHome!= null) {
+
+                        databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("Username").setValue(userItem.getUsername());
+                        databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("ImageThumb").setValue(userItem.getImageURLThumbnail());
+                    }
+
+                    ChatItemFormats message = new ChatItemFormats();
+                    message.setTimeDate(calendarTime);
+                    message.setUuid(userItem.getUserUID());
+                    message.setName(userItem.getUsername());
+                    message.setImageThumb(userItem.getImageURLThumbnail());
+                    message.setMessage("\""+firstMessage+"\"");
+                    message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                    newPush.child("Chat").push().setValue(message);
+
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tabUid).child(newPush.getKey()).child("lastMessage").setValue(message);
+
+                    NotificationSender notificationSender = new NotificationSender(CreateForum.this,userItem.getUserUID());
+                    NotificationItemFormat addForumNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,userItem.getUserUID());
+                    addForumNotification.setCommunityName(communityTitle);
+                    addForumNotification.setItemKey(newPush.getKey());
+                    addForumNotification.setItemCategoryUID(tabUid);
+                    addForumNotification.setItemCategory(mtabName);
+                    addForumNotification.setItemName(catName);
+                    addForumNotification.setUserImage(userItem.getImageURLThumbnail());
+                    addForumNotification.setUserName(userItem.getUsername());
+
+                    notificationSender.execute(addForumNotification);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            ////writing uid of post to homePosts node in Users1.uid for handling data conistency
+            mPostedByDetails.child("homePosts").child(newPush.getKey()).setValue(true);
+
+
+            if(mImageUri!=null && mImageUriThumb!=null)
+            {
+                flag = false;
+                final StorageReference filePath = mStorage.child(communityReference).child("features").child("forums").child("groupIcons").child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                UploadTask uploadTask = filePath.putFile(mImageUri);
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            Log.d("taskException", task.getException().toString());
+                            throw task.getException();
+                        }
+
+                        // Continue with the task to get the download URL
+                        return filePath.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            newPush.child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
+                            databaseReferenceTabsCategories.child(newPush.getKey()).child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
+                            if(databaseReferenceHome != null) {
+                                databaseReferenceHome.child(newPush.getKey()).child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
+                            }
+                            if(flag) {
+                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
+                                intent.putExtra("type", "forums");
+                                intent.putExtra("name", catName);
+                                intent.putExtra("tab", tabUid);
+                                intent.putExtra("key", newPush.getKey());
+                                GlobalFunctions.addPoints(10);
+                                startActivity(intent);
+                                finish();
+                            } else{ flag = true;}
+                        } else {
+                            Snackbar snackbar = Snackbar.make(addForumName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                            snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                            snackbar.show();
+                        }
+                    }
+                });
+                final StorageReference filePathThumb = mStorage.child(communityReference).child("features").child("forums").child("groupIcons").child((mImageUri.getLastPathSegment()) + FirebaseAuth.getInstance().getCurrentUser().getUid() + "Thumb");
+                UploadTask uploadTaskThumb = filePathThumb.putFile(mImageUriThumb);
+                uploadTaskThumb.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+
+                        // Continue with the task to get the download URL
+                        return filePathThumb.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            newPush.child("imageThumb").setValue(downloadUri != null ? downloadUri.toString() : null);
+                            databaseReferenceTabsCategories.child(newPush.getKey()).child("imageThumb").setValue(downloadUri != null ? downloadUri.toString() : null);
+                            if(databaseReferenceHome != null) {
+                                databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue(downloadUri != null ? downloadUri.toString() : null);
+                            }
+                            if (flag) {
+                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
+                                intent.putExtra("type", "forums");
+                                intent.putExtra("name", catName);
+                                intent.putExtra("tab", tabUid);
+                                intent.putExtra("key", newPush.getKey());
+                                GlobalFunctions.addPoints(10);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                flag = true;
+                            }
+                        } else {
+                            // Handle failures
+                            // ...
+                            Snackbar snackbar = Snackbar.make(addForumName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
+                            snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
+                            snackbar.show();
+                        }
+
+                    }
+                });
+            }
+            else {
+//                        newPush.child("image").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
+//                        databaseReferenceTabsCategories.child(newPush.getKey()).child("image").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
+//                        databaseReferenceHome.child(newPush.getKey()).child("image").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
+//                        newPush.child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
+//                        databaseReferenceTabsCategories.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
+//                        databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
+                if(databaseReferenceHome == null) {
+                    newPush.child("image").setValue(mImageURL);
+                }
+
+                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
+                intent.putExtra("type","forums");
+                intent.putExtra("name", catName);
+                intent.putExtra("tab",tabUid);
+                intent.putExtra("key",newPush.getKey());
+                startActivity(intent);
+                GlobalFunctions.addPoints(10);
+                finish();
+            }
+            return newPush.getKey();
+        }
+
+
+    }
+

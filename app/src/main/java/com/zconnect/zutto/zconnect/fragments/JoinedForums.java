@@ -1,7 +1,6 @@
 package com.zconnect.zutto.zconnect.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,9 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,15 +23,12 @@ import com.zconnect.zutto.zconnect.adapters.JoinedForumsAdapter;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
-import com.zconnect.zutto.zconnect.utilities.ForumShareUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 
-import static android.content.Context.POWER_SERVICE;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
-import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -77,11 +71,11 @@ public class JoinedForums extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            activityType = getArguments().getString(ForumShareUtilities.KEY_ACTIVITY_TYPE_STR);
-            if(activityType.equals(ForumShareUtilities.VALUE_SHARE_FORUM_STR)){
-                messageType = getArguments().getString(ForumShareUtilities.KEY_MESSAGE_TYPE_STR,null);
+            activityType = getArguments().getString(ForumUtilities.KEY_ACTIVITY_TYPE_STR);
+            if(activityType.equals(ForumUtilities.VALUE_SHARE_FORUM_STR)){
+                messageType = getArguments().getString(ForumUtilities.KEY_MESSAGE_TYPE_STR,null);
                 if(messageType != null){
-                    message = getArguments().getString(ForumShareUtilities.KEY_MESSAGE,null);
+                    message = getArguments().getString(ForumUtilities.KEY_MESSAGE,null);
                 }
             }
         }
@@ -156,9 +150,9 @@ public class JoinedForums extends Fragment {
                         temp.setTotalMessages(0);
                     }
                     if(activityType != null) {
-                        if (activityType.equals(ForumShareUtilities.VALUE_SHARE_FORUM_STR)) {
+                        if (activityType.equals(ForumUtilities.VALUE_SHARE_FORUM_STR)) {
                             Log.d("Setting message", message);
-                            temp.setForumType(ForumShareUtilities.VALUE_SHARE_FORUM_STR);
+                            temp.setForumType(ForumUtilities.VALUE_SHARE_FORUM_STR);
                             temp.setMessage(message);
                             temp.setMessageType(messageType);
 

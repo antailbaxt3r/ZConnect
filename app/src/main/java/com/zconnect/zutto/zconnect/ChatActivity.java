@@ -1,7 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,11 +34,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,7 +46,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -69,7 +65,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
-import com.zconnect.zutto.zconnect.utilities.ForumShareUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
@@ -84,8 +80,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class ChatActivity extends BaseActivity {
 
@@ -144,6 +138,7 @@ public class ChatActivity extends BaseActivity {
             });
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        Log.d("name",getIntent().getStringExtra("name"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -170,9 +165,9 @@ public class ChatActivity extends BaseActivity {
         communitySP = ChatActivity.this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
         Intent callingActivityIntent = getIntent();
-        if(callingActivityIntent.getStringExtra(ForumShareUtilities.KEY_MESSAGE_TYPE_STR) != null){
-            shareMessage = callingActivityIntent.getStringExtra(ForumShareUtilities.KEY_MESSAGE);
-            shareMessageType = callingActivityIntent.getStringExtra(ForumShareUtilities.KEY_MESSAGE_TYPE_STR);
+        if(callingActivityIntent.getStringExtra(ForumUtilities.KEY_MESSAGE_TYPE_STR) != null){
+            shareMessage = callingActivityIntent.getStringExtra(ForumUtilities.KEY_MESSAGE);
+            shareMessageType = callingActivityIntent.getStringExtra(ForumUtilities.KEY_MESSAGE_TYPE_STR);
         }
         if(callingActivityIntent.getStringExtra("store_room_message") != null){
             storeRoomMessage = callingActivityIntent.getStringExtra("store_room_message");
@@ -215,6 +210,7 @@ public class ChatActivity extends BaseActivity {
         }else if (type.equals("post")){
             setActionBarTitle("Comments");
         }else if(type.equals("personalChats")){
+            Log.d("Setting it to:",getIntent().getStringExtra("name"));
             setActionBarTitle(getIntent().getStringExtra("name"));
         }
 
@@ -364,6 +360,8 @@ public class ChatActivity extends BaseActivity {
                 final String key,tab;
                 key = getIntent().getStringExtra("key");
                 tab = getIntent().getStringExtra("tab");
+                Log.d("Setting it to:",getIntent().getStringExtra("name"));
+
                 setToolbarTitle(getIntent().getStringExtra("name"));
 
                 final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
@@ -489,11 +487,11 @@ public class ChatActivity extends BaseActivity {
             }
         });
         if(shareMessageType!= null) {
-            if (shareMessageType.equals(ForumShareUtilities.VALUE_MESSAGE_TEXT_MESSAGE)) {
+            if (shareMessageType.equals(ForumUtilities.VALUE_MESSAGE_TEXT_MESSAGE)) {
                 typer.setText(shareMessage);
                 postMessage();
             }
-            if (shareMessageType.equals(ForumShareUtilities.VALUE_MESSAGE_IMAGE)) {
+            if (shareMessageType.equals(ForumUtilities.VALUE_MESSAGE_IMAGE)) {
                 mImageUri = Uri.parse(shareMessage);
                 postPhoto();
             }
@@ -941,6 +939,7 @@ public class ChatActivity extends BaseActivity {
 
         if(!getIntent().getStringExtra("type").equals("forums")) {
             menu.findItem(R.id.action_list_people).setVisible(false);
+
         }
 
         if(!getIntent().getStringExtra("type").equals("forums")){
@@ -951,6 +950,12 @@ public class ChatActivity extends BaseActivity {
             if (tabuid.equals("shopPools") || tabuid.equals("otherChats")){
 
                 menu.findItem(R.id.action_edit_forum).setVisible(false);
+            }
+            if(tabuid.equals("personalChats")){
+                menu.findItem(R.id.action_edit_forum).setVisible(false);
+                menu.findItem(R.id.action_list_people).setVisible(false);
+                Log.d("Menu Setting",getIntent().getStringExtra("name"));
+                setActionBarTitle(getIntent().getStringExtra("name"));
             }
         }
         return super.onPrepareOptionsMenu(menu);
