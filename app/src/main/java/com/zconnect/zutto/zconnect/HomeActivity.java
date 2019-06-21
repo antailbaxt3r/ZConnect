@@ -125,16 +125,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     private DatabaseReference mDatabaseStats;
     private DatabaseReference mDatabaseUserStats;
-    private String navHeaderBackGroundImageUrl =null;
+    private String navHeaderBackGroundImageUrl = null;
     private String Title;
+    Context context;
 
-    TextView[] tabTitle= new TextView[6];
+    TextView[] tabTitle = new TextView[6];
     SimpleDraweeView[] tabImage = new SimpleDraweeView[6];
     ImageView[] tabNotificationCircle = new ImageView[6];
 
-    public TabLayout.Tab recentsT,forumsT,addT,infoneT,profileT, notificationsT;
+    public TabLayout.Tab recentsT, forumsT, addT, infoneT, profileT, notificationsT;
     HomeBottomSheet bottomSheetFragment;
     private LinearLayoutManager recentsLinearLayoutManager;
+
     public HomeActivity() {
 
         isFabOpen = false;
@@ -185,6 +187,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
 
 
+
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -197,15 +200,119 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
-
         initListeners();
-
         tabs();
+
+//        fixFirebaseUserForum();
+//        testTheFix();
+//        fixUpdateTotalJoinedForums();
+//        setForumNotificationDot();
+    }
+
+//    private void testTheFix() {
+//        final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("newUserForums");
+//        userForums.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for(DataSnapshot users: dataSnapshot.getChildren()){
+//                    String tot = users.c
+//                    for(DataSnapshot forums: users.getChildren()){
+//
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//    }
+    void fixUpdateTotalJoinedForums(){
+        final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("userForums");
+        userForums.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot user : dataSnapshot.getChildren()){
+                    long count = user.child("joinedForums").getChildrenCount();
+                    userForums.child(user.getKey()).child("totalJoinedForums").setValue(count);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Error",databaseError.toString());
+            }
+        });
+
+    }
+////fixFirebaseUserForum to add respective forum details under each user. change "testCollege" to desired community/use loops
+    void fixFirebaseUserForum() {
+
+        final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("userForums");
+        Log.d("Fix", "Starting fixFirebaseUserForum");
+        DatabaseReference tabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("tabsCategories");
+        tabsCategories.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot tablist : dataSnapshot.getChildren()) {
+                    Log.d("Fix", tablist.toString());
+                    String tabName = tablist.getKey();
+                    for (DataSnapshot forumlist : tablist.getChildren()) {
+                        Log.d("Fix", forumlist.toString());
+                        for (DataSnapshot user : forumlist.child("users").getChildren()) {
+                            Log.d("Fix:IsUser?", user.toString());
+
+                            DatabaseReference newUserForm = userForums.child(user.getKey()).child("joinedForums").child(forumlist.getKey());
+                            copyData(forumlist.getRef(), newUserForm);
+
+
+                        }
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+//copyData to copy a set of data from one node to another. Copies data and then deletes user node from the new copy
+    private void copyData(final DatabaseReference fromPath, final DatabaseReference toPath) {
+        fromPath.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                toPath.setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                        if (firebaseError != null) {
+                            Log.d("Try:Error", firebaseError.toString());
+                        } else {
+                            System.out.println("Success");
+                            toPath.child("users").removeValue();
+
+
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
     //Circular notification in the bottom navigation
-    void setNotificationCircle(){
+    void setNotificationCircle() {
 //        if(TotalEvents>UsersTotalEvents){
 //            tabNotificationCircle[4].setVisibility(View.VISIBLE);
 //        } else {
@@ -233,30 +340,85 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 //        }
     }
 
-    public void setTabListener(){
+//    public void setForumNotificationDot(){
+//        mUser = mAuth.getCurrentUser();
+//        DBHelper mydb = new DBHelper(getApplicationContext());
+//        final Map<String,Integer> allForumsSeenMessages = mydb.getAllForums();
+////        forumsCategoriesRef.addValueEventListener(joinedForumsListener);
+//        Log.d("Forum",mUser.getUid());
+//        DatabaseReference userForum = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("features").child("forums").child("userForums").child(mUser.getUid());
+//        userForum.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                Integer totalUnreadMessages = 0;
+//                for(DataSnapshot forum: dataSnapshot.getChildren()){
+//                    try {
+//                        Integer totalMessages = Integer.getInteger(forum.child("totalMessages").toString());
+//                        String catUID = forum.child("catUID").toString();
+//                        Integer readMessages = allForumsSeenMessages.get(catUID);
+//                        if(totalMessages == null){
+//                            Log.d("totalMessages","null");
+//
+//
+//                        }
+//                    if(readMessages == null){
+//                        Log.d("readlMessages","null");
+//
+//                    }
+//
+//                        totalUnreadMessages = totalUnreadMessages+ totalMessages - readMessages;
+//                        if(totalUnreadMessages>0){
+//                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+//                            break;
+//                        }
+//                    }
+//                    catch(Exception e){
+//                        Log.d("ForumDot",e.toString());
+//
+//                        continue;
+//                    }
+//                }
+////                if(totalUnreadMessages<=0){
+//                    tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+//
+//
+////                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
+
+    public void setTabListener() {
 
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
             int prePos;
+
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
                 tab.getCustomView().setAlpha((float) 1);
                 switch (pos) {
                     case 0: {
+                        findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
                         setToolbarTitle(Title);
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
-                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Forums",HomeActivity.this);
+                        findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
+                        if (UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(), "Forums", HomeActivity.this);
                             tabs.getTabAt(prePos);
-                        }else{
+                        } else {
                             setActionBarTitle("Forums");
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
 
                             counterItemFormat.setUserID(mAuth.getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_TAB_OPEN);
@@ -269,23 +431,26 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 2: {
-                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Add",HomeActivity.this);
+                        findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
+
+                        if (UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(), "Add", HomeActivity.this);
                             tabs.getTabAt(prePos);
-                        }else {
+                        } else {
                             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                         }
                         break;
                     }
                     case 3: {
-                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Infone",HomeActivity.this);
+                        findViewById(R.id.fab_cat_infone).setVisibility(View.VISIBLE);
+
+                        if (UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(), "Infone", HomeActivity.this);
                             tabs.getTabAt(prePos);
-                        }
-                        else {
+                        } else {
                             setActionBarTitle("Infone");
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_TAB_OPEN);
@@ -299,15 +464,16 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         break;
                     }
                     case 4: {
+                        findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
                         //setActionBarTitle("You");
                         setActionBarTitle("Notifications");
 
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
-                        HashMap<String, String> meta= new HashMap<>();
-                        meta.put("type","fromRecents");
+                        HashMap<String, String> meta = new HashMap<>();
+                        meta.put("type", "fromRecents");
                         //meta.put("userType","myProfile");
                         meta.put("userType", "notifications");
-                        meta.put("userUID",FirebaseAuth.getInstance().getUid());
+                        meta.put("userUID", FirebaseAuth.getInstance().getUid());
 
                         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                         //counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
@@ -327,7 +493,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                if(tab.getPosition()!=4)
+                if (tab.getPosition() != 4)
                     tab.getCustomView().setAlpha((float) .7);
                 prePos = tab.getPosition();
             }
@@ -339,13 +505,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 tab.getCustomView().setAlpha((float) 1);
                 switch (pos) {
                     case 0:
-                        recentsLinearLayoutManager.scrollToPositionWithOffset(0,0);
+                        recentsLinearLayoutManager.scrollToPositionWithOffset(0, 0);
                         break;
                     case 2: {
-                        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(),"Add",HomeActivity.this);
+                        if (UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                            newUserVerificationAlert.buildAlertCheckNewUser(UserUtilities.currentUser.getUserType(), "Add", HomeActivity.this);
                             tabs.getTabAt(prePos);
-                        }else {
+                        } else {
                             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
                         }
                         break;
@@ -440,6 +606,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         tabs.addTab(infoneT);
         //tabs.addTab(profileT);
         tabs.addTab(notificationsT);
+//        setForumNotificationDot();
+//        tabs.getTabAt(0)
     }
 
 
@@ -519,7 +687,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                     CustomDialogClass cdd = new CustomDialogClass(HomeActivity.this, updateImageURL, "UPDATE");
 
-                    if(!cdd.isShowing()) {
+                    if (!cdd.isShowing()) {
                         cdd.show();
                     }
                     if (cdd.getWindow() == null)
@@ -540,7 +708,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                 }
 
-                for (int i = 0; i < popUpUrl1.size()&& firstTimePopUp && !updateAvailable; i++) {
+                for (int i = 0; i < popUpUrl1.size() && firstTimePopUp && !updateAvailable; i++) {
 
                     double random1 = Math.random();
                     int random = (int) (random1 * 10);
@@ -584,24 +752,21 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         editProfileValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.hasChild("mobileNumber")){
+                if (!dataSnapshot.hasChild("mobileNumber")) {
                     DatabaseReference referredUsersRef = FirebaseDatabase.getInstance().getReference().child("referredUsers");
                     referredUsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.hasChild(mUser.getUid()))
-                            {
+                            if (dataSnapshot.hasChild(mUser.getUid())) {
                                 Log.d("RRR", "TO EDIT PROFILE - IS REFERRED");
-                                Intent i = new Intent(HomeActivity.this,EditProfileActivity.class);
-                                i.putExtra("newUser",true);
+                                Intent i = new Intent(HomeActivity.this, EditProfileActivity.class);
+                                i.putExtra("newUser", true);
                                 i.putExtra("isReferred", true);
                                 startActivity(i);
-                            }
-                            else
-                            {
+                            } else {
                                 Log.d("RRR", "TO EDIT PROFILE - IS NOT REFERRED");
-                                Intent i = new Intent(HomeActivity.this,EditProfileActivity.class);
-                                i.putExtra("newUser",true);
+                                Intent i = new Intent(HomeActivity.this, EditProfileActivity.class);
+                                i.putExtra("newUser", true);
                                 startActivity(i);
                             }
                         }
@@ -611,18 +776,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                         }
                     });
-                }else {
-                    DatabaseReference userReference= FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid());
+                } else {
+                    DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid());
                     userReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
 
-                            if(!dataSnapshot.hasChild("userType")){
+                            if (!dataSnapshot.hasChild("userType")) {
                                 UserUtilities.currentUser.setUserType(UsersTypeUtilities.KEY_VERIFIED);
                             }
 
-                            if(communityReference!=null && !flag) {
+                            if (communityReference != null && !flag) {
                                 recent = new Recents();
                                 forums = new JoinedForums();
                                 myProfile = new MyProfileFragment();
@@ -666,27 +831,23 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             editProfileItem.setVisible(false);
             editProfileItem.setEnabled(false);
 
-            Log.d("RRRRR","IS NOT INVITED");
+            Log.d("RRRRR", "IS NOT INVITED");
             startActivity(new Intent(HomeActivity.this, LoginActivity.class));
 
-        }
-        else if(getIntent().getBooleanExtra("isReferred", false) && mUser != null)
-        {
+        } else if (getIntent().getBooleanExtra("isReferred", false) && mUser != null) {
             String sharedPrefKey = getResources().getString(R.string.referredAnonymousUser);
             SharedPreferences sharedPref = getSharedPreferences(sharedPrefKey, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("referredUserID", mUser.getUid());
             editor.putString("referredBy", getIntent().getStringExtra("referredBy"));
             editor.commit();
-            Log.d("RRRRR","IS INVITED");
+            Log.d("RRRRR", "IS INVITED");
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
             intent.putExtra("isReferred", true);
             intent.putExtra("referredBy", getIntent().getStringExtra("referredBy"));
             startActivity(intent);
-        }
-        else if(getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE).getString("referredUserID", null) != null && mUser != null)
-        {
-            Log.d("RRRRR","IS INVITED PLUS SHARED PREF");
+        } else if (getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE).getString("referredUserID", null) != null && mUser != null) {
+            Log.d("RRRRR", "IS INVITED PLUS SHARED PREF");
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
             intent.putExtra("isReferred", true);
             intent.putExtra("referredBy", getSharedPreferences(getResources().getString(R.string.referredAnonymousUser), Context.MODE_PRIVATE).getString("referredBy", null));
@@ -713,8 +874,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 editor.commit();
 
 
-            } else if(communityReference!=null) {
-                Log.d("RRRRR","COMM REF NOT NULL");
+            } else if (communityReference != null) {
+                Log.d("RRRRR", "COMM REF NOT NULL");
                 initialiseNotifications();
 
                 communityFeaturesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("communityFeatures");
@@ -769,7 +930,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if(setTitleFlag) {
+                        if (setTitleFlag) {
                             if (dataSnapshot.hasChild("name")) {
                                 Title = dataSnapshot.child("name").getValue().toString() + " Connect";
                                 setToolbarTitle(Title);
@@ -796,7 +957,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 && URLUtil.isNetworkUrl(navHeaderBackGroundImageUrl)
                                 && navHeaderBackground != null) {
                             navHeaderBackground.setImageURI(navHeaderBackGroundImageUrl);
-                        }else {
+                        } else {
                             navHeaderBackground.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                         }
 
@@ -812,9 +973,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 currentUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mUser.getUid());
                 currentUserReference.keepSynced(true);
                 currentUserReference.addListenerForSingleValueEvent(editProfileValueEventListener);
-            } else if (communityReference == null){
-                Log.d("RRRRR","COMM REF IS NULL");
-                Intent i = new Intent(this,CommunitiesAround.class);
+            } else if (communityReference == null) {
+                Log.d("RRRRR", "COMM REF IS NULL");
+                Intent i = new Intent(this, CommunitiesAround.class);
                 startActivity(i);
                 finish();
             }
@@ -828,14 +989,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
 
-
-    public void initialiseNotifications(){
+    public void initialiseNotifications() {
 
         DatabaseReference databaseReference;
         String Uid;
 
-        Uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        databaseReference=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid).child("NotificationChannels");
+        Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid).child("NotificationChannels");
 
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -875,7 +1035,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     } else {
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD + communityReference);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
 
@@ -899,13 +1059,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
             case R.id.edit_profile: {
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-                intent.putExtra("newUser",false);
+                intent.putExtra("newUser", false);
                 startActivity(intent);
                 break;
             }
             case R.id.MyProducts: {
 
-                Intent MyProductsIntent = new Intent(HomeActivity.this,MyProducts.class);
+                Intent MyProductsIntent = new Intent(HomeActivity.this, MyProducts.class);
                 startActivity(MyProductsIntent);
                 break;
             }
@@ -914,8 +1074,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                 Intent MyOrdersIntent = new Intent(HomeActivity.this, MyOrdersActivity.class);
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-                meta.put("type","fromNavigationDrawer");
+                HashMap<String, String> meta = new HashMap<>();
+                meta.put("type", "fromNavigationDrawer");
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_MY_ORDERS_OPEN);
                 counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -928,8 +1088,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.MyRides: {
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-                meta.put("type","fromNavigationDrawer");
+                HashMap<String, String> meta = new HashMap<>();
+                meta.put("type", "fromNavigationDrawer");
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_MY_RIDES_OPEN);
                 counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -953,8 +1113,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 }
                 break;
             }
-            case R.id.Noti_Settings:{
-                startActivity(new Intent(HomeActivity.this,NotificationSettings.class));
+            case R.id.Noti_Settings: {
+                startActivity(new Intent(HomeActivity.this, NotificationSettings.class));
                 break;
             }
             case R.id.about: {
@@ -1030,7 +1190,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         launchRelevantActivitiesIfNeeded();
 
-        if(communityReference!=null) {
+        if (communityReference != null) {
             uiDbRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui");
 
             mDatabasePopUps = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("PopUps");
@@ -1043,11 +1203,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onStop() {
         super.onStop();
-        if(communityReference!=null) {
+        if (communityReference != null) {
             try {
                 mDatabasePopUps.removeEventListener(popupsListener);
                 currentUserReference.removeEventListener(editProfileValueEventListener);
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
             if (addContactDialog != null) addContactDialog.cancel();
         }
     }
@@ -1070,7 +1231,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         FirebaseMessaging.getInstance().unsubscribeFromTopic(mAuth.getCurrentUser().getUid());
         try {
             FirebaseMessaging.getInstance().unsubscribeFromTopic(communityReference);
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         mAuth.signOut();
         SharedPreferences preferences = getSharedPreferences("communityName", 0);
         preferences.edit().remove("communityReference").commit();
@@ -1204,8 +1366,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void onAttachFragment(Fragment fragment) {
-        if(fragment instanceof Recents)
-        {
+        if (fragment instanceof Recents) {
             Recents recentsFragment = (Recents) fragment;
             recentsFragment.setOnHomeIconListener(this);
         }

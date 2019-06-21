@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="30dp"
+    android:background="@drawable/round_button_primary"
+    android:backgroundTint="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+
+
+    <TextView
+        android:id="@+id/validate_infone_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Was the number you called correct?"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/colorPrimary"/>
+    <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/image_profile_infone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginVertical="10dp"
+        android:background="@drawable/profile_avatar_circle"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:roundAsCircle="true" />
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/et_name_infone_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/appbar_padding_top"
+        android:gravity="center_horizontal"
+        android:inputType="text"
+        android:enabled="false"
+        android:clickable="false"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:met_hideUnderline="true"
+        app:met_textColor="@color/primaryText" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/et_phone1_infone_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:inputType="number"
+        android:enabled="false"
+        android:clickable="false"
+        android:maxLength="10"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:met_hideUnderline="true"
+        app:met_textColor="@color/primaryText" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:background="@drawable/round_button_primary"
+            android:layout_marginHorizontal="5dp"
+            android:textColor="@color/white"
+            android:padding="@dimen/margin_small8dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/validate_infone_yes_btn"
+            android:text="Yes, Validate"
+            android:layout_alignParentStart="true" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/validate_infone_no_btn"
+            android:textColor="@color/colorPrimary"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_alignParentEnd="true"
+            android:text="No" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
+
