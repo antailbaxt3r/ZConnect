@@ -87,11 +87,12 @@
             <!-- Proside for payment btn-->
             <Button
                 android:id="@+id/payment_btn"
-                android:background="@drawable/border_fill_sharp"
+                android:background="@drawable/round_button_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textAllCaps="false"
+                android:layout_margin="5dp"
                 android:text="Make Payment"/>
 
         </LinearLayout>

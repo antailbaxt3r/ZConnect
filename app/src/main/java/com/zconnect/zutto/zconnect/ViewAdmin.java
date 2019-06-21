@@ -52,8 +52,12 @@ DatabaseReference databaseReference;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_admins);
         Toolbar toolbar = (Toolbar) findViewById(R.id.view_admins_app_bar_home);
-        setToolbar();
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

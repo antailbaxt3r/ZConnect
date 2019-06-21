@@ -46,6 +46,11 @@
             <!--android:icon="@drawable/ic_live_tv_black_24dp"-->
             <!--android:name="Advertisement" />-->
         <item
+            android:id="@+id/admins"
+            android:name="View Admins"
+            android:icon="@drawable/baseline_people_24"
+            android:title="View Admins" />
+        <item
             android:title="About Us"
             android:id="@+id/about"
             android:icon="@mipmap/ic_zc_material_icon"

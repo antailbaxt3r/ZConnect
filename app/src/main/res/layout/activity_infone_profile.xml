@@ -66,8 +66,9 @@
                     android:inputType="text"
                     android:textSize="26sp"
                     android:textStyle="bold"
+                    android:text="name"
                     app:met_hideUnderline="true"
-                    app:met_textColor="@color/white" />
+                    app:met_textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/tv_desc_infone_profile"
@@ -89,21 +90,51 @@
                         android:id="@+id/valid_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/black" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/border_radius_5dp"
                         android:text="•"
-                        android:textColor="@color/white"
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/verified_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/validate_percent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="@dimen/margin_small8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_small8dp"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:id="@+id/validate_percent_yes"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/percentage_indiator_left"
+                        android:backgroundTint="@color/green500"
+                        android:layout_weight="0.5"
+                        />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:id="@+id/validate_percent_no"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/percentage_indicator_right"
+                        android:backgroundTint="@color/red500"
+                        android:layout_weight="0.5"
+                        />
 
                 </LinearLayout>
 
@@ -140,16 +171,16 @@
                     android:textIsSelectable="true"
                     android:textSize="16sp"
                     app:met_hideUnderline="true"
-                    app:met_textColor="@color/primaryText" />
+                    app:met_textColor="@color/black" />
 
 
                 <ImageView
                     android:layout_marginEnd="20dp"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_phone"
-                    android:tint="@color/colorPrimary" />
+                    android:src="@drawable/ic_phone_outline_24dp"
+                    android:tint="@color/deepPurple500" />
 
 
             </RelativeLayout>
@@ -164,10 +195,10 @@
                 <ImageView
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="20dp"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/whatsapp_64px"
-                    android:tint="@color/colorPrimary" />
+                    android:tint="@color/deepPurple500" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/et_phone2_infone_profile"
@@ -182,7 +213,40 @@
                     android:textIsSelectable="true"
                     android:textSize="16sp"
                     app:met_hideUnderline="true"
-                    app:met_textColor="@color/primaryText" />
+                    app:met_textColor="@color/black" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/personalchatrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="20dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/logo"
+                    />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/message_on_zconnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:ems="10"
+                    android:clickable="false"
+                    android:enabled="false"
+                    android:inputType="number"
+                    android:paddingLeft="20dp"
+                    android:text="Message on ZConnect"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp"
+                    app:met_hideUnderline="true"
+                    app:met_textColor="@color/black" />
 
             </RelativeLayout>
 
@@ -197,12 +261,44 @@
 
         </LinearLayout>
 
+        <RelativeLayout
+            android:id="@+id/valid_rl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/thank_you_tv"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textAlignment="center"
+                android:text="Thank you for your feedback!!"
+                android:textSize="28sp"/>
+
         <LinearLayout
+            android:visibility="visible"
+            android:id="@+id/valid_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="18sp"
+                android:layout_marginBottom="10dp"
+                android:text="Are the contact details correct?"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
 
             <Button
                 android:id="@+id/valid_button"
@@ -211,9 +307,26 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/margin_top_between_similar_views"
-                android:background="@color/white"
-                android:text="Validate"
+                android:background="@drawable/round_button_primary"
+                android:text="Yes"
                 android:textColor="@color/colorPrimary" />
+
+            <Button
+                android:id="@+id/invalid_button"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/margin_top_between_similar_views"
+                android:background="@drawable/round_button_primary"
+                android:text="No"
+                android:textColor="@color/colorPrimary" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        </RelativeLayout>
 
 
             <Button
@@ -222,13 +335,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/margin_top_between_similar_views"
-
+                android:visibility="gone"
                 android:background="@drawable/round_button_primary"
                 android:padding="16dp"
                 android:text="View Profile"
                 android:textColor="@color/white" />
 
-        </LinearLayout>
+
     </LinearLayout>
 
 

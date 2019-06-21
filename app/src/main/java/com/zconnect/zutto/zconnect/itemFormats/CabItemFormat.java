@@ -8,6 +8,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Vector;
+
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 /**
@@ -25,12 +27,14 @@ public class CabItemFormat {
     private int peopleCount=0, peopleCount1;
     private int from;
     private int to;
+    private Vector<UsersListItemFormat> usersListItemFormats;
+    private PostedByDetails PostedBy;
     private DatabaseReference cabpoolReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     private long PostTimeMillis;
 
 
 
-    public CabItemFormat(String source, String destination, String date, String details, String time, String key, String DT, int from, int to, long PostTimeMillis, final int peopleCount) {
+    public CabItemFormat(String source, Vector<UsersListItemFormat> usersListItemFormats, PostedByDetails PostedBy, String destination, String date, String details, String time, String key, String DT, int from, int to, long PostTimeMillis, final int peopleCount) {
 
         this.source = source;
         this.destination = destination;
@@ -42,12 +46,20 @@ public class CabItemFormat {
         this.peopleCount = peopleCount;
         this.from=from;
         this.to=to;
-
         this.PostTimeMillis = PostTimeMillis;
+        this.PostedBy = PostedBy;
 
     }
 
     public CabItemFormat() {
+    }
+
+    public PostedByDetails getPostedBy() {
+        return PostedBy;
+    }
+
+    public void setPostedBy(PostedByDetails postedBy) {
+        PostedBy = postedBy;
     }
 
     public String getSource() {
@@ -71,7 +83,6 @@ public class CabItemFormat {
     }
 
     public int getPeopleCount() {
-
         return peopleCount1;
     }
 

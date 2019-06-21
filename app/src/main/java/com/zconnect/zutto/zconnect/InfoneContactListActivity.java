@@ -1,25 +1,21 @@
 package com.zconnect.zutto.zconnect;
 
 import  android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.SearchManager;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +26,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -44,13 +42,11 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.InfoneContactsRVItem;
-import com.zconnect.zutto.zconnect.adapters.InfoneContactsRVAdpater;
+import com.zconnect.zutto.zconnect.adapters.InfoneContactsRVAdapter;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneCat;
 import com.zconnect.zutto.zconnect.addActivities.AddInfoneContact;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -68,7 +64,7 @@ public class InfoneContactListActivity extends BaseActivity {
     RecyclerView recyclerViewContacts;
     ArrayList<InfoneContactsRVItem> contactsRVSearchItems;
     ArrayList<InfoneContactsRVItem> contactsRVItems = new ArrayList<>();
-    InfoneContactsRVAdpater infoneContactsRVAdpater;
+    InfoneContactsRVAdapter infoneContactsRVAdapter;
     DatabaseReference databaseReferenceList;
     ValueEventListener listener;
     FloatingActionButton fabAddContact;
@@ -81,6 +77,15 @@ public class InfoneContactListActivity extends BaseActivity {
     private ShimmerFrameLayout shimmerFrameLayout;
 
     int totalContacts;
+
+    //Dialog UI
+    Dialog addContactDialog;
+    LinearLayout dialogAddContactZconnectLl;
+    LinearLayout dialogAddContactPhonebookLl;
+    Button dialogAddContactCancelButton;
+
+    //Elements for call verification(All belong to the popup dialog
+    public static boolean hasCalled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,18 +128,51 @@ public class InfoneContactListActivity extends BaseActivity {
         recyclerViewContacts = (RecyclerView) findViewById(R.id.rv_infone_contacts);
         recyclerViewContacts.setVisibility(View.GONE);
         fabAddContact = (FloatingActionButton) findViewById(R.id.fab_contacts_infone);
+        addContactDialog = new Dialog(InfoneContactListActivity.this);
+        addContactDialog.setContentView(R.layout.add_infone_contact_dialog);
+        addContactDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.LTGRAY));
+        dialogAddContactZconnectLl =addContactDialog.findViewById(R.id.add_infone_contact_zconnectll);
+        dialogAddContactPhonebookLl = addContactDialog.findViewById(R.id.add_infone_contact_phonebookll);
+        dialogAddContactCancelButton = addContactDialog.findViewById(R.id.add_infone_contact_cancel_btn);
+
+        dialogAddContactPhonebookLl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addContactDialog.dismiss();
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, RQS_PICK_CONTACT);
+            }
+        });
+        dialogAddContactZconnectLl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addContactDialog.dismiss();
+                addContact("","");
+            }
+        });
+
+        dialogAddContactCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addContactDialog.dismiss();
+            }
+        });
 
         recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         fabAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(intent, RQS_PICK_CONTACT);
+            addContactDialog.show();
+
+
             }
         });
 
         setAdapter("lite",false);
+
+
+
     }
 
 
@@ -199,8 +237,8 @@ public class InfoneContactListActivity extends BaseActivity {
                 });
 
 
-                infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVItems, catId);
-                recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
+                infoneContactsRVAdapter = new InfoneContactsRVAdapter(InfoneContactListActivity.this, contactsRVItems, catId);
+                recyclerViewContacts.setAdapter(infoneContactsRVAdapter);
                 shimmerFrameLayout.stopShimmerAnimation();
                 shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
@@ -229,14 +267,14 @@ public class InfoneContactListActivity extends BaseActivity {
                     }
                 }
 
-                infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVSearchItems, catId);
-                recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
+                infoneContactsRVAdapter = new InfoneContactsRVAdapter(InfoneContactListActivity.this, contactsRVSearchItems, catId);
+                recyclerViewContacts.setAdapter(infoneContactsRVAdapter);
                 shimmerFrameLayout.stopShimmerAnimation();
                 shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
             }else {
-                infoneContactsRVAdpater = new InfoneContactsRVAdpater(InfoneContactListActivity.this, contactsRVItems, catId);
-                recyclerViewContacts.setAdapter(infoneContactsRVAdpater);
+                infoneContactsRVAdapter = new InfoneContactsRVAdapter(InfoneContactListActivity.this, contactsRVItems, catId);
+                recyclerViewContacts.setAdapter(infoneContactsRVAdapter);
                 shimmerFrameLayout.stopShimmerAnimation();
                 shimmerFrameLayout.setVisibility(View.INVISIBLE);
                 recyclerViewContacts.setVisibility(View.VISIBLE);
@@ -297,6 +335,15 @@ public class InfoneContactListActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         databaseReferenceList.removeEventListener(listener);
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+
+        super.onPause();
     }
 
     @Override

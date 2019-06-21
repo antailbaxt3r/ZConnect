@@ -333,12 +333,37 @@
                                 android:id="@+id/mailbutton"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
-                                android:src="@drawable/ic_email_black_24dp" />
+                                android:src="@drawable/ic_mail_outline_purple_24dp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
                 <!--about-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/margin_top_between_similar_views">
+                    <TextView
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Forums joined:"
+                        android:textStyle="bold"
+                        android:textColor="@color/primaryText"/>
+                    <TextView
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/border_radius_5dp"
+                        android:id="@+id/contact_details_forums_joined"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:textColor="@color/primaryText"
+                        />
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -361,6 +386,8 @@
                         android:textSize="16sp"
                         android:layout_marginTop="@dimen/margin_top_between_similar_views"/>
                 </LinearLayout>
+
+
 
                 <!--skills-->
                 <LinearLayout
