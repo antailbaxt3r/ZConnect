@@ -470,6 +470,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         };
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//                        TODO internet connectivity check required for delete message
                         builder.setMessage("Delete message?").setPositiveButton("Yes", dialogClickListener)
                                 .setNegativeButton("No", dialogClickListener).show();
                     }
