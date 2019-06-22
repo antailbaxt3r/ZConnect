@@ -119,7 +119,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences defaultPrefs;
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
-    private Fragment recent, forums, shop, myProfile, infone, notifications, active;
+    private Fragment recent, forums, shop, myProfile, notifications, active;
+    public Fragment infone;
     private FragmentManager fm;
 
     public Boolean flag = false;
@@ -167,7 +168,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         mAuth = FirebaseAuth.getInstance();
 
         bottomSheetFragment = new HomeBottomSheet();
-
 
         View navHeader = navigationView.getHeaderView(0);
 
