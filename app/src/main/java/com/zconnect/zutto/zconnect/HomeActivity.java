@@ -18,6 +18,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -119,7 +120,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences defaultPrefs;
     private SharedPreferences guestPrefs;
     private AlertDialog addContactDialog;
-    private Fragment recent, forums, shop, myProfile, infone, notifications;
+    private Fragment recent, forums, shop, myProfile, notifications, active;
+    public Fragment infone;
+    private FragmentManager fm;
+
     public Boolean flag = false;
     public Boolean setTitleFlag = true;
 
@@ -159,13 +163,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
-
         defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         mAuth = FirebaseAuth.getInstance();
 
         bottomSheetFragment = new HomeBottomSheet();
-
 
         View navHeader = navigationView.getHeaderView(0);
 
@@ -431,7 +433,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     case 0: {
                         findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
                         setToolbarTitle(Title);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+
+                        fm.beginTransaction().hide(active).show(recent).commit();
+                        active = recent;
+                        //getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
                         break;
                     }
                     case 1: {
@@ -450,7 +455,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             counterItemFormat.setMeta(meta);
                             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                             counterPush.pushValues();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
+
+                            fm.beginTransaction().hide(active).show(forums).commit();
+                            active = forums;
+                            //getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
                         }
                         break;
                     }
@@ -483,7 +491,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                             counterPush.pushValues();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
+
+                            fm.beginTransaction().hide(active).show(infone).commit();
+                            active = infone;
+                            //getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         }
                         break;
                     }
@@ -508,7 +519,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                         counterPush.pushValues();
 
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, notifications).commit();
+                        fm.beginTransaction().hide(active).show(notifications).commit();
+                        active = notifications;
+                        //getSupportFragmentManager().beginTransaction().replace(R.id.container, notifications).commit();
                         //getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
                         break;
                     }
@@ -818,7 +831,15 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                                 infone = new InfoneActivity();
                                 notifications = new InAppNotificationsFragment();
 
-                                getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
+                                fm = getSupportFragmentManager();
+                                active = recent;
+
+                                fm.beginTransaction().add(R.id.container, notifications, "4").hide(notifications).commit();
+                                fm.beginTransaction().add(R.id.container, infone, "3").hide(infone).commit();
+                                fm.beginTransaction().add(R.id.container, forums, "2").hide(forums).commit();
+                                fm.beginTransaction().add(R.id.container,recent, "1").commit();
+
+                                //getSupportFragmentManager().beginTransaction().replace(R.id.container, recent).commit();
 
                                 //tabImage[4].setImageURI(UserUtilities.currentUser.getImageURLThumbnail());
                                 setTabListener();
@@ -1270,13 +1291,21 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void onBackPressed() {
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
             return;
         }
 
-        if (doubleBackToExitPressedOnce) {
+        if (active!=recent)
+        {
+            setToolbarTitle(Title);
+            tabs.getTabAt(0).select();
+            fm.beginTransaction().hide(active).show(recent).commit();
+            active = recent;}
+
+            if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
             return;
         }
@@ -1290,12 +1319,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         new Handler().postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
+                    @Override
+                    public void run() { doubleBackToExitPressedOnce = false;
+                    }
+                }, 2000);
             }
-        }, 2000);
-    }
+
 //
 //    @SuppressLint("ApplySharedPref")
 //    private void promptToAddContact() {
