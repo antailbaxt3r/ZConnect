@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,11 +45,11 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 
 public class HomeBottomSheet extends BottomSheetDialogFragment{
 
-    BottomSheetBehavior sheetBehavior;
-    LinearLayout layoutBottomSheet;
-    Button test;
-    DatabaseReference communityFeaturesRef;
-    HomeActivity mHomeActivity;
+    private BottomSheetBehavior sheetBehavior;
+    private LinearLayout layoutBottomSheet;
+    private Button test;
+    private DatabaseReference communityFeaturesRef;
+    private HomeActivity mHomeActivity;
 
     public HomeBottomSheet(){
 
@@ -280,7 +281,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
 //                startActivity(intent);
                 mHomeActivity.setActionBarTitle("Infone");
                 mHomeActivity.tabs.getTabAt(3).select();
-                getFragmentManager().beginTransaction().replace(R.id.container, new InfoneActivity()).commit();
+                getFragmentManager().beginTransaction().show(mHomeActivity.infone).commit();
                 Toast.makeText(getContext(), "Choose a category to add a contact", Toast.LENGTH_LONG).show();
             }
         };
