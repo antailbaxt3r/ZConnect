@@ -430,11 +430,55 @@ public class OpenProductDetails extends BaseActivity {
                 CounterPush counterPush2 = new CounterPush(counterItemFormat, communityReference);
                 counterPush2.pushValues();
 
-                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
-                intent.putExtra("type","storeroom");
-                intent.putExtra("key",productKey);
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
-                startActivity(intent);
+//                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
+//                intent.putExtra("type","storeroom");
+//                intent.putExtra("key",productKey);
+//                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("storeroom").child("products").child(productKey).toString());
+//                startActivity(intent);
+                databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if (!dataSnapshot.child("userChats").hasChild(productSellerUserUID)) {
+//                            userImageURL = dataSnapshot.child("imageURL").getValue().toString();
+                            Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), productSellerUserUID));
+                        }
+                        databaseReferenceUser.child("userChats").child(productSellerUserUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String key = dataSnapshot.getValue().toString();
+                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                                intent.putExtra("type", "personalChats");
+                                intent.putExtra("store_room_message","Hey there, I was checking out the following product:\nProduct Name: "+
+                                        productName.getText().toString()+"\nProduct Category:"+productCategory+"\nPrice:"+
+                                        productPrice.getText().toString());
+
+                                intent.putExtra("name", productSellerName.getText());
+                                intent.putExtra("tab", "personalChats");
+                                intent.putExtra("key", key);
+                                startActivity(intent);
+                                overridePendingTransition(0, 0);
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
                 break;
             default:
                 break;

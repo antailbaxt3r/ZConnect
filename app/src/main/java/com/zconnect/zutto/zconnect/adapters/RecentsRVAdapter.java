@@ -1199,11 +1199,26 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                         counterPush.pushValues();
 
-                        i=new Intent(context,CabPoolListOfPeople.class);
-                        Log.e("check","executed");
-                        i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getId());
-                        i.putExtra("date",recentsItemFormats.get(getAdapterPosition()).getDT());
-                        context.startActivity(i);
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs").child(recentsItemFormats.get(getAdapterPosition()).getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                i=new Intent(context,CabPoolListOfPeople.class);
+                                Log.e("check","executed");
+                                if(dataSnapshot.child("forumUID").getValue() != null){
+                                i.putExtra("forumUID",dataSnapshot.child("forumUID").getValue().toString());
+                                }
+                                i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getId());
+                                i.putExtra("date",recentsItemFormats.get(getAdapterPosition()).getDT());
+                                context.startActivity(i);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){
                         try {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();

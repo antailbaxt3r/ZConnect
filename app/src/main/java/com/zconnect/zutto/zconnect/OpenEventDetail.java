@@ -427,13 +427,44 @@ public class  OpenEventDetail extends BaseActivity{
             counterPush.pushValues();
 
             //chat room clicked;
-            Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
-            intent.putExtra("type","events");
-            intent.putExtra("key",eventId);
-            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(event.getKey()).toString());
-            startActivity(intent);
-        }
+            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    try {
+                        Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                        intent.putExtra("type", "forums");
+                        intent.putExtra("key", dataSnapshot.child("forumUID").getValue().toString());
+                        intent.putExtra("name", getSupportActionBar().getTitle());
+                        intent.putExtra("tab", "others");
+                        if (dataSnapshot.child("forumUID").getValue() != null) {
+                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(dataSnapshot.child("forumUID").getValue().toString()).toString());
+                        }
+//                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("cabPool").child(dataSnapshot.child("forumID").toString()).toString());
+
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    } catch (Exception e) {
+
+                        Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                        intent.putExtra("type", "events");
+                        intent.putExtra("key", eventId);
+                        intent.putExtra("name", getSupportActionBar().getTitle());
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).toString());
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+                });
+
+    }
         return super.onOptionsItemSelected(item);
+
     }
 
     private void shareEvent(final String image, final Context context, final String eventID) {

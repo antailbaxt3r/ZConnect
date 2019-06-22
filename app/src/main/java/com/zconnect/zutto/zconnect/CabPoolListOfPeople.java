@@ -263,7 +263,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                     startActivity(intent);
                     overridePendingTransition(0, 0);
                 } else {
-                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("forumsCategories").child("others").child(forumUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("others").child(forumUID).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String name = dataSnapshot.child("name").getValue().toString();
