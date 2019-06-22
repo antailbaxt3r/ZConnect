@@ -510,7 +510,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if (isLastMessage)
         {
-            forumRef.addValueEventListener(new ValueEventListener() {
+            forumRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.hasChild("lastMessage"))
