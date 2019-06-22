@@ -236,7 +236,7 @@ public class CabPoolListOfPeople extends BaseActivity {
         pool.keepSynced(true);
 
 
-                View.OnClickListener chatListener = new View.OnClickListener() {
+        View.OnClickListener chatListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -291,7 +291,7 @@ public class CabPoolListOfPeople extends BaseActivity {
         };
         chatLayout.setOnClickListener(chatListener);
 
-                chatEditText.setOnClickListener(chatListener);
+        chatEditText.setOnClickListener(chatListener);
 
 
         join.setOnClickListener(new View.OnClickListener() {

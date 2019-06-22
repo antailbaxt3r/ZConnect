@@ -100,6 +100,7 @@ public class OpenProductDetails extends BaseActivity {
     private DatabaseReference databaseReferenceSellingUser;
     String productSellerUserUID;
     String productSellerUserImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,7 +152,7 @@ public class OpenProductDetails extends BaseActivity {
         productContent = (LinearLayout) findViewById(R.id.product_content);
         productCall = (Button) findViewById(R.id.product_call);
         productCall.setTypeface(ralewayBold);
-        chatLayout= (LinearLayout) findViewById(R.id.chatLayout);
+        chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
         chatEditText = (EditText) findViewById(R.id.typer);
         askTag = (LinearLayout) findViewById(R.id.ask_tag_open_product_details);
         askText = (TextView) findViewById(R.id.ask_text_open_product_details);
@@ -179,15 +180,15 @@ public class OpenProductDetails extends BaseActivity {
                                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
                                 intent.putExtra("type", "personalChats");
-                                intent.putExtra("store_room_message","Hey there, I was checking out the following product:\nProduct Name: "+
-                                        productName.getText().toString()+"\nProduct Category:"+productCategory+"\nPrice:"+
+                                intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
+                                        productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
                                         productPrice.getText().toString());
 
                                 intent.putExtra("name", productSellerName.getText());
                                 intent.putExtra("tab", "personalChats");
                                 intent.putExtra("key", key);
                                 startActivity(intent);
-                                                overridePendingTransition(0, 0);
+                                overridePendingTransition(0, 0);
 
 
                             }
@@ -208,7 +209,6 @@ public class OpenProductDetails extends BaseActivity {
                 });
 
 
-
 //                Intent intent = new Intent(OpenProductDetails.this, ChatActivity.class);
 //                intent.putExtra("type","storeroom");
 //                intent.putExtra("key",productKey);
@@ -219,7 +219,7 @@ public class OpenProductDetails extends BaseActivity {
             }
         };
 
-                chatLayout.setOnClickListener(onChat);
+        chatLayout.setOnClickListener(onChat);
 
 
 //        chatEditText.setOnClickListener(new View.OnClickListener() {
@@ -285,7 +285,7 @@ public class OpenProductDetails extends BaseActivity {
 
     }
 
-        private String createPersonalChat(final String uid, final String sellingUserUID) {
+    private String createPersonalChat(final String uid, final String sellingUserUID) {
         final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
         final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats");
         final DatabaseReference newPush = databaseReferenceCategories.push();
@@ -374,8 +374,6 @@ public class OpenProductDetails extends BaseActivity {
         databaseReferenceUserForums.child(sellingUserUID).child("joinedForums").child(newPush.getKey()).child("lastMessage").setValue("Null");
 
 
-
-
         return newPush.getKey();
 
     }
@@ -403,7 +401,7 @@ public class OpenProductDetails extends BaseActivity {
 
 
         CounterItemFormat counterItemFormat = new CounterItemFormat();
-        HashMap<String, String> meta= new HashMap<>();
+        HashMap<String, String> meta = new HashMap<>();
 
         switch (item.getItemId()) {
 
@@ -420,7 +418,7 @@ public class OpenProductDetails extends BaseActivity {
                 break;
             case R.id.menu_chat_room:
 
-                meta.put("type","fromMenu");
+                meta.put("type", "fromMenu");
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_CHAT);
                 counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -450,8 +448,8 @@ public class OpenProductDetails extends BaseActivity {
                                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                                 intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
                                 intent.putExtra("type", "personalChats");
-                                intent.putExtra("store_room_message","Hey there, I was checking out the following product:\nProduct Name: "+
-                                        productName.getText().toString()+"\nProduct Category:"+productCategory+"\nPrice:"+
+                                intent.putExtra("store_room_message", "Hey there, I was checking out the following product:\nProduct Name: " +
+                                        productName.getText().toString() + "\nProduct Category:" + productCategory + "\nPrice:" +
                                         productPrice.getText().toString());
 
                                 intent.putExtra("name", productSellerName.getText());
@@ -528,14 +526,13 @@ public class OpenProductDetails extends BaseActivity {
             Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
 //            https://your_subdomain.page.link/?link=your_deep_link&apn=package_name[&amv=minimum_version][&afl=fallback_link]
 //            https://example.page.link/?link=https://www.example.com/invitation?gameid%3D1234%26referrer%3D555&apn=com.example.android&ibi=com.example.ios&isi=12345
-                    .setLongLink(Uri.parse("https://zconnect.page.link/?link="+encodedUri+"&apn=com.zconnect.zutto.zconnect&amv=11" ))
+                    .setLongLink(Uri.parse("https://zconnect.page.link/?link=" + encodedUri + "&apn=com.zconnect.zutto.zconnect&amv=11"))
                     .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setMinimumVersion(12).build())
                     .buildShortDynamicLink()
                     .addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
                         @Override
                         public void onComplete(@NonNull Task<ShortDynamicLink> task) {
-                            if(task.isSuccessful())
-                            {
+                            if (task.isSuccessful()) {
                                 //short link
                                 final Uri shortLink = task.getResult().getShortLink();
                                 final Uri flowcharLink = task.getResult().getPreviewLink();
@@ -590,8 +587,7 @@ public class OpenProductDetails extends BaseActivity {
                                 });
 
                                 thread.start();
-                            }
-                            else {
+                            } else {
                                 Log.d("Dynamic link ERROR", task.getException().getMessage());
 
                             }
@@ -605,8 +601,6 @@ public class OpenProductDetails extends BaseActivity {
 //                    .setIosParameters(new DynamicLink.IosParameters.Builder("https://www.google.com").build())
 //                    .buildDynamicLink();
 //            final Uri dynamicUri = dynamicLink.getUri();
-
-
 
 
         } catch (android.content.ActivityNotFoundException ex) {
@@ -623,16 +617,13 @@ public class OpenProductDetails extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        productKey =  getIntent().getExtras().getString("key");
+        productKey = getIntent().getExtras().getString("key");
         type = getIntent().getExtras().getString("type");
-        if(type!=null && type.equals(ProductUtilities.TYPE_ASK_STR))
-        {
+        if (type != null && type.equals(ProductUtilities.TYPE_ASK_STR)) {
             productPrice.setVisibility(View.GONE);
             productPriceType.setVisibility(View.GONE);
             askTag.setVisibility(VISIBLE);
-        }
-        else
-        {
+        } else {
             askTag.setVisibility(View.GONE);
             productPrice.setVisibility(VISIBLE);
             productPriceType.setVisibility(VISIBLE);
@@ -646,7 +637,7 @@ public class OpenProductDetails extends BaseActivity {
                     productSellerUserImage = dataSnapshot.child("PostedBy").child("ImageThumb").getValue().toString();
                     databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     databaseReferenceSellingUser = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(productSellerUserUID);
-                    if(!type.equals(ProductUtilities.TYPE_ASK_STR))
+                    if (!type.equals(ProductUtilities.TYPE_ASK_STR))
                         productPrice.setText(dataSnapshot.child("Price").getValue().toString());
                     productDescription.setText(dataSnapshot.child("ProductDescription").getValue().toString());
                     productCategory = dataSnapshot.child("Category").getValue().toString();
@@ -675,18 +666,14 @@ public class OpenProductDetails extends BaseActivity {
                     try {
                         TimeUtilities tu = new TimeUtilities(dataSnapshot.child("PostTimeMillis").getValue(Long.class), System.currentTimeMillis());
                         productDate.setText(tu.calculateTimeAgoStoreroom());
+                    } catch (Exception e) {
                     }
-                    catch (Exception e) {
-                    }
-                    if(dataSnapshot.hasChild("Image"))
-                    {
+                    if (dataSnapshot.hasChild("Image")) {
                         askText.setVisibility(View.GONE);
                         productImage.setVisibility(VISIBLE);
                         mImageUri = dataSnapshot.child("Image").getValue().toString();
                         setImage(OpenProductDetails.this, dataSnapshot.child("ProductName").getValue().toString(), dataSnapshot.child("Image").getValue().toString(), productImage);
-                    }
-                    else
-                    {
+                    } else {
                         productImage.setVisibility(View.GONE);
                         askText.setVisibility(VISIBLE);
                         askText.setText(productName.getText());
@@ -694,12 +681,12 @@ public class OpenProductDetails extends BaseActivity {
                         productContent.setVisibility(VISIBLE);
                     }
 
-                    setProductPrice(productPrice,dataSnapshot.child("Price").getValue().toString());
+                    setProductPrice(productPrice, dataSnapshot.child("Price").getValue().toString());
 
                     if (dataSnapshot.hasChild("isNegotiable")) {
                         setProductPriceType(productPriceType, dataSnapshot.child("isNegotiable").getValue(Boolean.class));
                     } else {
-                        setProductPriceType(productPriceType,Boolean.FALSE);
+                        setProductPriceType(productPriceType, Boolean.FALSE);
                     }
 
                     defaultSwitch(productKey, productCategory, productShortlist);
@@ -757,7 +744,7 @@ public class OpenProductDetails extends BaseActivity {
 //                            overridePendingTransition(0, 0);
 //                        }
 //                    });
-                }catch (Exception e){
+                } catch (Exception e) {
                 }
             }
 
@@ -775,8 +762,8 @@ public class OpenProductDetails extends BaseActivity {
             public void onClick(View v) {
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-                meta.put("type","fromRV");
+                HashMap<String, String> meta = new HashMap<>();
+                meta.put("type", "fromRV");
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_SHORTLIST);
                 counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -815,8 +802,8 @@ public class OpenProductDetails extends BaseActivity {
 //                                        NotificationSender notificationSender=new NotificationSender(dataSnapshot.child("PostedBy").child("UID").getValue().toString(),null,null,null,null,userDetails.getUserUID(),productName.getText().toString(),KEY_PRODUCT,false,true,getApplicationContext());
 //                                        notificationSender.execute();
 
-                                        NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this,userItemFormat.getUserUID());
-                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST,userItemFormat.getUserUID());
+                                        NotificationSender notificationSender = new NotificationSender(OpenProductDetails.this, userItemFormat.getUserUID());
+                                        NotificationItemFormat productShortlistNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST, userItemFormat.getUserUID());
                                         productShortlistNotification.setCommunityName(communityTitle);
                                         productShortlistNotification.setItemKey(productKey);
                                         productShortlistNotification.setItemName(dataSnapshot.child("ProductName").getValue().toString());
@@ -854,7 +841,6 @@ public class OpenProductDetails extends BaseActivity {
         productShortlist.setOnClickListener(mListener);
 
 
-
     }
 
     public void setProductPrice(TextView productPrice, String productPriceValue) {
@@ -863,10 +849,10 @@ public class OpenProductDetails extends BaseActivity {
 
     }
 
-    public void setProductPriceType(TextView productPriceType,Boolean isNegotiable){
-        if(isNegotiable) {
+    public void setProductPriceType(TextView productPriceType, Boolean isNegotiable) {
+        if (isNegotiable) {
             productPriceType.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             productPriceType.setVisibility(View.GONE);
         }
     }

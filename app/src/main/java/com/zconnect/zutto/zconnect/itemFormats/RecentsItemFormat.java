@@ -20,29 +20,28 @@ public class RecentsItemFormat {
     //new ui
     private long PostTimeMillis;
     //for infone
-    String infoneContactName,infoneContactCategoryName;
+    String infoneContactName, infoneContactCategoryName;
     //for cabpool
     String cabpoolSource;
     String cabpoolDestination;
     String cabpoolDate;
     String cabpoolTime;
-    int cabpoolTimeTo=-1;
-    int cabpoolTimeFrom=-1;
-        //for events
+    int cabpoolTimeTo = -1;
+    int cabpoolTimeFrom = -1;
+    //for events
     String eventDate;
-        //for storeroom
+    //for storeroom
     String productPrice;
     String productType;
-        //for new users
+    //for new users
     String communityName;
 
-        //for messages
+    //for messages
     String message;
     int msgLikes;
     int msgComments;
 
-        //for Forums
-
+    //for Forums
 
 
     private PostedByDetails PostedBy;
@@ -58,9 +57,9 @@ public class RecentsItemFormat {
         this.desc2 = desc2;
         this.imageurl = imageurl;
         this.feature = feature;
-        this.Key= Key;
+        this.Key = Key;
         this.id = id;
-        this.DT=DT;
+        this.DT = DT;
 
         //new ui
         this.PostTimeMillis = PostTimeMillis;
@@ -150,9 +149,14 @@ public class RecentsItemFormat {
     }
 
     //new ui
-    public long getPostTimeMillis() { return PostTimeMillis; }
-        //for infone
-    public String getInfoneContactName() { return infoneContactName; }
+    public long getPostTimeMillis() {
+        return PostTimeMillis;
+    }
+
+    //for infone
+    public String getInfoneContactName() {
+        return infoneContactName;
+    }
 
     public String getInfoneContactCategoryName() {
         return infoneContactCategoryName;
@@ -162,17 +166,41 @@ public class RecentsItemFormat {
         this.infoneContactCategoryName = infoneContactCategoryName;
     }
 
-        //for cabpool
-    public String getCabpoolSource() { return cabpoolSource; }
-    public String getCabpoolDestination() { return cabpoolDestination; }
-    public String getCabpoolDate() { return cabpoolDate; }
-    public String getCabpoolTime() { return cabpoolTime; }
-    public int getCabpoolTimeFrom() { return cabpoolTimeFrom; }
-    public int getCabpoolTimeTo() { return cabpoolTimeTo; }
-        //for events
-    public String getEventDate() { return  eventDate; }
-        //for storeroom
-    public String getProductPrice() { return productPrice; }
+    //for cabpool
+    public String getCabpoolSource() {
+        return cabpoolSource;
+    }
+
+    public String getCabpoolDestination() {
+        return cabpoolDestination;
+    }
+
+    public String getCabpoolDate() {
+        return cabpoolDate;
+    }
+
+    public String getCabpoolTime() {
+        return cabpoolTime;
+    }
+
+    public int getCabpoolTimeFrom() {
+        return cabpoolTimeFrom;
+    }
+
+    public int getCabpoolTimeTo() {
+        return cabpoolTimeTo;
+    }
+
+    //for events
+    public String getEventDate() {
+        return eventDate;
+    }
+
+    //for storeroom
+    public String getProductPrice() {
+        return productPrice;
+    }
+
     //
     public String getKey() {
         return Key;
@@ -222,8 +250,12 @@ public class RecentsItemFormat {
         this.postID = postID;
     }
 
-    public void setProductType(String productType) { this.productType = productType; }
+    public void setProductType(String productType) {
+        this.productType = productType;
+    }
 
-    public String getProductType() { return productType; }
+    public String getProductType() {
+        return productType;
+    }
 }
 
