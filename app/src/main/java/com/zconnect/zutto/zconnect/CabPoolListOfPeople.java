@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -75,7 +76,7 @@ public class CabPoolListOfPeople extends BaseActivity {
     private ProgressBar progressBar;
     private DatabaseReference pool, chatRef;
     private Button join;
-    private String key,name, number, uid, imageThumb, userUID, date, source, destination, time, people;
+    private String key,name, number, uid, imageThumb, userUID, date, source, destination, time, people, postedByImageText, postedByText;
     private Vector<UsersListItemFormat> usersListItemFormatVector = new Vector<>();
     private UsersListRVAdapter adapter;
     private Boolean flag, numberFlag;
@@ -84,7 +85,8 @@ public class CabPoolListOfPeople extends BaseActivity {
     private LinearLayout joinLayout,chatLayout, share;
     private TextView chatEditText;
     private String formatted_date, Date;
-    private TextView dateTV, timeTV, sourceTV, destinationTV, peopleTV;
+    private TextView dateTV, timeTV, sourceTV, destinationTV, peopleTV, postedByTV;
+    private SimpleDraweeView postedByImageDV;
     private FirebaseAuth mAuth;
     private DatabaseReference ref;
     private DatabaseReference databaseReference;
@@ -100,6 +102,9 @@ public class CabPoolListOfPeople extends BaseActivity {
         setContentView(R.layout.activity_cab_list_of_people);
         setToolbar();
         setSupportActionBar(toolbar);
+
+        toolbar.setTitle("Cabpool Details");
+
         share = findViewById(R.id.share_cab_cp_detail);
 //        setTitle("List of people");
         if (toolbar != null) {
@@ -144,18 +149,24 @@ public class CabPoolListOfPeople extends BaseActivity {
         sourceTV = findViewById(R.id.source_cp_detail);
         destinationTV = findViewById(R.id.destination_cp_detail);
         peopleTV = findViewById(R.id.people_count_cp_detail);
+        postedByTV = findViewById(R.id.postedByCabpoolDetail);
+        postedByImageDV = findViewById(R.id.user_circle_image_in_detail);
 
         time = getIntent().getStringExtra("timeText");
         date = getIntent().getStringExtra("dateText");
         source = getIntent().getStringExtra("sourceText");
         destination = getIntent().getStringExtra("destinationText");
         people = getIntent().getStringExtra("peopleText");
+        postedByText = getIntent().getStringExtra("postedByText");
+        postedByImageText = getIntent().getStringExtra("postedByImageText");
 
         timeTV.setText(time);
         dateTV.setText(date);
         sourceTV.setText(source);
         destinationTV.setText(destination);
         peopleTV.setText(people);
+        postedByTV.setText(postedByText);
+        postedByImageDV.setImageURI(Uri.parse(postedByImageText));
 
         share.setOnClickListener(new View.OnClickListener() {
             @Override

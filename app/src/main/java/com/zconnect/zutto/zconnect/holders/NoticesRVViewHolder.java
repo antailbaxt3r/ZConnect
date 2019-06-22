@@ -35,6 +35,8 @@ import com.zconnect.zutto.zconnect.itemFormats.NoticeItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -181,9 +183,8 @@ public class NoticesRVViewHolder extends RecyclerView.ViewHolder {
         itemView.getContext().startActivity(i, optionsCompat.toBundle());
     }
 
-    //month range is from 0 to 11.
     public void setExpiryDate(ExpiryDateItemFormat expiryDateItemFormat) {
-        //month range is from 0 to 11
+
         String expiryDateText = expiryDateItemFormat.getDay() + "/" + (expiryDateItemFormat.getMonth()+1) + "/" + expiryDateItemFormat.getYear()%100;
         expiryDateFL.setVisibility(View.VISIBLE);
         expiryDateTV.setText(expiryDateText);

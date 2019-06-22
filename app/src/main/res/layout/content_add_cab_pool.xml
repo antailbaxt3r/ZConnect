@@ -173,7 +173,7 @@
                             android:layout_height="match_parent"
                             android:orientation="vertical"
                             android:layout_gravity="center"
-                            android:padding="10dp"
+                            android:padding="5dp"
                             android:layout_weight="1"
                             >
                             <LinearLayout
@@ -217,7 +217,7 @@
                             android:layout_height="match_parent"
                             android:orientation="vertical"
                             android:layout_gravity="center"
-                            android:padding="10dp"
+                            android:padding="5dp"
                             android:layout_weight="1"
                             >
                             <LinearLayout

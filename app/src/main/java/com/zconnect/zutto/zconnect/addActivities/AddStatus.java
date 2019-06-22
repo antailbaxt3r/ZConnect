@@ -348,6 +348,7 @@ public class AddStatus extends BaseActivity {
 
                     mImageUri = Uri.parse(path);
                     postImageView.setVisibility(View.VISIBLE);
+                    addImage.setVisibility(View.GONE);
                     Picasso.with(AddStatus.this).load(mImageUri).into(postImageView);
 
                 } catch (IOException e) {

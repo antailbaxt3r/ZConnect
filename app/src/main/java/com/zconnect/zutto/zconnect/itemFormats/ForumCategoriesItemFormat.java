@@ -21,7 +21,7 @@ public class ForumCategoriesItemFormat {
     private Integer totalMembers = null;
     private Boolean verified;
 
-    public ForumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, Vector<UsersListItemFormat> usersListItemFormats, PostedByDetails PostedBy, String imageThumb, String image, Integer totalMessages, Boolean verified,Integer totalMembers) {
+    public ForumCategoriesItemFormat(String name, String catUID, String tabUID, ChatItemFormats lastMessage, PostedByDetails PostedBy, String imageThumb, String image, Integer totalMessages, Boolean verified,Integer totalMembers) {
 
         this.name = name;
         this.tabUID = tabUID;

@@ -29,12 +29,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:backgroundTint="@color/secondaryText2"
             android:id="@+id/shimmer_view_container_infone_cat"
             app:duration="2000">
             <LinearLayout
@@ -77,8 +81,14 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cat_infone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="80dp">
 
         </android.support.v7.widget.RecyclerView>
+
+    </FrameLayout>
+
+
+
     </FrameLayout>
 <!--</android.support.design.widget.CoordinatorLayout>-->

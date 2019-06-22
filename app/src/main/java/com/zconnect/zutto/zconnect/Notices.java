@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -23,9 +24,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.adapters.NoticeRVAdapter;
 import com.zconnect.zutto.zconnect.addActivities.AddNotices;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.ExpiryDateItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NoticeItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Vector;
 
 public class Notices extends BaseActivity {
@@ -37,7 +42,7 @@ public class Notices extends BaseActivity {
     private NoticeRVAdapter noticeRVAdapter;
     private ValueEventListener mListener;
     private FloatingActionButton add_photo;
-
+    String fetchedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,18 +94,47 @@ public class Notices extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 noticesItemFormats.clear();
+
                 for(DataSnapshot shot: dataSnapshot.getChildren()) {
                     try{
                         NoticeItemFormat singleObject;
                         singleObject = shot.getValue(NoticeItemFormat.class);
 
                         if(singleObject.getTitle()!=null && singleObject.getImageThumbURL()!=null && singleObject.getImageURL()!=null) {
+                            if (singleObject.getExpiryDate()==null)
                             noticesItemFormats.add(singleObject);
+                            else
+                            {
+                                Calendar c = Calendar.getInstance();
+                                SimpleDateFormat output = new SimpleDateFormat("yyyyMMdd");
+                                String date = output.format(c.getTime());
+
+                                String yEAR = singleObject.getExpiryDate().getYear() + "";
+                                String mONTH = (singleObject.getExpiryDate().getMonth()+1) + "";
+                                if (mONTH.length()<2)
+                                    mONTH = "0"+mONTH;
+                                String dAY = singleObject.getExpiryDate().getDay() + "";
+                                if (dAY.length()<2)
+                                    dAY = "0"+dAY;
+
+                                fetchedDate = yEAR + mONTH + dAY;
+
+                                if (date.compareTo(fetchedDate)<=0)
+                                    noticesItemFormats.add(singleObject);
+                                else
+                                    continue;
+                            }
                         }
                     }catch (Exception e){}
                 }
 
-               mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                /*Calendar c = Calendar.getInstance();
+                SimpleDateFormat output = new SimpleDateFormat("yyyyMMdd");
+                String date = output.format(c.getTime());*/
+
+                //for (int i = 0; i < noticesItemFormats.size(); i++) {}
+
+                mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                    @Override
                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                        UserItemFormat currentUser = dataSnapshot.getValue(UserItemFormat.class);

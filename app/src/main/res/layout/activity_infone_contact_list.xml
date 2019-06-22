@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     tools:context="com.zconnect.zutto.zconnect.InfoneContactListActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -65,6 +66,41 @@
                 android:id="@+id/rv_infone_contacts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+
+            <!--<com.getbase.floatingactionbutton.FloatingActionsMenu-->
+                <!--android:id="@+id/right_labels"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_gravity="end|bottom"-->
+                <!--android:layout_margin="@dimen/fab_margin"-->
+                <!--android:layout_height="wrap_content"-->
+
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--fab:fab_addButtonColorNormal="@color/colorHighlight"-->
+                <!--fab:fab_addButtonColorPressed="@color/green500"-->
+                <!--fab:fab_addButtonPlusIconColor="@color/white"-->
+                <!--fab:fab_labelsPosition="left"-->
+                <!--fab:fab_labelStyle="@style/menu_labels_style"-->
+                <!--&gt;-->
+
+                <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--fab:fab_colorNormal="@color/white"-->
+                    <!--fab:fab_title="Add from Contacts"-->
+                    <!--fab:fab_colorPressed="@color/green500"/>-->
+
+                <!--<com.getbase.floatingactionbutton.FloatingActionButton-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--fab:fab_colorNormal="@color/white"-->
+                    <!--fab:fab_size="normal"-->
+
+                    <!--fab:fab_title="Add from ZConnect"-->
+                    <!--fab:fab_colorPressed="@color/green500"/>-->
+
+            <!--</com.getbase.floatingactionbutton.FloatingActionsMenu>-->
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab_contacts_infone"

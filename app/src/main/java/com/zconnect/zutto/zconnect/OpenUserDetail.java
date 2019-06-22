@@ -78,6 +78,7 @@ public class OpenUserDetail extends BaseActivity {
     private Menu menu;
     private Toolbar toolbar;
     private Button userTypeText, requestContact;
+    private TextView forumsJoined;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +97,7 @@ public class OpenUserDetail extends BaseActivity {
         editTextNumber = (TextView) findViewById(R.id.contact_details_number_editText);
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
         whatsAppNumberText = (TextView) findViewById(R.id.whatsapp_number);
+        forumsJoined = findViewById(R.id.contact_details_forums_joined);
 
         btn_like = (ImageButton) findViewById(R.id.btn_like);
         btn_love = (ImageButton) findViewById(R.id.btn_love);
@@ -145,7 +147,19 @@ public class OpenUserDetail extends BaseActivity {
 //        skills=getIntent().getStringExtra("skills");
 //        category=getIntent().getStringExtra("category");
         Uid=getIntent().getStringExtra("Uid");
+        final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums").child(Uid).child("totalJoinedForums");
 
+        userForums.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                forumsJoined.setText(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         //Like and Love data reader
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(Uid);

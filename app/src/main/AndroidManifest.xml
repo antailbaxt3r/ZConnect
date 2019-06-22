@@ -11,6 +11,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+
+
 
     <application
         android:name=".ZConnect"
@@ -530,6 +534,9 @@
             android:label="Add a Forums Tab"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
+
+
     </application>
 
 </manifest>

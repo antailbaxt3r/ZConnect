@@ -157,6 +157,60 @@ public class AddInfoneContact extends BaseActivity {
                 mProgress.setCancelable(false);
                 mProgress.show();
 
+//                postTimeMillis = System.currentTimeMillis();
+//                key = databaseReferenceInfone.child("numbers").push().getKey();
+//                newContactNumRef = databaseReferenceInfone.child("numbers").child(key);
+//                newContactRef = databaseReferenceInfone.child("categories").child(catId).child(key);
+//                categoryInfo = databaseReferenceInfone.child("categoriesInfo").child(catId);
+//
+//                Log.e(TAG, "data phone:" + key + " " + phoneNum1);
+//
+//                //Inside Categories Info
+//                categoryInfo.child("totalContacts").setValue(totalContacts + 1);
+//
+//                //Inside Categories
+//                newContactRef.child("name").setValue(name);
+//                newContactRef.child("phone").child("0").setValue(phoneNum1);
+//                newContactRef.child("phone").child("1").setValue(phoneNum2);
+//                newContactRef.child("desc").setValue(desc);
+//                newContactRef.child("key").child(key);
+//
+//                //Inside Contacts
+//                newContactNumRef.child("category").setValue(catId);
+//                newContactNumRef.child("key").child(key);
+//                newContactNumRef.child("name").setValue(name);
+//                newContactNumRef.child("phone").child("0").setValue(phoneNum1);
+//                newContactNumRef.child("phone").child("1").setValue(phoneNum2);
+//                newContactNumRef.child("type").setValue("NotUser");
+//                newContactNumRef.child("validCount").setValue(0);
+//                newContactNumRef.child("invalidCount").setValue(0);
+//                newContactNumRef.child("verifiedDate").setValue(postTimeMillis);
+//                newContactNumRef.child("PostTimeMillis").setValue(postTimeMillis);
+//                newContactNumRef.child("desc").setValue(desc);
+//                newContactNumRef.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                uploadImage();
+//
+//                //Inside Recents
+//                final DatabaseReference recentsPost = databaseRecents.push();
+//                final DatabaseReference recentsPostPostedBy = recentsPost.child("PostedBy");
+//
+//                recentsPost.child("infoneContactName").setValue(name);
+//                recentsPostPostedBy.setValue(null);
+//                recentsPost.child("infoneContactCategoryName").setValue(catName);
+//                recentsPost.child("id").setValue(key);
+//                recentsPost.child("feature").setValue("Infone");
+//                recentsPost.child("desc").setValue(catId);
+//                recentsPost.child("PostTimeMillis").setValue(postTimeMillis);
+//                recentsPostPostedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+//                        recentsPostPostedBy.child("Username").setValue(user.getUsername());
+//                        newContactNumRef.child("PostedBy").child("Username").setValue(user.getUsername());
+//                        recentsPostPostedBy.child("ImageThumb").setValue(user.getImageURLThumbnail());
+//                        newContactNumRef.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
+//                    }
                 final String name = nameEt.getText().toString();
                 String phoneNum1 = phone1Et.getText().toString();
                 String phoneNum2 = phone2Et.getText().toString();
@@ -307,6 +361,7 @@ public class AddInfoneContact extends BaseActivity {
 
 
                 }else {
+                    mProgress.dismiss();
                     if(phoneNum1.length()<10) {
                         Snackbar snackbar = Snackbar.make(nameEt, "Please check the contact details", Snackbar.LENGTH_LONG);
                         snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));
@@ -314,6 +369,7 @@ public class AddInfoneContact extends BaseActivity {
                     }else {
                         Toast.makeText(AddInfoneContact.this, "All fields not set, including image.", Toast.LENGTH_SHORT).show();
                     }
+                    return;
                 }
 
             }

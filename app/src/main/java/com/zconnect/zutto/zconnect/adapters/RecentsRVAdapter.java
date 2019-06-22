@@ -1735,6 +1735,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     final UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
 
                     if(!dataSnapshot.hasChild("userType")){
+                        Log.d("Try", "Set not verified");
                        userItem.setUserType(UsersTypeUtilities.KEY_NOT_VERIFIED);
                     }
                     //for admin
