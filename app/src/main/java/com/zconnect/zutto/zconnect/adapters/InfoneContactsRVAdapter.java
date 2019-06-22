@@ -191,7 +191,7 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
         holder.hiddentv.setVisibility(View.GONE);
         holder.callImageBtn.setVisibility(View.VISIBLE);
         holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.primaryText));
-        holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.primaryText));
+        holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.secondaryText2));
 
         if (infoneContactsRVItems.get(position).getContactHidden()) {
             holder.hiddentv.setVisibility(View.VISIBLE);
