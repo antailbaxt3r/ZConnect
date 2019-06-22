@@ -138,7 +138,7 @@ public class ChatActivity extends BaseActivity {
             });
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        Log.d("name",getIntent().getStringExtra("name"));
+//        Log.d("name",getIntent().getStringExtra("name"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -550,7 +550,13 @@ public class ChatActivity extends BaseActivity {
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(dataSnapshot.child("tab").getValue().toString()).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                            if(dataSnapshot.child("tab").getValue().toString() != null) {
+                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(dataSnapshot.child("tab").getValue().toString()).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                            }
+                            else{
+                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(getIntent().getStringExtra("tab")).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+
+                            }
                         }
 
                         @Override

@@ -126,8 +126,6 @@ public class CreateForum extends BaseActivity {
             String desc = callingActivityIntent.getStringExtra(ForumUtilities.KEY_FORUM_DESC_STR);
             String name = callingActivityIntent.getStringExtra(ForumUtilities.KEY_FORUM_NAME_STR);
             String tab = callingActivityIntent.getStringExtra(ForumUtilities.KEY_FORUM_TAB_STR);
-            mtabName = tab;
-            mImageUri = Uri.parse(imageUri);
             final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
             final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab);
             forumIDSaveLocation.child("forumUID").setValue(createForumWithDetails(name,
@@ -185,7 +183,12 @@ public class CreateForum extends BaseActivity {
         tabName.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-               mtabName = dataSnapshot.child("name").getValue().toString();
+                if(dataSnapshot.child("name").getValue() != null) {
+                    mtabName = dataSnapshot.child("name").getValue().toString();
+                }
+                else{
+                    mtabName = getIntent().getStringExtra("uid");
+                }
             }
 
             @Override
@@ -584,7 +587,7 @@ public class CreateForum extends BaseActivity {
             }
         }
     }
-    //RETURNS WHETHER USER IS VERIFIED OR NOT
+    //RETURNS forum uid
     String createForumWithDetails(final String catName,
                                    final DatabaseReference databaseReferenceCategories,
                                    final DatabaseReference databaseReferenceTabsCategories,
@@ -810,7 +813,7 @@ public class CreateForum extends BaseActivity {
 //                        newPush.child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
 //                        databaseReferenceTabsCategories.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
 //                        databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
-                if(databaseReferenceHome == null) {
+                if(databaseReferenceHome == null && mImageURL != null) {
                     newPush.child("image").setValue(mImageURL);
                 }
 
@@ -824,7 +827,7 @@ public class CreateForum extends BaseActivity {
                 GlobalFunctions.addPoints(10);
                 finish();
             }
-            return newPush.getKey();
+            return newPush.getKey().toString();
         }
 
 

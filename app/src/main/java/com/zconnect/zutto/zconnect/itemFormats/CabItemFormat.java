@@ -12,6 +12,17 @@ public class CabItemFormat {
     private String time;
     private String key;
     private String DT;
+
+    public String getForumUID() {
+
+        return forumUID;
+    }
+
+    public void setForumUID(String forumUID) {
+        this.forumUID = forumUID;
+    }
+
+    private String forumUID;
     private int from;
     private int to;
     private long PostTimeMillis;

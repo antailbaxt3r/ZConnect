@@ -141,7 +141,7 @@ public class  OpenEventDetail extends BaseActivity{
         Bundle extras = getIntent().getExtras();
         eventId = (String) extras.get("id");
 
-        chatLayout.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener chatListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -158,35 +158,24 @@ public class  OpenEventDetail extends BaseActivity{
 
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        try {
+                            Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
+                            intent.putExtra("type", "forums");
+                            intent.putExtra("key", dataSnapshot.child("forumUID").getValue().toString());
+                            intent.putExtra("name", getSupportActionBar().getTitle());
+                            intent.putExtra("tab", "others");
+                            if (dataSnapshot.child("forumUID").getValue() != null) {
+                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(dataSnapshot.child("forumUID").getValue().toString()).toString());
+                            }
+//                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("cabPool").child(dataSnapshot.child("forumID").toString()).toString());
 
-                Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
-                intent.putExtra("type","events");
-                intent.putExtra("key",eventId);
-                intent.putExtra("name",getSupportActionBar().getTitle());
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId).toString());
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            }
-        });
-
-        chatEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-
-                meta.put("type","fromTextBox");
-                meta.put("eventID",eventId);
-
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_CHAT_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
+                            startActivity(intent);
+                            overridePendingTransition(0, 0);
+                        }
+                        catch (Exception e){
 
                 Intent intent = new Intent(OpenEventDetail.this, ChatActivity.class);
                 intent.putExtra("type","events");
@@ -196,8 +185,21 @@ public class  OpenEventDetail extends BaseActivity{
                 startActivity(intent);
                 overridePendingTransition(0, 0);
 
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
             }
-        });
+        };
+
+        chatLayout.setOnClickListener(chatListener);
+
+        chatEditText.setOnClickListener(chatListener);
 
         progressDialog = new ProgressDialog(this);
         progressDialogMain = new ProgressDialog(this);

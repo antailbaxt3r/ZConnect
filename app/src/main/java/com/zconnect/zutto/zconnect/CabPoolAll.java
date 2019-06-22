@@ -221,6 +221,12 @@ public class CabPoolAll extends BaseActivity {
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     try {
                         CabItemFormat cabItemFormatShot = shot.getValue(CabItemFormat.class);
+                        if(cabItemFormatShot.getForumUID() != null) {
+                            Log.d("ForumUID", cabItemFormatShot.getForumUID());
+                        }
+                        else{
+                            Log.d("ForumUID","null");
+                        }
                         if (!cabItemFormatShot.getDestination().equals(null) && !cabItemFormatShot.getSource().equals(null)) {
                             vector_fetched.add(shot.getValue(CabItemFormat.class));
                         }

@@ -43,10 +43,12 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -282,6 +284,7 @@ public class AddCabPool extends BaseActivity {
 
 
 
+
                                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_CABPOOL);
                                         numberNotificationForFeatures.setCount();
                                         Log.d("NumberNoti setting for ", FeatureDBName.KEY_CABPOOL);
@@ -381,10 +384,24 @@ public class AddCabPool extends BaseActivity {
 
                                         GlobalFunctions.addPoints(10);
 
-                                        Intent intent = new Intent(AddCabPool.this,CabPoolAll.class);
+//                                        Intent intent = new Intent(AddCabPool.this,CabPoolAll.class);
+//
+//                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                        startActivity(intent);
+                                        Intent createForum = new Intent(AddCabPool.this,CreateForum.class);
+                                        createForum.putExtra(ForumUtilities.KEY_ACTIVITY_TYPE_STR,ForumUtilities.VALUE_CREATE_EVENT_FORUM_STR);
+                                        createForum.putExtra(ForumUtilities.KEY_REF_LOCATION,databaseReference.child(newPost.getKey()).toString());
+//                                        createForum.putExtra(ForumUtilities.KEY_FORUM_IMAGE_STR,);
+                                        createForum.putExtra(ForumUtilities.KEY_FORUM_DESC_STR,"Cabpool");
+                                        createForum.putExtra(ForumUtilities.KEY_FORUM_TAB_STR,"others");
 
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent);
+                                        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+                                        Log.d("forumID",newPost.getKey());
+                                        createForum.putExtra(ForumUtilities.KEY_MESSAGE,"Cabpool:"+"From:"+String.valueOf(source.getSelectedItem())+"\nTo:"+String.valueOf(destination.getSelectedItem())+"\nGoing time:"+goingTime+"\nReturning Time:+"+returnTime);
+                                        createForum.putExtra(ForumUtilities.KEY_FORUM_NAME_STR,"Cabpool - "+goingTime);
+                                        startActivity(createForum);
+
+
                                         //AddCabPool.this.startActivity(new Intent(AddCabPool.this, CabPoolAll.class));
 
                                         finish();
