@@ -86,7 +86,7 @@ public class LogoFlashActivity extends BaseActivity {
         bgImage =  findViewById(R.id.bgImage);
         bgColor = findViewById(R.id.bgColor);
 
-        SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
+        final SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
@@ -100,9 +100,12 @@ public class LogoFlashActivity extends BaseActivity {
                     {
                         if (shot.hasChild("userType"))
                         {
-                            if ((shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_VERIFIED)) || (shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN)))
-                            {
-                                temporary.child(shot.child("userUID").getValue().toString()).child("communitiesJoined").setValue(communityReference);
+                            if ((shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_VERIFIED)) || (shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))) {
+                                try {
+                                    temporary.child(shot.child("userUID").getValue().toString()).child("communitiesJoined").child(communityReference).setValue(communityReference);
+
+                                }
+                                catch (Exception e){}
                             }
                             else
                                 continue;

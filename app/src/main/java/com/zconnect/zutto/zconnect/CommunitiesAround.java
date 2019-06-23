@@ -68,8 +68,12 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
     CommunitiesAroundAdapter adapter;
     Vector<CommunitiesItemFormat> communitiesList = new Vector<>();
+    Vector<CommunitiesItemFormat> communitiesJoinedList = new Vector<>();
+    CommunitiesItemFormat titleCommunitiesJoined = new CommunitiesItemFormat();
+
     RecyclerView communitiesRecycler;
     DatabaseReference communitiesReference;
+    DatabaseReference communitiesJoinedReference;
     LocationManager locationManager;
     LocationListener locationListener;
     private ProgressDialog progressDialog;
