@@ -13,11 +13,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,7 +41,9 @@ import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.AddMembersToForumActivity;
 import com.zconnect.zutto.zconnect.ChatActivity;
+import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
@@ -60,7 +64,6 @@ import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -107,6 +110,9 @@ public class CreateForum extends BaseActivity {
     ArrayAdapter<String> forumTabsSpinnerAdapter;
     private int init_opn_index;
     private String TAG = CreateForum.class.getSimpleName();
+    Button addMembers;
+    RecyclerView addedMembersRV;
+    ArrayList<UserItemFormat> addedMembersArrayList = new ArrayList<>();
 
     //For Cabpols and Events
     Intent callingActivityIntent;
@@ -138,12 +144,14 @@ public class CreateForum extends BaseActivity {
                     null,
                     null,
                     null,
-                    imageUri
+                    imageUri,
+                    false
             ));
             return;
 
 
         }
+
 
 
         setContentView(R.layout.activity_create_forum);
@@ -208,6 +216,8 @@ public class CreateForum extends BaseActivity {
         forumTabsObjectList = new ArrayList<>();
         intentHandle = new IntentHandle();
         mStorage = FirebaseStorage.getInstance().getReference();
+
+
 
         tabsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -294,7 +304,8 @@ public class CreateForum extends BaseActivity {
                                 mImageUri,
                                 mImageUriThumb,
                                 databaseReferenceHome,
-                                null
+                                null,
+                                true
                                 );
 
                     }
@@ -326,8 +337,11 @@ public class CreateForum extends BaseActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for(DataSnapshot snapshot : dataSnapshot.getChildren())
                     {
-                        if(snapshot.hasChild("userType") && snapshot.child("userType").getValue().toString().equals(ForumsUserTypeUtilities.KEY_ADMIN))
-                            deleteForumLL.setVisibility(View.VISIBLE);
+                        if(snapshot.hasChild("userType") && snapshot.child("userType").getValue().toString().equals(ForumsUserTypeUtilities.KEY_ADMIN)) {
+                            if(!uid.equals("others")) {
+                                deleteForumLL.setVisibility(View.VISIBLE);
+                            }
+                        }
                     }
                 }
 
@@ -340,8 +354,11 @@ public class CreateForum extends BaseActivity {
             userDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
-                        deleteForumLL.setVisibility(View.VISIBLE);
+                    if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN)) {
+                        if(!uid.equals("others")) {
+                            deleteForumLL.setVisibility(View.VISIBLE);
+                        }
+                    }
                 }
 
                 @Override
@@ -598,7 +615,8 @@ public class CreateForum extends BaseActivity {
                                    final Uri mImageUri,
                                    final Uri mImageUriThumb,
                                    final DatabaseReference databaseReferenceHome,
-                                  final String mImageURL
+                                  final String mImageURL,
+                                  final boolean requestAddMembers
                                    ){
 
             final DatabaseReference newPush=databaseReferenceCategories.push();
@@ -743,15 +761,31 @@ public class CreateForum extends BaseActivity {
                                 databaseReferenceHome.child(newPush.getKey()).child("image").setValue(downloadUri != null ? downloadUri.toString() : null);
                             }
                             if(flag) {
-                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
-                                intent.putExtra("type", "forums");
-                                intent.putExtra("name", catName);
-                                intent.putExtra("tab", tabUid);
-                                intent.putExtra("key", newPush.getKey());
-                                GlobalFunctions.addPoints(10);
-                                startActivity(intent);
-                                finish();
+                                if(requestAddMembers){
+                                    Intent intent = new Intent(getApplicationContext(), AddMembersToForumActivity.class);
+                                    intent.putExtra("refChat", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
+                                    intent.putExtra("type", "forums");
+                                    intent.putExtra("name", catName);
+                                    intent.putExtra("tab", tabUid);
+                                    intent.putExtra("key", newPush.getKey());
+                                    intent.putExtra("refForum",databaseReferenceTabsCategories.child(newPush.getKey()).toString());
+                                    GlobalFunctions.addPoints(10);
+                                    startActivity(intent);
+                                    finish();
+
+
+                                }
+                                else {
+                                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
+                                    intent.putExtra("type", "forums");
+                                    intent.putExtra("name", catName);
+                                    intent.putExtra("tab", tabUid);
+                                    intent.putExtra("key", newPush.getKey());
+                                    GlobalFunctions.addPoints(10);
+                                    startActivity(intent);
+                                    finish();
+                                }
                             } else{ flag = true;}
                         } else {
                             Snackbar snackbar = Snackbar.make(addForumName, "Failed. Check Internet connectivity", Snackbar.LENGTH_SHORT);
@@ -783,15 +817,33 @@ public class CreateForum extends BaseActivity {
                                 databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue(downloadUri != null ? downloadUri.toString() : null);
                             }
                             if (flag) {
-                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
-                                intent.putExtra("type", "forums");
-                                intent.putExtra("name", catName);
-                                intent.putExtra("tab", tabUid);
-                                intent.putExtra("key", newPush.getKey());
-                                GlobalFunctions.addPoints(10);
-                                startActivity(intent);
-                                finish();
+                                if(requestAddMembers){
+                                    Intent intent = new Intent(getApplicationContext(), AddMembersToForumActivity.class);
+                                    intent.putExtra("refChat", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
+                                    intent.putExtra("type", "forums");
+                                    intent.putExtra("name", catName);
+                                    intent.putExtra("tab", tabUid);
+                                    intent.putExtra("key", newPush.getKey());
+                                    intent.putExtra("refForum",databaseReferenceTabsCategories.child(newPush.getKey()).toString());
+                                    GlobalFunctions.addPoints(10);
+                                    startActivity(intent);
+                                    finish();
+
+
+                                }
+                                else{
+                                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
+                                    intent.putExtra("type", "forums");
+                                    intent.putExtra("name", catName);
+                                    intent.putExtra("tab", tabUid);
+                                    intent.putExtra("key", newPush.getKey());
+                                    GlobalFunctions.addPoints(10);
+                                    startActivity(intent);
+                                    finish();
+
+                                }
+
                             } else {
                                 flag = true;
                             }
@@ -816,16 +868,30 @@ public class CreateForum extends BaseActivity {
                 if(databaseReferenceHome == null && mImageURL != null) {
                     newPush.child("image").setValue(mImageURL);
                 }
+                if(requestAddMembers) {
+                    Intent intent = new Intent(getApplicationContext(), AddMembersToForumActivity.class);
+                    intent.putExtra("refChat", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
+                    intent.putExtra("type", "forums");
+                    intent.putExtra("name", catName);
+                    intent.putExtra("tab", tabUid);
+                    intent.putExtra("key", newPush.getKey());
+                    intent.putExtra("refForum", databaseReferenceTabsCategories.child(newPush.getKey()).toString());
+                    GlobalFunctions.addPoints(10);
+                    startActivity(intent);
+                    finish();
+                }
+                else {
 
-                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
-                intent.putExtra("type","forums");
-                intent.putExtra("name", catName);
-                intent.putExtra("tab",tabUid);
-                intent.putExtra("key",newPush.getKey());
-                startActivity(intent);
-                GlobalFunctions.addPoints(10);
-                finish();
+                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                    intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(newPush.getKey()).toString());
+                    intent.putExtra("type", "forums");
+                    intent.putExtra("name", catName);
+                    intent.putExtra("tab", tabUid);
+                    intent.putExtra("key", newPush.getKey());
+                    startActivity(intent);
+                    GlobalFunctions.addPoints(10);
+                    finish();
+                }
             }
             return newPush.getKey().toString();
         }

@@ -23,9 +23,18 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ShareToForum"
-            android:label="Share to Forums">
+        <activity android:name=".AddMembersToForumActivity">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
 
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ShareToForum"
+            android:label="Share to Forums">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -242,9 +251,7 @@
         <activity
             android:name=".GalleryActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <receiver android:name=".InfoneSearchWidget">
             <intent-filter>

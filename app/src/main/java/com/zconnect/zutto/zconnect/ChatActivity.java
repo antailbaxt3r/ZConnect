@@ -80,6 +80,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 public class ChatActivity extends BaseActivity {
 
@@ -87,8 +88,8 @@ public class ChatActivity extends BaseActivity {
 
     private static final int GALLERY_REQUEST = 7;
     private String ref  = "Misc";
-    private RecyclerView chatView;
-    private RecyclerView.Adapter adapter;
+    public RecyclerView chatView;
+    public RecyclerView.Adapter adapter;
     private DatabaseReference databaseReference ;
     private DatabaseReference forumCategory = null;
     private Calendar calendar;
@@ -176,8 +177,12 @@ public class ChatActivity extends BaseActivity {
         mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if(getIntent()!=null && !TextUtils.isEmpty(getIntent().getStringExtra("ref"))) {
             if (!TextUtils.isEmpty(getIntent().getStringExtra("ref"))){
+
                 ref = getIntent().getStringExtra("ref");
+                Log.d("Ref",ref);
             }
+            Log.d("Ref",ref);
+
             if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))){
                 type = getIntent().getStringExtra("type");
             }
@@ -399,6 +404,7 @@ public class ChatActivity extends BaseActivity {
                             if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                                 newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(),"Chat", ChatActivity.this);
                             } else {
+
                                 postMessage();
                             }
                         }else {
@@ -661,12 +667,26 @@ public class ChatActivity extends BaseActivity {
         message.setTimeDate(calendar.getTimeInMillis());
 
         if(mImageUri!=null){
-            Log.d("Try","Image Posting");
-//            message1.setPhotoURL(mImageUri.toString());
-//            message1.setMessageType(MessageTypeUtilities.KEY_PHOTO_SENDING_STR);
-//            messages.add(message1);
-//            adapter.notifyDataSetChanged();
-//            chatView.scrollToPosition(messages.size()-1);
+            List<ChatItemFormats> tempModel=new ArrayList<>(messages);
+            messages.clear();
+            ChatItemFormats message1 = new ChatItemFormats();
+            message1.setPhotoURL(mImageUri.toString());
+            Log.d("L",Integer.toString(messages.size()));
+            message1.setMessageType(MessageTypeUtilities.KEY_PHOTO_SENDING_STR);
+            tempModel.add(message1);
+            messages.addAll(tempModel);
+            adapter.notifyDataSetChanged();
+
+            chatView.setAdapter(adapter);
+
+            messages.clear();
+            adapter.notifyItemInserted(messages.size() - 1);
+            adapter.notifyDataSetChanged();
+            Log.d("L",Integer.toString(messages.size()));
+            chatView.setAdapter(adapter);
+
+
+            chatView.scrollToPosition(messages.size()-1);
 
 
             final StorageReference filePath = mStorage.child(communityReference).child("features").child(type).child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
