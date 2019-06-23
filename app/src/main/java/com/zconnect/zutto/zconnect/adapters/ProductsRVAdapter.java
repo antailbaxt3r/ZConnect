@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,18 +48,22 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsViewHolder>{
 
     @Override
     public void onBindViewHolder(final ProductsViewHolder holder, final int position) {
-        StoreRoomRef.child(productVector.get(position).getKey()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild("NumberOfViews"))
-                    holder.setNumberOfViewsInHolder(productVector.get(position).getNumberOfViews());
-            }
+        try {
+            StoreRoomRef.child(productVector.get(position).getKey()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.hasChild("NumberOfViews"))
+                        holder.setNumberOfViewsInHolder(productVector.get(position).getNumberOfViews());
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        } catch (Exception e){
+            Log.e("Error Message","Null reference to Database");
+        }
 
         if(getItemViewType(position) == ProductUtilities.TYPE_ADD)
         {
