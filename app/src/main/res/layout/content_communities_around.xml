@@ -61,7 +61,7 @@
                     android:clickable="false"
                     android:textAlignment="center"
                     android:textSize="18sp"
-                    android:text="No communities found \n"/>
+                    android:text="No communities found in your area \n"/>
 
                 <TextView
                     android:id="@+id/text2"
