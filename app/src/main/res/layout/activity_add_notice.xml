@@ -43,6 +43,13 @@
                 android:contentDescription="Product image"
                 android:scaleType="fitXY"
                 android:layout_margin="7dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Notice Title"
+                android:layout_below="@id/dateAndTime"
+                android:textColor="@color/primaryText" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/name"
@@ -57,6 +64,14 @@
                 android:padding="5dp"
                 android:layout_marginLeft="7dp"
                 android:layout_marginRight="7dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Expiry Date (Optional)"
+                android:layout_below="@id/dateAndTime"
+                android:textColor="@color/primaryText" />
 
             <LinearLayout
                 android:id="@+id/expiryDateLayout"

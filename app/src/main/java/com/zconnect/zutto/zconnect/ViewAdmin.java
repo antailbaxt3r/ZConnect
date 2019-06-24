@@ -94,12 +94,7 @@ DatabaseReference databaseReference;
                 for(DataSnapshot childsnapshot: dataSnapshot.getChildren()){
                     Log.d((String) childsnapshot.child("Username").getValue(), "onDataChange: ");
                     admname.add((String) childsnapshot.child("Username").getValue());
-                    if(!("").equals(childsnapshot.child("ImageThumb").getValue())) {
-                        admimg.add((String) childsnapshot.child("ImageThumb").getValue());
-                    }
-                    else{
-                        admimg.add("https://lh6.googleusercontent.com/-idc9bXb9n-Q/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DVg6FhNzc1jkN4eBCa6ESbBPmpl5g/s96-c/photo.jpg");
-                    }
+                    admimg.add((String) childsnapshot.child("ImageThumb").getValue());
                 }
                 recyclerView = (RecyclerView) findViewById(R.id.view_admins_rv);
                 viewAdminsRVAdapter = new ViewAdminsRVAdapter(ViewAdmin.this,admimg,admname);

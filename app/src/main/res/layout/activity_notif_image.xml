@@ -46,6 +46,14 @@
                     android:scaleType="fitCenter"
                     android:layout_margin="7dp"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Notification Title"
+                    android:textColor="@color/primaryText" />
+
                 <EditText
                     android:id="@+id/notif_title"
                     android:layout_width="match_parent"
@@ -55,6 +63,14 @@
                     android:hint="Notification title"
                     android:textColor="@color/secondaryText"
                     android:textColorHint="@color/secondaryText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Notification Message"
+                    android:textColor="@color/primaryText" />
 
 
                 <EditText
@@ -66,6 +82,14 @@
                     android:hint="Notification message"
                     android:textColor="@color/secondaryText"
                     android:textColorHint="@color/secondaryText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Notification URL"
+                    android:textColor="@color/primaryText" />
 
                 <EditText
                     android:id="@+id/notif_url"

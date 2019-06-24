@@ -27,23 +27,45 @@
             tools:src="@drawable/addimage"
             android:contentDescription="Event image" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginVertical="@dimen/padding_10"
+            android:layout_marginRight="5dp"
+            android:text="Event Name"
+            android:layout_below="@id/imageButton"
+            android:id="@+id/eventName"
+            android:textColor="@color/primaryText" />
+
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/imageButton"
             android:background="@drawable/border_filled_2"
             android:ems="10"
+            android:layout_below="@id/eventName"
             android:hint="Event name"
             android:inputType="textPersonName"
             android:padding="10dp"
             android:elevation="5dp"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginVertical="@dimen/padding_10"
+            android:layout_marginRight="5dp"
+            android:text="Description"
+            android:layout_below="@id/name"
+            android:id="@+id/eventDesc"
+            android:textColor="@color/primaryText" />
+
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/name"
+            android:layout_below="@+id/eventDesc"
             android:background="@drawable/border_filled_2"
             android:ems="10"
             android:hint="Event description"
@@ -52,11 +74,22 @@
             android:padding="10dp"
             android:elevation="5dp"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginVertical="@dimen/padding_10"
+            android:layout_marginRight="5dp"
+            android:text="Event Date and Time"
+            android:layout_below="@id/description"
+            android:id="@+id/eventdate"
+            android:textColor="@color/primaryText" />
+
         <LinearLayout
             android:id="@+id/dateAndTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/description"
+            android:layout_below="@+id/eventdate"
             android:orientation="horizontal"
             android:padding="10dp"
             android:elevation="5dp">
@@ -81,12 +114,23 @@
                 android:textColor="@color/primaryText" />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginVertical="@dimen/padding_10"
+            android:layout_marginRight="5dp"
+            android:text="Event Venue"
+            android:layout_below="@id/dateAndTime"
+            android:id="@+id/eventVenue"
+            android:textColor="@color/primaryText" />
+
 
         <RelativeLayout
             android:id="@+id/venueLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/dateAndTime"
+            android:layout_below="@+id/eventVenue"
             android:layout_marginTop="7dp"
             android:orientation="vertical"
             android:elevation="5dp">
@@ -113,6 +157,7 @@
                 android:layout_margin="10dp"
                 android:text="Pick on Google maps "
                 android:textSize="15sp" />
+
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/VenueText"
