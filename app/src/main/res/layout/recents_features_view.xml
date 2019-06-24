@@ -107,7 +107,7 @@
                                 android:id="@+id/shops_circle_recents_feature_item"
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
-                                android:src="@drawable/ic_store_white_36dp"
+                                android:src="@drawable/ic_outline_store_36"
                                 android:tint="@color/deepPurple500" />
                             <FrameLayout
                                 android:id="@+id/shops_unread_count_fl_recents_feature_item"
