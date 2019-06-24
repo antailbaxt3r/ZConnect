@@ -408,3 +408,47 @@ exports.copyOrderReceivingStatusInShopFeature = functions.database.ref('shops/sh
     .set(change.after.val());
   });
 });
+
+exports.addToUserCommunities = functions.database.ref('communities/{communityID}/Users1/{uid}/userType')
+.onUpdate((change, context) => {
+  const uid = context.params.uid;
+  const communityID = context.params.communityID;
+  const userType = change.after.val();
+  return change.after.ref.root.child("userCommunities").child(uid).child("communitiesJoined").once('value', snapshot => {
+    if(userType === "verified" || userType === "admin")
+    {
+      if(snapshot.val() === null || !snapshot.hasChild(communityID))
+      {
+        return snapshot.ref.child(communityID).set(communityID) && snapshot.ref.parent.child("totalCommunitiesJoined").set(1);
+      }
+      else
+      {
+        return console.log("User uid - ", uid, " already has community ID - ", communityID, " in their communititesJoined list");
+      } 
+    }
+    else if(snapshot.hasChild(communityID))
+    {
+      if(snapshot.numChildren()===1)
+      {
+        return snapshot.ref.parent.remove();
+      }
+      else
+      {
+        return snapshot.ref.child(communityID).remove();
+      }
+    }
+    else
+    {
+      return console.log("User UID - ", uid, " is not a verfied member of the community ID - ", communityID);
+    }
+  });
+});
+
+exports.countCommunitiesJoined = functions.database.ref('userCommunities/{uid}/communitiesJoined')
+.onWrite((change, context) => {
+  const countRef = change.after.ref.parent.child("totalCommunitiesJoined");
+  if(change.after.val()===null)
+    return countRef.remove();
+  else
+    return countRef.set(change.after.numChildren());
+});
