@@ -59,6 +59,10 @@ import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -74,7 +78,7 @@ public class CabPoolListOfPeople extends BaseActivity {
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private DatabaseReference pool, chatRef;
+    private DatabaseReference pool, chatRef, fullPool;
     private Button join;
     private String key,name, number, uid, imageThumb, userUID, date, source, destination, time, people, postedByImageText, postedByText;
     private Vector<UsersListItemFormat> usersListItemFormatVector = new Vector<>();
@@ -102,6 +106,7 @@ public class CabPoolListOfPeople extends BaseActivity {
         setContentView(R.layout.activity_cab_list_of_people);
         setToolbar();
         setSupportActionBar(toolbar);
+
 
         toolbar.setTitle("Cabpool Details");
 
@@ -152,11 +157,10 @@ public class CabPoolListOfPeople extends BaseActivity {
         postedByTV = findViewById(R.id.postedByCabpoolDetail);
         postedByImageDV = findViewById(R.id.user_circle_image_in_detail);
 
-        time = getIntent().getStringExtra("timeText");
+       /* time = getIntent().getStringExtra("timeText");
         date = getIntent().getStringExtra("dateText");
         source = getIntent().getStringExtra("sourceText");
         destination = getIntent().getStringExtra("destinationText");
-        people = getIntent().getStringExtra("peopleText");
         postedByText = getIntent().getStringExtra("postedByText");
         postedByImageText = getIntent().getStringExtra("postedByImageText");
 
@@ -166,7 +170,7 @@ public class CabPoolListOfPeople extends BaseActivity {
         destinationTV.setText(destination);
         peopleTV.setText(people);
         postedByTV.setText(postedByText);
-        postedByImageDV.setImageURI(Uri.parse(postedByImageText));
+        postedByImageDV.setImageURI(Uri.parse(postedByImageText));*/
 
         share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -316,6 +320,7 @@ public class CabPoolListOfPeople extends BaseActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child(reference);
         pool = databaseReference.child(key).child("usersListItemFormats");
+        fullPool = databaseReference.child(key);
         mAuth = FirebaseAuth.getInstance();
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_cabpeople_progress);
@@ -327,11 +332,69 @@ public class CabPoolListOfPeople extends BaseActivity {
 
         if (mAuth.getCurrentUser() != null)
             uid = mAuth.getCurrentUser().getUid();
+
+        if(getIntent().getBooleanExtra("fromRVCheck", false)){
+            time = getIntent().getStringExtra("timeText");
+            date = getIntent().getStringExtra("dateText");
+            source = getIntent().getStringExtra("sourceText");
+            destination = getIntent().getStringExtra("destinationText");
+            postedByText = getIntent().getStringExtra("postedByText");
+            postedByImageText = getIntent().getStringExtra("postedByImageText");
+
+            timeTV.setText(time);
+            dateTV.setText(date);
+            sourceTV.setText(source);
+            destinationTV.setText(destination);
+            peopleTV.setText(people);
+            postedByTV.setText(postedByText);
+            postedByImageDV.setImageURI(Uri.parse(postedByImageText));
+
+        }else {
+            fullPool.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    source = dataSnapshot.child("source").getValue().toString();
+                    destination = dataSnapshot.child("destination").getValue().toString();
+
+                    DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
+                    DateTime date2 = dtf.parseDateTime(dataSnapshot.child("date").getValue().toString());
+                    date = date2.toString("MMM") + " " + date2.getDayOfMonth();
+
+                    String fromAmPm = Integer.parseInt(dataSnapshot.child("from").getValue().toString()) < 12 ? "AM" : "PM";
+                    int fromTime = Integer.parseInt(dataSnapshot.child("from").getValue().toString()) <= 12 ? Integer.parseInt(dataSnapshot.child("from").getValue().toString()) : Integer.parseInt(dataSnapshot.child("from").getValue().toString()) - 12;
+                    fromTime = fromTime == 0 ? 12 : fromTime;
+                    String toAmPm = Integer.parseInt(dataSnapshot.child("to").getValue().toString()) < 12 ? "AM" : "PM";
+                    int toTime = Integer.parseInt(dataSnapshot.child("to").getValue().toString()) <= 12 ? Integer.parseInt(dataSnapshot.child("to").getValue().toString()) : Integer.parseInt(dataSnapshot.child("to").getValue().toString()) - 12;
+                    toTime = toTime == 0 ? 12 : toTime;
+                    time = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
+
+                    postedByText = dataSnapshot.child("PostedBy").child("Username").getValue().toString();
+                    postedByImageText = dataSnapshot.child("PostedBy").child("ImageThumb").getValue().toString();
+
+                    timeTV.setText(time);
+                    dateTV.setText(date);
+                    sourceTV.setText(source);
+                    destinationTV.setText(destination);
+                    peopleTV.setText(people);
+                    postedByTV.setText(postedByText);
+                    postedByImageDV.setImageURI(Uri.parse(postedByImageText));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
         pool.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 flag = false;
                 usersListItemFormatVector.clear();
+                people = Long.toString(dataSnapshot.getChildrenCount()) + " people";
+                peopleTV.setText(people);
+
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     UsersListItemFormat usersListItemFormat;

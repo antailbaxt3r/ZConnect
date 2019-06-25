@@ -19,7 +19,7 @@
         android:textSize="18sp"
         android:gravity="center"
         android:layout_marginBottom="10dp"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/deepPurple500"/>
     <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
         android:id="@+id/image_profile_infone"
         android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/validate_infone_no_btn"
             android:textColor="@color/colorPrimary"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            android:background="@drawable/round_button_primary"
             android:layout_alignParentEnd="true"
             android:text="No" />
 

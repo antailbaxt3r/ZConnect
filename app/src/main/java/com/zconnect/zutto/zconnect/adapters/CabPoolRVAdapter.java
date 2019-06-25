@@ -232,6 +232,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
 
                 if(i==0) {
                     Intent intent = new Intent(context, CabPoolListOfPeople.class);
+                    intent.putExtra("fromRVCheck", true);
                     intent.putExtra("key", array.get(getAdapterPosition()).getKey());
                     intent.putExtra("date", (array.get(getAdapterPosition()).getDT()).substring(0,8));
                     intent.putExtra("sourceText", sourceText);
@@ -240,8 +241,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                     intent.putExtra("dateText", dateText);
                     intent.putExtra("postedByText", postedByText);
                     intent.putExtra("peopleText", postedByImageText);
-                    System.out.println(postedByImageText);
-
+                    //System.out.println(postedByImageText);
                     context.startActivity(intent);
                 }
 
@@ -256,7 +256,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                     intent.putExtra("peopleText", people.getText().toString());
                     intent.putExtra("postedByText", postedByText);
                     intent.putExtra("postedByImageText", postedByImageText);
-                    System.out.println(postedByImageText);
+                    //System.out.println(postedByImageText);
 
                     context.startActivity(intent);
                 }}

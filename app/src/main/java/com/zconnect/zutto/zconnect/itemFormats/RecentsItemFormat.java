@@ -1,49 +1,51 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
+import java.util.HashMap;
+
 /**
  * Created by shubhamk on 20/3/17.
  */
 
 public class RecentsItemFormat {
     String name;
-    String desc;
-    String desc2;
+    private String desc;
+    private String desc2;
     String imageurl;
-    String feature;
-    String id;
+    private String feature;
+    private String id;
     private String Key;
     private String DT;
+    private HashMap<String, CabItemFormat> cabItemFormat;
 
-    String recentType;
+    private String recentType;
     private String postID;
 
     //new ui
     private long PostTimeMillis;
     //for infone
-    String infoneContactName,infoneContactCategoryName;
+    private String infoneContactName,infoneContactCategoryName;
     //for cabpool
-    String cabpoolSource;
-    String cabpoolDestination;
-    String cabpoolDate;
-    String cabpoolTime;
-    int cabpoolTimeTo=-1;
-    int cabpoolTimeFrom=-1;
+    private String cabpoolSource;
+    private String cabpoolDestination;
+    private String cabpoolDate;
+    private String cabpoolTime;
+    private int cabpoolTimeTo=-1;
+    private int cabpoolTimeFrom=-1;
+
         //for events
-    String eventDate;
+        private String eventDate;
         //for storeroom
-    String productPrice;
-    String productType;
+        private String productPrice;
+    private String productType;
         //for new users
-    String communityName;
+        private String communityName;
 
         //for messages
-    String message;
-    int msgLikes;
-    int msgComments;
+        private String message;
+    private int msgLikes;
+    private int msgComments;
 
         //for Forums
-
-
 
     private PostedByDetails PostedBy;
     //
@@ -52,7 +54,8 @@ public class RecentsItemFormat {
                              String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate,
                              String cabpoolTime, int cabpoolTimeFrom, int cabpoolTimeTo, String eventDate, String productPrice, String Key, long PostTimeMillis,
                              PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName,
-                             String communityName, String message, String recentType, int msgLikes, int msgComments, String productType) {
+                             String communityName, String message, String recentType, int msgLikes, int msgComments, String productType,
+                             HashMap<String, CabItemFormat> cabItemFormat) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -81,6 +84,7 @@ public class RecentsItemFormat {
         this.recentType = recentType;
         this.msgComments = msgComments;
         this.productType = productType;
+        this.cabItemFormat = cabItemFormat;
     }
 
     public RecentsItemFormat() {
@@ -225,5 +229,13 @@ public class RecentsItemFormat {
     public void setProductType(String productType) { this.productType = productType; }
 
     public String getProductType() { return productType; }
+
+    public HashMap<String, CabItemFormat> getCabItemFormat() {
+        return cabItemFormat;
+    }
+
+    public void setCabItemFormat(HashMap<String, CabItemFormat> cabItemFormat) {
+        this.cabItemFormat = cabItemFormat;
+    }
 }
 
