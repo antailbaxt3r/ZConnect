@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/edittext_newmessage_input"
             android:hint="@string/status_hint"
-            android:textSize="25dp"
+            android:textSize="25sp"
             app:met_textColor="@color/primaryText"
             app:met_textColorHint="@color/secondaryText"
             android:layout_marginTop="10dp" />

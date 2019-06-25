@@ -61,7 +61,6 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
     private TreeMap<Double,CabItemFormat> treeMap_double;
     private TreeMap<String,CabItemFormat> treeMap_string;
     private String sourceText, destinationText, timeText, dateText, peopleText, postedByText, postedByImageText;
-    private DatabaseReference cabpoolReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs");
     private ArrayList<CabItemFormat> array;
     private String url = "https://play.google.com/store/apps/details?id=com.zconnect.zutto.zconnect";
     private Vector<CabItemFormat> cabItemFormat;
@@ -128,19 +127,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             holder.imagethmb.setImageURI(Uri.parse(cabItemFormat.get(position).getPostedBy().getImageThumb()));
             holder.source.setText(array.get(position).getSource());
            String key0 = cabItemFormat.get(position).getKey();
-           cabpoolReference.child(key0).child("usersListItemFormats").addListenerForSingleValueEvent(new ValueEventListener() {
-               @Override
-               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                   int size = (int) dataSnapshot.getChildrenCount();
-                   peopleText = Integer.toString(size);
-                   holder.people.setText(peopleText);
-               }
-
-               @Override
-               public void onCancelled(@NonNull DatabaseError databaseError) {
-
-               }
-           });
+           holder.people.setText(cabItemFormat.get(position).getUsersListItemFormats().size() + " People");
 
 //       if(array.get(position).getFrom()!=0){ holder.time.setText(array.get(position).getFrom()+":00 to "+array.get(position).getTo()+":00");}
            String fromAmPm = array.get(position).getFrom()<12 ? "AM" : "PM";
@@ -168,23 +155,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth());
 
             final String key1 = cabItemFormat.get(position).getKey();
-
-            cabpoolReference.child(key1).child("usersListItemFormats").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    int size = (int) dataSnapshot.getChildrenCount();
-                    //System.out.println("sizevalue for " + key1 + " : " + size); //for testing
-                    peopleText = Integer.toString(size);
-                    //System.out.println("peopletextvalue: " + peopleText); //for testing
-                    //System.out.println("INSIDE DATASNAPSHOT"); //for testing
-                    holder.people.setText(peopleText + " People");
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            holder.people.setText(cabItemFormat.get(position).getUsersListItemFormats().size() + " Persons");
             //System.out.println("OUTSIDE DATASNAPSHOT"); //for testing
             //System.out.println("peopletext outside: " + peopleText); //for testing
             holder.imagethmb.setImageURI(Uri.parse(cabItemFormat.get(position).getPostedBy().getImageThumb()));

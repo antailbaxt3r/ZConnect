@@ -78,7 +78,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="Source"
                                         android:textAlignment="center"
-                                        android:textSize="20dp"
+                                        android:textSize="20sp"
                                         android:layout_marginStart="5dp"
                                         android:textColor="@color/black"/>
                                 </LinearLayout>
@@ -323,7 +323,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:background="@drawable/round_button_primary"
             android:text="Search"
             style="?android:attr/borderlessButtonStyle"/>

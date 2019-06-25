@@ -11,27 +11,17 @@ public class UsersListItemFormat {
     private String phonenumber;
     private String imageThumb;
     private String userUID;
-    private int count;
     private String userType;
 
-    public UsersListItemFormat(String name, String phonenumber, String imageThumb, String userUID, String userType, int count) {
+    public UsersListItemFormat(String name, String phonenumber, String imageThumb, String userUID, String userType) {
         this.name = name;
         this.phonenumber = phonenumber;
-        this.imageThumb = this.imageThumb;
+        this.imageThumb = imageThumb;
         this.userUID = userUID;
-        this.count = count;
         this.userType = userType;
     }
 
     public UsersListItemFormat() {
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
     }
 
     public String getName() { return name; }

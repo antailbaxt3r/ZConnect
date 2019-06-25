@@ -46,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="7dp"
-                    android:textSize="18dp"
+                    android:textSize="18sp"
                     android:hint="Notification title"
                     android:textColor="@color/secondaryText"
                     android:textColorHint="@color/secondaryText" />
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:layout_margin="7dp"
-                    android:textSize="18dp"
+                    android:textSize="18sp"
                     android:hint="Notification message"
                     android:textColor="@color/secondaryText"
                     android:textColorHint="@color/secondaryText" />
