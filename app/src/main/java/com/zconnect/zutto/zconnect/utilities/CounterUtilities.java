@@ -41,6 +41,11 @@ public class CounterUtilities {
     public static final String KEY_CABPOOL_ADD_LOCATION_OPEN = "cabpoolAddLocationsOpen";
     //checked
     public static final String KEY_CABPOOL_ADDED_LOCATION = "cabpoolLocationAdded";
+
+    public static final String KEY_CABPOOL_REQUEST_LOCATION_OPEN = "cabpoolRequestLocationsOpen";
+
+    public static final String KEY_CABPOOL_ADDEDREQUEST_LOCATION = "cabpoolAddedRequestLocationsOpen";
+
     //checked
     public static final String KEY_CABPOOL_MY_RIDES_OPEN = "cabpoolMyRidesOpen";
     //checked

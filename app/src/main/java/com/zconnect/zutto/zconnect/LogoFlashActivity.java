@@ -66,7 +66,7 @@ public class LogoFlashActivity extends BaseActivity {
     private String TAG = LogoFlashActivity.class.getSimpleName();
     private final int RC_PERM_REQ_EXT_STORAGE = 7;
     private SimpleDraweeView bgImage;
-    private DatabaseReference mDatabase,temp,temp2,temp3,temp4,temp5,t,t2;
+    private DatabaseReference mDatabase,temp,temp2,temp3,temp4,temp5,t,t2,temporary,temporary2;
     private View bgColor;
     boolean flag = false;
     private String mReferrerUid;
@@ -86,10 +86,42 @@ public class LogoFlashActivity extends BaseActivity {
         bgImage =  findViewById(R.id.bgImage);
         bgColor = findViewById(R.id.bgColor);
 
-        SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
+        final SharedPreferences communitySP = getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
 
         if (communityReference != null) {
+            /*temporary = FirebaseDatabase.getInstance().getReference().child("userCommunities");
+            temporary2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
+
+            temporary2.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot shot: dataSnapshot.getChildren())
+                    {
+                        if (shot.hasChild("userType"))
+                        {
+                            if ((shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_VERIFIED)) || (shot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))) {
+                                try {
+                                    temporary.child(shot.child("userUID").getValue().toString()).child("communitiesJoined").child(communityReference).setValue(communityReference);
+
+                                }
+                                catch (Exception e){}
+                            }
+                            else
+                                continue;
+                        }
+                        else
+                            continue;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });*/
+
+
             mDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("ui/logoFlash");
 
             mDatabase.addValueEventListener(new ValueEventListener() {

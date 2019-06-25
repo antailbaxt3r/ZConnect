@@ -452,3 +452,15 @@ exports.countCommunitiesJoined = functions.database.ref('userCommunities/{uid}/c
   else
     return countRef.set(change.after.numChildren());
 });
+
+exports.updateLastMessageAfterDeletion = functions.database.ref('communities/{communityID}/features/forums/tabsCategories/{tabID}/{forumID}/lastMessage')
+.onDelete((snapshot, context) => {
+  const forumID = context.params.forumID;
+  const chatsRef = snapshot.ref.parent.parent.parent.parent.child('categories').child(forumID).child('Chat');
+  return chatsRef.orderByChild('timeDate').limitToLast(1).once('value', messageSnapshot => {
+    const messageKey = Object.keys(messageSnapshot.val())[0];
+    const secondLastMessage = messageSnapshot.val()[messageKey];
+    secondLastMessage["key"] = messageKey;
+    return snapshot.ref.set(secondLastMessage);
+  });
+});

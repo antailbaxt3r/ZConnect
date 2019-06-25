@@ -54,7 +54,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private DatabaseReference databaseref;
     private DatabaseReference forumRef;
-    private boolean hasChild = false ;
+    private boolean isLastMessage = false ;
     private ValueEventListener loadMessagesListener;
     private ChatItemFormats delMessage;
     private ChatItemFormats delphoto;
@@ -483,7 +483,50 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void deleteFromDatabase(final ChatItemFormats Message) {
 
-        databaseref.child("Chat").child(Message.getKey()).removeValue();
+        try
+        {
+            forumRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("lastMessage"))
+                {
+                    if (dataSnapshot.child("lastMessage").child("key").getValue().toString().equals(Message.getKey()))
+                    {
+                        forumRef.child("lastMessage").removeValue();
+                        isLastMessage = true;
+                    }
+                    else
+                        isLastMessage = false;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            });
+        }
+        catch (Exception e)
+        { e.printStackTrace(); }
+
+        if (isLastMessage)
+        {
+            forumRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.hasChild("lastMessage"))
+                    {
+                        Toast.makeText(ctx, "Unable to delete message.Try again later.", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                        databaseref.child("Chat").child(Message.getKey()).removeValue();
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) { }
+            });
+        }
+        else
+            databaseref.child("Chat").child(Message.getKey()).removeValue();
+
         // After deleting , chat needs to be refreshed
         loadMessagesListener = new ValueEventListener() {
             @Override
@@ -502,56 +545,11 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     chatFormats.add(temp);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         };
-
         databaseref.child("Chat").addValueEventListener(loadMessagesListener);
-
-        try
-        {
-            forumRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild("lastMessage"))
-                {
-                    hasChild = true;
-                }
-                else
-                    hasChild = false;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        if(hasChild)
-        {
-            forumRef.child("lastMessage").child("message").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    if (dataSnapshot.getValue().equals(Message.getMessage()))
-                    {
-                        forumRef.child("lastMessage").removeValue();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
 
@@ -589,7 +587,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     delphoto = chatFormats.get( (int) itemView.getTag());
 
-                    if(delMessage.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                    if(delphoto.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override

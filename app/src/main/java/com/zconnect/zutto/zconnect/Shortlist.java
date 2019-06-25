@@ -100,7 +100,7 @@ public class Shortlist extends BaseActivity {
         mProductList = (RecyclerView) findViewById(R.id.reservedProductList);
         mProductList.setHasFixedSize(true);
         mProductList.setLayoutManager(productGridLayout);
-        productAdapter = new ProductsRVAdapter(productVector,this);
+        productAdapter = new ProductsRVAdapter(productVector,this,mDatabase);
         mProductList.setAdapter(productAdapter);
 
         communitySP = getSharedPreferences("communityName", MODE_PRIVATE);

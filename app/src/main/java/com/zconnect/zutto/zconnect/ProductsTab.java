@@ -171,7 +171,7 @@ public class ProductsTab extends Fragment {
 
         }
 
-        productAdapter = new ProductsRVAdapter(productVector,getContext());
+        productAdapter = new ProductsRVAdapter(productVector,getContext(),mDatabase);
         mProductList.setAdapter(productAdapter);
 
 

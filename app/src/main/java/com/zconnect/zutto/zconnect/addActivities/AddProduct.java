@@ -98,6 +98,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private CheckBox negotiableCheckBox;
     private Long postTimeMillis;
     private boolean isAsk;
+    private int numberOfViewsInAddProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,6 +264,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         final String productNameValue = mProductName.getText().toString().trim();
         final String productDescriptionValue = mProductDescription.getText().toString().trim();
         final String productPriceValue = mProductPrice.getText().toString().trim();
+        numberOfViewsInAddProduct = 0;
         final Boolean negotiable;
 
         if(negotiableCheckBox.isChecked()) {
@@ -293,6 +295,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         taskMap.put("PostedBy", mAuth.getCurrentUser().getUid());
         taskMap.put("userID", FirebaseAuth.getInstance().getCurrentUser().getUid());
         taskMap.put("PostTimeMillis", postTimeMillis);
+        taskMap.put("NumberOfViews",numberOfViewsInAddProduct);
 
         final DatabaseReference _newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(_newPost.getKey());
         final Map<String, Object> taskMapHome = new HashMap<String, Object>();

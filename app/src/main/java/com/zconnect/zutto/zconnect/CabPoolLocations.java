@@ -39,6 +39,7 @@ import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
 
 public class CabPoolLocations extends BaseActivity {
     private DatabaseReference databaseReferenceCabPool;
+    private DatabaseReference databaseReferenceCabPool2;
     private DatabaseReference mPostedByDetails;
     private RecyclerView locationRecyclerView;
     private LinearLayoutManager locationLinearLayout;
@@ -46,6 +47,7 @@ public class CabPoolLocations extends BaseActivity {
     private ValueEventListener mListener;
     private CabPoolLocationRVAdapter cabPoolLocationRVAdapter;
     private ProgressBar progressBar;
+    private int flag;
 
 
     @Override
@@ -100,6 +102,7 @@ public class CabPoolLocations extends BaseActivity {
         setSupportActionBar(toolbar);
 
         databaseReferenceCabPool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations");
+        databaseReferenceCabPool2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests").child("requestedLocations");
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter Location");
@@ -112,9 +115,9 @@ public class CabPoolLocations extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild("userType")){
                     if (dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN)){
-                        fab.setVisibility(View.VISIBLE);
-                    }else {
-                        fab.setVisibility(View.INVISIBLE);
+                        flag = 1;
+                    }else if (dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_VERIFIED)){
+                        flag = 0;
                     }
                 }else{
                     fab.setVisibility(View.INVISIBLE);
@@ -130,49 +133,88 @@ public class CabPoolLocations extends BaseActivity {
             @Override
             public void onClick(View view) {
 
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADD_LOCATION_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
+                if (flag==1)
+                { CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADD_LOCATION_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
 
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-                final EditText input = new EditText(view.getContext());
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+                    final EditText input = new EditText(view.getContext());
 
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                builder.setView(input);
+                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(input);
 
-                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        addLocation(input.getText().toString());
-                        CounterItemFormat counterItemFormat = new CounterItemFormat();
-                        HashMap<String, String> meta= new HashMap<>();
-                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                        counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADDED_LOCATION);
-                        counterItemFormat.setTimestamp(System.currentTimeMillis());
-                        counterItemFormat.setMeta(meta);
-                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                        counterPush.pushValues();
-
-
-                    }
-                });
-
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                    builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            addLocation(input.getText().toString());
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADDED_LOCATION);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
 
 
-                builder.show();
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
 
 
+                    builder.show();
+                }
+                else if (flag==0){
+                    CounterItemFormat counterItemFormat = new CounterItemFormat();
+                    HashMap<String, String> meta= new HashMap<>();
+                    counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                    counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_REQUEST_LOCATION_OPEN);
+                    counterItemFormat.setTimestamp(System.currentTimeMillis());
+                    counterItemFormat.setMeta(meta);
+
+                    CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                    counterPush.pushValues();
+                    final EditText input = new EditText(view.getContext());
+
+                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(input);
+
+                    builder.setPositiveButton("Request", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestLocation(input.getText().toString());
+                            CounterItemFormat counterItemFormat = new CounterItemFormat();
+                            HashMap<String, String> meta= new HashMap<>();
+                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                            counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_ADDEDREQUEST_LOCATION);
+                            counterItemFormat.setTimestamp(System.currentTimeMillis());
+                            counterItemFormat.setMeta(meta);
+                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                            counterPush.pushValues();
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    builder.show();}
             }
         });
 
@@ -247,6 +289,29 @@ public class CabPoolLocations extends BaseActivity {
                 newPush.child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
                 //needs to be changed after image thumbnail is put
                 newPush.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void requestLocation(String Location){
+        final DatabaseReference newPush=databaseReferenceCabPool2.push();
+
+        newPush.child("key").setValue(newPush.getKey());
+        newPush.child("locationName").setValue(Location);
+        Long postTimeMillis = System.currentTimeMillis();
+        newPush.child("PostTimeMillis").setValue(postTimeMillis);
+        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                newPush.child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
+                //needs to be changed after image thumbnail is put
+                newPush.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
+                newPush.child("PostedBy").child("UID").setValue(dataSnapshot.child("userUID").getValue().toString());
             }
 
             @Override
