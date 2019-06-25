@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:textAlignment="center"
-                    android:textSize="24sp"
+                    android:textSize="18sp"
                     android:text="Tap to start a new communtiy in your area"/>
 
             </LinearLayout>
