@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect;
 
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -33,8 +34,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zconnect.zutto.zconnect.adapters.NewRequestRVAdapter;
 import com.zconnect.zutto.zconnect.addActivities.AddForumTab;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.itemFormats.NewRequestItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NewUserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
@@ -136,15 +139,29 @@ public class AdminHome extends BaseActivity {
     public static class PlaceholderFragment extends Fragment {
 
         private static final String ARG_SECTION_NUMBER = "section_number";
+
         private RecyclerView newUsersRV;
+        private RecyclerView newRequestsRV;
+
         private LinearLayoutManager linearLayoutManager;
+
         private NewUserRVAdapter adapter;
+        private NewRequestRVAdapter requestsRVAdapter;
+
         private Vector<NewUserItemFormat> newUserItemFormats = new Vector<NewUserItemFormat>();
+        private Vector<NewRequestItemFormat> newRequestItemFormats = new Vector<NewRequestItemFormat>();
+
         private DatabaseReference newUsersDataReference;
+        private DatabaseReference newRequestsDataReference;
+
         private Boolean flag;
+
         private TextView noUserMessage;
+        private TextView noRequestMessage;
 
         private ValueEventListener usersDatalistener;
+        private ValueEventListener requestsDataListener;
+
         private ProgressBar progressBar;
 
         private int filterOption;
@@ -177,9 +194,13 @@ public class AdminHome extends BaseActivity {
                 setHasOptionsMenu(true);
                 return verifyUsersTab(inflater, container);
             }
-            else
+            else if(getArguments().getInt(ARG_SECTION_NUMBER)==1)
             {
                 return adminFunctionalityTab(inflater, container);
+            }
+            else
+            {
+                return requestsFromUsersTab(inflater,container);
             }
         }
 
@@ -218,6 +239,48 @@ public class AdminHome extends BaseActivity {
             adminFuncTV0.setOnClickListener(listener);
             adminFuncTV1.setOnClickListener(listener);
 
+            return rootView;
+        }
+
+        private View requestsFromUsersTab(LayoutInflater inflater, ViewGroup container) {
+
+            View rootView = inflater.inflate(R.layout.fragment_admin_requests, container, false);
+            newRequestsDataReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests").child("requestedLocations");
+            newRequestsRV = rootView.findViewById(R.id.new_requests_recycler);
+            linearLayoutManager = new LinearLayoutManager(getContext());
+            newRequestsRV.setLayoutManager(linearLayoutManager);
+            progressBar = rootView.findViewById(R.id.progress_bar);
+            noRequestMessage = rootView.findViewById(R.id.section_label);
+            progressBar.setVisibility(View.VISIBLE);
+
+            requestsDataListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    newRequestItemFormats.clear();
+
+                    for (DataSnapshot shot: dataSnapshot.getChildren()){
+                        try {
+                            NewRequestItemFormat newRequest = shot.getValue(NewRequestItemFormat.class);
+                            newRequestItemFormats.add(newRequest);
+                        }
+                        catch (Exception e) { }
+                    }
+                    progressBar.setVisibility(View.GONE);
+                    if (newRequestItemFormats.isEmpty())
+                        noRequestMessage.setVisibility(View.VISIBLE);
+                    requestsRVAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+
+            newRequestsDataReference.addValueEventListener(requestsDataListener);
+
+            requestsRVAdapter = new NewRequestRVAdapter(rootView.getContext(),newRequestItemFormats);
+            newRequestsRV.setAdapter(requestsRVAdapter);
             return rootView;
         }
 
@@ -350,6 +413,8 @@ public class AdminHome extends BaseActivity {
                     return PlaceholderFragment.newInstance(0);
                 case 1:
                     return PlaceholderFragment.newInstance(1);
+                case 2:
+                    return PlaceholderFragment.newInstance(2);
                 default:
                     return null;
             }
@@ -362,6 +427,8 @@ public class AdminHome extends BaseActivity {
                     return "Verify users";
                 case 1:
                     return "Settings";
+                case 2:
+                    return "Requests";
             }
             return null;
         }
@@ -369,7 +436,7 @@ public class AdminHome extends BaseActivity {
         @Override
         public int getCount() {
             // Show 2 total pages.
-            return 2;
+            return 3;
         }
     }
 }

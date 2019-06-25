@@ -330,8 +330,9 @@ public class CreateForum extends BaseActivity {
                                 message.setImageThumb(userItem.getImageURLThumbnail());
                                 message.setMessage("\""+firstMessage.getText()+"\"");
                                 message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
-                                newPush.child("Chat").push().setValue(message);
-
+                                String messagePushID = newPush.child("Chat").push().getKey();
+                                message.setKey(messagePushID);
+                                newPush.child("Chat").child(messagePushID).setValue(message);
                                 FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid).child(newPush.getKey()).child("lastMessage").setValue(message);
 
                                 NotificationSender notificationSender = new NotificationSender(CreateForum.this,userItem.getUserUID());

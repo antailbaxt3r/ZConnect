@@ -138,7 +138,7 @@ public class StoreroomIndividualCategory extends BaseActivity {
             }
         });
         mDatabase.keepSynced(true);
-        adapter = new ProductsRVAdapter(productVector,this);
+        adapter = new ProductsRVAdapter(productVector,this,mDatabase);
         mProductList.setAdapter(adapter);
 
 

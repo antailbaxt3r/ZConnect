@@ -61,7 +61,7 @@
                     android:clickable="false"
                     android:textAlignment="center"
                     android:textSize="18sp"
-                    android:text="No communities found \n"/>
+                    android:text="No communities found in your area \n"/>
 
                 <TextView
                     android:id="@+id/text2"
@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:textAlignment="center"
-                    android:textSize="24sp"
+                    android:textSize="18sp"
                     android:text="Tap to start a new communtiy in your area"/>
 
             </LinearLayout>
