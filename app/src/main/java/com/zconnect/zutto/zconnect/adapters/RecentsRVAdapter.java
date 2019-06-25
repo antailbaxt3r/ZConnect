@@ -1203,10 +1203,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                         counterPush.pushValues();
 
-                        i=new Intent(context,CabPoolListOfPeople.class);
+                        i=new Intent(context, CabPoolListOfPeople.class);
                         Log.e("check","executed");
                         i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getId());
                         i.putExtra("date",recentsItemFormats.get(getAdapterPosition()).getDT());
+                        i.putExtra("sourceText", recentsItemFormats.get(getAdapterPosition()).getCabpoolSource());
+                        i.putExtra("destinationText", recentsItemFormats.get(getAdapterPosition()).getCabpoolDestination());
+                        i.putExtra("timeText", recentsItemFormats.get(getAdapterPosition()).getCabpoolTime());
+                        i.putExtra("dateText", recentsItemFormats.get(getAdapterPosition()).getCabpoolDate());
+                        i.putExtra("postedByText", recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUsername());
+                        i.putExtra("postedByImageText", recentsItemFormats.get(getAdapterPosition()).getPostedBy().getImageThumb());
                         context.startActivity(i);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){
                         try {

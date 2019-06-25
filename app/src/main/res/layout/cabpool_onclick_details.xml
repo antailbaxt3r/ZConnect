@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="bits"
+                android:textSize="12sp"
                 android:textColor="@color/primaryText"
                 android:layout_marginStart="5dp"/>
         </LinearLayout>
@@ -115,12 +116,10 @@
                     android:layout_gravity="right"
                     android:layout_height="wrap_content"
                     android:text="Date"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="5dp"
-                    android:background="@drawable/rounded_corner_border"
                     android:textSize="30sp"
+                    android:textStyle="bold"
                     android:layout_marginBottom="5dp"
-                    android:textColor="@color/primaryText" />
+                    android:textColor="@color/deepPurple500" />
                 <TextView
                     android:id="@+id/time_cp_detail"
                     android:gravity="end"
@@ -128,9 +127,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:text="Time"
-                    android:background="@drawable/rounded_corner_border"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="@dimen/border_radius_5dp"
                     android:textSize="16sp"
                     android:textColor="@color/primaryText"/>
             </LinearLayout>
@@ -166,6 +162,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Share"
+                        android:textSize="16sp"
                         android:textColor="@color/primaryText"/>
 
                 </LinearLayout>
@@ -176,7 +173,6 @@
                     android:id="@+id/people_count_cp_detail"
                     android:text="0 People"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
                     android:textAlignment="textEnd"
                     />
             </LinearLayout>
