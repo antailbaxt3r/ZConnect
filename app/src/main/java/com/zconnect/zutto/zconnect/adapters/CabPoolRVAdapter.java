@@ -127,7 +127,8 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             holder.imagethmb.setImageURI(Uri.parse(cabItemFormat.get(position).getPostedBy().getImageThumb()));
             holder.source.setText(array.get(position).getSource());
            String key0 = cabItemFormat.get(position).getKey();
-           holder.people.setText(cabItemFormat.get(position).getUsersListItemFormats().size() + " People");
+           int noOfPersons = cabItemFormat.get(position).getUsersListItemFormats().size();
+           holder.people.setText(noOfPersons + (noOfPersons>1?" Persons":" Person"));
 
 //       if(array.get(position).getFrom()!=0){ holder.time.setText(array.get(position).getFrom()+":00 to "+array.get(position).getTo()+":00");}
            String fromAmPm = array.get(position).getFrom()<12 ? "AM" : "PM";
@@ -155,7 +156,8 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
             holder.date.setText(date.toString("MMM") + " " + date.getDayOfMonth());
 
             final String key1 = cabItemFormat.get(position).getKey();
-            holder.people.setText(cabItemFormat.get(position).getUsersListItemFormats().size() + " Persons");
+            int noOfPersons = cabItemFormat.get(position).getUsersListItemFormats().size();
+            holder.people.setText(noOfPersons + (noOfPersons>1?" Persons":" Person"));
             //System.out.println("OUTSIDE DATASNAPSHOT"); //for testing
             //System.out.println("peopletext outside: " + peopleText); //for testing
             holder.imagethmb.setImageURI(Uri.parse(cabItemFormat.get(position).getPostedBy().getImageThumb()));
