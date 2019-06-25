@@ -587,7 +587,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     delphoto = chatFormats.get( (int) itemView.getTag());
 
-                    if(delMessage.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                    if(delphoto.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
