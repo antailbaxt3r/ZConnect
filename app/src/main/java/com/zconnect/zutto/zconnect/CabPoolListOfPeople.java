@@ -392,7 +392,8 @@ public class CabPoolListOfPeople extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 flag = false;
                 usersListItemFormatVector.clear();
-                people = Long.toString(dataSnapshot.getChildrenCount()) + " people";
+                long noOfPersons = dataSnapshot.getChildrenCount();
+                people = noOfPersons + (noOfPersons>1?" Persons":" Person");
                 peopleTV.setText(people);
 
 
