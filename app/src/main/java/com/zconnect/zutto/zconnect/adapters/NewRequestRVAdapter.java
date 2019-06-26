@@ -38,6 +38,8 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
     public void onBindViewHolder(newRequestViewHolder holder, int position) {
 
         holder.newRequestName.setText(newRequestItemFormats.get(position).getLocationName());
+        holder.postedByNameInLocation.setText(newRequestItemFormats.get(position).getPostedBy().getUsername());
+        holder.postedByImageLocation.setImageURI(newRequestItemFormats.get(position).getPostedBy().getImageThumb());
         holder.setAcceptDeclineButton(newRequestItemFormats.get(position).getKey());
     }
 

@@ -4,8 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,15 +21,18 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 
 public class newRequestViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView newRequestName;
-    public Button acceptUserButton, declineUserButton;
+    public TextView newRequestName, postedByNameInLocation;
+    public ImageView acceptUserButton, declineUserButton;
+    public SimpleDraweeView postedByImageLocation;
 
     public newRequestViewHolder(View itemView)
     {
         super(itemView);
-        newRequestName = (TextView) itemView.findViewById(R.id.name_new_request);
-        acceptUserButton = (Button) itemView.findViewById(R.id.accept_new_request);
-        declineUserButton = (Button) itemView.findViewById(R.id.decline_new_request);
+        newRequestName = itemView.findViewById(R.id.name_new_request);
+        acceptUserButton = itemView.findViewById(R.id.accept_new_request);
+        declineUserButton = itemView.findViewById(R.id.decline_new_request);
+        postedByImageLocation = itemView.findViewById(R.id.postedByImageLocation);
+        postedByNameInLocation = itemView.findViewById(R.id.postedByInLocation);
     }
 
     public void setAcceptDeclineButton(final String key) {

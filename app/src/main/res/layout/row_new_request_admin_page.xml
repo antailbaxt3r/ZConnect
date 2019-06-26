@@ -8,38 +8,101 @@
     android:background="@color/card_background_color"
     android:layout_marginBottom="10dp">
 
-    <TextView
-        android:layout_marginTop="10dp"
-        android:id="@+id/name_new_request"
-        android:text="Location Name"
-        android:textSize="16sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primaryText"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-        <Button
-            android:id="@+id/decline_new_request"
-            android:text="Decline"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_button_simple"
-            android:layout_marginEnd="10dp"
-            android:textColor="@color/colorPrimary"
-            style="?android:attr/borderlessButtonStyle"/>
-        <Button
-            android:id="@+id/accept_new_request"
-            android:text="Accept"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_button_primary"
-            android:textColor="@color/white"
-            android:layout_marginStart="10dp"
-            style="?android:attr/borderlessButtonStyle"/>
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/border_radius_5dp"
+                android:orientation="horizontal">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/postedByImageLocation"
+                    app:roundAsCircle="true"
+                    android:background="@drawable/avatar_circle_24dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="PostedBy"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/black"
+                    android:id="@+id/postedByInLocation"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/name_new_request"
+                android:text="Location Name"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primaryText"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+                <Button
+                    android:id="@+id/decline_new_request"
+                    android:text="@string/decline"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_button_simple"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="@color/deepPurple500"
+                    style="?android:attr/borderlessButtonStyle"/>
+                <Button
+                    android:id="@+id/accept_new_request"
+                    android:text="@string/accept"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_button_primary"
+                    android:textColor="@color/white"
+                    android:layout_marginStart="10dp"
+                    style="?android:attr/borderlessButtonStyle"/>
+            </LinearLayout>
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal">-->
+                <!--<ImageView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_marginEnd="10dp"-->
+                    <!--android:id="@+id/decline_new_request"-->
+                    <!--android:tint="@color/deepPurple500"-->
+                    <!--android:src="@drawable/ic_outline_highlight_off_24px" />-->
+
+
+                <!--<ImageView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/accept_new_request"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:tint="@color/deepPurple500"-->
+                    <!--android:src="@drawable/ic_check_circle_outline_24px" />-->
+            <!--</LinearLayout>-->
+            </LinearLayout>
+
+        </LinearLayout>
 </LinearLayout>

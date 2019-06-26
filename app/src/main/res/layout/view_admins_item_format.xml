@@ -17,7 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:orientation="vertical">
-            <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/admin_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

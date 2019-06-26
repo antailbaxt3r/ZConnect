@@ -81,8 +81,6 @@ for (DataSnapshot childsnap:dataSnapshot.getChildren()){
         name.add(String.valueOf(childsnap.child("username").getValue()));
         if (!("").equals(childsnap.child("imageURL").getValue())) {
             image.add(String.valueOf(childsnap.child("imageURL").getValue()));
-        } else {
-            image.add("https://lh6.googleusercontent.com/-idc9bXb9n-Q/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DVg6FhNzc1jkN4eBCa6ESbBPmpl5g/s96-c/photo.jpg");
         }
         uid.add(String.valueOf(childsnap.child("userUID").getValue()));
     }
