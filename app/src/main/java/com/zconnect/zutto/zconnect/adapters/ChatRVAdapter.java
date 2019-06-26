@@ -412,6 +412,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
+
+        Log.d("Came hear","ITEMCOUNT");
         return chatFormats.size();
     }
 

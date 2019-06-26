@@ -664,29 +664,22 @@ public class ChatActivity extends BaseActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
 
         final ChatItemFormats message = new ChatItemFormats();
+        final ChatItemFormats messageTemp = new ChatItemFormats();
+
         message.setTimeDate(calendar.getTimeInMillis());
 
         if(mImageUri!=null){
-            List<ChatItemFormats> tempModel=new ArrayList<>(messages);
-            messages.clear();
-            ChatItemFormats message1 = new ChatItemFormats();
-            message1.setPhotoURL(mImageUri.toString());
             Log.d("L",Integer.toString(messages.size()));
-            message1.setMessageType(MessageTypeUtilities.KEY_PHOTO_SENDING_STR);
-            tempModel.add(message1);
-            messages.addAll(tempModel);
+            messageTemp.setUuid(mAuth.getCurrentUser().getUid());
+            messageTemp.setName(mAuth.getCurrentUser().getDisplayName());
+            messageTemp.setPhotoURL(mImageUri != null ? mImageUri.toString() : null);
+            messageTemp.setImageThumb(mImageUri.toString());
+            messageTemp.setMessage(" \uD83D\uDCF7 Image ");
+            messageTemp.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
+            messages.add(messageTemp);
+            Log.d("L",Integer.toString(messages.size()));
             adapter.notifyDataSetChanged();
 
-            chatView.setAdapter(adapter);
-
-            messages.clear();
-            adapter.notifyItemInserted(messages.size() - 1);
-            adapter.notifyDataSetChanged();
-            Log.d("L",Integer.toString(messages.size()));
-            chatView.setAdapter(adapter);
-
-
-            chatView.scrollToPosition(messages.size()-1);
 
 
             final StorageReference filePath = mStorage.child(communityReference).child("features").child(type).child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
