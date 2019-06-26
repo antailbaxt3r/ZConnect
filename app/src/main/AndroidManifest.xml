@@ -404,6 +404,11 @@
             android:label="@string/title_activity_cab_pool_locations"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MakeAdmin"
+            android:label="@string/title_activity_cab_pool_locations"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ForumsPeopleList"

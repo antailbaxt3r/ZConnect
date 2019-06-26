@@ -1,54 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="1dp"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="3dp">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/view_admin_cardview"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <android.support.constraint.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="150dp"
+            android:orientation="vertical">
+            <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/admin_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75"
+                fresco:viewAspectRatio="1.33"
+                android:paddingTop="5dp"
+                android:transitionName="@string/transition_string"
+                app:roundAsCircle="true"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/admin_name"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="45dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="TextView"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.52"
-                app:layout_constraintStart_toEndOf="@+id/admin_image"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.10"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:textAlignment="center"
+                android:textColor="@color/primaryText"
+                android:textStyle="bold"
+                tools:text="Admin Name" />
+        </LinearLayout>
+    </LinearLayout>
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/admin_image"
-                android:layout_width="61dp"
-                android:layout_height="61dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                app:actualImageScaleType="centerCrop"
-                android:background="@drawable/avatar_circle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:roundAsCircle="true" />
-        </android.support.constraint.ConstraintLayout>
 
-    </android.support.v7.widget.CardView>
-
-</android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

@@ -60,7 +60,6 @@ public class AdminHome extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
-
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Admin Home");
         setSupportActionBar(toolbar);
@@ -78,12 +77,7 @@ public class AdminHome extends BaseActivity {
                         }
                     });
         }
-
-
-
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,7 +90,6 @@ public class AdminHome extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int colorPrimary = ContextCompat.getColor(this, R.color.colorPrimary);
             int colorDarkPrimary = ContextCompat.getColor(this, R.color.colorPrimaryDark);
@@ -104,7 +97,6 @@ public class AdminHome extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
-
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -189,7 +181,7 @@ public class AdminHome extends BaseActivity {
 
 
         //for admin functionalities
-        private TextView adminFuncTV0, adminFuncTV1;
+        private TextView adminFuncTV0, adminFuncTV1,adminFuncTV2;
         public PlaceholderFragment() {
         }
 
@@ -234,7 +226,7 @@ public class AdminHome extends BaseActivity {
             View rootView = inflater.inflate(R.layout.fragment_admin_functionalities, container, false);
             adminFuncTV0 = rootView.findViewById(R.id.admin_func_0);
             adminFuncTV1 = rootView.findViewById(R.id.admin_func_1);
-
+            adminFuncTV2 = rootView.findViewById(R.id.admin_func_2);
             View.OnClickListener listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -247,6 +239,8 @@ public class AdminHome extends BaseActivity {
                         case 1:
                             startActivity(new Intent(getContext(), AddForumTab.class));
                             break;
+                        case 2:
+                            startActivity(new Intent(getContext(),MakeAdmin.class));
                         default:
                             break;
                     }
@@ -255,6 +249,7 @@ public class AdminHome extends BaseActivity {
 
             adminFuncTV0.setOnClickListener(listener);
             adminFuncTV1.setOnClickListener(listener);
+            adminFuncTV2.setOnClickListener(listener);
 
             return rootView;
         }
