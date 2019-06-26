@@ -72,7 +72,7 @@ public class MakeAdmin extends BaseActivity {
         recyclerViewContacts = (RecyclerView) findViewById(R.id.rv_make_admin);
         recyclerViewContacts.setVisibility(View.GONE);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1");
-        databaseReference.limitToFirst(15).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 for (DataSnapshot childsnap:dataSnapshot.getChildren()){
@@ -93,49 +93,6 @@ for (DataSnapshot childsnap:dataSnapshot.getChildren()){
                 recyclerViewContacts.setLayoutManager(new LinearLayoutManager(MakeAdmin.this));
                makeAdminRVAdapter = new MakeAdminRVAdapter(MakeAdmin.this,image,name,uid);
                 recyclerViewContacts.setAdapter(makeAdminRVAdapter);
-
-                recyclerViewContacts.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                        if (!recyclerView.canScrollVertically(1)) {
-                            progressBar.setVisibility(View.VISIBLE);
-                            Log.d("i scrolled", "onScrolled: ");
-                            databaseReference.orderByKey().startAt(oldestPostId).limitToFirst(15).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    name.removeElementAt(name.size()-1);
-                                    image.removeElementAt(name.size()-1);
-                                    for (DataSnapshot childsnap : dataSnapshot.getChildren()) {
-                                        if (!("admin").equals(childsnap.child("userType").getValue())) {
-                                            oldestPostId = childsnap.getKey();
-                                            name.add(String.valueOf(childsnap.child("username").getValue()));
-                                            if (!("").equals(childsnap.child("imageURL").getValue())) {
-                                                image.add(String.valueOf(childsnap.child("imageURL").getValue()));
-                                            } else {
-                                                image.add("https://lh6.googleusercontent.com/-idc9bXb9n-Q/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DVg6FhNzc1jkN4eBCa6ESbBPmpl5g/s96-c/photo.jpg");
-                                            }
-                                            uid.add(String.valueOf(childsnap.child("userUID").getValue()));
-                                        }
-                                    }
-                                    Log.d("DATA CHANGED", "onDataChange: ");
-                                   makeAdminRVAdapter.notifyDataSetChanged();
-                                    progressBar.setVisibility(View.INVISIBLE);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Log.e(MakeAdmin.class.getName(), "database error" + databaseError.toString());
-                                    progressBar.setVisibility(View.GONE);
-                                    recyclerViewContacts.setVisibility(View.VISIBLE);
-                                    Toast.makeText(getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
-
-                                }
-                            });
-                        }
-                    }
-                });
-
 
 
             }
