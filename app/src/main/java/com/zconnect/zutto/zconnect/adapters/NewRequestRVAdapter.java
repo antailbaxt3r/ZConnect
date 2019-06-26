@@ -37,8 +37,15 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
     @Override
     public void onBindViewHolder(newRequestViewHolder holder, int position) {
 
-        holder.newRequestName.setText(newRequestItemFormats.get(position).getLocationName());
-        holder.setAcceptDeclineButton(newRequestItemFormats.get(position).getKey());
+        if (newRequestItemFormats.get(position).getType().equals("CabpoolLocation"))
+        holder.newRequestName.setText("Requested Location name: "+newRequestItemFormats.get(position).getName());
+        else
+            holder.newRequestName.setText("Requested ForumTab name: "+newRequestItemFormats.get(position).getName());
+
+        if (newRequestItemFormats.get(position).getType().equals("CabpoolLocation"))
+        holder.setAcceptDeclineButtonForLocations(newRequestItemFormats.get(position).getKey());
+        else
+            holder.setAcceptDeclineButtonForForumTabs(newRequestItemFormats.get(position).getKey());
     }
 
     @Override

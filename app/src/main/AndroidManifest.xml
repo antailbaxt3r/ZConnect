@@ -532,6 +532,11 @@
             android:label="Add a Forums Tab"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".addActivities.RequestForumTab"
+            android:label="Request a Forums Tab"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
 
 

@@ -1,10 +1,13 @@
 package com.zconnect.zutto.zconnect.holders;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,24 +33,24 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
         declineUserButton = (Button) itemView.findViewById(R.id.decline_new_request);
     }
 
-    public void setAcceptDeclineButton(final String key) {
+    public void setAcceptDeclineButtonForLocations(final String key) {
 
         acceptUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatabaseReference requestedLocationDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests").child("requestedLocations");
+                DatabaseReference requestedLocationDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests");
 
-                final DatabaseReference newPush=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations").push();
+                final DatabaseReference addNewLocation=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations");
 
                 Long postTimeMillis = System.currentTimeMillis();
-                newPush.child("PostTimeMillis").setValue(postTimeMillis);
+                addNewLocation.child(key).child("PostTimeMillis").setValue(postTimeMillis);
 
                 requestedLocationDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        try { newPush.child("locationName").setValue(dataSnapshot.child(key).child("locationName").getValue().toString());
-                            newPush.child("PostedBy").child("Username").setValue(dataSnapshot.child(key).child("PostedBy").child("Username").getValue().toString());
-                            newPush.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child(key).child("PostedBy").child("ImageThumb").getValue().toString()); }
+                        try { addNewLocation.child(key).child("locationName").setValue(dataSnapshot.child(key).child("locationName").getValue().toString());
+                            addNewLocation.child(key).child("PostedBy").child("Username").setValue(dataSnapshot.child(key).child("PostedBy").child("Username").getValue().toString());
+                            addNewLocation.child(key).child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child(key).child("PostedBy").child("ImageThumb").getValue().toString()); }
                         catch (Exception e){}
                     }
 
@@ -65,10 +68,29 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
 
-                DatabaseReference requestedLocationDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests").child("requestedLocations");
+                DatabaseReference requestedLocationDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests");
                 requestedLocationDatabaseReference.child(key).removeValue();
 
             }
         });
+    }
+
+    public void setAcceptDeclineButtonForForumTabs(final String key) {
+
+        acceptUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("ButtonResponse","Accepted");
+            }
+        });
+
+        declineUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               DatabaseReference requestForumTabs = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/admin/requests");
+                requestForumTabs.child(key).removeValue();
+            }
+        });
+
     }
 }

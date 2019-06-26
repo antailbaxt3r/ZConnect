@@ -1,5 +1,6 @@
 package com.zconnect.zutto.zconnect;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.addActivities.AddForumTab;
+import com.zconnect.zutto.zconnect.addActivities.RequestForumTab;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -75,6 +79,8 @@ public class ExploreForumsActivity extends BaseActivity{
 
     ViewPagerAdapter adapter;
     private Boolean newUser = false;
+
+    int flag;
 
 
     @Override
@@ -194,6 +200,12 @@ public class ExploreForumsActivity extends BaseActivity{
             if(getIntent().getStringExtra("userType").equals(UsersTypeUtilities.KEY_ADMIN))
             {
                item_addTab.setVisible(true);
+               flag = 1;
+            }
+            else if(getIntent().getStringExtra("userType").equals(UsersTypeUtilities.KEY_VERIFIED))
+            {
+                item_addTab.setVisible(true);
+                flag = 2;
             }
             else
             {
@@ -216,7 +228,12 @@ public class ExploreForumsActivity extends BaseActivity{
             finish();
         }
         if(id == R.id.action_add_tab) {
+            if (flag==1)
             startActivity(new Intent(getApplicationContext(), AddForumTab.class));
+            else
+            {
+                startActivity(new Intent(getApplicationContext(), RequestForumTab.class));
+            }
         }
         return super.onOptionsItemSelected(item);
     }
