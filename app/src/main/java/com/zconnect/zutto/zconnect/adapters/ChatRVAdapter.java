@@ -490,7 +490,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild("lastMessage"))
                 {
-                    if (dataSnapshot.child("lastMessage").child("message").getValue().toString().trim().equals(Message.getMessage().trim()))
+                    if (dataSnapshot.child("lastMessage").child("key").getValue().toString().equals(Message.getKey()))
                     {
                         forumRef.child("lastMessage").removeValue();
                         isLastMessage = true;
@@ -587,7 +587,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     delphoto = chatFormats.get( (int) itemView.getTag());
 
-                    if(delMessage.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                    if(delphoto.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
