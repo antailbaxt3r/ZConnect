@@ -64,9 +64,12 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
     private ImageView productImage;
     private ImageView productShortList;
     private TextView productPrice;
+    private TextView productViewsCount;
     private TextView productNegotiableText;
 //    private Button productSellerContact;
     private TextView productDate;
+
+    Long ViewsCounter;
 
     private String sellerName;
     public Boolean flag;
@@ -111,6 +114,29 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
 
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
+
+                StoreRoom.child(key).child("NumberOfViews").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        try
+                        {
+                            ViewsCounter = (Long) dataSnapshot.getValue();
+                            ViewsCounter++;
+                            StoreRoom.child(key).child("NumberOfViews").setValue(ViewsCounter);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.e("Error","Number of views not found for this product");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
                 Intent intent= new Intent(mView.getContext(),OpenProductDetails.class);
                 intent.putExtra("key", key);
                 intent.putExtra("type", type);
@@ -293,6 +319,19 @@ public class ProductsViewHolder extends RecyclerView.ViewHolder {
         TimeUtilities tu = new TimeUtilities(postedTime, currentTime);
         String timeAgo = tu.calculateTimeAgoStoreroom();
         productDate.setText(timeAgo);
+
+    }
+
+    public void setNumberOfViewsInHolder(int numberOfViews) {
+        productViewsCount = (TextView) mView.findViewById(R.id.views);
+        productViewsCount.setVisibility(View.VISIBLE);
+
+        if (numberOfViews==0)
+            productViewsCount.setText("No Views");
+        else if (numberOfViews==1)
+            productViewsCount.setText("1 View");
+        else
+            productViewsCount.setText(numberOfViews+" Views");
 
     }
 

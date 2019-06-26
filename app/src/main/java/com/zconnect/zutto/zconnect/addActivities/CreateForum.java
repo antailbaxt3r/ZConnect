@@ -308,7 +308,9 @@ public class CreateForum extends BaseActivity {
                                 true
                                 );
 
-                    }
+                            }
+
+
                     else {
                         Snackbar snackbar = Snackbar.make(addForumName, "Forum name and first message required", Snackbar.LENGTH_SHORT);
                         snackbar.getView().setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimaryDark));

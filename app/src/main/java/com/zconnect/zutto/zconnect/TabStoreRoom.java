@@ -272,7 +272,7 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
 
         }
 
-        productAdapter = new ProductsRVAdapter(productVector,this);
+        productAdapter = new ProductsRVAdapter(productVector,this,mDatabase);
         mProductList.setAdapter(productAdapter);
 
         mListener = new ValueEventListener() {
@@ -379,12 +379,12 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                     }
                 }
 
-                productAdapter = new ProductsRVAdapter(searchProductVector,this);
+                productAdapter = new ProductsRVAdapter(searchProductVector,this,mDatabase);
                 mProductList.setAdapter(productAdapter);
                 //progressBar.setVisibility(View.GONE);
                 //mProductList.setVisibility(View.VISIBLE);
             }else {
-                productAdapter = new ProductsRVAdapter(productVector,this);
+                productAdapter = new ProductsRVAdapter(productVector,this,mDatabase);
                 mProductList.setAdapter(productAdapter);
                 //progressBar.setVisibility(View.GONE);
                 //mProductList.setVisibility(View.VISIBLE);

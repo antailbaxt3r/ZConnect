@@ -534,7 +534,9 @@ public class ChatActivity extends BaseActivity {
                 message.setMessage("\""+text+"\"");
                 message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                 GlobalFunctions.addPoints(2);
-                databaseReference.child("Chat").push().setValue(message);
+                String messagePushID = databaseReference.child("Chat").push().getKey();
+                message.setKey(messagePushID);
+                databaseReference.child("Chat").child(messagePushID).setValue(message);
 //                messages.add(message);
 
 //                adapter.notifyDataSetChanged();
@@ -710,8 +712,9 @@ public class ChatActivity extends BaseActivity {
                                 message.setMessage(" \uD83D\uDCF7 Image ");
                                 message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
                                 GlobalFunctions.addPoints(5);
-
-                                databaseReference.child("Chat").push().setValue(message);
+                                String messagePushID = databaseReference.child("Chat").push().getKey();
+                                message.setKey(messagePushID);
+                                databaseReference.child("Chat").child(messagePushID).setValue(message);
                                 if (type.equals("forums")){
                                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 
