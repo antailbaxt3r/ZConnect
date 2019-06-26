@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.RemoteMessage;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 import org.json.JSONObject;
@@ -115,11 +116,11 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         switch (notificationIdentifier) {
             //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST:
-                eventBoostNotification(ND.getItemKey(), ND.getItemName(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage());
+                eventBoostNotification(ND.getItemKey(), ND.getItemName(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage(),ND.getRecieverKey());
                 break;
             //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN:
-                cabJoinNotification(ND.getItemKey(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage());
+                cabJoinNotification(ND.getItemKey(), ND.getUserName(), ND.getCommunityName(), ND.getUserImage(),ND.getRecieverKey());
                 break;
             //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE:
@@ -127,7 +128,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
                 break;
             //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST:
-                productShortlistNotification(ND.getItemKey(), ND.getUserName(), ND.getUserMobileNumber(), ND.getItemName(), ND.getCommunityName(), ND.getUserImage());
+                productShortlistNotification(ND.getItemKey(), ND.getUserName(), ND.getUserMobileNumber(), ND.getItemName(), ND.getCommunityName(), ND.getUserImage(),ND.getRecieverKey());
                 break;
                 //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD:
@@ -186,11 +187,11 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
                 break;
                 //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT:
-                newUserAcceptNotification(ND.getCommunityName(),ND.getItemKey());
+                newUserAcceptNotification(ND.getCommunityName(),ND.getItemKey(),ND.getUserName(),ND.getUserImage());
                 break;
                 //done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT:
-                newUserRejectNotification(ND.getCommunityName(),ND.getItemKey());
+                newUserRejectNotification(ND.getCommunityName(),ND.getItemKey(),ND.getUserName(),ND.getUserImage());
                 break;
                 //Done
             case NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED:
@@ -229,23 +230,33 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_NOTICES_ADD_FREQUENCY_STR);
     }
 
-    private void newUserRejectNotification(String communityName,String receiverKey) {
+    private void newUserRejectNotification(String communityName,String receiverKey,String username,String userimg) {
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
 
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_REJECT);
         creator.addData("userKey",userKey);
 
+        UserItemFormat userItemFormat=new UserItemFormat();
+        userItemFormat.setUserUID(userKey);
+        userItemFormat.setUsername(username);
+        userItemFormat.setImageURL(userimg);
+GlobalFunctions.inAppNotifications("rejected your request to join the community","please add your details and try again",userItemFormat,false,"verification",null,receiverKey);
         sendNotification(true,receiverKey);
     }
 
-    private void newUserAcceptNotification(String communityName,String receiverKey) {
+    private void newUserAcceptNotification(String communityName,String receiverKey,String username,String userimg) {
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
 
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT);
         creator.addData("userKey",userKey);
 
+        UserItemFormat userItemFormat=new UserItemFormat();
+        userItemFormat.setUserUID(userKey);
+        userItemFormat.setUsername(username);
+        userItemFormat.setImageURL(userimg);
+        GlobalFunctions.inAppNotifications("accepted your request to join the community","congratulations your part of this community",userItemFormat,false,"verification",null,receiverKey);
         sendNotification(true,receiverKey);
     }
 
@@ -499,7 +510,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD_FREQUENCY_STR);
     }
 
-    private void productShortlistNotification(String productKey,String userName,String userMobileNumber,String productName, String communityName,String userImage){
+    private void productShortlistNotification(String productKey,String userName,String userMobileNumber,String productName, String communityName,String userImage,String recieverKey){
 
         creator = new RemoteMessage.Builder("data");
         creator.addData("userName",userName);
@@ -514,6 +525,11 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST);
         creator.addData("userKey",userKey);
 
+        UserItemFormat userItemFormat=new UserItemFormat();
+        userItemFormat.setUserUID(userKey);
+        userItemFormat.setUsername(userName);
+        userItemFormat.setImageURL(userImage);
+        GlobalFunctions.inAppNotifications("shortlisted your product","",userItemFormat,false,"cabpool",null,recieverKey);
         sendNotification(true, productKey);
     }
 
@@ -532,7 +548,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         sendNotification(true, cabKey);
     }
 
-    private void cabJoinNotification(String cabKey,String userName,String communityName,String userImage) {
+    private void cabJoinNotification(String cabKey,String userName,String communityName,String userImage,String recieverKey) {
         creator = new RemoteMessage.Builder("data");
 
         creator.addData("userName",userName);
@@ -542,11 +558,15 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
 
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN);
         creator.addData("userKey",userKey);
-
+        UserItemFormat userItemFormat=new UserItemFormat();
+        userItemFormat.setUserUID(userKey);
+        userItemFormat.setUsername(userName);
+        userItemFormat.setImageURL(userImage);
+        GlobalFunctions.inAppNotifications("joined your cabpool","",userItemFormat,false,"cabpool",null,recieverKey);
         sendNotification(true, cabKey);
     }
 
-    public void eventBoostNotification(String eventKey, String eventName, String userName,String communityName,String userImage) {
+    public void eventBoostNotification(String eventKey, String eventName, String userName,String communityName,String userImage,String recieverKey) {
         creator = new RemoteMessage.Builder("data");
 
         creator.addData("eventKey",eventKey);
@@ -558,6 +578,11 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST);
         creator.addData("userKey",userKey);
 
+        UserItemFormat userItemFormat=new UserItemFormat();
+        userItemFormat.setUserUID(userKey);
+        userItemFormat.setUsername(userName);
+        userItemFormat.setImageURL(userImage);
+        GlobalFunctions.inAppNotifications("boosted your event","",userItemFormat,false,"cabpool",null,recieverKey);
         sendNotification(true,eventKey);
     }
 

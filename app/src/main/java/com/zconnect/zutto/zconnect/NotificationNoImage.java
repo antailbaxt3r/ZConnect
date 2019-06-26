@@ -26,13 +26,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 public class NotificationNoImage extends BaseActivity {
@@ -48,6 +53,7 @@ public class NotificationNoImage extends BaseActivity {
     private EditText nottificationURL;
     private Button sendNotification;
     private Toolbar mActionBarToolbar;
+    UserItemFormat userItemFormat=new UserItemFormat();
 
 
 
@@ -126,6 +132,20 @@ public class NotificationNoImage extends BaseActivity {
             addImageNotification.setItemTitle(notificationTitle.getText().toString());
             addImageNotification.setItemURL(nottificationURL.getText().toString());
 
+            mUsername.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                       userItemFormat.setUsername(String.valueOf(dataSnapshot.child(userId).child("username").getValue()));
+                       userItemFormat.setImageURL(String.valueOf(dataSnapshot.child(userId).child("imageURL").getValue()));
+                       userItemFormat.setUserUID(String.valueOf(dataSnapshot.child(userId).child("userUID").getValue()));
+                       GlobalFunctions.inAppNotifications("send the following notification: "+ notificationTitle.getText().toString(), notificationDescription.getText() + "Notification URL:" + nottificationURL.getText(), userItemFormat, true, "adminnotif", null, null);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
             notificationSender.execute(addImageNotification);
 
             mProgress.dismiss();

@@ -7,10 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,10 +23,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.adapters.InAppNotificationsAdapter;
 import com.zconnect.zutto.zconnect.itemFormats.InAppNotificationsItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -36,6 +41,7 @@ public class InAppNotificationsFragment extends Fragment {
     private SharedPreferences communitySP;
     public String communityRef;
     private DatabaseReference notificationsReference;
+    private DatabaseReference globalReference;
     private ValueEventListener listener;
     ArrayList<InAppNotificationsItemFormat> notificationsList;
     private InAppNotificationsAdapter inAppNotificationsAdapter;
@@ -58,16 +64,12 @@ public class InAppNotificationsFragment extends Fragment {
         notifRecyclerView = (RecyclerView) view.findViewById(R.id.rv_notifications_fragment);
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_notifications_progress_circle);
 
-        notifRecyclerView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
 
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityRef = communitySP.getString("communityReference", null);
 
-        notificationsReference = FirebaseDatabase.getInstance().getReference().child("communities")
-                .child(communityRef).child("Users1")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("notifications");
-
+        globalReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef);
         notifRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
 
@@ -76,34 +78,55 @@ public class InAppNotificationsFragment extends Fragment {
         //Test Notification. Uncomment for testing
         //GlobalFunctions.pushNotifications("Test", "This is a test", false, 1, new HashMap<String, String>());
 
-        listener = new ValueEventListener() {
+
+        Log.d("outside", "onDataChange: ");
+        globalReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    try {
-                        InAppNotificationsItemFormat inAppNotificationsItemFormat = childSnapshot.getValue(InAppNotificationsItemFormat.class);
+                for(DataSnapshot childSnapshot : dataSnapshot.child("globalNotifications").getChildren()) {
+                        InAppNotificationsItemFormat globalnotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
+                        if(globalnotification!=null)
+                        notificationsList.add(globalnotification);
 
-                        notificationsList.add(inAppNotificationsItemFormat);
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
                 }
 
-                progressBar.setVisibility(View.GONE);
-                notifRecyclerView.setVisibility(View.VISIBLE);
-                inAppNotificationsAdapter.notifyDataSetChanged();
+          inAppNotificationsAdapter.notifyDataSetChanged();
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        };
-        notificationsReference.addValueEventListener(listener);
+        });
+        globalReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot childSnapshot : dataSnapshot.child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("notifications").getChildren()) {
+                    InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
+                    notificationsList.add(usernotification);
+                }
+                Collections.sort(notificationsList, new Comparator<InAppNotificationsItemFormat>() {
+                    @Override
+                    public int compare(InAppNotificationsItemFormat o1, InAppNotificationsItemFormat o2) {
+                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()) ;
+                    }
+                });
+                progressBar.setVisibility(View.GONE);
+                notifRecyclerView.setVisibility(View.VISIBLE);
+               inAppNotificationsAdapter.notifyDataSetChanged();
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        Log.d("return", "onCreateView: ");
         inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, notificationsList);
         notifRecyclerView.setAdapter(inAppNotificationsAdapter);
-
         return view;
     }
 }

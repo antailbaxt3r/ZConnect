@@ -89,7 +89,7 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 public class ChatActivity extends BaseActivity {
 
     private String TAG = ChatActivity.class.getSimpleName();
-
+    NotificationItemFormat notificationItemFormat;
     private static final int GALLERY_REQUEST = 7;
     private String ref  = "Misc";
     private RecyclerView chatView;
@@ -106,7 +106,7 @@ public class ChatActivity extends BaseActivity {
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
     private static boolean unseenFlag, unseenFlag2;
-
+    private String recieverKey;
     //For Photo Posting
     private IntentHandle intentHandle;
     private Intent galleryIntent;
@@ -175,7 +175,6 @@ public class ChatActivity extends BaseActivity {
         chatLayout.setVisibility(View.VISIBLE);
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref);
-
         if(FirebaseAuth.getInstance().getCurrentUser().getUid()==null) {
             showToast("You have to be logged in to chat");
             finish();
@@ -201,11 +200,12 @@ public class ChatActivity extends BaseActivity {
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
+                        recieverKey = (String) dataSnapshot.child("PostedBy").child("UID").getValue();
                         if(!dataSnapshot.child("usersListItemFormats").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             joinButton.setVisibility(View.VISIBLE);
                             joinLayout.setVisibility(View.VISIBLE);
                             chatLayout.setVisibility(View.GONE);
+
 
                             joinButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -224,11 +224,13 @@ public class ChatActivity extends BaseActivity {
                                             databaseReference.child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
 
                                             NotificationSender notificationSender = new NotificationSender(ChatActivity.this,userItemFormat.getUserUID());
-                                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,userItemFormat.getUserUID());
+                                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,userItemFormat.getUserUID(),recieverKey,1);
                                             cabPoolJoinNotification.setCommunityName(communityTitle);
                                             cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
                                             cabPoolJoinNotification.setUserName(userItemFormat.getUsername());
                                             cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
+                                            cabPoolJoinNotification.setRecieverKey(recieverKey);
+                                            Log.d(recieverKey, "reciverkey");
                                             notificationSender.execute(cabPoolJoinNotification);
 
                                             CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -474,6 +476,7 @@ public class ChatActivity extends BaseActivity {
                 message.setImageThumb(userItem.getImageURLThumbnail());
                 message.setMessage("\""+text+"\"");
                 message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+                Log.d("test", userItem.getUsername());
                 GlobalFunctions.addPoints(2);
                 databaseReference.child("Chat").push().setValue(message);
 //                messages.add(message);
@@ -523,6 +526,8 @@ public class ChatActivity extends BaseActivity {
                     notificationSender.execute(productChatNotification);
 
                 }else if(type.equals("post")){
+                    Log.d("test", getIntent().getStringExtra("key"));
+
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 
                     NotificationItemFormat postChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST,userItem.getUserUID());
@@ -534,12 +539,17 @@ public class ChatActivity extends BaseActivity {
                     postChatNotification.setUserName(userItem.getUsername());
                     postChatNotification.setCommunityName(communityTitle);
 
+                    GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"status",null,getIntent().getStringExtra("uid"));
                     notificationSender.execute(postChatNotification);
 
                 }else if(type.equals("messages")){
+                    Log.d("test", "message ");
                     NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
                     notificationSender.execute();
+
                 }else if(type.equals("events")){
+                    Log.d("test", "events");
+
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this,userItem.getUserUID());
 
                     NotificationItemFormat eventChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_EVENT,userItem.getUserUID());
@@ -554,6 +564,7 @@ public class ChatActivity extends BaseActivity {
 
                     notificationSender.execute(eventChatNotification);
                 }else if(type.equals("cabPool")){
+                    Log.d("test", "cabpool");
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 
                     NotificationItemFormat cabChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_CAB,userItem.getUserUID());

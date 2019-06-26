@@ -80,6 +80,7 @@ public class CabPoolListOfPeople extends BaseActivity {
     private DatabaseReference ref;
     private DatabaseReference databaseReference;
     private FirebaseUser user;
+    private String reciverKey;
     private ValueEventListener listener;
     private DatabaseReference mDatabaseViews;
 
@@ -175,6 +176,18 @@ public class CabPoolListOfPeople extends BaseActivity {
         }
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child(reference);
+       databaseReference.child(key).child("PostedBy").child("UID").addListenerForSingleValueEvent(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               reciverKey = (String) dataSnapshot.getValue();
+               Log.d(reciverKey, "reciever key");
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {
+
+           }
+       });
         pool = databaseReference.child(key).child("usersListItemFormats");
         mAuth = FirebaseAuth.getInstance();
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
@@ -305,13 +318,13 @@ public class CabPoolListOfPeople extends BaseActivity {
 
                            // NotificationSender notificationSender = new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_CABPOOL_JOIN,false,true,CabPoolListOfPeople.this);
                             NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,userItemFormat.getUserUID());
-                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,userItemFormat.getUserUID());
+                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,userItemFormat.getUserUID(),reciverKey,1);
                             cabPoolJoinNotification.setCommunityName(communityTitle);
                             cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                             cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
                             cabPoolJoinNotification.setUserName(userItemFormat.getUsername());
+                            cabPoolJoinNotification.setRecieverKey(reciverKey);
                             notificationSender.execute(cabPoolJoinNotification);
-
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta= new HashMap<>();
 

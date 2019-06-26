@@ -94,6 +94,7 @@ public class  OpenEventDetail extends BaseActivity{
     DatabaseReference databaseReference, mUserDetails;
     Button boostBtn;
     Boolean flag = false;
+    String recieverKey;
 
     ProgressDialog progressDialog,progressDialogMain;
 
@@ -615,6 +616,17 @@ public class  OpenEventDetail extends BaseActivity{
         final DatabaseReference eventDatabase = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("events").child("activeEvents").child(eventId);
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        eventDatabase.child("PostedBy").child("UID").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                recieverKey=(String) dataSnapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         eventDatabase.child("BoostersUids").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -656,20 +668,19 @@ public class  OpenEventDetail extends BaseActivity{
                         Bundle extras = getIntent().getExtras();
 
                         eventDatabase.child("BoostersUids").updateChildren(taskMap);
-
                         mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
                                 NotificationSender notificationSender = new NotificationSender(OpenEventDetail.this,userItemFormat.getUserUID());
 
-                                NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,userItemFormat.getUserUID());
+                                NotificationItemFormat eventBoostNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST,userItemFormat.getUserUID(),recieverKey,1);
                                 eventBoostNotification.setItemKey(event.getKey());
                                 eventBoostNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                                 eventBoostNotification.setItemName(event.getEventName());
                                 eventBoostNotification.setUserName(user.getDisplayName());
                                 eventBoostNotification.setCommunityName(communityTitle);
-
+                                eventBoostNotification.setRecieverKey(recieverKey);
                                 notificationSender.execute(eventBoostNotification);
                             }
 

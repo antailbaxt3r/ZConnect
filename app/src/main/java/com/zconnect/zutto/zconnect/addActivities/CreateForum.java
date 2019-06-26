@@ -292,70 +292,22 @@ public class CreateForum extends BaseActivity {
                         counterPush.pushValues();
 
                         //Home
-                        databaseReferenceHome.child(newPush.getKey()).child("feature").setValue("Forums");
-                        databaseReferenceHome.child(newPush.getKey()).child("name").setValue(catName);
-                        databaseReferenceHome.child(newPush.getKey()).child("id").setValue(uid);
-                        databaseReferenceHome.child(newPush.getKey()).child("desc").setValue(mtabName);
-                        databaseReferenceHome.child(newPush.getKey()).child("Key").setValue(newPush.getKey());
-                        databaseReferenceHome.child(newPush.getKey()).child("PostTimeMillis").setValue(postTimeMillis);
-
-                        databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
-
-                                UsersListItemFormat userDetails = new UsersListItemFormat();
-
-                                userDetails.setImageThumb(userItem.getImageURLThumbnail());
-                                userDetails.setName(userItem.getUsername());
-                                userDetails.setPhonenumber(userItem.getMobileNumber());
-                                userDetails.setUserUID(userItem.getUserUID());
-                                userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
-
-                                databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(userItem.getUserUID()).setValue(userDetails);
-
-                                newPush.child("PostedBy").child("Username").setValue(userItem.getUsername());
-                                newPush.child("PostedBy").child("ImageThumb").setValue(userItem.getImageURLThumbnail());
-
-                                databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("Username").setValue(userItem.getUsername());
-                                databaseReferenceHome.child(newPush.getKey()).child("PostedBy").child("ImageThumb").setValue(userItem.getImageURLThumbnail());
-
-                                ChatItemFormats message = new ChatItemFormats();
-                                message.setTimeDate(calendar.getTimeInMillis());
-                                message.setUuid(userItem.getUserUID());
-                                message.setName(userItem.getUsername());
-                                message.setImageThumb(userItem.getImageURLThumbnail());
-                                message.setMessage("\""+firstMessage.getText()+"\"");
-                                message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
-                                newPush.child("Chat").push().setValue(message);
-
-                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(uid).child(newPush.getKey()).child("lastMessage").setValue(message);
-
-                                NotificationSender notificationSender = new NotificationSender(CreateForum.this,userItem.getUserUID());
-                                NotificationItemFormat addForumNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_FORUM_ADD,userItem.getUserUID());
-                                addForumNotification.setCommunityName(communityTitle);
-                                addForumNotification.setItemKey(newPush.getKey());
-                                addForumNotification.setItemCategoryUID(uid);
-                                addForumNotification.setItemCategory(mtabName);
-                                addForumNotification.setItemName(catName);
-                                addForumNotification.setUserImage(userItem.getImageURLThumbnail());
-                                addForumNotification.setUserName(userItem.getUsername());
-
-                                notificationSender.execute(addForumNotification);
+                                UserItemFormat userItemFormat = new UserItemFormat();
+                                userItemFormat.setUsername(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username").getValue()));
+                                userItemFormat.setImageURL(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("imageURL").getValue()));
+                                userItemFormat.setUserUID(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("userUID").getValue()));
+                                GlobalFunctions.inAppNotifications("added a forum",catName,userItemFormat,true,"contact",null,null);
                             }
 
                             @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
                             }
                         });
-
-                        ////writing uid of post to homePosts node in Users1.uid for handling data conistency
-                        mPostedByDetails.child("homePosts").child(newPush.getKey()).setValue(true);
-
 
                         if(mImageUri!=null && mImageUriThumb!=null)
                         {

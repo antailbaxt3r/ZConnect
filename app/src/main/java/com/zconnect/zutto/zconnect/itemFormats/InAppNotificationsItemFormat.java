@@ -1,7 +1,6 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
 
-import org.joda.time.DateTime;
 
 import java.util.HashMap;
 
@@ -14,8 +13,12 @@ public class InAppNotificationsItemFormat {
     private String type;
     private HashMap<String, Object> metadata;
     private String key;
+    private UserItemFormat notifiedBy;
+    public InAppNotificationsItemFormat()
+    {}
 
-    public InAppNotificationsItemFormat(String title, String desc, long PostTimeMillis, String type, boolean seen, HashMap<String, Object> metadata, String key) {
+
+    public InAppNotificationsItemFormat(String title, String desc, long PostTimeMillis, String type,UserItemFormat notifiedBy, boolean seen, HashMap<String, Object> metadata, String key) {
         this.title = title;
         this.desc = desc;
         this.PostTimeMillis = PostTimeMillis;
@@ -23,8 +26,10 @@ public class InAppNotificationsItemFormat {
         this.seen = seen;
         this.metadata = metadata;
         this.key = key;
+        this.notifiedBy=notifiedBy;
     }
-
+    public UserItemFormat getNotifiedby(){return notifiedBy;}
+    public void setNotifiedby(UserItemFormat notificationItemFormat){notificationItemFormat=notifiedBy;}
     public long getPostTimeMillis() {
         return PostTimeMillis;
     }

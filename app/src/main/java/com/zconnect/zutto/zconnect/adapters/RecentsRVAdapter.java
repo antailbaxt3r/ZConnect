@@ -72,6 +72,7 @@ import com.zconnect.zutto.zconnect.Shop_detail;
 import com.zconnect.zutto.zconnect.TabStoreRoom;
 import com.zconnect.zutto.zconnect.TabbedEvents;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.NumberNotificationForFeatures;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
@@ -79,6 +80,7 @@ import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
+import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.pools.PoolActivity;
@@ -251,7 +253,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                                     HashMap<String, String> meta= new HashMap<>();
-
                                     meta.put("type","fromRecentsRV");
                                     meta.put("userType","openUserProfile");
                                     meta.put("userUID",recentsItemFormats.get(position).getPostedBy().getUID());
@@ -782,7 +783,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
-
                     holder.setLike(recentsItemFormats.get(position).getKey());
                     if(recentsItemFormats.get(position).getDesc().length()<=0)
                         holder.messagesMessage.setVisibility(View.GONE);
@@ -1343,6 +1343,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     i.putExtra("ref", mRef.toString());
                     i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
                     i.putExtra("type", "post");
+                    i.putExtra("uid",recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
 
                     context.startActivity(i);
                 }
@@ -1473,14 +1474,15 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         counterItemFormat.setMeta(meta);
                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                         counterPush.pushValues();
-
                         if(!statusLikeFlag){
                             Map<String, Object> taskMap = new HashMap<String, Object>();
                             taskMap.put(user.getUid(), user.getUid());
-
                             statusDatabase.child("likeUids").updateChildren(taskMap);
                             final NotificationSender notificationSender = new NotificationSender(itemView.getContext(),FirebaseAuth.getInstance().getCurrentUser().getUid());
                             final NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                           // HashMap<String,Object> hashmap=new HashMap<>();
+                           // hashmap.put("meta",1);
+
                             statusLikeNotification.setItemKey(key);
                             mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -1488,11 +1490,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
                                     statusLikeNotification.setUserImage(userItem.getImageURLThumbnail());
                                     statusLikeNotification.setUserName(userItem.getUsername());
-
+                                    statusLikeNotification.setUserKey(userItem.getUserUID());
                                     statusLikeNotification.setCommunityName(communityTitle);
                                     statusLikeNotification.setItemLikeCount(statusLikeCount);
-
                                     notificationSender.execute(statusLikeNotification);
+                                    GlobalFunctions.inAppNotifications("liked your status",recentsItemFormats.get(getAdapterPosition()).getDesc(),userItem,false,"status",null, recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
                                 }
 
                                 @Override
@@ -1507,7 +1509,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                         }else {
                             statusDatabase.child("likeUids").child(user.getUid()).removeValue();
-
                         }
                     }
                 });

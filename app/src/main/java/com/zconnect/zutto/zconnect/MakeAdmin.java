@@ -30,7 +30,6 @@ import java.util.Vector;
 
 public class MakeAdmin extends BaseActivity {
     private SharedPreferences communitySP;
-    String oldestPostId;
     public String communityReference;
     MakeAdminRVAdapter makeAdminRVAdapter;
     ProgressBar progressBar;
@@ -77,7 +76,6 @@ public class MakeAdmin extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 for (DataSnapshot childsnap:dataSnapshot.getChildren()){
     if(!("admin").equals(childsnap.child("userType").getValue())) {
-        oldestPostId = childsnap.getKey();
         name.add(String.valueOf(childsnap.child("username").getValue()));
         if (!("").equals(childsnap.child("imageURL").getValue())) {
             image.add(String.valueOf(childsnap.child("imageURL").getValue()));
