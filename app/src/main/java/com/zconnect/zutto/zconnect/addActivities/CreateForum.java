@@ -636,10 +636,15 @@ public class CreateForum extends BaseActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
                     {
-                        newPush.child("verified").setValue(true);
-                        databaseReferenceTabsCategories.child(newPush.getKey()).child("verified").setValue(true);
-                        if(databaseReferenceHome!=null) {
-                            databaseReferenceHome.child(newPush.getKey()).child("verified").setValue(true);
+                        if (tabUid.equals("others")) {
+                            databaseReferenceTabsCategories.child(newPush.getKey()).child("verified").setValue(false);
+                        }
+                        else {
+                            newPush.child("verified").setValue(true);
+                            databaseReferenceTabsCategories.child(newPush.getKey()).child("verified").setValue(true);
+                            if (databaseReferenceHome != null) {
+                                databaseReferenceHome.child(newPush.getKey()).child("verified").setValue(true);
+                            }
                         }
                     }
                 }
@@ -869,6 +874,7 @@ public class CreateForum extends BaseActivity {
 //                        databaseReferenceHome.child(newPush.getKey()).child("imageThumb").setValue("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/testCollege%2Ffeatures%2Fother%20features%20icons%2Fbaseline_fastfood_white_36dp.png?alt=media&token=d1146a76-aff9-4fce-a999-a3b560925d46");
                 if(databaseReferenceHome == null && mImageURL != null) {
                     newPush.child("image").setValue(mImageURL);
+                    newPush.child("imageThumb").setValue(mImageURL);
                 }
                 if(requestAddMembers) {
                     Intent intent = new Intent(getApplicationContext(), AddMembersToForumActivity.class);

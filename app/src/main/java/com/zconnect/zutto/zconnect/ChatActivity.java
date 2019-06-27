@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,13 +10,16 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -30,10 +34,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -49,6 +57,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.addActivities.CreateForum;
@@ -80,7 +89,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
+
+import butterknife.OnCheckedChanged;
 
 public class ChatActivity extends BaseActivity {
 
@@ -103,6 +113,7 @@ public class ChatActivity extends BaseActivity {
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
     private static boolean unseenFlag, unseenFlag2;
+    private boolean isAnonymousEnabled = false;
 
     //For Photo Posting
     private IntentHandle intentHandle;
@@ -380,7 +391,7 @@ public class ChatActivity extends BaseActivity {
         }
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
-        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this);
+        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_NORMAL_FORUM);
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
@@ -435,7 +446,16 @@ public class ChatActivity extends BaseActivity {
                     if (!snapshot.hasChild("messageType")) {
                         temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                     }
-                    messages.add(temp);
+                    if(!snapshot.hasChild("anonymous") || snapshot.child("anonymous").getValue().toString().equals("false"))  {
+                        messages.add(temp);
+                    }
+
+                    else{
+                        ChatItemFormats anonMessage = new ChatItemFormats();
+                        anonMessage.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
+                        anonMessage.setUuid(temp.getUuid());
+                        messages.add(anonMessage);
+                    }
                 }
 
                 if (type.equals("forums")) {
@@ -536,6 +556,8 @@ public class ChatActivity extends BaseActivity {
                 GlobalFunctions.addPoints(2);
                 String messagePushID = databaseReference.child("Chat").push().getKey();
                 message.setKey(messagePushID);
+                message.setAnonymous(isAnonymousEnabled);
+
                 databaseReference.child("Chat").child(messagePushID).setValue(message);
 //                messages.add(message);
 
@@ -679,6 +701,8 @@ public class ChatActivity extends BaseActivity {
             messageTemp.setMessage(" \uD83D\uDCF7 Image ");
             messageTemp.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
             messages.add(messageTemp);
+//            messages.add()
+            messages.add(messages.get(0));
             Log.d("L",Integer.toString(messages.size()));
             adapter.notifyDataSetChanged();
 
@@ -711,6 +735,7 @@ public class ChatActivity extends BaseActivity {
                                 message.setImageThumb(userItem.getImageURLThumbnail());
                                 message.setMessage(" \uD83D\uDCF7 Image ");
                                 message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
+                                message.setAnonymous(isAnonymousEnabled);
                                 GlobalFunctions.addPoints(5);
                                 String messagePushID = databaseReference.child("Chat").push().getKey();
                                 message.setKey(messagePushID);
@@ -953,8 +978,120 @@ public class ChatActivity extends BaseActivity {
 
         }
 
+        if(item.getItemId() == R.id.action_anonymous_forum) {
+            if (isAnonymousEnabled) {
+                setNormalChat();
+
+            } else {
+
+                final Dialog anonymousModeDialog = new Dialog(this);
+                anonymousModeDialog.setContentView(R.layout.dialog_confirm_anonymous_mode);
+                anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        anonymousModeDialog.dismiss();
+                    }
+                });
+                CheckBox checkBox = anonymousModeDialog.findViewById(R.id.anonymous_show_again_cb);
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = preferences.edit();
+                        if(isChecked) {
+                            editor.putBoolean("AnonymousDialog",false);
+                        }
+                        else{
+                            editor.putBoolean("AnonymousDialog",true);
+                        }
+                        editor.apply();
+
+                    }
+                });
+                mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String username = "newUser";
+
+                        final AutoCompleteTextView usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
+                        Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
+                        if(dataSnapshot.hasChild("username")){
+                            username = dataSnapshot.child("username").getValue().toString();
+                            usernameEt.setText(dataSnapshot.child("username").getValue().toString());
+                        }
+                       enterButton.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+//                               username = usernameEt.getText().toString();
+                               if(usernameEt.getText().toString().trim().equals("")){
+                                   Toast.makeText(ChatActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
+                                   return;
+                               }
+                               mUserReference.child("username").setValue(usernameEt.getText().toString().trim());
+                               setAnonyomusChat();
+                               anonymousModeDialog.dismiss();
+                           }
+                       });
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                boolean setDialog = preferences.getBoolean("AnonymousDialog", true);
+                if(setDialog){
+                    anonymousModeDialog.show();
+                }
+                else {
+                    setAnonyomusChat();
+                }
+
+            }
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
+    private void setNormalChat() {
+        isAnonymousEnabled = false;
+        chatView = (RecyclerView) findViewById(R.id.chatList);
+        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_NORMAL_FORUM);
+        progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
+        chatView.setVisibility(View.GONE);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(false);
+        linearLayoutManager.setStackFromEnd(true);
+        chatView.setLayoutManager(linearLayoutManager);
+        chatView.setAdapter(adapter);
+    }
+
+    private void setAnonyomusChat() {
+        isAnonymousEnabled = true;
+
+        chatView = (RecyclerView) findViewById(R.id.chatList);
+        chatView.setBackgroundColor(ContextCompat.getColor(this,R.color.gray_holo_dark));
+        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_ANONYMOUS_FORUM);
+        progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
+        chatView.setVisibility(View.GONE);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(false);
+        linearLayoutManager.setStackFromEnd(true);
+        chatView.setLayoutManager(linearLayoutManager);
+        chatView.setAdapter(adapter);
+
+    }
+
+
 
 
     @Override
