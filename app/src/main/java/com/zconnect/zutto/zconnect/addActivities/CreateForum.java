@@ -875,6 +875,9 @@ public class CreateForum extends BaseActivity {
                 if(databaseReferenceHome == null && mImageURL != null) {
                     newPush.child("image").setValue(mImageURL);
                     newPush.child("imageThumb").setValue(mImageURL);
+                    databaseReferenceTabsCategories.child(newPush.getKey()).child("imageThumb").setValue(mImageURL);
+                    databaseReferenceTabsCategories.child(newPush.getKey()).child("image").setValue(mImageURL);
+
                 }
                 if(requestAddMembers) {
                     Intent intent = new Intent(getApplicationContext(), AddMembersToForumActivity.class);

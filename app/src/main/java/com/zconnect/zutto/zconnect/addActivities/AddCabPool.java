@@ -391,6 +391,7 @@ public class AddCabPool extends BaseActivity {
 //                                        createForum.putExtra(ForumUtilities.KEY_FORUM_IMAGE_STR,);
                                         createForum.putExtra(ForumUtilities.KEY_FORUM_DESC_STR, "Cabpool");
                                         createForum.putExtra(ForumUtilities.KEY_FORUM_TAB_STR, "others");
+                                        createForum.putExtra(ForumUtilities.KEY_FORUM_IMAGE_STR,"https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/taxi_icon.png?alt=media&token=e2d26476-bc86-4bd3-a33c-b27f744a9491");
 
                                         SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                                         Log.d("forumID", newPost.getKey());
