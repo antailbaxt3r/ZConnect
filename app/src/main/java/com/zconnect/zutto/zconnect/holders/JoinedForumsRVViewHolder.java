@@ -67,27 +67,35 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
             forumIcon.setBackground(mView.getContext().getResources().getDrawable(R.drawable.forum_circle));
         }
 
-        try {
+        if(forumCategoriesItemFormat.getLastMessage().isAnonymous()){
             lastMessageWithName.setVisibility(View.VISIBLE);
-            lastMessageTime.setVisibility(View.VISIBLE);
-            String shortName = forumCategoriesItemFormat.getLastMessage().getName();
-            if(shortName.indexOf(' ')>0) {
-                shortName = shortName.substring(0, shortName.indexOf(' '));
-            }
-
-            lastMessageWithName.setText(shortName + ": " + forumCategoriesItemFormat.getLastMessage().getMessage().substring(1, forumCategoriesItemFormat.getLastMessage().getMessage().length() - 1));
+            lastMessageWithName.setText("Anonymous");
             lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormat.getLastMessage().getTimeDate()));
-            String timeStamp = new TimeUtilities().getTimeStamp(forumCategoriesItemFormat.getLastMessage().getTimeDate());
+        }
+        else {
 
-            if(timeStamp.length()!=0)
-            {
-                lastMessageTime.setText(timeStamp);
+            try {
+                lastMessageWithName.setVisibility(View.VISIBLE);
+                lastMessageTime.setVisibility(View.VISIBLE);
+                String shortName = forumCategoriesItemFormat.getLastMessage().getName();
+                if (shortName.indexOf(' ') > 0) {
+                    shortName = shortName.substring(0, shortName.indexOf(' '));
+                }
+
+                lastMessageWithName.setText(shortName + ": " + forumCategoriesItemFormat.getLastMessage().getMessage().substring(1, forumCategoriesItemFormat.getLastMessage().getMessage().length() - 1));
+                lastMessageTime.setText(SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(forumCategoriesItemFormat.getLastMessage().getTimeDate()));
+                String timeStamp = new TimeUtilities().getTimeStamp(forumCategoriesItemFormat.getLastMessage().getTimeDate());
+
+                if (timeStamp.length() != 0) {
+                    lastMessageTime.setText(timeStamp);
+                }
+
+            } catch (Exception e) {
+                Log.d("Error alert ", e.getMessage());
+                lastMessageWithName.setVisibility(View.INVISIBLE);
+                lastMessageTime.setVisibility(View.INVISIBLE);
             }
 
-        } catch (Exception e) {
-            Log.d("Error alert ", e.getMessage());
-            lastMessageWithName.setVisibility(View.INVISIBLE);
-            lastMessageTime.setVisibility(View.INVISIBLE);
         }
         try
         {

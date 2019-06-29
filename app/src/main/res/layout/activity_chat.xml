@@ -13,6 +13,8 @@
 
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
@@ -43,6 +45,7 @@
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/chat_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
@@ -98,6 +101,7 @@
                     android:layout_width="@dimen/single_line_btn_min_width"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
+                    android:visibility="gone"
                     android:textSize="18sp"
                     android:textColor="@color/white"
                     android:background="@drawable/round_button_simple"

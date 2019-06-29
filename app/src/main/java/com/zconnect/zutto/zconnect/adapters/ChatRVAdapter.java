@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -59,12 +60,14 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private ValueEventListener loadMessagesListener;
     private ChatItemFormats delMessage;
     private ChatItemFormats delphoto;
+    private String forumType;
 
     public ChatRVAdapter(ArrayList<ChatItemFormats> chatFormats, DatabaseReference databaseref,DatabaseReference reference,Context ctx, String forumType) {
         this.chatFormats = chatFormats;
         this.ctx = ctx;
         this.databaseref = databaseref;
         this.forumRef = reference;
+        this.forumType = forumType;
     }
 
     @Override
@@ -135,6 +138,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 previousTs = pm.getTimeDate();
             }
             setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
+            holder.message.setTypeface(Typeface.DEFAULT,Typeface.NORMAL);
+
             if(message.getUuid()!=null)
             {
 
@@ -179,6 +184,26 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.message.setText(messageText);
                 Linkify.addLinks(holder.message, Linkify.ALL);
             }
+            if(message.isAnonymous() && forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setEnabled(false);
+                holder.name.setText(message.getUserName());
+                holder.userAvatar.setVisibility(View.GONE);
+                holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
+
+            }
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
+            }
         }
         else if(message.getMessageType().equals("photo")) {
 
@@ -189,6 +214,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 ChatItemFormats pm = chatFormats.get(position-1);
                 previousTs = pm.getTimeDate();
             }
+
             setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
             if(message.getUuid()!=null) {
 
@@ -238,6 +264,23 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 });
             }
+            if(message.isAnonymous() && forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setEnabled(false);
+                holder.name.setText(message.getUserName());
+                holder.userAvatar.setVisibility(View.GONE);
+
+            }
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
+            }
         }
         else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_MESSAGE_STR)){
 
@@ -247,6 +290,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 ChatItemFormats pm = chatFormats.get(position-1);
                 previousTs = pm.getTimeDate();
             }
+            holder.message.setTypeface(holder.message.getTypeface(),Typeface.NORMAL);
+
             setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
             if(message.getUuid()!=null)
             {
@@ -291,6 +336,28 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 messageText = messageText.substring(1,messageText.length()-1);
                 holder.message.setText(messageText);
                 Linkify.addLinks(holder.message, Linkify.ALL);
+            }
+
+            if(message.isAnonymous() && forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setEnabled(false);
+                holder.name.setText(message.getUserName());
+                holder.userAvatar.setVisibility(View.GONE);
+                holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
+
+            }
+
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
             }
         }
         else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_PHOTO_STR)) {
@@ -351,6 +418,25 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 });
             }
+
+            if(message.isAnonymous() && forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setEnabled(false);
+                holder.name.setText(message.getUserName());
+                holder.userAvatar.setVisibility(View.GONE);
+
+            }
+
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
+            }
         }
         else if(message.getMessageType().equals(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR)){
 
@@ -389,8 +475,24 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
                 Linkify.addLinks(holder.message, Linkify.ALL);
             }
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
+            }
 
         }
+
+
+
 
     }
 

@@ -22,6 +22,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -39,6 +40,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -57,7 +59,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.addActivities.CreateForum;
@@ -89,9 +90,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-
-import butterknife.OnCheckedChanged;
-
+//TODO: IMPROVE ANONYMOUS MODE
 public class ChatActivity extends BaseActivity {
 
     private String TAG = ChatActivity.class.getSimpleName();
@@ -129,6 +128,8 @@ public class ChatActivity extends BaseActivity {
 
     //For Storeroom message
     String storeRoomMessage;
+    private AppBarLayout appBarLayout;
+    private FrameLayout chatFrameLayout;
 
     //UI elements
     EditText typer;
@@ -166,6 +167,7 @@ public class ChatActivity extends BaseActivity {
         showBackButton();
 
         mAuth = FirebaseAuth.getInstance();
+        appBarLayout = findViewById(R.id.appBarLayout);
 
 
         //For Photo Posting
@@ -204,6 +206,7 @@ public class ChatActivity extends BaseActivity {
 
         joinLayout.setVisibility(View.GONE);
         chatLayout.setVisibility(View.VISIBLE);
+        chatFrameLayout = findViewById(R.id.chat_frame_layout);
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref);
         Log.d("Try",databaseReference.getParent().toString());
@@ -446,15 +449,19 @@ public class ChatActivity extends BaseActivity {
                     if (!snapshot.hasChild("messageType")) {
                         temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                     }
-                    if(!snapshot.hasChild("anonymous") || snapshot.child("anonymous").getValue().toString().equals("false"))  {
+                    if(isAnonymousEnabled){
                         messages.add(temp);
                     }
-
-                    else{
-                        ChatItemFormats anonMessage = new ChatItemFormats();
-                        anonMessage.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
-                        anonMessage.setUuid(temp.getUuid());
-                        messages.add(anonMessage);
+                    else {
+                        if (!snapshot.hasChild("anonymous") || snapshot.child("anonymous").getValue().toString().equals("false")) {
+                            messages.add(temp);
+                        } else {
+                            ChatItemFormats anonMessage = new ChatItemFormats();
+                            anonMessage.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
+                            anonMessage.setUuid(temp.getUuid());
+                            anonMessage.setTimeDate(temp.getTimeDate());
+                            messages.add(anonMessage);
+                        }
                     }
                 }
 
@@ -550,6 +557,13 @@ public class ChatActivity extends BaseActivity {
                 UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
                 message.setUuid(userItem.getUserUID());
                 message.setName(userItem.getUsername());
+                if(userItem.getAnonymousUsername() != null){
+                    message.setUserName(userItem.getAnonymousUsername());
+
+                }
+                else{
+                    message.setUserName("Unknown");
+                }
                 message.setImageThumb(userItem.getImageURLThumbnail());
                 message.setMessage("\""+text+"\"");
                 message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
@@ -1017,9 +1031,9 @@ public class ChatActivity extends BaseActivity {
 
                         final AutoCompleteTextView usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
                         Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
-                        if(dataSnapshot.hasChild("username")){
-                            username = dataSnapshot.child("username").getValue().toString();
-                            usernameEt.setText(dataSnapshot.child("username").getValue().toString());
+                        if(dataSnapshot.hasChild("anonymousUsername")){
+                            username = dataSnapshot.child("anonymousUsername").getValue().toString();
+                            usernameEt.setText(dataSnapshot.child("anonymousUsername").getValue().toString());
                         }
                        enterButton.setOnClickListener(new View.OnClickListener() {
                            @Override
@@ -1029,8 +1043,8 @@ public class ChatActivity extends BaseActivity {
                                    Toast.makeText(ChatActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
                                    return;
                                }
-                               mUserReference.child("username").setValue(usernameEt.getText().toString().trim());
-                               setAnonyomusChat();
+                               mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
+                               setAnonymousChat();
                                anonymousModeDialog.dismiss();
                            }
                        });
@@ -1049,7 +1063,7 @@ public class ChatActivity extends BaseActivity {
                     anonymousModeDialog.show();
                 }
                 else {
-                    setAnonyomusChat();
+                    setAnonymousChat();
                 }
 
             }
@@ -1061,10 +1075,21 @@ public class ChatActivity extends BaseActivity {
     private void setNormalChat() {
         isAnonymousEnabled = false;
         chatView = (RecyclerView) findViewById(R.id.chatList);
+        chatView.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+        appBarLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));
+        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+        chatLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+
+        typer.setTextColor(ContextCompat.getColor(this,R.color.black));
+
+
+
         adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_NORMAL_FORUM);
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
+        databaseReference.child("Chat").addValueEventListener(loadMessagesListener);
+        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_NORMAL_FORUM);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(false);
@@ -1073,16 +1098,22 @@ public class ChatActivity extends BaseActivity {
         chatView.setAdapter(adapter);
     }
 
-    private void setAnonyomusChat() {
+    private void setAnonymousChat() {
         isAnonymousEnabled = true;
 
         chatView = (RecyclerView) findViewById(R.id.chatList);
-        chatView.setBackgroundColor(ContextCompat.getColor(this,R.color.gray_holo_dark));
+        chatView.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_surface));
+        appBarLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.title_bar_dark));
+        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_surface));
+        chatLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_chat_layout));
+        typer.setTextColor(ContextCompat.getColor(this,R.color.white));
+
+
         adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_ANONYMOUS_FORUM);
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
-
+        databaseReference.child("Chat").addValueEventListener(loadMessagesListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(false);
         linearLayoutManager.setStackFromEnd(true);
