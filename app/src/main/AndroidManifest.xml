@@ -542,6 +542,11 @@
             android:label="Request a Forums Tab"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".addActivities.CreatePoll"
+            android:label="Create a Poll"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
 
 
