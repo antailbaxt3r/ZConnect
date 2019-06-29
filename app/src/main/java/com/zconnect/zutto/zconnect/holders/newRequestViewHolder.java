@@ -77,17 +77,32 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
 
     public void setAcceptDeclineButtonForForumTabs(final String key) {
 
+        final DatabaseReference requestForumTabs = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/admin/requests");
+        final DatabaseReference forumTab = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/forums/tabs");
+
         acceptUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.e("ButtonResponse","Accepted");
+                requestForumTabs.child(key).child("Name").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        forumTab.child(dataSnapshot.getValue().toString().trim()).child("name").setValue(dataSnapshot.getValue().toString().trim().toLowerCase());
+                        forumTab.child(dataSnapshot.getValue().toString().trim()).child("UID").setValue(dataSnapshot.getValue().toString().trim());
+                        requestForumTabs.child(key).removeValue();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
         declineUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               DatabaseReference requestForumTabs = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/admin/requests");
                 requestForumTabs.child(key).removeValue();
             }
         });
