@@ -40,6 +40,7 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.NewRequestItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NewUserItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.PostedByDetails;
+import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
 import com.zconnect.zutto.zconnect.utilities.VerificationUtilities;
 import com.zconnect.zutto.zconnect.adapters.NewUserRVAdapter;
 
@@ -47,6 +48,8 @@ import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.ref;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 public class AdminHome extends BaseActivity {
@@ -257,7 +260,7 @@ public class AdminHome extends BaseActivity {
         private View requestsFromUsersTab(LayoutInflater inflater, ViewGroup container) {
 
             View rootView = inflater.inflate(R.layout.fragment_admin_requests, container, false);
-            newRequestsDataReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests").child("requestedLocations");
+            newRequestsDataReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests");
             newRequestsRV = rootView.findViewById(R.id.new_requests_recycler);
             linearLayoutManager = new LinearLayoutManager(getContext());
             newRequestsRV.setLayoutManager(linearLayoutManager);
@@ -277,10 +280,18 @@ public class AdminHome extends BaseActivity {
                         }
                         catch (Exception e) { }
                     }
-                    progressBar.setVisibility(View.GONE);
                     if (newRequestItemFormats.isEmpty())
                         noRequestMessage.setVisibility(View.VISIBLE);
+
+                    Collections.sort(newRequestItemFormats, new Comparator<NewRequestItemFormat>() {
+                        @Override
+                        public int compare(NewRequestItemFormat o1, NewRequestItemFormat o2) {
+                            return Long.valueOf(o2.getPostTimeMillis()).compareTo(o1.getPostTimeMillis());
+                        }
+                    });
+
                     requestsRVAdapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
                 }
 
                 @Override
