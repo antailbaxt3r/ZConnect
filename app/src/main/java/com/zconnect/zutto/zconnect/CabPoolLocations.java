@@ -92,7 +92,7 @@ public class CabPoolLocations extends BaseActivity {
         setSupportActionBar(toolbar);
 
         databaseReferenceCabPool = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations");
-        databaseReferenceCabPool2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests").child("requestedLocations");
+        databaseReferenceCabPool2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests");
         mPostedByDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter Location");
@@ -291,8 +291,9 @@ public class CabPoolLocations extends BaseActivity {
     public void requestLocation(String Location){
         final DatabaseReference newPush=databaseReferenceCabPool2.push();
 
+        newPush.child("Type").setValue("CabpoolLocation");
         newPush.child("key").setValue(newPush.getKey());
-        newPush.child("locationName").setValue(Location);
+        newPush.child("Name").setValue(Location);
         Long postTimeMillis = System.currentTimeMillis();
         newPush.child("PostTimeMillis").setValue(postTimeMillis);
         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
