@@ -22,7 +22,7 @@ import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityRe
 public class newRequestViewHolder extends RecyclerView.ViewHolder {
 
     public TextView newRequestName, postedByNameInLocation;
-    public ImageView acceptUserButton, declineUserButton;
+    public Button acceptUserButton, declineUserButton;
     public SimpleDraweeView postedByImageLocation;
 
     public newRequestViewHolder(View itemView)
