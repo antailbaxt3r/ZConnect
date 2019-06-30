@@ -30,6 +30,7 @@ import com.zconnect.zutto.zconnect.adapters.CabPoolLocationRVAdapter;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.RequestTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.HashMap;
@@ -288,21 +289,23 @@ public class CabPoolLocations extends BaseActivity {
         });
     }
 
-    public void requestLocation(String Location){
+    public void requestLocation(String location){
         final DatabaseReference newPush=databaseReferenceCabPool2.push();
-
-        newPush.child("Type").setValue("CabpoolLocation");
-        newPush.child("key").setValue(newPush.getKey());
-        newPush.child("Name").setValue(Location);
-        Long postTimeMillis = System.currentTimeMillis();
-        newPush.child("PostTimeMillis").setValue(postTimeMillis);
+        final HashMap<String, Object> requestMap = new HashMap<>();
+        requestMap.put("Type", RequestTypeUtilities.TYPE_CABPOOL_LOCATION);
+        requestMap.put("key", newPush.getKey());
+        requestMap.put("Name", location);
+        requestMap.put("PostTimeMillis", System.currentTimeMillis());
         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                newPush.child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
+                HashMap<String, Object> postedBy = new HashMap<>();
+                postedBy.put("Username", dataSnapshot.child("username").getValue().toString());
                 //needs to be changed after image thumbnail is put
-                newPush.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
-                newPush.child("PostedBy").child("UID").setValue(dataSnapshot.child("userUID").getValue().toString());
+                postedBy.put("ImageThumb", dataSnapshot.child("imageURLThumbnail").getValue().toString());
+                postedBy.put("UID", dataSnapshot.child("userUID").getValue().toString());
+
+                requestMap.put("PostedBy", postedBy);
             }
 
             @Override
