@@ -269,7 +269,7 @@ public class AdminHome extends BaseActivity {
                     Collections.sort(newRequestItemFormats, new Comparator<NewRequestItemFormat>() {
                         @Override
                         public int compare(NewRequestItemFormat o1, NewRequestItemFormat o2) {
-                            return Long.valueOf(o2.getPostTimeMillis()).compareTo(o1.getPostTimeMillis());
+                            return o2.getPostTimeMillis().compareTo(o1.getPostTimeMillis());
                         }
                     });
 
