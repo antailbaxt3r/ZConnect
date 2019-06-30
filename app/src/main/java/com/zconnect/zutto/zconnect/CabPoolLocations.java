@@ -306,6 +306,7 @@ public class CabPoolLocations extends BaseActivity {
                 postedBy.put("UID", dataSnapshot.child("userUID").getValue().toString());
 
                 requestMap.put("PostedBy", postedBy);
+                newPush.setValue(requestMap);
             }
 
             @Override
