@@ -34,6 +34,7 @@ import com.zconnect.zutto.zconnect.addActivities.AddProduct;
 import com.zconnect.zutto.zconnect.CabPooling;
 import com.zconnect.zutto.zconnect.addActivities.AddStatus;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.addActivities.CreatePoll;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.itemFormats.CommunityFeatures;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
@@ -66,6 +67,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         final LinearLayout bottomSheetAddEvent = (LinearLayout) bottomSheetView.findViewById(R.id.addEvent_bottomSheet);
         final LinearLayout bottomSheetAddProduct = (LinearLayout) bottomSheetView.findViewById(R.id.addProduct_bottomSheet);
         LinearLayout bottomSheetAddMessage = (LinearLayout) bottomSheetView.findViewById(R.id.addMessage_bottomSheet);
+        LinearLayout bottomSheetCreatePoll = (LinearLayout) bottomSheetView.findViewById(R.id.createPoll_bottomSheet);
         final LinearLayout bottomSheetSearchPool = (LinearLayout) bottomSheetView.findViewById(R.id.searchPool_bottomSheet);
         final LinearLayout bottomSheetAddNotices = bottomSheetView.findViewById(R.id.add_notices_bottomSheet);
         LinearLayout bottomSheetAddContact = (LinearLayout) bottomSheetView.findViewById(R.id.addContact_bottomSheet);
@@ -187,6 +189,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
 
             }
         };
+
         View.OnClickListener addMessageListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -209,6 +212,22 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
 
                 Intent intent;
                 intent = new Intent(getContext(), AddStatus.class);
+                startActivity(intent);
+            }
+        };
+
+        View.OnClickListener createPollListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try {
+                    HomeBottomSheet.this.dismiss();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+
+                Intent intent;
+                intent = new Intent(getContext(), CreatePoll.class);
                 startActivity(intent);
             }
         };
@@ -289,6 +308,7 @@ public class HomeBottomSheet extends BottomSheetDialogFragment{
         bottomSheetAddEvent.setOnClickListener(addEventListener);
         bottomSheetAddProduct.setOnClickListener(addProductListener);
         bottomSheetAddMessage.setOnClickListener(addMessageListener);
+        bottomSheetCreatePoll.setOnClickListener(createPollListener);
         bottomSheetSearchPool.setOnClickListener(searchPoolListener);
         bottomSheetAddNotices.setOnClickListener(noticesListener);
         bottomSheetAddContact.setOnClickListener(addContactListener);
