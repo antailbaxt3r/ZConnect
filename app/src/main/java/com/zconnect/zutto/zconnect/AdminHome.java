@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -286,7 +287,7 @@ public class AdminHome extends BaseActivity {
                     Collections.sort(newRequestItemFormats, new Comparator<NewRequestItemFormat>() {
                         @Override
                         public int compare(NewRequestItemFormat o1, NewRequestItemFormat o2) {
-                            return Long.valueOf(o2.getPostTimeMillis()).compareTo(o1.getPostTimeMillis());
+                            return o2.getPostTimeMillis().compareTo(o1.getPostTimeMillis());
                         }
                     });
 

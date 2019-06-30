@@ -252,4 +252,7 @@
     <string name="tc5">We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least ​​1 months notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</string>
 
     <string name="tc6">If you have any questions about these Terms, please contact us at info@zconnect.xyz</string>
+    <string name="decline">Decline</string>
+    <string name="accept">Accept</string>
+    <string name="question">Question</string>
 </resources>

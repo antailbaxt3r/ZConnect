@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
+import com.zconnect.zutto.zconnect.utilities.RequestTypeUtilities;
 
 public class RequestForumTab extends BaseActivity {
 
@@ -61,7 +62,7 @@ public class RequestForumTab extends BaseActivity {
                 {
                     final DatabaseReference newPush=requestForumTabs.push();
 
-                    newPush.child("Type").setValue("ForumTab");
+                    newPush.child("Type").setValue(RequestTypeUtilities.TYPE_FORUM_TAB);
                     newPush.child("key").setValue(newPush.getKey());
                     newPush.child("Name").setValue(inputTabName.getText().toString());
                     Long postTimeMillis = System.currentTimeMillis();

@@ -866,7 +866,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
 
                     }catch (Exception e){
-
+                        Log.e("Error: ", e.getMessage());
                     }
 
 

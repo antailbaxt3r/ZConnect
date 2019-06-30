@@ -108,7 +108,7 @@
                         android:id="@+id/postTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Unkown time ago"
+                        android:text="Unknown time ago"
                         android:textColor="@color/secondaryText"
                         android:textSize="12sp"
                         android:layout_gravity="center"
