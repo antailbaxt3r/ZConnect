@@ -18,6 +18,8 @@ import com.zconnect.zutto.zconnect.R;
 
 import com.zconnect.zutto.zconnect.CabPoolLocations;
 
+import java.util.HashMap;
+
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
 public class newRequestViewHolder extends RecyclerView.ViewHolder {
@@ -39,18 +41,32 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 DatabaseReference requestedLocationDatabaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("admin").child("requests");
+                final DatabaseReference addNewLocation=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations").child(key);
 
-                final DatabaseReference addNewLocation=FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("locations");
+                /*Long postTimeMillis = System.currentTimeMillis();
+                addNewLocation.child("PostTimeMillis").setValue(postTimeMillis);*/
 
-                Long postTimeMillis = System.currentTimeMillis();
-                addNewLocation.child(key).child("PostTimeMillis").setValue(postTimeMillis);
+                final HashMap<String, Object> map = new HashMap<>();
+                map.put("PostTimeMillis", System.currentTimeMillis());
 
                 requestedLocationDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        try { addNewLocation.child(key).child("locationName").setValue(dataSnapshot.child(key).child("locationName").getValue().toString());
-                            addNewLocation.child(key).child("PostedBy").child("Username").setValue(dataSnapshot.child(key).child("PostedBy").child("Username").getValue().toString());
-                            addNewLocation.child(key).child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child(key).child("PostedBy").child("ImageThumb").getValue().toString()); }
+                        try {
+
+                            /*addNewLocation.child("locationName").setValue(dataSnapshot.child(key).child("locationName").getValue().toString());
+                            addNewLocation.child("PostedBy").child("Username").setValue(dataSnapshot.child(key).child("PostedBy").child("Username").getValue().toString());
+                            addNewLocation.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child(key).child("PostedBy").child("ImageThumb").getValue().toString());*/
+
+                            map.put("locationName",dataSnapshot.child(key).child("locationName").getValue().toString());
+
+                            HashMap<String, Object> postedBy = new HashMap<>();
+                            postedBy.put("Username",dataSnapshot.child(key).child("PostedBy").child("Username").getValue().toString());
+                            postedBy.put("ImageThumb",dataSnapshot.child(key).child("PostedBy").child("ImageThumb").getValue().toString());
+
+                            map.put("PostedBy",postedBy);
+                            addNewLocation.setValue(map);
+                        }
                         catch (Exception e){}
                     }
 
@@ -83,12 +99,18 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
         acceptUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("ButtonResponse","Accepted");
                 requestForumTabs.child(key).child("Name").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        forumTab.child(dataSnapshot.getValue().toString().trim()).child("name").setValue(dataSnapshot.getValue().toString().trim().toLowerCase());
-                        forumTab.child(dataSnapshot.getValue().toString().trim()).child("UID").setValue(dataSnapshot.getValue().toString().trim());
+                        /*forumTab.child(dataSnapshot.getValue().toString().trim()).child("name").setValue(dataSnapshot.getValue().toString().trim().toLowerCase());
+                        forumTab.child(dataSnapshot.getValue().toString().trim()).child("UID").setValue(dataSnapshot.getValue().toString().trim());*/
+
+                        final HashMap<String, Object> map = new HashMap<>();
+                        map.put("name",dataSnapshot.getValue().toString().trim().toLowerCase());
+                        map.put("UID",dataSnapshot.getValue().toString().trim());
+
+                        forumTab.child(dataSnapshot.getValue().toString().trim()).setValue(map);
+                        
                         requestForumTabs.child(key).removeValue();
                     }
 
