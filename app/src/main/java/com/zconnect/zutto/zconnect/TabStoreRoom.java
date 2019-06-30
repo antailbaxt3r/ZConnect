@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +29,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -418,6 +422,11 @@ public class TabStoreRoom extends BaseActivity implements PopupMenu.OnMenuItemCl
                     (SearchView) menu.findItem(R.id.search).getActionView();
             searchView.setSearchableInfo(
                     searchManager.getSearchableInfo(getComponentName()));
+            EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+            ImageView searchClose = (ImageView) searchView.findViewById (android.support.v7.appcompat.R.id.search_close_btn);
+            searchClose.setColorFilter (Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+            searchEditText.setTextColor(getResources().getColor(R.color.black));
+            searchEditText.setHintTextColor(getResources().getColor(R.color.secondaryText));
 
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
