@@ -465,7 +465,7 @@ public class ChatActivity extends BaseActivity {
                     }
                 }
 
-                if (type.equals("forums")) {
+                if (type.equals("forums") || type.equals("others") || type.equals("personalChats")) {
                     DBHelper mydb = new DBHelper(ChatActivity.this);
 
                     String key, tab, name;

@@ -22,6 +22,7 @@ import com.google.firebase.storage.StorageReference;
 import com.zconnect.zutto.zconnect.ExploreForumsActivity;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.holders.JoinedForumsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
@@ -83,7 +84,7 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         FirebaseMessaging.getInstance().subscribeToTopic(forumCategoriesItemFormats.get(position).getCatUID());
         final ForumCategoriesItemFormat forumCategory = forumCategoriesItemFormats.get(position);
 
@@ -104,10 +105,10 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 db.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        dataSnapshot = dataSnapshot.child("users");
+                        DataSnapshot dataSnapshot1 = dataSnapshot.child("users");
                         Log.d("user:details",dataSnapshot.toString());
 
-                        for(DataSnapshot user: dataSnapshot.getChildren()){
+                        for(DataSnapshot user: dataSnapshot1.getChildren()){
                             Log.d("user:details",user.toString());
                             if(user.child("userUID").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                                 continue;
@@ -117,6 +118,7 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             itemFormat1.setImageThumb(user.child("imageThumb").getValue().toString());
                             itemFormat1.setImage(user.child("imageThumb").getValue().toString());
                             Log.d("Try:inside dataChange",user.child("name").getValue().toString());
+
                             holderMain.setDetails(itemFormat1);
                             holderMain.openChat(itemFormat1.getCatUID(), itemFormat1.getTabUID(), user.child("name").getValue().toString());
 
