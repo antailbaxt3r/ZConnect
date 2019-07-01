@@ -450,7 +450,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                             fm.beginTransaction().hide(active).show(forums).commit();
                             active = forums;
-                            //getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
                         }
                         break;
                     }
@@ -502,7 +502,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                             fm.beginTransaction().hide(active).show(infone).commit();
                             active = infone;
-                            //getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         }
                         break;
                     }
@@ -536,7 +536,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                         fm.beginTransaction().hide(active).show(notifications).commit();
                         active = notifications;
-                        //getSupportFragmentManager().beginTransaction().replace(R.id.container, notifications).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, notifications).commit();
                         //getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
                         break;
                     }

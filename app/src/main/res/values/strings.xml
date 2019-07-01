@@ -255,4 +255,5 @@
     <string name="decline">Decline</string>
     <string name="accept">Accept</string>
     <string name="question">Question</string>
+    <string name="create_pool">CREATE POOL</string>
 </resources>

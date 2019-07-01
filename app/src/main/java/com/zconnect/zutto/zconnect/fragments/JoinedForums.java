@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -247,9 +248,16 @@ public class JoinedForums extends Fragment {
                 joinedForumsRV.setLayoutManager(linearLayoutManager);
                 joinedForumsRV.setAdapter(adapter);
 
-                shimmerFrameLayout.stopShimmerAnimation();
-                shimmerFrameLayout.setVisibility(View.INVISIBLE);
-                joinedForumsRV.setVisibility(View.VISIBLE);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        shimmerFrameLayout.stopShimmerAnimation();
+                        shimmerFrameLayout.setVisibility(View.INVISIBLE);
+                        joinedForumsRV.setVisibility(View.VISIBLE);
+
+                    }
+                }, 500);
                 adapter.notifyDataSetChanged();
             }
 
