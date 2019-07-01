@@ -95,13 +95,8 @@ DatabaseReference databaseReference;
                 for(DataSnapshot childsnapshot: dataSnapshot.getChildren()){
                     Log.d((String) childsnapshot.child("Username").getValue(), "onDataChange: ");
                     admname.add((String) childsnapshot.child("Username").getValue());
-                    if(!("").equals(childsnapshot.child("ImageThumb").getValue())) {
-                        admimg.add((String) childsnapshot.child("ImageThumb").getValue());
-                    }
-                    else{
-                        //TODO (Arjun) Change required: default profile pic instead of random image URL
-                        admimg.add("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/defaultProfile.png?alt=media&token=4d4ec5db-41bd-4d04-9be5-12fc5a1bdd6d");
-                    }
+                    admimg.add((String) childsnapshot.child("ImageThumb").getValue());
+
                 }
                 recyclerView = (RecyclerView) findViewById(R.id.view_admins_rv);
                 viewAdminsRVAdapter = new ViewAdminsRVAdapter(ViewAdmin.this,admimg,admname);
