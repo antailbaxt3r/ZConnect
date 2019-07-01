@@ -3,6 +3,7 @@ package com.zconnect.zutto.zconnect;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
@@ -58,6 +59,7 @@ public class BottomNavigationViewBehavior extends CoordinatorLayout.Behavior<Tab
     public void onNestedPreScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull TabLayout child, @NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type);
 //        child.translationY = max(0f, min(child.height.toFloat(), child.translationY + dy));
+        FloatingActionButton fb = coordinatorLayout.findViewById(R.id.fab_cat_infone);
         float min = child.getTranslationY()+dy;
         float max = 0;
         if(((float)child.getHeight())<min){
@@ -67,6 +69,7 @@ public class BottomNavigationViewBehavior extends CoordinatorLayout.Behavior<Tab
             max = min;
         }
         child.setTranslationY(max);
+        fb.setTranslationY(max);
 
     }
 

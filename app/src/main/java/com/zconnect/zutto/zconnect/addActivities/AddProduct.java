@@ -50,6 +50,7 @@ import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zconnect.zutto.zconnect.TabStoreRoom;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.CustomSpinner;
@@ -97,6 +98,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     private CheckBox negotiableCheckBox;
     private Long postTimeMillis;
     private boolean isAsk;
+    private int numberOfViewsInAddProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,6 +260,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         final String productNameValue = mProductName.getText().toString().trim();
         final String productDescriptionValue = mProductDescription.getText().toString().trim();
         final String productPriceValue = mProductPrice.getText().toString().trim();
+        numberOfViewsInAddProduct = 0;
         final Boolean negotiable;
 
         if(negotiableCheckBox.isChecked()) {
@@ -288,6 +291,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
         taskMap.put("PostedBy", mAuth.getCurrentUser().getUid());
         taskMap.put("userID", FirebaseAuth.getInstance().getCurrentUser().getUid());
         taskMap.put("PostTimeMillis", postTimeMillis);
+        taskMap.put("NumberOfViews",numberOfViewsInAddProduct);
 
         final DatabaseReference _newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(_newPost.getKey());
         final Map<String, Object> taskMapHome = new HashMap<String, Object>();
@@ -333,6 +337,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                     taskMapHome.put("desc2", productPriceValue);
                     taskMapHome.put("productPrice", productPriceValue);
                 }
+
                 if (noFieldsEmpty) {
                     Log.i("EEEEEEEEEEEEE", "entered");
                     if(String.valueOf(spinner1.getSelectedItem()).equals("Choose Category"))
@@ -370,7 +375,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
 //                        newPost.child("PostTimeMillis").setValue(postTimeMillis);
                                         taskMap.put("Image", downloadUri != null ? downloadUri.toString() : null);
                                         taskMapHome.put("imageurl", downloadUri != null ? downloadUri.toString() : null);
-//                        postedBy.setValue(null);
+                                        //                        postedBy.setValue(null);
 //                        postedBy.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 //                        mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
 //                            @Override
@@ -428,6 +433,7 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
                                         handleNotifAndCountAndStats(productNameValue, productPriceValue, downloadUri);
                                         GlobalFunctions.addPoints(10);
                                         mProgress.dismiss();
+
                                         finish();
                                     } else {
                                         // Handle failures

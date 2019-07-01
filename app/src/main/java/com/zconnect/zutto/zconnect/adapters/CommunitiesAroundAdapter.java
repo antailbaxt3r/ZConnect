@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,10 +51,20 @@ public class CommunitiesAroundAdapter extends RecyclerView.Adapter<CommunitiesAr
     public void onBindViewHolder(communitiesViewHolder holder, int position) {
 
         holder.communityName.setText(allCommunities.get(position).getName() + " Connect");
-        holder.communitySize.setText(allCommunities.get(position).getSize().toString() + " members");
+        try {
+            holder.communitySize.setText(allCommunities.get(position).getSize().toString() + " members");
 //        Picasso.with(context).load(allCommunities.get(position).getImage()).into(holder.communityImage);
-        holder.communityImage.setImageURI(Uri.parse(allCommunities.get(position).getImage()));
-        holder.enterCommunity(allCommunities.get(position).getCode());
+            holder.communityImage.setImageURI(Uri.parse(allCommunities.get(position).getImage()));
+            holder.enterCommunity(allCommunities.get(position).getCode());
+        }
+        catch (Exception e)
+        {
+            //Log.e("Error","Title: Communities Joined");
+            holder.communityName.setText(allCommunities.get(position).getName());
+            holder.communitySize.setVisibility(View.GONE);
+            holder.communityImage.setVisibility(View.GONE);
+            holder.communityLogin.setVisibility(View.GONE);
+        }
 
     }
 

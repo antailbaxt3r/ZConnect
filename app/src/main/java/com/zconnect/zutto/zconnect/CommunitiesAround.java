@@ -21,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,9 +68,14 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 public class CommunitiesAround extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     CommunitiesAroundAdapter adapter;
+    Vector<CommunitiesItemFormat> totalCommunitiesList = new Vector<>();
     Vector<CommunitiesItemFormat> communitiesList = new Vector<>();
+    Vector<CommunitiesItemFormat> communitiesJoinedList = new Vector<>();
+    CommunitiesItemFormat titleCommunitiesJoined = new CommunitiesItemFormat();
+    CommunitiesItemFormat titleCoummunitiesNearby = new CommunitiesItemFormat();
     RecyclerView communitiesRecycler;
     DatabaseReference communitiesReference;
+    DatabaseReference userCommunitiesReference;
     LocationManager locationManager;
     LocationListener locationListener;
     private ProgressDialog progressDialog;
@@ -145,6 +151,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
                 .build();
 
         communitiesReference = FirebaseDatabase.getInstance().getReference().child("communitiesInfo");
+        userCommunitiesReference = FirebaseDatabase.getInstance().getReference().child("userCommunities");
         communitiesRecycler = (RecyclerView) findViewById(R.id.all_communities);
         communitiesRecycler.setLayoutManager(new LinearLayoutManager(this));
         noCommunitiesLayout = (RelativeLayout) findViewById(R.id.no_communities_layout);
@@ -182,7 +189,7 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
             }
         });
 
-        adapter = new CommunitiesAroundAdapter(this, communitiesList);
+        adapter = new CommunitiesAroundAdapter(this, totalCommunitiesList);
         communitiesRecycler.setAdapter(adapter);
         communitiesReference.keepSynced(true);
 
@@ -340,39 +347,73 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
 
         communitiesReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                totalCommunitiesList.clear();
                 communitiesList.clear();
+                //communitiesJoinedList.clear();
+
+                titleCoummunitiesNearby.setName("Communities Nearby");
+                titleCommunitiesJoined.setName("Communities Joined");
                 Boolean flagNoCommunity = true;
+
+                totalCommunitiesList.add(titleCoummunitiesNearby);
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     CommunitiesItemFormat communitiesItemFormat = shot.getValue(CommunitiesItemFormat.class);
-                   try {
-                       double comLat, comLon,totalDistance;
-                       Integer radius;
+                    try {
+                        double comLat, comLon,totalDistance;
+                        Integer radius;
 
-                       radius = communitiesItemFormat.getRadius();
+                        radius = communitiesItemFormat.getRadius();
 
-                       comLat = shot.child("location").child("lat").getValue(Double.class);
-                       comLon = shot.child("location").child("lon").getValue(Double.class);
+                        comLat = shot.child("location").child("lat").getValue(Double.class);
+                        comLon = shot.child("location").child("lon").getValue(Double.class);
 
-                       totalDistance = distance(lat,comLat,lon,comLon);
-                       if(totalDistance<radius){
+                        totalDistance = distance(lat,comLat,lon,comLon);
+                        if(totalDistance<radius){
 
-                           communitiesList.add(communitiesItemFormat);
-                           flagNoCommunity = false;
-                       }
+                            communitiesList.add(communitiesItemFormat);
+                            flagNoCommunity = false;
+                        }
 
-                   }catch (Exception e){
+                    }catch (Exception e){
 
-                   }
+                    }
                 }
+
+                userCommunitiesReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+
+                        communitiesJoinedList.clear();
+                        try {
+                            for (DataSnapshot shot : dataSnapshot2.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("communitiesJoined").getChildren()) {
+                                CommunitiesItemFormat communitiesItemFormat2 = dataSnapshot.child(shot.getValue().toString()).getValue(CommunitiesItemFormat.class);
+                                communitiesJoinedList.add(communitiesItemFormat2);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Log.e("Message","New User");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                totalCommunitiesList.addAll(communitiesList);
+                totalCommunitiesList.add(titleCommunitiesJoined);
+                totalCommunitiesList.addAll(communitiesJoinedList);
 
                 if(flagNoCommunity){
                     noCommunitiesLayout.setVisibility(View.VISIBLE);
                 }else{
                     noCommunitiesLayout.setVisibility(View.GONE);
                 }
-                    progressDialog.dismiss();
+                progressDialog.dismiss();
                 adapter.notifyDataSetChanged();
             }
 

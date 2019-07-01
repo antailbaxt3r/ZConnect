@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="12dp"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+
+
+    <TextView
+        android:id="@+id/validate_infone_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select an app to proceed:"
+        android:gravity="left"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/primaryText"/>
+
+    <LinearLayout
+        android:id="@+id/add_infone_contact_zconnectll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/logo"/>
+        <TextView
+            android:layout_marginStart="@dimen/margin_small8dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ZConnect"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/add_infone_contact_phonebookll"
+        android:layout_marginTop="@dimen/margin_small8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_person_grey_24dp"/>
+        <TextView
+            android:layout_marginStart="@dimen/margin_small8dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contacts"/>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/add_infone_contact_cancel_btn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_gravity="right"
+        android:text="CANCEL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
+

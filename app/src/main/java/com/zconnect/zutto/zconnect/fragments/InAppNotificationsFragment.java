@@ -60,7 +60,6 @@ public class InAppNotificationsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notifications,container,false);
-
         notifRecyclerView = (RecyclerView) view.findViewById(R.id.rv_notifications_fragment);
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_notifications_progress_circle);
 
@@ -72,7 +71,6 @@ public class InAppNotificationsFragment extends Fragment {
         globalReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef);
         notifRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
-
         notificationsList = new ArrayList<>();
 
         //Test Notification. Uncomment for testing
@@ -80,17 +78,28 @@ public class InAppNotificationsFragment extends Fragment {
 
 
         Log.d("outside", "onDataChange: ");
+        inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, notificationsList);
+
+        notifRecyclerView.setAdapter(inAppNotificationsAdapter);
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("inapresume", "onResume: ");
         globalReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot childSnapshot : dataSnapshot.child("globalNotifications").getChildren()) {
-                        InAppNotificationsItemFormat globalnotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
-                        if(globalnotification!=null)
+                    InAppNotificationsItemFormat globalnotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
+                    if(globalnotification!=null)
                         notificationsList.add(globalnotification);
 
                 }
 
-          inAppNotificationsAdapter.notifyDataSetChanged();
+                inAppNotificationsAdapter.notifyDataSetChanged();
 
             }
 
@@ -114,7 +123,7 @@ public class InAppNotificationsFragment extends Fragment {
                 });
                 progressBar.setVisibility(View.GONE);
                 notifRecyclerView.setVisibility(View.VISIBLE);
-               inAppNotificationsAdapter.notifyDataSetChanged();
+                inAppNotificationsAdapter.notifyDataSetChanged();
 
             }
 
@@ -124,9 +133,6 @@ public class InAppNotificationsFragment extends Fragment {
             }
         });
 
-        Log.d("return", "onCreateView: ");
-        inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, notificationsList);
-        notifRecyclerView.setAdapter(inAppNotificationsAdapter);
-        return view;
+
     }
 }

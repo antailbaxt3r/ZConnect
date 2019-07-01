@@ -94,6 +94,7 @@ DatabaseReference databaseReference;
                         admimg.add((String) childsnapshot.child("ImageThumb").getValue());
                     }
                     else{
+                        //TODO (Arjun) Change required: default profile pic instead of random image URL
                         admimg.add("https://lh6.googleusercontent.com/-idc9bXb9n-Q/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DVg6FhNzc1jkN4eBCa6ESbBPmpl5g/s96-c/photo.jpg");
                     }
                 }

@@ -95,10 +95,11 @@ public class ChatActivity extends BaseActivity {
     private RecyclerView chatView;
     private RecyclerView.Adapter adapter;
     private DatabaseReference databaseReference ;
+    private DatabaseReference forumCategory = null;
     private Calendar calendar;
     private ArrayList<ChatItemFormats> messages  = new ArrayList<>();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private String type=null;
+    private String type = null;
     private Button joinButton;
     private LinearLayout joinLayout,chatLayout;
     private Menu menu;
@@ -175,6 +176,8 @@ public class ChatActivity extends BaseActivity {
         chatLayout.setVisibility(View.VISIBLE);
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref);
+        Log.d("Try",databaseReference.getParent().toString());
+
         if(FirebaseAuth.getInstance().getCurrentUser().getUid()==null) {
             showToast("You have to be logged in to chat");
             finish();
@@ -193,6 +196,8 @@ public class ChatActivity extends BaseActivity {
             setActionBarTitle("Chat with seller");
         }else if (type.equals("post")){
             setActionBarTitle("Comments");
+        }else if(type.equals("personalChats")){
+            setActionBarTitle(getIntent().getStringExtra("name"));
         }
 
         if(type!=null){
@@ -272,7 +277,7 @@ public class ChatActivity extends BaseActivity {
                 final String key,tab;
                 key = getIntent().getStringExtra("key");
                 tab = getIntent().getStringExtra("tab");
-                final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
+                forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
 
                 forumCategory.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -339,10 +344,24 @@ public class ChatActivity extends BaseActivity {
                     }
                 });
             }
+            else if(type.equals("personalChats")){
+
+                final String key,tab;
+                key = getIntent().getStringExtra("key");
+                tab = getIntent().getStringExtra("tab");
+                setToolbarTitle(getIntent().getStringExtra("name"));
+
+                final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
+                joinButton.setVisibility(View.GONE);
+                joinLayout.setVisibility(View.GONE);
+                chatLayout.setVisibility(View.VISIBLE);
+
+            }
+
         }
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
-        adapter = new ChatRVAdapter(messages,databaseReference,this);
+        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this);
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
@@ -476,9 +495,10 @@ public class ChatActivity extends BaseActivity {
                 message.setImageThumb(userItem.getImageURLThumbnail());
                 message.setMessage("\""+text+"\"");
                 message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
-                Log.d("test", userItem.getUsername());
                 GlobalFunctions.addPoints(2);
-                databaseReference.child("Chat").push().setValue(message);
+                String messagePushID = databaseReference.child("Chat").push().getKey();
+                message.setKey(messagePushID);
+                databaseReference.child("Chat").child(messagePushID).setValue(message);
 //                messages.add(message);
 
 //                adapter.notifyDataSetChanged();
@@ -526,8 +546,6 @@ public class ChatActivity extends BaseActivity {
                     notificationSender.execute(productChatNotification);
 
                 }else if(type.equals("post")){
-                    Log.d("test", getIntent().getStringExtra("key"));
-
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 
                     NotificationItemFormat postChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST,userItem.getUserUID());
@@ -543,13 +561,9 @@ public class ChatActivity extends BaseActivity {
                     notificationSender.execute(postChatNotification);
 
                 }else if(type.equals("messages")){
-                    Log.d("test", "message ");
                     NotificationSender notificationSender=new NotificationSender(getIntent().getStringExtra("userKey"),userItem.getUserUID(),null,null,null,null,userItem.getUsername(), OtherKeyUtilities.KEY_MESSAGES_CHAT,false,true,ChatActivity.this);
                     notificationSender.execute();
-
                 }else if(type.equals("events")){
-                    Log.d("test", "events");
-
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this,userItem.getUserUID());
 
                     NotificationItemFormat eventChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_EVENT,userItem.getUserUID());
@@ -564,7 +578,6 @@ public class ChatActivity extends BaseActivity {
 
                     notificationSender.execute(eventChatNotification);
                 }else if(type.equals("cabPool")){
-                    Log.d("test", "cabpool");
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 
                     NotificationItemFormat cabChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_CAB,userItem.getUserUID());
@@ -577,6 +590,19 @@ public class ChatActivity extends BaseActivity {
                     cabChatNotification.setCommunityName(communityTitle);
 
                     notificationSender.execute(cabChatNotification);
+                }else if(type.equals("personalChats")){
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats").child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
 
             }
@@ -636,8 +662,9 @@ public class ChatActivity extends BaseActivity {
                                 message.setMessage(" \uD83D\uDCF7 Image ");
                                 message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
                                 GlobalFunctions.addPoints(5);
-
-                                databaseReference.child("Chat").push().setValue(message);
+                                String messagePushID = databaseReference.child("Chat").push().getKey();
+                                message.setKey(messagePushID);
+                                databaseReference.child("Chat").child(messagePushID).setValue(message);
                                 if (type.equals("forums")){
                                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
 
