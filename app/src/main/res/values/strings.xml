@@ -121,7 +121,7 @@
     <string name="title_activity_each_category">EachCategory</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_edit_profile">Edit Profile</string>
-    <string name="appwidget_text">Search Infone ...</string>
+    <string name="appwidget_text">Search Infone …</string>
     <string name="add_widget">Add widget</string>
     <string name="title_activity_offers">Latest Offers</string>
     <string name="title_activity_shop_detail">Shop_detail</string>
@@ -165,8 +165,8 @@
     <string name="title_storeroom_shortlist">Shortlisted Products</string>
     <string name="GPSAlertDialogTitle">Location Permission</string>
     <string name="GPSAlertDialogMessage">allow permission</string>
-    <string name="cancel">cancel</string>
-    <string name="title_activity_verfication_page">Verfication</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_activity_verfication_page">Verification</string>
     <string name="title_activity_admin_home">Admin Home</string>
 
     <string name="title_recents_feature_view">Community Features</string>
@@ -176,16 +176,16 @@
     <string name="forum_first_msg_label">First Message</string>
     <string name="forum_first_msg_hint">Type a welcome message here</string>
 
-    <string name="status_hint">Type what you are thinking...</string>
+    <string name="status_hint">Type what you are thinking…</string>
     <string name="status_hint_ask_questions">Or ask anyone a question</string>
 
 
     <!--add status hints-->
-    <string name="status_hint_1">Is there ...?</string>
-    <string name="status_hint_2">Where can I ...?</string>
-    <string name="status_hint_3">Does anyone have ...?</string>
-    <string name="status_hint_4">Can anyone suggest ...?</string>
-    <string name="status_hint_5">Which is a better option ...?</string>
+    <string name="status_hint_1">Is there …?</string>
+    <string name="status_hint_2">Where can I …?</string>
+    <string name="status_hint_3">Does anyone have …?</string>
+    <string name="status_hint_4">Can anyone suggest …?</string>
+    <string name="status_hint_5">Which is a better option …?</string>
 
 
     <!--admin fragments text-->
@@ -209,7 +209,7 @@
     <string name="invitation_title">Invite Friends</string>
     <string name="invitation_message">Hey, check out this amazing app! ZConnect is a social network exclusively for our community.</string>
     <string name="invitation_deep_link">https://zconnect.page.link/Tbeh</string>
-    <string name="invitation_custom_image"></string>
+    <string name="invitation_custom_image"> </string>
     <string name="invitation_cta">Call to action</string>
 
 
@@ -256,4 +256,5 @@
     <string name="accept">Accept</string>
     <string name="question">Question</string>
     <string name="create_pool">CREATE POOL</string>
+    <string name="admin_name">Admin Name</string>
 </resources>
