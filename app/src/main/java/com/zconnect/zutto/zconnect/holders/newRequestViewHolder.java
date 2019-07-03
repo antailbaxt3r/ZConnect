@@ -110,7 +110,7 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
                         map.put("UID",dataSnapshot.getValue().toString().trim());
 
                         forumTab.child(dataSnapshot.getValue().toString().trim()).setValue(map);
-                        
+
                         requestForumTabs.child(key).removeValue();
                     }
 
