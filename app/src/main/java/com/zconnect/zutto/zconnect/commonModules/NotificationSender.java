@@ -248,7 +248,6 @@ GlobalFunctions.inAppNotifications("rejected your request to join the community"
     private void newUserAcceptNotification(String communityName,String receiverKey,String username,String userimg) {
         creator = new RemoteMessage.Builder("data");
         creator.addData("communityName",communityName);
-
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_NEW_USER_ACCEPT);
         creator.addData("userKey",userKey);
 

@@ -350,7 +350,6 @@ public class CommunitiesAround extends BaseActivity implements GoogleApiClient.O
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 totalCommunitiesList.clear();
                 communitiesList.clear();
-                //communitiesJoinedList.clear();
 
                 titleCoummunitiesNearby.setName("Communities Nearby");
                 titleCommunitiesJoined.setName("Communities Joined");

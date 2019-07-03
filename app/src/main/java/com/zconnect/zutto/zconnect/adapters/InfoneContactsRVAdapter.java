@@ -27,6 +27,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.zconnect.zutto.zconnect.InfoneContactListActivity;
 import com.zconnect.zutto.zconnect.ZConnectDetails;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
+import com.zconnect.zutto.zconnect.commonModules.GlobalFunctions;
 import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.holders.InfoneContactsRVViewHolder;
 import com.zconnect.zutto.zconnect.InfoneProfileActivity;
@@ -325,7 +326,7 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                 requestCallNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                 requestCallNotification.setUserName(userItemFormat.getUsername());
                 requestCallNotification.setCommunityName(communityTitle);
-
+                GlobalFunctions.inAppNotifications("tried contacting you"," call him back!",userItemFormat,false,"requestcallback",null,itemUID);
                 notificationSender.execute(requestCallNotification);
             }
 

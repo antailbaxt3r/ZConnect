@@ -701,6 +701,7 @@ public class OpenUserDetail extends BaseActivity {
                     requestCallNotification.setUserName(userItemFormat.getUsername());
                     requestCallNotification.setCommunityName(communityTitle);
 
+                    GlobalFunctions.inAppNotifications("tried contacting you"," call him back!",userItemFormat,false,"requestcallback",null,Uid);
                     notificationSender.execute(requestCallNotification);
                 }
 

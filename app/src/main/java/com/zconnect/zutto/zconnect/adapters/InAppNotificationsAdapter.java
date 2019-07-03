@@ -1,21 +1,31 @@
 package com.zconnect.zutto.zconnect.adapters;
 
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.drm.DrmStore;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.commonModules.NotificationService;
 import com.zconnect.zutto.zconnect.holders.InAppNotificationsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.InAppNotificationsItemFormat;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
@@ -27,6 +37,7 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 import static android.graphics.Typeface.BOLD;
 
@@ -51,7 +62,15 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
     }
 
     @Override
-    public void onBindViewHolder(final InAppNotificationsRVViewHolder holder, int position) {
+    public void onBindViewHolder(final InAppNotificationsRVViewHolder holder, final int position) {
+        final DatabaseReference seenReference = FirebaseDatabase.getInstance().getReference()
+                .child("communities").child(communityRef).child("Users1")
+                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
+                .child("notifications").child(notificationsList.get(position).getKey())
+                .child("seen");
+                if(Boolean.compare(notificationsList.get(position).isSeen(),false)==0){
+                    holder.seen.setVisibility(View.VISIBLE);
+                }
 
         String text = notificationsList.get(position).getNotifiedby().getUsername() + " " + notificationsList.get(position).getTitle();
         SpannableString spannableString = new SpannableString(text);
@@ -67,12 +86,19 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
             @Override
             public void onClick(View view) {
                 //Seenzone
-                DatabaseReference seenReference = FirebaseDatabase.getInstance().getReference()
-                        .child("communities").child(communityRef).child("Users1")
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child("notifications").child(notificationsList.get(holder.getAdapterPosition()).getKey())
-                        .child("seen");
+                holder.seen.setVisibility(View.INVISIBLE);
                 seenReference.setValue(true);
+                notificationsList.get(position).setSeen(true);
+                if(notificationsList.get(position).getTitle().equals("tried contacting you")){
+                    Log.d("onclick", "calling ");
+                    Intent call = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + notificationsList.get(position).getNotifiedby().getMobileNumber()));
+                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, call, PendingIntent.FLAG_UPDATE_CURRENT);
+                    try {
+                        pendingIntent.send(context,0,call);
+                    } catch (PendingIntent.CanceledException e) {
+                        e.printStackTrace();
+                    }
+                }
 
                 //Open Metadata related stuff
             }

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -76,10 +77,8 @@ public class InAppNotificationsFragment extends Fragment {
         //Test Notification. Uncomment for testing
         //GlobalFunctions.pushNotifications("Test", "This is a test", false, 1, new HashMap<String, String>());
 
-
         Log.d("outside", "onDataChange: ");
         inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, notificationsList);
-
         notifRecyclerView.setAdapter(inAppNotificationsAdapter);
 
         return view;
@@ -111,7 +110,7 @@ public class InAppNotificationsFragment extends Fragment {
         globalReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot childSnapshot : dataSnapshot.child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("notifications").getChildren()) {
+                for(DataSnapshot childSnapshot : dataSnapshot.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").getChildren()) {
                     InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
                     notificationsList.add(usernotification);
                 }

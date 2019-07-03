@@ -2,6 +2,7 @@ package com.zconnect.zutto.zconnect.holders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ public class InAppNotificationsRVViewHolder extends RecyclerView.ViewHolder {
     public TextView titletv;
     public TextView timetv;
     public TextView desctv;
+    public ImageView seen;
     public LinearLayout notificationsLayout;
     public SimpleDraweeView simpleDraweeView;
 
@@ -22,5 +24,6 @@ public class InAppNotificationsRVViewHolder extends RecyclerView.ViewHolder {
         timetv = (TextView) itemView.findViewById(R.id.tv_notification_timeago);
         desctv = (TextView) itemView.findViewById(R.id.tv_notification_desc);
         simpleDraweeView = itemView.findViewById(R.id.imageView);
+        seen = (ImageView) itemView.findViewById(R.id.seen);
     }
 }
