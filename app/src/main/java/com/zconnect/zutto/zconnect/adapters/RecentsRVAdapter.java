@@ -1450,7 +1450,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }else{
                         statusLikeFlag = true;
                         likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
-                        likeIcon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+                        likeIcon.setColorFilter(context.getResources().getColor(R.color.deepPurple500));
                         if(likeText.getText().toString().equals("")){
                             likeText.setText("1");
                         }else {

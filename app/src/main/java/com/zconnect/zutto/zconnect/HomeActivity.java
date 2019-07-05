@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.Rectangle;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -36,6 +39,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +60,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
+import com.zconnect.zutto.zconnect.fragments.ForumsFragment;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.fragments.InAppNotificationsFragment;
@@ -70,6 +75,7 @@ import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
 
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
@@ -78,6 +84,11 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.toptas.fancyshowcase.FancyShowCaseQueue;
+import me.toptas.fancyshowcase.FancyShowCaseView;
+import me.toptas.fancyshowcase.FocusShape;
+import me.toptas.fancyshowcase.listener.DismissListener;
+import me.toptas.fancyshowcase.listener.OnViewInflateListener;
 
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, Recents.OnHomeIconListener {
 
@@ -122,6 +133,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private Fragment recent, forums, shop, myProfile, notifications, active;
     public Fragment infone;
     private FragmentManager fm;
+    LinearLayout recentView;
+    private BottomNavigationItemView home, forum, add, infoneb,noti;
 
     public Boolean flag = false;
     public Boolean setTitleFlag = true;
@@ -145,6 +158,207 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         isFabOpen = false;
     }
 
+//    private void showAppTour(){
+//
+//        MaterialShowcaseView welcome = new MaterialShowcaseView.Builder(this)
+//                .setTitleText("Welcome to ZConnect!")
+//                .setTarget(toolbar)
+//                .setMaskColour(R.color.deepPurple1000)
+//                .setTitleTextColor(Color.WHITE)
+//                .setDismissText("NEXT")
+//                .setContentText("This tour will guide you through the app features.")
+//                .setContentTextColor(Color.WHITE)
+//                .setDismissOnTouch(true)
+//                .build();
+//
+//        MaterialShowcaseView home = new MaterialShowcaseView.Builder(this)
+//                .setTitleText("Home")
+//                .setTarget(tabs.getTabAt(0).getCustomView())
+//                .setMaskColour(R.color.deepPurple1000)
+//                .setTitleTextColor(Color.WHITE)
+//                .setContentTextColor(Color.WHITE)
+//                .setDismissText("NEXT")
+//                .setContentText("The home shows your feed, latest activities in your community and all the posts")
+//                .setDismissOnTouch(true)
+//                .build();
+//
+//        MaterialShowcaseView forums = new MaterialShowcaseView.Builder(HomeActivity.this)
+//                .setTitleText("Forums")
+//                .setTarget(tabs.getTabAt(1).getCustomView())
+//                .setMaskColour(R.color.deepPurple1000)
+//                .setTitleTextColor(Color.WHITE)
+//                .setContentTextColor(Color.WHITE)
+//                .setDismissText("NEXT")
+//                .setContentText("Forums are conversation hubs for talking with like-minded people in your community")
+//                .setDismissOnTouch(true)
+//                .build();
+//
+//        MaterialShowcaseView add = new MaterialShowcaseView.Builder(this)
+//                .setTitleText("Add")
+//                .setTarget(tabs.getTabAt(2).getCustomView())
+//                .setMaskColour(R.color.deepPurple1000)
+//                .setTitleTextColor(Color.WHITE)
+//                .setContentTextColor(Color.WHITE)
+//                .setDismissText("NEXT")
+//                .setContentText("Add a Status, a Poll, an Event or whatever you want!")
+//                .setDismissOnTouch(true)
+//                .build();
+//
+//        MaterialShowcaseView infone = new MaterialShowcaseView.Builder(this)
+//                .setTitleText("Contacts")
+//                .setTarget(tabs.getTabAt(3).getCustomView())
+//                .setMaskColour(R.color.deepPurple1000)
+//                .setTitleTextColor(Color.WHITE)
+//                .setContentTextColor(Color.WHITE)
+//                .setDismissText("NEXT")
+//                .setContentText("Access all contacts, student or otherwise right here")
+//                .setDismissOnTouch(true)
+//                .build();
+//
+//        MaterialShowcaseView notifications = new MaterialShowcaseView.Builder(this)
+//                .setTitleText("Notifications")
+//                .setTarget(tabs.getTabAt(4).getCustomView())
+//                .setMaskColour(R.color.deepPurple1000)
+//                .setTitleTextColor(Color.WHITE)
+//                .setDismissText("NEXT")
+//                .setContentTextColor(Color.WHITE)
+//                .setContentText("All your notifications are displayed here")
+//                .setDismissOnTouch(true)
+//                .build();
+//
+//        recentView = findViewById(R.id.recentView);
+//
+//        MaterialShowcaseView features = new MaterialShowcaseView.Builder(this)
+//                .setTitleText("Other Features")
+//                .setTarget(recentView)
+//                .withRectangleShape()
+//                .setMaskColour(R.color.deepPurple1000)
+//                .setTitleTextColor(Color.WHITE)
+//                .setContentTextColor(Color.WHITE)
+//                .setDismissText("NEXT")
+//                .setContentText("Access all features of ZConnect from this bar including StoreRoom, CabPool and Events")
+//                .setDismissOnTouch(true)
+//                .build();
+//
+//        MaterialShowcaseView end = new MaterialShowcaseView.Builder(this)
+//                .setTitleText("Enjoy ZConnect")
+//                .setTarget(toolbar)
+//                .setMaskColour(R.color.deepPurple1000)
+//                .setTitleTextColor(Color.WHITE)
+//                .setContentTextColor(Color.WHITE)
+//                .setContentText("Thank You for taking this tour")
+//                .setDismissText("GOT IT")
+//                .setDismissOnTouch(true)
+//                .build();
+//
+//        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this)
+//                .addSequenceItem(welcome)
+//                .addSequenceItem(home)
+//                .addSequenceItem(forums)
+//                .addSequenceItem(add)
+//                .addSequenceItem(infone)
+//                .addSequenceItem(notifications)
+//                .addSequenceItem(features)
+//                .addSequenceItem(end);
+//        sequence.start();
+//
+//
+//    }
+
+    private void showAppTour(){
+
+        recentView = findViewById(R.id.recentView);
+
+        FancyShowCaseView welcome = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .customView(R.layout.welcome_zconnect, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        FancyShowCaseView home = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(tabImage[0])
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_home, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                     }
+                })
+                .build();
+
+
+        FancyShowCaseView forums = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(tabImage[1])
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_forums, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        FancyShowCaseView add = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(tabImage[2])
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_add, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        FancyShowCaseView infone = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(tabImage[3])
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_infone, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        FancyShowCaseView notifications = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(tabImage[4])
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_notifications, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        FancyShowCaseView features = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(recentView)
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_features, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+                .roundRectRadius(15)
+                .build();
+
+        FancyShowCaseQueue queue = new FancyShowCaseQueue()
+                .add(welcome)
+                .add(home)
+                .add(forums)
+                .add(add)
+                .add(infone)
+                .add(notifications)
+                .add(features);
+
+        queue.show();
+
+    }
 
     @SuppressLint("ApplySharedPref")
     @Override
@@ -177,6 +391,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
 
         navigationView.setItemIconTintList(null);
+
 
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -1235,6 +1450,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             default: {
                 return false;
             }
+
+            case R.id.app_tour_btn:
+                drawer.closeDrawer(GravityCompat.START);
+                showAppTour();
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -1448,4 +1667,5 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     public void getLayoutManager(LinearLayoutManager linearLayoutManager) {
         recentsLinearLayoutManager = linearLayoutManager;
     }
+
 }
