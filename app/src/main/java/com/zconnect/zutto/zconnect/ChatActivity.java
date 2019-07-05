@@ -26,14 +26,18 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -41,10 +45,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -59,6 +67,21 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.linkedin.android.spyglass.suggestions.SuggestionsResult;
+import com.linkedin.android.spyglass.suggestions.interfaces.Suggestible;
+import com.linkedin.android.spyglass.suggestions.interfaces.SuggestionsResultListener;
+import com.linkedin.android.spyglass.suggestions.interfaces.SuggestionsVisibilityManager;
+import com.linkedin.android.spyglass.tokenization.QueryToken;
+import com.linkedin.android.spyglass.tokenization.impl.WordTokenizer;
+import com.linkedin.android.spyglass.tokenization.impl.WordTokenizerConfig;
+import com.linkedin.android.spyglass.tokenization.interfaces.QueryTokenReceiver;
+import com.linkedin.android.spyglass.tokenization.interfaces.Tokenizer;
+import com.linkedin.android.spyglass.ui.MentionsEditText;
+import com.linkedin.android.spyglass.ui.RichEditorView;
+import com.percolate.mentions.Mentionable;
+import com.percolate.mentions.Mentions;
+import com.percolate.mentions.QueryListener;
+import com.percolate.mentions.SuggestionsListener;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zconnect.zutto.zconnect.addActivities.CreateForum;
@@ -71,6 +94,7 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UserMentionsFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
@@ -89,11 +113,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+
 //TODO: IMPROVE ANONYMOUS MODE
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends BaseActivity implements QueryTokenReceiver, SuggestionsResultListener, SuggestionsVisibilityManager {
 
     private String TAG = ChatActivity.class.getSimpleName();
+    private static final String BUCKET = "people-network";
+
 
     private static final int GALLERY_REQUEST = 7;
     private String ref  = "Misc";
@@ -132,13 +161,38 @@ public class ChatActivity extends BaseActivity {
     private FrameLayout chatFrameLayout;
 
     //UI elements
-    EditText typer;
+    static MentionsEditText typer;
+
+    //User Mentions
+    static UserMentionsFormat.MentionsLoader mentionsLoader;
+    static RecyclerView mentionsRecyclerView;
+    private static final WordTokenizerConfig tokenizerConfig = new WordTokenizerConfig
+            .Builder()
+            .setWordBreakChars(", ")
+            .setExplicitChars("@")
+            .setMaxNumKeywords(2)
+            .setThreshold(1)
+            .build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+
+        mentionsRecyclerView = findViewById(R.id.mentions_grid);
+        mentionsRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        adapter = new MentionsAdapter(new ArrayList<UserMentionsFormat>());
+        mentionsRecyclerView.setAdapter(adapter);
+
+        typer = ((MentionsEditText) findViewById(R.id.typer));
+
+        typer.setTokenizer(new WordTokenizer(tokenizerConfig));
+        typer.setQueryTokenReceiver(this);
+        typer.setSuggestionsVisibilityManager(this);
+
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
@@ -174,7 +228,59 @@ public class ChatActivity extends BaseActivity {
         intentHandle = new IntentHandle();
         unseenFlag = true;
         unseenFlag2 = false;
-        typer = ((EditText) findViewById(R.id.typer));
+
+//        Mentions mentions = new Mentions.Builder(ChatActivity.this, typer)
+//                .highlightColor(R.color.colorPrimary)
+//                .maxCharacters(5)
+//                .queryListener(new QueryListener() {
+//                    public void onQueryReceived(final String query) {
+//                        // Get and display results for query.
+//                    }
+//                })
+//                .suggestionsListener(new SuggestionsListener() {
+//                    public void displaySuggestions(final boolean display) {
+//                        // Hint that can be used to show or hide your list of @mentions".
+//                    }
+//                })
+//                .build();
+//
+//        final Mentionable mention = new Mentionable() {
+//
+//            @Override
+//            public int getMentionOffset() {
+//                return 0;
+//            }
+//
+//            @Override
+//            public void setMentionOffset(int i) {
+//
+//            }
+//
+//            @Override
+//            public int getMentionLength() {
+//                return 4;
+//            }
+//
+//            @Override
+//            public void setMentionLength(int i) {
+//
+//            }
+//
+//            @Override
+//            public String getMentionName() {
+//                return "AAAAA";
+//            }
+//
+//            @Override
+//            public void setMentionName(String s) {
+//
+//            }
+//
+//        };
+//        mention.setMentionName(user.getDisplayName());
+//        mentions.insertMention(mention);
+//
+
         SharedPreferences communitySP;
         final String communityReference;
         communitySP = ChatActivity.this.getSharedPreferences("communityName", MODE_PRIVATE);
@@ -309,12 +415,29 @@ public class ChatActivity extends BaseActivity {
                 key = getIntent().getStringExtra("key");
                 tab = getIntent().getStringExtra("tab");
                 forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
+                //TODO usersReference IS HARDCODED
+
+
 
                 forumCategory.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
                         try {
                             setToolbarTitle(dataSnapshot.child("name").getValue().toString());
+                            ArrayList<UserMentionsFormat> userMentionsFormats = new ArrayList<>();
+                            UserMentionsFormat userMentionsFormat1 = new UserMentionsFormat();
+                            userMentionsFormat1.setUsername("ANSHUUU");
+                            userMentionsFormat1.setUserImage("AAAAA");
+                            userMentionsFormat1.setUserUID("AAAAAAA");
+                            userMentionsFormats.add(userMentionsFormat1);
+                            for(DataSnapshot users: dataSnapshot.child("users").getChildren()){
+                                UserMentionsFormat userMentionsFormat = new UserMentionsFormat();
+                                userMentionsFormat.setUsername(users.child("name").getValue().toString());
+                                userMentionsFormat.setUserImage(users.child("imageThumb").getValue().toString());
+                                userMentionsFormat.setUserUID(users.child("userUID").getValue().toString());
+                                userMentionsFormats.add(userMentionsFormat);
+                            }
+                            mentionsLoader = new UserMentionsFormat.MentionsLoader(userMentionsFormats);
 
                             if (!dataSnapshot.child("users").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                                 joinButton.setVisibility(View.VISIBLE);
@@ -1080,7 +1203,7 @@ public class ChatActivity extends BaseActivity {
         chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
         chatLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
 
-        typer.setTextColor(ContextCompat.getColor(this,R.color.black));
+//        typer.setText(ContextCompat.getColor(this,R.color.black));
 
 
 
@@ -1106,7 +1229,8 @@ public class ChatActivity extends BaseActivity {
         appBarLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.title_bar_dark));
         chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_surface));
         chatLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_chat_layout));
-        typer.setTextColor(ContextCompat.getColor(this,R.color.white));
+//        typer.setTextColor(ContextCompat.getColor(this,R.color.white));
+
 
 
         adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_ANONYMOUS_FORUM);
@@ -1121,7 +1245,6 @@ public class ChatActivity extends BaseActivity {
         chatView.setAdapter(adapter);
 
     }
-
 
 
 
@@ -1365,5 +1488,112 @@ public class ChatActivity extends BaseActivity {
 
         return inSampleSize;
     }
+
+
+    @Override
+    public List<String> onQueryReceived(final @NonNull QueryToken queryToken) {
+        List<String> buckets = Collections.singletonList(BUCKET);
+        List<UserMentionsFormat> suggestions = mentionsLoader.getSuggestions(queryToken);
+        SuggestionsResult result = new SuggestionsResult(queryToken, suggestions);
+        // Have suggestions, now call the listener (which is this activity)
+        onReceiveSuggestionsResult(result, BUCKET);
+        Log.d("MENTIONs",queryToken.toString());
+
+        return buckets;
+    }
+
+    @Override
+    public void onReceiveSuggestionsResult(@NonNull SuggestionsResult result, @NonNull String bucket) {
+        Log.d("MENTIONs",result.toString());
+        List<? extends Suggestible> suggestions = result.getSuggestions();
+        adapter = new MentionsAdapter(result.getSuggestions());
+        mentionsRecyclerView.swapAdapter(adapter, true);
+        boolean display = suggestions != null && suggestions.size() > 0;
+        displaySuggestions(display);
+    }
+
+    @Override
+     public void displaySuggestions(boolean display) {
+        if (display) {
+            mentionsRecyclerView.setVisibility(RecyclerView.VISIBLE);
+        } else {
+            mentionsRecyclerView.setVisibility(RecyclerView.GONE);
+        }
+    }
+
+    @Override
+    public boolean isDisplayingSuggestions() {
+        return mentionsRecyclerView.getVisibility() == RecyclerView.VISIBLE;
+    }
+    static  public void displaysuggestions(boolean display){
+        if(display) {
+            mentionsRecyclerView.setVisibility(RecyclerView.VISIBLE);
+        }
+        else {
+            mentionsRecyclerView.setVisibility(RecyclerView.GONE);
+        }
+    }
+
+
+
+
+    static class MentionsViewHolder extends RecyclerView.ViewHolder {
+        public TextView name;
+        public SimpleDraweeView picture;
+
+        public MentionsViewHolder(View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.person_name);
+            picture = itemView.findViewById(R.id.person_image);
+        }
+    }
+
+     static class MentionsAdapter extends RecyclerView.Adapter<MentionsViewHolder> {
+
+        private List<? extends Suggestible> suggestions;
+
+        public MentionsAdapter(List<? extends Suggestible> people) {
+            suggestions = people;
+        }
+
+        @NonNull
+        @Override
+        public MentionsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.mentions_item, viewGroup, false);
+            return new MentionsViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MentionsViewHolder viewHolder, int i) {
+            Suggestible suggestion = suggestions.get(i);
+            if (!(suggestion instanceof UserMentionsFormat)) {
+                return;
+            }
+
+            final UserMentionsFormat person = (UserMentionsFormat) suggestion;
+            viewHolder.name.setText(person.getUsername());
+            Uri imageuri = Uri.parse(person.getUserImage());
+            viewHolder.picture.setImageURI(imageuri);
+            Glide.with(viewHolder.picture.getContext())
+                    .load(person.getUserImage())
+                    .crossFade()
+                    .into(viewHolder.picture);
+
+            viewHolder.itemView.setOnClickListener(v -> {
+                typer.insertMention(person);
+                mentionsRecyclerView.swapAdapter(new MentionsAdapter(new ArrayList<UserMentionsFormat>()), true);
+                displaysuggestions(false);
+                typer.requestFocus();
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return suggestions.size();
+        }
+    }
+
+
+
 
 }
