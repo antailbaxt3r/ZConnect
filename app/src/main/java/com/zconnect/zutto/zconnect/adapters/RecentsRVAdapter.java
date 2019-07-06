@@ -535,19 +535,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    try{
+
+                    holder.postConjunction.setText(" created a ");
+                    holder.post.setText(" Poll ");
                     holder.pollQuestion.setText(recentsItemFormats.get(position).getQuestion());
                     holder.pollOptionA.setText(recentsItemFormats.get(position).getOptions().getOptionA());
                     holder.pollOptionB.setText(recentsItemFormats.get(position).getOptions().getOptionB());
                     holder.pollOptionC.setText(recentsItemFormats.get(position).getOptions().getOptionC());
-                        }
-                    catch (Exception e)
-                    {
-                        Log.e("Error in Poll","Error");
-                    }
 
-                    mRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + recentsItemFormats.get(position).getKey());
-                    mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    DatabaseReference databaseReferenceGetOptionSelected = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + recentsItemFormats.get(position).getKey());
+                    //Start a Progress Bar
+                    databaseReferenceGetOptionSelected.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild("usersList"))
@@ -561,6 +559,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     else if (dataSnapshot.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").getValue().toString().equals("optionC"))
                                         holder.pollOptionC.setTextColor(Color.RED);
                                 }
+                                else
+                                {
+                                    Log.v("Create Poll","No user found");
+                                }
+                            }
+                            else
+                            {
+                                Log.v("Create Poll","No user list found");
                             }
                         }
 
@@ -569,6 +575,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                         }
                     });
+                    //End the Progress Bar
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
                 {
@@ -1219,7 +1226,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         //mHome.finish();
                     }
                     else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("createPoll"))
+                    {
                         pollOptionsSelect(recentsItemFormats.get(getAdapterPosition()).getKey());
+                    }
                     else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                           try{
 
@@ -1637,161 +1646,128 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public void pollOptionsSelect(String key) {
 
-            mRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + key);
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + key);
 
-            mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            pollOptionA.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.hasChild("usersList"))
-                    {
-                        if(dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                        {
-                            Toast.makeText(context, "You have already selected an option!", Toast.LENGTH_SHORT).show();
-                        }
-                        else
+                public void onClick(View view) {
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
                             {
-                                pollOptionA.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    Log.e("Create Poll","User has already selected an option");
+                                }
+                                else
+                                {
+                                    count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
+                                    count++;
+
+                                    reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
+                                    reference.child("options").child("optionACount").setValue(count);
                                     pollOptionA.setTextColor(Color.RED);
-                                    mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
-                                            count++;
-
-                                            mRef.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
-                                            mRef.child("options").child("optionACount").setValue(count);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
                                 }
-                            });
+                            }
+                            else {
+                                count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
+                                count++;
 
-                            pollOptionB.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    pollOptionB.setTextColor(Color.RED);
-                                    mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            count = dataSnapshot.child("options").child("optionBCount").getValue(Long.class);
-                                            count++;
-
-                                            mRef.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
-                                            mRef.child("options").child("optionBCount").setValue(count);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-                            });
-
-
-                            pollOptionC.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    pollOptionC.setTextColor(Color.RED);
-                                    mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            count = dataSnapshot.child("options").child("optionCCount").getValue(Long.class);
-                                            count++;
-
-                                            mRef.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
-                                            mRef.child("options").child("optionCCount").setValue(count);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    }
-                    else
-                    {
-                        pollOptionA.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
+                                reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
+                                reference.child("options").child("optionACount").setValue(count);
                                 pollOptionA.setTextColor(Color.RED);
-                                mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
-                                        count++;
-
-                                        mRef.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
-                                        mRef.child("options").child("optionACount").setValue(count);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
                             }
-                        });
+                        }
 
-                        pollOptionB.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                pollOptionB.setTextColor(Color.RED);
-                                mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        count = dataSnapshot.child("options").child("optionBCount").getValue(Long.class);
-                                        count++;
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                        mRef.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
-                                        mRef.child("options").child("optionBCount").setValue(count);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }
-                        });
-
-
-                        pollOptionC.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                pollOptionC.setTextColor(Color.RED);
-                                mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        count = dataSnapshot.child("options").child("optionCCount").getValue(Long.class);
-                                        count++;
-
-                                        mRef.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
-                                        mRef.child("options").child("optionCCount").setValue(count);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }
-                        });
-                    }
+                        }
+                    });
                 }
+            });
 
+            pollOptionB.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+                public void onClick(View view) {
 
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
+                            {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    Log.e("Create Poll","User has already selected an option");
+                                }
+                                else
+                                {
+                                    count = dataSnapshot.child("options").child("optionBCount").getValue(Long.class);
+                                    count++;
+
+                                    reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
+                                    reference.child("options").child("optionBCount").setValue(count);
+                                    pollOptionB.setTextColor(Color.RED);
+                                }
+                            }
+                            else {
+                                count = dataSnapshot.child("options").child("optionBCount").getValue(Long.class);
+                                count++;
+
+                                reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
+                                reference.child("options").child("optionBCount").setValue(count);
+                                pollOptionB.setTextColor(Color.RED);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+
+            pollOptionC.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
+                            {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    Log.e("Create Poll","User has already selected an option");
+                                }
+                                else
+                                {
+                                    count = dataSnapshot.child("options").child("optionCCount").getValue(Long.class);
+                                    count++;
+
+                                    reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
+                                    reference.child("options").child("optionCCount").setValue(count);
+                                    pollOptionC.setTextColor(Color.RED);
+                                }
+                            }
+                            else {
+                                count = dataSnapshot.child("options").child("optionCCount").getValue(Long.class);
+                                count++;
+
+                                reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
+                                reference.child("options").child("optionCCount").setValue(count);
+                                pollOptionC.setTextColor(Color.RED);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             });
         }
