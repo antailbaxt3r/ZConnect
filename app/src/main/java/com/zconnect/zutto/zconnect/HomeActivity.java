@@ -29,6 +29,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -158,113 +159,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         isFabOpen = false;
     }
 
-//    private void showAppTour(){
-//
-//        MaterialShowcaseView welcome = new MaterialShowcaseView.Builder(this)
-//                .setTitleText("Welcome to ZConnect!")
-//                .setTarget(toolbar)
-//                .setMaskColour(R.color.deepPurple1000)
-//                .setTitleTextColor(Color.WHITE)
-//                .setDismissText("NEXT")
-//                .setContentText("This tour will guide you through the app features.")
-//                .setContentTextColor(Color.WHITE)
-//                .setDismissOnTouch(true)
-//                .build();
-//
-//        MaterialShowcaseView home = new MaterialShowcaseView.Builder(this)
-//                .setTitleText("Home")
-//                .setTarget(tabs.getTabAt(0).getCustomView())
-//                .setMaskColour(R.color.deepPurple1000)
-//                .setTitleTextColor(Color.WHITE)
-//                .setContentTextColor(Color.WHITE)
-//                .setDismissText("NEXT")
-//                .setContentText("The home shows your feed, latest activities in your community and all the posts")
-//                .setDismissOnTouch(true)
-//                .build();
-//
-//        MaterialShowcaseView forums = new MaterialShowcaseView.Builder(HomeActivity.this)
-//                .setTitleText("Forums")
-//                .setTarget(tabs.getTabAt(1).getCustomView())
-//                .setMaskColour(R.color.deepPurple1000)
-//                .setTitleTextColor(Color.WHITE)
-//                .setContentTextColor(Color.WHITE)
-//                .setDismissText("NEXT")
-//                .setContentText("Forums are conversation hubs for talking with like-minded people in your community")
-//                .setDismissOnTouch(true)
-//                .build();
-//
-//        MaterialShowcaseView add = new MaterialShowcaseView.Builder(this)
-//                .setTitleText("Add")
-//                .setTarget(tabs.getTabAt(2).getCustomView())
-//                .setMaskColour(R.color.deepPurple1000)
-//                .setTitleTextColor(Color.WHITE)
-//                .setContentTextColor(Color.WHITE)
-//                .setDismissText("NEXT")
-//                .setContentText("Add a Status, a Poll, an Event or whatever you want!")
-//                .setDismissOnTouch(true)
-//                .build();
-//
-//        MaterialShowcaseView infone = new MaterialShowcaseView.Builder(this)
-//                .setTitleText("Contacts")
-//                .setTarget(tabs.getTabAt(3).getCustomView())
-//                .setMaskColour(R.color.deepPurple1000)
-//                .setTitleTextColor(Color.WHITE)
-//                .setContentTextColor(Color.WHITE)
-//                .setDismissText("NEXT")
-//                .setContentText("Access all contacts, student or otherwise right here")
-//                .setDismissOnTouch(true)
-//                .build();
-//
-//        MaterialShowcaseView notifications = new MaterialShowcaseView.Builder(this)
-//                .setTitleText("Notifications")
-//                .setTarget(tabs.getTabAt(4).getCustomView())
-//                .setMaskColour(R.color.deepPurple1000)
-//                .setTitleTextColor(Color.WHITE)
-//                .setDismissText("NEXT")
-//                .setContentTextColor(Color.WHITE)
-//                .setContentText("All your notifications are displayed here")
-//                .setDismissOnTouch(true)
-//                .build();
-//
-//        recentView = findViewById(R.id.recentView);
-//
-//        MaterialShowcaseView features = new MaterialShowcaseView.Builder(this)
-//                .setTitleText("Other Features")
-//                .setTarget(recentView)
-//                .withRectangleShape()
-//                .setMaskColour(R.color.deepPurple1000)
-//                .setTitleTextColor(Color.WHITE)
-//                .setContentTextColor(Color.WHITE)
-//                .setDismissText("NEXT")
-//                .setContentText("Access all features of ZConnect from this bar including StoreRoom, CabPool and Events")
-//                .setDismissOnTouch(true)
-//                .build();
-//
-//        MaterialShowcaseView end = new MaterialShowcaseView.Builder(this)
-//                .setTitleText("Enjoy ZConnect")
-//                .setTarget(toolbar)
-//                .setMaskColour(R.color.deepPurple1000)
-//                .setTitleTextColor(Color.WHITE)
-//                .setContentTextColor(Color.WHITE)
-//                .setContentText("Thank You for taking this tour")
-//                .setDismissText("GOT IT")
-//                .setDismissOnTouch(true)
-//                .build();
-//
-//        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this)
-//                .addSequenceItem(welcome)
-//                .addSequenceItem(home)
-//                .addSequenceItem(forums)
-//                .addSequenceItem(add)
-//                .addSequenceItem(infone)
-//                .addSequenceItem(notifications)
-//                .addSequenceItem(features)
-//                .addSequenceItem(end);
-//        sequence.start();
-//
-//
-//    }
-
     private void showAppTour(){
 
         recentView = findViewById(R.id.recentView);
@@ -288,6 +182,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                      }
                 })
                 .build();
+
 
 
         FancyShowCaseView forums = new FancyShowCaseView.Builder(this)
@@ -334,9 +229,15 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 })
                 .build();
 
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int dpi = (int)(metrics.density);
+        int x = 50*dpi;
+        int y = 160*dpi;
+        int w = 1100*dpi;
+        int h = 120*dpi;
         FancyShowCaseView features = new FancyShowCaseView.Builder(this)
                 .backgroundColor(R.color.deeppurple700)
-                .focusOn(recentView)
+                .focusRectAtPosition(x, y, w, h)
                 .fitSystemWindows(true)
                 .customView(R.layout.app_tour_features, new OnViewInflateListener() {
                     @Override
@@ -347,6 +248,15 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 .roundRectRadius(15)
                 .build();
 
+        FancyShowCaseView end = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .customView(R.layout.app_tour_end, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
         FancyShowCaseQueue queue = new FancyShowCaseQueue()
                 .add(welcome)
                 .add(home)
@@ -354,7 +264,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 .add(add)
                 .add(infone)
                 .add(notifications)
-                .add(features);
+                .add(features)
+                .add(end);
 
         queue.show();
 
@@ -419,6 +330,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
         initListeners();
         tabs();
+    /////////////////////////////////////////////////////////////////////////////////////
+        boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                .getBoolean("isFirstRun", true);
+
+        if(isFirstRun){
+            showAppTour();
+        }
+
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+                .putBoolean("isFirstRun", false).commit();
+    /////////////////////////////////////////////////////////////////////////////////////
 
 //        fixFirebaseUserForum();
 //        testTheFix();

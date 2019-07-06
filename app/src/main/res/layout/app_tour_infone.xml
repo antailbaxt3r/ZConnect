@@ -1,44 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="248dp"
-        android:layout_marginBottom="132dp"
+        android:layout_marginTop="450dp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="20dp"
         android:text="Contacts"
         android:textColor="@color/white"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textSize="30sp"/>
 
     <TextView
-        android:id="@+id/textView8"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:text="Access all contacts, student or otherwise right here"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textAlignment="textEnd"
-        app:layout_constraintEnd_toEndOf="@+id/textView7"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-    <TextView
-        android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="320dp"
-        android:layout_marginBottom="60dp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="20dp"
+        android:text="Access all contacts, student or otherwise right here"
+        android:textColor="@color/white"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="50dp"
         android:text="NEXT"
         android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textSize="20sp"/>
 
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
