@@ -67,6 +67,7 @@ import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.Notices;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
+import com.zconnect.zutto.zconnect.OpenStatus;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.Recents;
@@ -1253,6 +1254,23 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         intent.putExtra("name",recentsItemFormats.get(getAdapterPosition()).getName());
                         intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(recentsItemFormats.get(getAdapterPosition()).getKey()).toString());
                         context.startActivity(intent);
+                    }else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Message")){
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADDED_STATUS);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        meta.put("type","fromRecentsRV");
+                        meta.put("catID",recentsItemFormats.get(getAdapterPosition()).getId());
+                        meta.put("channelID",recentsItemFormats.get(getAdapterPosition()).getKey());
+                        counterItemFormat.setMeta(meta);
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+
+                        Intent intent = new Intent(context, OpenStatus.class);
+                        intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
+                        System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
+                        context.startActivity(intent);
                     }
                 }
             });
@@ -1474,9 +1492,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             likeText.setText(String.valueOf(dataSnapshot.getChildrenCount()));
                         else
                             likeText.setText("");
-                        likeText.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                        likeText.setTextColor(context.getResources().getColor(R.color.black));
                         likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
-                        likeIcon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+                        likeIcon.setColorFilter(context.getResources().getColor(R.color.deepPurple500));
                         statusLikeFlag=true;
                     }else {
 //                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
