@@ -161,16 +161,15 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     private FrameLayout chatFrameLayout;
 
     //UI elements
-    static MentionsEditText typer;
+    MentionsEditText typer;
 
     //User Mentions
-    static UserMentionsFormat.MentionsLoader mentionsLoader;
-    static RecyclerView mentionsRecyclerView;
+    UserMentionsFormat.MentionsLoader mentionsLoader;
+     RecyclerView mentionsRecyclerView;
     private static final WordTokenizerConfig tokenizerConfig = new WordTokenizerConfig
             .Builder()
-            .setWordBreakChars(", ")
             .setExplicitChars("@")
-            .setMaxNumKeywords(2)
+            .setMaxNumKeywords(1)
             .setThreshold(1)
             .build();
 
@@ -182,7 +181,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
 
         mentionsRecyclerView = findViewById(R.id.mentions_grid);
-        mentionsRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mentionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MentionsAdapter(new ArrayList<UserMentionsFormat>());
         mentionsRecyclerView.setAdapter(adapter);
 
@@ -1493,6 +1492,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     @Override
     public List<String> onQueryReceived(final @NonNull QueryToken queryToken) {
         List<String> buckets = Collections.singletonList(BUCKET);
+        if(mentionsLoader == null){
+           return  null;
+        }
         List<UserMentionsFormat> suggestions = mentionsLoader.getSuggestions(queryToken);
         SuggestionsResult result = new SuggestionsResult(queryToken, suggestions);
         // Have suggestions, now call the listener (which is this activity)
@@ -1525,7 +1527,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
     public boolean isDisplayingSuggestions() {
         return mentionsRecyclerView.getVisibility() == RecyclerView.VISIBLE;
     }
-    static  public void displaysuggestions(boolean display){
+    public void displaysuggestions(boolean display){
         if(display) {
             mentionsRecyclerView.setVisibility(RecyclerView.VISIBLE);
         }
@@ -1537,7 +1539,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
 
 
-    static class MentionsViewHolder extends RecyclerView.ViewHolder {
+    public class MentionsViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public SimpleDraweeView picture;
 
@@ -1548,7 +1550,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         }
     }
 
-     static class MentionsAdapter extends RecyclerView.Adapter<MentionsViewHolder> {
+     public class MentionsAdapter extends RecyclerView.Adapter<MentionsViewHolder> {
 
         private List<? extends Suggestible> suggestions;
 
