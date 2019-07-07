@@ -24,6 +24,10 @@ public class RecentsItemFormat {
     private long PostTimeMillis;
     //for infone
     private String infoneContactName,infoneContactCategoryName;
+    //for Poll
+    private String question;
+    private int totalCount;
+    private CreatePollOptionsItemFormat options;
     //for cabpool
     private String cabpoolSource;
     private String cabpoolDestination;
@@ -55,7 +59,7 @@ public class RecentsItemFormat {
                              String cabpoolTime, int cabpoolTimeFrom, int cabpoolTimeTo, String eventDate, String productPrice, String Key, long PostTimeMillis,
                              PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName,
                              String communityName, String message, String recentType, int msgLikes, int msgComments, String productType,
-                             HashMap<String, CabItemFormat> cabItemFormat) {
+                             HashMap<String, CabItemFormat> cabItemFormat,String question,int totalCount,CreatePollOptionsItemFormat optionsItemFormat) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -85,6 +89,9 @@ public class RecentsItemFormat {
         this.msgComments = msgComments;
         this.productType = productType;
         this.cabItemFormat = cabItemFormat;
+        this.question = question;
+        this.totalCount = totalCount;
+        this.options = optionsItemFormat;
     }
 
     public RecentsItemFormat() {
@@ -236,6 +243,30 @@ public class RecentsItemFormat {
 
     public void setCabItemFormat(HashMap<String, CabItemFormat> cabItemFormat) {
         this.cabItemFormat = cabItemFormat;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public int getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public CreatePollOptionsItemFormat getOptions() {
+        return options;
+    }
+
+    public void setOptions(CreatePollOptionsItemFormat options) {
+        this.options = options;
     }
 }
 

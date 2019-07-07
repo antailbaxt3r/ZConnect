@@ -126,6 +126,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static int firstVisibleInRV;
     LinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
+    private Long count;
+    private boolean hasNotSelected = false;
 
     public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, CommunityFeatures communityFeatures, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView) {
         this.context = context;
@@ -519,6 +521,62 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             ds.setUnderlineText(false);
                         }
                     };
+                }
+                else if (recentsItemFormats.get(position).getFeature().equals("createPoll"))
+                {
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
+                    holder.post.setVisibility(View.VISIBLE);
+                    holder.pollLinearLayout.setVisibility(View.VISIBLE);
+                    holder.infoneRecentItem.setVisibility(View.GONE);
+                    holder.eventsRecentItem.setVisibility(View.GONE);
+                    holder.cabpoolRecentItem.setVisibility(View.GONE);
+                    holder.messagesRecentItem.setVisibility(View.GONE);
+                    holder.forumsRecentItem.setVisibility(View.GONE);
+                    holder.storeroomRecentItem.setVisibility(View.GONE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
+
+
+                    holder.postConjunction.setText(" created a ");
+                    holder.post.setText(" Poll ");
+                    holder.pollQuestion.setText(recentsItemFormats.get(position).getQuestion());
+                    holder.pollOptionA.setText(recentsItemFormats.get(position).getOptions().getOptionA());
+                    holder.pollOptionB.setText(recentsItemFormats.get(position).getOptions().getOptionB());
+                    holder.pollOptionC.setText(recentsItemFormats.get(position).getOptions().getOptionC());
+
+                    DatabaseReference databaseReferenceGetOptionSelected = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + recentsItemFormats.get(position).getKey());
+                    //Start a Progress Bar
+                    databaseReferenceGetOptionSelected.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
+                            {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    if (dataSnapshot.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").getValue().toString().equals("optionA"))
+                                        holder.pollOptionA.setTextColor(Color.RED);
+                                    else if (dataSnapshot.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").getValue().toString().equals("optionB"))
+                                        holder.pollOptionB.setTextColor(Color.RED);
+                                    else if (dataSnapshot.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").getValue().toString().equals("optionC"))
+                                        holder.pollOptionC.setTextColor(Color.RED);
+                                }
+                                else
+                                {
+                                    Log.v("Create Poll","No user found");
+                                }
+                            }
+                            else
+                            {
+                                Log.v("Create Poll","No user list found");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                    //End the Progress Bar
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
                 {
@@ -1062,7 +1120,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 messagesMessage,
                 forumNameCategorySentence,
                 sentence,totalComments,
-                noticesText;
+                noticesText,
+                pollQuestion,pollOptionA,pollOptionB,pollOptionC;
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
                 postImage,
@@ -1073,7 +1132,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         ImageButton deleteButton;
 
-        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem;
+        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,pollLinearLayout;
         FrameLayout layoutFeatureIcon, bannerLinkLayout;
         //
         long statusLikeCount;
@@ -1088,6 +1147,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             name = (TextView) itemView.findViewById(R.id.recentname);
             feature = (TextView) itemView.findViewById(R.id.featurename);
             desc = (TextView) itemView.findViewById(R.id.recentdesc);
+
+            pollQuestion = itemView.findViewById(R.id.poll_question);
+            pollOptionA = itemView.findViewById(R.id.optionA_option_text);
+            pollOptionB = itemView.findViewById(R.id.optionB_option_text);
+            pollOptionC = itemView.findViewById(R.id.optionC_option_text);
+            pollLinearLayout = itemView.findViewById(R.id.pollFormat);
 
             //new ui
             postedBy = (TextView) itemView.findViewById(R.id.postedBy);
@@ -1160,7 +1225,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         //context.startActivity(i);
                         //mHomeActivity.finish();
                         //mHome.finish();
-                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
+                    }
+                    else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("createPoll"))
+                    {
+                        pollOptionsSelect(recentsItemFormats.get(getAdapterPosition()).getKey());
+                    }
+                    else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                           try{
 
                               CounterItemFormat counterItemFormat = new CounterItemFormat();
@@ -1591,6 +1661,135 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
 //            eventNumLit.setTypeface(customfont);
         }
+
+        public void pollOptionsSelect(String key) {
+
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + key);
+
+            pollOptionA.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
+                            {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    Log.e("Create Poll","User has already selected an option");
+                                }
+                                else
+                                {
+                                    count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
+                                    count++;
+
+                                    reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
+                                    reference.child("options").child("optionACount").setValue(count);
+                                    pollOptionA.setTextColor(Color.RED);
+                                }
+                            }
+                            else {
+                                count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
+                                count++;
+
+                                reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
+                                reference.child("options").child("optionACount").setValue(count);
+                                pollOptionA.setTextColor(Color.RED);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+
+            pollOptionB.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
+                            {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    Log.e("Create Poll","User has already selected an option");
+                                }
+                                else
+                                {
+                                    count = dataSnapshot.child("options").child("optionBCount").getValue(Long.class);
+                                    count++;
+
+                                    reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
+                                    reference.child("options").child("optionBCount").setValue(count);
+                                    pollOptionB.setTextColor(Color.RED);
+                                }
+                            }
+                            else {
+                                count = dataSnapshot.child("options").child("optionBCount").getValue(Long.class);
+                                count++;
+
+                                reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
+                                reference.child("options").child("optionBCount").setValue(count);
+                                pollOptionB.setTextColor(Color.RED);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+
+            pollOptionC.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
+                            {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    Log.e("Create Poll","User has already selected an option");
+                                }
+                                else
+                                {
+                                    count = dataSnapshot.child("options").child("optionCCount").getValue(Long.class);
+                                    count++;
+
+                                    reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
+                                    reference.child("options").child("optionCCount").setValue(count);
+                                    pollOptionC.setTextColor(Color.RED);
+                                }
+                            }
+                            else {
+                                count = dataSnapshot.child("options").child("optionCCount").getValue(Long.class);
+                                count++;
+
+                                reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
+                                reference.child("options").child("optionCCount").setValue(count);
+                                pollOptionC.setTextColor(Color.RED);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+        }
+
     }
 
     class ViewHolderStatus extends RecyclerView.ViewHolder {
