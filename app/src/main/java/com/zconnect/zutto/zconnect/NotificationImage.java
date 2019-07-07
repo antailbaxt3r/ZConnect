@@ -254,7 +254,22 @@ public class NotificationImage extends BaseActivity{
             });
 
 
-        }else {
+        }
+        // Sending a notification without an image
+        else if (!TextUtils.isEmpty(notificationDescription.getText()) && !TextUtils.isEmpty(notificationTitle.getText()) && !TextUtils.isEmpty(nottificationURL.getText()) ) {
+
+            NotificationSender notificationSender = new NotificationSender(NotificationImage.this, userId);
+            NotificationItemFormat addImageNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_TEXT_URL, userId);
+            addImageNotification.setItemMessage(notificationDescription.getText().toString());
+            addImageNotification.setItemTitle(notificationTitle.getText().toString());
+            addImageNotification.setItemURL(nottificationURL.getText().toString());
+
+            notificationSender.execute(addImageNotification);
+
+            mProgress.dismiss();
+            finish();
+        }
+        else {
             Snackbar snack = Snackbar.make(mAddImage, "Fields are empty", Snackbar.LENGTH_LONG);
             TextView snackBarText = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_text);
             snackBarText.setTextColor(Color.WHITE);

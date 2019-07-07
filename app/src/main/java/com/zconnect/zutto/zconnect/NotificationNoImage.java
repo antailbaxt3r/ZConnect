@@ -1,4 +1,5 @@
-package com.zconnect.zutto.zconnect;
+//Not required anymore
+/*package com.zconnect.zutto.zconnect;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -142,4 +143,4 @@ public class NotificationNoImage extends BaseActivity {
 
 
 
-}
+}*/
