@@ -172,12 +172,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
+                        android:weightSum="1"
                         android:id="@+id/poll_results_optionA"
                         android:visibility="invisible">
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@color/deeppurple200"
+                            android:background="@drawable/rounded_corner_purple_border"
                             android:id="@+id/optionA_result_success"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
@@ -205,6 +206,8 @@
                             android:text="A."
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
+                            android:layout_margin="2dp"
+                            android:layout_marginStart="5dp"
                             android:id="@+id/optionA_placeHolder"
                             android:layout_weight="9"/>
                         <TextView
@@ -213,6 +216,7 @@
                             android:text="Option A"
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
+                            android:layout_margin="2dp"
                             android:id="@+id/optionA_option_text"
                             android:layout_weight="1"/>
                     </LinearLayout>
@@ -234,12 +238,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
+                        android:weightSum="1"
                         android:id="@+id/poll_results_optionB"
                         android:visibility="invisible">
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@color/deeppurple200"
+                            android:background="@drawable/rounded_corner_purple_border"
                             android:id="@+id/optionB_result_success"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
@@ -268,6 +273,8 @@
                             android:text="B."
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
+                            android:layout_margin="2dp"
+                            android:layout_marginStart="5dp"
                             android:id="@+id/optionB_placeHolder"
                             android:layout_weight="9"/>
                         <TextView
@@ -276,6 +283,7 @@
                             android:text="Option B"
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
+                            android:layout_margin="2dp"
                             android:id="@+id/optionB_option_text"
                             android:layout_weight="1"/>
                     </LinearLayout>
@@ -297,12 +305,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
+                        android:weightSum="1"
                         android:id="@+id/poll_results_optionC"
                         android:visibility="invisible">
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@color/deeppurple200"
+                            android:background="@drawable/rounded_corner_purple_border"
                             android:id="@+id/optionC_result_success"
                             android:layout_weight="0.5"
                             android:orientation="horizontal"/>
@@ -330,12 +339,15 @@
                             android:text="C."
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
+                            android:layout_margin="2dp"
+                            android:layout_marginStart="5dp"
                             android:id="@+id/optionC_placeHolder"
                             android:layout_weight="9"/>
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Option C"
+                            android:layout_margin="2dp"
                             android:textColor="@color/secondaryText"
                             android:textSize="20sp"
                             android:id="@+id/optionC_option_text"
