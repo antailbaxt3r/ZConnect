@@ -174,6 +174,7 @@ public class JoinedForums extends Fragment {
                         notifTabForum = mydb.getTabForums(shot2.child("tabUID").getValue().toString());
                     temp.setSeenMessages(totalSeenNumber(temp.getCatUID()));
 
+
                         if(activityType != null) {
                         if (activityType.equals(ForumUtilities.VALUE_SHARE_FORUM_STR)) {
                             Log.d("Setting message", message);
