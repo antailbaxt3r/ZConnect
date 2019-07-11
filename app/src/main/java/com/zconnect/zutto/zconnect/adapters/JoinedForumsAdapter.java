@@ -3,7 +3,6 @@ package com.zconnect.zutto.zconnect.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,10 +20,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.zconnect.zutto.zconnect.ExploreForumsActivity;
-import com.zconnect.zutto.zconnect.JoinedForumsDiffCallback;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
-import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.holders.JoinedForumsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
@@ -32,7 +29,6 @@ import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -254,12 +250,4 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    public void updateArrayListItems(ArrayList<ForumCategoriesItemFormat> forumCategoriesItemFormatList) {
-        final JoinedForumsDiffCallback diffCallback = new JoinedForumsDiffCallback(new ArrayList<>(this.forumCategoriesItemFormats), forumCategoriesItemFormatList);
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
-        this.forumCategoriesItemFormats.clear();
-        this.forumCategoriesItemFormats.addAll(forumCategoriesItemFormatList);
-        diffResult.dispatchUpdatesTo(this);
-    }
 }
