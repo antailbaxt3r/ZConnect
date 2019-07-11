@@ -342,7 +342,9 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
             setActionBarTitle("Comments");
         } else if (type.equals("personalChats")) {
             Log.d("Setting it to:", getIntent().getStringExtra("name"));
-            setActionBarTitle(getIntent().getStringExtra("name"));
+//            setActionBarTitle(getIntent().getStringExtra("name"));
+//            setActionBarTitle("HERE");
+
         }
 
         if (type != null) {
@@ -428,13 +430,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     @Override
                     public void onDataChange(final DataSnapshot dataSnapshot) {
                         try {
-                            setToolbarTitle(dataSnapshot.child("name").getValue().toString());
+//                            setToolbarTitle(dataSna/pshot.child("name").getValue().toString());
                             ArrayList<UserMentionsFormat> userMentionsFormats = new ArrayList<>();
-                            UserMentionsFormat userMentionsFormat1 = new UserMentionsFormat();
-                            userMentionsFormat1.setUsername("ANSHUUU");
-                            userMentionsFormat1.setUserImage("AAAAA");
-                            userMentionsFormat1.setUserUID("AAAAAAA");
-                            userMentionsFormats.add(userMentionsFormat1);
                             for (DataSnapshot users : dataSnapshot.child("users").getChildren()) {
                                 UserMentionsFormat userMentionsFormat = new UserMentionsFormat();
                                 userMentionsFormat.setUsername(users.child("name").getValue().toString());
@@ -1229,7 +1226,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
         chatLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
 
-//        typer.setText(ContextCompat.getColor(this,R.color.black));
+        typer.setTextColor(ContextCompat.getColor(this,R.color.black));
 
 
         adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_NORMAL_FORUM);
@@ -1254,7 +1251,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         appBarLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.title_bar_dark));
         chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_theme_surface));
         chatLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_theme_chat_layout));
-//        typer.setTextColor(ContextCompat.getColor(this,R.color.white));
+        typer.setTextColor(ContextCompat.getColor(this,R.color.white));
 
 
         adapter = new ChatRVAdapter(messages, databaseReference, forumCategory, this, ForumUtilities.VALUE_ANONYMOUS_FORUM);

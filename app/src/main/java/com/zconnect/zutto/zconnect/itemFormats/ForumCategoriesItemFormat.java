@@ -22,6 +22,15 @@ public class ForumCategoriesItemFormat {
     private Boolean verified;
     private String message;
     private String messageType;
+    private boolean isUnread;
+
+    public boolean isUnread() {
+        return isUnread;
+    }
+
+    public void setUnread(boolean unread) {
+        isUnread = unread;
+    }
 
     public String getMessage() {
         return message;

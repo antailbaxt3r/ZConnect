@@ -55,7 +55,7 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
     public void setDetails(ForumCategoriesItemFormat forumCategoriesItemFormat){
 
         catName.setText(forumCategoriesItemFormat.getName());
-        setUnSeenMessages(forumCategoriesItemFormat.getTotalMessages(),forumCategoriesItemFormat.getSeenMessages());
+        setUnSeenMessages(forumCategoriesItemFormat.getTotalMessages(),forumCategoriesItemFormat.getSeenMessages(),forumCategoriesItemFormat.isUnread());
 
         if(forumCategoriesItemFormat.getImageThumb()!=null)
         {
@@ -150,7 +150,22 @@ public class JoinedForumsRVViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    void setUnSeenMessages(Integer totalMessages,Integer readMessages){
+    void setUnSeenMessages(Integer totalMessages,Integer readMessages, boolean isUnread){
+
+        if (readMessages == 0) {
+            if(isUnread){
+                layoutUnseenMessages.setVisibility(View.VISIBLE);
+                unSeenMessages.setText("");
+                unseen_num = totalMessages - readMessages;
+                lastMessageTime.setTextColor(mView.getContext().getResources().getColor(R.color.colorHighlight));
+
+            }
+            else{
+                layoutUnseenMessages.setVisibility(View.INVISIBLE);
+                lastMessageTime.setTextColor(mView.getContext().getResources().getColor(R.color.secondaryText));
+            }
+            return;
+        }
 
         if(totalMessages-readMessages>0){
             layoutUnseenMessages.setVisibility(View.VISIBLE);

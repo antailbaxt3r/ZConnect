@@ -106,7 +106,22 @@ public class JoinedForumsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         DataSnapshot dataSnapshot1 = dataSnapshot.child("users");
-                        Log.d("user:details",dataSnapshot.toString());
+                        Log.d("user:details", dataSnapshot.toString());
+                        if (dataSnapshot1.getChildrenCount() == 1) {
+                            for (DataSnapshot user : dataSnapshot1.getChildren()) {
+                                ForumCategoriesItemFormat itemFormat1 = itemFormat;
+                                itemFormat1.setName(user.child("name").getValue().toString());
+                                itemFormat1.setImageThumb(user.child("imageThumb").getValue().toString());
+                                itemFormat1.setImage(user.child("imageThumb").getValue().toString());
+                                Log.d("Try:inside dataChange", user.child("name").getValue().toString());
+
+                                holderMain.setDetails(itemFormat1);
+                                holderMain.openChat(itemFormat1.getCatUID(), itemFormat1.getTabUID(), user.child("name").getValue().toString());
+
+                            }
+                        }
+
+
 
                         for(DataSnapshot user: dataSnapshot1.getChildren()){
                             Log.d("user:details",user.toString());

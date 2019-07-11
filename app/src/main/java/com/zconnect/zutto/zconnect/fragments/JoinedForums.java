@@ -198,6 +198,13 @@ public class JoinedForums extends Fragment {
                     Log.d("Try",temp.getForumType());
                     Log.d("Try",temp.getLastMessage().getMessage());
                     Log.d("Try",temp.getTotalMessages().toString());
+
+                        if(shot2.hasChild("isUnread")){
+                            temp.setUnread(shot2.child("isUnread").getValue(Boolean.class));
+                        }
+                        else{
+
+                        }
 //                    if(temp.getTabUID().toString().equals("personalChats")){
 //                        final DatabaseReference actualForum = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(temp.getTabUID()).child(temp.getCatUID()).child("users");
 //                        actualForum.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -262,6 +269,7 @@ public class JoinedForums extends Fragment {
                         }
 
                     }
+
                 }catch (Exception e){Log.e("Try:Outside Error",e.toString());}
                         }
 
