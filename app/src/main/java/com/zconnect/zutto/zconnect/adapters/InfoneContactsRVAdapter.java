@@ -216,6 +216,8 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                         Intent profileIntent = new Intent(context, InfoneProfileActivity.class);
                         profileIntent.putExtra("infoneUserId", infoneContactsRVItems.get(position).getInfoneUserId());
                         profileIntent.putExtra("catID", catId);
+
+                        profileIntent.putExtra("infoneUserImageThumb",infoneContactsRVItems.get(position).getImageThumb());
                         context.startActivity(profileIntent);
 
                         CounterItemFormat counterItemFormat = new CounterItemFormat();

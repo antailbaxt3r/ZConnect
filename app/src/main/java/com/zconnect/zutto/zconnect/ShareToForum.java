@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
+import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 
-public class ShareToForum extends AppCompatActivity {
+public class ShareToForum extends BaseActivity {
 
     JoinedForums joinedForums;
 
@@ -21,6 +23,8 @@ public class ShareToForum extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         String receivedType = receivedIntent.getType();
         String receivedAction = receivedIntent.getAction();
+        Log.d("HereTry",bundle.toString());
+        Log.d("hereTry",receivedType);
 
 //        For future in app sharing
 //        if(receivedAction.equals(Intent.ACTION_SEND)){

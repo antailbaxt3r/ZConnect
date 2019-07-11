@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,6 +38,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -589,6 +591,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     }
                 }
 
+
                 if (type.equals("forums") || type.equals("others") || type.equals("personalChats")) {
                     DBHelper mydb = new DBHelper(ChatActivity.this);
 
@@ -602,6 +605,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                     else
                         unseen_num = 0;
                     mydb.replaceForum(name, key, tab, messages.size());
+                    mydb.close();
+                    Log.d("readNumber",messages.size()+"");
                     if (unseenFlag) {
                         chatView.scrollToPosition(messages.size() - 1 - unseen_num);
                         unseenFlag = false;
@@ -1057,6 +1062,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         return true;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -1149,11 +1155,13 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 final Dialog anonymousModeDialog = new Dialog(this);
                 anonymousModeDialog.setContentView(R.layout.dialog_confirm_anonymous_mode);
                 anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
                 Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
-                cancelButton.setOnClickListener(new View.OnClickListener() {
+                cancelButton.setOnTouchListener(new View.OnTouchListener() {
                     @Override
-                    public void onClick(View v) {
+                    public boolean onTouch(View v, MotionEvent event) {
                         anonymousModeDialog.dismiss();
+                        return false;
                     }
                 });
                 CheckBox checkBox = anonymousModeDialog.findViewById(R.id.anonymous_show_again_cb);
@@ -1171,30 +1179,34 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
                     }
                 });
+                Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
+                final EditText usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
+
+                enterButton.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (usernameEt.getText().toString().trim().equals("")) {
+                            Toast.makeText(ChatActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                        mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
+                        setAnonymousChat();
+                        anonymousModeDialog.dismiss();
+
+                        return false;
+                    }
+                });
+
+
                 mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String username = "newUser";
 
-                        final AutoCompleteTextView usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
-                        Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
                         if (dataSnapshot.hasChild("anonymousUsername")) {
                             username = dataSnapshot.child("anonymousUsername").getValue().toString();
                             usernameEt.setText(dataSnapshot.child("anonymousUsername").getValue().toString());
                         }
-                        enterButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-//                               username = usernameEt.getText().toString();
-                                if (usernameEt.getText().toString().trim().equals("")) {
-                                    Toast.makeText(ChatActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
-                                setAnonymousChat();
-                                anonymousModeDialog.dismiss();
-                            }
-                        });
 
 
                     }

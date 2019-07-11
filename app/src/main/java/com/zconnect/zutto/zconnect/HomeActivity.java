@@ -205,6 +205,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         initListeners();
         tabs();
 
+//        Log.d("USEROBJECT",UserUtilities.currentUser.toString());
+
+
 //        fixFirebaseUserForum();
 //        testTheFix();
 //        fixUpdateTotalJoinedForums();
