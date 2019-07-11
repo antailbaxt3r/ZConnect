@@ -5,12 +5,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.drm.DrmStore;
+import android.graphics.Region;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +28,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.zconnect.zutto.zconnect.CabPoolAll;
+import com.zconnect.zutto.zconnect.ExploreForumsActivity;
+import com.zconnect.zutto.zconnect.InfoneProfileActivity;
+import com.zconnect.zutto.zconnect.OpenEventDetail;
+import com.zconnect.zutto.zconnect.OpenProductDetails;
+import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.VerificationPage;
 import com.zconnect.zutto.zconnect.commonModules.NotificationService;
 import com.zconnect.zutto.zconnect.holders.InAppNotificationsRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.InAppNotificationsItemFormat;
@@ -46,6 +57,7 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
     private ArrayList<InAppNotificationsItemFormat> notificationsList;
     private Context context;
     private String communityRef;
+    String catID;
 
     public InAppNotificationsAdapter(Context context, String communityRef, ArrayList<InAppNotificationsItemFormat> notificationsList) {
         this.notificationsList = notificationsList;
@@ -63,6 +75,20 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
 
     @Override
     public void onBindViewHolder(final InAppNotificationsRVViewHolder holder, final int position) {
+        if(!notificationsList.get(position).getNotifiedby().getUserUID().equals("")) {
+            FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef).child("Users1")
+                    .child(Objects.requireNonNull(notificationsList.get(position).getNotifiedby().getUserUID())).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    catID = (String) dataSnapshot.child("infoneTyoe").getValue();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
         final DatabaseReference seenReference = FirebaseDatabase.getInstance().getReference()
                 .child("communities").child(communityRef).child("Users1")
                 .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
@@ -72,11 +98,26 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
                     holder.seen.setVisibility(View.VISIBLE);
                 }
 
-        String text = notificationsList.get(position).getNotifiedby().getUsername() + " " + notificationsList.get(position).getTitle();
-        SpannableString spannableString = new SpannableString(text);
-        StyleSpan styleSpan = new StyleSpan(BOLD);
-        spannableString.setSpan(styleSpan, 0 , notificationsList.get(position).getNotifiedby().getUsername().length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        holder.titletv.setText(spannableString);
+    String text = notificationsList.get(position).getNotifiedby().getUsername() + " " + notificationsList.get(position).getTitle();
+    SpannableString spannableString = new SpannableString(text);
+    ClickableSpan clickableSpan = new ClickableSpan() {
+        @Override
+        public void onClick(@NonNull View widget) {
+            Intent intent = new Intent(context, OpenUserDetail.class);
+            intent.putExtra("Uid",notificationsList.get(position).getNotifiedby().getUserUID());
+            context.startActivity(intent);
+        }
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            ds.setUnderlineText(false); // set to false to remove underline
+        }
+    };
+    StyleSpan styleSpan = new StyleSpan(BOLD);
+    spannableString.setSpan(clickableSpan, 0, notificationsList.get(position).getNotifiedby().getUsername().length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    spannableString.setSpan(styleSpan, 0, notificationsList.get(position).getNotifiedby().getUsername().length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    holder.titletv.setText(spannableString);
+    holder.titletv.setClickable(true);
+    holder.titletv.setMovementMethod(LinkMovementMethod.getInstance());
         Uri uri = Uri.parse(notificationsList.get(position).getNotifiedby().getImageURL());
         holder.simpleDraweeView.setImageURI(uri);
         TimeUtilities timeUtilities = new TimeUtilities(notificationsList.get(position).getPostTimeMillis(),System.currentTimeMillis());
@@ -86,9 +127,70 @@ public class InAppNotificationsAdapter extends RecyclerView.Adapter<InAppNotific
             @Override
             public void onClick(View view) {
                 //Seenzone
+                Intent intent;
                 holder.seen.setVisibility(View.INVISIBLE);
                 seenReference.setValue(true);
                 notificationsList.get(position).setSeen(true);
+                String type=notificationsList.get(position).getType();
+                switch (type){
+                    case "acceptforum":
+                        intent = new Intent(context, ExploreForumsActivity.class);
+                        context.startActivity(intent);
+                        break;
+                    case "infonevalidate":
+                        intent = new Intent(context, InfoneProfileActivity.class);
+                        intent.putExtra("infoneUserId",notificationsList.get(position).getNotifiedby().getUserUID());
+                        intent.putExtra("catID", catID);
+                        context.startActivity(intent);
+                        break;
+                    case "addforum":
+                        intent = new Intent(context, ExploreForumsActivity.class);
+                        context.startActivity(intent);
+                    case "contactAdd":
+                        intent = new Intent(context, InfoneProfileActivity.class);
+                        intent.putExtra("infoneUserId", String.valueOf(notificationsList.get(position).getMetadata().get("infoneUserId")));
+                        intent.putExtra("catID", String.valueOf(notificationsList.get(position).getMetadata().get("catID")));
+                        context.startActivity(intent);
+                        break;
+                    case "productAdd":
+                        intent = new Intent(context, OpenProductDetails.class);
+                        intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                        intent.putExtra("type", String.valueOf(notificationsList.get(position).getMetadata().get("type")));
+                        context.startActivity(intent);
+                        break;
+
+                    case "eventAdd":
+                        intent = new Intent(context, OpenEventDetail.class);
+                        intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("id")));
+                        context.startActivity(intent);
+                        break;
+
+                    case "cabpoolAdd":
+                        intent = new Intent(context, CabPoolAll.class);
+                        intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                        context.startActivity(intent);
+                        break;
+                    case "eventBoost":
+                        intent = new Intent(context, OpenEventDetail.class);
+                        intent.putExtra("id", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                        context.startActivity(intent);
+                        break;
+                    case "productShortlist":
+                        intent = new Intent(context, OpenProductDetails.class);
+                        intent.putExtra("key", String.valueOf(notificationsList.get(position).getMetadata().get("key")));
+                        context.startActivity(intent);
+                        break;
+                    case "infoneinvalidate":
+                        intent = new Intent(context, InfoneProfileActivity.class);
+                        intent.putExtra("infoneUserId",notificationsList.get(position).getNotifiedby().getUserUID());
+                        intent.putExtra("catID", catID);
+                        context.startActivity(intent);
+                        break;
+                    case "verification":
+                        intent = new Intent(context, VerificationPage.class);
+                        context.startActivity(intent);
+                }
+
                 if(notificationsList.get(position).getTitle().equals("tried contacting you")){
                     Log.d("onclick", "calling ");
                     Intent call = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + notificationsList.get(position).getNotifiedby().getMobileNumber()));

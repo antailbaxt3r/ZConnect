@@ -300,7 +300,7 @@ public class CreateForum extends BaseActivity {
                                 userItemFormat.setUsername(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username").getValue()));
                                 userItemFormat.setImageURL(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("imageURL").getValue()));
                                 userItemFormat.setUserUID(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("userUID").getValue()));
-                                GlobalFunctions.inAppNotifications("added a forum",catName,userItemFormat,true,"contact",null,null);
+                                GlobalFunctions.inAppNotifications("added a forum",catName,userItemFormat,true,"addforum",null,null);
                             }
 
                             @Override

@@ -24,6 +24,8 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.adapters.InAppNotificationsAdapter;
 import com.zconnect.zutto.zconnect.itemFormats.InAppNotificationsItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.RecentsItemFormat;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
+import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import org.joda.time.DateTime;
 
@@ -107,31 +109,32 @@ public class InAppNotificationsFragment extends Fragment {
 
             }
         });
-        globalReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot childSnapshot : dataSnapshot.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").getChildren()) {
-                    InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
-                    notificationsList.add(usernotification);
-                }
-                Collections.sort(notificationsList, new Comparator<InAppNotificationsItemFormat>() {
-                    @Override
-                    public int compare(InAppNotificationsItemFormat o1, InAppNotificationsItemFormat o2) {
-                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()) ;
+        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+            globalReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot childSnapshot : dataSnapshot.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").getChildren()) {
+                        InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
+                        notificationsList.add(usernotification);
                     }
-                });
-                progressBar.setVisibility(View.GONE);
-                notifRecyclerView.setVisibility(View.VISIBLE);
-                inAppNotificationsAdapter.notifyDataSetChanged();
+                    Collections.sort(notificationsList, new Comparator<InAppNotificationsItemFormat>() {
+                        @Override
+                        public int compare(InAppNotificationsItemFormat o1, InAppNotificationsItemFormat o2) {
+                            return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
+                        }
+                    });
+                    progressBar.setVisibility(View.GONE);
+                    notifRecyclerView.setVisibility(View.VISIBLE);
+                    inAppNotificationsAdapter.notifyDataSetChanged();
 
-            }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
-
+                }
+            });
+        }
 
     }
 }

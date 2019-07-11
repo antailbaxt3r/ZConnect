@@ -1493,8 +1493,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     statusLikeNotification.setUserKey(userItem.getUserUID());
                                     statusLikeNotification.setCommunityName(communityTitle);
                                     statusLikeNotification.setItemLikeCount(statusLikeCount);
-                                    notificationSender.execute(statusLikeNotification);
                                     GlobalFunctions.inAppNotifications("liked your status",recentsItemFormats.get(getAdapterPosition()).getDesc(),userItem,false,"status",null, recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUID());
+                                    notificationSender.execute(statusLikeNotification);
                                 }
 
                                 @Override

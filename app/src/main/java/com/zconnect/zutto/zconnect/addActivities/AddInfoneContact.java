@@ -302,10 +302,13 @@ public class AddInfoneContact extends BaseActivity {
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                         UserItemFormat userItemFormat = new UserItemFormat();
+                                        HashMap<String,Object> metadata = new HashMap<>();
                                         userItemFormat.setUsername(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("username").getValue()));
                                         userItemFormat.setImageURL(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("imageURL").getValue()));
                                         userItemFormat.setUserUID(String.valueOf(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("userUID").getValue()));
-                                        GlobalFunctions.inAppNotifications("added a contact",name,userItemFormat,true,"contact",null,null);
+                                        metadata.put("infoneUserId",key);
+                                        metadata.put("catID",catId);
+                                        GlobalFunctions.inAppNotifications("added a contact",name,userItemFormat,true,"contactAdd",metadata,null);
                                     }
 
                                     @Override

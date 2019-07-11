@@ -55,36 +55,36 @@ public class GlobalFunctions {
     }
 
     public static void inAppNotifications(String title, String desc, final UserItemFormat notifiedby, boolean audience, String type, HashMap<String, Object> metadata, String uid) {
-        HashMap<String,Object> notificationMap = new HashMap<>();
+        HashMap<String, Object> notificationMap = new HashMap<>();
         /*
         audience true - Community specific notifications
         audience false - User specific notifications
         */
-        if(audience) {
+        if (audience) {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                     child(communityReference).child("globalNotifications");
 
-        }
-        else {
+        } else {
             notificationsRef = FirebaseDatabase.getInstance().getReference().child("communities").
                     child(communityReference).child("Users1").child(uid)
                     .child("notifications");
         }
 
         DatabaseReference newNotifRef = notificationsRef.push();
-        notificationMap.put("title",title);
-        notificationMap.put("desc",desc);
-        notificationMap.put("PostTimeMillis",System.currentTimeMillis());
-        notificationMap.put("seen",false);
-        notificationMap.put("type",type);
-        notificationMap.put("key",newNotifRef.getKey());
-        notificationMap.put("notifiedBy",notifiedby);
+        notificationMap.put("title", title);
+        notificationMap.put("desc", desc);
+        notificationMap.put("PostTimeMillis", System.currentTimeMillis());
+        notificationMap.put("seen", false);
+        notificationMap.put("type", type);
+        notificationMap.put("key", newNotifRef.getKey());
+        notificationMap.put("notifiedBy", notifiedby);
 
         newNotifRef.setValue(notificationMap);
+        if (metadata != null) {
+            for (HashMap.Entry<String, Object> entry : metadata.entrySet()) {
+                newNotifRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
+            }
 
-//        for(HashMap.Entry<String, Object> entry : metadata.entrySet()) {
-  //          newNotifRef.child("metadata").child(entry.getKey()).setValue(entry.getValue());
-    //    }
-
+        }
     }
 }

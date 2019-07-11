@@ -100,7 +100,7 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 Log.e("ButtonResponse", "Accepted");
-                GlobalFunctions.inAppNotifications("has accepted your forum request", "You forum tab request has been approved", userItemFormat, false, "adminrequests", null, uid);
+                GlobalFunctions.inAppNotifications("has accepted your forum tab request", "You forum tab request has been approved", userItemFormat, false, "acceptforum", null, uid);
             }
         });
         declineUserButton.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +109,7 @@ public class newRequestViewHolder extends RecyclerView.ViewHolder {
 
                 DatabaseReference requestForumTabs = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features/admin/requests");
                 requestForumTabs.child(key).removeValue();
-                GlobalFunctions.inAppNotifications("has declined your forum request", "You forum tab request has been rejected", userItemFormat, false, "adminrequests", null, uid);
+                GlobalFunctions.inAppNotifications("has declined your forum tab request", "You forum tab request has been rejected", userItemFormat, false, "declineforum", null, uid);
             }
         });
     }

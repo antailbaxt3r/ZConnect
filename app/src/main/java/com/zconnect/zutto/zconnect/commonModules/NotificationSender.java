@@ -241,7 +241,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         userItemFormat.setUserUID(userKey);
         userItemFormat.setUsername(username);
         userItemFormat.setImageURL(userimg);
-GlobalFunctions.inAppNotifications("rejected your request to join the community","please add your details and try again",userItemFormat,false,"verification",null,receiverKey);
+        GlobalFunctions.inAppNotifications("rejected your request to join the community","please add your details and try again",userItemFormat,false,"verification",null,receiverKey);
         sendNotification(true,receiverKey);
     }
 
@@ -465,6 +465,7 @@ GlobalFunctions.inAppNotifications("rejected your request to join the community"
 
 
         creator = new RemoteMessage.Builder("data");
+        HashMap<String,Object> metadata = new HashMap<>();
 
         creator.addData("communityName",communityName);
         creator.addData("productName",productName);
@@ -479,11 +480,21 @@ GlobalFunctions.inAppNotifications("rejected your request to join the community"
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD);
         creator.addData("userKey",userKey);
 
+        UserItemFormat userItemFormat=new UserItemFormat();
+        userItemFormat.setUserUID("");
+        userItemFormat.setUsername("");
+        userItemFormat.setImageURL("");
+
+        metadata.put("key",productKey);
+        metadata.put("type",productType);
+        GlobalFunctions.inAppNotifications("A new product has been added",productName+" price: "+productPrice,userItemFormat,true,"productAdd",metadata,null);
+
         compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_ADD_FREQUENCY_STR);
     }
 
     private void eventAddNotification(String communityName,String eventName,String eventLocation,String eventKey,String eventImage) {
         creator = new RemoteMessage.Builder("data");
+     HashMap<String,Object> metadata = new HashMap<>();
         creator.addData("communityName",communityName);
         creator.addData("communityReference",communityReference);
 
@@ -495,40 +506,45 @@ GlobalFunctions.inAppNotifications("rejected your request to join the community"
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD);
         creator.addData("userKey",userKey);
 
+        UserItemFormat userItemFormat=new UserItemFormat();
+        userItemFormat.setUserUID("");
+        userItemFormat.setUsername("");
+        userItemFormat.setImageURL("");
+        metadata.put("id",eventKey);
+        GlobalFunctions.inAppNotifications("A new event has been added",eventName+" location: "+eventLocation,userItemFormat,true,"eventAdd",metadata,null);
         compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR);
     }
 
     private void cabAddNotification(String communityName) {
 
         creator = new RemoteMessage.Builder("data");
+        HashMap<String,Object> metadata = new HashMap<>();
         creator.addData("communityName",communityName);
-
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD);
         creator.addData("userKey",userKey);
-
+        metadata.put("key",userKey);
+        GlobalFunctions.inAppNotifications("A new cabpool has been added","",null,true,"cabAdd",null,null);
         compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_ADD_FREQUENCY_STR);
     }
 
     private void productShortlistNotification(String productKey,String userName,String userMobileNumber,String productName, String communityName,String userImage,String recieverKey){
 
         creator = new RemoteMessage.Builder("data");
+        HashMap<String,Object> metadata = new HashMap<>();
         creator.addData("userName",userName);
         creator.addData("userMobileNumber",userMobileNumber);
         creator.addData("productKey",productKey);
         creator.addData("productName",productName);
         creator.addData("communityName",communityName);
         creator.addData("userImage",userImage);
-
-
-
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_PRODUCT_SHORTLIST);
         creator.addData("userKey",userKey);
-
+        metadata.put("key",productKey);
         UserItemFormat userItemFormat=new UserItemFormat();
         userItemFormat.setUserUID(userKey);
         userItemFormat.setUsername(userName);
         userItemFormat.setImageURL(userImage);
-        GlobalFunctions.inAppNotifications("shortlisted your product","",userItemFormat,false,"cabpool",null,recieverKey);
+        GlobalFunctions.inAppNotifications("shortlisted your product","",userItemFormat,false,"productShortlist",metadata,recieverKey);
         sendNotification(true, productKey);
     }
 
@@ -561,13 +577,13 @@ GlobalFunctions.inAppNotifications("rejected your request to join the community"
         userItemFormat.setUserUID(userKey);
         userItemFormat.setUsername(userName);
         userItemFormat.setImageURL(userImage);
-        GlobalFunctions.inAppNotifications("joined your cabpool","",userItemFormat,false,"cabpool",null,recieverKey);
+        GlobalFunctions.inAppNotifications("joined your cabpool","",userItemFormat,false,"cabpoolJoin",null,recieverKey);
         sendNotification(true, cabKey);
     }
 
     public void eventBoostNotification(String eventKey, String eventName, String userName,String communityName,String userImage,String recieverKey) {
         creator = new RemoteMessage.Builder("data");
-
+        HashMap<String,Object> metadata = new HashMap<>();
         creator.addData("eventKey",eventKey);
         creator.addData("eventName",eventName);
         creator.addData("userName",userName);
@@ -576,12 +592,12 @@ GlobalFunctions.inAppNotifications("rejected your request to join the community"
         creator.addData("communityName",communityName);
         creator.addData("Type",NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_BOOST);
         creator.addData("userKey",userKey);
-
+        metadata.put("key",eventKey);
         UserItemFormat userItemFormat=new UserItemFormat();
         userItemFormat.setUserUID(userKey);
         userItemFormat.setUsername(userName);
         userItemFormat.setImageURL(userImage);
-        GlobalFunctions.inAppNotifications("boosted your event","",userItemFormat,false,"cabpool",null,recieverKey);
+        GlobalFunctions.inAppNotifications("boosted your event","",userItemFormat,false,"eventBoost",metadata,recieverKey);
         sendNotification(true,eventKey);
     }
 

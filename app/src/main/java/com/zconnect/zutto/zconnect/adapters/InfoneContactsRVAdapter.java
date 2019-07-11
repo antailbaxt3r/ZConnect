@@ -173,6 +173,25 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                 databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("valid").child(mAuth.getCurrentUser().getUid()).setValue("true");
                 long postTimeMillis = System.currentTimeMillis();
                 databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
+
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = new UserItemFormat();
+                        userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
+                        userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
+                        userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+
+                        GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infoneverify",null,infoneContactsRVItems.get(position).getInfoneUserId());
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 holder.verifyDialog.dismiss();
 
             }
@@ -184,6 +203,24 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                 databaseReferenceInfone.child("numbers").child(infoneContactsRVItems.get(position).getInfoneUserId()).child("invalid").child(mAuth.getCurrentUser().getUid()).setValue("true");
                 long postTimeMillis = System.currentTimeMillis();
                 databaseReferenceContact.child("verifiedDate").setValue(postTimeMillis);
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = new UserItemFormat();
+                        userItemFormat.setUsername((String) dataSnapshot.child("username").getValue());
+                        userItemFormat.setUserUID((String) dataSnapshot.child("userUID").getValue());
+                        userItemFormat.setImageURL((String) dataSnapshot.child("imageURL").getValue());
+
+                        GlobalFunctions.inAppNotifications("has validated your phone number",phoneNums.get(0),userItemFormat,false,"infoneverify",null,infoneContactsRVItems.get(position).getInfoneUserId());
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 holder.verifyDialog.dismiss();
 
             }
