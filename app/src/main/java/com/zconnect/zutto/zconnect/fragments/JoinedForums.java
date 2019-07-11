@@ -2,9 +2,9 @@ package com.zconnect.zutto.zconnect.fragments;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,9 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,15 +34,15 @@ import com.zconnect.zutto.zconnect.commonModules.DBHelper;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ForumCategoriesItemFormat;
+
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumTypeUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import static android.content.Context.POWER_SERVICE;
 import static com.zconnect.zutto.zconnect.R.menu.menu_infone_contact_list;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 
-import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -60,6 +58,7 @@ public class JoinedForums extends Fragment {
 
 //    private DatabaseReference forumsCategoriesRef;
     private Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats = new Vector<>();
+    private Vector<ForumCategoriesItemFormat> notifTabForum = new Vector<>();
     private Vector<ForumCategoriesItemFormat> searchForumCategoriesItemFormats;
     ForumCategoriesItemFormat exploreButton = new ForumCategoriesItemFormat();
     private ValueEventListener joinedForumsListener;
@@ -73,6 +72,14 @@ public class JoinedForums extends Fragment {
     private DatabaseReference userForumsRef;
     private ValueEventListener forumEventListener;
 
+    //Share Forums
+    boolean isShare =false;
+    String activityType;
+    String messageType;
+    String message;
+
+    boolean isUnread;
+
     public JoinedForums() {
         // Required empty public constructor
     }
@@ -81,6 +88,15 @@ public class JoinedForums extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            activityType = getArguments().getString(ForumUtilities.KEY_ACTIVITY_TYPE_STR);
+            if(activityType.equals(ForumUtilities.VALUE_SHARE_FORUM_STR)){
+                messageType = getArguments().getString(ForumUtilities.KEY_MESSAGE_TYPE_STR,null);
+                if(messageType != null){
+                    message = getArguments().getString(ForumUtilities.KEY_MESSAGE,null);
+                }
+            }
+        }
 
         setHasOptionsMenu(true);
 
@@ -142,24 +158,34 @@ public class JoinedForums extends Fragment {
                             temp.setCatUID(shot2.child("catUID").getValue().toString());
                         }
 
+
+
                     if(shot2.child("TabUID").toString().equals("personalChats")){
                         name = shot2.child("personalChatTitle").getValue().toString();
                         imageURL = shot2.child("imageThumb").getValue().toString();
                         shot2.child("personalChatTitle");
                     }
-                    if (allForumsSeenMessages.get(temp.getCatUID()) != null) {
-                        temp.setSeenMessages(allForumsSeenMessages.get(temp.getCatUID()));
-                    } else {
-                        if (!shot2.hasChild("totalMessages")) {
-                            temp.setSeenMessages(0);
-                        } else {
-                            temp.setSeenMessages(Integer.parseInt(shot2.child("totalMessages").getValue().toString()));
-                        }
-                    }
+
                     if (!shot2.hasChild("totalMessages")) {
                         temp.setTotalMessages(0);
                     }
-                    temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
+                        mydb = new DBHelper(getContext());
+//                        Log.d("TabUID",)
+                        notifTabForum = mydb.getTabForums(shot2.child("tabUID").getValue().toString());
+                    temp.setSeenMessages(totalSeenNumber(temp.getCatUID()));
+
+                        if(activityType != null) {
+                        if (activityType.equals(ForumUtilities.VALUE_SHARE_FORUM_STR)) {
+                            Log.d("Setting message", message);
+                            temp.setForumType(ForumUtilities.VALUE_SHARE_FORUM_STR);
+                            temp.setMessage(message);
+                            temp.setMessageType(messageType);
+
+                        }
+                    }
+                    else {
+                        temp.setForumType(ForumTypeUtilities.KEY_JOINED_STR);
+                    }
                     if(name!=null){
                         temp.setName(name);
                     }
@@ -192,6 +218,20 @@ public class JoinedForums extends Fragment {
 //                            }
 //                        });
 //                    }
+                    if(temp.getTotalMessages()>temp.getSeenMessages()){
+                        isUnread = true;
+
+                    }
+                    if(isUnread){
+                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                        tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                        isUnread = false;
+                    }
+                    else{
+                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                        tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+                    }
+
 
                     if (shot2.child("users").child(mAuth.getCurrentUser().getUid()).hasChild("userType")) {
                         if (!(shot2.child("users").child(mAuth.getCurrentUser().getUid()).child("userType").getValue().equals(ForumsUserTypeUtilities.KEY_BLOCKED))) {
@@ -233,8 +273,10 @@ public class JoinedForums extends Fragment {
                         return Long.valueOf((Long) o2.getLastMessage().getTimeDate()).compareTo((Long) o1.getLastMessage().getTimeDate()) ;
                     }
                 });
+                if(activityType == null) {
 
-                forumCategoriesItemFormats.add(exploreButton);
+                    forumCategoriesItemFormats.add(exploreButton);
+                }
 
                 Collections.reverse(forumCategoriesItemFormats);
 
@@ -244,6 +286,10 @@ public class JoinedForums extends Fragment {
 
                 progressBar.setVisibility(View.GONE);
                 joinedForumsRV.setVisibility(View.VISIBLE);
+                Log.d("Adapter List",forumCategoriesItemFormats.toString());
+                adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getActivity());
+                joinedForumsRV.setLayoutManager(linearLayoutManager);
+                joinedForumsRV.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
 
@@ -252,6 +298,7 @@ public class JoinedForums extends Fragment {
 
             }
         };
+
 
         if(search){
             if(!queryString.equals("")) {
@@ -324,6 +371,19 @@ public class JoinedForums extends Fragment {
                 return true;
             }
         });
+    }
+
+    public Integer totalSeenNumber(String catID){
+        Integer seenMessages = 0;
+        Log.d("ForumTabs",notifTabForum.toString());
+        Log.d("CATUID",catID);
+        for (int i=0;i<notifTabForum.size(); i++){
+            if(notifTabForum.get(i).getCatUID().equals(catID)){
+                seenMessages = notifTabForum.get(i).getSeenMessages();
+            }
+        }
+        Log.d("Seen message",Integer.toString(seenMessages));
+        return seenMessages;
     }
 
     @Override

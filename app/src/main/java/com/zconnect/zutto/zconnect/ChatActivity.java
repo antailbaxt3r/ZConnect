@@ -1,7 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,15 +10,19 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -31,15 +35,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,7 +56,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -69,6 +75,7 @@ import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
@@ -83,17 +90,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-
-import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
-
+//TODO: IMPROVE ANONYMOUS MODE
 public class ChatActivity extends BaseActivity {
 
     private String TAG = ChatActivity.class.getSimpleName();
 
     private static final int GALLERY_REQUEST = 7;
     private String ref  = "Misc";
-    private RecyclerView chatView;
-    private RecyclerView.Adapter adapter;
+    public RecyclerView chatView;
+    public RecyclerView.Adapter adapter;
     private DatabaseReference databaseReference ;
     private DatabaseReference forumCategory = null;
     private Calendar calendar;
@@ -107,6 +112,7 @@ public class ChatActivity extends BaseActivity {
     private DatabaseReference mUserReference;
     private FirebaseAuth mAuth;
     private static boolean unseenFlag, unseenFlag2;
+    private boolean isAnonymousEnabled = false;
 
     //For Photo Posting
     private IntentHandle intentHandle;
@@ -115,6 +121,18 @@ public class ChatActivity extends BaseActivity {
     private StorageReference mStorage;
     private String userType = ForumsUserTypeUtilities.KEY_USER;
     private ValueEventListener loadMessagesListener;
+
+    //For Sharing
+    String shareMessageType = null;
+    String shareMessage = null;
+
+    //For Storeroom message
+    String storeRoomMessage;
+    private AppBarLayout appBarLayout;
+    private FrameLayout chatFrameLayout;
+
+    //UI elements
+    EditText typer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +152,7 @@ public class ChatActivity extends BaseActivity {
             });
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+//        Log.d("name",getIntent().getStringExtra("name"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -148,22 +167,35 @@ public class ChatActivity extends BaseActivity {
         showBackButton();
 
         mAuth = FirebaseAuth.getInstance();
+        appBarLayout = findViewById(R.id.appBarLayout);
 
 
         //For Photo Posting
         intentHandle = new IntentHandle();
         unseenFlag = true;
         unseenFlag2 = false;
-
+        typer = ((EditText) findViewById(R.id.typer));
         SharedPreferences communitySP;
         final String communityReference;
         communitySP = ChatActivity.this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
+        Intent callingActivityIntent = getIntent();
+        if(callingActivityIntent.getStringExtra(ForumUtilities.KEY_MESSAGE_TYPE_STR) != null){
+            shareMessage = callingActivityIntent.getStringExtra(ForumUtilities.KEY_MESSAGE);
+            shareMessageType = callingActivityIntent.getStringExtra(ForumUtilities.KEY_MESSAGE_TYPE_STR);
+        }
+        if(callingActivityIntent.getStringExtra("store_room_message") != null){
+            storeRoomMessage = callingActivityIntent.getStringExtra("store_room_message");
+        }
         mUserReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         if(getIntent()!=null && !TextUtils.isEmpty(getIntent().getStringExtra("ref"))) {
             if (!TextUtils.isEmpty(getIntent().getStringExtra("ref"))){
+
                 ref = getIntent().getStringExtra("ref");
+                Log.d("Ref",ref);
             }
+            Log.d("Ref",ref);
+
             if (!TextUtils.isEmpty(getIntent().getStringExtra("type"))){
                 type = getIntent().getStringExtra("type");
             }
@@ -174,6 +206,7 @@ public class ChatActivity extends BaseActivity {
 
         joinLayout.setVisibility(View.GONE);
         chatLayout.setVisibility(View.VISIBLE);
+        chatFrameLayout = findViewById(R.id.chat_frame_layout);
 
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(ref);
         Log.d("Try",databaseReference.getParent().toString());
@@ -197,6 +230,7 @@ public class ChatActivity extends BaseActivity {
         }else if (type.equals("post")){
             setActionBarTitle("Comments");
         }else if(type.equals("personalChats")){
+            Log.d("Setting it to:",getIntent().getStringExtra("name"));
             setActionBarTitle(getIntent().getStringExtra("name"));
         }
 
@@ -346,6 +380,8 @@ public class ChatActivity extends BaseActivity {
                 final String key,tab;
                 key = getIntent().getStringExtra("key");
                 tab = getIntent().getStringExtra("tab");
+                Log.d("Setting it to:",getIntent().getStringExtra("name"));
+
                 setToolbarTitle(getIntent().getStringExtra("name"));
 
                 final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(tab).child(key);
@@ -358,7 +394,7 @@ public class ChatActivity extends BaseActivity {
         }
         calendar = Calendar.getInstance();
         chatView = (RecyclerView) findViewById(R.id.chatList);
-        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this);
+        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_NORMAL_FORUM);
         progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
         progressBar.setVisibility(View.VISIBLE);
         chatView.setVisibility(View.GONE);
@@ -382,6 +418,7 @@ public class ChatActivity extends BaseActivity {
                             if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
                                 newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(),"Chat", ChatActivity.this);
                             } else {
+
                                 postMessage();
                             }
                         }else {
@@ -412,10 +449,23 @@ public class ChatActivity extends BaseActivity {
                     if (!snapshot.hasChild("messageType")) {
                         temp.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                     }
-                    messages.add(temp);
+                    if(isAnonymousEnabled){
+                        messages.add(temp);
+                    }
+                    else {
+                        if (!snapshot.hasChild("anonymous") || snapshot.child("anonymous").getValue().toString().equals("false")) {
+                            messages.add(temp);
+                        } else {
+                            ChatItemFormats anonMessage = new ChatItemFormats();
+                            anonMessage.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
+                            anonMessage.setUuid(temp.getUuid());
+                            anonMessage.setTimeDate(temp.getTimeDate());
+                            messages.add(anonMessage);
+                        }
+                    }
                 }
 
-                if (type.equals("forums")) {
+                if (type.equals("forums") || type.equals("others") || type.equals("personalChats")) {
                     DBHelper mydb = new DBHelper(ChatActivity.this);
 
                     String key, tab, name;
@@ -470,15 +520,33 @@ public class ChatActivity extends BaseActivity {
                 }
             }
         });
+        if(shareMessageType!= null) {
+            if (shareMessageType.equals(ForumUtilities.VALUE_MESSAGE_TEXT_MESSAGE)) {
+                typer.setText(shareMessage);
+                postMessage();
+            }
+            if (shareMessageType.equals(ForumUtilities.VALUE_MESSAGE_IMAGE)) {
+                mImageUri = Uri.parse(shareMessage);
+                postPhoto();
+            }
+        }
+
     }
 
     private void postMessage(){
 
-        final EditText typer = ((EditText) findViewById(R.id.typer));
-        final String text = typer.getText().toString().trim();
-        if (TextUtils.isEmpty(text)) {
+//        final EditText typer = ((EditText) findViewById(R.id.typer));
+        final String text;
+        if (TextUtils.isEmpty(typer.getText().toString().trim())) {
             showToast("Message is empty.");
             return;
+        }
+        if(storeRoomMessage != null){
+            text = storeRoomMessage+"\n"+typer.getText().toString().trim();
+            storeRoomMessage = null;
+        }
+        else{
+              text = typer.getText().toString().trim();
         }
         unseenFlag2 = true;
         final ChatItemFormats message = new ChatItemFormats();
@@ -489,12 +557,21 @@ public class ChatActivity extends BaseActivity {
                 UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
                 message.setUuid(userItem.getUserUID());
                 message.setName(userItem.getUsername());
+                if(userItem.getAnonymousUsername() != null){
+                    message.setUserName(userItem.getAnonymousUsername());
+
+                }
+                else{
+                    message.setUserName("Unknown");
+                }
                 message.setImageThumb(userItem.getImageURLThumbnail());
                 message.setMessage("\""+text+"\"");
                 message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                 GlobalFunctions.addPoints(2);
                 String messagePushID = databaseReference.child("Chat").push().getKey();
                 message.setKey(messagePushID);
+                message.setAnonymous(isAnonymousEnabled);
+
                 databaseReference.child("Chat").child(messagePushID).setValue(message);
 //                messages.add(message);
 
@@ -518,7 +595,13 @@ public class ChatActivity extends BaseActivity {
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(dataSnapshot.child("tab").getValue().toString()).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                            if(dataSnapshot.child("tab").getValue().toString() != null) {
+                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(dataSnapshot.child("tab").getValue().toString()).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+                            }
+                            else{
+                                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child(getIntent().getStringExtra("tab")).child(getIntent().getStringExtra("key")).child("lastMessage").setValue(message);
+
+                            }
                         }
 
                         @Override
@@ -619,15 +702,24 @@ public class ChatActivity extends BaseActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
 
         final ChatItemFormats message = new ChatItemFormats();
+        final ChatItemFormats messageTemp = new ChatItemFormats();
+
         message.setTimeDate(calendar.getTimeInMillis());
 
         if(mImageUri!=null){
-            Log.d("Try","Image Posting");
-//            message1.setPhotoURL(mImageUri.toString());
-//            message1.setMessageType(MessageTypeUtilities.KEY_PHOTO_SENDING_STR);
-//            messages.add(message1);
-//            adapter.notifyDataSetChanged();
-//            chatView.scrollToPosition(messages.size()-1);
+            Log.d("L",Integer.toString(messages.size()));
+            messageTemp.setUuid(mAuth.getCurrentUser().getUid());
+            messageTemp.setName(mAuth.getCurrentUser().getDisplayName());
+            messageTemp.setPhotoURL(mImageUri != null ? mImageUri.toString() : null);
+            messageTemp.setImageThumb(mImageUri.toString());
+            messageTemp.setMessage(" \uD83D\uDCF7 Image ");
+            messageTemp.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
+            messages.add(messageTemp);
+//            messages.add()
+            messages.add(messages.get(0));
+            Log.d("L",Integer.toString(messages.size()));
+            adapter.notifyDataSetChanged();
+
 
 
             final StorageReference filePath = mStorage.child(communityReference).child("features").child(type).child((mImageUri.getLastPathSegment()) + mAuth.getCurrentUser().getUid());
@@ -657,6 +749,7 @@ public class ChatActivity extends BaseActivity {
                                 message.setImageThumb(userItem.getImageURLThumbnail());
                                 message.setMessage(" \uD83D\uDCF7 Image ");
                                 message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
+                                message.setAnonymous(isAnonymousEnabled);
                                 GlobalFunctions.addPoints(5);
                                 String messagePushID = databaseReference.child("Chat").push().getKey();
                                 message.setKey(messagePushID);
@@ -899,8 +992,137 @@ public class ChatActivity extends BaseActivity {
 
         }
 
+        if(item.getItemId() == R.id.action_anonymous_forum) {
+            if (isAnonymousEnabled) {
+                setNormalChat();
+
+            } else {
+
+                final Dialog anonymousModeDialog = new Dialog(this);
+                anonymousModeDialog.setContentView(R.layout.dialog_confirm_anonymous_mode);
+                anonymousModeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                Button cancelButton = anonymousModeDialog.findViewById(R.id.anonymous_cancel_button);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        anonymousModeDialog.dismiss();
+                    }
+                });
+                CheckBox checkBox = anonymousModeDialog.findViewById(R.id.anonymous_show_again_cb);
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = preferences.edit();
+                        if(isChecked) {
+                            editor.putBoolean("AnonymousDialog",false);
+                        }
+                        else{
+                            editor.putBoolean("AnonymousDialog",true);
+                        }
+                        editor.apply();
+
+                    }
+                });
+                mUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String username = "newUser";
+
+                        final AutoCompleteTextView usernameEt = anonymousModeDialog.findViewById(R.id.anonymous_username_et);
+                        Button enterButton = anonymousModeDialog.findViewById(R.id.anonymous_enter_button);
+                        if(dataSnapshot.hasChild("anonymousUsername")){
+                            username = dataSnapshot.child("anonymousUsername").getValue().toString();
+                            usernameEt.setText(dataSnapshot.child("anonymousUsername").getValue().toString());
+                        }
+                       enterButton.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+//                               username = usernameEt.getText().toString();
+                               if(usernameEt.getText().toString().trim().equals("")){
+                                   Toast.makeText(ChatActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
+                                   return;
+                               }
+                               mUserReference.child("anonymousUsername").setValue(usernameEt.getText().toString().trim());
+                               setAnonymousChat();
+                               anonymousModeDialog.dismiss();
+                           }
+                       });
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                boolean setDialog = preferences.getBoolean("AnonymousDialog", true);
+                if(setDialog){
+                    anonymousModeDialog.show();
+                }
+                else {
+                    setAnonymousChat();
+                }
+
+            }
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
+    private void setNormalChat() {
+        isAnonymousEnabled = false;
+        chatView = (RecyclerView) findViewById(R.id.chatList);
+        chatView.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+        appBarLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));
+        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+        chatLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+
+        typer.setTextColor(ContextCompat.getColor(this,R.color.black));
+
+
+
+        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_NORMAL_FORUM);
+        progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
+        chatView.setVisibility(View.GONE);
+        databaseReference.child("Chat").addValueEventListener(loadMessagesListener);
+        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_NORMAL_FORUM);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(false);
+        linearLayoutManager.setStackFromEnd(true);
+        chatView.setLayoutManager(linearLayoutManager);
+        chatView.setAdapter(adapter);
+    }
+
+    private void setAnonymousChat() {
+        isAnonymousEnabled = true;
+
+        chatView = (RecyclerView) findViewById(R.id.chatList);
+        chatView.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_surface));
+        appBarLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.title_bar_dark));
+        chatFrameLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_surface));
+        chatLayout.setBackgroundColor(ContextCompat.getColor(this,R.color.dark_theme_chat_layout));
+        typer.setTextColor(ContextCompat.getColor(this,R.color.white));
+
+
+        adapter = new ChatRVAdapter(messages,databaseReference,forumCategory,this,ForumUtilities.VALUE_ANONYMOUS_FORUM);
+        progressBar = (ProgressBar) findViewById(R.id.activity_chat_progress_circle);
+        progressBar.setVisibility(View.VISIBLE);
+        chatView.setVisibility(View.GONE);
+        databaseReference.child("Chat").addValueEventListener(loadMessagesListener);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(false);
+        linearLayoutManager.setStackFromEnd(true);
+        chatView.setLayoutManager(linearLayoutManager);
+        chatView.setAdapter(adapter);
+
+    }
+
+
 
 
     @Override
@@ -908,6 +1130,7 @@ public class ChatActivity extends BaseActivity {
 
         if(!getIntent().getStringExtra("type").equals("forums")) {
             menu.findItem(R.id.action_list_people).setVisible(false);
+
         }
 
         if(!getIntent().getStringExtra("type").equals("forums")){
@@ -918,6 +1141,12 @@ public class ChatActivity extends BaseActivity {
             if (tabuid.equals("shopPools") || tabuid.equals("otherChats")){
 
                 menu.findItem(R.id.action_edit_forum).setVisible(false);
+            }
+            if(tabuid.equals("personalChats")){
+                menu.findItem(R.id.action_edit_forum).setVisible(false);
+                menu.findItem(R.id.action_list_people).setVisible(false);
+                Log.d("Menu Setting",getIntent().getStringExtra("name"));
+                setActionBarTitle(getIntent().getStringExtra("name"));
             }
         }
         return super.onPrepareOptionsMenu(menu);

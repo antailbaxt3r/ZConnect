@@ -11,22 +11,23 @@ public class Event implements Serializable {
 
     private double lon = 0, lat = 0, BoostCount;
     private long EventTimeMillis, PostTimeMillis;
-    private String EventName,
-            EventDescription,
-            EventImage,
-            EventDate,
-            FormatDate,
-            Key,
-            Venue,
-            UserID,
-            Verified;
+    private String EventName;
+    private String EventDescription;
+    private String EventImage;
+    private String EventDate;
+    private String FormatDate;
+    private String Key;
+    private String eventForumID;
+    private String Venue;
+    private String UserID;
+    private String Verified;
     private PostedByDetails PostedBy;
     
     public Event() {
 
     }
 
-    public Event(double lon, double lat, String EventName, String EventDescription, String EventImage, String EventDate, Long EventTimeMillis, String FormatDate, String Key, String Venue, String UserID, double BoostCount, String Verified, PostedByDetails PostedBy, long PostTimeMillis) {
+    public Event(double lon, double lat, String EventName, String EventDescription, String EventImage, String EventDate, Long EventTimeMillis, String FormatDate, String Key, String Venue, String UserID, double BoostCount, String Verified, PostedByDetails PostedBy, long PostTimeMillis, String eventForumID) {
         this.lon = lon;
         this.lat = lat;
         this.EventName = EventName;
@@ -42,6 +43,7 @@ public class Event implements Serializable {
         this.Verified = Verified;
         this.PostedBy = PostedBy;
         this.PostTimeMillis = PostTimeMillis;
+        this.eventForumID = eventForumID;
     }
 
     public double getLon() {
@@ -162,6 +164,13 @@ public class Event implements Serializable {
 
     public void setPostedBy(PostedByDetails postedBy) {
         PostedBy = postedBy;
+    }
+    public String getEventForumID() {
+        return eventForumID;
+    }
+
+    public void setEventForumID(String eventForumID) {
+        this.eventForumID = eventForumID;
     }
 
 

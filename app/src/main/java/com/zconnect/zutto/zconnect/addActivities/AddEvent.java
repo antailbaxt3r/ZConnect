@@ -67,6 +67,7 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
 import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 
 
@@ -354,7 +355,7 @@ public class AddEvent extends BaseActivity {
             if (!TextUtils.isEmpty(eventNameValue) && !TextUtils.isEmpty(eventDescriptionValue) && mImageUri != null && eventDate != null) {
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmm");
-                String formattedDate = df.format(c.getTime());
+                final String formattedDate = df.format(c.getTime());
                 final StorageReference filepath = mStorage.child("EventImage").child(formattedDate + mImageUri.getLastPathSegment() + mAuth.getCurrentUser().getUid());
                 UploadTask uploadTask = filepath.putFile(mImageUri);
                 uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -381,6 +382,7 @@ public class AddEvent extends BaseActivity {
                                 DatabaseReference newPost = mDatabaseVerified.push();
                                 final DatabaseReference postedByDetails = newPost.child("PostedBy");
                                 postedByDetails.setValue(null);
+
                                 postedByDetails.child("UID").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -397,6 +399,7 @@ public class AddEvent extends BaseActivity {
                                 });
                                 postTimeMillis = System.currentTimeMillis();
                                 final String key = newPost.getKey();
+                                Log.d("Key",key);
                                 newPost.child("Key").setValue(key);
                                 newPost.child("EventName").setValue(eventNameValue);
                                 newPost.child("EventDescription").setValue(eventDescriptionValue);
@@ -411,17 +414,32 @@ public class AddEvent extends BaseActivity {
                                 newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
                                 newPost.child("Verified").setValue("true");
                                 newPost.child("BoostCount").setValue(0);
+                                Intent createForum = new Intent(AddEvent.this,CreateForum.class);
+                                createForum.putExtra(ForumUtilities.KEY_ACTIVITY_TYPE_STR,ForumUtilities.VALUE_CREATE_EVENT_FORUM_STR);
+                                createForum.putExtra(ForumUtilities.KEY_REF_LOCATION,mDatabaseVerified.child(newPost.getKey()).toString());
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_IMAGE_STR,downloadUri.toString());
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_DESC_STR,eventDescriptionValue);
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_TAB_STR,"others");
 
                                 SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                                 Log.d("Event Date", eventDate);
+                                String stringEventDate = eventDate;
                                 try {
                                     eventTimeMillis = sdf.parse(eventDate).getTime();
+                                    Date date = sdf.parse(eventDate);
+                                    SimpleDateFormat dt1 = new SimpleDateFormat("h:mm a EEE, d MMM yyyy");
+                                    stringEventDate = dt1.format(date);
+
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
 
                                 newPost.child("EventTimeMillis").setValue(eventTimeMillis);
                                 newPost.child("PostTimeMillis").setValue(postTimeMillis);
+                                createForum.putExtra(ForumUtilities.KEY_MESSAGE,"Event Name: "+eventNameValue+"\nDate"+stringEventDate+"\nVenu: "+eventVenue);
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_NAME_STR,eventNameValue+" - "+stringEventDate);
+
+
 
                                 //For Recents
                                 DatabaseReference newPost2 = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(newPost.getKey());
@@ -502,6 +520,7 @@ public class AddEvent extends BaseActivity {
                                     }
                                 });
                                 FirebaseMessaging.getInstance().subscribeToTopic(key);
+                                startActivity(createForum);
 
                             } else {
                                 DatabaseReference newPost = mDatabaseVerified.push();
@@ -524,6 +543,7 @@ public class AddEvent extends BaseActivity {
                                 });
                                 postTimeMillis = System.currentTimeMillis();
                                 final String key = newPost.getKey();
+                                Log.d("key",key);
                                 newPost.child("Key").setValue(key);
                                 newPost.child("EventName").setValue(eventNameValue);
                                 newPost.child("EventDescription").setValue(eventDescriptionValue);
@@ -538,14 +558,29 @@ public class AddEvent extends BaseActivity {
                                 newPost.child("Verified").setValue("false");
                                 newPost.child("UserID").setValue(mAuth.getCurrentUser().getUid());
                                 newPost.child("BoostCount").setValue(0);
+                                Intent createForum = new Intent(AddEvent.this,CreateForum.class);
+                                createForum.putExtra(ForumUtilities.KEY_ACTIVITY_TYPE_STR,ForumUtilities.VALUE_CREATE_EVENT_FORUM_STR);
+                                createForum.putExtra(ForumUtilities.KEY_REF_LOCATION,mDatabaseVerified.child(newPost.getKey()).toString());
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_IMAGE_STR,downloadUri.toString());
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_DESC_STR,eventDescriptionValue);
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_TAB_STR,"others");
 
                                 SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                                 Log.d("Event Date", eventDate);
+                                String stringEventDate = eventDate;
                                 try {
                                     eventTimeMillis = sdf.parse(eventDate).getTime();
+                                    Date date = sdf.parse(eventDate);
+                                    SimpleDateFormat dt1 = new SimpleDateFormat("h:mm a EEE, d MMM yyyy");
+                                    stringEventDate = dt1.format(date);
+
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
+                                createForum.putExtra(ForumUtilities.KEY_MESSAGE,"Event Name: "+eventNameValue+"\nDate"+stringEventDate+"\nVenu: "+eventVenue);
+                                createForum.putExtra(ForumUtilities.KEY_FORUM_NAME_STR,eventNameValue+" - "+stringEventDate);
+
+
                                 newPost.child("EventTimeMillis").setValue(eventTimeMillis);
                                 newPost.child("PostTimeMillis").setValue(postTimeMillis);
 
@@ -603,6 +638,7 @@ public class AddEvent extends BaseActivity {
                                 });
 
                                 ////writing uid of event to homePosts node in Users1.uid for handling data conistency
+                                startActivity(createForum);
                                 mPostedByDetails.child("homePosts").child(key).setValue(true);
 
                                 //Sending Notifications

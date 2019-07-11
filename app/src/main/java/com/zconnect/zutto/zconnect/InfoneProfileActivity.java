@@ -697,9 +697,7 @@ public class InfoneProfileActivity extends BaseActivity {
         databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("image").setValue(userImageURL);
         databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("imageThumb").setValue(userImageURL);
 
-        while (user[0] != null){
 
-        }
 
         return newPush.getKey();
 
