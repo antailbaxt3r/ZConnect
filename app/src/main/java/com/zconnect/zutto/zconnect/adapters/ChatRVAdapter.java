@@ -6,11 +6,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
+import com.zconnect.zutto.zconnect.custom.MentionsClickableSpan;
 import com.zconnect.zutto.zconnect.holders.EmptyRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
@@ -47,7 +52,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -179,10 +188,65 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.userAvatar.setImageURI(message.getImageThumb());
 
                 String messageText = message.getMessage();
-
                 messageText = messageText.substring(1,messageText.length()-1);
-                holder.message.setText(messageText);
-                Linkify.addLinks(holder.message, Linkify.ALL);
+                //TODO IMPROVE EXTRACTION OF USERNAME AND UID
+                String newMessageText = "", token = "";
+                ArrayList<Integer> startIndexList = new ArrayList<>();
+                ArrayList<Integer> endIndexList = new ArrayList<>();
+                ArrayList<String> uid = new ArrayList<>();
+
+                int startIndex = 0;
+                int endIndex = 0;
+                boolean isToken = false;
+                try {
+                    for (int i = 0; i < messageText.length(); i++) {
+                        char letter = messageText.charAt(i);
+                        if (letter == '@') {
+                            startIndex = i;
+                            isToken = true;
+                        } else if (letter == '~') {
+                            endIndex = i;
+                            newMessageText += token;
+                            token = "";
+                        } else if (letter == ';') {
+                            startIndexList.add(newMessageText.length()-endIndex+startIndex);
+                            endIndexList.add(newMessageText.length());
+                            Log.d("logtokrn", token);
+                            uid.add(token.substring(1));
+                            startIndex = 0;
+                            endIndex = 0;
+                            token = "";
+                            isToken = false;
+                            continue;
+                        }
+
+                        if (isToken) {
+                            token += letter;
+                        } else {
+                            newMessageText += letter;
+                        }
+
+                    }
+                    SpannableString spannableString = new SpannableString(newMessageText);
+                    int i = 0;
+                    for (String u : uid) {
+                        spannableString.setSpan(new MentionsClickableSpan(holder.itemView.getContext(), u), startIndexList.get(i), endIndexList.get(i), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        i++;
+                    }
+                    holder.message.setText(spannableString);
+                    holder.message.setMovementMethod(LinkMovementMethod.getInstance());
+                    holder.message.setHighlightColor(Color.TRANSPARENT);
+                    Linkify.addLinks(holder.message, Linkify.ALL);
+
+                }
+                catch (Exception e){
+                    Log.e("MYERROR",e.toString());
+                    holder.message.setText("Unable to load the message");
+
+                }
+
+
+
             }
             if(message.isAnonymous() && forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
                 holder.name.setEnabled(false);
