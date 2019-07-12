@@ -26,6 +26,7 @@
         android:layout_margin="3dp"
         android:background="@color/white"
         android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
         android:paddingTop="10dp">
         <LinearLayout
             android:id="@+id/chat_format_leftdummy"

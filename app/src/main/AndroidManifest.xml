@@ -23,6 +23,8 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".OpenStatus"></activity>
+
         <activity android:name=".AddMembersToForumActivity">
             <meta-data
                 android:name="android.app.searchable"
@@ -129,7 +131,6 @@
             android:label="@string/title_activity_shop_list"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".OpenUserDetail"
             android:exported="true"
@@ -424,7 +425,6 @@
             android:label="@string/title_activity_cab_pool_locations"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ForumsPeopleList"
             android:label="@string/title_activity_forums_people_list"
@@ -514,7 +514,6 @@
             android:label="Notices"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".addActivities.AddNotices"
             android:label="Add Notices"
@@ -566,9 +565,6 @@
             android:label="Create a Poll"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-
-
     </application>
 
 </manifest>

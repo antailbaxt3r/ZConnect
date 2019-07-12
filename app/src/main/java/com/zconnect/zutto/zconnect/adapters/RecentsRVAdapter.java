@@ -15,9 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
@@ -30,6 +28,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -40,11 +39,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.android.gms.analytics.ExceptionReporter;
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -53,7 +49,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.zconnect.zutto.zconnect.AdminHome;
@@ -67,9 +62,9 @@ import com.zconnect.zutto.zconnect.LoginActivity;
 import com.zconnect.zutto.zconnect.Notices;
 import com.zconnect.zutto.zconnect.OpenEventDetail;
 import com.zconnect.zutto.zconnect.OpenProductDetails;
+import com.zconnect.zutto.zconnect.OpenStatus;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
-import com.zconnect.zutto.zconnect.Recents;
 import com.zconnect.zutto.zconnect.ReferralCode;
 import com.zconnect.zutto.zconnect.Shop_detail;
 import com.zconnect.zutto.zconnect.TabStoreRoom;
@@ -90,7 +85,6 @@ import com.zconnect.zutto.zconnect.utilities.FeatureDBName;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.ProductUtilities;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
-import com.zconnect.zutto.zconnect.utilities.RequestCodes;
 import com.zconnect.zutto.zconnect.utilities.TimeUtilities;
 import com.zconnect.zutto.zconnect.addActivities.AddStatus;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
@@ -100,12 +94,10 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.text.DateFormat;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -513,6 +505,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                     holder.postConjunction.setText(" created a ");
                     holder.post.setText(" Poll ");
+                    holder.featureIcon.setImageResource(R.drawable.ic_outline_poll_24px);
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.pollQuestion.setText(recentsItemFormats.get(position).getQuestion());
                     holder.pollOptionA.setText(recentsItemFormats.get(position).getOptions().getOptionA());
                     holder.pollOptionB.setText(recentsItemFormats.get(position).getOptions().getOptionB());
@@ -527,12 +521,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             {
                                 if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                                 {
-                                    if (dataSnapshot.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").getValue().toString().equals("optionA"))
-                                        holder.pollOptionA.setTextColor(Color.RED);
-                                    else if (dataSnapshot.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").getValue().toString().equals("optionB"))
-                                        holder.pollOptionB.setTextColor(Color.RED);
-                                    else if (dataSnapshot.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").getValue().toString().equals("optionC"))
-                                        holder.pollOptionC.setTextColor(Color.RED);
+                                    holder.setPollResultsVisible(recentsItemFormats.get(position).getKey());
+
                                 }
                                 else
                                 {
@@ -1084,7 +1074,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 forumNameCategorySentence,
                 sentence,totalComments,
                 noticesText,
-                pollQuestion,pollOptionA,pollOptionB,pollOptionC;
+                pollQuestion,pollOptionA,pollOptionB,pollOptionC,
+                markerA, markerB, markerC;
 
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
@@ -1096,8 +1087,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         ImageButton deleteButton;
 
-        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,pollLinearLayout;
-        FrameLayout layoutFeatureIcon, bannerLinkLayout;
+        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,pollLinearLayout,
+                pollAYes, pollANo, pollBYes, pollBNo, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult;
+
+        FrameLayout layoutFeatureIcon, bannerLinkLayout, optionALayout, optionBLayout, optionCLayout;
         //
         long statusLikeCount;
         boolean statusLikeFlag;
@@ -1112,9 +1105,24 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             desc = (TextView) itemView.findViewById(R.id.recentdesc);
 
             pollQuestion = itemView.findViewById(R.id.poll_question);
+            optionALayout = itemView.findViewById(R.id.optionA_Layout);
             pollOptionA = itemView.findViewById(R.id.optionA_option_text);
+            markerA = itemView.findViewById(R.id.optionA_placeHolder);
+            pollAYes = itemView.findViewById(R.id.optionA_result_success);
+            pollANo = itemView.findViewById(R.id.optionA_result_failure);
+            pollAResult = itemView.findViewById(R.id.poll_results_optionA);
+            optionBLayout = itemView.findViewById(R.id.optionB_Layout);
             pollOptionB = itemView.findViewById(R.id.optionB_option_text);
+            markerB = itemView.findViewById(R.id.optionB_placeHolder);
+            pollBYes = itemView.findViewById(R.id.optionB_result_success);
+            pollBNo = itemView.findViewById(R.id.optionB_result_failure);
+            pollBResult = itemView.findViewById(R.id.poll_results_optionB);
+            optionCLayout = itemView.findViewById(R.id.optionC_Layout);
             pollOptionC = itemView.findViewById(R.id.optionC_option_text);
+            markerC = itemView.findViewById(R.id.optionC_placeHolder);
+            pollCYes = itemView.findViewById(R.id.optionC_result_success);
+            pollCNo = itemView.findViewById(R.id.optionC_result_failure);
+            pollCResult = itemView.findViewById(R.id.poll_results_optionC);
             pollLinearLayout = itemView.findViewById(R.id.pollFormat);
 
             //new ui
@@ -1192,6 +1200,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("createPoll"))
                     {
                         pollOptionsSelect(recentsItemFormats.get(getAdapterPosition()).getKey());
+                        System.out.print(recentsItemFormats.get(getAdapterPosition()).getKey());
                     }
                     else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
                           try{
@@ -1289,6 +1298,23 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         intent.putExtra("tab", recentsItemFormats.get(getAdapterPosition()).getId());
                         intent.putExtra("name", recentsItemFormats.get(getAdapterPosition()).getName());
                         intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(recentsItemFormats.get(getAdapterPosition()).getKey()).toString());
+                        context.startActivity(intent);
+                    }else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Message")){
+                        CounterItemFormat counterItemFormat = new CounterItemFormat();
+                        HashMap<String, String> meta= new HashMap<>();
+                        counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                        counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADDED_STATUS);
+                        counterItemFormat.setTimestamp(System.currentTimeMillis());
+                        meta.put("type","fromRecentsRV");
+                        meta.put("catID",recentsItemFormats.get(getAdapterPosition()).getId());
+                        meta.put("channelID",recentsItemFormats.get(getAdapterPosition()).getKey());
+                        counterItemFormat.setMeta(meta);
+                        CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                        counterPush.pushValues();
+
+                        Intent intent = new Intent(context, OpenStatus.class);
+                        intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
+                        System.out.println(recentsItemFormats.get(getAdapterPosition()).getKey());
                         context.startActivity(intent);
                     }
                 }
@@ -1486,7 +1512,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }else{
                         statusLikeFlag = true;
                         likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
-                        likeIcon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+                        likeIcon.setColorFilter(context.getResources().getColor(R.color.deepPurple500));
                         if(likeText.getText().toString().equals("")){
                             likeText.setText("1");
                         }else {
@@ -1510,11 +1536,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             likeText.setText(String.valueOf(dataSnapshot.getChildrenCount()));
                         else
                             likeText.setText("");
-                        likeText.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                        likeText.setTextColor(context.getResources().getColor(R.color.black));
                         likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
-                        likeIcon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
-                        statusLikeFlag = true;
-                    } else {
+                        likeIcon.setColorFilter(context.getResources().getColor(R.color.deepPurple500));
+                        statusLikeFlag=true;
+                    }else {
+
 //                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
                         if (dataSnapshot.getChildrenCount() > 0)
                             likeText.setText(String.valueOf(dataSnapshot.getChildrenCount()));
@@ -1610,11 +1637,157 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            eventNumLit.setTypeface(customfont);
         }
 
+        public void setPollResultsVisible(String key){
+
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home").child(key);
+            ref.child("options").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int optionACount = Integer.parseInt(dataSnapshot.child("optionACount").getValue().toString());
+                    int optionBCount = Integer.parseInt(dataSnapshot.child("optionBCount").getValue().toString());
+                    int optionCCount = Integer.parseInt(dataSnapshot.child("optionCCount").getValue().toString());
+
+                    int sum = optionACount + optionBCount + optionCCount;
+
+
+                    float optionAFraction = 1;
+                    float optionBFraction = 1;
+                    float optionCFraction = 1;
+
+                    optionAFraction = (float) optionACount / sum;
+                    optionBFraction = (float) optionBCount / sum;
+                    optionCFraction = (float) optionCCount / sum;
+
+                    LinearLayout.LayoutParams paramsAYes = (LinearLayout.LayoutParams) pollAYes.getLayoutParams();
+                    LinearLayout.LayoutParams paramsBYes = (LinearLayout.LayoutParams) pollBYes.getLayoutParams();
+                    LinearLayout.LayoutParams paramsCYes = (LinearLayout.LayoutParams) pollCYes.getLayoutParams();
+                    LinearLayout.LayoutParams paramsANo = (LinearLayout.LayoutParams) pollANo.getLayoutParams();
+                    LinearLayout.LayoutParams paramsBNo = (LinearLayout.LayoutParams) pollBNo.getLayoutParams();
+                    LinearLayout.LayoutParams paramsCNo = (LinearLayout.LayoutParams) pollCNo.getLayoutParams();
+
+                    paramsAYes.weight = (float) optionAFraction;
+                    paramsBYes.weight = (float) optionBFraction;
+                    paramsCYes.weight = (float) optionCFraction;
+                    paramsANo.weight = (float) 1 - optionAFraction;
+                    paramsBNo.weight = (float) 1 - optionBFraction;
+                    paramsCNo.weight = (float) 1 - optionCFraction;
+
+                    pollAYes.setLayoutParams(paramsAYes);
+                    pollBYes.setLayoutParams(paramsBYes);
+                    pollCYes.setLayoutParams(paramsCYes);
+                    pollANo.setLayoutParams(paramsANo);
+                    pollBNo.setLayoutParams(paramsBNo);
+                    pollCNo.setLayoutParams(paramsCNo);
+
+                    pollOptionA.setTextColor(context.getResources().getColor(R.color.white));
+                    pollOptionB.setTextColor(context.getResources().getColor(R.color.white));
+                    pollOptionC.setTextColor(context.getResources().getColor(R.color.white));
+                    markerA.setTextColor(context.getResources().getColor(R.color.white));
+                    markerB.setTextColor(context.getResources().getColor(R.color.white));
+                    markerC.setTextColor(context.getResources().getColor(R.color.white));
+
+                    //set background
+                    if (optionACount == 0){
+                        pollANo.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_light));
+                    }else{
+                        pollANo.setBackground(context.getResources().getDrawable(R.drawable.right_rounded_corner_purple_border));
+                    }
+
+                    if (optionBCount == 0){
+                        pollBNo.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_light));
+                    }else{
+                        pollBNo.setBackground(context.getResources().getDrawable(R.drawable.right_rounded_corner_purple_border));
+                    }
+
+                    if (optionCCount == 0){
+                        pollCNo.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_light));
+                    }else{
+                        pollCNo.setBackground(context.getResources().getDrawable(R.drawable.right_rounded_corner_purple_border));
+                    }
+
+                    if (optionACount != 0 && optionBCount == 0 && optionCCount == 0){
+                        pollAYes.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_dark));
+                    }else{
+                        pollAYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
+                    }
+
+                    if (optionBCount != 0 && optionACount == 0 && optionCCount == 0){
+                        pollBYes.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_dark));
+                    }else{
+                        pollBYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
+                    }
+
+                    if (optionCCount != 0 && optionBCount == 0 && optionACount == 0){
+                        pollCYes.setBackground(context.getResources().getDrawable(R.drawable.rounded_corner_purple_dark));
+                    }else{
+                        pollCYes.setBackground(context.getResources().getDrawable(R.drawable.left_rounded_corner_full_purple_border));
+                    }
+
+                    //make highest option bold
+                    if (optionACount > optionBCount && optionACount > optionCCount){
+                        pollOptionA.setTypeface(null, BOLD);
+                        pollOptionB.setTypeface(null, Typeface.NORMAL);
+                        pollOptionC.setTypeface(null, Typeface.NORMAL);
+                    } else if (optionBCount > optionACount && optionBCount > optionCCount){
+                        pollOptionB.setTypeface(null, BOLD);
+                        pollOptionA.setTypeface(null, Typeface.NORMAL);
+                        pollOptionC.setTypeface(null, Typeface.NORMAL);
+                    } else if (optionCCount > optionACount && optionCCount > optionBCount){
+                        pollOptionC.setTypeface(null, BOLD);
+                        pollOptionB.setTypeface(null, Typeface.NORMAL);
+                        pollOptionA.setTypeface(null, Typeface.NORMAL);
+                    }
+
+                    if(optionACount == optionBCount && optionACount > optionCCount){
+                        pollOptionA.setTypeface(null, BOLD);
+                        pollOptionB.setTypeface(null, BOLD);
+                        pollOptionC.setTypeface(null, Typeface.NORMAL);
+                    }
+
+                    if(optionCCount == optionBCount && optionCCount > optionACount){
+                        pollOptionC.setTypeface(null, BOLD);
+                        pollOptionB.setTypeface(null, BOLD);
+                        pollOptionA.setTypeface(null, Typeface.NORMAL);
+                    }
+
+                    if(optionACount == optionCCount && optionACount > optionBCount){
+                        pollOptionA.setTypeface(null, BOLD);
+                        pollOptionC.setTypeface(null, BOLD);
+                        pollOptionB.setTypeface(null, Typeface.NORMAL);
+                    }
+
+                    if (optionACount == optionBCount && optionACount == optionCCount){
+                        pollOptionA.setTypeface(null, BOLD);
+                        pollOptionB.setTypeface(null, BOLD);
+                        pollOptionC.setTypeface(null, BOLD);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+
+            pollAYes.setVisibility(View.VISIBLE);
+            pollANo.setVisibility(View.VISIBLE);
+            pollBYes.setVisibility(View.VISIBLE);
+            pollBNo.setVisibility(View.VISIBLE);
+            pollCYes.setVisibility(View.VISIBLE);
+            pollCNo.setVisibility(View.VISIBLE);
+            pollAResult.setVisibility(View.VISIBLE);
+            pollBResult.setVisibility(View.VISIBLE);
+            pollCResult.setVisibility(View.VISIBLE);
+
+        }
+
         public void pollOptionsSelect(String key) {
 
             final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + key);
 
-            pollOptionA.setOnClickListener(new View.OnClickListener() {
+            optionALayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -1626,6 +1799,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                                 {
                                     Log.e("Create Poll","User has already selected an option");
+                                    Toast.makeText(context, "You have already voted", Toast.LENGTH_SHORT).show();
                                 }
                                 else
                                 {
@@ -1634,7 +1808,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                     reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
                                     reference.child("options").child("optionACount").setValue(count);
-                                    pollOptionA.setTextColor(Color.RED);
+                                    String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
+                                    setPollResultsVisible(key);
                                 }
                             }
                             else {
@@ -1643,7 +1818,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
                                 reference.child("options").child("optionACount").setValue(count);
-                                pollOptionA.setTextColor(Color.RED);
+                                String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
+                                setPollResultsVisible(key);
+
+
                             }
                         }
 
@@ -1655,7 +1833,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
 
-            pollOptionB.setOnClickListener(new View.OnClickListener() {
+            optionBLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -1667,6 +1845,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                                 {
                                     Log.e("Create Poll","User has already selected an option");
+                                    Toast.makeText(context, "You have already voted", Toast.LENGTH_SHORT).show();
                                 }
                                 else
                                 {
@@ -1675,7 +1854,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                     reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
                                     reference.child("options").child("optionBCount").setValue(count);
-                                    pollOptionB.setTextColor(Color.RED);
+                                    String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
+                                    setPollResultsVisible(key);
+
                                 }
                             }
                             else {
@@ -1684,7 +1865,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
                                 reference.child("options").child("optionBCount").setValue(count);
-                                pollOptionB.setTextColor(Color.RED);
+                                String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
+                                setPollResultsVisible(key);
+
                             }
                         }
 
@@ -1696,7 +1879,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             });
 
-            pollOptionC.setOnClickListener(new View.OnClickListener() {
+            optionCLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -1708,6 +1891,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                                 {
                                     Log.e("Create Poll","User has already selected an option");
+                                    Toast.makeText(context, "You have already voted", Toast.LENGTH_SHORT).show();
                                 }
                                 else
                                 {
@@ -1716,7 +1900,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                     reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
                                     reference.child("options").child("optionCCount").setValue(count);
-                                    pollOptionC.setTextColor(Color.RED);
+                                    String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
+                                    setPollResultsVisible(key);
                                 }
                             }
                             else {
@@ -1725,7 +1910,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
                                 reference.child("options").child("optionCCount").setValue(count);
-                                pollOptionC.setTextColor(Color.RED);
+                                String key  = recentsItemFormats.get(getAdapterPosition()).getKey();
+                                setPollResultsVisible(key);
                             }
                         }
 
@@ -1900,7 +2086,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             mOtherFeatures = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("otherFeatures").orderByChild("pos");
             mUserDetails = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
 
             mUserDetails.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -2293,8 +2478,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         }
 
-        public void resetFeaturesUnreadCount(final String featureDBName, DataSnapshot dataSnapshot) {
-            if (dataSnapshot.child("featuresUnreadCount").hasChild(featureDBName) && dataSnapshot.child("featuresUnreadCount").child(featureDBName).getValue(Long.class) >= 0) {
+
+        public void resetFeaturesUnreadCount(final String featureDBName, DataSnapshot dataSnapshot)
+        {
+            if(dataSnapshot.child("featuresUnreadCount").hasChild(featureDBName) && dataSnapshot.child("featuresUnreadCount").child(featureDBName).getValue(Long.class) >= 0)
+            {
+
                 NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(featureDBName);
                 numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                     @Override

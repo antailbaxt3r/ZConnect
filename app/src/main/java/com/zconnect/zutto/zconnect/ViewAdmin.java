@@ -96,6 +96,7 @@ DatabaseReference databaseReference;
                 for(DataSnapshot childsnapshot: dataSnapshot.getChildren()){
                     Log.d((String) childsnapshot.child("Username").getValue(), "onDataChange: ");
                     admname.add((String) childsnapshot.child("Username").getValue());
+
                     adminUID.add((String)childsnapshot.getKey().toString());
                     Log.d("ADMIN UID",adminUID.toString());
 
