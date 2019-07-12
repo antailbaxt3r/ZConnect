@@ -33,12 +33,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/infone2_progress_circle"
-            android:layout_width="wrap_content"
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:backgroundTint="@color/secondaryText2" />
+            android:backgroundTint="@color/secondaryText2"
+            android:id="@+id/shimmer_view_container_infone_cat"
+            app:duration="2000">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+                <include layout="@layout/shimmer_infone_item"/>
+
+
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_cat_infone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            android:visibility="visible"
+            app:backgroundTint="@color/colorHighlight"
+            app:srcCompat="@drawable/ic_add_white_36dp" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cat_infone"

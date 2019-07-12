@@ -11,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import android.widget.LinearLayout;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,6 +24,7 @@ import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 
+import java.util.HashMap;
 public class CreatePoll extends BaseActivity {
     EditText pollQuestion;
     EditText pollOptionA;
@@ -40,6 +43,12 @@ public class CreatePoll extends BaseActivity {
         setContentView(R.layout.activity_create_poll);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         progressDialog = new ProgressDialog(this);
         setActionBarTitle("Create a Poll");
@@ -84,17 +93,35 @@ public class CreatePoll extends BaseActivity {
                 }
                 else
                 {
-                    progressDialog.setMessage("Posting Status..");
+                    progressDialog.setMessage("Posting Poll...");
                     progressDialog.show();
 
                     final DatabaseReference newPoll = home.push();
+
                     final DatabaseReference homePosts = postedByDetails.child("homePosts");
                     final String key = newPoll.getKey();
-
                     homePosts.child(key).setValue(true);
 
-                    newPoll.child("Key").setValue(key);
+                    final HashMap<String, Object> createPollMap = new HashMap<>();
 
+                    createPollMap.put("Key",key);
+                    createPollMap.put("question",pollQuestion.getText().toString().trim());
+                    createPollMap.put("feature","createPoll");
+                    createPollMap.put("recentType",RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
+                    createPollMap.put("PostTimeMillis",System.currentTimeMillis());
+
+                    final HashMap<String, Object> optionsMap = new HashMap<>();
+                    optionsMap.put("optionA",pollOptionA.getText().toString().trim());
+                    optionsMap.put("optionACount",0);
+                    optionsMap.put("optionB",pollOptionB.getText().toString().trim());
+                    optionsMap.put("optionBCount",0);
+                    optionsMap.put("optionC",pollOptionC.getText().toString().trim());
+                    optionsMap.put("optionCCount",0);
+
+                    createPollMap.put("options",optionsMap);
+                    createPollMap.put("totalCount",0);
+
+                    /*newPoll.child("Key").setValue(key);
                     newPoll.child("Question").setValue(pollQuestion.getText().toString().trim());
                     newPoll.child("Options").child("OptionA").setValue(pollOptionA.getText().toString().trim());
                     newPoll.child("Options").child("OptionB").setValue(pollOptionB.getText().toString().trim());
@@ -102,15 +129,26 @@ public class CreatePoll extends BaseActivity {
 
                     newPoll.child("feature").setValue("CreatePoll");
                     newPoll.child("recentType").setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
-                    newPoll.child("PostTimeMillis").setValue(System.currentTimeMillis());
+                    newPoll.child("PostTimeMillis").setValue(System.currentTimeMillis());*/
 
                     postedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
-                            newPoll.child("PostedBy").child("Username").setValue(user.getUsername());
+
+
+                            final HashMap<String, Object> postedByDetails = new HashMap<>();
+                            postedByDetails.put("Username",user.getUsername());
+                            postedByDetails.put("UID",user.getUserUID());
+                            postedByDetails.put("ImageThumb",user.getImageURLThumbnail());
+
+                            createPollMap.put("PostedBy",postedByDetails);
+
+                            newPoll.setValue(createPollMap);
+
+                            /*newPoll.child("PostedBy").child("Username").setValue(user.getUsername());
                             newPoll.child("PostedBy").child("UID").setValue(user.getUserUID());
-                            newPoll.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());
+                            newPoll.child("PostedBy").child("ImageThumb").setValue(user.getImageURLThumbnail());*/
                         }
 
                         @Override

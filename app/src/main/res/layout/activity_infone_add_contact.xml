@@ -15,6 +15,7 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_app_bar_home"
             android:layout_width="match_parent"
+            app:titleTextColor="@color/black"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
@@ -50,6 +51,12 @@
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="@color/primaryText" />
+
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/name_et_infone_add"
             android:layout_width="match_parent"
@@ -58,17 +65,29 @@
             android:inputType="text"
             app:met_textColor="@color/primaryText"
             app:met_textColorHint="@color/secondaryText"
-            android:layout_marginTop="10dp"/>
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textColor="@color/primaryText" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/desc_et_infone_add"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Description, designation, profession etc."
             android:inputType="text"
             app:met_textColor="@color/primaryText"
             app:met_textColorHint="@color/secondaryText"
-            android:layout_marginTop="10dp"/>
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone Number"
+            android:textColor="@color/primaryText" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/phone_et_infone_add"
@@ -79,7 +98,13 @@
             android:maxLength="12"
             app:met_textColor="@color/primaryText"
             app:met_textColorHint="@color/secondaryText"
-            android:layout_marginTop="10dp"/>
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Whatsapp Number"
+            android:textColor="@color/primaryText" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/phone2_et_infone_add"
@@ -90,7 +115,7 @@
             android:maxLength="12"
             app:met_textColor="@color/primaryText"
             app:met_textColorHint="@color/secondaryText"
-            android:layout_marginTop="10dp"/>
+            />
 
         <Button
             android:id="@+id/btn_save_infone_add"

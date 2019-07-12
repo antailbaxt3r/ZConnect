@@ -91,7 +91,7 @@ public class ExploreForumsActivity extends BaseActivity{
         setContentView(R.layout.activity_infone);
 
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
 
 

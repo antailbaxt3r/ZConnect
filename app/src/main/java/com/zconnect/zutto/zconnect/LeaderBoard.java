@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +48,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
+
 public class LeaderBoard extends BaseActivity {
 
     private RecyclerView leaderBoardRV;
@@ -61,7 +64,7 @@ public class LeaderBoard extends BaseActivity {
 
     private TextView currentUserName,currentUserPoints,currentUserRank;
     private SimpleDraweeView currentUserImage;
-    private ProgressBar progressBar;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private LinearLayout leaderBoardContent;
     private String lastUserUID;
     private int lastUserPointsNum;
@@ -71,8 +74,15 @@ public class LeaderBoard extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader_board);
 
-        Toolbar mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mActionBarToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mActionBarToolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        mActionBarToolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        mActionBarToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+
+        mActionBarToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         mActionBarToolbar.setTitle("Leader Board");
 
@@ -95,11 +105,11 @@ public class LeaderBoard extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
 
-        progressBar = findViewById(R.id.progress_bar);
+        shimmerFrameLayout = findViewById(R.id.shimmer_view_container_leaderboard);
         leaderBoardContent = findViewById(R.id.leader_board_content);
 
         leaderBoardContent.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
 
         currentUserName = findViewById(R.id.current_user_name);
         currentUserPoints = findViewById(R.id.current_user_points);
@@ -164,7 +174,8 @@ public class LeaderBoard extends BaseActivity {
                 }
 
                 leaderBoardContent.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
+                shimmerFrameLayout.stopShimmerAnimation();
                 leaderBoardRVAdapter.notifyDataSetChanged();
                 if(lastUserUID!=null)
                     leaderBoardRVAdapter.setLoaded();

@@ -40,6 +40,7 @@ public class InfoneContactsRVViewHolder extends RecyclerView.ViewHolder {
     public MaterialEditText dialogRequestCallNameEt;
     public SimpleDraweeView dialogRequestCallProfileImg;
     public ImageButton whatsAppImageBtn;
+    public ImageView checked;
 
 
     public InfoneContactsRVViewHolder(View itemView) {
@@ -69,5 +70,6 @@ public class InfoneContactsRVViewHolder extends RecyclerView.ViewHolder {
         dialogRequestCallNameEt = requestCallDialog.findViewById(R.id.et_name_infone_profile);
         dialogRequestCallProfileImg = requestCallDialog.findViewById(R.id.image_profile_infone);
         whatsAppImageBtn = itemView.findViewById(R.id.image_btn_whatsapp_infone_contacts) ;
+        checked = itemView.findViewById(R.id.item_checked);
     }
 }

@@ -3,6 +3,8 @@ package com.zconnect.zutto.zconnect;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +17,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -50,6 +54,13 @@ public class MakeAdmin extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_admin);
         toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_make_admin);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -81,8 +92,6 @@ for (DataSnapshot childsnap:dataSnapshot.getChildren()){
         name.add(String.valueOf(childsnap.child("username").getValue()));
         if (!("").equals(childsnap.child("imageURL").getValue())) {
             image.add(String.valueOf(childsnap.child("imageURL").getValue()));
-        } else {
-            image.add("https://lh6.googleusercontent.com/-idc9bXb9n-Q/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DVg6FhNzc1jkN4eBCa6ESbBPmpl5g/s96-c/photo.jpg");
         }
         uid.add(String.valueOf(childsnap.child("userUID").getValue()));
     }
@@ -133,6 +142,11 @@ for (DataSnapshot childsnap:dataSnapshot.getChildren()){
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+        EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        ImageView searchClose = (ImageView) searchView.findViewById (android.support.v7.appcompat.R.id.search_close_btn);
+        searchClose.setColorFilter (Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+        searchEditText.setTextColor(getResources().getColor(R.color.black));
+        searchEditText.setHintTextColor(getResources().getColor(R.color.secondaryText));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

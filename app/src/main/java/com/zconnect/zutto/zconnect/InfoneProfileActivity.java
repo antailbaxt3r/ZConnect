@@ -63,6 +63,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
+import static com.zconnect.zutto.zconnect.R.drawable.ic_arrow_back_black_24dp;
 
 public class InfoneProfileActivity extends BaseActivity {
 
@@ -146,6 +149,10 @@ public class InfoneProfileActivity extends BaseActivity {
     RelativeLayout personalChat;
     private String infoneUserUID;
 
+
+    UserItemFormat infoneUserDetails = new UserItemFormat();
+
+
     private final String TAG = getClass().getSimpleName();
     private String name, desc, mobileNumber;
     LinearLayout linearLayout;
@@ -157,6 +164,12 @@ public class InfoneProfileActivity extends BaseActivity {
         setContentView(R.layout.activity_infone_profile);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+        
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -206,6 +219,10 @@ public class InfoneProfileActivity extends BaseActivity {
 //        saveEditBtn.setVisibility(View.GONE);
 
         infoneUserId = getIntent().getExtras().getString("infoneUserId");
+        infoneUserDetails.setUserUID(infoneUserId);
+//        Log.d("infoneUserImageThumb",getIntent().getExtras().getString("infoneUserImageThumb"));
+        infoneUserDetails.setImageURL(getIntent().getExtras().getString("infoneUserImageThumb"));
+
         catID = getIntent().getExtras().getString("catID");
         Log.e(InfoneProfileActivity.class.getName(), "data :" + infoneUserId);
 
@@ -377,6 +394,7 @@ public class InfoneProfileActivity extends BaseActivity {
 //                    validrl.setVisibility(View.INVISIBLE);
 //                }
                 String imageThumb = dataSnapshot.child("thumbnail").getValue(String.class);
+                infoneUserDetails.setImageURLThumbnail(imageThumb);
                 String imageUrl = dataSnapshot.child("imageurl").getValue(String.class);
                 validLabel.setText(dataSnapshot.child("validCount").getValue().toString() + " validations");
 
@@ -411,6 +429,7 @@ public class InfoneProfileActivity extends BaseActivity {
 
 
                 userType = dataSnapshot.child("type").getValue(String.class);
+                infoneUserDetails.setUserType(userType);
                 verfiedDate = dataSnapshot.child("verifiedDate").getValue().toString();
                 TimeUtilities ta = new TimeUtilities(Long.parseLong(verfiedDate), System.currentTimeMillis());
                 verifiedDateTextView.setText(ta.calculateTimeAgo());
@@ -447,7 +466,7 @@ public class InfoneProfileActivity extends BaseActivity {
 
                             Intent i = new Intent(InfoneProfileActivity.this, OpenUserDetail.class);
                             i.putExtra("Uid", dataSnapshot.child("UID").getValue().toString());
-                            Log.d("AAKKHHIILL", dataSnapshot.child("UID").getValue().toString());
+//                            Log.d("AAKKHHIILL", dataSnapshot.child("UID").getValue().toString());
                             startActivity(i);
                         }
                     });
@@ -625,8 +644,8 @@ public class InfoneProfileActivity extends BaseActivity {
         final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
         final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats");
         final DatabaseReference newPush = databaseReferenceCategories.push();
-        final DatabaseReference databaseReferenceUserForums = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums");
-        newPush.child("name").setValue("null");
+//        final DatabaseReference databaseReferenceUserForums = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums");
+        newPush.child("name").setValue(false);
         Long postTimeMillis = System.currentTimeMillis();
         newPush.child("PostTimeMillis").setValue(postTimeMillis);
         newPush.child("UID").setValue(newPush.getKey());
@@ -634,31 +653,34 @@ public class InfoneProfileActivity extends BaseActivity {
         newPush.child("Chat");
         final UserItemFormat[] user = {null};
 
-        databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
 
-                UsersListItemFormat userDetails = new UsersListItemFormat();
+//        databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
+//
+//                UsersListItemFormat userDetails = new UsersListItemFormat();
+//
+//                userDetails.setImageThumb(userItem.getImageURLThumbnail());
+//                userDetails.setName(userItem.getUsername());
+//                userDetails.setPhonenumber(userItem.getMobileNumber());
+//                userDetails.setUserUID(userItem.getUserUID());
+//                userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
+////                databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("image").setValue(userItem.getImageURLThumbnail());
+////                databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("imageThumb").setValue(userItem.getImageURLThumbnail());
+//
+//                user[0] = dataSnapshot.getValue(UserItemFormat.class);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
-                userDetails.setImageThumb(userItem.getImageURLThumbnail());
-                userDetails.setName(userItem.getUsername());
-                userDetails.setPhonenumber(userItem.getMobileNumber());
-                userDetails.setUserUID(userItem.getUserUID());
-                userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
-                databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("image").setValue(userItem.getImageURLThumbnail());
-                databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("imageThumb").setValue(userItem.getImageURLThumbnail());
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(uid).setValue(infoneUserDetails);
 
-                user[0] = dataSnapshot.getValue(UserItemFormat.class);
-                databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(userItem.getUserUID()).setValue(userDetails);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         databaseReferenceInfoneUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -666,15 +688,22 @@ public class InfoneProfileActivity extends BaseActivity {
                 UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
 
                 UsersListItemFormat userDetails = new UsersListItemFormat();
-
                 userDetails.setImageThumb(userItem.getImageURLThumbnail());
-
                 userDetails.setName(userItem.getUsername());
                 userDetails.setPhonenumber(userItem.getMobileNumber());
                 userDetails.setUserUID(userItem.getUserUID());
-                userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
 
-                databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(userItem.getUserUID()).setValue(userDetails);
+                HashMap<String,UsersListItemFormat> userList = new HashMap<String,UsersListItemFormat>();
+                userList.put(infoneUserUID,userDetails);
+                Log.d("USEROBJECT",UserUtilities.currentUser.toString());
+                UsersListItemFormat currentUser = new UsersListItemFormat();
+                currentUser.setImageThumb(UserUtilities.currentUser.getImageURLThumbnail());
+                currentUser.setName(UserUtilities.currentUser.getUsername());
+                currentUser.setPhonenumber(UserUtilities.currentUser.getMobileNumber());
+                currentUser.setUserUID(UserUtilities.currentUser.getUserUID());
+                currentUser.setUserType(UserUtilities.currentUser.getUserType());
+                userList.put(uid,currentUser);
+                databaseReferenceTabsCategories.child(newPush.getKey()).child("users").setValue(userList);
 //                databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("image").setValue(userItem.getImageURL());
 
 
@@ -686,33 +715,41 @@ public class InfoneProfileActivity extends BaseActivity {
 
             }
         });
+        //TODO HANDLE NO USER IMAGE
+//        databaseReferenceTabsCategories.child(newPush.getKey()).child("users").child(infoneUserUID).setValue(UserUtilities.currentUser);
+        HashMap<String,UserItemFormat> userList = new HashMap<String,UserItemFormat>();
+        userList.put(infoneUserUID,infoneUserDetails);
+        Log.d("USEROBJECT",UserUtilities.currentUser.toString());
+        userList.put(uid,UserUtilities.currentUser);
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("users").setValue(userList);
 
 
+
+        //updating value in userchats in users1
         databaseReferenceUser.child("userChats").child(infoneUserUID).setValue(newPush.getKey());
         databaseReferenceInfoneUser.child("userChats").child(uid).setValue(newPush.getKey());
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue("null");
+
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(false);
         databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
         databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue("personalChats");
         databaseReferenceTabsCategories.child(newPush.getKey()).child("lastMessage").setValue("Null");
 
-        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("personalChatTitle").setValue(name);
-        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
-        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("tabUID").setValue("personalChats");
-        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("lastMessage").setValue("Null");
-        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("image").setValue(mImageUri);
-        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("imageThumb").setValue(mImageUri);
+//        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("personalChatTitle").setValue(name);
+//        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+//        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("tabUID").setValue("personalChats");
+//        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("lastMessage").setValue("Null");
+//        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("image").setValue(mImageUri);
+//        databaseReferenceUserForums.child(uid).child("joinedForums").child(newPush.getKey()).child("imageThumb").setValue(mImageUri);
+//
+//
+//        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("personalChatTitle").setValue(mAuth.getCurrentUser().getDisplayName());
+//        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+//        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("tabUID").setValue("personalChats");
+//        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("lastMessage").setValue("Null");
+//        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("image").setValue(userImageURL);
+//        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("imageThumb").setValue(userImageURL);
 
 
-        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("personalChatTitle").setValue(mAuth.getCurrentUser().getDisplayName());
-        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
-        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("tabUID").setValue("personalChats");
-        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("lastMessage").setValue("Null");
-        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("image").setValue(userImageURL);
-        databaseReferenceUserForums.child(infoneUserUID).child("joinedForums").child(newPush.getKey()).child("imageThumb").setValue(userImageURL);
-
-        while (user[0] != null){
-
-        }
 
         return newPush.getKey();
 

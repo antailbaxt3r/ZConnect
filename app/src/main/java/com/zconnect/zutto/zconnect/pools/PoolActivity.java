@@ -41,6 +41,8 @@ public class PoolActivity extends BaseActivity {
         //TODO  set proper commmunityID from preference
 
         setToolbar();
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         attachID();
 
 

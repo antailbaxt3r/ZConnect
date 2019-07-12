@@ -17,6 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+
+            app:collapseIcon="@drawable/ic_arrow_back_black_24dp"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
@@ -25,17 +27,21 @@
         android:layout_below="@id/appbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        android:id="@+id/scrollView_poll"
+        >
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:elevation="3dp"
+            android:layout_margin="@dimen/padding_10"
             app:cardCornerRadius="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:padding="10dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -60,7 +66,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -102,13 +109,36 @@
                         android:hint="Option C"
                         android:id="@+id/poll_add_optionC"/>
                 </LinearLayout>
-                <Button
-                    android:layout_width="wrap_content"
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Create Poll"
-                    android:id="@+id/createPollButton"/>
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/createPollButton"
+                        android:layout_gravity="center"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:background="@drawable/round_button_primary"
+                        android:text="Create Poll"
+                        style="?android:attr/borderlessButtonStyle"/>
+
+                </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
+
     </ScrollView>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/scrollView_poll"
+        android:src="@drawable/ic_outline_poll_24px"
+        android:tint="@color/deeppurple700"/>
+
 
 </RelativeLayout>

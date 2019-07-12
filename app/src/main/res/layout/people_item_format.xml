@@ -18,20 +18,20 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
             <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/cab_people_avatarCircle"
-                android:layout_width="wrap_content"
+                android:layout_width="36dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:background="@drawable/avatar_circle"
                 fresco:actualImageScaleType="centerCrop"
                 fresco:roundAsCircle="true" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
 
         <LinearLayout

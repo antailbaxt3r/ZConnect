@@ -26,7 +26,7 @@
             <ImageButton
                 android:id="@+id/delete_location"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_close_black_24dp"
+                android:src="@drawable/ic_delete_black_24dp"
                 android:background="@color/transparent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

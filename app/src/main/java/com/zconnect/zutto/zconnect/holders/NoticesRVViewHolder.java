@@ -47,6 +47,7 @@ public class NoticesRVViewHolder extends RecyclerView.ViewHolder {
     private SimpleDraweeView image;
     private ImageButton deleteButton;
     private TextView expiryDateTV;
+
     private FrameLayout expiryDateFL;
     View mView;
 

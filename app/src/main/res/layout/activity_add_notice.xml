@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/addNoticeLayout"
     tools:context=".addActivities.AddNotices">
 
     <android.support.design.widget.AppBarLayout
@@ -40,8 +41,15 @@
                 android:maxHeight="300dp"
                 android:background="@drawable/dashed_border"
                 android:contentDescription="Product image"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 android:layout_margin="7dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Notice Title"
+                android:layout_below="@id/dateAndTime"
+                android:textColor="@color/primaryText" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/name"
@@ -56,6 +64,14 @@
                 android:padding="5dp"
                 android:layout_marginLeft="7dp"
                 android:layout_marginRight="7dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Expiry Date (Optional)"
+                android:layout_below="@id/dateAndTime"
+                android:textColor="@color/primaryText" />
 
             <LinearLayout
                 android:id="@+id/expiryDateLayout"

@@ -7,8 +7,8 @@
 
     <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
         android:id="@+id/image_infone_contacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:background="@drawable/avatar_circle"
         fresco:actualImageScaleType="centerCrop"
         fresco:roundAsCircle="true"/>
@@ -52,7 +52,8 @@
             android:id="@+id/tv_desc_infone_contacts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/primaryText"
+            android:textSize="12sp"
+            android:textColor="@color/secondaryText2"
             android:ellipsize="end"
             android:maxLines="1"/>
         <TextView
@@ -64,15 +65,26 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/item_checked"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:visibility="gone"
+        android:tint="@color/colorPrimary"
+        android:src="@drawable/baseline_check_24"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="@dimen/border_radius_5dp"
+        android:layout_marginBottom="5dp"/>
+
     <ImageButton
         android:layout_marginTop="5dp"
         android:layout_marginEnd="@dimen/border_radius_5dp"
         android:layout_marginBottom="5dp"
         android:layout_width="0dp"
+        android:id="@+id/image_btn_whatsapp_infone_contacts"
         android:layout_height="match_parent"
         android:layout_weight="0.1"
-        android:background="@drawable/whatsapp_64px"
-        android:id="@+id/image_btn_whatsapp_infone_contacts"/>
+        android:background="@drawable/whatsapp_64px"/>
 
     <ImageButton
         android:id="@+id/image_btn_call_infone_contacts"
