@@ -9,16 +9,17 @@ public class InAppNotificationsItemFormat {
     private String title;
     private String desc;
     private long PostTimeMillis;
-    private boolean seen;
+    private HashMap<String,Boolean> seen;
     private String type;
     private HashMap<String, Object> metadata;
     private String key;
     private UserItemFormat notifiedBy;
+    private String scope;
     public InAppNotificationsItemFormat()
     {}
 
 
-    public InAppNotificationsItemFormat(String title, String desc, long PostTimeMillis, String type,UserItemFormat notifiedBy, boolean seen, HashMap<String, Object> metadata, String key) {
+    public InAppNotificationsItemFormat(String title, String desc, long PostTimeMillis, String type,UserItemFormat notifiedBy, String scope,HashMap<String,Boolean> seen, HashMap<String, Object> metadata, String key) {
         this.title = title;
         this.desc = desc;
         this.PostTimeMillis = PostTimeMillis;
@@ -27,15 +28,7 @@ public class InAppNotificationsItemFormat {
         this.metadata = metadata;
         this.key = key;
         this.notifiedBy=notifiedBy;
-    }
-    public UserItemFormat getNotifiedby(){return notifiedBy;}
-    public void setNotifiedby(UserItemFormat notificationItemFormat){notificationItemFormat=notifiedBy;}
-    public long getPostTimeMillis() {
-        return PostTimeMillis;
-    }
-
-    public void setPostTimeMillis(long postTimeMillis) {
-        PostTimeMillis = postTimeMillis;
+        this.scope=scope;
     }
 
     public String getTitle() {
@@ -54,11 +47,19 @@ public class InAppNotificationsItemFormat {
         this.desc = desc;
     }
 
-    public boolean isSeen() {
+    public long getPostTimeMillis() {
+        return PostTimeMillis;
+    }
+
+    public void setPostTimeMillis(long postTimeMillis) {
+        PostTimeMillis = postTimeMillis;
+    }
+
+    public HashMap<String, Boolean> isSeen() {
         return seen;
     }
 
-    public void setSeen(boolean seen) {
+    public void setSeen(HashMap<String, Boolean> seen) {
         this.seen = seen;
     }
 
@@ -86,4 +87,19 @@ public class InAppNotificationsItemFormat {
         this.key = key;
     }
 
+    public UserItemFormat getNotifiedBy() {
+        return notifiedBy;
+    }
+
+    public void setNotifiedBy(UserItemFormat notifiedBy) {
+        this.notifiedBy = notifiedBy;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
 }

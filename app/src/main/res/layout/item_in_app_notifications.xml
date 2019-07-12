@@ -57,16 +57,18 @@
                 android:paddingBottom="10dp"
                 android:text="TextView"
                 android:textColor="#E2404040"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView" />
 
             <View
                 android:id="@+id/divider2"
                 android:layout_width="0dp"
-                android:layout_height="1dp"
+                android:layout_height="3dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="8dp"
-                android:background="#353434"
+                android:background="@color/secondaryText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_notification_timeago" />
@@ -94,6 +96,8 @@
                 app:layout_constraintEnd_toEndOf="@+id/divider2"
                 app:layout_constraintTop_toBottomOf="@+id/tv_notification_desc"
                 app:srcCompat="@drawable/circle_notification" />
+
+
         </android.support.constraint.ConstraintLayout>
     </LinearLayout>
 

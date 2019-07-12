@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,7 +47,10 @@ public class InAppNotificationsFragment extends Fragment {
     private DatabaseReference notificationsReference;
     private DatabaseReference globalReference;
     private ValueEventListener listener;
-    ArrayList<InAppNotificationsItemFormat> notificationsList;
+    private TextView noNotif;
+    ArrayList<InAppNotificationsItemFormat> usernotificationsList;
+    ArrayList<InAppNotificationsItemFormat> globalnotificationsList;
+    ArrayList<InAppNotificationsItemFormat> totalnotificationsList;
     private InAppNotificationsAdapter inAppNotificationsAdapter;
 
     public InAppNotificationsFragment() {
@@ -65,7 +69,7 @@ public class InAppNotificationsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_notifications,container,false);
         notifRecyclerView = (RecyclerView) view.findViewById(R.id.rv_notifications_fragment);
         progressBar = (ProgressBar) view.findViewById(R.id.fragment_notifications_progress_circle);
-
+        noNotif = view.findViewById(R.id.noNotif);
         progressBar.setVisibility(View.VISIBLE);
 
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
@@ -74,14 +78,15 @@ public class InAppNotificationsFragment extends Fragment {
         globalReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityRef);
         notifRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
-        notificationsList = new ArrayList<>();
-
+        totalnotificationsList = new ArrayList<>();
+        usernotificationsList = new ArrayList<>();
+        globalnotificationsList = new ArrayList<>();
         //Test Notification. Uncomment for testing
         //GlobalFunctions.pushNotifications("Test", "This is a test", false, 1, new HashMap<String, String>());
+            Log.d("outside", "onDataChange: ");
+            inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, totalnotificationsList);
+            notifRecyclerView.setAdapter(inAppNotificationsAdapter);
 
-        Log.d("outside", "onDataChange: ");
-        inAppNotificationsAdapter = new InAppNotificationsAdapter(getContext(), communityRef, notificationsList);
-        notifRecyclerView.setAdapter(inAppNotificationsAdapter);
 
         return view;
     }
@@ -90,18 +95,38 @@ public class InAppNotificationsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d("inapresume", "onResume: ");
-        globalReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        if(!UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || !UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+        globalReference.child("globalNotifications").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot childSnapshot : dataSnapshot.child("globalNotifications").getChildren()) {
+                totalnotificationsList.clear();
+                globalnotificationsList.clear();
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     InAppNotificationsItemFormat globalnotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
-                    if(globalnotification!=null)
-                        notificationsList.add(globalnotification);
-
+                    if (globalnotification != null) {
+                        globalnotificationsList.add(globalnotification);
+                    }
                 }
 
-                inAppNotificationsAdapter.notifyDataSetChanged();
+                totalnotificationsList.addAll(globalnotificationsList);
+                totalnotificationsList.addAll(usernotificationsList);
+                Collections.sort(totalnotificationsList, new Comparator<InAppNotificationsItemFormat>() {
+                    @Override
+                    public int compare(InAppNotificationsItemFormat o1, InAppNotificationsItemFormat o2) {
+                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
+                    }
+                });
+                progressBar.setVisibility(View.GONE);
+                notifRecyclerView.setVisibility(View.VISIBLE);
+                if(!totalnotificationsList.isEmpty()) {
+                    noNotif.setVisibility(View.GONE);
+                    notifRecyclerView.setVisibility(View.VISIBLE);
+                    inAppNotificationsAdapter.notifyDataSetChanged();
 
+                } else {
+                    noNotif.setVisibility(View.VISIBLE);
+                    notifRecyclerView.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -109,15 +134,20 @@ public class InAppNotificationsFragment extends Fragment {
 
             }
         });
-        if(UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || UserUtilities.currentUser.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
-            globalReference.addListenerForSingleValueEvent(new ValueEventListener() {
+    }
+            globalReference.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot childSnapshot : dataSnapshot.child("Users1").child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child("notifications").getChildren()) {
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    totalnotificationsList.clear();
+                    usernotificationsList.clear();
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                         InAppNotificationsItemFormat usernotification = childSnapshot.getValue(InAppNotificationsItemFormat.class);
-                        notificationsList.add(usernotification);
+                        if(usernotification!=null)
+                        usernotificationsList.add(usernotification);
                     }
-                    Collections.sort(notificationsList, new Comparator<InAppNotificationsItemFormat>() {
+                    totalnotificationsList.addAll(globalnotificationsList);
+                    totalnotificationsList.addAll(usernotificationsList);
+                    Collections.sort(totalnotificationsList, new Comparator<InAppNotificationsItemFormat>() {
                         @Override
                         public int compare(InAppNotificationsItemFormat o1, InAppNotificationsItemFormat o2) {
                             return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
@@ -125,7 +155,14 @@ public class InAppNotificationsFragment extends Fragment {
                     });
                     progressBar.setVisibility(View.GONE);
                     notifRecyclerView.setVisibility(View.VISIBLE);
-                    inAppNotificationsAdapter.notifyDataSetChanged();
+                    if(!totalnotificationsList.isEmpty()) {
+                        noNotif.setVisibility(View.GONE);
+                        notifRecyclerView.setVisibility(View.VISIBLE);
+                        inAppNotificationsAdapter.notifyDataSetChanged();
+                    } else {
+                        noNotif.setVisibility(View.VISIBLE);
+                        notifRecyclerView.setVisibility(View.GONE);
+                    }
 
                 }
 
@@ -134,7 +171,7 @@ public class InAppNotificationsFragment extends Fragment {
 
                 }
             });
-        }
+
 
     }
 }

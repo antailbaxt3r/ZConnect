@@ -1,6 +1,7 @@
 package com.zconnect.zutto.zconnect;
 
 import android.Manifest;
+import android.accessibilityservice.GestureDescription;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -547,17 +548,18 @@ public class ChatActivity extends BaseActivity {
 
                 }else if(type.equals("post")){
                     NotificationSender notificationSender = new NotificationSender(ChatActivity.this, userItem.getUserUID());
-
+                    HashMap<String,Object> metadata = new HashMap<>();
                     NotificationItemFormat postChatNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CHAT_POST,userItem.getUserUID());
-
                     postChatNotification.setItemMessage(text);
                     postChatNotification.setItemKey(getIntent().getStringExtra("key"));
-
                     postChatNotification.setUserImage(userItem.getImageURLThumbnail());
                     postChatNotification.setUserName(userItem.getUsername());
                     postChatNotification.setCommunityName(communityTitle);
-
-                    GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"status",null,getIntent().getStringExtra("uid"));
+                    metadata.put("key",getIntent().getStringExtra("key"));
+                    metadata.put("ref",getIntent().getStringExtra("ref"));
+                    metadata.put("type",getIntent().getStringExtra("type"));
+                    metadata.put("uid",getIntent().getStringExtra("uid"));
+                    GlobalFunctions.inAppNotifications("commented on your status","Comment: "+text,userItem,false,"statusComment",metadata,getIntent().getStringExtra("uid"));
                     notificationSender.execute(postChatNotification);
 
                 }else if(type.equals("messages")){

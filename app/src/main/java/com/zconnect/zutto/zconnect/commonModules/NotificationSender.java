@@ -511,7 +511,7 @@ public class NotificationSender extends AsyncTask<NotificationItemFormat,Void,Vo
         userItemFormat.setUsername("");
         userItemFormat.setImageURL("");
         metadata.put("id",eventKey);
-        GlobalFunctions.inAppNotifications("A new event has been added",eventName+" location: "+eventLocation,userItemFormat,true,"eventAdd",metadata,null);
+        GlobalFunctions.inAppNotifications("A new event has been added","Event name: "+eventName+" location: "+eventLocation,userItemFormat,true,"eventAdd",metadata,null);
         compareFrequency(NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD,NotificationIdentifierUtilities.KEY_NOTIFICATION_EVENT_ADD_FREQUENCY_STR);
     }
 
