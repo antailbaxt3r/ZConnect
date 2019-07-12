@@ -8,6 +8,9 @@
     app:cardElevation="0dp"
     app:cardCornerRadius="3dp">
 
+    <!--Currently new_view_admins_item_format is in use.
+     To use this one remove onClick listener from chat-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

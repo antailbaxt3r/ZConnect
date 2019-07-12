@@ -215,6 +215,7 @@
 
     <!--menu related-->
     <string name="edit_forum">Edit Forum</string>
+    <string name="anonymous_forum">Anonymous Forum</string>
 
     <!--referral code related-->
     <string name="referral_code_invite_btn">Invite Friends</string>

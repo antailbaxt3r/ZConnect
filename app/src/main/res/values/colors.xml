@@ -96,6 +96,10 @@
     <color name="deeppurple700">#512da8</color>
     <color name="green200">#a5d6a7</color>
     <color name="green700">#388e3c</color>
+    <color name="title_bar_dark">#2D283A</color>
+    <color name="dark_theme_surface">#121212</color>
+    <color name="dark_theme_chat_layout">#212121</color>
+    <color name="dark_theme_chat_bubble">#424242</color>
 
     <color name="placeholder_bg">#B3AFAF</color>
     <color name="item_name">#0c0c0c</color>

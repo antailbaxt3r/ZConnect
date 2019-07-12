@@ -15,7 +15,7 @@ public class InfoneContactsRVItem {
     private ArrayList<String> phoneNums;
     private String infoneUserId;
     private String desc;
-
+    public boolean isChecked;
     public InfoneContactsRVItem(String name, String views, String imageThumb, ArrayList<String> phoneNums, String infoneUserId, Boolean contactHidden, String desc) {
         this.name = name;
         this.views = views;

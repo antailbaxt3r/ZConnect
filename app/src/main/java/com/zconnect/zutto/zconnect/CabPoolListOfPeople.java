@@ -81,6 +81,7 @@ public class CabPoolListOfPeople extends BaseActivity {
     private DatabaseReference pool, chatRef, fullPool;
     private Button join;
     private String key,name, number, uid, imageThumb, userUID, date, source, destination, time, people, postedByImageText, postedByText;
+
     private Vector<UsersListItemFormat> usersListItemFormatVector = new Vector<>();
     private UsersListRVAdapter adapter;
     private Boolean flag, numberFlag;
@@ -95,6 +96,7 @@ public class CabPoolListOfPeople extends BaseActivity {
     private DatabaseReference ref;
     private DatabaseReference databaseReference;
     private FirebaseUser user;
+    private String forumUID;
     private ValueEventListener listener;
     private DatabaseReference mDatabaseViews;
     private int i;
@@ -143,6 +145,8 @@ public class CabPoolListOfPeople extends BaseActivity {
             finish();
         }
 
+
+        forumUID = getIntent().getStringExtra("forumUID");
 
         joinButton = (Button) findViewById(R.id.join);
         joinLayout = (LinearLayout) findViewById(R.id.joinLayout);
@@ -285,10 +289,10 @@ public class CabPoolListOfPeople extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    UserItemFormat userDisplayItem = dataSnapshot.getValue(UserItemFormat.class);
-                    name = userDisplayItem.getUsername();
-                    number = userDisplayItem.getMobileNumber();
-                    numberFlag = true;
+                UserItemFormat userDisplayItem = dataSnapshot.getValue(UserItemFormat.class);
+                name = userDisplayItem.getUsername();
+                number = userDisplayItem.getMobileNumber();
+                numberFlag = true;
             }
 
 
@@ -437,14 +441,14 @@ public class CabPoolListOfPeople extends BaseActivity {
         pool.keepSynced(true);
 
 
-        chatLayout.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener chatListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
+                HashMap<String, String> meta = new HashMap<>();
 
-                meta.put("type","fromTextBox");
+                meta.put("type", "fromTextBox");
 
                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                 counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_CHAT_OPEN);
@@ -454,40 +458,45 @@ public class CabPoolListOfPeople extends BaseActivity {
                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                 counterPush.pushValues();
 
-                Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
-                intent.putExtra("type","cabPool");
-                intent.putExtra("key",key);
-                intent.putExtra("ref", databaseReference.child(key).toString());
-                startActivity(intent);
-                overridePendingTransition(0, 0);
+
+                if (forumUID == null) {
+
+                    Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
+                    intent.putExtra("type", "cabPool");
+                    intent.putExtra("key", key);
+                    intent.putExtra("ref", databaseReference.child(key).toString());
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                } else {
+                    FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("others").child(forumUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String name = dataSnapshot.child("name").getValue().toString();
+
+                            Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
+                            intent.putExtra("type", "forums");
+                            intent.putExtra("key", forumUID);
+                            intent.putExtra("name", name);
+                            intent.putExtra("tab", "others");
+                            intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(forumUID).toString());
+
+                            startActivity(intent);
+                            overridePendingTransition(0, 0);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                }
             }
-        });
+        };
+        chatLayout.setOnClickListener(chatListener);
 
-        chatEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                CounterItemFormat counterItemFormat = new CounterItemFormat();
-                HashMap<String, String> meta= new HashMap<>();
-
-                meta.put("type","fromTextBox");
-
-                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_CHAT_OPEN);
-                counterItemFormat.setTimestamp(System.currentTimeMillis());
-                counterItemFormat.setMeta(meta);
-
-                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                counterPush.pushValues();
-
-                Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
-                intent.putExtra("type","cabPool");
-                intent.putExtra("key",key);
-                intent.putExtra("ref", databaseReference.child(key).toString());
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-            }
-        });
+        chatEditText.setOnClickListener(chatListener);
 
 
         join.setOnClickListener(new View.OnClickListener() {
@@ -497,6 +506,7 @@ public class CabPoolListOfPeople extends BaseActivity {
                 if (!flag) {
                     final UsersListItemFormat userDetails = new UsersListItemFormat();
                     DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    final DatabaseReference forumCategory = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("others").child(key);
                     user.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -507,9 +517,9 @@ public class CabPoolListOfPeople extends BaseActivity {
                             userDetails.setUserUID(userItemFormat.getUserUID());
                             databaseReference.child(key).child("usersListItemFormats").child(userItemFormat.getUserUID()).setValue(userDetails);
 
-                           // NotificationSender notificationSender = new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_CABPOOL_JOIN,false,true,CabPoolListOfPeople.this);
-                            NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,userItemFormat.getUserUID());
-                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN,userItemFormat.getUserUID());
+                            // NotificationSender notificationSender = new NotificationSender(getIntent().getStringExtra("key"),null,null,null,null,null,userItemFormat.getUsername(), OtherKeyUtilities.KEY_CABPOOL_JOIN,false,true,CabPoolListOfPeople.this);
+                            NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this, userItemFormat.getUserUID());
+                            NotificationItemFormat cabPoolJoinNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_JOIN, userItemFormat.getUserUID());
                             cabPoolJoinNotification.setCommunityName(communityTitle);
                             cabPoolJoinNotification.setUserImage(userItemFormat.getImageURLThumbnail());
                             cabPoolJoinNotification.setItemKey(getIntent().getStringExtra("key"));
@@ -517,10 +527,10 @@ public class CabPoolListOfPeople extends BaseActivity {
                             notificationSender.execute(cabPoolJoinNotification);
 
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
 
-                            meta.put("type","fromList");
-                            meta.put("key",getIntent().getStringExtra("key"));
+                            meta.put("type", "fromList");
+                            meta.put("key", getIntent().getStringExtra("key"));
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_JOIN);
@@ -552,12 +562,12 @@ public class CabPoolListOfPeople extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.menu_chat) {
+        if (id == R.id.menu_chat) {
 
             CounterItemFormat counterItemFormat = new CounterItemFormat();
-            HashMap<String, String> meta= new HashMap<>();
+            HashMap<String, String> meta = new HashMap<>();
 
-            meta.put("type","fromMenu");
+            meta.put("type", "fromMenu");
 
             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
             counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_CHAT_OPEN);
@@ -567,14 +577,40 @@ public class CabPoolListOfPeople extends BaseActivity {
             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
             counterPush.pushValues();
 
-            Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
-            intent.putExtra("type","cabPool");
-            intent.putExtra("key",key);
-            intent.putExtra("ref", databaseReference.child(key).toString());
-            startActivity(intent);
-            overridePendingTransition(0, 0);
+            if (forumUID == null) {
 
-        }else if(id == R.id.leave_pool){
+                Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
+                intent.putExtra("type", "cabPool");
+                intent.putExtra("key", key);
+                intent.putExtra("ref", databaseReference.child(key).toString());
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            } else {
+                FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("forumsCategories").child("others").child(forumUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String name = dataSnapshot.child("name").getValue().toString();
+
+                        Intent intent = new Intent(CabPoolListOfPeople.this, ChatActivity.class);
+                        intent.putExtra("type", "forums");
+                        intent.putExtra("key", forumUID);
+                        intent.putExtra("name", name);
+                        intent.putExtra("tab", "others");
+                        intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(forumUID).toString());
+
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+            }
+        } else if (id == R.id.leave_pool) {
 
             final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(CabPoolListOfPeople.this);
             builder.setMessage("Please confirm to leave this pool.")
@@ -590,8 +626,8 @@ public class CabPoolListOfPeople extends BaseActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
-                                    NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this,userItemFormat.getUserUID());
-                                    NotificationItemFormat cabPoolLeaveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE,userItemFormat.getUserUID());
+                                    NotificationSender notificationSender = new NotificationSender(CabPoolListOfPeople.this, userItemFormat.getUserUID());
+                                    NotificationItemFormat cabPoolLeaveNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_CAB_LEAVE, userItemFormat.getUserUID());
                                     cabPoolLeaveNotification.setCommunityName(communityTitle);
                                     cabPoolLeaveNotification.setItemKey(getIntent().getStringExtra("key"));
                                     cabPoolLeaveNotification.setUserName(userItemFormat.getUsername());
@@ -599,10 +635,10 @@ public class CabPoolListOfPeople extends BaseActivity {
                                     notificationSender.execute(cabPoolLeaveNotification);
 
                                     CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta= new HashMap<>();
+                                    HashMap<String, String> meta = new HashMap<>();
 
-                                    meta.put("type","fromList");
-                                    meta.put("key",getIntent().getStringExtra("key"));
+                                    meta.put("type", "fromList");
+                                    meta.put("key", getIntent().getStringExtra("key"));
 
                                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                     counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_LEAVE);
@@ -637,13 +673,13 @@ public class CabPoolListOfPeople extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean onPrepareOptionsMenu(Menu menu){
-        if(flag){
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (flag) {
             menu.findItem(R.id.leave_pool).setVisible(true);
-        }else {
+        } else {
             menu.findItem(R.id.leave_pool).setVisible(false);
         }
-        return  super.onPrepareOptionsMenu(menu);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

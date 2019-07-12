@@ -6,10 +6,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,10 +36,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zconnect.zutto.zconnect.ChatActivity;
 import com.zconnect.zutto.zconnect.commonModules.DBHelper;
+import com.zconnect.zutto.zconnect.custom.MentionsClickableSpan;
 import com.zconnect.zutto.zconnect.holders.EmptyRVViewHolder;
 import com.zconnect.zutto.zconnect.itemFormats.ChatItemFormats;
 import com.zconnect.zutto.zconnect.OpenUserDetail;
 import com.zconnect.zutto.zconnect.R;
+import com.zconnect.zutto.zconnect.utilities.ForumUtilities;
 import com.zconnect.zutto.zconnect.utilities.MessageTypeUtilities;
 import com.zconnect.zutto.zconnect.commonModules.viewImage;
 
@@ -45,7 +52,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -58,12 +69,14 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private ValueEventListener loadMessagesListener;
     private ChatItemFormats delMessage;
     private ChatItemFormats delphoto;
+    private String forumType;
 
-    public ChatRVAdapter(ArrayList<ChatItemFormats> chatFormats, DatabaseReference databaseref,DatabaseReference reference,Context ctx) {
+    public ChatRVAdapter(ArrayList<ChatItemFormats> chatFormats, DatabaseReference databaseref,DatabaseReference reference,Context ctx, String forumType) {
         this.chatFormats = chatFormats;
         this.ctx = ctx;
         this.databaseref = databaseref;
         this.forumRef = reference;
+        this.forumType = forumType;
     }
 
     @Override
@@ -81,6 +94,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return MessageTypeUtilities.KEY_SHOP_MESSAGE;
         }else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_SHOP_PHOTO_STR)){
             return MessageTypeUtilities.KEY_SHOP_PHOTO;
+        }else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR)){
+            return MessageTypeUtilities.KEY_MESSAGE;
         }
 //        else if(chatFormats.get(position).getMessageType().equals(MessageTypeUtilities.KEY_PHOTO_SENDING_STR)){
 //            return MessageTypeUtilities.KEY_PHOTO_SENDING;
@@ -119,7 +134,6 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder rvHolder, final int position) {
-
         rvHolder.itemView.setTag(position);
 
         final ChatItemFormats message = chatFormats.get(position);
@@ -133,6 +147,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 previousTs = pm.getTimeDate();
             }
             setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
+            holder.message.setTypeface(Typeface.DEFAULT,Typeface.NORMAL);
+
             if(message.getUuid()!=null)
             {
 
@@ -172,10 +188,85 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.userAvatar.setImageURI(message.getImageThumb());
 
                 String messageText = message.getMessage();
-
                 messageText = messageText.substring(1,messageText.length()-1);
-                holder.message.setText(messageText);
-                Linkify.addLinks(holder.message, Linkify.ALL);
+                //TODO IMPROVE EXTRACTION OF USERNAME AND UID
+                String newMessageText = "", token = "";
+                ArrayList<Integer> startIndexList = new ArrayList<>();
+                ArrayList<Integer> endIndexList = new ArrayList<>();
+                ArrayList<String> uid = new ArrayList<>();
+
+                int startIndex = 0;
+                int endIndex = 0;
+                boolean isToken = false;
+                try {
+                    for (int i = 0; i < messageText.length(); i++) {
+                        char letter = messageText.charAt(i);
+                        if (letter == '@') {
+                            startIndex = i;
+                            isToken = true;
+                        } else if (letter == '~') {
+                            endIndex = i;
+                            newMessageText += token;
+                            token = "";
+                        } else if (letter == ';') {
+                            startIndexList.add(newMessageText.length()-endIndex+startIndex);
+                            endIndexList.add(newMessageText.length());
+                            Log.d("logtokrn", token);
+                            uid.add(token.substring(1));
+                            startIndex = 0;
+                            endIndex = 0;
+                            token = "";
+                            isToken = false;
+                            continue;
+                        }
+
+                        if (isToken) {
+                            token += letter;
+                        } else {
+                            newMessageText += letter;
+                        }
+
+                    }
+                    SpannableString spannableString = new SpannableString(newMessageText);
+                    int i = 0;
+                    for (String u : uid) {
+                        spannableString.setSpan(new MentionsClickableSpan(holder.itemView.getContext(), u), startIndexList.get(i), endIndexList.get(i), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        i++;
+                    }
+                    holder.message.setText(spannableString);
+                    holder.message.setMovementMethod(LinkMovementMethod.getInstance());
+                    holder.message.setHighlightColor(Color.TRANSPARENT);
+                    Linkify.addLinks(holder.message, Linkify.ALL);
+
+                }
+                catch (Exception e){
+                    Log.e("MYERROR",e.toString());
+                    holder.message.setText("Unable to load the message");
+
+                }
+
+
+
+            }
+            if(message.isAnonymous() && forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setEnabled(false);
+                holder.name.setText(message.getUserName());
+                holder.userAvatar.setVisibility(View.GONE);
+                holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
+
+            }
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
             }
         }
         else if(message.getMessageType().equals("photo")) {
@@ -187,6 +278,7 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 ChatItemFormats pm = chatFormats.get(position-1);
                 previousTs = pm.getTimeDate();
             }
+
             setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
             if(message.getUuid()!=null) {
 
@@ -236,6 +328,23 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 });
             }
+            if(message.isAnonymous() && forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setEnabled(false);
+                holder.name.setText(message.getUserName());
+                holder.userAvatar.setVisibility(View.GONE);
+
+            }
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
+            }
         }
         else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_MESSAGE_STR)){
 
@@ -245,6 +354,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 ChatItemFormats pm = chatFormats.get(position-1);
                 previousTs = pm.getTimeDate();
             }
+            holder.message.setTypeface(holder.message.getTypeface(),Typeface.NORMAL);
+
             setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
             if(message.getUuid()!=null)
             {
@@ -289,6 +400,28 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 messageText = messageText.substring(1,messageText.length()-1);
                 holder.message.setText(messageText);
                 Linkify.addLinks(holder.message, Linkify.ALL);
+            }
+
+            if(message.isAnonymous() && forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setEnabled(false);
+                holder.name.setText(message.getUserName());
+                holder.userAvatar.setVisibility(View.GONE);
+                holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
+
+            }
+
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
             }
         }
         else if(message.getMessageType().equals(MessageTypeUtilities.KEY_SHOP_PHOTO_STR)) {
@@ -349,7 +482,81 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 });
             }
+
+            if(message.isAnonymous() && forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setEnabled(false);
+                holder.name.setText(message.getUserName());
+                holder.userAvatar.setVisibility(View.GONE);
+
+            }
+
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
+            }
         }
+        else if(message.getMessageType().equals(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR)){
+
+
+            messageViewHolder holder = (messageViewHolder) rvHolder;
+            long previousTs = 0;
+            if(position>=1){
+                ChatItemFormats pm = chatFormats.get(position-1);
+                previousTs = pm.getTimeDate();
+            }
+            setTimeTextVisibility(message.getTimeDate(), previousTs, holder.timeGroupText);
+            if(message.getUuid()!=null)
+            {
+                    holder.name.setVisibility(View.GONE);
+                if(message.getUuid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                {
+                    holder.rightDummy.setVisibility(View.GONE);
+                    holder.leftDummy.setVisibility(View.VISIBLE);
+                    holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box_self));
+                    holder.chatContainer.setGravity(Gravity.END);
+
+                }
+                else
+                {
+                    holder.rightDummy.setVisibility(View.VISIBLE);
+                    holder.leftDummy.setVisibility(View.GONE);
+                    holder.messageBubble.setBackground(holder.context.getResources().getDrawable(R.drawable.message_box));
+                    holder.chatContainer.setGravity(Gravity.START);
+
+                }
+                holder.userAvatar.setVisibility(View.GONE);
+                holder.name.setVisibility(View.GONE);
+                String time = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.US).format(message.getTimeDate());
+                holder.time.setText(time);
+                holder.message.setText("Anonymous");
+                holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD_ITALIC);
+                Linkify.addLinks(holder.message, Linkify.ALL);
+            }
+            if(forumType.equals(ForumUtilities.VALUE_ANONYMOUS_FORUM)){
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.white));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box_dark_mode));
+            }
+            else{
+                holder.message.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.name.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.time.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),R.color.black));
+                holder.messageBubble.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(),R.drawable.message_box));
+
+            }
+
+        }
+
+
+
 
     }
 
@@ -412,6 +619,8 @@ public class ChatRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
+
+        Log.d("Came hear","ITEMCOUNT");
         return chatFormats.size();
     }
 
