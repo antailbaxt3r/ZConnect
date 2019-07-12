@@ -26,6 +26,10 @@ android {
 
     productFlavors {
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
     android {
         lintOptions {
             checkReleaseBuilds false
@@ -105,6 +109,8 @@ dependencies {
     implementation 'com.github.kenglxn.QRGen:android:2.5.0'
     //Expandable Floating Action Menu
     implementation 'com.getbase:floatingactionbutton:1.10.1'
+    implementation 'com.github.percolate:mentions:0.1.0'
+
 
     //showcaseview
     implementation 'me.toptas.fancyshowcase:fancyshowcaseview:1.1.5'

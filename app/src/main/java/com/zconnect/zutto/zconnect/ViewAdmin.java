@@ -36,6 +36,7 @@ import java.util.Vector;
 public class ViewAdmin extends BaseActivity {
     Vector<String> admname = new Vector<>();
     Vector<String> admimg = new Vector<>();
+    Vector<String> adminUID = new Vector<>();
     FirebaseAuth mAuth;
     FirebaseUser user;
 DatabaseReference databaseReference;
@@ -95,11 +96,20 @@ DatabaseReference databaseReference;
                 for(DataSnapshot childsnapshot: dataSnapshot.getChildren()){
                     Log.d((String) childsnapshot.child("Username").getValue(), "onDataChange: ");
                     admname.add((String) childsnapshot.child("Username").getValue());
-                    admimg.add((String) childsnapshot.child("ImageThumb").getValue());
 
+                    adminUID.add((String)childsnapshot.getKey().toString());
+                    Log.d("ADMIN UID",adminUID.toString());
+
+                    if(!("").equals(childsnapshot.child("ImageThumb").getValue())) {
+                        admimg.add((String) childsnapshot.child("ImageThumb").getValue());
+                    }
+                    else{
+                        //TODO (Arjun) Change required: default profile pic instead of random image URL
+                        admimg.add("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/defaultProfile.png?alt=media&token=4d4ec5db-41bd-4d04-9be5-12fc5a1bdd6d");
+                    }
                 }
                 recyclerView = (RecyclerView) findViewById(R.id.view_admins_rv);
-                viewAdminsRVAdapter = new ViewAdminsRVAdapter(ViewAdmin.this,admimg,admname);
+                viewAdminsRVAdapter = new ViewAdminsRVAdapter(ViewAdmin.this,admimg,admname,adminUID,communityReference);
                 recyclerView.setLayoutManager(new GridLayoutManager(ViewAdmin.this,2));
                 recyclerView.setAdapter(viewAdminsRVAdapter);
                 recyclerView.setVisibility(View.VISIBLE);

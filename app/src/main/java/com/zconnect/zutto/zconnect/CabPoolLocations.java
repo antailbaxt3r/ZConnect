@@ -299,12 +299,12 @@ public class CabPoolLocations extends BaseActivity {
         });
     }
 
-    public void requestLocation(String Location){
+    public void requestLocation(String location){
         final DatabaseReference newPush=databaseReferenceCabPool2.push();
         final HashMap<String, Object> requestMap = new HashMap<>();
         requestMap.put("Type", RequestTypeUtilities.TYPE_CABPOOL_LOCATION);
         requestMap.put("key", newPush.getKey());
-        requestMap.put("Name", Location);
+        requestMap.put("Name", location);
         requestMap.put("PostTimeMillis", System.currentTimeMillis());
         mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

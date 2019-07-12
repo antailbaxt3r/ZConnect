@@ -233,6 +233,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
                 if(i==0) {
                     Intent intent = new Intent(context, CabPoolListOfPeople.class);
                     intent.putExtra("fromRVCheck", true);
+                    intent.putExtra("forumUID",array.get(getAdapterPosition()).getForumUID());
                     intent.putExtra("key", array.get(getAdapterPosition()).getKey());
                     intent.putExtra("date", (array.get(getAdapterPosition()).getDT()).substring(0,8));
                     intent.putExtra("sourceText", sourceText);
@@ -260,6 +261,7 @@ public class CabPoolRVAdapter extends RecyclerView.Adapter<CabPoolRVAdapter.View
 
                     context.startActivity(intent);
                 }}
+
             });
             share.setOnClickListener(new View.OnClickListener() {
                 @Override

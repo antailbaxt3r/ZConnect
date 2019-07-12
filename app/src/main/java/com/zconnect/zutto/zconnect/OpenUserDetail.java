@@ -40,9 +40,12 @@ import com.zconnect.zutto.zconnect.commonModules.NotificationSender;
 import com.zconnect.zutto.zconnect.itemFormats.CounterItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.NotificationItemFormat;
 import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
+import com.zconnect.zutto.zconnect.itemFormats.UsersListItemFormat;
 import com.zconnect.zutto.zconnect.utilities.CounterUtilities;
+import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
+import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 
 import java.util.Calendar;
@@ -80,6 +83,9 @@ public class OpenUserDetail extends BaseActivity {
     private Button userTypeText, requestContact;
     private TextView forumsJoined;
 
+    private Button chatButton;
+    String userImageURL;
+    UsersListItemFormat userDetails = new UsersListItemFormat();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +104,7 @@ public class OpenUserDetail extends BaseActivity {
         editTextSkills = (TagsEditText) findViewById(R.id.contact_details_editText_skills);
         whatsAppNumberText = (TextView) findViewById(R.id.whatsapp_number);
         forumsJoined = findViewById(R.id.contact_details_forums_joined);
+        chatButton = findViewById(R.id.chat_button);
 
         btn_like = (ImageButton) findViewById(R.id.btn_like);
         btn_love = (ImageButton) findViewById(R.id.btn_love);
@@ -147,6 +154,7 @@ public class OpenUserDetail extends BaseActivity {
 //        skills=getIntent().getStringExtra("skills");
 //        category=getIntent().getStringExtra("category");
         Uid=getIntent().getStringExtra("Uid");
+
         final DatabaseReference userForums = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums").child(Uid).child("totalJoinedForums");
 
         userForums.addValueEventListener(new ValueEventListener() {
@@ -172,7 +180,12 @@ public class OpenUserDetail extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
                     userProfile = dataSnapshot.getValue(UserItemFormat.class);
+                    userDetails.setUserUID(userProfile.getUserUID());
+                    userDetails.setName(userProfile.getUsername());
+                    userDetails.setImageThumb(userProfile.getImageURLThumbnail());
+                    userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
                     setUserDetails(currentUser);
+
                     progressBar.setVisibility(View.GONE);
                     content.setVisibility(View.VISIBLE);
                     if(userProfile.getUserUID().equals(myUID));
@@ -439,7 +452,99 @@ public class OpenUserDetail extends BaseActivity {
         editTextSkills.setTypeface(ralewayRegular);
         editTextEmail.setTypeface(ralewayRegular);
 
+        chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Try", "clicked");
+                final DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                        .child(communityReference).child(ZConnectDetails.USERS_DB).child(mAuth.getCurrentUser().getUid());
+
+                if (databaseReferenceUser == null) {
+                    Toast.makeText(v.getContext(), "The user does not exist!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if (!dataSnapshot.child("userChats").hasChild(Uid)) {
+                            userImageURL = dataSnapshot.child("imageURL").getValue().toString();
+                            Log.d("Try", createPersonalChat(mAuth.getCurrentUser().getUid(), Uid,databaseReferenceUser));
+                        }
+                        databaseReferenceUser.child("userChats").child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String key = dataSnapshot.getValue().toString();
+                                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                                intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(key).toString());
+                                intent.putExtra("type", "personalChats");
+                                intent.putExtra("name", name);
+                                intent.putExtra("tab", "personalChats");
+                                intent.putExtra("key", key);
+                                startActivity(intent);
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
     }
+
+    private String createPersonalChat(final String uid, final String infoneUserUID, DatabaseReference databaseReferenceUser) {
+        final DatabaseReference databaseReferenceCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories");
+        final DatabaseReference databaseReferenceTabsCategories = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories").child("personalChats");
+        final DatabaseReference newPush = databaseReferenceCategories.push();
+        final DatabaseReference databaseReferenceInfoneUser = FirebaseDatabase.getInstance().getReference().child(ZConnectDetails.COMMUNITIES_DB)
+                .child(communityReference).child(ZConnectDetails.USERS_DB).child(infoneUserUID);
+        newPush.child("name").setValue(false);
+        Long postTimeMillis = System.currentTimeMillis();
+        newPush.child("PostTimeMillis").setValue(postTimeMillis);
+        newPush.child("UID").setValue(newPush.getKey());
+        newPush.child("tab").setValue("personalChats");
+        newPush.child("Chat");
+        final UserItemFormat[] user = {null};
+
+
+        HashMap<String,UsersListItemFormat> userList = new HashMap<String,UsersListItemFormat>();
+        userList.put(infoneUserUID,userDetails);
+        Log.d("USEROBJECT", UserUtilities.currentUser.toString());
+        UsersListItemFormat currentUser = new UsersListItemFormat();
+        currentUser.setImageThumb(UserUtilities.currentUser.getImageURLThumbnail());
+        currentUser.setName(UserUtilities.currentUser.getUsername());
+        currentUser.setPhonenumber(UserUtilities.currentUser.getMobileNumber());
+        currentUser.setUserUID(UserUtilities.currentUser.getUserUID());
+        currentUser.setUserType(UserUtilities.currentUser.getUserType());
+        userList.put(uid,currentUser);
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("users").setValue(userList);
+
+
+        databaseReferenceUser.child("userChats").child(infoneUserUID).setValue(newPush.getKey());
+        databaseReferenceInfoneUser.child("userChats").child(uid).setValue(newPush.getKey());
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(false);
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue("personalChats");
+        databaseReferenceTabsCategories.child(newPush.getKey()).child("lastMessage").setValue("Null");
+
+
+
+        return newPush.getKey();
+
+    }
+
 
     public void setUserDetails(final DatabaseReference currentUser){
         //        name = getIntent().getStringExtra("name");

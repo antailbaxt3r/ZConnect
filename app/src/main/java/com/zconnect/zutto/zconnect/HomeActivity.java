@@ -342,10 +342,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 .putBoolean("isFirstRun", false).commit();
     /////////////////////////////////////////////////////////////////////////////////////
 
+//        Log.d("USEROBJECT",UserUtilities.currentUser.toString());
+
+
 //        fixFirebaseUserForum();
 //        testTheFix();
 //        fixUpdateTotalJoinedForums();
 //        setForumNotificationDot();
+//        fixUserType();
     }
 
 //    private void testTheFix() {
@@ -386,6 +390,29 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         });
 
     }
+    //fixUserType to go inside each user, set userType to verified
+    void fixUserType(){
+        final DatabaseReference userList = FirebaseDatabase.getInstance().getReference().child("communities").child("testCollege").child("Users1");
+        Log.d("Fix","Staring ficUserType");
+        int count = 0;
+        userList.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot user: dataSnapshot.getChildren()){
+                    userList.child(user.getKey()).child("userType").setValue("verified");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+
 ////fixFirebaseUserForum to add respective forum details under each user. change "testCollege" to desired community/use loops
     void fixFirebaseUserForum() {
 

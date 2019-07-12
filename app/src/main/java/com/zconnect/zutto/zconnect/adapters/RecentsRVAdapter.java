@@ -105,7 +105,7 @@ import static android.graphics.Typeface.BOLD;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityTitle;
 
-public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
     Vector<RecentsItemFormat> recentsItemFormats;
@@ -128,27 +128,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.linearLayoutManager = linearLayoutManager;
         this.recyclerView = recyclerView;
     }
-//
+
+    //
     @Override
     public int getItemViewType(int position) {
         try {
-            if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR))
-            {
+            if (recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_ADD_STATUS_STR)) {
                 return RecentTypeUtilities.KEY_RECENT_ADD_STATUS;
-            }
-            else if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_FEATURES_STR))
-            {
+            } else if (recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_FEATURES_STR)) {
                 return RecentTypeUtilities.KEY_RECENT_FEATURES;
-            }
-            else if(recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR)) {
+            } else if (recentsItemFormats.get(position).getRecentType().equals(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR)) {
                 return RecentTypeUtilities.KEY_RECENT_NORMAL_POST;
-            }
-            else {
+            } else {
                 return -1;
             }
-        }
-        catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             Log.d("Exception", "adding type");
             recentsItemFormats.get(position).setRecentType(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
             return RecentTypeUtilities.KEY_RECENT_NORMAL_POST;
@@ -159,20 +153,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        if(viewType == RecentTypeUtilities.KEY_RECENT_ADD_STATUS) {
+        if (viewType == RecentTypeUtilities.KEY_RECENT_ADD_STATUS) {
             View addStatusView = inflater.inflate(R.layout.recents_add_status, parent, false);
             Log.d("VIEWTYPE", String.valueOf(viewType));
             return new RecentsRVAdapter.ViewHolderStatus(addStatusView);
-        }
-        else if(viewType == RecentTypeUtilities.KEY_RECENT_FEATURES) {
+        } else if (viewType == RecentTypeUtilities.KEY_RECENT_FEATURES) {
             View featuresView = inflater.inflate(R.layout.recents_features_view, parent, false);
             return new RecentsRVAdapter.FeaturesViewHolder(featuresView);
-        }
-        else if(viewType == RecentTypeUtilities.KEY_RECENT_NORMAL_POST) {
+        } else if (viewType == RecentTypeUtilities.KEY_RECENT_NORMAL_POST) {
             View contactView = inflater.inflate(R.layout.recents_item_format, parent, false);
             return new RecentsRVAdapter.Viewholder(contactView);
-        }
-        else {
+        } else {
             View blankLayout = inflater.inflate(R.layout.row_blank_layout, parent, false);
             return new RecentsRVAdapter.BlankViewHolder(blankLayout);
         }
@@ -180,33 +171,29 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder2, final int position) {
-        switch (holder2.getItemViewType())
-        {
+        switch (holder2.getItemViewType()) {
             case 0:
-                ViewHolderStatus holderStatus = (ViewHolderStatus)holder2;
+                ViewHolderStatus holderStatus = (ViewHolderStatus) holder2;
                 break;
             case 1:
                 FeaturesViewHolder featuresViewHolder = (FeaturesViewHolder) holder2;
                 featuresViewHolder.setFeatureVisibility(communityFeatures);
                 break;
             case 2:
-                final Viewholder holder = (Viewholder)holder2;
+                final Viewholder holder = (Viewholder) holder2;
                 openUserProfileListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(recentsItemFormats.get(position).getPostedBy().getUID()))
-                        {
+                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(recentsItemFormats.get(position).getPostedBy().getUID())) {
                             mHomeActivity.changeFragment(4);
-                        }
-                        else
-                        {
+                        } else {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
 
-                            meta.put("type","fromRecentsRV");
-                            meta.put("userType","openUserProfile");
-                            meta.put("userUID",recentsItemFormats.get(position).getPostedBy().getUID());
+                            meta.put("type", "fromRecentsRV");
+                            meta.put("userType", "openUserProfile");
+                            meta.put("userUID", recentsItemFormats.get(position).getPostedBy().getUID());
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
@@ -216,8 +203,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                             counterPush.pushValues();
 
-                            Intent i = new Intent(context,OpenUserDetail.class);
-                            i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
+                            Intent i = new Intent(context, OpenUserDetail.class);
+                            i.putExtra("Uid", recentsItemFormats.get(position).getPostedBy().getUID());
                             context.startActivity(i);
                         }
                     }
@@ -239,19 +226,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         clickableSpanPostedBy = new ClickableSpan() {
                             @Override
                             public void onClick(View widget) {
-                                if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(recentsItemFormats.get(position).getPostedBy().getUID()))
-                                {
+                                if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(recentsItemFormats.get(position).getPostedBy().getUID())) {
                                     mHomeActivity.changeFragment(4);
-                                }
-                                else
-                                {
+                                } else {
 
                                     CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta= new HashMap<>();
+                                    HashMap<String, String> meta = new HashMap<>();
 
-                                    meta.put("type","fromRecentsRV");
-                                    meta.put("userType","openUserProfile");
-                                    meta.put("userUID",recentsItemFormats.get(position).getPostedBy().getUID());
+                                    meta.put("type", "fromRecentsRV");
+                                    meta.put("userType", "openUserProfile");
+                                    meta.put("userUID", recentsItemFormats.get(position).getPostedBy().getUID());
 
                                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                     counterItemFormat.setUniqueID(CounterUtilities.KEY_PROFILE_OPEN);
@@ -261,8 +245,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                     counterPush.pushValues();
 
-                                    Intent i = new Intent(context,OpenUserDetail.class);
-                                    i.putExtra("Uid",recentsItemFormats.get(position).getPostedBy().getUID());
+                                    Intent i = new Intent(context, OpenUserDetail.class);
+                                    i.putExtra("Uid", recentsItemFormats.get(position).getPostedBy().getUID());
                                     context.startActivity(i);
                                 }
                             }
@@ -272,7 +256,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 ds.setUnderlineText(false);
                             }
                         };
-                        if(recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y")) {
+                        if (recentsItemFormats.get(position).getFeature().equals("Message") && recentsItemFormats.get(position).getDesc2().equals("y")) {
                             holder.postedBy.setOnClickListener(null);
                             clickableSpanPostedBy = null;
                         }
@@ -282,7 +266,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         holder.avatarCircle.setOnClickListener(openUserProfileListener);
                     }
 
-                    if(recentsItemFormats.get(position).getPostedBy().getUID().equals(FirebaseAuth.getInstance().getUid())){
+                    if (recentsItemFormats.get(position).getPostedBy().getUID().equals(FirebaseAuth.getInstance().getUid())) {
                         holder.deleteButton.setVisibility(View.VISIBLE);
                         holder.deletePost(recentsItemFormats.get(position).getPostID());
                     }
@@ -291,8 +275,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 holder.post.setTextColor(context.getResources().getColor(R.color.link));
 
-                if(recentsItemFormats.get(position).getFeature().equals("Banner"))
-                {
+                if (recentsItemFormats.get(position).getFeature().equals("Banner")) {
                     holder.prePostDetails.setVisibility(View.GONE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
                     holder.storeroomRecentItem.setVisibility(View.GONE);
@@ -314,9 +297,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 public void onClick(View v) {
 
                                     CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta= new HashMap<>();
+                                    HashMap<String, String> meta = new HashMap<>();
 
-                                    meta.put("URL",recentsItemFormats.get(position).getDesc());
+                                    meta.put("URL", recentsItemFormats.get(position).getDesc());
                                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                     counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_BANNER_CLICK);
                                     counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -334,9 +317,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 public void run() {
                                     try {
                                         Thread.sleep(3000);
-                                    }
-                                    catch (InterruptedException ie)
-                                    {
+                                    } catch (InterruptedException ie) {
                                         Log.d("Interrupted Error", ie.getMessage());
                                     }
 
@@ -353,9 +334,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
 
-                }
-                else if(recentsItemFormats.get(position).getFeature().equals("Infone"))
-                {
+                } else if (recentsItemFormats.get(position).getFeature().equals("Infone")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.VISIBLE);
@@ -388,9 +367,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         public void onClick(View widget) {
                             mHomeActivity.changeFragment(3);
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
 
-                            meta.put("type","fromRecentsRV");
+                            meta.put("type", "fromRecentsRV");
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_INFONE_TAB_OPEN);
@@ -407,9 +386,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     };
 
-                }
-                else if (recentsItemFormats.get(position).getFeature().equals("Event"))
-                {
+                } else if (recentsItemFormats.get(position).getFeature().equals("Event")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -445,23 +422,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         holder.eventDate.setText(new SimpleDateFormat("EEE, dd MMM yyyy").format(date));
                         DateTimeZone indianZone = DateTimeZone.forID("Asia/Kolkata");
                         DateTime dt = new DateTime(date, indianZone);
-                        String minOfHr ="";
+                        String minOfHr = "";
                         minOfHr = dt.getMinuteOfHour() < 10 ? "0" + String.valueOf(dt.getMinuteOfHour()) : String.valueOf(dt.getMinuteOfHour());
-                        if(dt.getHourOfDay() <=12)
+                        if (dt.getHourOfDay() <= 12)
                             holder.eventTime.setText(dt.getHourOfDay() + ":" + minOfHr + " AM");
                         else
                             holder.eventTime.setText((dt.getHourOfDay() - 12) + ":" + minOfHr + " PM");
-                    }
-                    catch (ParseException pe) {
+                    } catch (ParseException pe) {
                         Log.d("Error Alert ", pe.getMessage());
                         holder.eventDate.setText(recentsItemFormats.get(position).getDesc2());
                         holder.eventTime.setText("");
                     }
                     final String eventDescString = recentsItemFormats.get(position).getDesc();
-                    if(eventDescString.length() < 55)
+                    if (eventDescString.length() < 55)
                         holder.eventDesc.setText(recentsItemFormats.get(position).getDesc());
-                    else
-                    {
+                    else {
                         ClickableSpan clickableSpan = new ClickableSpan() {
                             @Override
                             public void onClick(@NonNull View widget) {
@@ -491,9 +466,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         @Override
                         public void onClick(View widget) {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
 
-                            meta.put("type","fromRecentsRV");
+                            meta.put("type", "fromRecentsRV");
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_OPEN);
@@ -569,6 +544,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
                 {
+
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -595,12 +571,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             context.startActivity(intent);
                         }
                     });
-                    if(recentsItemFormats.get(position).getProductType()!=null && recentsItemFormats.get(position).getProductType().equals(ProductUtilities.TYPE_ASK_STR))
-                    {
+                    if (recentsItemFormats.get(position).getProductType() != null && recentsItemFormats.get(position).getProductType().equals(ProductUtilities.TYPE_ASK_STR)) {
                         holder.postConjunction.setText(" asked for a ");
-                    }
-                    else
-                    {
+                    } else {
                         holder.postConjunction.setText(" added a ");
                     }
                     holder.post.setText("Product");
@@ -615,10 +588,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     });
                     holder.productName.setText(recentsItemFormats.get(position).getName());
                     final String productDescString = recentsItemFormats.get(position).getDesc();
-                    if(productDescString.length() < 55)
+                    if (productDescString.length() < 55)
                         holder.productDesc.setText(productDescString);
-                    else
-                    {
+                    else {
                         ClickableSpan clickableSpan = new ClickableSpan() {
                             @Override
                             public void onClick(@NonNull View widget) {
@@ -640,21 +612,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         holder.productDesc.setText(spannableString);
                         holder.productDesc.setMovementMethod(LinkMovementMethod.getInstance());
                     }
-                    if(recentsItemFormats.get(position).getImageurl()!=null)
-                    {
+                    if (recentsItemFormats.get(position).getImageurl() != null) {
                         holder.productImage.setVisibility(View.VISIBLE);
                         Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.productImage);
-                    }
-                    else
+                    } else
                         holder.productImage.setVisibility(View.GONE);
-                    if(recentsItemFormats.get(position).getProductType()!=null && recentsItemFormats.get(position).getProductType().equals(ProductUtilities.TYPE_ASK_STR))
-                    {
+                    if (recentsItemFormats.get(position).getProductType() != null && recentsItemFormats.get(position).getProductType().equals(ProductUtilities.TYPE_ASK_STR)) {
                         holder.productPrice.setVisibility(View.GONE);
                         posted = " asked for a ";
                         post = "Product";
-                    }
-                    else
-                    {
+                    } else {
                         holder.productPrice.setVisibility(View.VISIBLE);
                         holder.productPrice.setText("₹" + recentsItemFormats.get(position).getProductPrice());
                         posted = " added a ";
@@ -665,9 +632,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         public void onClick(View widget) {
 
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
 
-                            meta.put("type","fromRecentsRV");
+                            meta.put("type", "fromRecentsRV");
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN);
@@ -686,9 +653,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     };
                     //set product price
-                }
-                else if (recentsItemFormats.get(position).getFeature().equals("CabPool"))
-                {
+                } else if (recentsItemFormats.get(position).getFeature().equals("CabPool")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -706,8 +671,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         @Override
                         public void onClick(View v) {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
-                            meta.put("type","fromRecents");
+                            HashMap<String, String> meta = new HashMap<>();
+                            meta.put("type", "fromRecents");
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN);
                             counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -726,30 +691,28 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     try {
                         DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
                         date = dtf.parseDateTime(recentsItemFormats.get(position).getCabpoolDate());
-                    }catch (Exception e){}
+                    } catch (Exception e) {
+                    }
                     String dateText = date.toString("MMM") + " " + date.getDayOfMonth();
                     holder.cabpoolDate.setText(dateText);
-                    if(recentsItemFormats.get(position).getCabpoolTimeFrom()!=-1)
-                    {
-                        String fromAmPm = recentsItemFormats.get(position).getCabpoolTimeFrom()<12 ? "AM" : "PM";
-                        int fromTime = recentsItemFormats.get(position).getCabpoolTimeFrom()<=12 ? recentsItemFormats.get(position).getCabpoolTimeFrom() : recentsItemFormats.get(position).getCabpoolTimeFrom() - 12;
-                        fromTime = fromTime ==  0 ? 12 : fromTime;
-                        String toAmPm = recentsItemFormats.get(position).getCabpoolTimeTo()<12 ? "AM" : "PM";
-                        int toTime = recentsItemFormats.get(position).getCabpoolTimeTo()<=12 ? recentsItemFormats.get(position).getCabpoolTimeTo() : recentsItemFormats.get(position).getCabpoolTimeTo() - 12;
+                    if (recentsItemFormats.get(position).getCabpoolTimeFrom() != -1) {
+                        String fromAmPm = recentsItemFormats.get(position).getCabpoolTimeFrom() < 12 ? "AM" : "PM";
+                        int fromTime = recentsItemFormats.get(position).getCabpoolTimeFrom() <= 12 ? recentsItemFormats.get(position).getCabpoolTimeFrom() : recentsItemFormats.get(position).getCabpoolTimeFrom() - 12;
+                        fromTime = fromTime == 0 ? 12 : fromTime;
+                        String toAmPm = recentsItemFormats.get(position).getCabpoolTimeTo() < 12 ? "AM" : "PM";
+                        int toTime = recentsItemFormats.get(position).getCabpoolTimeTo() <= 12 ? recentsItemFormats.get(position).getCabpoolTimeTo() : recentsItemFormats.get(position).getCabpoolTimeTo() - 12;
                         toTime = toTime == 0 ? 12 : toTime;
                         String timeText = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
                         holder.cabpoolTime.setText(timeText);
-                    }
-                    else
-                    {
+                    } else {
                         String timeText = recentsItemFormats.get(position).getCabpoolTime();
                         int fromTime = Integer.parseInt(timeText.substring(0, timeText.indexOf(":")));
-                        String fromAmPm = fromTime<12 ? "AM" : "PM";
-                        fromTime = fromTime<=12 ? fromTime : fromTime - 12;
-                        fromTime = fromTime ==  0 ? 12 : fromTime;
-                        int toTime = Integer.parseInt(timeText.substring(timeText.indexOf("to")+3, timeText.lastIndexOf(":")));
-                        String toAmPm = toTime<12 ? "AM" : "PM";
-                        toTime = toTime<=12 ? toTime : toTime - 12;
+                        String fromAmPm = fromTime < 12 ? "AM" : "PM";
+                        fromTime = fromTime <= 12 ? fromTime : fromTime - 12;
+                        fromTime = fromTime == 0 ? 12 : fromTime;
+                        int toTime = Integer.parseInt(timeText.substring(timeText.indexOf("to") + 3, timeText.lastIndexOf(":")));
+                        String toAmPm = toTime < 12 ? "AM" : "PM";
+                        toTime = toTime <= 12 ? toTime : toTime - 12;
                         toTime = toTime == 0 ? 12 : toTime;
                         timeText = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
                         holder.cabpoolTime.setText(timeText);
@@ -777,9 +740,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         public void onClick(View widget) {
 
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
 
-                            meta.put("type","fromRecentsRV");
+                            meta.put("type", "fromRecentsRV");
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN);
@@ -799,9 +762,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     };
                     //set text for source and destination...
-                }
-                else if (recentsItemFormats.get(position).getFeature().equals("Shop"))
-                {
+                } else if (recentsItemFormats.get(position).getFeature().equals("Shop")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -822,7 +783,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     posted = " put an ";
                     post = "Offer";
                     clickableSpanFeature = null;
-                }else if(recentsItemFormats.get(position).getFeature().equals("Message")) {
+                } else if (recentsItemFormats.get(position).getFeature().equals("Message")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -835,21 +796,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
                     holder.setLike(recentsItemFormats.get(position).getKey());
-                    if(recentsItemFormats.get(position).getDesc().length()<=0)
+                    if (recentsItemFormats.get(position).getDesc().length() <= 0)
                         holder.messagesMessage.setVisibility(View.GONE);
                     else
                         holder.messagesMessage.setVisibility(View.VISIBLE);
                     try {
-                        if(!recentsItemFormats.get(position).getImageurl().equals(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS) && recentsItemFormats.get(position).getImageurl()!=null){
-                            if(!recentsItemFormats.get(position).getImageurl().equals("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png")) {
+                        if (!recentsItemFormats.get(position).getImageurl().equals(RecentTypeUtilities.KEY_RECENTS_NO_IMAGE_STATUS) && recentsItemFormats.get(position).getImageurl() != null) {
+                            if (!recentsItemFormats.get(position).getImageurl().equals("https://www.iconexperience.com/_img/o_collection_png/green_dark_grey/512x512/plain/message.png")) {
                                 holder.postImage.setVisibility(View.VISIBLE);
                                 Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.postImage);
-                                holder.setOpenStatusImage(recentsItemFormats.get(position).getPostedBy().getUsername(),recentsItemFormats.get(position).getImageurl());
+                                holder.setOpenStatusImage(recentsItemFormats.get(position).getPostedBy().getUsername(), recentsItemFormats.get(position).getImageurl());
                             }
-                        }
-                        else
+                        } else
                             holder.postImage.setVisibility(View.GONE);
-                    }catch (Exception e){}
+                    } catch (Exception e) {
+                    }
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_24dp));
@@ -859,14 +820,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.post.setTextColor(context.getResources().getColor(R.color.secondaryText));
                     holder.post.setTypeface(Typeface.DEFAULT);
                     final String statusMsg = recentsItemFormats.get(position).getDesc();
-                    if(statusMsg.length() < 70 && holder.postImage.getVisibility()==View.GONE)
+                    if (statusMsg.length() < 70 && holder.postImage.getVisibility() == View.GONE)
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
                     else
                         holder.messagesMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                    if(statusMsg.length() < 180)
+                    if (statusMsg.length() < 180)
                         holder.messagesMessage.setText(recentsItemFormats.get(position).getDesc());
-                    else
-                    {
+                    else {
                         ClickableSpan clickableSpan = new ClickableSpan() {
                             @Override
                             public void onClick(@NonNull View widget) {
@@ -876,6 +836,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 holder.messagesMessage.setLinkTextColor(Color.BLUE);
                                 holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
                             }
+
                             @Override
                             public void updateDrawState(TextPaint ds) {
                                 ds.setUnderlineText(false); // set to false to remove underline
@@ -893,8 +854,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     Linkify.addLinks(holder.messagesMessage, Linkify.ALL);
                     holder.messagesMessage.setLinkTextColor(Color.BLUE);
                     holder.messagesMessage.setTypeface(Typeface.SANS_SERIF);
-                    if(recentsItemFormats.get(position).getDesc2().equals("y")) {
-                        holder.name.setText("Anonymous "+recentsItemFormats.get(position).getName());
+                    if (recentsItemFormats.get(position).getDesc2().equals("y")) {
+                        holder.name.setText("Anonymous " + recentsItemFormats.get(position).getName());
                         holder.avatarCircle.setImageResource(R.drawable.question_mark_icon);
                         holder.avatarCircle.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.darkgreyforavatarbg)));
                         holder.avatarCircle.setOnClickListener(null);
@@ -906,15 +867,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.setOpenComments();
                     holder.totalComments.setVisibility(View.GONE);
                     try {
-                        if(recentsItemFormats.get(position).getMsgComments()!=0){
+                        if (recentsItemFormats.get(position).getMsgComments() != 0) {
 
                             holder.totalComments.setVisibility(View.VISIBLE);
                             holder.totalComments.setText("" + recentsItemFormats.get(position).getMsgComments());
 
                         }
 
+
                     }catch (Exception e){
                         Log.e("Error: ", e.getMessage());
+
                     }
 
 
@@ -922,7 +885,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     post = "status";
                     clickableSpanFeature = null;
 
-                }else if(recentsItemFormats.get(position).getFeature().equals("Notices")) {
+                } else if (recentsItemFormats.get(position).getFeature().equals("Notices")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -941,8 +904,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         @Override
                         public void onClick(View v) {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
-                            meta.put("type","fromRecents");
+                            HashMap<String, String> meta = new HashMap<>();
+                            meta.put("type", "fromRecents");
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN);
                             counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -966,8 +929,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         @Override
                         public void onClick(View v) {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
-                            meta.put("type","fromRecents");
+                            HashMap<String, String> meta = new HashMap<>();
+                            meta.put("type", "fromRecents");
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN);
                             counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -987,9 +950,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         public void onClick(View widget) {
 
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
 
-                            meta.put("type","fromRecentsRV");
+                            meta.put("type", "fromRecentsRV");
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN);
@@ -1010,7 +973,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     };
 
 
-                }else if(recentsItemFormats.get(position).getFeature().equals("Forums")){
+                } else if (recentsItemFormats.get(position).getFeature().equals("Forums")) {
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -1033,16 +996,16 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.postConjunction.setText(" created a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
                     holder.forumNameCategorySentence.setText(recentsItemFormats.get(position).getName()
-                    + " in " + recentsItemFormats.get(position).getDesc());
+                            + " in " + recentsItemFormats.get(position).getDesc());
                     posted = " created a ";
                     post = "Forum";
                     clickableSpanFeature = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
 
-                            meta.put("type","fromRecentsRV");
+                            meta.put("type", "fromRecentsRV");
 
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_TAB_OPEN);
@@ -1071,6 +1034,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 spannableString.setSpan(foregroundColorSpan, sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 if(post.equals("status"))
                     foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
+
                 else
                     foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
                 spannableString.setSpan(foregroundColorSpan, sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -1082,7 +1046,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 holder.sentence.setMovementMethod(LinkMovementMethod.getInstance());
                 break;
             default:
-                BlankViewHolder blankViewHolder = (BlankViewHolder)holder2;
+                BlankViewHolder blankViewHolder = (BlankViewHolder) holder2;
 //                blankViewHolder = (BlankViewHolder)holder2;
                 break;
         }
@@ -1096,7 +1060,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     class Viewholder extends RecyclerView.ViewHolder {
 
         TextView feature, name, desc;
-//        SimpleDraweeView simpleDraweeView;
+        //        SimpleDraweeView simpleDraweeView;
         Intent i;
         String nam;
 
@@ -1112,6 +1076,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 noticesText,
                 pollQuestion,pollOptionA,pollOptionB,pollOptionC,
                 markerA, markerB, markerC;
+
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
                 postImage,
@@ -1130,7 +1095,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         long statusLikeCount;
         boolean statusLikeFlag;
         DatabaseReference mUserDetails;
-
 
 
         public Viewholder(View itemView) {
@@ -1215,17 +1179,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         i = new Intent(context, OpenEventDetail.class);
                         try {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta= new HashMap<>();
+                            HashMap<String, String> meta = new HashMap<>();
                             counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                             counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_OPEN_EVENT);
                             counterItemFormat.setTimestamp(System.currentTimeMillis());
-                            meta.put("type","fromRecentsRV");
+                            meta.put("type", "fromRecentsRV");
                             counterItemFormat.setMeta(meta);
                             CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                             counterPush.pushValues();
                             i.putExtra("id", recentsItemFormats.get(getAdapterPosition()).getId());
                             context.startActivity(i);
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             Log.d("Error Alert: ", e.getMessage());
                         }
 
@@ -1260,6 +1224,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                           } catch(Exception e) {
                               Log.d("Error Alert: ", e.getMessage());
                             }
+
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Shop")) {
                         try {
                             i = new Intent(context, Shop_detail.class);
@@ -1267,17 +1232,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             i.putExtra("Name", recentsItemFormats.get(getAdapterPosition()).getName());
                             i.putExtra("Imageurl", recentsItemFormats.get(getAdapterPosition()).getImageurl());
                             context.startActivity(i);
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             Log.d("Error Alert: ", e.getMessage());
                         }
-                    }else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("CabPool")){
+                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("CabPool")) {
 
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
-                        HashMap<String, String> meta= new HashMap<>();
+                        HashMap<String, String> meta = new HashMap<>();
                         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                         counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN_LIST_OF_PEOPLE);
                         counterItemFormat.setTimestamp(System.currentTimeMillis());
-                        meta.put("type","fromRecentsRV");
+                        meta.put("type", "fromRecentsRV");
                         counterItemFormat.setMeta(meta);
                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                         counterPush.pushValues();
@@ -1294,6 +1259,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         i.putExtra("postedByImageText", recentsItemFormats.get(getAdapterPosition()).getPostedBy().getImageThumb());
                         context.startActivity(i);
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){
+
                         try {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta = new HashMap<>();
@@ -1310,26 +1276,27 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             i.putExtra("infoneUserId", recentsItemFormats.get(getAdapterPosition()).getId());
                             i.putExtra("catID", recentsItemFormats.get(getAdapterPosition()).getDesc());
                             context.startActivity(i);
-                        } catch (Exception e){}
-                    } else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Forums")){
+                        } catch (Exception e) {
+                        }
+                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Forums")) {
 
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
-                        HashMap<String, String> meta= new HashMap<>();
+                        HashMap<String, String> meta = new HashMap<>();
                         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                         counterItemFormat.setUniqueID(CounterUtilities.KEY_FORUMS_CHANNEL_OPEN);
                         counterItemFormat.setTimestamp(System.currentTimeMillis());
-                        meta.put("type","fromRecentsRV");
-                        meta.put("catID",recentsItemFormats.get(getAdapterPosition()).getId());
-                        meta.put("channelID",recentsItemFormats.get(getAdapterPosition()).getKey());
+                        meta.put("type", "fromRecentsRV");
+                        meta.put("catID", recentsItemFormats.get(getAdapterPosition()).getId());
+                        meta.put("channelID", recentsItemFormats.get(getAdapterPosition()).getKey());
                         counterItemFormat.setMeta(meta);
                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                         counterPush.pushValues();
 
                         Intent intent = new Intent(context, ChatActivity.class);
-                        intent.putExtra("type","forums");
-                        intent.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getKey());
-                        intent.putExtra("tab",recentsItemFormats.get(getAdapterPosition()).getId());
-                        intent.putExtra("name",recentsItemFormats.get(getAdapterPosition()).getName());
+                        intent.putExtra("type", "forums");
+                        intent.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getKey());
+                        intent.putExtra("tab", recentsItemFormats.get(getAdapterPosition()).getId());
+                        intent.putExtra("name", recentsItemFormats.get(getAdapterPosition()).getName());
                         intent.putExtra("ref", FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("categories").child(recentsItemFormats.get(getAdapterPosition()).getKey()).toString());
                         context.startActivity(intent);
                     }else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Message")){
@@ -1361,8 +1328,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             desc.setTypeface(quicksandLight);
         }
 
-        public void deletePost(final String postID){
-
+        public void deletePost(final String postID) {
 
 
             deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -1377,7 +1343,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                 public void onClick(DialogInterface dialog, int which) {
 
                                     CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                    HashMap<String, String> meta= new HashMap<>();
+                                    HashMap<String, String> meta = new HashMap<>();
                                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                     counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_DELETE_POST);
                                     counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -1409,7 +1375,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     builder.setItems(options, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                             switch (which) {
+                            switch (which) {
                                 case 0:
                                     dialog2.show();
                                     dialog2.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.colorHighlight));
@@ -1435,7 +1401,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 public void onClick(View v) {
 
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
+                    HashMap<String, String> meta = new HashMap<>();
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                     counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_COMMENT);
                     counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -1457,14 +1423,14 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         }
 
-        public void setOpenStatusImage(final String name, final String imageURL){
+        public void setOpenStatusImage(final String name, final String imageURL) {
 
             postImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
-                    HashMap<String, String> meta= new HashMap<>();
+                    HashMap<String, String> meta = new HashMap<>();
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                     counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_OPEN_IMAGE);
                     counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -1483,7 +1449,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         }
 
-        public void setOpenNoticeImage(final String title, final String imageURL){
+        public void setOpenNoticeImage(final String title, final String imageURL) {
 
             noticesImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1492,7 +1458,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     CounterItemFormat counterItemFormat = new CounterItemFormat();
                     HashMap<String, String> meta = new HashMap<>();
 
-                    meta.put("type","fromRecentsRV");
+                    meta.put("type", "fromRecentsRV");
                     counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                     counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN_NOTICE);
                     counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -1564,9 +1530,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     statusLikeCount = dataSnapshot.getChildrenCount();
                     statusDatabase.child("likeCount").setValue(dataSnapshot.getChildrenCount());
 
-                    if(dataSnapshot.hasChild(user.getUid())){
+                    if (dataSnapshot.hasChild(user.getUid())) {
 //                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                        if(dataSnapshot.getChildrenCount()>0)
+                        if (dataSnapshot.getChildrenCount() > 0)
                             likeText.setText(String.valueOf(dataSnapshot.getChildrenCount()));
                         else
                             likeText.setText("");
@@ -1575,8 +1541,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         likeIcon.setColorFilter(context.getResources().getColor(R.color.deepPurple500));
                         statusLikeFlag=true;
                     }else {
+
 //                        boostBtn.setText(dataSnapshot.getChildrenCount() + " Boost");
-                        if(dataSnapshot.getChildrenCount()>0)
+                        if (dataSnapshot.getChildrenCount() > 0)
                             likeText.setText(String.valueOf(dataSnapshot.getChildrenCount()));
                         else
                             likeText.setText("");
@@ -1584,7 +1551,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
 //                        likeIcon.setBackground(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_24));
                         likeIcon.setColorFilter(itemView.getContext().getResources().getColor(R.color.icon_color));
-                        statusLikeFlag=false;
+                        statusLikeFlag = false;
                     }
                 }
 
@@ -1600,7 +1567,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     public void onClick(View v) {
 
                         CounterItemFormat counterItemFormat = new CounterItemFormat();
-                        HashMap<String, String> meta= new HashMap<>();
+                        HashMap<String, String> meta = new HashMap<>();
                         counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                         counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_LIKE);
                         counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -1608,13 +1575,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                         counterPush.pushValues();
 
-                        if(!statusLikeFlag){
+                        if (!statusLikeFlag) {
                             Map<String, Object> taskMap = new HashMap<String, Object>();
                             taskMap.put(user.getUid(), user.getUid());
 
                             statusDatabase.child("likeUids").updateChildren(taskMap);
-                            final NotificationSender notificationSender = new NotificationSender(itemView.getContext(),FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            final NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            final NotificationSender notificationSender = new NotificationSender(itemView.getContext(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            final NotificationItemFormat statusLikeNotification = new NotificationItemFormat(NotificationIdentifierUtilities.KEY_NOTIFICATION_STATUS_LIKED, FirebaseAuth.getInstance().getCurrentUser().getUid());
                             statusLikeNotification.setItemKey(key);
                             mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -1639,7 +1606,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                             Log.d("LIKESSSS", "1");
 
-                        }else {
+                        } else {
                             statusDatabase.child("likeUids").child(user.getUid()).removeValue();
 
                         }
@@ -1988,11 +1955,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     textArea.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(!(user.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || user.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                            if (!(user.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || user.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
 
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta= new HashMap<>();
-                                meta.put("type","fromRecentsRV");
+                                HashMap<String, String> meta = new HashMap<>();
+                                meta.put("type", "fromRecentsRV");
                                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                 counterItemFormat.setUniqueID(CounterUtilities.KEY_RECENTS_ADD_STATUS);
                                 counterItemFormat.setTimestamp(System.currentTimeMillis());
@@ -2002,8 +1969,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 Intent intent = new Intent(context, AddStatus.class);
                                 context.startActivity(intent);
-                            }else {
-                                newUserVerificationAlert.buildAlertCheckNewUser(user.getUserType(),"Add Status",context);
+                            } else {
+                                newUserVerificationAlert.buildAlertCheckNewUser(user.getUserType(), "Add Status", context);
                             }
                         }
                     });
@@ -2037,16 +2004,17 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     try {
                         int members_num = dataSnapshot.getValue(Integer.class);
-                        if(members_num>=10 && members_num<100)
-                            members_num = (members_num/10)*10;
-                        else if(members_num>=100 && members_num<1000)
-                            members_num = (members_num/100)*100;
-                        else if(members_num>=1000 && members_num<10000)
-                            members_num = (members_num/1000)*1000;
-                        else if(members_num>=10000)
+                        if (members_num >= 10 && members_num < 100)
+                            members_num = (members_num / 10) * 10;
+                        else if (members_num >= 100 && members_num < 1000)
+                            members_num = (members_num / 100) * 100;
+                        else if (members_num >= 1000 && members_num < 10000)
+                            members_num = (members_num / 1000) * 1000;
+                        else if (members_num >= 10000)
                             members_num = 10000;
                         totalMembers.setText(members_num + "+");
-                    }catch (Exception e){}
+                    } catch (Exception e) {
+                    }
                 }
 
                 @Override
@@ -2059,7 +2027,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    private class  BlankViewHolder extends  RecyclerView.ViewHolder{
+    private class BlankViewHolder extends RecyclerView.ViewHolder {
 
         public BlankViewHolder(View itemView) {
             super(itemView);
@@ -2073,9 +2041,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         HorizontalScrollView hsv;
         LinearLayout linearLayout;
-        RelativeLayout notices, events, cabpool, storeroom,shops, admin;
-        FrameLayout unreadCountStoreroomFL, unreadCountEventsFL,unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
-        TextView unreadCountStoreroomTV, unreadCountEventsTV,unreadCountShopsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
+        RelativeLayout notices, events, cabpool, storeroom, shops, admin;
+        FrameLayout unreadCountStoreroomFL, unreadCountEventsFL, unreadCountShopsFL, unreadCountCabpoolFL, unreadCountAdminPanelFL, unreadCountNoticesFL;
+        TextView unreadCountStoreroomTV, unreadCountEventsTV, unreadCountShopsTV, unreadCountCabpoolTV, unreadCountAdminPanelTV, unreadCountNoticesTV;
         Query mOtherFeatures;
 
         //for other features
@@ -2124,35 +2092,28 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                     final UserItemFormat userItem = dataSnapshot.getValue(UserItemFormat.class);
 
-                    if(!dataSnapshot.hasChild("userType")){
+                    if (!dataSnapshot.hasChild("userType")) {
                         Log.d("Try", "Set not verified");
-                       userItem.setUserType(UsersTypeUtilities.KEY_NOT_VERIFIED);
+                        userItem.setUserType(UsersTypeUtilities.KEY_NOT_VERIFIED);
                     }
                     //for admin
-                    if(dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN))
-                    {
-                        if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_ADMIN_PANEL))
-                        {
+                    if (dataSnapshot.hasChild("userType") && dataSnapshot.child("userType").getValue().toString().equals(UsersTypeUtilities.KEY_ADMIN)) {
+                        if (dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_ADMIN_PANEL)) {
                             final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_ADMIN_PANEL).getValue(Long.class);
                             NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_ADMIN_PANEL);
                             numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                                 @Override
                                 public void onCallBack(long value) {
-                                    if(value - current > 0)
-                                    {
+                                    if (value - current > 0) {
                                         Log.d(TAG, String.valueOf(value - current));
                                         unreadCountAdminPanelTV.setText(String.valueOf(value - current));
                                         unreadCountAdminPanelFL.setVisibility(View.VISIBLE);
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         unreadCountAdminPanelFL.setVisibility(View.GONE);
                                     }
                                 }
                             });
-                        }
-                        else
-                        {
+                        } else {
                             NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_ADMIN_PANEL);
                             numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                                 @Override
@@ -2163,27 +2124,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     }
                     //for storeroom
-                    if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_STOREROOM))
-                    {
+                    if (dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_STOREROOM)) {
                         final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_STOREROOM).getValue(Long.class);
                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_STOREROOM);
                         numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                             @Override
                             public void onCallBack(long value) {
-                                if(value - current > 0)
-                                {
+                                if (value - current > 0) {
                                     unreadCountStoreroomTV.setText(String.valueOf(value - current));
                                     unreadCountStoreroomFL.setVisibility(View.VISIBLE);
-                                }
-                                else
-                                {
+                                } else {
                                     unreadCountStoreroomFL.setVisibility(View.GONE);
                                 }
                             }
                         });
-                    }
-                    else
-                    {
+                    } else {
                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_STOREROOM);
                         numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                             @Override
@@ -2193,27 +2148,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         });
                     }
                     //for events
-                    if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_EVENTS))
-                    {
+                    if (dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_EVENTS)) {
                         final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_EVENTS).getValue(Long.class);
                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_EVENTS);
                         numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                             @Override
                             public void onCallBack(long value) {
-                                if(value - current > 0)
-                                {
+                                if (value - current > 0) {
                                     unreadCountEventsTV.setText(String.valueOf(value - current));
                                     unreadCountEventsFL.setVisibility(View.VISIBLE);
-                                }
-                                else
-                                {
+                                } else {
                                     unreadCountEventsFL.setVisibility(View.GONE);
                                 }
                             }
                         });
-                    }
-                    else
-                    {
+                    } else {
                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_EVENTS);
                         numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                             @Override
@@ -2224,27 +2173,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
 
                     //for shops
-                    if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_SHOPS))
-                    {
+                    if (dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_SHOPS)) {
                         final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_SHOPS).getValue(Long.class);
                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_SHOPS);
                         numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                             @Override
                             public void onCallBack(long value) {
-                                if(value - current > 0)
-                                {
+                                if (value - current > 0) {
                                     unreadCountShopsTV.setText(String.valueOf(value - current));
                                     unreadCountShopsFL.setVisibility(View.VISIBLE);
-                                }
-                                else
-                                {
+                                } else {
                                     unreadCountShopsFL.setVisibility(View.GONE);
                                 }
                             }
                         });
-                    }
-                    else
-                    {
+                    } else {
                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_SHOPS);
                         numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                             @Override
@@ -2255,27 +2198,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
 
                     //for cabpool
-                    if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_CABPOOL))
-                    {
+                    if (dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_CABPOOL)) {
                         final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_CABPOOL).getValue(Long.class);
                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_CABPOOL);
                         numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                             @Override
                             public void onCallBack(long value) {
-                                if(value - current > 0)
-                                {
+                                if (value - current > 0) {
                                     unreadCountCabpoolTV.setText(String.valueOf(value - current));
                                     unreadCountCabpoolFL.setVisibility(View.VISIBLE);
-                                }
-                                else
-                                {
+                                } else {
                                     unreadCountCabpoolFL.setVisibility(View.GONE);
                                 }
                             }
                         });
-                    }
-                    else
-                    {
+                    } else {
                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_CABPOOL);
                         numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                             @Override
@@ -2286,27 +2223,21 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
 
                     //for notices
-                    if(dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_NOTICES))
-                    {
+                    if (dataSnapshot.child("featuresUnreadCount").hasChild(FeatureDBName.KEY_NOTICES)) {
                         final long current = dataSnapshot.child("featuresUnreadCount").child(FeatureDBName.KEY_NOTICES).getValue(Long.class);
                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_NOTICES);
                         numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                             @Override
                             public void onCallBack(long value) {
-                                if(value - current > 0)
-                                {
+                                if (value - current > 0) {
                                     unreadCountNoticesTV.setText(String.valueOf(value - current));
                                     unreadCountNoticesFL.setVisibility(View.VISIBLE);
-                                }
-                                else
-                                {
+                                } else {
                                     unreadCountNoticesFL.setVisibility(View.GONE);
                                 }
                             }
                         });
-                    }
-                    else
-                    {
+                    } else {
                         NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(FeatureDBName.KEY_NOTICES);
                         numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                             @Override
@@ -2315,8 +2246,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             }
                         });
                     }
-                    if(userItem.getUsername()!=null) {
-                        if(userItem.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
+                    if (userItem.getUsername() != null) {
+                        if (userItem.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)) {
                             admin.setVisibility(View.VISIBLE);
                             admin.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -2331,13 +2262,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     events.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                 resetFeaturesUnreadCount(FeatureDBName.KEY_EVENTS, dataSnapshot);
                                 Intent intent = new Intent(context, TabbedEvents.class);
                                 context.startActivity(intent);
 
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta= new HashMap<>();
+                                HashMap<String, String> meta = new HashMap<>();
 
                                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                 counterItemFormat.setUniqueID(CounterUtilities.KEY_EVENTS_OPEN);
@@ -2346,8 +2277,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                 counterPush.pushValues();
-                            }else {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),"Events",context);
+                            } else {
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Events", context);
                             }
                         }
                     });
@@ -2355,13 +2286,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     storeroom.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                 resetFeaturesUnreadCount(FeatureDBName.KEY_STOREROOM, dataSnapshot);
                                 Intent intent = new Intent(context, TabStoreRoom.class);
                                 context.startActivity(intent);
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta= new HashMap<>();
-
+                                HashMap<String, String> meta = new HashMap<>();
 
 
                                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
@@ -2371,8 +2301,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                 counterPush.pushValues();
-                            }else {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),"Storeroom",context);
+                            } else {
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Storeroom", context);
                             }
 
                         }
@@ -2381,12 +2311,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     cabpool.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                 resetFeaturesUnreadCount(FeatureDBName.KEY_CABPOOL, dataSnapshot);
                                 Intent intent = new Intent(context, CabPoolAll.class);
                                 context.startActivity(intent);
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta= new HashMap<>();
+                                HashMap<String, String> meta = new HashMap<>();
 
                                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                 counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_OPEN);
@@ -2395,8 +2325,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                 counterPush.pushValues();
-                            }else {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),"Cab Pool",context);
+                            } else {
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Cab Pool", context);
                             }
 
                         }
@@ -2405,12 +2335,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     notices.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                 resetFeaturesUnreadCount(FeatureDBName.KEY_NOTICES, dataSnapshot);
                                 Intent intent = new Intent(context, Notices.class);
                                 context.startActivity(intent);
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta= new HashMap<>();
+                                HashMap<String, String> meta = new HashMap<>();
 
                                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                 counterItemFormat.setUniqueID(CounterUtilities.KEY_NOTICES_OPEN);
@@ -2419,8 +2349,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                 counterPush.pushValues();
-                            }else {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),"Notices",context);
+                            } else {
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Notices", context);
                             }
 
                         }
@@ -2429,12 +2359,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     shops.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                 resetFeaturesUnreadCount(FeatureDBName.KEY_SHOPS, dataSnapshot);
                                 Intent intent = new Intent(context, PoolActivity.class);
                                 context.startActivity(intent);
                                 CounterItemFormat counterItemFormat = new CounterItemFormat();
-                                HashMap<String, String> meta= new HashMap<>();
+                                HashMap<String, String> meta = new HashMap<>();
 
                                 counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
                                 counterItemFormat.setUniqueID(CounterUtilities.KEY_SHOPS_OPEN);
@@ -2443,8 +2373,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                                 CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                                 counterPush.pushValues();
-                            }else {
-                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),"Storeroom",context);
+                            } else {
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), "Storeroom", context);
                             }
 
                         }
@@ -2453,7 +2383,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     mOtherFeatures.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(flag) {
+                            if (flag) {
 
                                 for (final DataSnapshot shot : dataSnapshot.getChildren()) {
 
@@ -2468,11 +2398,11 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     otherFeatureItemLayout.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            if(!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))){
+                                            if (!(userItem.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItem.getUserType().equals(UsersTypeUtilities.KEY_PENDING))) {
                                                 Intent urlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.child("URL").getValue().toString()));
                                                 context.startActivity(urlIntent);
-                                            }else {
-                                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(),shot.child("name").getValue(String.class),context);
+                                            } else {
+                                                newUserVerificationAlert.buildAlertCheckNewUser(userItem.getUserType(), shot.child("name").getValue(String.class), context);
                                             }
 
                                         }
@@ -2501,48 +2431,48 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         }
 
-        public void setFeatureVisibility(CommunityFeatures communityFeatures){
+        public void setFeatureVisibility(CommunityFeatures communityFeatures) {
             try {
 
-                if (communityFeatures.getCabpool().equals("true")){
+                if (communityFeatures.getCabpool().equals("true")) {
                     cabpool.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     cabpool.setVisibility(View.GONE);
                 }
 
 
-                if (communityFeatures.getEvents().equals("true")){
+                if (communityFeatures.getEvents().equals("true")) {
                     events.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     events.setVisibility(View.GONE);
                 }
 
-                if (communityFeatures.getNotices().equals("true")){
+                if (communityFeatures.getNotices().equals("true")) {
                     notices.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     notices.setVisibility(View.GONE);
                 }
 
-                if (communityFeatures.getLinks().equals("true")){
+                if (communityFeatures.getLinks().equals("true")) {
 
-                }else {
+                } else {
 
                 }
 
-                if (communityFeatures.getStoreroom().equals("true")){
+                if (communityFeatures.getStoreroom().equals("true")) {
                     storeroom.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     storeroom.setVisibility(View.GONE);
                 }
 
-                if (communityFeatures.getShops().equals("true")){
+                if (communityFeatures.getShops().equals("true")) {
                     shops.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     shops.setVisibility(View.GONE);
                 }
 
 
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
 
@@ -2553,6 +2483,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         {
             if(dataSnapshot.child("featuresUnreadCount").hasChild(featureDBName) && dataSnapshot.child("featuresUnreadCount").child(featureDBName).getValue(Long.class) >= 0)
             {
+
                 NumberNotificationForFeatures numberNotificationForFeatures = new NumberNotificationForFeatures(featureDBName);
                 numberNotificationForFeatures.getCount(new NumberNotificationForFeatures.MyCallBack() {
                     @Override
@@ -2561,12 +2492,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         mUserDetails.child("featuresUnreadCount").child(featureDBName).setValue(value).continueWithTask(new Continuation<Void, Task<Long>>() {
                             @Override
                             public Task<Long> then(@NonNull Task<Void> task) throws Exception {
-                                if(task.isSuccessful())
-                                {
+                                if (task.isSuccessful()) {
                                     Log.d(TAG, "sucessful");
-                                }
-                                else
-                                {
+                                } else {
                                     Log.d(TAG, "unsuccessful");
                                     task.addOnFailureListener(new OnFailureListener() {
                                         @Override

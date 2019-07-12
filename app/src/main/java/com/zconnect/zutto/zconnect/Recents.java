@@ -60,9 +60,9 @@ public class Recents extends Fragment {
 
     private SwipeRefreshLayout swipeContainer;
 
-    private DatabaseReference homeDbRef,userReference,communityFeaturesRef;
+    private DatabaseReference homeDbRef, userReference, communityFeaturesRef;
     Query queryRef;
-    private ValueEventListener homeListener,userListener,communityFeaturesListener;
+    private ValueEventListener homeListener, userListener, communityFeaturesListener;
     @BindView(R.id.recent_progress)
     ProgressBar progressBar;
 
@@ -84,9 +84,11 @@ public class Recents extends Fragment {
     public void setOnHomeIconListener(Activity activity) {
         mCallback = (OnHomeIconListener) activity;
     }
+
     public interface OnHomeIconListener {
         public void getLayoutManager(LinearLayoutManager linearLayoutManager);
     }
+
     public Recents() {
         // Required empty public constructor
     }
@@ -165,7 +167,7 @@ public class Recents extends Fragment {
                     tempUser = new RecentsItemFormat();
                     tempUser = shot.getValue(RecentsItemFormat.class);
                     tempUser.setPostID(shot.getKey());
-                    if(shot.hasChild("feature")) {
+                    if (shot.hasChild("feature")) {
                         if (shot.hasChild("recentType")) {
                             normalPostsUsers.add(tempUser);
                         } else {
@@ -185,7 +187,7 @@ public class Recents extends Fragment {
                 Collections.sort(normalPosts, new Comparator<RecentsItemFormat>() {
                     @Override
                     public int compare(RecentsItemFormat o1, RecentsItemFormat o2) {
-                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()) ;
+                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
                     }
                 });
                 recentsItemFormats.addAll(normalPosts);
@@ -209,7 +211,7 @@ public class Recents extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 communityFeatures = dataSnapshot.getValue(CommunityFeatures.class);
 
-                adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity() ,communityFeatures, productLinearLayoutManager, recyclerView);
+                adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), communityFeatures, productLinearLayoutManager, recyclerView);
                 recyclerView.setAdapter(adapter);
 
             }
@@ -232,7 +234,7 @@ public class Recents extends Fragment {
                     tempUser = new RecentsItemFormat();
                     tempUser = shot.getValue(RecentsItemFormat.class);
                     tempUser.setPostID(shot.getKey());
-                    if(shot.hasChild("feature")) {
+                    if (shot.hasChild("feature")) {
                         if (shot.hasChild("recentType")) {
                             normalPostsHome.add(tempUser);
                         } else {
@@ -251,7 +253,7 @@ public class Recents extends Fragment {
                 Collections.sort(normalPosts, new Comparator<RecentsItemFormat>() {
                     @Override
                     public int compare(RecentsItemFormat o1, RecentsItemFormat o2) {
-                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis()) ;
+                        return Long.valueOf((Long) o2.getPostTimeMillis()).compareTo((Long) o1.getPostTimeMillis());
                     }
                 });
                 recentsItemFormats.addAll(normalPosts);
@@ -283,7 +285,7 @@ public class Recents extends Fragment {
 //                productLinearLayoutManager.scrollToPositionWithOffset(0,0);
 //            }
 //        });
-        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity() ,communityFeatures, productLinearLayoutManager, recyclerView);
+        adapter = new RecentsRVAdapter(getContext(), recentsItemFormats, (HomeActivity) getActivity(), communityFeatures, productLinearLayoutManager, recyclerView);
         recyclerView.setAdapter(adapter);
         communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);
 

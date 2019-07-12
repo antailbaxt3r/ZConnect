@@ -25,6 +25,28 @@
         android:theme="@style/AppTheme">
         <activity android:name=".OpenStatus"></activity>
 
+        <activity android:name=".AddMembersToForumActivity">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ShareToForum"
+            android:label="Share to Forums">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+                <data android:mimeType="text/*" />
+            </intent-filter>
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -231,7 +253,7 @@
         <activity
             android:name=".GalleryActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <receiver android:name=".InfoneSearchWidget">
             <intent-filter>
@@ -397,6 +419,7 @@
             android:label="@string/title_activity_cab_pool_locations"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".MakeAdmin"
             android:label="@string/title_activity_cab_pool_locations"
@@ -531,6 +554,7 @@
             android:label="Add a Forums Tab"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".addActivities.RequestForumTab"
             android:label="Request a Forums Tab"
