@@ -368,6 +368,38 @@
             android:orientation="vertical"
             android:layout_marginBottom="-5dp"
             android:layout_marginTop="-5dp">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/youtubelinklinearlayout"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:id="@+id/webvideo_layout"
+                    android:layout_width="250dp"
+                    android:layout_height="180dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp">
+                    <ImageView
+                        android:id="@+id/img_thumnail"
+                        android:layout_width="250dp"
+                        android:layout_height="180dp"
+                        android:layout_centerInParent="true"
+                        android:scaleType="fitXY" />
+
+                    <!-- <ImageView
+                        android:id="@+id/iv_play_pause"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/mr_media_play_dark" /> -->
+                </RelativeLayout>
+
+            </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/bannerRecentItem"
                 android:layout_width="match_parent"
