@@ -669,7 +669,6 @@ public class InfoneProfileActivity extends BaseActivity {
                 userDetails.setName(userItem.getUsername());
                 userDetails.setPhonenumber(userItem.getMobileNumber());
                 userDetails.setUserUID(userItem.getUserUID());
-                userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
 
                 HashMap<String,UsersListItemFormat> userList = new HashMap<String,UsersListItemFormat>();
                 userList.put(infoneUserUID,userDetails);
