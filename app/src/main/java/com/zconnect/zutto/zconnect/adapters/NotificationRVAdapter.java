@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zconnect.zutto.zconnect.NotificationImage;
+import com.zconnect.zutto.zconnect.NotificationNoImage;
 import com.zconnect.zutto.zconnect.R;
 
 import java.util.ArrayList;
@@ -39,13 +40,13 @@ public class NotificationRVAdapter extends RecyclerView.Adapter<NotificationRVAd
         holder.notif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*if (holder.notif.getText()=="Text Notification"){
+                if (holder.notif.getText()=="Text Notification"){
                     Intent nottif_no_image;
                     nottif_no_image = new Intent(context,NotificationNoImage.class);
                     nottif_no_image.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(nottif_no_image);
-                }*/
-                if (holder.notif.getText()=="Send Text/Image Notification"){
+                }
+                if (holder.notif.getText()=="Image Notification"){
                     Intent notif_image = new Intent(context,NotificationImage.class);
                     notif_image.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(notif_image);

@@ -20,8 +20,6 @@ import com.zconnect.zutto.zconnect.R;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.utilities.RequestTypeUtilities;
 
-import java.util.HashMap;
-
 public class RequestForumTab extends BaseActivity {
 
     private MaterialEditText inputTabName;
@@ -64,32 +62,18 @@ public class RequestForumTab extends BaseActivity {
                 {
                     final DatabaseReference newPush=requestForumTabs.push();
 
-                    final HashMap<String, Object> requestMap = new HashMap<>();
-                    requestMap.put("Type",RequestTypeUtilities.TYPE_FORUM_TAB);
-                    requestMap.put("key",newPush.getKey());
-                    requestMap.put("Name",inputTabName.getText().toString());
-                    requestMap.put("PostTimeMillis",System.currentTimeMillis());
-
-                    /*newPush.child("Type").setValue(RequestTypeUtilities.TYPE_FORUM_TAB);
+                    newPush.child("Type").setValue(RequestTypeUtilities.TYPE_FORUM_TAB);
                     newPush.child("key").setValue(newPush.getKey());
                     newPush.child("Name").setValue(inputTabName.getText().toString());
                     Long postTimeMillis = System.currentTimeMillis();
-                    newPush.child("PostTimeMillis").setValue(postTimeMillis);*/
-
+                    newPush.child("PostTimeMillis").setValue(postTimeMillis);
                     mPostedByDetails.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            /*newPush.child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
+                            newPush.child("PostedBy").child("Username").setValue(dataSnapshot.child("username").getValue().toString());
                             //needs to be changed after image thumbnail is put
                             newPush.child("PostedBy").child("ImageThumb").setValue(dataSnapshot.child("imageURLThumbnail").getValue().toString());
-                            newPush.child("PostedBy").child("UID").setValue(dataSnapshot.child("userUID").getValue().toString());*/
-                            final HashMap<String,Object> postedBy = new HashMap<>();
-                            postedBy.put("Username",dataSnapshot.child("username").getValue().toString());
-                            postedBy.put("ImageThumb",dataSnapshot.child("imageURLThumbnail").getValue().toString());
-                            postedBy.put("UID",dataSnapshot.child("userUID").getValue().toString());
-
-                            requestMap.put("PostedBy",postedBy);
-                            newPush.setValue(requestMap);
+                            newPush.child("PostedBy").child("UID").setValue(dataSnapshot.child("userUID").getValue().toString());
                         }
 
                         @Override

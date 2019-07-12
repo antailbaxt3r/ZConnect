@@ -94,18 +94,12 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DateFormat;
-
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
-
-import com.squareup.picasso.Picasso;
 
 import static android.graphics.Typeface.BOLD;
 import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
@@ -123,10 +117,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static int firstVisibleInRV;
     LinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
-    String videoId;
     private Long count;
     private boolean hasNotSelected = false;
-
 
     public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, CommunityFeatures communityFeatures, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView) {
         this.context = context;
@@ -293,7 +285,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.VISIBLE);
-                    holder.youtubeLink.setVisibility(View.GONE);
 
                     Picasso.with(context).load(recentsItemFormats.get(position).getImageurl()).into(holder.bannerImage);
 //                    holder.bannerImage.setImageURI(recentsItemFormats.get(position).getImageurl());
@@ -354,7 +345,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
-                    holder.youtubeLink.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_24dp));
@@ -407,7 +397,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.eventsRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
-                    holder.youtubeLink.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_24dp));
@@ -566,7 +555,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.storeroomRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
-                    holder.youtubeLink.setVisibility(View.GONE);
 
 //            Drawable[] layers = new Drawable[2];
 //            layers[0] = context.getResources().getDrawable(R.drawable.feature_circle);
@@ -676,7 +664,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.cabpoolRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
-                    holder.youtubeLink.setVisibility(View.GONE);
 
                     holder.postConjunction.setText(" started a ");
                     holder.post.setText(recentsItemFormats.get(position).getFeature());
@@ -786,7 +773,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.messagesRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
-                    holder.youtubeLink.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_24dp));
@@ -893,28 +879,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         Log.e("Error: ", e.getMessage());
 
                     }
-                    
-                    //youtube Link code
-                    if(recentsItemFormats.get(position).getDesc().length()>16) {
-                        if ((recentsItemFormats.get(position).getDesc().substring(0, 17).equals("https://youtu.be/")) || (recentsItemFormats.get(position).getDesc().substring(0,22).equals("https://m.youtube.com/"))) {
-                            holder.youtubeLink.setVisibility(View.VISIBLE);
-                            try {
-                                videoId = recentsItemFormats.get(position).getDesc().substring(0, 17).equals("https://youtu.be/") ? recentsItemFormats.get(position).getDesc().substring(17) : recentsItemFormats.get(position).getDesc().substring(30);
 
-                                Log.e("VideoId is->", "" + videoId);
-
-                                String img_url = "http://img.youtube.com/vi/" + videoId + "/0.jpg"; // this is link which will give u thumnail image of that video
-
-                                // picasso jar file download image for u and set image in imagview
-
-                                Picasso.with(context).load(img_url).into(holder.iv_youtube_thumnail);
-
-                            }
-                    catch (Exception e) { e.printStackTrace(); }
-                        }
-                        else
-                            holder.youtubeLink.setVisibility(View.GONE);
-                    }
 
                     posted = "  wrote a ";
                     post = "status";
@@ -931,7 +896,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.GONE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.VISIBLE);
-                    holder.youtubeLink.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_24));
@@ -1020,7 +984,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.forumsRecentItem.setVisibility(View.VISIBLE);
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
-                    holder.youtubeLink.setVisibility(View.GONE);
 
                     holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
                     holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_24dp));
@@ -1120,11 +1083,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 productImage,
                 bannerImage,
                 noticesImage;
-        ImageView featureIcon,iv_youtube_thumnail,iv_play;
-
+        ImageView featureIcon;
 
         ImageButton deleteButton;
-
 
         LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,pollLinearLayout,
                 pollAYes, pollANo, pollBYes, pollBNo, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult;
@@ -1193,9 +1154,6 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             productImage = (SimpleDraweeView) itemView.findViewById(R.id.storeroomRecentItem_image);
             messagesRecentItem = (LinearLayout) itemView.findViewById(R.id.messagesRecentItem);
             messagesMessage = (TextView) itemView.findViewById(R.id.messagesRecentItem_message);
-            youtubeLink = itemView.findViewById(R.id.youtubelinklinearlayout);
-            iv_youtube_thumnail=(ImageView)itemView.findViewById(R.id.img_thumnail);
-            //iv_play=(ImageView)itemView.findViewById(R.id.iv_play_pause);
             forumsRecentItem = (LinearLayout) itemView.findViewById(R.id.forumsRecentItem);
             forumNameCategorySentence = (TextView) itemView.findViewById(R.id.forum_name_with_category_sentence);
             postImage = (SimpleDraweeView) itemView.findViewById(R.id.messagesRecentItem_image);
