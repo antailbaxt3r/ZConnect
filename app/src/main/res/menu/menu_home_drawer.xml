@@ -80,4 +80,10 @@
             android:icon="@drawable/ic_bug_report_grey_24dp"
             android:name="Report Bug / Feedback" />
     </group>
+    <item
+        android:title="App Tour"
+        android:iconTint="@color/black"
+        android:id="@+id/app_tour_btn"
+        android:icon="@drawable/ic_info_outline_white_24dp"
+        android:name="App Tour"/>
 </menu>

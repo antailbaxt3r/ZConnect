@@ -11,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import android.widget.LinearLayout;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,7 +25,6 @@ import com.zconnect.zutto.zconnect.itemFormats.UserItemFormat;
 import com.zconnect.zutto.zconnect.utilities.RecentTypeUtilities;
 
 import java.util.HashMap;
-
 public class CreatePoll extends BaseActivity {
     EditText pollQuestion;
     EditText pollOptionA;
@@ -42,6 +43,12 @@ public class CreatePoll extends BaseActivity {
         setContentView(R.layout.activity_create_poll);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         progressDialog = new ProgressDialog(this);
         setActionBarTitle("Create a Poll");
@@ -119,6 +126,7 @@ public class CreatePoll extends BaseActivity {
                     newPoll.child("Options").child("OptionA").setValue(pollOptionA.getText().toString().trim());
                     newPoll.child("Options").child("OptionB").setValue(pollOptionB.getText().toString().trim());
                     newPoll.child("Options").child("OptionC").setValue(pollOptionC.getText().toString().trim());
+
                     newPoll.child("feature").setValue("CreatePoll");
                     newPoll.child("recentType").setValue(RecentTypeUtilities.KEY_RECENT_NORMAL_POST_STR);
                     newPoll.child("PostTimeMillis").setValue(System.currentTimeMillis());*/
@@ -127,6 +135,7 @@ public class CreatePoll extends BaseActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserItemFormat user = dataSnapshot.getValue(UserItemFormat.class);
+
 
                             final HashMap<String, Object> postedByDetails = new HashMap<>();
                             postedByDetails.put("Username",user.getUsername());

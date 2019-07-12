@@ -143,9 +143,12 @@ public class InfoneProfileActivity extends BaseActivity {
     private Button invalidButton;
     private TextView thankYou;
 
+    private TextView infoneCategory;
+
     //Elements for personal chat
     RelativeLayout personalChat;
     private String infoneUserUID;
+
 
     UserItemFormat infoneUserDetails = new UserItemFormat();
 
@@ -240,7 +243,7 @@ public class InfoneProfileActivity extends BaseActivity {
         validLl = findViewById(R.id.valid_ll);
         invalidButton = findViewById(R.id.invalid_button);
         thankYou = findViewById(R.id.thank_you_tv);
-
+        infoneCategory = findViewById(R.id.infonecategory);
 
         verifyDialog = new Dialog(this);
         verifyDialog.setContentView(R.layout.dialog_validate_number);
@@ -320,6 +323,18 @@ public class InfoneProfileActivity extends BaseActivity {
 
         updateViews();
         Log.e(TAG, "inside" + infoneUserId);
+
+        databaseReferenceInfone.child("categoriesInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                infoneCategory.setText(dataSnapshot.child(catID).child("name").getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         listener = new ValueEventListener() {
             @Override

@@ -30,7 +30,7 @@
                 android:layout_centerHorizontal="true"
                 android:paddingTop="3dp"
                 android:textSize="7sp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/deepPurple500"/>
 
         </RelativeLayout>
     </LinearLayout>

@@ -128,7 +128,7 @@ public class Recents extends Fragment {
         queryRef.keepSynced(true);
 
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshContainer);
-        swipeContainer.setColorSchemeResources(R.color.colorPrimary, R.color.colorHighlight);
+        swipeContainer.setColorSchemeResources(R.color.black, R.color.deepPurple500, R.color.colorHighlight);
 
         progressBar.setVisibility(VISIBLE);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -140,6 +140,7 @@ public class Recents extends Fragment {
                     public void run() {
                         // cancel the Visual indication of a refresh
                         swipeContainer.setRefreshing(false);
+
                         queryRef.addListenerForSingleValueEvent(homeListener);
                         userReference.addListenerForSingleValueEvent(userListener);
                         communityFeaturesRef.addListenerForSingleValueEvent(communityFeaturesListener);

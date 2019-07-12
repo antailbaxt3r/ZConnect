@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.Rectangle;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -26,6 +29,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +40,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +61,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
 import com.zconnect.zutto.zconnect.commonModules.CounterPush;
 import com.zconnect.zutto.zconnect.commonModules.newUserVerificationAlert;
+import com.zconnect.zutto.zconnect.fragments.ForumsFragment;
 import com.zconnect.zutto.zconnect.fragments.JoinedForums;
 import com.zconnect.zutto.zconnect.fragments.MyProfileFragment;
 import com.zconnect.zutto.zconnect.fragments.InAppNotificationsFragment;
@@ -70,6 +76,7 @@ import com.zconnect.zutto.zconnect.utilities.UserUtilities;
 import com.zconnect.zutto.zconnect.utilities.UsersTypeUtilities;
 import com.zconnect.zutto.zconnect.fragments.HomeBottomSheet;
 
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
@@ -78,6 +85,11 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.toptas.fancyshowcase.FancyShowCaseQueue;
+import me.toptas.fancyshowcase.FancyShowCaseView;
+import me.toptas.fancyshowcase.FocusShape;
+import me.toptas.fancyshowcase.listener.DismissListener;
+import me.toptas.fancyshowcase.listener.OnViewInflateListener;
 
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, Recents.OnHomeIconListener {
 
@@ -122,6 +134,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private Fragment recent, forums, shop, myProfile, notifications, active;
     public Fragment infone;
     private FragmentManager fm;
+    LinearLayout recentView;
+    private BottomNavigationItemView home, forum, add, infoneb,noti;
 
     public Boolean flag = false;
     public Boolean setTitleFlag = true;
@@ -145,6 +159,117 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         isFabOpen = false;
     }
 
+    private void showAppTour(){
+
+        recentView = findViewById(R.id.recentView);
+
+        FancyShowCaseView welcome = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .customView(R.layout.welcome_zconnect, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        FancyShowCaseView home = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(tabImage[0])
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_home, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                     }
+                })
+                .build();
+
+
+
+        FancyShowCaseView forums = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(tabImage[1])
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_forums, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        FancyShowCaseView add = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(tabImage[2])
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_add, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        FancyShowCaseView infone = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(tabImage[3])
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_infone, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        FancyShowCaseView notifications = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusOn(tabImage[4])
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_notifications, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int dpi = (int)(metrics.density);
+        int x = 50*dpi;
+        int y = 160*dpi;
+        int w = 1100*dpi;
+        int h = 120*dpi;
+        FancyShowCaseView features = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .focusRectAtPosition(x, y, w, h)
+                .fitSystemWindows(true)
+                .customView(R.layout.app_tour_features, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .focusShape(FocusShape.ROUNDED_RECTANGLE)
+                .roundRectRadius(15)
+                .build();
+
+        FancyShowCaseView end = new FancyShowCaseView.Builder(this)
+                .backgroundColor(R.color.deeppurple700)
+                .customView(R.layout.app_tour_end, new OnViewInflateListener() {
+                    @Override
+                    public void onViewInflated(@NotNull View view) {
+                    }
+                })
+                .build();
+
+        FancyShowCaseQueue queue = new FancyShowCaseQueue()
+                .add(welcome)
+                .add(home)
+                .add(forums)
+                .add(add)
+                .add(infone)
+                .add(notifications)
+                .add(features)
+                .add(end);
+
+        queue.show();
+
+    }
 
     @SuppressLint("ApplySharedPref")
     @Override
@@ -178,6 +303,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         navigationView.setItemIconTintList(null);
 
+
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -204,6 +330,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         FirebaseMessaging.getInstance().subscribeToTopic("ZCM");
         initListeners();
         tabs();
+    /////////////////////////////////////////////////////////////////////////////////////
+        boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                .getBoolean("isFirstRun", true);
+
+        if(isFirstRun){
+            showAppTour();
+        }
+
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+                .putBoolean("isFirstRun", false).commit();
+    /////////////////////////////////////////////////////////////////////////////////////
 
 //        Log.d("USEROBJECT",UserUtilities.currentUser.toString());
 
@@ -477,7 +614,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                             fm.beginTransaction().hide(active).show(forums).commit();
                             active = forums;
-                            //getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, forums).commit();
                         }
                         break;
                     }
@@ -529,7 +666,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                             fm.beginTransaction().hide(active).show(infone).commit();
                             active = infone;
-                            //getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, infone).commit();
                         }
                         break;
                     }
@@ -563,7 +700,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
                         fm.beginTransaction().hide(active).show(notifications).commit();
                         active = notifications;
-                        //getSupportFragmentManager().beginTransaction().replace(R.id.container, notifications).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, notifications).commit();
                         //getSupportFragmentManager().beginTransaction().replace(R.id.container, myProfile).commit();
                         break;
                     }
@@ -1262,6 +1399,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             default: {
                 return false;
             }
+
+            case R.id.app_tour_btn:
+                drawer.closeDrawer(GravityCompat.START);
+                showAppTour();
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -1475,4 +1616,5 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     public void getLayoutManager(LinearLayoutManager linearLayoutManager) {
         recentsLinearLayoutManager = linearLayoutManager;
     }
+
 }
