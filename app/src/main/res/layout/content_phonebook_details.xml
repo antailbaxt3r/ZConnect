@@ -48,7 +48,7 @@
                     android:ems="10"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textColorHint="@color/secondaryText"
                     android:textSize="16sp"/>
@@ -93,7 +93,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textSize="18sp"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textStyle="bold" />
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -107,7 +107,7 @@
                                         android:gravity="center_vertical"
                                         android:minWidth="32dp"
                                         android:text="Points"
-                                        android:textColor="@color/white"
+                                        android:textColor="@color/black"
                                         android:textSize="14sp" />
                                 </LinearLayout>
                             </LinearLayout>
@@ -124,7 +124,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textSize="18sp"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textStyle="bold"/>
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -147,7 +147,7 @@
                                         android:gravity="center_vertical"
                                         android:minWidth="32dp"
                                         android:text="Likes"
-                                        android:textColor="@color/white"
+                                        android:textColor="@color/black"
                                         android:textSize="14sp" />
                                 </LinearLayout>
                             </LinearLayout>
@@ -165,7 +165,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textSize="18sp"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textStyle="bold"/>
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -189,7 +189,7 @@
                                         android:gravity="center_vertical"
                                         android:minWidth="32dp"
                                         android:text="Loves"
-                                        android:textColor="@color/white"
+                                        android:textColor="@color/black"
                                         android:textSize="14sp" />
                                 </LinearLayout>
                             </LinearLayout>
@@ -201,8 +201,8 @@
                             android:text="User Type"
                             android:gravity="center"
                             android:layout_gravity="center"
-                            android:textColor="@color/primaryText"
-                            android:background="@drawable/round_button_simple"
+                            android:textColor="@color/white"
+                            android:background="@drawable/round_button_primary"
                             android:textSize="12sp"
                             android:layout_marginTop="@dimen/margin_top_between_non_similar_views"
                             android:paddingStart="@dimen/button_padding_start_end"
@@ -211,6 +211,11 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/horizontalLine"
+                android:layout_margin="10dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -255,22 +260,23 @@
                                 android:id="@+id/ib_call_contact_item"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
-                                android:src="@drawable/ic_phone_black_24dp"
+                                android:src="@drawable/ic_phone_outline_24dp"
                                 android:visibility="visible" />
                         </LinearLayout>
                         <Button
                             android:id="@+id/show_cum_request_contact_button"
                             android:layout_width="0dp"
                             android:layout_weight="0.55"
-                            android:layout_height="25dp"
+                            android:layout_height="30dp"
+                            android:textSize="12sp"
                             android:background="@drawable/round_button_primary"
                             android:layout_marginEnd="@dimen/margin_small"
                             android:text="@string/show_contact"
                             android:textColor="@color/white"
                             android:paddingStart="@dimen/button_padding_start_end"
                             android:paddingEnd="@dimen/button_padding_start_end"
-                            android:visibility="gone"
                             android:layout_gravity="center"
+                            android:visibility="gone"
                             style="?android:attr/borderlessButtonStyle" />
                     </LinearLayout>
                 </LinearLayout>
@@ -332,7 +338,7 @@
                                 android:id="@+id/mailbutton"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
-                                android:src="@drawable/ic_email_black_24dp" />
+                                android:src="@drawable/ic_mail_outline_purple_24dp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -413,13 +419,13 @@
                         android:text=""
                         android:clickable="false"
                         android:textSize="16sp"
-                        android:textColor="@color/colorPrimaryDark"
+                        android:textColor="@color/deepPurple500"
                         android:visibility="gone"
                         TagsEditText:allowSpaceInTag="true"
                         TagsEditText:tagsBackground="@drawable/square"
                         TagsEditText:tagsCloseImageLeft="@drawable/dot"
                         TagsEditText:tagsCloseImagePadding="@dimen/defaultTagsCloseImagePadding"
-                        TagsEditText:tagsTextColor="@color/colorPrimaryDark"
+                        TagsEditText:tagsTextColor="@color/deeppurple700"
                         TagsEditText:tagsTextSize="@dimen/defaultTagsTextSize"
                         android:layout_marginTop="@dimen/margin_top_between_similar_views" />
                 </LinearLayout>

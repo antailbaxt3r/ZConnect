@@ -32,7 +32,7 @@
             <!--android:icon="@drawable/ic_place_red"-->
             <!--android:name="Campus Map" />-->
         <item
-            android:title="My Notifications"
+            android:title="Notifications Settings"
             android:id="@+id/Noti_Settings"
             android:icon="@drawable/ic_notifications_grey_24dp"
             android:name="Notifications"/>
@@ -75,7 +75,7 @@
             android:icon="@drawable/ic_power_settings_new_grey_24dp"
             android:name="Sign Out" />
         <item
-            android:title="Report Bug"
+            android:title="Report Bug / Feedback"
             android:id="@+id/bugReport"
             android:icon="@drawable/ic_bug_report_grey_24dp"
             android:name="Report Bug / Feedback" />

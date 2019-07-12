@@ -53,8 +53,9 @@ public class AboutUs extends BaseActivity {
         // Start loading the ad in the background.
         mAdView.loadAd(adRequest);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
+        toolbar.setTitle("About Us");
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override

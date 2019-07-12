@@ -115,7 +115,7 @@
                             android:background="@drawable/round_button_simple"
                             android:text="Join"
                             android:textSize="12sp"
-                            android:textColor="@color/colorPrimary"
+                            android:textColor="@color/deepPurple500"
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_gravity="end" />
 

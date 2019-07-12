@@ -129,6 +129,7 @@
             android:label="@string/title_activity_shop_list"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".OpenUserDetail"
             android:exported="true"
@@ -513,6 +514,7 @@
             android:label="Notices"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".addActivities.AddNotices"
             android:label="Add Notices"
@@ -557,6 +559,11 @@
         <activity
             android:name=".addActivities.RequestForumTab"
             android:label="Request a Forums Tab"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".addActivities.CreatePoll"
+            android:label="Create a Poll"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 

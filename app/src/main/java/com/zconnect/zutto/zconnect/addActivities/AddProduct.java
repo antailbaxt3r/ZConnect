@@ -103,13 +103,17 @@ public class AddProduct extends BaseActivity implements TagsEditText.TagsEditLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toolbar toolbar = findViewById(R.id.toolbar_app_bar_home);
         isAsk = getIntent().getStringExtra("type").equals("ASK");
-        if(isAsk)
+        if(isAsk){
             setContentView(R.layout.activity_add_product_ask);
-        else
+            setTitle("Ask For Product");
+        }
+        else {
             setContentView(R.layout.activity_add_product);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
-        setSupportActionBar(toolbar);
+            setTitle("Sell Product");
+        }
+        setToolbar();
         intentHandle = new IntentHandle();
 
         if (toolbar != null) {

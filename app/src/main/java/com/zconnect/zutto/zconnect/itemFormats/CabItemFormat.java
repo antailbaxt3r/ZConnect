@@ -1,5 +1,18 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
+import android.support.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Vector;
+
+import static com.zconnect.zutto.zconnect.commonModules.BaseActivity.communityReference;
+
 /**
  * Created by shubhamk on 26/7/17.
  */
@@ -25,10 +38,14 @@ public class CabItemFormat {
     private String forumUID;
     private int from;
     private int to;
+    private HashMap<String, UsersListItemFormat> usersListItemFormats;
+    private PostedByDetails PostedBy;
     private long PostTimeMillis;
 
 
-    public CabItemFormat(String source, String destination, String date, String details, String time, String key,String DT,int from,int to, long PostTimeMillis) {
+
+    public CabItemFormat(String source, HashMap<String, UsersListItemFormat> usersListItemFormats, PostedByDetails PostedBy, String destination, String date, String details, String time, String key, String DT, int from, int to, long PostTimeMillis) {
+
         this.source = source;
         this.destination = destination;
         this.date = date;
@@ -39,9 +56,20 @@ public class CabItemFormat {
         this.from=from;
         this.to=to;
         this.PostTimeMillis = PostTimeMillis;
+        this.PostedBy = PostedBy;
+        this.usersListItemFormats = usersListItemFormats;
+
     }
 
     public CabItemFormat() {
+    }
+
+    public PostedByDetails getPostedBy() {
+        return PostedBy;
+    }
+
+    public void setPostedBy(PostedByDetails postedBy) {
+        PostedBy = postedBy;
     }
 
     public String getSource() {
@@ -105,6 +133,7 @@ public class CabItemFormat {
     }
 
     public String getKey() {
+
         return key;
     }
 
@@ -115,6 +144,14 @@ public class CabItemFormat {
     public long getPostTimeMillis() { return this.PostTimeMillis; }
 
     public void setPostTimeMillis(long PostTimeMillis) { this.PostTimeMillis = PostTimeMillis; }
+
+    public HashMap<String, UsersListItemFormat> getUsersListItemFormats() {
+        return usersListItemFormats;
+    }
+
+    public void setUsersListItemFormats(HashMap<String, UsersListItemFormat> usersListItemFormats) {
+        this.usersListItemFormats = usersListItemFormats;
+    }
 //
 //    public Vector<UsersListItemFormat> getCabListItemFormats() {
 //        return cabListItemFormats;

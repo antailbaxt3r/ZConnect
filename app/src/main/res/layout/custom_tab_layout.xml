@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:paddingTop="3dp"
-                android:textSize="7dp"
+                android:textSize="7sp"
                 android:textColor="@color/white"/>
 
         </RelativeLayout>

@@ -17,9 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -58,13 +58,12 @@ public class CabPoolAll extends BaseActivity {
     TreeMap<String, CabItemFormat> treeMap = new TreeMap<>();
     Vector<CabItemFormat> vector_fetched = new Vector<>();
     Vector<CabItemFormat> vector_final = new Vector<>();
-    TextView error;
     String DT;
     View.OnClickListener onEmpty;
     ValueEventListener allPools;
-    ProgressBar progressBar;
     FloatingActionButton fab;
     TextView noCabpoolText;
+    private ShimmerFrameLayout shimmerFrameLayoutCabpool;
 
     private SharedPreferences communitySP;
     public String communityReference;
@@ -124,8 +123,9 @@ public class CabPoolAll extends BaseActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -161,13 +161,12 @@ public class CabPoolAll extends BaseActivity {
         // Inflate the layout for this fragment
 //        View view = inflater.inflate(R.layout.fragment_cab_pool_main, container, false);
         recyclerView = (RecyclerView) findViewById(R.id.pool_main_rv);
-        progressBar = (ProgressBar) findViewById(R.id.fragment_cab_pool_main_progress_circle);
         noCabpoolText = (TextView) findViewById(R.id.no_cabpool_text_fragment_cab_pooling);
-        error = (TextView) findViewById(R.id.message);
+        shimmerFrameLayoutCabpool = findViewById(R.id.shimmer_view_container_cabpool);
         cabPoolRVAdapter = new CabPoolRVAdapter(CabPoolAll.this, vector_final);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 1));
         recyclerView.setAdapter(cabPoolRVAdapter);
-        progressBar.setVisibility(View.VISIBLE);
+        shimmerFrameLayoutCabpool.startShimmerAnimation();
         recyclerView.setVisibility(View.INVISIBLE);
         communitySP = CabPoolAll.this.getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
@@ -231,6 +230,7 @@ public class CabPoolAll extends BaseActivity {
                             vector_fetched.add(shot.getValue(CabItemFormat.class));
                         }
                     } catch (Exception e) {
+                        Log.d("CHOOLO", e.getMessage());
                     }
                 }
 
@@ -266,18 +266,15 @@ public class CabPoolAll extends BaseActivity {
                 if (vector_final.size() == 0) {
                     recyclerView.setVisibility(View.GONE);
                     noCabpoolText.setVisibility(View.VISIBLE);
-                    error.setVisibility(View.VISIBLE);
-                    error.setOnClickListener(onEmpty);
 
                 } else {
                     recyclerView.setVisibility(View.VISIBLE);
                     noCabpoolText.setVisibility(View.GONE);
-                    error.setVisibility(View.GONE);
                     recyclerView.setAdapter(cabPoolRVAdapter);
                     cabPoolRVAdapter.notifyDataSetChanged();
                 }
-                progressBar.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
+                shimmerFrameLayoutCabpool.stopShimmerAnimation();
+                shimmerFrameLayoutCabpool.setVisibility(View.INVISIBLE);
                 if(viaDynamicLinkFlag)
                 {
                     LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -288,16 +285,9 @@ public class CabPoolAll extends BaseActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                progressBar.setVisibility(View.GONE);
+                shimmerFrameLayoutCabpool.stopShimmerAnimation();
+                shimmerFrameLayoutCabpool.setVisibility(View.INVISIBLE);
                 recyclerView.setVisibility(View.VISIBLE);
-            }
-        };
-
-        onEmpty = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CabPoolAll.this, AddCabPool.class);
-                startActivity(intent);
             }
         };
 

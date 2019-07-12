@@ -47,6 +47,9 @@ public class NewRequestRVAdapter extends RecyclerView.Adapter<newRequestViewHold
             holder.setAcceptDeclineButtonForLocations(newRequestItemFormats.get(position).getKey());
         else if(newRequestItemFormats.get(position).getType().equals(RequestTypeUtilities.TYPE_FORUM_TAB))
             holder.setAcceptDeclineButtonForForumTabs(newRequestItemFormats.get(position).getKey());
+
+        holder.postedByNameInLocation.setText(newRequestItemFormats.get(position).getPostedBy().getUsername());
+        holder.postedByImageLocation.setImageURI(newRequestItemFormats.get(position).getPostedBy().getImageThumb());
     }
 
     @Override

@@ -155,7 +155,7 @@ public class CreateForum extends BaseActivity {
 
 
         setContentView(R.layout.activity_create_forum);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
         intentHandle = new IntentHandle();
 

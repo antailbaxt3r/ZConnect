@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -14,7 +15,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
@@ -122,6 +125,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static int firstVisibleInRV;
     LinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
+    private Long count;
+    private boolean hasNotSelected = false;
 
     public RecentsRVAdapter(Context context, Vector<RecentsItemFormat> recentsItemFormats, HomeActivity HomeActivity, CommunityFeatures communityFeatures, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView) {
         this.context = context;
@@ -349,8 +354,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.infone), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_people_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -358,13 +363,13 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         }
                     });
                     holder.postConjunction.setText(" added a ");
-                    holder.post.setText("Contact");
+                    holder.post.setText("contact");
                     holder.infoneNameCategorySentence.setText("Contact of " +
                             recentsItemFormats.get(position).getInfoneContactName() +
                             " added in " +
                             recentsItemFormats.get(position).getInfoneContactCategoryName());
                     posted = " added a ";
-                    post = "Contact";
+                    post = "contact";
                     clickableSpanFeature = new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
@@ -401,8 +406,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.events), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_event_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -490,7 +495,66 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             ds.setUnderlineText(false);
                         }
                     };
-                } else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom")) {
+                }
+                else if (recentsItemFormats.get(position).getFeature().equals("createPoll"))
+                {
+                    holder.prePostDetails.setVisibility(View.VISIBLE);
+                    holder.post.setVisibility(View.VISIBLE);
+                    holder.pollLinearLayout.setVisibility(View.VISIBLE);
+                    holder.infoneRecentItem.setVisibility(View.GONE);
+                    holder.eventsRecentItem.setVisibility(View.GONE);
+                    holder.cabpoolRecentItem.setVisibility(View.GONE);
+                    holder.messagesRecentItem.setVisibility(View.GONE);
+                    holder.forumsRecentItem.setVisibility(View.GONE);
+                    holder.storeroomRecentItem.setVisibility(View.GONE);
+                    holder.bannerRecentItem.setVisibility(View.GONE);
+                    holder.noticesRecentItem.setVisibility(View.GONE);
+
+
+                    holder.postConjunction.setText(" created a ");
+                    holder.post.setText(" Poll ");
+                    holder.pollQuestion.setText(recentsItemFormats.get(position).getQuestion());
+                    holder.pollOptionA.setText(recentsItemFormats.get(position).getOptions().getOptionA());
+                    holder.pollOptionB.setText(recentsItemFormats.get(position).getOptions().getOptionB());
+                    holder.pollOptionC.setText(recentsItemFormats.get(position).getOptions().getOptionC());
+
+                    DatabaseReference databaseReferenceGetOptionSelected = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + recentsItemFormats.get(position).getKey());
+                    //Start a Progress Bar
+                    databaseReferenceGetOptionSelected.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
+                            {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    if (dataSnapshot.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").getValue().toString().equals("optionA"))
+                                        holder.pollOptionA.setTextColor(Color.RED);
+                                    else if (dataSnapshot.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").getValue().toString().equals("optionB"))
+                                        holder.pollOptionB.setTextColor(Color.RED);
+                                    else if (dataSnapshot.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").getValue().toString().equals("optionC"))
+                                        holder.pollOptionC.setTextColor(Color.RED);
+                                }
+                                else
+                                {
+                                    Log.v("Create Poll","No user found");
+                                }
+                            }
+                            else
+                            {
+                                Log.v("Create Poll","No user list found");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                    //End the Progress Bar
+                }
+                else if (recentsItemFormats.get(position).getFeature().equals("StoreRoom"))
+                {
+
                     holder.prePostDetails.setVisibility(View.VISIBLE);
                     holder.post.setVisibility(View.VISIBLE);
                     holder.infoneRecentItem.setVisibility(View.GONE);
@@ -508,8 +572,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            layers[1] = context.getResources().getDrawable(R.drawable.ic_local_mall_white_24dp);
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.storeroom), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_mall_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_mall_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -669,8 +733,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            layers[1] = context.getResources().getDrawable(R.drawable.ic_local_taxi_white_18dp);
 //            LayerDrawable layerDrawable = new LayerDrawable(layers);
 //            holder.featureCircle.setBackground(layerDrawable);
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.cabpool), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_taxi_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_local_taxi_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -720,8 +784,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.shops), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_store_white_24dp));
                     holder.postConjunction.setText(" put an ");
                     holder.post.setText("Offer");
                     holder.layoutFeatureIcon.setOnClickListener(null);
@@ -758,8 +822,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     } catch (Exception e) {
                     }
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.messages), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_message_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(null);
                     holder.postConjunction.setText(" wrote a ");
                     holder.post.setText("status");
@@ -803,6 +867,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     if (recentsItemFormats.get(position).getDesc2().equals("y")) {
                         holder.name.setText("Anonymous " + recentsItemFormats.get(position).getName());
                         holder.avatarCircle.setImageResource(R.drawable.question_mark_icon);
+                        holder.avatarCircle.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.darkgreyforavatarbg)));
                         holder.avatarCircle.setOnClickListener(null);
 //                holder.avatarCircle.setBackground(context.getResources().getDrawable(R.drawable.question_mark_icon));
                     } else {
@@ -819,7 +884,9 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                         }
 
-                    } catch (Exception e) {
+
+                    }catch (Exception e){
+                        Log.e("Error: ", e.getMessage());
 
                     }
 
@@ -840,8 +907,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.VISIBLE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.notices), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_18));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.baseline_insert_photo_white_24));
                     holder.setOpenNoticeImage(recentsItemFormats.get(position).getName(), recentsItemFormats.get(position).getImageurl());
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -928,8 +995,8 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     holder.bannerRecentItem.setVisibility(View.GONE);
                     holder.noticesRecentItem.setVisibility(View.GONE);
 
-                    holder.featureCircle.getBackground().setColorFilter(context.getResources().getColor(R.color.forums), PorterDuff.Mode.SRC_ATOP);
-                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_18dp));
+                    holder.featureIcon.setColorFilter(context.getResources().getColor(R.color.secondaryText), PorterDuff.Mode.SRC_ATOP);
+                    holder.featureIcon.setImageDrawable(context.getDrawable(R.drawable.ic_forum_white_24dp));
                     holder.layoutFeatureIcon.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -969,21 +1036,22 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 String sentence = name + posted + post;
                 SpannableString spannableString = new SpannableString(sentence);
-
                 spannableString.setSpan(clickableSpanPostedBy, sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 spannableString.setSpan(clickableSpanFeature, sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.link));
+                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
                 spannableString.setSpan(foregroundColorSpan, sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                if (post.equals("status"))
-                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.secondaryText));
-                else
-                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.link));
-                spannableString.setSpan(foregroundColorSpan, sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.secondaryText));
-                spannableString.setSpan(foregroundColorSpan, sentence.indexOf(posted), sentence.indexOf(posted) + posted.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                if(post.equals("status"))
+                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
 
+                else
+                    foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
+                spannableString.setSpan(foregroundColorSpan, sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                foregroundColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.black));
+                spannableString.setSpan(foregroundColorSpan, sentence.indexOf(posted), sentence.indexOf(posted) + posted.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                spannableString.setSpan(new android.text.style.StyleSpan(BOLD), sentence.indexOf(name), sentence.indexOf(name) + name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new android.text.style.StyleSpan(BOLD), sentence.indexOf(post), sentence.indexOf(post) + post.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 holder.sentence.setText(spannableString);
                 holder.sentence.setMovementMethod(LinkMovementMethod.getInstance());
                 break;
@@ -1014,8 +1082,10 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 productName, productPrice, productDesc,
                 messagesMessage,
                 forumNameCategorySentence,
-                sentence, totalComments,
-                noticesText;
+                sentence,totalComments,
+                noticesText,
+                pollQuestion,pollOptionA,pollOptionB,pollOptionC;
+
         SimpleDraweeView featureCircle, avatarCircle,
                 eventImage,
                 postImage,
@@ -1026,7 +1096,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         ImageButton deleteButton;
 
-        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem;
+        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,pollLinearLayout;
         FrameLayout layoutFeatureIcon, bannerLinkLayout;
         //
         long statusLikeCount;
@@ -1040,6 +1110,12 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             name = (TextView) itemView.findViewById(R.id.recentname);
             feature = (TextView) itemView.findViewById(R.id.featurename);
             desc = (TextView) itemView.findViewById(R.id.recentdesc);
+
+            pollQuestion = itemView.findViewById(R.id.poll_question);
+            pollOptionA = itemView.findViewById(R.id.optionA_option_text);
+            pollOptionB = itemView.findViewById(R.id.optionB_option_text);
+            pollOptionC = itemView.findViewById(R.id.optionC_option_text);
+            pollLinearLayout = itemView.findViewById(R.id.pollFormat);
 
             //new ui
             postedBy = (TextView) itemView.findViewById(R.id.postedBy);
@@ -1112,28 +1188,34 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         //context.startActivity(i);
                         //mHomeActivity.finish();
                         //mHome.finish();
-                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
-                        try {
+                    }
+                    else if(recentsItemFormats.get(getAdapterPosition()).getFeature().equals("createPoll"))
+                    {
+                        pollOptionsSelect(recentsItemFormats.get(getAdapterPosition()).getKey());
+                    }
+                    else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("StoreRoom")) {
+                          try{
 
-                            CounterItemFormat counterItemFormat = new CounterItemFormat();
-                            HashMap<String, String> meta = new HashMap<>();
-                            counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
-                            counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_PRODUCT);
-                            counterItemFormat.setTimestamp(System.currentTimeMillis());
-                            meta.put("type", "fromRecentsRV");
-                            counterItemFormat.setMeta(meta);
-                            CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
-                            counterPush.pushValues();
-                            i = new Intent(context, OpenProductDetails.class);
-                            i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getId());
-                            String productType = recentsItemFormats.get(getAdapterPosition()).getProductType() != null ?
-                                    recentsItemFormats.get(getAdapterPosition()).getProductType() : ProductUtilities.TYPE_ADD_STR;
-                            i.putExtra("type", productType);
-                            context.startActivity(i);
+                              CounterItemFormat counterItemFormat = new CounterItemFormat();
+                              HashMap<String, String> meta= new HashMap<>();
+                              counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                              counterItemFormat.setUniqueID(CounterUtilities.KEY_STOREROOM_OPEN_PRODUCT);
+                              counterItemFormat.setTimestamp(System.currentTimeMillis());
+                              meta.put("type","fromRecentsRV");
+                              counterItemFormat.setMeta(meta);
+                              CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                              counterPush.pushValues();
+                              i = new Intent(context, OpenProductDetails.class);
+                              i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getId());
+                              String productType = recentsItemFormats.get(getAdapterPosition()).getProductType()!=null ?
+                                      recentsItemFormats.get(getAdapterPosition()).getProductType() : ProductUtilities.TYPE_ADD_STR;
+                              i.putExtra("type", productType);
+                              context.startActivity(i);
 
-                        } catch (Exception e) {
-                            Log.d("Error Alert: ", e.getMessage());
-                        }
+                          } catch(Exception e) {
+                              Log.d("Error Alert: ", e.getMessage());
+                            }
+
                     } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Shop")) {
                         try {
                             i = new Intent(context, Shop_detail.class);
@@ -1156,27 +1238,19 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
                         counterPush.pushValues();
 
-                        FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child("allCabs").child(recentsItemFormats.get(getAdapterPosition()).getId()).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                i = new Intent(context, CabPoolListOfPeople.class);
-                                Log.e("check", "executed");
-                                if (dataSnapshot.child("forumUID").getValue() != null) {
-                                    i.putExtra("forumUID", dataSnapshot.child("forumUID").getValue().toString());
-                                }
-                                i.putExtra("key", recentsItemFormats.get(getAdapterPosition()).getId());
-                                i.putExtra("date", recentsItemFormats.get(getAdapterPosition()).getDT());
-                                context.startActivity(i);
-                            }
+                        i=new Intent(context, CabPoolListOfPeople.class);
+                        Log.e("check","executed");
+                        i.putExtra("key",recentsItemFormats.get(getAdapterPosition()).getId());
+                        i.putExtra("date",recentsItemFormats.get(getAdapterPosition()).getDT());
+                        i.putExtra("sourceText", recentsItemFormats.get(getAdapterPosition()).getCabpoolSource());
+                        i.putExtra("destinationText", recentsItemFormats.get(getAdapterPosition()).getCabpoolDestination());
+                        i.putExtra("timeText", recentsItemFormats.get(getAdapterPosition()).getCabpoolTime());
+                        i.putExtra("dateText", recentsItemFormats.get(getAdapterPosition()).getCabpoolDate());
+                        i.putExtra("postedByText", recentsItemFormats.get(getAdapterPosition()).getPostedBy().getUsername());
+                        i.putExtra("postedByImageText", recentsItemFormats.get(getAdapterPosition()).getPostedBy().getImageThumb());
+                        context.startActivity(i);
+                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")){
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-                    } else if (recentsItemFormats.get(getAdapterPosition()).getFeature().equals("Infone")) {
                         try {
                             CounterItemFormat counterItemFormat = new CounterItemFormat();
                             HashMap<String, String> meta = new HashMap<>();
@@ -1396,7 +1470,35 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             final RelativeLayout likeLayout = (RelativeLayout) itemView.findViewById(R.id.messagesRecentItem_like_layout);
             final ImageView likeIcon = (ImageView) itemView.findViewById(R.id.like_image_status);
             final TextView likeText = (TextView) itemView.findViewById(R.id.like_text_status);
-            statusDatabase.child("likeUids").addValueEventListener(new ValueEventListener() {
+
+
+            likeIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(statusLikeFlag == true){
+                        statusLikeFlag = false;
+                        likeText.setText(String.valueOf(Integer.valueOf(likeText.getText().toString())-1));
+                        if(likeText.getText().toString().equals("0")){
+                            likeText.setText("");
+                        }
+                        likeIcon.setColorFilter(itemView.getContext().getResources().getColor(R.color.icon_color));
+                        likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.outline_thumb_up_alt_white_24));
+                    }else{
+                        statusLikeFlag = true;
+                        likeIcon.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_thumb_up_alt_white_24));
+                        likeIcon.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+                        if(likeText.getText().toString().equals("")){
+                            likeText.setText("1");
+                        }else {
+                            likeText.setText(String.valueOf(Integer.valueOf(likeText.getText().toString()) + 1));
+                        }
+
+                    }
+                }
+            });
+
+
+            statusDatabase.child("likeUids").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     statusLikeCount = dataSnapshot.getChildrenCount();
@@ -1507,6 +1609,135 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //            Typeface customfont = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Raleway-Light.ttf");
 //            eventNumLit.setTypeface(customfont);
         }
+
+        public void pollOptionsSelect(String key) {
+
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("home/" + key);
+
+            pollOptionA.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
+                            {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    Log.e("Create Poll","User has already selected an option");
+                                }
+                                else
+                                {
+                                    count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
+                                    count++;
+
+                                    reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
+                                    reference.child("options").child("optionACount").setValue(count);
+                                    pollOptionA.setTextColor(Color.RED);
+                                }
+                            }
+                            else {
+                                count = dataSnapshot.child("options").child("optionACount").getValue(Long.class);
+                                count++;
+
+                                reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionA");
+                                reference.child("options").child("optionACount").setValue(count);
+                                pollOptionA.setTextColor(Color.RED);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+
+            pollOptionB.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
+                            {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    Log.e("Create Poll","User has already selected an option");
+                                }
+                                else
+                                {
+                                    count = dataSnapshot.child("options").child("optionBCount").getValue(Long.class);
+                                    count++;
+
+                                    reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
+                                    reference.child("options").child("optionBCount").setValue(count);
+                                    pollOptionB.setTextColor(Color.RED);
+                                }
+                            }
+                            else {
+                                count = dataSnapshot.child("options").child("optionBCount").getValue(Long.class);
+                                count++;
+
+                                reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionB");
+                                reference.child("options").child("optionBCount").setValue(count);
+                                pollOptionB.setTextColor(Color.RED);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+
+            pollOptionC.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild("usersList"))
+                            {
+                                if (dataSnapshot.child("usersList").hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                {
+                                    Log.e("Create Poll","User has already selected an option");
+                                }
+                                else
+                                {
+                                    count = dataSnapshot.child("options").child("optionCCount").getValue(Long.class);
+                                    count++;
+
+                                    reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
+                                    reference.child("options").child("optionCCount").setValue(count);
+                                    pollOptionC.setTextColor(Color.RED);
+                                }
+                            }
+                            else {
+                                count = dataSnapshot.child("options").child("optionCCount").getValue(Long.class);
+                                count++;
+
+                                reference.child("usersList").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("optionSelected").setValue("optionC");
+                                reference.child("options").child("optionCCount").setValue(count);
+                                pollOptionC.setTextColor(Color.RED);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+        }
+
     }
 
     class ViewHolderStatus extends RecyclerView.ViewHolder {

@@ -190,6 +190,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 
+
+
         mentionsRecyclerView = findViewById(R.id.mentions_grid);
         mentionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MentionsAdapter(new ArrayList<UserMentionsFormat>());

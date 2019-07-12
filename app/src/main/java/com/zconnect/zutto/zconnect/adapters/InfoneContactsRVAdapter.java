@@ -206,6 +206,19 @@ public class InfoneContactsRVAdapter extends RecyclerView.Adapter<InfoneContacts
                 holder.hiddentv.setText("hidden");
             }
 
+        holder.hiddentv.setVisibility(View.GONE);
+        holder.callImageBtn.setVisibility(View.VISIBLE);
+        holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.primaryText));
+        holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.secondaryText));
+
+        if (infoneContactsRVItems.get(position).getContactHidden()) {
+            holder.hiddentv.setVisibility(View.VISIBLE);
+            holder.whatsAppImageBtn.setVisibility(View.GONE);
+            holder.callImageBtn.setVisibility(View.GONE);
+            holder.nametv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray_holo_light));
+            holder.desctv.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.gray_holo_light));
+            holder.hiddentv.setText("hidden");
+        }
             holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

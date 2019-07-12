@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +30,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +40,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.zconnect.zutto.zconnect.adapters.UsersListRVAdapter;
 import com.zconnect.zutto.zconnect.commonModules.BaseActivity;
@@ -52,6 +59,12 @@ import com.zconnect.zutto.zconnect.utilities.ForumsUserTypeUtilities;
 import com.zconnect.zutto.zconnect.utilities.NotificationIdentifierUtilities;
 import com.zconnect.zutto.zconnect.utilities.OtherKeyUtilities;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -65,17 +78,20 @@ public class CabPoolListOfPeople extends BaseActivity {
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private DatabaseReference pool, chatRef;
+    private DatabaseReference pool, chatRef, fullPool;
     private Button join;
-    private String key, name, number, uid, imageThumb, userUID;
+    private String key,name, number, uid, imageThumb, userUID, date, source, destination, time, people, postedByImageText, postedByText;
+
     private Vector<UsersListItemFormat> usersListItemFormatVector = new Vector<>();
     private UsersListRVAdapter adapter;
     private Boolean flag, numberFlag;
     private String reference, reference_old = "archives", reference_default = "allCabs";
     private Button joinButton;
-    private LinearLayout joinLayout, chatLayout;
+    private LinearLayout joinLayout,chatLayout, share;
     private TextView chatEditText;
     private String formatted_date, Date;
+    private TextView dateTV, timeTV, sourceTV, destinationTV, peopleTV, postedByTV;
+    private SimpleDraweeView postedByImageDV;
     private FirebaseAuth mAuth;
     private DatabaseReference ref;
     private DatabaseReference databaseReference;
@@ -83,14 +99,20 @@ public class CabPoolListOfPeople extends BaseActivity {
     private String forumUID;
     private ValueEventListener listener;
     private DatabaseReference mDatabaseViews;
+    private int i;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cab_list_of_people);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
+        setToolbar();
         setSupportActionBar(toolbar);
+
+
+        toolbar.setTitle("Cabpool Details");
+
+        share = findViewById(R.id.share_cab_cp_detail);
 //        setTitle("List of people");
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -123,11 +145,134 @@ public class CabPoolListOfPeople extends BaseActivity {
             finish();
         }
 
+
         forumUID = getIntent().getStringExtra("forumUID");
 
         joinButton = (Button) findViewById(R.id.join);
         joinLayout = (LinearLayout) findViewById(R.id.joinLayout);
         chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
+
+        //for cabpool details
+        timeTV = findViewById(R.id.time_cp_detail);
+        dateTV = findViewById(R.id.date_cp_detail);
+        sourceTV = findViewById(R.id.source_cp_detail);
+        destinationTV = findViewById(R.id.destination_cp_detail);
+        peopleTV = findViewById(R.id.people_count_cp_detail);
+        postedByTV = findViewById(R.id.postedByCabpoolDetail);
+        postedByImageDV = findViewById(R.id.user_circle_image_in_detail);
+
+       /* time = getIntent().getStringExtra("timeText");
+        date = getIntent().getStringExtra("dateText");
+        source = getIntent().getStringExtra("sourceText");
+        destination = getIntent().getStringExtra("destinationText");
+        postedByText = getIntent().getStringExtra("postedByText");
+        postedByImageText = getIntent().getStringExtra("postedByImageText");
+
+        timeTV.setText(time);
+        dateTV.setText(date);
+        sourceTV.setText(source);
+        destinationTV.setText(destination);
+        peopleTV.setText(people);
+        postedByTV.setText(postedByText);
+        postedByImageDV.setImageURI(Uri.parse(postedByImageText));*/
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                i=1;
+
+                CounterItemFormat counterItemFormat = new CounterItemFormat();
+                HashMap<String, String> meta= new HashMap<>();
+
+                try {
+                    meta.put("source", String.valueOf(source));
+                    meta.put("destination", String.valueOf(destination));
+                }catch (Exception e){}
+
+                counterItemFormat.setUserID(FirebaseAuth.getInstance().getUid());
+                counterItemFormat.setUniqueID(CounterUtilities.KEY_CABPOOL_SHARE);
+                counterItemFormat.setTimestamp(System.currentTimeMillis());
+                counterItemFormat.setMeta(meta);
+
+                CounterPush counterPush = new CounterPush(counterItemFormat, communityReference);
+                counterPush.pushValues();
+
+                Uri BASE_URI = Uri.parse("http://www.zconnect.com/cabpooling/");
+
+                Uri APP_URI = BASE_URI.buildUpon().appendQueryParameter("key", key)
+                        .appendQueryParameter("communityRef", communityReference)
+                        .build();
+                String encodedUri = null;
+                try {
+                    encodedUri = URLEncoder.encode(APP_URI.toString(), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                if(i==0) {
+
+                    Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                            .setLongLink(Uri.parse("https://zconnect.page.link/?link=" + encodedUri + "&apn=com.zconnect.zutto.zconnect&amv=11"))
+                            .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setMinimumVersion(12).build())
+                            .buildShortDynamicLink()
+                            .addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
+                                @Override
+                                public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                                    if (task.isSuccessful()) {
+                                        //short link
+                                        final Uri shortLink = task.getResult().getShortLink();
+                                        Uri flowcharLink = task.getResult().getPreviewLink();
+                                        Intent intent = new Intent();
+                                        intent.setAction(Intent.ACTION_SEND);
+                                        intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + source +
+                                                " to " + destination + " on " +
+                                                date +
+                                                "\n Use ZConnect app to join the pool \n"
+                                                + shortLink);
+
+                                        intent.setType("text/plain");
+                                        intent.setPackage("com.whatsapp");
+                                        startActivity(intent);
+
+                                    }
+                                    else {
+                                        Log.d("CabPoolRVAdapter", task.getException().getMessage());
+                                    }
+                                }
+                            });
+                }
+                if(i==1) {
+
+                    Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                            .setLongLink(Uri.parse("https://zconnect.page.link/?link=" + encodedUri + "&apn=com.zconnect.zutto.zconnect&amv=11"))
+                            .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setMinimumVersion(12).build())
+                            .buildShortDynamicLink()
+                            .addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
+                                @Override
+                                public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                                    if (task.isSuccessful()) {
+                                        //short link
+                                        final Uri shortLink = task.getResult().getShortLink();
+                                        Uri flowcharLink = task.getResult().getPreviewLink();
+                                        Intent intent = new Intent();
+                                        intent.setAction(Intent.ACTION_SEND);
+                                        intent.putExtra(Intent.EXTRA_TEXT, "Join my cabpool from " + source +
+                                                " to " + destination + " on " +
+                                                date +
+                                                "\n Use the ZConnect app to join the pool \n"
+                                                + shortLink);
+                                        intent.setType("text/plain");
+                                        intent.setPackage("com.whatsapp");
+                                        startActivity(intent);
+                                    }
+                                    else {
+                                        Log.d("CabPoolRVAdapter", task.getException().getMessage());
+                                    }
+                                }
+                            });
+                }
+            }
+        });
 
         joinLayout.setVisibility(View.GONE);
         chatLayout.setVisibility(View.VISIBLE);
@@ -179,6 +324,7 @@ public class CabPoolListOfPeople extends BaseActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("cabPool").child(reference);
         pool = databaseReference.child(key).child("usersListItemFormats");
+        fullPool = databaseReference.child(key);
         mAuth = FirebaseAuth.getInstance();
         recyclerView = (RecyclerView) findViewById(R.id.content_cabpeople_rv);
         progressBar = (ProgressBar) findViewById(R.id.content_cabpeople_progress);
@@ -190,11 +336,70 @@ public class CabPoolListOfPeople extends BaseActivity {
 
         if (mAuth.getCurrentUser() != null)
             uid = mAuth.getCurrentUser().getUid();
+
+        if(getIntent().getBooleanExtra("fromRVCheck", false)){
+            time = getIntent().getStringExtra("timeText");
+            date = getIntent().getStringExtra("dateText");
+            source = getIntent().getStringExtra("sourceText");
+            destination = getIntent().getStringExtra("destinationText");
+            postedByText = getIntent().getStringExtra("postedByText");
+            postedByImageText = getIntent().getStringExtra("postedByImageText");
+
+            timeTV.setText(time);
+            dateTV.setText(date);
+            sourceTV.setText(source);
+            destinationTV.setText(destination);
+            peopleTV.setText(people);
+            postedByTV.setText(postedByText);
+            postedByImageDV.setImageURI(Uri.parse(postedByImageText));
+
+        }else {
+            fullPool.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    source = dataSnapshot.child("source").getValue().toString();
+                    destination = dataSnapshot.child("destination").getValue().toString();
+
+                    DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy");
+                    DateTime date2 = dtf.parseDateTime(dataSnapshot.child("date").getValue().toString());
+                    date = date2.toString("MMM") + " " + date2.getDayOfMonth();
+
+                    String fromAmPm = Integer.parseInt(dataSnapshot.child("from").getValue().toString()) < 12 ? "AM" : "PM";
+                    int fromTime = Integer.parseInt(dataSnapshot.child("from").getValue().toString()) <= 12 ? Integer.parseInt(dataSnapshot.child("from").getValue().toString()) : Integer.parseInt(dataSnapshot.child("from").getValue().toString()) - 12;
+                    fromTime = fromTime == 0 ? 12 : fromTime;
+                    String toAmPm = Integer.parseInt(dataSnapshot.child("to").getValue().toString()) < 12 ? "AM" : "PM";
+                    int toTime = Integer.parseInt(dataSnapshot.child("to").getValue().toString()) <= 12 ? Integer.parseInt(dataSnapshot.child("to").getValue().toString()) : Integer.parseInt(dataSnapshot.child("to").getValue().toString()) - 12;
+                    toTime = toTime == 0 ? 12 : toTime;
+                    time = fromTime + " " + fromAmPm + " - " + toTime + " " + toAmPm;
+
+                    postedByText = dataSnapshot.child("PostedBy").child("Username").getValue().toString();
+                    postedByImageText = dataSnapshot.child("PostedBy").child("ImageThumb").getValue().toString();
+
+                    timeTV.setText(time);
+                    dateTV.setText(date);
+                    sourceTV.setText(source);
+                    destinationTV.setText(destination);
+                    peopleTV.setText(people);
+                    postedByTV.setText(postedByText);
+                    postedByImageDV.setImageURI(Uri.parse(postedByImageText));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
         pool.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 flag = false;
                 usersListItemFormatVector.clear();
+                long noOfPersons = dataSnapshot.getChildrenCount();
+                people = noOfPersons + (noOfPersons>1?" Persons":" Person");
+                peopleTV.setText(people);
+
 
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     UsersListItemFormat usersListItemFormat;

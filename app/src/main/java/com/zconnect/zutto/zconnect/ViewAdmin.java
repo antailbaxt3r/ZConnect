@@ -55,6 +55,11 @@ DatabaseReference databaseReference;
         setContentView(R.layout.view_admins);
         Toolbar toolbar = (Toolbar) findViewById(R.id.view_admins_app_bar_home);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -99,7 +104,7 @@ DatabaseReference databaseReference;
                     }
                     else{
                         //TODO (Arjun) Change required: default profile pic instead of random image URL
-                        admimg.add("https://lh6.googleusercontent.com/-idc9bXb9n-Q/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DVg6FhNzc1jkN4eBCa6ESbBPmpl5g/s96-c/photo.jpg");
+                        admimg.add("https://firebasestorage.googleapis.com/v0/b/zconnectmulticommunity.appspot.com/o/defaultProfile.png?alt=media&token=4d4ec5db-41bd-4d04-9be5-12fc5a1bdd6d");
                     }
                 }
                 recyclerView = (RecyclerView) findViewById(R.id.view_admins_rv);

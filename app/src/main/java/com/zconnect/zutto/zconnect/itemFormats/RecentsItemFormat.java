@@ -1,48 +1,55 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
+import java.util.HashMap;
+
 /**
  * Created by shubhamk on 20/3/17.
  */
 
 public class RecentsItemFormat {
     String name;
-    String desc;
-    String desc2;
+    private String desc;
+    private String desc2;
     String imageurl;
-    String feature;
-    String id;
+    private String feature;
+    private String id;
     private String Key;
     private String DT;
+    private HashMap<String, CabItemFormat> cabItemFormat;
 
-    String recentType;
+    private String recentType;
     private String postID;
 
     //new ui
     private long PostTimeMillis;
     //for infone
-    String infoneContactName, infoneContactCategoryName;
+    private String infoneContactName,infoneContactCategoryName;
+    //for Poll
+    private String question;
+    private int totalCount;
+    private CreatePollOptionsItemFormat options;
     //for cabpool
-    String cabpoolSource;
-    String cabpoolDestination;
-    String cabpoolDate;
-    String cabpoolTime;
-    int cabpoolTimeTo = -1;
-    int cabpoolTimeFrom = -1;
-    //for events
-    String eventDate;
-    //for storeroom
-    String productPrice;
-    String productType;
-    //for new users
-    String communityName;
+    private String cabpoolSource;
+    private String cabpoolDestination;
+    private String cabpoolDate;
+    private String cabpoolTime;
+    private int cabpoolTimeTo=-1;
+    private int cabpoolTimeFrom=-1;
 
-    //for messages
-    String message;
-    int msgLikes;
-    int msgComments;
+        //for events
+        private String eventDate;
+        //for storeroom
+        private String productPrice;
+    private String productType;
+        //for new users
+        private String communityName;
 
-    //for Forums
+        //for messages
+        private String message;
+    private int msgLikes;
+    private int msgComments;
 
+        //for Forums
 
     private PostedByDetails PostedBy;
     //
@@ -51,7 +58,8 @@ public class RecentsItemFormat {
                              String DT, String cabpoolSource, String cabpoolDestination, String cabpoolDate,
                              String cabpoolTime, int cabpoolTimeFrom, int cabpoolTimeTo, String eventDate, String productPrice, String Key, long PostTimeMillis,
                              PostedByDetails PostedBy, String infoneContactName, String infoneContactCategoryName,
-                             String communityName, String message, String recentType, int msgLikes, int msgComments, String productType) {
+                             String communityName, String message, String recentType, int msgLikes, int msgComments, String productType,
+                             HashMap<String, CabItemFormat> cabItemFormat,String question,int totalCount,CreatePollOptionsItemFormat optionsItemFormat) {
         this.name = name;
         this.desc = desc;
         this.desc2 = desc2;
@@ -80,6 +88,10 @@ public class RecentsItemFormat {
         this.recentType = recentType;
         this.msgComments = msgComments;
         this.productType = productType;
+        this.cabItemFormat = cabItemFormat;
+        this.question = question;
+        this.totalCount = totalCount;
+        this.options = optionsItemFormat;
     }
 
     public RecentsItemFormat() {
@@ -254,8 +266,39 @@ public class RecentsItemFormat {
         this.productType = productType;
     }
 
-    public String getProductType() {
-        return productType;
+    public String getProductType() { return productType; }
+
+    public HashMap<String, CabItemFormat> getCabItemFormat() {
+        return cabItemFormat;
+    }
+
+    public void setCabItemFormat(HashMap<String, CabItemFormat> cabItemFormat) {
+        this.cabItemFormat = cabItemFormat;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public int getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public CreatePollOptionsItemFormat getOptions() {
+        return options;
+    }
+
+    public void setOptions(CreatePollOptionsItemFormat options) {
+        this.options = options;
+
     }
 }
 

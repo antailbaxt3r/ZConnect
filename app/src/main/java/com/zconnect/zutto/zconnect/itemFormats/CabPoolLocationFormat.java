@@ -1,5 +1,7 @@
 package com.zconnect.zutto.zconnect.itemFormats;
 
+import java.util.Vector;
+
 /**
  * Created by Lokesh Garg on 02-04-2018.
  */
@@ -10,12 +12,13 @@ public class CabPoolLocationFormat {
     private String locationName;
     private Long PostTimeMillis;
     private PostedByDetails PostedBy;
+    private Vector<UsersListItemFormat> usersListItemFormats;
 
     public CabPoolLocationFormat(){
 
     }
 
-    public CabPoolLocationFormat(String locationName, Long PostTimeMillis, PostedByDetails PostedBy){
+    public CabPoolLocationFormat(String locationName, Long PostTimeMillis, PostedByDetails PostedBy, Vector<UsersListItemFormat> usersListItemFormats){
         this.locationName = locationName;
         this.PostTimeMillis = PostTimeMillis;
         this.PostedBy = PostedBy;

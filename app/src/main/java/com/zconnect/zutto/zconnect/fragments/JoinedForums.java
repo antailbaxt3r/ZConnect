@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,7 +58,10 @@ public class JoinedForums extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private JoinedForumsAdapter adapter;
 
-    //    private DatabaseReference forumsCategoriesRef;
+//    private DatabaseReference forumsCategoriesRef;
+    private ShimmerFrameLayout shimmerFrameLayout;
+    private DatabaseReference forumsCategoriesRef;
+
     private Vector<ForumCategoriesItemFormat> forumCategoriesItemFormats = new Vector<>();
     private Vector<ForumCategoriesItemFormat> notifTabForum = new Vector<>();
     private Vector<ForumCategoriesItemFormat> searchForumCategoriesItemFormats;
@@ -112,7 +116,9 @@ public class JoinedForums extends Fragment {
 
 //        forumsCategoriesRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("tabsCategories");
         joinedForumsRV =view.findViewById(R.id.joined_forums_rv);
-        progressBar = view.findViewById(R.id.progress_bar);
+        shimmerFrameLayout = view.findViewById(R.id.shimmer_view_container_forums);
+        shimmerFrameLayout.startShimmerAnimation();
+        joinedForumsRV.setVisibility(View.INVISIBLE);
         linearLayoutManager = new LinearLayoutManager(view.getContext());
         userForumsRef = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("features").child("forums").child("userForums").child(mAuth.getCurrentUser().getUid()).child("joinedForums");
 
@@ -317,6 +323,12 @@ public class JoinedForums extends Fragment {
                     }
                 }
 
+
+                shimmerFrameLayout.stopShimmerAnimation();
+                shimmerFrameLayout.setVisibility(View.INVISIBLE);
+                joinedForumsRV.setVisibility(View.VISIBLE);
+                adapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -422,7 +434,6 @@ public class JoinedForums extends Fragment {
         super.onResume();
         mydb = new DBHelper(getContext());
         allForumsSeenMessages = mydb.getAllForums();
-        userForumsRef.addValueEventListener(joinedForumsListener);
         userForumsRef.addValueEventListener(joinedForumsListener);
 //        forumsCategoriesRef.addValueEventListener(joinedForumsListener);
 
