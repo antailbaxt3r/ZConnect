@@ -1126,7 +1126,7 @@ public class RecentsRVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ImageButton deleteButton;
 
 
-        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,pollLinearLayout,
+        LinearLayout infoneRecentItem, cabpoolRecentItem, eventsRecentItem, storeroomRecentItem, messagesRecentItem, forumsRecentItem, bannerRecentItem, prePostDetails, noticesRecentItem,youtubeLink,pollLinearLayout,
                 pollAYes, pollANo, pollBYes, pollBNo, pollCYes, pollCNo, pollAResult, pollBResult, pollCResult;
 
         FrameLayout layoutFeatureIcon, bannerLinkLayout, optionALayout, optionBLayout, optionCLayout;

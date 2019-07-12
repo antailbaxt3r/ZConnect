@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.JoinedForums">
 
-
     <com.facebook.shimmer.ShimmerFrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

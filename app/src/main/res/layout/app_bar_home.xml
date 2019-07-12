@@ -125,8 +125,6 @@
         app:srcCompat="@drawable/ic_add_white_36dp" />
 
 
-
-
     <android.support.design.widget.TabLayout
         android:id="@+id/navigation"
         android:layout_width="match_parent"

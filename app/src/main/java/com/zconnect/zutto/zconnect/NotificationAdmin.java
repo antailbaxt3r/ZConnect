@@ -22,16 +22,14 @@ public class NotificationAdmin extends BaseActivity {
 
     private ArrayList notification_type=new ArrayList<>(Arrays.asList("Send Text/Image Notification"));
     private Toolbar mActionBarToolbar;
+    private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
-    private LinearLayout imageNotification, textNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_admin);
 
-        imageNotification = findViewById(R.id.image_notification);
-        textNotification = findViewById(R.id.text_notification);
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_app_bar_home);
         setSupportActionBar(mActionBarToolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -59,25 +57,9 @@ public class NotificationAdmin extends BaseActivity {
 //            getWindow().setNavigationBarColor(colorPrimary);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         }
+        recyclerView=(RecyclerView)findViewById(R.id.menu_notifications_add);
         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-
-        imageNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent nottif_no_image = new Intent(NotificationAdmin.this,NotificationNoImage.class);
-                nottif_no_image.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(nottif_no_image);
-            }
-        });
-
-        textNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(NotificationAdmin.this, NotificationNoImage.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-
-            }
-        });
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(new NotificationRVAdapter(notification_type,getBaseContext()));
     }
 }

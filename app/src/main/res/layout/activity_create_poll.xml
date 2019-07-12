@@ -26,7 +26,7 @@
     <ScrollView
         android:layout_below="@id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
         android:id="@+id/scrollView_poll"
         >
 

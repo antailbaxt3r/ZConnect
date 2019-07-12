@@ -63,6 +63,7 @@ public class InfoneActivity extends Fragment {
     public String communityReference;
     private ShimmerFrameLayout shimmerFrameLayout;
     Toolbar toolbar;
+    public boolean isAdmin = false;
 
     public InfoneActivity() {
         // Required empty public constructor
@@ -72,6 +73,16 @@ public class InfoneActivity extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setHasOptionsMenu(true);
+        if(fabCatAdd != null) {
+            if (isAdmin) {
+                fabCatAdd.setVisibility(View.VISIBLE);
+
+            } else {
+                fabCatAdd.setVisibility(View.GONE);
+
+            }
+        }
+
     }
 
 
@@ -83,7 +94,8 @@ public class InfoneActivity extends Fragment {
 
         recyclerViewCat = (RecyclerView) view.findViewById(R.id.rv_cat_infone);
         recyclerViewCat.setVisibility(View.GONE);
-        fabCatAdd = (FloatingActionButton) view.findViewById(R.id.fab_cat_infone);
+        fabCatAdd = getActivity().findViewById(R.id.fab_cat_infone);
+//        fabCatAdd.setVisibility(View.VISIBLE);
         shimmerFrameLayout = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container_infone_cat);
         communitySP = getActivity().getSharedPreferences("communityName", MODE_PRIVATE);
         communityReference = communitySP.getString("communityReference", null);
@@ -97,6 +109,14 @@ public class InfoneActivity extends Fragment {
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+//                if(isAdmin){
+//                    fabCatAdd.setVisibility(View.VISIBLE);
+//
+//                }
+//                else{
+//                    fabCatAdd.setVisibility(View.GONE);
+//
+//                }
 
                 categoriesList = new ArrayList<>();
                 for (DataSnapshot childSnapShot :
@@ -144,14 +164,13 @@ public class InfoneActivity extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         };
-        databaseReferenceCat.addValueEventListener(listener);
 
         mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
                 if(userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
-                    fabCatAdd.setVisibility(View.VISIBLE);
+                    isAdmin = true;
                 }
             }
 
@@ -160,6 +179,9 @@ public class InfoneActivity extends Fragment {
 
             }
         });
+
+        databaseReferenceCat.addValueEventListener(listener);
+
         fabCatAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

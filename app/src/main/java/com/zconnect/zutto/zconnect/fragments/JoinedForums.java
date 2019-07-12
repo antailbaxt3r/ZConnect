@@ -296,18 +296,20 @@ public class JoinedForums extends Fragment {
 //                joinedForumsRV.setLayoutManager(linearLayoutManager);
 //                joinedForumsRV.setAdapter(adapter);
 //                adapter.notifyDataSetChanged();
-                if(adapter == null ) {
+//                if(adapter == null ) {
                     Log.d("TryHere","Setting Adapter");
                     adapter = new JoinedForumsAdapter(forumCategoriesItemFormats, getActivity());
                     joinedForumsRV.setLayoutManager(linearLayoutManager);
                     joinedForumsRV.setAdapter(adapter);
+                    if(joinedForumsRV != null && recyclerViewState != null) {
+                        joinedForumsRV.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                    }
 
-                }
-                else{
-//                    adapter.updateArrayListItems(new ArrayList<>(forumCategoriesItemFormats));
+//                }
+//                else{
                     adapter.notifyDataSetChanged();
 
-                }
+//                }
 
                 if(!isUnread){
                     if(activityType == null) {
@@ -330,7 +332,7 @@ public class JoinedForums extends Fragment {
                     public void run() {
 
                         shimmerFrameLayout.stopShimmerAnimation();
-                        shimmerFrameLayout.setVisibility(View.INVISIBLE);
+                        shimmerFrameLayout.setVisibility(View.GONE);
                         joinedForumsRV.setVisibility(View.VISIBLE);
 
                     }
@@ -366,7 +368,6 @@ public class JoinedForums extends Fragment {
             }else {
                 adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());
                 joinedForumsRV.setAdapter(adapter);
-                progressBar.setVisibility(View.GONE);
                 joinedForumsRV.setVisibility(View.VISIBLE);
             }
 

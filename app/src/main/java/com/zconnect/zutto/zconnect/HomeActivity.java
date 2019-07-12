@@ -711,6 +711,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public void onTabUnselected(TabLayout.Tab tab) {
 
                 prePos = tab.getPosition();
+                if(prePos!=3) {
+                    findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
+                }
+                else{
+                    findViewById(R.id.fab_cat_infone).setVisibility(View.VISIBLE);
+
+                }
 
 
             }
@@ -719,6 +726,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public void onTabReselected(TabLayout.Tab tab) {
 
                 int pos = tab.getPosition();
+                if(pos!=3) {
+                    findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
+                }
+                else{
+                    findViewById(R.id.fab_cat_infone).setVisibility(View.VISIBLE);
+
+                }
+
 
 
 
