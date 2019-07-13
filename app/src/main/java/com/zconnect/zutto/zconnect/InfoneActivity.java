@@ -73,15 +73,6 @@ public class InfoneActivity extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setHasOptionsMenu(true);
-        if(fabCatAdd != null) {
-            if (isAdmin) {
-                fabCatAdd.setVisibility(View.VISIBLE);
-
-            } else {
-                fabCatAdd.setVisibility(View.GONE);
-
-            }
-        }
 
     }
 
@@ -109,6 +100,7 @@ public class InfoneActivity extends Fragment {
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
 //                if(isAdmin){
 //                    fabCatAdd.setVisibility(View.VISIBLE);
 //
@@ -165,20 +157,6 @@ public class InfoneActivity extends Fragment {
             }
         };
 
-        mUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
-                if(userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_ADMIN)){
-                    isAdmin = true;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         databaseReferenceCat.addValueEventListener(listener);
 

@@ -72,7 +72,7 @@ public class JoinedForums extends Fragment {
     private Map<String,Integer> allForumsSeenMessages = new HashMap();
 
     private FirebaseAuth mAuth;
-    private ProgressBar progressBar;
+//    private ProgressBar progressBar;
 
     //New Forums
     private DatabaseReference userForumsRef;
@@ -310,22 +310,24 @@ public class JoinedForums extends Fragment {
                     adapter.notifyDataSetChanged();
 
 //                }
+                try {
+                    if (!isUnread) {
+                        if (activityType == null) {
+                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+                        }
+                    } else {
+                        if (activityType == null) {
 
-                if(!isUnread){
-                    if(activityType == null) {
-                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                        tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.GONE);
+                            TabLayout tabs = getActivity().findViewById(R.id.navigation);
+                            tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
+                            isUnread = false;
+                        }
                     }
                 }
-                else {
-                    if (activityType == null) {
-
-                        TabLayout tabs = getActivity().findViewById(R.id.navigation);
-                        tabs.getTabAt(1).getCustomView().findViewById(R.id.notification_circle).setVisibility(View.VISIBLE);
-                        isUnread = false;
-                    }
+                catch (Exception e){
+                    Log.d("JoinedForumDot",e.toString());
                 }
-
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -363,7 +365,7 @@ public class JoinedForums extends Fragment {
 
                 adapter = new JoinedForumsAdapter(searchForumCategoriesItemFormats,getContext());
                 joinedForumsRV.setAdapter(adapter);
-                progressBar.setVisibility(View.GONE);
+//                progressBar.setVisibility(View.GONE);
                 joinedForumsRV.setVisibility(View.VISIBLE);
             }else {
                 adapter = new JoinedForumsAdapter(forumCategoriesItemFormats,getContext());

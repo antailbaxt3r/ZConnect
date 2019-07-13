@@ -239,57 +239,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         unseenFlag = true;
         unseenFlag2 = false;
 
-//        Mentions mentions = new Mentions.Builder(ChatActivity.this, typer)
-//                .highlightColor(R.color.colorPrimary)
-//                .maxCharacters(5)
-//                .queryListener(new QueryListener() {
-//                    public void onQueryReceived(final String query) {
-//                        // Get and display results for query.
-//                    }
-//                })
-//                .suggestionsListener(new SuggestionsListener() {
-//                    public void displaySuggestions(final boolean display) {
-//                        // Hint that can be used to show or hide your list of @mentions".
-//                    }
-//                })
-//                .build();
-//
-//        final Mentionable mention = new Mentionable() {
-//
-//            @Override
-//            public int getMentionOffset() {
-//                return 0;
-//            }
-//
-//            @Override
-//            public void setMentionOffset(int i) {
-//
-//            }
-//
-//            @Override
-//            public int getMentionLength() {
-//                return 4;
-//            }
-//
-//            @Override
-//            public void setMentionLength(int i) {
-//
-//            }
-//
-//            @Override
-//            public String getMentionName() {
-//                return "AAAAA";
-//            }
-//
-//            @Override
-//            public void setMentionName(String s) {
-//
-//            }
-//
-//        };
-//        mention.setMentionName(user.getDisplayName());
-//        mentions.insertMention(mention);
-//
 
         SharedPreferences communitySP;
         final String communityReference;
@@ -548,10 +497,40 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                                 newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Chat", ChatActivity.this);
                             } else {
 
-                                postMessage();
+                                postMessage(false);
                             }
                         } else {
-                            postMessage();
+                            postMessage(false);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+        });
+
+        findViewById(R.id.sendAnonymousButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                user.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserItemFormat userItemFormat = dataSnapshot.getValue(UserItemFormat.class);
+                        if (dataSnapshot.hasChild("userType")) {
+                            if (userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_NOT_VERIFIED) || userItemFormat.getUserType().equals(UsersTypeUtilities.KEY_PENDING)) {
+                                newUserVerificationAlert.buildAlertCheckNewUser(userItemFormat.getUserType(), "Chat", ChatActivity.this);
+                            } else {
+
+                                postMessage(true);
+                            }
+                        } else {
+                            postMessage(true);
                         }
                     }
 
@@ -584,11 +563,8 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                         if (!snapshot.hasChild("anonymous") || snapshot.child("anonymous").getValue().toString().equals("false")) {
                             messages.add(temp);
                         } else {
-                            ChatItemFormats anonMessage = new ChatItemFormats();
-                            anonMessage.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
-                            anonMessage.setUuid(temp.getUuid());
-                            anonMessage.setTimeDate(temp.getTimeDate());
-                            messages.add(anonMessage);
+                            temp.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
+                            messages.add(temp);
                         }
                     }
                 }
@@ -672,7 +648,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
         if (shareMessageType != null) {
             if (shareMessageType.equals(ForumUtilities.VALUE_MESSAGE_TEXT_MESSAGE)) {
                 typer.setText(shareMessage);
-                postMessage();
+                postMessage(false);
             }
             if (shareMessageType.equals(ForumUtilities.VALUE_MESSAGE_IMAGE)) {
                 mImageUri = Uri.parse(shareMessage);
@@ -682,7 +658,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
 
     }
 
-    private void postMessage() {
+    private void postMessage(boolean anonymous) {
 
 //        final EditText typer = ((EditText) findViewById(R.id.typer));
         final String text;
@@ -733,10 +709,15 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 }
                 message.setImageThumb(userItem.getImageURLThumbnail());
                 message.setMessage("\"" + text + "\"");
-                message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
                 GlobalFunctions.addPoints(2);
                 message.setKey(messagePushID);
-                message.setAnonymous(isAnonymousEnabled);
+                if(anonymous){
+                    message.setMessageType(MessageTypeUtilities.KEY_ANONYMOUS_MESSAGE_STR);
+                }
+                else{
+                    message.setMessageType(MessageTypeUtilities.KEY_MESSAGE_STR);
+
+                }
 
                 databaseReference.child("Chat").child(messagePushID).setValue(message);
 //                messages.add(message);
@@ -911,7 +892,6 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                                 message.setImageThumb(userItem.getImageURLThumbnail());
                                 message.setMessage(" \uD83D\uDCF7 Image ");
                                 message.setMessageType(MessageTypeUtilities.KEY_PHOTO_STR);
-                                message.setAnonymous(isAnonymousEnabled);
                                 GlobalFunctions.addPoints(5);
                                 String messagePushID = databaseReference.child("Chat").push().getKey();
                                 message.setKey(messagePushID);
@@ -1300,6 +1280,7 @@ public class ChatActivity extends BaseActivity implements QueryTokenReceiver, Su
                 menu.findItem(R.id.action_edit_forum).setVisible(false);
             }
             if (tabuid.equals("personalChats")) {
+                menu.findItem(R.id.action_anonymous_forum).setVisible(false);
                 menu.findItem(R.id.action_edit_forum).setVisible(false);
                 menu.findItem(R.id.action_list_people).setVisible(false);
                 Log.d("Menu Setting", getIntent().getStringExtra("name"));

@@ -160,7 +160,9 @@ public class OpenUserDetail extends BaseActivity {
         userForums.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                forumsJoined.setText(dataSnapshot.getValue().toString());
+                if(dataSnapshot.getValue().toString() != null) {
+                    forumsJoined.setText(dataSnapshot.getValue().toString());
+                }
             }
 
             @Override
@@ -184,6 +186,8 @@ public class OpenUserDetail extends BaseActivity {
                     userDetails.setName(userProfile.getUsername());
                     userDetails.setImageThumb(userProfile.getImageURLThumbnail());
                     userDetails.setUserType(ForumsUserTypeUtilities.KEY_ADMIN);
+//                    forumsJoined.setText(dataSnapshot.getValue().toString());
+
                     setUserDetails(currentUser);
 
                     progressBar.setVisibility(View.GONE);
@@ -529,15 +533,18 @@ public class OpenUserDetail extends BaseActivity {
         currentUser.setUserUID(UserUtilities.currentUser.getUserUID());
         currentUser.setUserType(UserUtilities.currentUser.getUserType());
         userList.put(uid,currentUser);
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("users").setValue(userList);
+
+        HashMap<String,Object> forumTabs = new HashMap<>();
+        forumTabs.put("name",false);
+        forumTabs.put("catUID",newPush.getKey());
+        forumTabs.put("tabUID","personalChats");
+        forumTabs.put("lastMessage","Null");
+        forumTabs.put("users",userList);
+        databaseReferenceTabsCategories.child(newPush.getKey()).setValue(forumTabs);
 
 
         databaseReferenceUser.child("userChats").child(infoneUserUID).setValue(newPush.getKey());
         databaseReferenceInfoneUser.child("userChats").child(uid).setValue(newPush.getKey());
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("name").setValue(false);
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("catUID").setValue(newPush.getKey());
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("tabUID").setValue("personalChats");
-        databaseReferenceTabsCategories.child(newPush.getKey()).child("lastMessage").setValue("Null");
 
 
 

@@ -313,6 +313,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         navigationView.setNavigationItemSelectedListener(this);
         editProfileItem = navigationView.getMenu().findItem(R.id.edit_profile);
+        findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
+
 
 
 
@@ -711,13 +713,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public void onTabUnselected(TabLayout.Tab tab) {
 
                 prePos = tab.getPosition();
-                if(prePos!=3) {
-                    findViewById(R.id.fab_cat_infone).setVisibility(View.GONE);
-                }
-                else{
-                    findViewById(R.id.fab_cat_infone).setVisibility(View.VISIBLE);
-
-                }
 
 
             }
@@ -1012,7 +1007,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     });
                 } else {
                     DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("communities").child(communityReference).child("Users1").child(mAuth.getCurrentUser().getUid());
-                    userReference.addValueEventListener(new ValueEventListener() {
+                    userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             UserUtilities.currentUser = dataSnapshot.getValue(UserItemFormat.class);
